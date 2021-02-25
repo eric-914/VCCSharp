@@ -1,0 +1,13 @@
+﻿<Window x:Class="VCCSharp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VCCSharp"
+        mc:Ignorable="d"
+        Title="VCCSharp" Height="519" Width="821">
+  <Grid Background="{DynamicResource {x:Static SystemColors.ActiveCaptionTextBrushKey}}">
+    <Image Margin="36,4,36,10" Stretch="Fill" Source="/Television.png"/>
+
+  </Grid>
+</Window>

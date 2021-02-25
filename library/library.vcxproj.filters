@@ -1,0 +1,383 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="library.cpp" />
+    <ClCompile Include="commandline.c">
+      <Filter>commandline</Filter>
+    </ClCompile>
+    <ClCompile Include="cpudef.c">
+      <Filter>cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="fileoperations.c">
+      <Filter>file</Filter>
+    </ClCompile>
+    <ClCompile Include="keyboardlayout.c">
+      <Filter>keyboard</Filter>
+    </ClCompile>
+    <ClCompile Include="tcc1014graphics-8.c">
+      <Filter>tc1014\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="tcc1014graphics-16.c">
+      <Filter>tc1014\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="tcc1014graphics-24.c">
+      <Filter>tc1014\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="tcc1014graphics-32.c">
+      <Filter>tc1014\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="xDebug.c">
+      <Filter>debug</Filter>
+    </ClCompile>
+    <ClCompile Include="logger.c">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio.c">
+      <Filter>audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Cassette.c">
+      <Filter>cassette</Filter>
+    </ClCompile>
+    <ClCompile Include="Clipboard.c">
+      <Filter>clipboard</Filter>
+    </ClCompile>
+    <ClCompile Include="CoCo.c">
+      <Filter>coco</Filter>
+    </ClCompile>
+    <ClCompile Include="Config.c">
+      <Filter>config</Filter>
+    </ClCompile>
+    <ClCompile Include="Joystick.c">
+      <Filter>joystick</Filter>
+    </ClCompile>
+    <ClCompile Include="MC6821.c">
+      <Filter>mc6821</Filter>
+    </ClCompile>
+    <ClCompile Include="VCC.c">
+      <Filter>vcc</Filter>
+    </ClCompile>
+    <ClCompile Include="Throttle.c">
+      <Filter>throttle</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.c">
+      <Filter>keyboard</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics.c">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="PAKInterface.c">
+      <Filter>pakinterface</Filter>
+    </ClCompile>
+    <ClCompile Include="IOBus.c">
+      <Filter>iobus</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectDraw.c">
+      <Filter>directdraw</Filter>
+    </ClCompile>
+    <ClCompile Include="QuickLoad.c">
+      <Filter>quickload</Filter>
+    </ClCompile>
+    <ClCompile Include="MC6809.c">
+      <Filter>mc6809</Filter>
+    </ClCompile>
+    <ClCompile Include="HD6309.c">
+      <Filter>hd6309</Filter>
+    </ClCompile>
+    <ClCompile Include="MC6809OpCodes.c">
+      <Filter>mc6809</Filter>
+    </ClCompile>
+    <ClCompile Include="HD6309OpCodes.c">
+      <Filter>hd6309</Filter>
+    </ClCompile>
+    <ClCompile Include="Callbacks.c">
+      <Filter>callbacks</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageHandlers.c">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessCommandMessage.c">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessKeyDownMessage.c">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessMessage.c">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="App.c">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="TC1014Registers.c">
+      <Filter>tc1014\registers</Filter>
+    </ClCompile>
+    <ClCompile Include="TC1014MMU.c">
+      <Filter>tc1014\mmu</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="defines.h" />
+    <ClInclude Include="library.h" />
+    <ClInclude Include="cc3font.h">
+      <Filter>ccfont</Filter>
+    </ClInclude>
+    <ClInclude Include="cc2font.h">
+      <Filter>ccfont</Filter>
+    </ClInclude>
+    <ClInclude Include="commandline.h">
+      <Filter>commandline</Filter>
+    </ClInclude>
+    <ClInclude Include="cpudef.h">
+      <Filter>cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="di.version.h">
+      <Filter>version</Filter>
+    </ClInclude>
+    <ClInclude Include="nt.version.h">
+      <Filter>version</Filter>
+    </ClInclude>
+    <ClInclude Include="fileoperations.h">
+      <Filter>file</Filter>
+    </ClInclude>
+    <ClInclude Include="keyboardlayout.h">
+      <Filter>keyboard</Filter>
+    </ClInclude>
+    <ClInclude Include="tcc1014graphics-8.h">
+      <Filter>tc1014\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="tcc1014graphics-16.h">
+      <Filter>tc1014\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="tcc1014graphics-24.h">
+      <Filter>tc1014\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="tcc1014graphics-32.h">
+      <Filter>tc1014\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="xDebug.h">
+      <Filter>debug</Filter>
+    </ClInclude>
+    <ClInclude Include="logger.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>resources</Filter>
+    </ClInclude>
+    <ClInclude Include="macros.h" />
+    <ClInclude Include="SoundCardList.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigModel.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemState.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio.h">
+      <Filter>audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Cassette.h">
+      <Filter>cassette</Filter>
+    </ClInclude>
+    <ClInclude Include="Clipboard.h">
+      <Filter>clipboard</Filter>
+    </ClInclude>
+    <ClInclude Include="CoCo.h">
+      <Filter>coco</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="Joystick.h">
+      <Filter>joystick</Filter>
+    </ClInclude>
+    <ClInclude Include="MC6821.h">
+      <Filter>mc6821</Filter>
+    </ClInclude>
+    <ClInclude Include="VCC.h">
+      <Filter>vcc</Filter>
+    </ClInclude>
+    <ClInclude Include="Throttle.h">
+      <Filter>throttle</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>keyboard</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="PAKInterface.h">
+      <Filter>pakinterface</Filter>
+    </ClInclude>
+    <ClInclude Include="IOBus.h">
+      <Filter>iobus</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectDraw.h">
+      <Filter>directdraw</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickLoad.h">
+      <Filter>quickload</Filter>
+    </ClInclude>
+    <ClInclude Include="MC6809.h">
+      <Filter>mc6809</Filter>
+    </ClInclude>
+    <ClInclude Include="HD6309.h">
+      <Filter>hd6309</Filter>
+    </ClInclude>
+    <ClInclude Include="HD6309Macros.h">
+      <Filter>hd6309</Filter>
+    </ClInclude>
+    <ClInclude Include="MC6809Macros.h">
+      <Filter>mc6809</Filter>
+    </ClInclude>
+    <ClInclude Include="MC6809OpCodes.h">
+      <Filter>mc6809</Filter>
+    </ClInclude>
+    <ClInclude Include="HD6309OpCodes.h">
+      <Filter>hd6309</Filter>
+    </ClInclude>
+    <ClInclude Include="Callbacks.h">
+      <Filter>callbacks</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageHandlers.h">
+      <Filter>events</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessCommandMessage.h">
+      <Filter>events</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessKeyDownMessage.h">
+      <Filter>events</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessMessage.h">
+      <Filter>events</Filter>
+    </ClInclude>
+    <ClInclude Include="App.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="TC1014Registers.h">
+      <Filter>tc1014\registers</Filter>
+    </ClInclude>
+    <ClInclude Include="TC1014MMU.h">
+      <Filter>tc1014\mmu</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="audio">
+      <UniqueIdentifier>{a1e197a3-96b7-4a32-8423-046b68586ec0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cassette">
+      <UniqueIdentifier>{b15549f3-bd40-41f7-924d-8588cdc3aff9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ccfont">
+      <UniqueIdentifier>{3348c768-b227-4765-ad7c-6909139425fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commandline">
+      <UniqueIdentifier>{6a29e241-1a76-4b54-9bf5-62ed7152ab06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cpu">
+      <UniqueIdentifier>{95cddd9b-7966-459b-b71a-4df974a5336a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="version">
+      <UniqueIdentifier>{24231aa7-6706-4af9-988d-e5c4f9399e79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="file">
+      <UniqueIdentifier>{16510640-f61a-43b2-bdcd-fa3485b3a597}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics">
+      <UniqueIdentifier>{f67d6558-beea-4086-991d-9c4a1019c9bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="joystick">
+      <UniqueIdentifier>{7ebfd3af-a17e-426b-8615-80a1562e5210}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="keyboard">
+      <UniqueIdentifier>{c4db8b51-810a-40c8-81d5-0024e052a93e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tc1014">
+      <UniqueIdentifier>{49389fe2-6b27-43b4-be8e-da55b700686d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tc1014\graphics">
+      <UniqueIdentifier>{720d3419-e0d4-407a-8b4d-6e75a0461778}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="debug">
+      <UniqueIdentifier>{67f7f1e9-6d8a-48db-9f9f-c4c936b752a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="logging">
+      <UniqueIdentifier>{21e949b4-3172-4865-b847-7bd0a2309d82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config">
+      <UniqueIdentifier>{f0e5d00c-8e47-4546-a76f-152ddb13e354}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{57f10a27-5161-423d-a617-cc41d9e82196}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="clipboard">
+      <UniqueIdentifier>{d02eba2c-0674-4a63-8489-bfc99f4df5c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="coco">
+      <UniqueIdentifier>{d1fdabc9-8d5d-4cb2-be9e-a7e7e59260ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="directdraw">
+      <UniqueIdentifier>{fcd2e4e7-3346-4625-b980-414909633751}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hd6309">
+      <UniqueIdentifier>{acdd0b6d-1ae3-41a6-877e-5e5366395d82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iobus">
+      <UniqueIdentifier>{76dcdb10-b8f2-4647-8ed5-2e3ff3ed2802}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="legal">
+      <UniqueIdentifier>{b1110f74-34ea-4882-92c9-833443968697}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mc6809">
+      <UniqueIdentifier>{a3dcb2f5-8404-425f-9ce5-c07298c7194e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mc6821">
+      <UniqueIdentifier>{2b9a7721-f759-46fe-8cae-76488c5d9ac0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="quickload">
+      <UniqueIdentifier>{916b390a-4f25-4746-8ac5-924945e99460}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tc1014\mmu">
+      <UniqueIdentifier>{cbafe392-f6a3-489e-8d85-1b2f9e4ea199}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tc1014\registers">
+      <UniqueIdentifier>{4241406f-da4d-467c-a2ca-e09cbdb16573}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="throttle">
+      <UniqueIdentifier>{f953503e-983d-438e-bb1f-ecfbce7b1eb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vcc">
+      <UniqueIdentifier>{f9665cb7-8ba3-4c08-8d8c-e698351da699}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pakinterface">
+      <UniqueIdentifier>{9a6f908d-4e3b-42ee-8d38-c35926c19974}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="models">
+      <UniqueIdentifier>{380d0ff3-f76b-440a-9ca7-537e14468c80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="callbacks">
+      <UniqueIdentifier>{d7a009e7-f60a-4914-98dc-573a8e0f986e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="events">
+      <UniqueIdentifier>{a1eac0da-ece6-40f6-9e6f-7c28f6152beb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="app">
+      <UniqueIdentifier>{d4a66abc-4c11-4b2e-9639-96d0090821f8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="library.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="COPYING">
+      <Filter>legal</Filter>
+    </None>
+    <None Include="README.md">
+      <Filter>legal</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="license.txt">
+      <Filter>legal</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

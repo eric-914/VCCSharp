@@ -1,0 +1,270 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{151D692E-1469-44D9-90D5-FB59FDDA4E31}</ProjectGuid>
+    <ProjectName>library</ProjectName>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)\x86\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(Configuration)\x86\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)\x86\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(Configuration)\x86\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)\x64\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(Configuration)\x64\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)\x64\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(Configuration)\x64\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBRARY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderOutputFile>$(OutDir)library.pch</PrecompiledHeaderOutputFile>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>comctl32.lib;ddraw.lib;dinput8.lib;dsound.lib;dxguid.lib;libcmtd.lib;shlwapi.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EnableUAC>false</EnableUAC>
+      <LinkDLL>true</LinkDLL>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBRARY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderOutputFile>$(OutDir)library.pch</PrecompiledHeaderOutputFile>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <Optimization>MaxSpeed</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>comctl32.lib;ddraw.lib;dinput8.lib;dsound.lib;dxguid.lib;libcmtd.lib;shlwapi.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableUAC>false</EnableUAC>
+      <LinkDLL>true</LinkDLL>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBRARY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderOutputFile>$(OutDir)library.pch</PrecompiledHeaderOutputFile>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>comctl32.lib;ddraw.lib;dinput8.lib;dsound.lib;dxguid.lib;libcmtd.lib;shlwapi.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EnableUAC>false</EnableUAC>
+      <LinkDLL>true</LinkDLL>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBRARY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderOutputFile>$(OutDir)library.pch</PrecompiledHeaderOutputFile>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <Optimization>MaxSpeed</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>comctl32.lib;ddraw.lib;dinput8.lib;dsound.lib;dxguid.lib;libcmtd.lib;shlwapi.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableUAC>false</EnableUAC>
+      <LinkDLL>true</LinkDLL>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="App.c" />
+    <ClCompile Include="Audio.c" />
+    <ClCompile Include="Callbacks.c" />
+    <ClCompile Include="Cassette.c" />
+    <ClCompile Include="Clipboard.c" />
+    <ClCompile Include="CoCo.c" />
+    <ClCompile Include="commandline.c" />
+    <ClCompile Include="Config.c" />
+    <ClCompile Include="cpudef.c" />
+    <ClCompile Include="DirectDraw.c" />
+    <ClCompile Include="fileoperations.c" />
+    <ClCompile Include="Graphics.c" />
+    <ClCompile Include="HD6309.c" />
+    <ClCompile Include="HD6309OpCodes.c" />
+    <ClCompile Include="IOBus.c" />
+    <ClCompile Include="Joystick.c" />
+    <ClCompile Include="Keyboard.c" />
+    <ClCompile Include="keyboardlayout.c" />
+    <ClCompile Include="library.cpp" />
+    <ClCompile Include="logger.c" />
+    <ClCompile Include="MC6809.c" />
+    <ClCompile Include="MC6809OpCodes.c" />
+    <ClCompile Include="MC6821.c" />
+    <ClCompile Include="MessageHandlers.c" />
+    <ClCompile Include="TC1014MMU.c" />
+    <ClCompile Include="PAKInterface.c" />
+    <ClCompile Include="ProcessCommandMessage.c" />
+    <ClCompile Include="ProcessKeyDownMessage.c" />
+    <ClCompile Include="ProcessMessage.c" />
+    <ClCompile Include="QuickLoad.c" />
+    <ClCompile Include="TC1014Registers.c" />
+    <ClCompile Include="tcc1014graphics-16.c" />
+    <ClCompile Include="tcc1014graphics-24.c" />
+    <ClCompile Include="tcc1014graphics-32.c" />
+    <ClCompile Include="tcc1014graphics-8.c" />
+    <ClCompile Include="Throttle.c" />
+    <ClCompile Include="VCC.c" />
+    <ClCompile Include="xDebug.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="App.h" />
+    <ClInclude Include="Audio.h" />
+    <ClInclude Include="Callbacks.h" />
+    <ClInclude Include="Cassette.h" />
+    <ClInclude Include="Clipboard.h" />
+    <ClInclude Include="CoCo.h" />
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="DirectDraw.h" />
+    <ClInclude Include="Graphics.h" />
+    <ClInclude Include="HD6309.h" />
+    <ClInclude Include="HD6309Macros.h" />
+    <ClInclude Include="HD6309OpCodes.h" />
+    <ClInclude Include="IOBus.h" />
+    <ClInclude Include="Joystick.h" />
+    <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="macros.h" />
+    <ClInclude Include="MC6809.h" />
+    <ClInclude Include="MC6809Macros.h" />
+    <ClInclude Include="MC6809OpCodes.h" />
+    <ClInclude Include="MC6821.h" />
+    <ClInclude Include="MessageHandlers.h" />
+    <ClInclude Include="TC1014MMU.h" />
+    <ClInclude Include="PAKInterface.h" />
+    <ClInclude Include="ProcessCommandMessage.h" />
+    <ClInclude Include="ProcessKeyDownMessage.h" />
+    <ClInclude Include="ProcessMessage.h" />
+    <ClInclude Include="QuickLoad.h" />
+    <ClInclude Include="TC1014Registers.h" />
+    <ClInclude Include="SoundCardList.h" />
+    <ClInclude Include="cc2font.h" />
+    <ClInclude Include="cc3font.h" />
+    <ClInclude Include="di.version.h" />
+    <ClInclude Include="nt.version.h" />
+    <ClInclude Include="ConfigModel.h" />
+    <ClInclude Include="commandline.h" />
+    <ClInclude Include="cpudef.h" />
+    <ClInclude Include="defines.h" />
+    <ClInclude Include="fileoperations.h" />
+    <ClInclude Include="keyboardlayout.h" />
+    <ClInclude Include="library.h" />
+    <ClInclude Include="logger.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SystemState.h" />
+    <ClInclude Include="tcc1014graphics-16.h" />
+    <ClInclude Include="tcc1014graphics-24.h" />
+    <ClInclude Include="tcc1014graphics-32.h" />
+    <ClInclude Include="tcc1014graphics-8.h" />
+    <ClInclude Include="Throttle.h" />
+    <ClInclude Include="VCC.h" />
+    <ClInclude Include="xDebug.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="library.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="COPYING" />
+    <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="license.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
