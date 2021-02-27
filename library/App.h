@@ -2,4 +2,4 @@
 
 #include <windows.h>
 
-extern "C" __declspec(dllexport) INT __cdecl AppRun(HINSTANCE hInstance, PSTR lpCmdLine, INT nCmdShow);
+extern "C" __declspec(dllexport) INT __cdecl AppRun(HINSTANCE hInstance, char* lpCmdLine);

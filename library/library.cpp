@@ -17,8 +17,12 @@ This file is part of VCC (Virtual Color Computer).
 */
 #include <windows.h>
 #include <stdio.h>
+#include <string>
+
 #include "defines.h"
 #include "resource.h" 
+
+#include "App.h"
 
 static HINSTANCE g_hinstDLL = NULL;
 

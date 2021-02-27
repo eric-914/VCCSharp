@@ -1,5 +1,6 @@
 //--This is just a wrapper of DirectX used
 #include "di.version.h"
+#include <stdio.h>
 #include <ddraw.h>
 #include <commctrl.h>	// Windows common controls
 
@@ -592,7 +593,7 @@ extern "C" {
       SendMessage(instance->hWndStatusBar, WM_SIZE, 0, 0); // Redraw Status bar in new position
 
       GetWindowRect(systemState->WindowHandle, &(instance->WindowDefaultSize));	// And save the Final size of the Window 
-      ShowWindow(systemState->WindowHandle, instance->CmdShow);
+      ShowWindow(systemState->WindowHandle, SW_SHOWDEFAULT);
       UpdateWindow(systemState->WindowHandle);
 
       // Create an instance of a DirectDraw object
@@ -684,7 +685,7 @@ extern "C" {
       }
 
       GetWindowRect(systemState->WindowHandle, &(instance->WindowDefaultSize));
-      ShowWindow(systemState->WindowHandle, instance->CmdShow);
+      ShowWindow(systemState->WindowHandle, SW_SHOWMAXIMIZED);
       UpdateWindow(systemState->WindowHandle);
 
       hr = DirectDrawCreate(NULL, &(instance->DD), NULL);		// Initialize DirectDraw
@@ -744,10 +745,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl InitInstance(HINSTANCE hInstance, HINSTANCE hResources, int nCmdShow)
+  __declspec(dllexport) BOOL __cdecl InitInstance(HINSTANCE hInstance, HINSTANCE hResources)
   {
     instance->hInstance = hInstance;
-    instance->CmdShow = nCmdShow;
 
     LoadString(hResources, IDS_APP_TITLE, instance->TitleBarText, MAX_LOADSTRING);
     LoadString(hResources, IDS_APP_TITLE, instance->AppNameText, MAX_LOADSTRING);

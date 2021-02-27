@@ -77,7 +77,7 @@ extern "C" __declspec(dllexport) void __cdecl CheckQuickLoad();
 extern "C" __declspec(dllexport) void __cdecl CreatePrimaryWindow();
 extern "C" __declspec(dllexport) void CheckScreenModeChange();
 
-extern "C" __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, PSTR lpCmdLine, INT nCmdShow);
+extern "C" __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, char* lpCmdLine);
 extern "C" __declspec(dllexport) void __cdecl VccRun();
 extern "C" __declspec(dllexport) INT __cdecl VccShutdown();
 

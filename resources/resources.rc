@@ -89,7 +89,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_COCO3               ICON                    "resources\\icon1.ico"
+IDI_COCO3               ICON                    "resources\\coco.ico"
 
 IDI_BINFILE             ICON                    "resources\\binfile.ico"
 

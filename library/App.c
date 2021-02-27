@@ -4,8 +4,8 @@
 #include "VCC.h"
 
 extern "C" {
-  __declspec(dllexport) INT __cdecl AppRun(HINSTANCE hInstance, PSTR lpCmdLine, INT nCmdShow) {
-    VccStartup(hInstance, lpCmdLine, nCmdShow);
+  __declspec(dllexport) INT __cdecl AppRun(HINSTANCE hInstance, char* lpCmdLine) {
+    VccStartup(hInstance, lpCmdLine);
 
     VccRun();
 

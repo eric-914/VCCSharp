@@ -509,7 +509,7 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) HMODULE __cdecl LoadResources() {
-    HMODULE hResources = LoadLibrary("..\\resources\\resources.dll");
+    HMODULE hResources = LoadLibrary("resources.dll");
 
     instance->SystemState.Resources = hResources;
 
@@ -600,7 +600,7 @@ HANDLE CreateThreadHandle(HANDLE hEvent) {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, PSTR lpCmdLine, INT nCmdShow) {
+  __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, char* lpCmdLine) {
     HANDLE OleInitialize(NULL); //Work around fixs app crashing in "Open file" system dialogs (related to Adobe acrobat 7+
     HMODULE hResources = LoadResources();
 
@@ -610,7 +610,7 @@ extern "C" {
     GetCmdLineArgs(lpCmdLine, cmdArg); //Parse command line
 
     CheckQuickLoad();
-    InitInstance(hInstance, hResources, nCmdShow);
+    InitInstance(hInstance, hResources);
 
     CreatePrimaryWindow();
 

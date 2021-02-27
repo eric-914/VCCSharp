@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "VCCSharp": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

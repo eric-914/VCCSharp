@@ -23,7 +23,6 @@ typedef struct {
   WNDCLASSEX Wcex;
   POINT RememberWinSize;
 
-  int CmdShow;
   unsigned int StatusBarHeight;
   unsigned char InfoBand;
   unsigned char Resizeable;
@@ -35,7 +34,7 @@ typedef struct {
 
 extern "C" __declspec(dllexport) DirectDrawState * __cdecl GetDirectDrawState();
 
-extern "C" __declspec(dllexport) BOOL __cdecl InitInstance(HINSTANCE, HINSTANCE, int);
+extern "C" __declspec(dllexport) BOOL __cdecl InitInstance(HINSTANCE, HINSTANCE);
 
 extern "C" __declspec(dllexport) POINT __cdecl GetCurrentWindowSize();
 
