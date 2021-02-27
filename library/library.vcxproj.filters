@@ -104,9 +104,6 @@
     <ClCompile Include="ProcessMessage.c">
       <Filter>events</Filter>
     </ClCompile>
-    <ClCompile Include="App.c">
-      <Filter>app</Filter>
-    </ClCompile>
     <ClCompile Include="TC1014Registers.c">
       <Filter>tc1014\registers</Filter>
     </ClCompile>
@@ -250,9 +247,6 @@
     <ClInclude Include="ProcessMessage.h">
       <Filter>events</Filter>
     </ClInclude>
-    <ClInclude Include="App.h">
-      <Filter>app</Filter>
-    </ClInclude>
     <ClInclude Include="TC1014Registers.h">
       <Filter>tc1014\registers</Filter>
     </ClInclude>
@@ -359,9 +353,6 @@
     </Filter>
     <Filter Include="events">
       <UniqueIdentifier>{a1eac0da-ece6-40f6-9e6f-7c28f6152beb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="app">
-      <UniqueIdentifier>{d4a66abc-4c11-4b2e-9639-96d0090821f8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

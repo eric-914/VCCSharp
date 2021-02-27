@@ -1,17 +1,26 @@
 ﻿using System.Runtime.InteropServices;
-
 using HINSTANCE = System.IntPtr;
+using INT = System.Int32;
+using PSTR = System.String;
+//using LRESULT = System.Int64;
 
-namespace VCCSharp.library
+namespace VCCSharp
 {
-    class Library
+    public static class Library
     {
         // ReSharper disable once InconsistentNaming
         private const string DLL = "library.dll";
 
-        //extern "C" __declspec(dllexport) __cdecl int sum(int a,int b); 
+        public static class Vcc
+        {
+            [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+            public static extern void VccStartup(HINSTANCE hInstance, PSTR lpCmdLine);
 
-        [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int AppRun(HINSTANCE hInstance, string lpCmdLine);
+            [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+            public static extern void VccRun();
+
+            [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+            public static extern INT VccShutdown();
+        }
     }
 }

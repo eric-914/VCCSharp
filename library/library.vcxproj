@@ -163,7 +163,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="App.c" />
     <ClCompile Include="Audio.c" />
     <ClCompile Include="Callbacks.c" />
     <ClCompile Include="Cassette.c" />
@@ -203,7 +202,6 @@
     <ClCompile Include="xDebug.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="App.h" />
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Callbacks.h" />
     <ClInclude Include="Cassette.h" />

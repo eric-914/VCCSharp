@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="VCCSharp" Height="519" Width="821">
   <Grid Background="{DynamicResource {x:Static SystemColors.ActiveCaptionTextBrushKey}}">
-    <Image Margin="36,4,36,10" Stretch="Fill" Source="/Television.png"/>
+    <Image Margin="36,4,36,10" Stretch="Fill" Source="/Resources/Television.png"/>
 
   </Grid>
 </Window>
