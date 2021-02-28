@@ -43,8 +43,6 @@ typedef struct
   unsigned char KB_save2;
   int KeySaveToggle;
 
-  struct CmdLineArguments CmdArg;
-
   SystemState SystemState;
 } VccState;
 
@@ -73,7 +71,7 @@ extern "C" __declspec(dllexport) void __cdecl SetTurboMode(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SoftReset();
 
 extern "C" __declspec(dllexport) HMODULE __cdecl LoadResources();
-extern "C" __declspec(dllexport) void __cdecl CheckQuickLoad();
+extern "C" __declspec(dllexport) void __cdecl CheckQuickLoad(char* qLoadFile);
 extern "C" __declspec(dllexport) void __cdecl CreatePrimaryWindow();
 extern "C" __declspec(dllexport) void CheckScreenModeChange();
 

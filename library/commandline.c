@@ -97,10 +97,12 @@ static char* _nextTokenPtr;
 //-------------------------------------------------------------------
 
 extern "C" {
-  __declspec(dllexport) int __cdecl GetCmdLineArgs(char* lpCmdLine, CmdLineArguments* cmdArg)
+  __declspec(dllexport) CmdLineArguments __cdecl GetCmdLineArgs(char* lpCmdLine)
   {
     char* token;      // token pointer (to item in command string)
     int  argnum = 0;  // non-option argument number
+
+    CmdLineArguments cmdArg = CmdLineArguments();
 
     // Options that require values need to be known by the parser
     // to allow seperation between option code and value.  
@@ -112,9 +114,9 @@ extern "C" {
     static char* valueRequired = "i";
 
     // Initialize the global variables set by this routine
-    cmdArg->QLoadFile[0] = '\0';
-    cmdArg->IniFile[0] = '\0';
-    cmdArg->Logging = 0;
+    cmdArg.QLoadFile[0] = '\0';
+    cmdArg.IniFile[0] = '\0';
+    cmdArg.Logging = 0;
 
     // Get the first token from the command string
     token = ParseCmdString(lpCmdLine, valueRequired);
@@ -128,7 +130,7 @@ extern "C" {
           // at the third character of the option string.
           // Default config file is "vcc.ini"
         case 'i':
-          strncpy(cmdArg->IniFile, token + 2, CL_MAX_PATH);
+          strncpy(cmdArg.IniFile, token + 2, CL_MAX_PATH);
           break;
 
           // "-d[level]" enables logging console and sets log level (default=1)
@@ -136,19 +138,19 @@ extern "C" {
           // a positive integer 0 to 3.
         case 'd':
           if (*(token + 2)) {
-            cmdArg->Logging = atoi(token + 2);
+            cmdArg.Logging = atoi(token + 2);
 
-            if (cmdArg->Logging < 1) cmdArg->Logging = 0;
-            if (cmdArg->Logging > 3) cmdArg->Logging = 3;
+            if (cmdArg.Logging < 1) cmdArg.Logging = 0;
+            if (cmdArg.Logging > 3) cmdArg.Logging = 3;
           }
           else {
-            cmdArg->Logging = 1;
+            cmdArg.Logging = 1;
           }
           break;
 
           // Unknown option code returns an error
         default:
-          return CL_ERR_UNKOPT;
+          return cmdArg;
         }
 
         // else Positional argument            
@@ -159,13 +161,13 @@ extern "C" {
           // First (currently only) positional arg is Quick Load filename.
         case 1:
         {
-          strncpy(cmdArg->QLoadFile, token, CL_MAX_PATH);
+          strncpy(cmdArg.QLoadFile, token, CL_MAX_PATH);
           break;
         }
 
         // Extra positional argument returns an error
         default:
-          return CL_ERR_XTRARG;
+          return cmdArg;
         }
       }
 
@@ -173,7 +175,7 @@ extern "C" {
       token = ParseCmdString(NULL, valueRequired);
     }
 
-    return 0;
+    return cmdArg;
   }
 }
 

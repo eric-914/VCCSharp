@@ -29,7 +29,7 @@ struct CmdLineArguments {
 };
 
 // Get Settings from Command line string 
-extern "C" __declspec(dllexport) int __cdecl GetCmdLineArgs(char* lpCmdLine, CmdLineArguments* cmdArg);
+extern "C" __declspec(dllexport) CmdLineArguments __cdecl GetCmdLineArgs(char* lpCmdLine);
 
 // Errors returned
 #define CL_ERR_UNKOPT 1  // Unknown option found

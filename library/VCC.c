@@ -518,14 +518,14 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl CheckQuickLoad() {
+  __declspec(dllexport) void __cdecl CheckQuickLoad(char* qLoadFile) {
     char temp1[MAX_PATH] = "";
     char temp2[MAX_PATH] = " Running on ";
 
-    if (strlen(instance->CmdArg.QLoadFile) != 0)
+    if (strlen(qLoadFile) != 0)
     {
-      strcpy(instance->QuickLoadFile, instance->CmdArg.QLoadFile);
-      strcpy(temp1, instance->CmdArg.QLoadFile);
+      strcpy(instance->QuickLoadFile, qLoadFile);
+      strcpy(temp1, qLoadFile);
 
       FilePathStripPath(temp1);
 
@@ -604,18 +604,17 @@ extern "C" {
     HANDLE OleInitialize(NULL); //Work around fixs app crashing in "Open file" system dialogs (related to Adobe acrobat 7+
     HMODULE hResources = LoadResources();
 
-    CmdLineArguments* cmdArg = &(instance->CmdArg);
     SystemState* systemState = &(instance->SystemState);
 
-    GetCmdLineArgs(lpCmdLine, cmdArg); //Parse command line
+    CmdLineArguments CmdArg = GetCmdLineArgs(lpCmdLine); //Parse command line
 
-    CheckQuickLoad();
+    CheckQuickLoad(CmdArg.QLoadFile);
     InitInstance(hInstance, hResources);
 
     CreatePrimaryWindow();
 
     //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
-    LoadConfig(systemState, *cmdArg);			//Loads the default config file Vcc.ini from the exec directory
+    LoadConfig(systemState, CmdArg);			//Loads the default config file Vcc.ini from the exec directory
 
     Cls(0, systemState);
     DynamicMenuCallback(systemState, "", 0, 0);
@@ -627,7 +626,7 @@ extern "C" {
     (*systemState).EmulationRunning = instance->AutoStart;
     instance->BinaryRunning = true;
 
-    if (strlen((*cmdArg).QLoadFile) != 0)
+    if (strlen(CmdArg.QLoadFile) != 0)
     {
       instance->Qflag = 255;
       instance->SystemState.EmulationRunning = 1;
