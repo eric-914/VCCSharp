@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace VCCSharp
 {
@@ -7,6 +6,8 @@ namespace VCCSharp
     {
         public void Startup(IntPtr hInstance, string commandLine)
         {
+            var cmdLineArgs = Library.Vcc.GetCmdLineArgs(commandLine);
+
             Library.Vcc.VccStartup(hInstance, commandLine);
         }
 

@@ -21,6 +21,9 @@ namespace VCCSharp
 
             [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
             public static extern INT VccShutdown();
+
+            [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+            public static extern CmdLineArguments GetCmdLineArgs(PSTR lpCmdLine);
         }
     }
 }
