@@ -9,7 +9,5 @@ namespace VCCSharp
 
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
         public string IniFile;
-
-        public int Logging;
     }
 }

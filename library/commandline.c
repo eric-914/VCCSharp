@@ -64,7 +64,7 @@ This file is part of VCC (Virtual Color Computer).
 //   CL_ERR_UNKOPT  Unknown option found
 //   CL_ERR_XTRARG  Too many arguments
 //
-// Caveauts:
+// Caveats:
 //
 // o Supports short (single char) option codes only. 
 // o Option codes may not be combined. Each must be preceeded by dash: '-'
@@ -116,7 +116,6 @@ extern "C" {
     // Initialize the global variables set by this routine
     cmdArg.QLoadFile[0] = '\0';
     cmdArg.IniFile[0] = '\0';
-    cmdArg.Logging = 0;
 
     // Get the first token from the command string
     token = ParseCmdString(lpCmdLine, valueRequired);
@@ -133,30 +132,14 @@ extern "C" {
           strncpy(cmdArg.IniFile, token + 2, CL_MAX_PATH);
           break;
 
-          // "-d[level]" enables logging console and sets log level (default=1)
-          // level is optional. It defaults to 1 and is forced to be
-          // a positive integer 0 to 3.
-        case 'd':
-          if (*(token + 2)) {
-            cmdArg.Logging = atoi(token + 2);
-
-            if (cmdArg.Logging < 1) cmdArg.Logging = 0;
-            if (cmdArg.Logging > 3) cmdArg.Logging = 3;
-          }
-          else {
-            cmdArg.Logging = 1;
-          }
-          break;
-
           // Unknown option code returns an error
         default:
           return cmdArg;
         }
-
-        // else Positional argument            
-        // argnum indicates argument position starting at one. 
       }
       else {
+        // else Positional argument            
+        // argnum indicates argument position starting at one. 
         switch (++argnum) {
           // First (currently only) positional arg is Quick Load filename.
         case 1:

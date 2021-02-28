@@ -8,7 +8,7 @@ namespace VCCSharp
         {
             var cmdLineArgs = Library.Vcc.GetCmdLineArgs(commandLine);
 
-            Library.Vcc.VccStartup(hInstance, commandLine);
+            Library.Vcc.VccStartup(hInstance, cmdLineArgs);
         }
 
         public void Run()

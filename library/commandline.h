@@ -25,7 +25,6 @@ This file is part of VCC (Virtual Color Computer).
 struct CmdLineArguments {
   char QLoadFile[CL_MAX_PATH];
   char IniFile[CL_MAX_PATH];
-  int  Logging;
 };
 
 // Get Settings from Command line string 

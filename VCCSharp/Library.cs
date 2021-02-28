@@ -14,7 +14,7 @@ namespace VCCSharp
         public static class Vcc
         {
             [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-            public static extern void VccStartup(HINSTANCE hInstance, PSTR lpCmdLine);
+            public static extern void VccStartup(HINSTANCE hInstance, CmdLineArguments cmdLineArgs);
 
             [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
             public static extern void VccRun();

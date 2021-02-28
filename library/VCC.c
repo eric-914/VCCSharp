@@ -600,21 +600,19 @@ HANDLE CreateThreadHandle(HANDLE hEvent) {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, char* lpCmdLine) {
+  __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, CmdLineArguments cmdArg) {
     HANDLE OleInitialize(NULL); //Work around fixs app crashing in "Open file" system dialogs (related to Adobe acrobat 7+
     HMODULE hResources = LoadResources();
 
     SystemState* systemState = &(instance->SystemState);
 
-    CmdLineArguments CmdArg = GetCmdLineArgs(lpCmdLine); //Parse command line
-
-    CheckQuickLoad(CmdArg.QLoadFile);
+    CheckQuickLoad(cmdArg.QLoadFile);
     InitInstance(hInstance, hResources);
 
     CreatePrimaryWindow();
 
     //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
-    LoadConfig(systemState, CmdArg);			//Loads the default config file Vcc.ini from the exec directory
+    LoadConfig(systemState, cmdArg);			//Loads the default config file Vcc.ini from the exec directory
 
     Cls(0, systemState);
     DynamicMenuCallback(systemState, "", 0, 0);
@@ -626,7 +624,7 @@ extern "C" {
     (*systemState).EmulationRunning = instance->AutoStart;
     instance->BinaryRunning = true;
 
-    if (strlen(CmdArg.QLoadFile) != 0)
+    if (strlen(cmdArg.QLoadFile) != 0)
     {
       instance->Qflag = 255;
       instance->SystemState.EmulationRunning = 1;
