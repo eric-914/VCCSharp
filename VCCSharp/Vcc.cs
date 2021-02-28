@@ -4,10 +4,8 @@ namespace VCCSharp
 {
     public class Vcc
     {
-        public void Startup(IntPtr hInstance, string commandLine)
+        public void Startup(IntPtr hInstance, CmdLineArguments cmdLineArgs)
         {
-            var cmdLineArgs = Library.Vcc.GetCmdLineArgs(commandLine);
-
             Library.Vcc.VccStartup(hInstance, cmdLineArgs);
         }
 

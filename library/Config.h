@@ -8,7 +8,7 @@
 #include "Joystick.h"
 #include "SystemState.h"
 
-#include "commandline.h"
+#include "CmdLineArguments.h"
 
 #define SCAN_TRANS_COUNT	84
 #define TABS 8

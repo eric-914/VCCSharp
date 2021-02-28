@@ -20,7 +20,7 @@
 
 #include "systemstate.h"
 #include "fileoperations.h"
-#include "commandline.h"
+#include "CmdLineArguments.h"
 
 #include "macros.h"
 

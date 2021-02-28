@@ -2,6 +2,7 @@
   "profiles": {
     "VCCSharp": {
       "commandName": "Project",
+      "commandLineArgs": "\"c:\\\\CoCo\\\\Mega-Bug (1982) (26-3076) (Tandy).ccc\"",
       "nativeDebugging": true
     }
   }

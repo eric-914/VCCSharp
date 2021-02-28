@@ -168,7 +168,6 @@
     <ClCompile Include="Cassette.c" />
     <ClCompile Include="Clipboard.c" />
     <ClCompile Include="CoCo.c" />
-    <ClCompile Include="commandline.c" />
     <ClCompile Include="Config.c" />
     <ClCompile Include="cpudef.c" />
     <ClCompile Include="DirectDraw.c" />
@@ -206,6 +205,7 @@
     <ClInclude Include="Callbacks.h" />
     <ClInclude Include="Cassette.h" />
     <ClInclude Include="Clipboard.h" />
+    <ClInclude Include="CmdLineArguments.h" />
     <ClInclude Include="CoCo.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="DirectDraw.h" />
@@ -235,7 +235,6 @@
     <ClInclude Include="di.version.h" />
     <ClInclude Include="nt.version.h" />
     <ClInclude Include="ConfigModel.h" />
-    <ClInclude Include="commandline.h" />
     <ClInclude Include="cpudef.h" />
     <ClInclude Include="defines.h" />
     <ClInclude Include="fileoperations.h" />

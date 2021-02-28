@@ -2,9 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="library.cpp" />
-    <ClCompile Include="commandline.c">
-      <Filter>commandline</Filter>
-    </ClCompile>
     <ClCompile Include="cpudef.c">
       <Filter>cpu</Filter>
     </ClCompile>
@@ -119,9 +116,6 @@
     </ClInclude>
     <ClInclude Include="cc2font.h">
       <Filter>ccfont</Filter>
-    </ClInclude>
-    <ClInclude Include="commandline.h">
-      <Filter>commandline</Filter>
     </ClInclude>
     <ClInclude Include="cpudef.h">
       <Filter>cpu</Filter>
@@ -253,6 +247,9 @@
     <ClInclude Include="TC1014MMU.h">
       <Filter>tc1014\mmu</Filter>
     </ClInclude>
+    <ClInclude Include="CmdLineArguments.h">
+      <Filter>models</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="audio">
@@ -263,9 +260,6 @@
     </Filter>
     <Filter Include="ccfont">
       <UniqueIdentifier>{3348c768-b227-4765-ad7c-6909139425fb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="commandline">
-      <UniqueIdentifier>{6a29e241-1a76-4b54-9bf5-62ed7152ab06}</UniqueIdentifier>
     </Filter>
     <Filter Include="cpu">
       <UniqueIdentifier>{95cddd9b-7966-459b-b71a-4df974a5336a}</UniqueIdentifier>

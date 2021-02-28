@@ -4,13 +4,18 @@ namespace VCCSharp
 {
     public class VccThread
     {
+        private readonly CommandLineParser _commandLineParser = new CommandLineParser();
         private readonly Vcc _vcc = new Vcc();
 
         public void Run()
         {
-            const string commandLine = "\"c:\\CoCo\\Mega-Bug (1982) (26-3076) (Tandy).ccc\" ";
+            CmdLineArguments? args = _commandLineParser.Parse();
+            if (args == null)
+            {
+                return;
+            }
 
-            _vcc.Startup(Process.GetCurrentProcess().Handle, commandLine);
+            _vcc.Startup(Process.GetCurrentProcess().Handle, args.Value);
 
             _vcc.Run();
 

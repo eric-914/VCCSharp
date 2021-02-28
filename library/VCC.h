@@ -4,7 +4,7 @@
 
 #include "defines.h"
 #include "systemstate.h"
-#include "commandline.h"
+#include "CmdLineArguments.h"
 
 #define TH_RUNNING	0
 #define TH_REQWAIT	1
