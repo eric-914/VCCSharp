@@ -81,7 +81,7 @@ extern "C" __declspec(dllexport) unsigned char __cdecl GetProfileByte(LPCSTR, LP
 extern "C" __declspec(dllexport) unsigned char __cdecl ReadIniFile(SystemState*);
 extern "C" __declspec(dllexport) unsigned char __cdecl TranslateDisplay2Scan(LRESULT);
 extern "C" __declspec(dllexport) unsigned char __cdecl TranslateScan2Display(int);
-extern "C" __declspec(dllexport) unsigned char __cdecl WriteIniFile(void);
+extern "C" __declspec(dllexport) void __cdecl WriteIniFile();
 
 extern "C" __declspec(dllexport) unsigned short __cdecl GetProfileShort(LPCSTR, LPCSTR, int);
 

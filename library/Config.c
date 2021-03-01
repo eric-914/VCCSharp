@@ -76,6 +76,9 @@ ConfigState* InitializeInstance(ConfigState* p) {
   return p;
 }
 
+void SaveConfiguration(ConfigModel model, char* iniFilePath);
+ConfigModel LoadConfiguration(char* iniFilePath);
+
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl TranslateScan2Display(int x)
   {
@@ -266,7 +269,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl WriteIniFile(void)
+  __declspec(dllexport) void __cdecl WriteIniFile(void)
   {
     POINT tp = GetCurrentWindowSize();
 
@@ -276,35 +279,10 @@ extern "C" {
     FileValidatePath(instance->CurrentConfig.ModulePath);
     FileValidatePath(instance->CurrentConfig.ExternalBasicImage);
 
+    //--A way of "versioning" the .ini file, I guess
     WritePrivateProfileString("Version", "Release", instance->AppName, instance->IniFilePath);
 
-    FileWritePrivateProfileInt("CPU", "CPUMultiplier", instance->CurrentConfig.CPUMultiplier, instance->IniFilePath);
-    FileWritePrivateProfileInt("CPU", "FrameSkip", instance->CurrentConfig.FrameSkip, instance->IniFilePath);
-    FileWritePrivateProfileInt("CPU", "SpeedThrottle", instance->CurrentConfig.SpeedThrottle, instance->IniFilePath);
-    FileWritePrivateProfileInt("CPU", "CpuType", instance->CurrentConfig.CpuType, instance->IniFilePath);
-    FileWritePrivateProfileInt("CPU", "MaxOverClock", instance->CurrentConfig.MaxOverclock, instance->IniFilePath);
-
-    WritePrivateProfileString("Audio", "SoundCardName", instance->CurrentConfig.SoundCardName, instance->IniFilePath);
-    FileWritePrivateProfileInt("Audio", "AudioRate", instance->CurrentConfig.AudioRate, instance->IniFilePath);
-
-    FileWritePrivateProfileInt("Video", "MonitorType", instance->CurrentConfig.MonitorType, instance->IniFilePath);
-    FileWritePrivateProfileInt("Video", "PaletteType", instance->CurrentConfig.PaletteType, instance->IniFilePath);
-    FileWritePrivateProfileInt("Video", "ScanLines", instance->CurrentConfig.ScanLines, instance->IniFilePath);
-    FileWritePrivateProfileInt("Video", "AllowResize", instance->CurrentConfig.AllowResize, instance->IniFilePath);
-    FileWritePrivateProfileInt("Video", "ForceAspect", instance->CurrentConfig.ForceAspect, instance->IniFilePath);
-    FileWritePrivateProfileInt("Video", "RememberSize", instance->CurrentConfig.RememberSize, instance->IniFilePath);
-    FileWritePrivateProfileInt("Video", "WindowSizeX", tp.x, instance->IniFilePath);
-    FileWritePrivateProfileInt("Video", "WindowSizeY", tp.y, instance->IniFilePath);
-
-    FileWritePrivateProfileInt("Memory", "RamSize", instance->CurrentConfig.RamSize, instance->IniFilePath);
-
-    WritePrivateProfileString("Memory", "ExternalBasicImage", instance->CurrentConfig.ExternalBasicImage, instance->IniFilePath);
-
-    FileWritePrivateProfileInt("Misc", "AutoStart", instance->CurrentConfig.AutoStart, instance->IniFilePath);
-    FileWritePrivateProfileInt("Misc", "CartAutoStart", instance->CurrentConfig.CartAutoStart, instance->IniFilePath);
-    FileWritePrivateProfileInt("Misc", "KeyMapIndex", instance->CurrentConfig.KeyMapIndex, instance->IniFilePath);
-
-    WritePrivateProfileString("Module", "ModulePath", instance->CurrentConfig.ModulePath, instance->IniFilePath);
+    SaveConfiguration(instance->CurrentConfig, instance->IniFilePath);
 
     JoystickState* joystickState = GetJoystickState();
 
@@ -317,6 +295,7 @@ extern "C" {
     FileWritePrivateProfileInt("LeftJoyStick", "Fire2", joystickState->Left.Fire2, instance->IniFilePath);
     FileWritePrivateProfileInt("LeftJoyStick", "DiDevice", joystickState->Left.DiDevice, instance->IniFilePath);
     FileWritePrivateProfileInt("LeftJoyStick", "HiResDevice", joystickState->Left.HiRes, instance->IniFilePath);
+
     FileWritePrivateProfileInt("RightJoyStick", "UseMouse", joystickState->Right.UseMouse, instance->IniFilePath);
     FileWritePrivateProfileInt("RightJoyStick", "Left", joystickState->Right.Left, instance->IniFilePath);
     FileWritePrivateProfileInt("RightJoyStick", "Right", joystickState->Right.Right, instance->IniFilePath);
@@ -326,11 +305,6 @@ extern "C" {
     FileWritePrivateProfileInt("RightJoyStick", "Fire2", joystickState->Right.Fire2, instance->IniFilePath);
     FileWritePrivateProfileInt("RightJoyStick", "DiDevice", joystickState->Right.DiDevice, instance->IniFilePath);
     FileWritePrivateProfileInt("RightJoyStick", "HiResDevice", joystickState->Right.HiRes, instance->IniFilePath);
-
-    //  Flush inifile
-    WritePrivateProfileString(NULL, NULL, NULL, instance->IniFilePath);
-
-    return(0);
   }
 }
 
@@ -462,52 +436,16 @@ extern "C" {
   }
 }
 
-void SetWindowSize(POINT p) {
-  int width = p.x + 16;
-  int height = p.y + 81;
-
+void SetWindowSize(int width, int height) {
   HWND handle = GetActiveWindow();
 
-  SetWindowPos(handle, 0, 0, 0, width, height, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+  SetWindowPos(handle, 0, 0, 0, width + 16, height + 81, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 }
 
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl ReadIniFile(SystemState* systemState)
   {
-    HANDLE hr = NULL;
-    POINT p = POINT();
-    unsigned char index = 0;
-
-    //Loads the config structure from the hard disk
-    instance->CurrentConfig.CPUMultiplier = GetProfileByte("CPU", "CPUMultiplier", 2);
-    instance->CurrentConfig.FrameSkip = GetProfileByte("CPU", "FrameSkip", 1);
-    instance->CurrentConfig.SpeedThrottle = GetProfileByte("CPU", "SpeedThrottle", 1);
-    instance->CurrentConfig.CpuType = GetProfileByte("CPU", "CpuType", 0);
-    instance->CurrentConfig.MaxOverclock = GetProfileShort("CPU", "MaxOverClock", 227);
-
-    instance->CurrentConfig.AudioRate = GetProfileShort("Audio", "AudioRate", 3);
-
-    GetPrivateProfileString("Audio", "SoundCardName", "", instance->CurrentConfig.SoundCardName, 63, instance->IniFilePath);
-
-    instance->CurrentConfig.MonitorType = GetProfileByte("Video", "MonitorType", 1);
-    instance->CurrentConfig.PaletteType = GetProfileByte("Video", "PaletteType", 1);
-    instance->CurrentConfig.ScanLines = GetProfileByte("Video", "ScanLines", 0);
-
-    instance->CurrentConfig.AllowResize = GetProfileByte("Video", "AllowResize", 0);
-    instance->CurrentConfig.ForceAspect = GetProfileByte("Video", "ForceAspect", 0);
-    instance->CurrentConfig.RememberSize = GetProfileShort("Video", "RememberSize", 0);
-    instance->CurrentConfig.WindowSizeX = GetProfileShort("Video", "WindowSizeX", 640);
-    instance->CurrentConfig.WindowSizeY = GetProfileShort("Video", "WindowSizeY", 480);
-    instance->CurrentConfig.AutoStart = GetProfileByte("Misc", "AutoStart", 1);
-    instance->CurrentConfig.CartAutoStart = GetProfileByte("Misc", "CartAutoStart", 1);
-
-    instance->CurrentConfig.RamSize = GetProfileByte("Memory", "RamSize", 1);
-
-    GetProfileText("Memory", "ExternalBasicImage", "", instance->CurrentConfig.ExternalBasicImage);
-
-    GetProfileText("Module", "ModulePath", "", instance->CurrentConfig.ModulePath);
-
-    instance->CurrentConfig.KeyMapIndex = GetProfileByte("Misc", "KeyMapIndex", 0);
+    instance->CurrentConfig = LoadConfiguration(instance->IniFilePath);;
 
     if (instance->CurrentConfig.KeyMapIndex > 3) {
       instance->CurrentConfig.KeyMapIndex = 0;	//Default to DECB Mapping
@@ -540,11 +478,7 @@ extern "C" {
     joystickState->Right.DiDevice = GetProfileByte("RightJoyStick", "DiDevice", 0);
     joystickState->Right.HiRes = GetProfileByte("RightJoyStick", "HiResDevice", 0);
 
-    GetProfileText("DefaultPaths", "CassPath", "", instance->CurrentConfig.CassPath);
-    GetProfileText("DefaultPaths", "FloppyPath", "", instance->CurrentConfig.FloppyPath);
-    GetProfileText("DefaultPaths", "CoCoRomPath", "", instance->CurrentConfig.CoCoRomPath);
-
-    for (index = 0; index < instance->NumberOfSoundCards; index++) {
+    for (unsigned char index = 0; index < instance->NumberOfSoundCards; index++) {
       if (!strcmp(instance->SoundCards[index].CardName, instance->CurrentConfig.SoundCardName)) {
         instance->CurrentConfig.SndOutDev = index;
       }
@@ -557,16 +491,10 @@ extern "C" {
     instance->CurrentConfig.AllowResize = 1; //Checkbox removed. Remove this from the ini? 
 
     if (instance->CurrentConfig.RememberSize) {
-      p.x = instance->CurrentConfig.WindowSizeX;
-      p.y = instance->CurrentConfig.WindowSizeY;
-
-      SetWindowSize(p);
+      SetWindowSize(instance->CurrentConfig.WindowSizeX, instance->CurrentConfig.WindowSizeY);
     }
     else {
-      p.x = 640;
-      p.y = 480;
-
-      SetWindowSize(p);
+      SetWindowSize(640, 480);
     }
 
     return(0);
@@ -651,7 +579,107 @@ extern "C" {
     else {
       CloseHandle(hr);
 
-      if (lasterror != ERROR_ALREADY_EXISTS) WriteIniFile();  //!=183
+      if (lasterror != ERROR_ALREADY_EXISTS) {
+        WriteIniFile();
+      }
     }
   }
+}
+
+void SaveConfiguration(ConfigModel model, char* iniFilePath) {
+  POINT tp = GetCurrentWindowSize();
+
+  //[Version]
+
+//[CPU]
+  FileWritePrivateProfileInt("CPU", "CPUMultiplier", model.CPUMultiplier, iniFilePath);
+  FileWritePrivateProfileInt("CPU", "FrameSkip", model.FrameSkip, iniFilePath);
+  FileWritePrivateProfileInt("CPU", "SpeedThrottle", model.SpeedThrottle, iniFilePath);
+  FileWritePrivateProfileInt("CPU", "CpuType", model.CpuType, iniFilePath);
+  FileWritePrivateProfileInt("CPU", "MaxOverClock", model.MaxOverclock, iniFilePath);
+
+  //[Audio]
+  WritePrivateProfileString("Audio", "SoundCardName", model.SoundCardName, iniFilePath);
+  FileWritePrivateProfileInt("Audio", "AudioRate", model.AudioRate, iniFilePath);
+
+  //[Video]
+  FileWritePrivateProfileInt("Video", "MonitorType", model.MonitorType, iniFilePath);
+  FileWritePrivateProfileInt("Video", "PaletteType", model.PaletteType, iniFilePath);
+  FileWritePrivateProfileInt("Video", "ScanLines", model.ScanLines, iniFilePath);
+  FileWritePrivateProfileInt("Video", "AllowResize", model.AllowResize, iniFilePath);
+  FileWritePrivateProfileInt("Video", "ForceAspect", model.ForceAspect, iniFilePath);
+  FileWritePrivateProfileInt("Video", "RememberSize", model.RememberSize, iniFilePath);
+  FileWritePrivateProfileInt("Video", "WindowSizeX", tp.x, iniFilePath);
+  FileWritePrivateProfileInt("Video", "WindowSizeY", tp.y, iniFilePath);
+
+  //[Memory]
+  FileWritePrivateProfileInt("Memory", "RamSize", model.RamSize, iniFilePath);
+  WritePrivateProfileString("Memory", "ExternalBasicImage", model.ExternalBasicImage, iniFilePath);
+
+  //[Misc]
+  FileWritePrivateProfileInt("Misc", "AutoStart", model.AutoStart, iniFilePath);
+  FileWritePrivateProfileInt("Misc", "CartAutoStart", model.CartAutoStart, iniFilePath);
+  FileWritePrivateProfileInt("Misc", "KeyMapIndex", model.KeyMapIndex, iniFilePath);
+
+  //[Module]
+  WritePrivateProfileString("Module", "ModulePath", model.ModulePath, iniFilePath);
+
+  //[LeftJoyStick]
+
+  //[RightJoyStick]
+
+  //[DefaultPaths]
+
+  //--Flush .ini file
+  WritePrivateProfileString(NULL, NULL, NULL, iniFilePath);
+}
+
+ConfigModel LoadConfiguration(char* iniFilePath) {
+  ConfigModel model = ConfigModel();
+
+  //[Version]
+
+  //[CPU]
+  model.CPUMultiplier = GetPrivateProfileInt("CPU", "CPUMultiplier", 2, iniFilePath);
+  model.FrameSkip = GetPrivateProfileInt("CPU", "FrameSkip", 1, iniFilePath);
+  model.SpeedThrottle = GetPrivateProfileInt("CPU", "SpeedThrottle", 1, iniFilePath);
+  model.CpuType = GetPrivateProfileInt("CPU", "CpuType", 0, iniFilePath);
+  model.MaxOverclock = GetPrivateProfileInt("CPU", "MaxOverClock", 227, iniFilePath);
+
+  //[Audio]
+  model.AudioRate = GetPrivateProfileInt("Audio", "AudioRate", 3, iniFilePath);
+  GetPrivateProfileString("Audio", "SoundCardName", "", model.SoundCardName, 63, iniFilePath);
+
+  //[Video]
+  model.MonitorType = GetPrivateProfileInt("Video", "MonitorType", 1, iniFilePath);
+  model.PaletteType = GetPrivateProfileInt("Video", "PaletteType", 1, iniFilePath);
+  model.ScanLines = GetPrivateProfileInt("Video", "ScanLines", 0, iniFilePath);
+  model.AllowResize = GetPrivateProfileInt("Video", "AllowResize", 0, iniFilePath);
+  model.ForceAspect = GetPrivateProfileInt("Video", "ForceAspect", 0, iniFilePath);
+  model.RememberSize = GetPrivateProfileInt("Video", "RememberSize", 0, iniFilePath);
+  model.WindowSizeX = GetPrivateProfileInt("Video", "WindowSizeX", 640, iniFilePath);
+  model.WindowSizeY = GetPrivateProfileInt("Video", "WindowSizeY", 480, iniFilePath);
+
+  //[Memory]
+  model.RamSize = GetPrivateProfileInt("Memory", "RamSize", 1, iniFilePath);
+  GetPrivateProfileString("Memory", "ExternalBasicImage", "", model.ExternalBasicImage, MAX_PATH, iniFilePath);
+
+  //[Misc]
+  model.AutoStart = GetPrivateProfileInt("Misc", "AutoStart", 1, iniFilePath);
+  model.CartAutoStart = GetPrivateProfileInt("Misc", "CartAutoStart", 1, iniFilePath);
+  model.KeyMapIndex = GetPrivateProfileInt("Misc", "KeyMapIndex", 0, iniFilePath);
+
+  //[Module]
+  GetPrivateProfileString("Module", "ModulePath", "", model.ModulePath, MAX_PATH, iniFilePath);
+
+  //[LeftJoyStick]
+
+  //[RightJoyStick]
+
+  //[DefaultPaths]
+  GetPrivateProfileString("DefaultPaths", "CassPath", "", model.CassPath, MAX_PATH, iniFilePath);
+  GetPrivateProfileString("DefaultPaths", "FloppyPath", "", model.FloppyPath, MAX_PATH, iniFilePath);
+  GetPrivateProfileString("DefaultPaths", "CoCoRomPath", "", model.CoCoRomPath, MAX_PATH, iniFilePath);
+
+  return model;
 }
