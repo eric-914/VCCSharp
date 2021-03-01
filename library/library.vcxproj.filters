@@ -250,6 +250,39 @@
     <ClInclude Include="CmdLineArguments.h">
       <Filter>models</Filter>
     </ClInclude>
+    <ClInclude Include="JoystickModel.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="JoystickState.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigState.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioState.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="CassetteState.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="ClipboardState.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="CoCoState.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectDrawState.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyboardState.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="ThrottleState.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="VccState.h">
+      <Filter>models</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="audio">

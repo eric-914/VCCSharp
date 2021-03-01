@@ -1,5 +1,6 @@
 #pragma once
 
+#include "di.version.h"
 #include <windows.h>
 #include <dsound.h>
 
@@ -40,12 +41,10 @@ typedef struct {
 
   WAVEFORMATEX pcmwf; //generic waveformat structure
 
-  SndCardList* Cards;
+  SoundCardList* Cards;
 
   unsigned short AuxBuffer[6][44100 / 60]; //Biggest block size possible
 
   char RateList[4][7];
   unsigned short iRateList[4];
 } AudioState;
-
-extern "C" __declspec(dllexport) AudioState * __cdecl GetAudioState();

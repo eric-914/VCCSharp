@@ -12,6 +12,7 @@
 #include "PAKInterface.h"
 #include "VCC.h"
 #include "Graphics.h"
+#include "Audio.h"
 
 #include "systemstate.h"
 

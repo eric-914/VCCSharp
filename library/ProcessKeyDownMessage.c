@@ -1,3 +1,6 @@
+#include "di.version.h"
+#include <dinput.h>
+
 #include <windows.h>
 
 #include "VCC.h"

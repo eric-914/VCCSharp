@@ -3,39 +3,10 @@
 #include "di.version.h"
 #include <dinput.h>
 
+#include "JoystickState.h"
+
 #define MAXSTICKS 10
 #define STRLEN 64
-
-typedef struct {
-  unsigned char UseMouse;
-  unsigned char Up;
-  unsigned char Down;
-  unsigned char Left;
-  unsigned char Right;
-  unsigned char Fire1;
-  unsigned char Fire2;
-  unsigned char DiDevice;
-  unsigned char HiRes;
-} JoyStick;
-
-typedef struct
-{
-  unsigned short StickValue;
-  unsigned short LeftStickX;
-  unsigned short LeftStickY;
-  unsigned short RightStickX;
-  unsigned short RightStickY;
-
-  unsigned char LeftButton1Status;
-  unsigned char RightButton1Status;
-  unsigned char LeftButton2Status;
-  unsigned char RightButton2Status;
-  unsigned char LeftStickNumber;
-  unsigned char RightStickNumber;
-
-  JoyStick Left;
-  JoyStick Right;
-} JoystickState;
 
 extern "C" __declspec(dllexport) JoystickState * __cdecl GetJoystickState();
 

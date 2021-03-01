@@ -2,22 +2,7 @@
 
 #include <windows.h>
 
-#include "Audio.h"
-
-typedef struct
-{
-  _LARGE_INTEGER StartTime;
-  _LARGE_INTEGER EndTime;
-  _LARGE_INTEGER OneFrame;
-  _LARGE_INTEGER CurrentTime;
-  _LARGE_INTEGER SleepRes;
-  _LARGE_INTEGER TargetTime, OneMs;
-  _LARGE_INTEGER MasterClock;
-  _LARGE_INTEGER Now;
-
-  unsigned char FrameSkip;
-  float fMasterClock;
-} ThrottleState;
+#include "ThrottleState.h"
 
 extern "C" __declspec(dllexport) ThrottleState* __cdecl GetThrottleState();
 

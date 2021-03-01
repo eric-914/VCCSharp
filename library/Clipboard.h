@@ -2,19 +2,7 @@
 
 using namespace std;
 
-#include <string>
-
-#include "ConfigModel.h"
-
-typedef struct
-{
-  bool CodePaste;
-  bool PasteWithNew;
-  int CurrentKeyMap;
-
-  string ClipboardText;
-  ConfigModel ClipConfig;
-} ClipboardState;
+#include "ClipboardState.h"
 
 extern "C" __declspec(dllexport) ClipboardState * __cdecl GetClipboardState();
 

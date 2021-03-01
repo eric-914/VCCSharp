@@ -15,6 +15,7 @@
 #include "VCC.h"
 #include "Throttle.h"
 #include "DirectDraw.h"
+#include "Audio.h"
 
 #include "cpudef.h"
 

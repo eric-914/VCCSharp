@@ -202,20 +202,29 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio.h" />
+    <ClInclude Include="AudioState.h" />
     <ClInclude Include="Callbacks.h" />
     <ClInclude Include="Cassette.h" />
+    <ClInclude Include="CassetteState.h" />
     <ClInclude Include="Clipboard.h" />
+    <ClInclude Include="ClipboardState.h" />
     <ClInclude Include="CmdLineArguments.h" />
     <ClInclude Include="CoCo.h" />
+    <ClInclude Include="CoCoState.h" />
     <ClInclude Include="Config.h" />
+    <ClInclude Include="ConfigState.h" />
     <ClInclude Include="DirectDraw.h" />
+    <ClInclude Include="DirectDrawState.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="HD6309.h" />
     <ClInclude Include="HD6309Macros.h" />
     <ClInclude Include="HD6309OpCodes.h" />
     <ClInclude Include="IOBus.h" />
     <ClInclude Include="Joystick.h" />
+    <ClInclude Include="JoystickModel.h" />
+    <ClInclude Include="JoystickState.h" />
     <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="KeyboardState.h" />
     <ClInclude Include="macros.h" />
     <ClInclude Include="MC6809.h" />
     <ClInclude Include="MC6809Macros.h" />
@@ -248,7 +257,9 @@
     <ClInclude Include="tcc1014graphics-32.h" />
     <ClInclude Include="tcc1014graphics-8.h" />
     <ClInclude Include="Throttle.h" />
+    <ClInclude Include="ThrottleState.h" />
     <ClInclude Include="VCC.h" />
+    <ClInclude Include="VccState.h" />
     <ClInclude Include="xDebug.h" />
   </ItemGroup>
   <ItemGroup>

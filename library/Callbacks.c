@@ -10,6 +10,7 @@
 #include "MC6821.h"
 #include "Keyboard.h"
 #include "Cassette.h"
+#include "Joystick.h"
 
 /*
   for displaying key name
