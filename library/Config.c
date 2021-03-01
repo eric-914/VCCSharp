@@ -541,7 +541,6 @@ extern "C" {
       OutputDebugString(instance->AppDataPath);
     }
 
-    strcpy(instance->CurrentConfig.PathtoExe, instance->ExecDirectory);
     strcat(instance->AppDataPath, "\\VCC");
 
     if (_mkdir(instance->AppDataPath) != 0) {

@@ -93,6 +93,4 @@ typedef struct {
 
   //[SuperIDE]  //### MODULE SPECIFIC ###//
   //"SuperIDEPath"  //TODO: Originally in [DefaultPaths]
-
-  char PathtoExe[MAX_PATH]; //**DERIVED**//
 } ConfigModel;
