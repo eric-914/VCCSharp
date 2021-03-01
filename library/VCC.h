@@ -62,7 +62,7 @@ extern "C" __declspec(dllexport) void __cdecl EmuLoop();
 extern "C" __declspec(dllexport) void __cdecl HardReset(SystemState*);
 extern "C" __declspec(dllexport) void __cdecl LoadIniFile();
 extern "C" __declspec(dllexport) void __cdecl LoadPack();
-extern "C" __declspec(dllexport) void __cdecl Reboot();
+//extern "C" __declspec(dllexport) void __cdecl Reboot();
 extern "C" __declspec(dllexport) void __cdecl SaveConfig();
 extern "C" __declspec(dllexport) void __cdecl SaveLastTwoKeyDownEvents(unsigned char, unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SendSavedKeyEvents();

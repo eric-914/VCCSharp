@@ -100,7 +100,7 @@ extern "C" {
       switch (LOWORD(wParam))
       {
       case IDC_OPEN:
-        SelectFile(&(vccState->SystemState), configState->SerialCaptureFile);
+        SelectSerialCaptureFile(&(vccState->SystemState), configState->SerialCaptureFile);
 
         SendDlgItemMessage(hDlg, IDC_SERIALFILE, WM_SETTEXT, strlen(configState->SerialCaptureFile), (LPARAM)(LPCSTR)(configState->SerialCaptureFile));
 
@@ -150,10 +150,10 @@ extern "C" {
     case WM_INITDIALOG:
       SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETRANGE, TRUE, MAKELONG(2, configState->CurrentConfig.MaxOverclock));	//Maximum overclock
 
-      sprintf(configState->OutBuffer, "%2.3f Mhz", (float)(configState->TempConfig.CPUMultiplyer) * .894);
+      sprintf(configState->OutBuffer, "%2.3f Mhz", (float)(configState->TempConfig.CPUMultiplier) * .894);
 
       SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(configState->OutBuffer), (LPARAM)(LPCSTR)(configState->OutBuffer));
-      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, configState->TempConfig.CPUMultiplyer);
+      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, configState->TempConfig.CPUMultiplier);
 
       for (unsigned char temp = 0; temp <= 3; temp++) {
         SendDlgItemMessage(hDlg, configState->Ramchoice[temp], BM_SETCHECK, (temp == configState->TempConfig.RamSize), 0);
@@ -168,9 +168,9 @@ extern "C" {
       break;
 
     case WM_HSCROLL:
-      configState->TempConfig.CPUMultiplyer = (unsigned char)SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_GETPOS, (WPARAM)0, (WPARAM)0);
+      configState->TempConfig.CPUMultiplier = (unsigned char)SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_GETPOS, (WPARAM)0, (WPARAM)0);
 
-      sprintf(configState->OutBuffer, "%2.3f Mhz", (float)(configState->TempConfig.CPUMultiplyer) * .894);
+      sprintf(configState->OutBuffer, "%2.3f Mhz", (float)(configState->TempConfig.CPUMultiplier) * .894);
 
       SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(configState->OutBuffer), (LPARAM)(LPCSTR)(configState->OutBuffer));
 
@@ -240,8 +240,8 @@ extern "C" {
       SendDlgItemMessage(hDlg, IDC_SCANLINES, BM_SETCHECK, configState->TempConfig.ScanLines, 0);
       SendDlgItemMessage(hDlg, IDC_THROTTLE, BM_SETCHECK, configState->TempConfig.SpeedThrottle, 0);
       SendDlgItemMessage(hDlg, IDC_FRAMESKIP, TBM_SETPOS, TRUE, configState->TempConfig.FrameSkip);
-      SendDlgItemMessage(hDlg, IDC_RESIZE, BM_SETCHECK, configState->TempConfig.Resize, 0);
-      SendDlgItemMessage(hDlg, IDC_ASPECT, BM_SETCHECK, configState->TempConfig.Aspect, 0);
+      SendDlgItemMessage(hDlg, IDC_RESIZE, BM_SETCHECK, configState->TempConfig.AllowResize, 0);
+      SendDlgItemMessage(hDlg, IDC_ASPECT, BM_SETCHECK, configState->TempConfig.ForceAspect, 0);
       SendDlgItemMessage(hDlg, IDC_REMEMBER_SIZE, BM_SETCHECK, configState->TempConfig.RememberSize, 0);
 
       sprintf(configState->OutBuffer, "%i", configState->TempConfig.FrameSkip);
@@ -279,8 +279,8 @@ extern "C" {
       break;
 
     case WM_COMMAND:
-      configState->TempConfig.Resize = 1;
-      configState->TempConfig.Aspect = (unsigned char)SendDlgItemMessage(hDlg, IDC_ASPECT, BM_GETCHECK, 0, 0);
+      configState->TempConfig.AllowResize = 1;
+      configState->TempConfig.ForceAspect = (unsigned char)SendDlgItemMessage(hDlg, IDC_ASPECT, BM_GETCHECK, 0, 0);
       configState->TempConfig.ScanLines = (unsigned char)SendDlgItemMessage(hDlg, IDC_SCANLINES, BM_GETCHECK, 0, 0);
       configState->TempConfig.SpeedThrottle = (unsigned char)SendDlgItemMessage(hDlg, IDC_THROTTLE, BM_GETCHECK, 0, 0);
       configState->TempConfig.RememberSize = (unsigned char)SendDlgItemMessage(hDlg, IDC_REMEMBER_SIZE, BM_GETCHECK, 0, 0);
@@ -289,7 +289,7 @@ extern "C" {
       switch (LOWORD(wParam))
       {
       case IDC_REMEMBER_SIZE:
-        configState->TempConfig.Resize = 1;
+        configState->TempConfig.AllowResize = 1;
 
         SendDlgItemMessage(hDlg, IDC_RESIZE, BM_GETCHECK, 1, 0);
 
@@ -385,11 +385,11 @@ extern "C" {
       }
 
       // select the current layout
-      SendDlgItemMessage(hDlg, IDC_KBCONFIG, CB_SETCURSEL, (WPARAM)(configState->CurrentConfig.KeyMap), (LPARAM)0);
+      SendDlgItemMessage(hDlg, IDC_KBCONFIG, CB_SETCURSEL, (WPARAM)(configState->CurrentConfig.KeyMapIndex), (LPARAM)0);
       break;
 
     case WM_COMMAND:
-      configState->TempConfig.KeyMap = (unsigned char)SendDlgItemMessage(hDlg, IDC_KBCONFIG, CB_GETCURSEL, 0, 0);
+      configState->TempConfig.KeyMapIndex = (unsigned char)SendDlgItemMessage(hDlg, IDC_KBCONFIG, CB_GETCURSEL, 0, 0);
       break;
     }
 
@@ -830,7 +830,7 @@ extern "C" {
 
         configState->CurrentConfig = configState->TempConfig;
 
-        vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->CurrentConfig.KeyMap));
+        vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->CurrentConfig.KeyMapIndex));
 
         joystickState->Right = configState->Right;
         joystickState->Left = configState->Left;
@@ -863,7 +863,7 @@ extern "C" {
 
         configState->CurrentConfig = configState->TempConfig;
 
-        vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->CurrentConfig.KeyMap));
+        vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->CurrentConfig.KeyMapIndex));
 
         joystickState->Right = configState->Right;
         joystickState->Left = configState->Left;

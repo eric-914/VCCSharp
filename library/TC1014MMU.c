@@ -271,7 +271,7 @@ extern "C" {
     char COCO3ROMPath[MAX_PATH];
     unsigned short temp = 0;
 
-    GetProfileText("DefaultPaths", "COCO3ROMPath", "", COCO3ROMPath);
+    GetProfileText("DefaultPaths", "CoCoRomPath", "", COCO3ROMPath);
 
     strcat(COCO3ROMPath, "\\coco3.rom");
 

@@ -117,7 +117,7 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) int __cdecl GetCurrentKeyboardLayout() {
-    return(instance->CurrentConfig.KeyMap);
+    return(instance->CurrentConfig.KeyMapIndex);
   }
 }
 
@@ -203,21 +203,21 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl DecreaseOverclockSpeed(SystemState* systemState)
   {
-    if (instance->TempConfig.CPUMultiplyer == 2)
+    if (instance->TempConfig.CPUMultiplier == 2)
     {
       return;
     }
 
-    instance->TempConfig.CPUMultiplyer = (unsigned char)(instance->TempConfig.CPUMultiplyer - 1);
+    instance->TempConfig.CPUMultiplier = (unsigned char)(instance->TempConfig.CPUMultiplier - 1);
 
     // Send updates to the dialog if it's open.
     if (systemState->ConfigDialog != NULL)
     {
       HWND hDlg = instance->hWndConfig[1];
 
-      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, instance->TempConfig.CPUMultiplyer);
+      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, instance->TempConfig.CPUMultiplier);
 
-      sprintf(instance->OutBuffer, "%2.3f Mhz", (float)(instance->TempConfig.CPUMultiplyer) * 0.894);
+      sprintf(instance->OutBuffer, "%2.3f Mhz", (float)(instance->TempConfig.CPUMultiplier) * 0.894);
 
       SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(instance->OutBuffer), (LPARAM)(LPCSTR)(instance->OutBuffer));
     }
@@ -270,7 +270,7 @@ extern "C" {
   {
     POINT tp = GetCurrentWindowSize();
 
-    instance->CurrentConfig.Resize = 1;
+    instance->CurrentConfig.AllowResize = 1;
 
     GetCurrentModule(instance->CurrentConfig.ModulePath);
     FileValidatePath(instance->CurrentConfig.ModulePath);
@@ -278,20 +278,20 @@ extern "C" {
 
     WritePrivateProfileString("Version", "Release", instance->AppName, instance->IniFilePath);
 
-    FileWritePrivateProfileInt("CPU", "DoubleSpeedClock", instance->CurrentConfig.CPUMultiplyer, instance->IniFilePath);
+    FileWritePrivateProfileInt("CPU", "CPUMultiplier", instance->CurrentConfig.CPUMultiplier, instance->IniFilePath);
     FileWritePrivateProfileInt("CPU", "FrameSkip", instance->CurrentConfig.FrameSkip, instance->IniFilePath);
-    FileWritePrivateProfileInt("CPU", "Throttle", instance->CurrentConfig.SpeedThrottle, instance->IniFilePath);
+    FileWritePrivateProfileInt("CPU", "SpeedThrottle", instance->CurrentConfig.SpeedThrottle, instance->IniFilePath);
     FileWritePrivateProfileInt("CPU", "CpuType", instance->CurrentConfig.CpuType, instance->IniFilePath);
     FileWritePrivateProfileInt("CPU", "MaxOverClock", instance->CurrentConfig.MaxOverclock, instance->IniFilePath);
 
-    WritePrivateProfileString("Audio", "SndCard", instance->CurrentConfig.SoundCardName, instance->IniFilePath);
-    FileWritePrivateProfileInt("Audio", "Rate", instance->CurrentConfig.AudioRate, instance->IniFilePath);
+    WritePrivateProfileString("Audio", "SoundCardName", instance->CurrentConfig.SoundCardName, instance->IniFilePath);
+    FileWritePrivateProfileInt("Audio", "AudioRate", instance->CurrentConfig.AudioRate, instance->IniFilePath);
 
     FileWritePrivateProfileInt("Video", "MonitorType", instance->CurrentConfig.MonitorType, instance->IniFilePath);
     FileWritePrivateProfileInt("Video", "PaletteType", instance->CurrentConfig.PaletteType, instance->IniFilePath);
     FileWritePrivateProfileInt("Video", "ScanLines", instance->CurrentConfig.ScanLines, instance->IniFilePath);
-    FileWritePrivateProfileInt("Video", "AllowResize", instance->CurrentConfig.Resize, instance->IniFilePath);
-    FileWritePrivateProfileInt("Video", "ForceAspect", instance->CurrentConfig.Aspect, instance->IniFilePath);
+    FileWritePrivateProfileInt("Video", "AllowResize", instance->CurrentConfig.AllowResize, instance->IniFilePath);
+    FileWritePrivateProfileInt("Video", "ForceAspect", instance->CurrentConfig.ForceAspect, instance->IniFilePath);
     FileWritePrivateProfileInt("Video", "RememberSize", instance->CurrentConfig.RememberSize, instance->IniFilePath);
     FileWritePrivateProfileInt("Video", "WindowSizeX", tp.x, instance->IniFilePath);
     FileWritePrivateProfileInt("Video", "WindowSizeY", tp.y, instance->IniFilePath);
@@ -302,9 +302,9 @@ extern "C" {
 
     FileWritePrivateProfileInt("Misc", "AutoStart", instance->CurrentConfig.AutoStart, instance->IniFilePath);
     FileWritePrivateProfileInt("Misc", "CartAutoStart", instance->CurrentConfig.CartAutoStart, instance->IniFilePath);
-    FileWritePrivateProfileInt("Misc", "KeyMapIndex", instance->CurrentConfig.KeyMap, instance->IniFilePath);
+    FileWritePrivateProfileInt("Misc", "KeyMapIndex", instance->CurrentConfig.KeyMapIndex, instance->IniFilePath);
 
-    WritePrivateProfileString("Module", "OnBoot", instance->CurrentConfig.ModulePath, instance->IniFilePath);
+    WritePrivateProfileString("Module", "ModulePath", instance->CurrentConfig.ModulePath, instance->IniFilePath);
 
     JoystickState* joystickState = GetJoystickState();
 
@@ -341,21 +341,21 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl IncreaseOverclockSpeed(SystemState* systemState)
   {
-    if (instance->TempConfig.CPUMultiplyer >= instance->CurrentConfig.MaxOverclock)
+    if (instance->TempConfig.CPUMultiplier >= instance->CurrentConfig.MaxOverclock)
     {
       return;
     }
 
-    instance->TempConfig.CPUMultiplyer = (unsigned char)(instance->TempConfig.CPUMultiplyer + 1);
+    instance->TempConfig.CPUMultiplier = (unsigned char)(instance->TempConfig.CPUMultiplier + 1);
 
     // Send updates to the dialog if it's open.
     if (systemState->ConfigDialog != NULL)
     {
       HWND hDlg = instance->hWndConfig[1];
 
-      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, instance->TempConfig.CPUMultiplyer);
+      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, instance->TempConfig.CPUMultiplier);
 
-      sprintf(instance->OutBuffer, "%2.3f Mhz", (float)(instance->TempConfig.CPUMultiplyer) * 0.894);
+      sprintf(instance->OutBuffer, "%2.3f Mhz", (float)(instance->TempConfig.CPUMultiplier) * 0.894);
 
       SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(instance->OutBuffer), (LPARAM)(LPCSTR)(instance->OutBuffer));
     }
@@ -415,14 +415,14 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl SelectFile(SystemState* systemState, char* filename)
+  __declspec(dllexport) int __cdecl SelectSerialCaptureFile(SystemState* systemState, char* filename)
   {
     OPENFILENAME ofn;
     char dummy[MAX_PATH] = "";
     char tempFileName[MAX_PATH] = "";
-    char capFilePath[MAX_PATH];
+    char captureFilePath[MAX_PATH];
 
-    GetProfileText("DefaultPaths", "CapFilePath", "", capFilePath);
+    GetProfileText("DefaultPaths", "SerialCaptureFilePath", "", captureFilePath);
 
     memset(&ofn, 0, sizeof(ofn));
     ofn.lStructSize = sizeof(OPENFILENAME);
@@ -436,7 +436,7 @@ extern "C" {
     ofn.nMaxFile = MAX_PATH;			      // sizeof lpstrFile
     ofn.lpstrFileTitle = NULL;				  // filename and extension only
     ofn.nMaxFileTitle = MAX_PATH;			  // sizeof lpstrFileTitle
-    ofn.lpstrInitialDir = capFilePath;  // initial directory
+    ofn.lpstrInitialDir = captureFilePath;  // initial directory
     ofn.lpstrTitle = "Open print capture file";		// title bar string
 
     if (GetOpenFileName(&ofn)) {
@@ -449,10 +449,10 @@ extern "C" {
 
       tmp = tmp.substr(0, idx);
 
-      strcpy(capFilePath, tmp.c_str());
+      strcpy(captureFilePath, tmp.c_str());
 
-      if (capFilePath != "") {
-        WritePrivateProfileString("DefaultPaths", "CapFilePath", capFilePath, instance->IniFilePath);
+      if (captureFilePath != "") {
+        WritePrivateProfileString("DefaultPaths", "SerialCaptureFilePath", captureFilePath, instance->IniFilePath);
       }
     }
 
@@ -479,22 +479,22 @@ extern "C" {
     unsigned char index = 0;
 
     //Loads the config structure from the hard disk
-    instance->CurrentConfig.CPUMultiplyer = GetProfileByte("CPU", "DoubleSpeedClock", 2);
+    instance->CurrentConfig.CPUMultiplier = GetProfileByte("CPU", "CPUMultiplier", 2);
     instance->CurrentConfig.FrameSkip = GetProfileByte("CPU", "FrameSkip", 1);
-    instance->CurrentConfig.SpeedThrottle = GetProfileByte("CPU", "Throttle", 1);
+    instance->CurrentConfig.SpeedThrottle = GetProfileByte("CPU", "SpeedThrottle", 1);
     instance->CurrentConfig.CpuType = GetProfileByte("CPU", "CpuType", 0);
     instance->CurrentConfig.MaxOverclock = GetProfileShort("CPU", "MaxOverClock", 227);
 
-    instance->CurrentConfig.AudioRate = GetProfileShort("Audio", "Rate", 3);
+    instance->CurrentConfig.AudioRate = GetProfileShort("Audio", "AudioRate", 3);
 
-    GetPrivateProfileString("Audio", "SndCard", "", instance->CurrentConfig.SoundCardName, 63, instance->IniFilePath);
+    GetPrivateProfileString("Audio", "SoundCardName", "", instance->CurrentConfig.SoundCardName, 63, instance->IniFilePath);
 
     instance->CurrentConfig.MonitorType = GetProfileByte("Video", "MonitorType", 1);
     instance->CurrentConfig.PaletteType = GetProfileByte("Video", "PaletteType", 1);
     instance->CurrentConfig.ScanLines = GetProfileByte("Video", "ScanLines", 0);
 
-    instance->CurrentConfig.Resize = GetProfileByte("Video", "AllowResize", 0);
-    instance->CurrentConfig.Aspect = GetProfileByte("Video", "ForceAspect", 0);
+    instance->CurrentConfig.AllowResize = GetProfileByte("Video", "AllowResize", 0);
+    instance->CurrentConfig.ForceAspect = GetProfileByte("Video", "ForceAspect", 0);
     instance->CurrentConfig.RememberSize = GetProfileShort("Video", "RememberSize", 0);
     instance->CurrentConfig.WindowSizeX = GetProfileShort("Video", "WindowSizeX", 640);
     instance->CurrentConfig.WindowSizeY = GetProfileShort("Video", "WindowSizeY", 480);
@@ -505,15 +505,15 @@ extern "C" {
 
     GetProfileText("Memory", "ExternalBasicImage", "", instance->CurrentConfig.ExternalBasicImage);
 
-    GetProfileText("Module", "OnBoot", "", instance->CurrentConfig.ModulePath);
+    GetProfileText("Module", "ModulePath", "", instance->CurrentConfig.ModulePath);
 
-    instance->CurrentConfig.KeyMap = GetProfileByte("Misc", "KeyMapIndex", 0);
+    instance->CurrentConfig.KeyMapIndex = GetProfileByte("Misc", "KeyMapIndex", 0);
 
-    if (instance->CurrentConfig.KeyMap > 3) {
-      instance->CurrentConfig.KeyMap = 0;	//Default to DECB Mapping
+    if (instance->CurrentConfig.KeyMapIndex > 3) {
+      instance->CurrentConfig.KeyMapIndex = 0;	//Default to DECB Mapping
     }
 
-    vccKeyboardBuildRuntimeTable((keyboardlayout_e)(instance->CurrentConfig.KeyMap));
+    vccKeyboardBuildRuntimeTable((keyboardlayout_e)(instance->CurrentConfig.KeyMapIndex));
 
     FileCheckPath(instance->CurrentConfig.ModulePath);
     FileCheckPath(instance->CurrentConfig.ExternalBasicImage);
@@ -529,6 +529,7 @@ extern "C" {
     joystickState->Left.Fire2 = GetProfileByte("LeftJoyStick", "Fire2", 60);
     joystickState->Left.DiDevice = GetProfileByte("LeftJoyStick", "DiDevice", 0);
     joystickState->Left.HiRes = GetProfileByte("LeftJoyStick", "HiResDevice", 0);
+
     joystickState->Right.UseMouse = GetProfileByte("RightJoyStick", "UseMouse", 1);
     joystickState->Right.Left = GetProfileByte("RightJoyStick", "Left", 75);
     joystickState->Right.Right = GetProfileByte("RightJoyStick", "Right", 77);
@@ -541,7 +542,7 @@ extern "C" {
 
     GetProfileText("DefaultPaths", "CassPath", "", instance->CurrentConfig.CassPath);
     GetProfileText("DefaultPaths", "FloppyPath", "", instance->CurrentConfig.FloppyPath);
-    GetProfileText("DefaultPaths", "COCO3ROMPath", "", instance->CurrentConfig.COCO3ROMPath);
+    GetProfileText("DefaultPaths", "CoCoRomPath", "", instance->CurrentConfig.CoCoRomPath);
 
     for (index = 0; index < instance->NumberOfSoundCards; index++) {
       if (!strcmp(instance->SoundCards[index].CardName, instance->CurrentConfig.SoundCardName)) {
@@ -553,7 +554,7 @@ extern "C" {
 
     InsertModule(systemState, instance->CurrentConfig.ModulePath);	// Should this be here?
 
-    instance->CurrentConfig.Resize = 1; //Checkbox removed. Remove this from the ini? 
+    instance->CurrentConfig.AllowResize = 1; //Checkbox removed. Remove this from the ini? 
 
     if (instance->CurrentConfig.RememberSize) {
       p.x = instance->CurrentConfig.WindowSizeX;
@@ -576,23 +577,17 @@ extern "C" {
   __declspec(dllexport) void __cdecl UpdateConfig(SystemState* systemState)
   {
     SetPaletteType();
-    SetResize(instance->CurrentConfig.Resize);
-    SetAspect(instance->CurrentConfig.Aspect);
+    SetResize(instance->CurrentConfig.AllowResize);
+    SetAspect(instance->CurrentConfig.ForceAspect);
     SetScanLines(systemState, instance->CurrentConfig.ScanLines);
     SetFrameSkip(instance->CurrentConfig.FrameSkip);
     SetAutoStart(instance->CurrentConfig.AutoStart);
     SetSpeedThrottle(instance->CurrentConfig.SpeedThrottle);
-    SetCPUMultiplayer(instance->CurrentConfig.CPUMultiplyer);
+    SetCPUMultiplayer(instance->CurrentConfig.CPUMultiplier);
     SetRamSize(instance->CurrentConfig.RamSize);
     SetCpuType(instance->CurrentConfig.CpuType);
     SetMonitorType(instance->CurrentConfig.MonitorType);
     MC6821_SetCartAutoStart(instance->CurrentConfig.CartAutoStart);
-
-    if (instance->CurrentConfig.RebootNow) {
-      Reboot();
-    }
-
-    instance->CurrentConfig.RebootNow = 0;
   }
 }
 
@@ -635,8 +630,6 @@ extern "C" {
     instance->NumberOfSoundCards = GetSoundCardList(instance->SoundCards);
 
     ReadIniFile(systemState);
-
-    instance->CurrentConfig.RebootNow = 0;
 
     UpdateConfig(systemState);
     RefreshJoystickStatus();

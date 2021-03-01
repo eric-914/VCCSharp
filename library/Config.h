@@ -75,7 +75,7 @@ extern "C" __declspec(dllexport) char* __cdecl BasicRomName(void);
 extern "C" __declspec(dllexport) int __cdecl GetCurrentKeyboardLayout();
 extern "C" __declspec(dllexport) int __cdecl GetPaletteType();
 extern "C" __declspec(dllexport) int __cdecl GetRememberSize();
-extern "C" __declspec(dllexport) int __cdecl SelectFile(SystemState*, char*);
+extern "C" __declspec(dllexport) int __cdecl SelectSerialCaptureFile(SystemState*, char*);
 
 extern "C" __declspec(dllexport) unsigned char __cdecl GetProfileByte(LPCSTR, LPCSTR, int);
 extern "C" __declspec(dllexport) unsigned char __cdecl ReadIniFile(SystemState*);

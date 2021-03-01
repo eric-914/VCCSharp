@@ -53,12 +53,12 @@ VccState* InitializeInstance(VccState* p) {
   return p;
 }
 
-extern "C" {
-  __declspec(dllexport) void __cdecl Reboot()
-  {
-    instance->SystemState.ResetPending = 2;
-  }
-}
+//extern "C" {
+//  __declspec(dllexport) void __cdecl Reboot()
+//  {
+//    instance->SystemState.ResetPending = 2;
+//  }
+//}
 
 extern "C" {
   __declspec(dllexport) void __cdecl SaveConfig(void) {
