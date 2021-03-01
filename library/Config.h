@@ -97,3 +97,5 @@ extern "C" __declspec(dllexport) void __cdecl SetProfileText(LPCSTR, LPCSTR, LPC
 extern "C" __declspec(dllexport) void __cdecl UpdateConfig(SystemState*);
 extern "C" __declspec(dllexport) void __cdecl UpdateSoundBar(unsigned short, unsigned short);
 extern "C" __declspec(dllexport) void __cdecl UpdateTapeCounter(unsigned int, unsigned char);
+
+unsigned char GetSoundCardIndex(char* soundCardName);

@@ -442,6 +442,16 @@ void SetWindowSize(int width, int height) {
   SetWindowPos(handle, 0, 0, 0, width + 16, height + 81, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 }
 
+unsigned char GetSoundCardIndex(char* soundCardName) {
+  for (unsigned char index = 0; index < instance->NumberOfSoundCards; index++) {
+    if (!strcmp(instance->SoundCards[index].CardName, soundCardName)) {
+      return index;
+    }
+  }
+
+  return 0;
+}
+
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl ReadIniFile(SystemState* systemState)
   {
@@ -477,12 +487,6 @@ extern "C" {
     joystickState->Right.Fire2 = GetProfileByte("RightJoyStick", "Fire2", 60);
     joystickState->Right.DiDevice = GetProfileByte("RightJoyStick", "DiDevice", 0);
     joystickState->Right.HiRes = GetProfileByte("RightJoyStick", "HiResDevice", 0);
-
-    for (unsigned char index = 0; index < instance->NumberOfSoundCards; index++) {
-      if (!strcmp(instance->SoundCards[index].CardName, instance->CurrentConfig.SoundCardName)) {
-        instance->CurrentConfig.SndOutDev = index;
-      }
-    }
 
     instance->TempConfig = instance->CurrentConfig;
 
@@ -562,7 +566,8 @@ extern "C" {
     UpdateConfig(systemState);
     RefreshJoystickStatus();
 
-    SoundInit(systemState->WindowHandle, instance->SoundCards[instance->CurrentConfig.SndOutDev].Guid, instance->CurrentConfig.AudioRate);
+    unsigned char soundCardIndex = GetSoundCardIndex(instance->CurrentConfig.SoundCardName);
+    SoundInit(systemState->WindowHandle, instance->SoundCards[soundCardIndex].Guid, instance->CurrentConfig.AudioRate);
 
     //  Try to open the config file.  Create it if necessary.  Abort if failure.
     hr = CreateFile(instance->IniFilePath,

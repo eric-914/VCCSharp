@@ -21,9 +21,20 @@ char* GetKeyName(int x)
   return keyNames[x];
 }
 
+void CheckAudioChange(SystemState systemState, ConfigModel current, ConfigModel temp, SoundCardList* soundCards) {
+  unsigned char currentSoundCardIndex = GetSoundCardIndex(current.SoundCardName);
+  unsigned char tempSoundCardIndex = GetSoundCardIndex(temp.SoundCardName);
+
+  if ((currentSoundCardIndex != tempSoundCardIndex) || (current.AudioRate != temp.AudioRate)) {
+    SoundInit(systemState.WindowHandle, soundCards[tempSoundCardIndex].Guid, temp.AudioRate);
+  }
+}
+
 extern "C" {
   __declspec(dllexport) LRESULT CALLBACK CreateAudioConfigDialogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
   {
+    unsigned char soundCardIndex;
+
     ConfigState* configState = GetConfigState();
 
     switch (message)
@@ -51,23 +62,16 @@ extern "C" {
 
       SendDlgItemMessage(hDlg, IDC_RATE, CB_SETCURSEL, (WPARAM)(configState->TempConfig.AudioRate), (LPARAM)0);
 
-      configState->TempConfig.SndOutDev = 0;
-
-      for (unsigned char index = 0; index < configState->NumberOfSoundCards; index++) {
-        if (!strcmp(configState->SoundCards[index].CardName, configState->TempConfig.SoundCardName)) {
-          configState->TempConfig.SndOutDev = index;
-        }
-      }
-
-      SendDlgItemMessage(hDlg, IDC_SOUNDCARD, CB_SETCURSEL, (WPARAM)(configState->TempConfig.SndOutDev), (LPARAM)0);
+      soundCardIndex = GetSoundCardIndex(configState->TempConfig.SoundCardName);
+      SendDlgItemMessage(hDlg, IDC_SOUNDCARD, CB_SETCURSEL, (WPARAM)(soundCardIndex), (LPARAM)0);
 
       break;
 
     case WM_COMMAND:
-      configState->TempConfig.SndOutDev = (unsigned char)SendDlgItemMessage(hDlg, IDC_SOUNDCARD, CB_GETCURSEL, 0, 0);
+      soundCardIndex = (unsigned char)SendDlgItemMessage(hDlg, IDC_SOUNDCARD, CB_GETCURSEL, 0, 0);
       configState->TempConfig.AudioRate = (unsigned char)SendDlgItemMessage(hDlg, IDC_RATE, CB_GETCURSEL, 0, 0);
 
-      strcpy(configState->TempConfig.SoundCardName, configState->SoundCards[configState->TempConfig.SndOutDev].CardName);
+      strcpy(configState->TempConfig.SoundCardName, configState->SoundCards[soundCardIndex].CardName);
 
       break;
     }
@@ -824,9 +828,7 @@ extern "C" {
           vccState->SystemState.ResetPending = 2;
         }
 
-        if ((configState->CurrentConfig.SndOutDev != configState->TempConfig.SndOutDev) || (configState->CurrentConfig.AudioRate != configState->TempConfig.AudioRate)) {
-          SoundInit(vccState->SystemState.WindowHandle, configState->SoundCards[configState->TempConfig.SndOutDev].Guid, configState->TempConfig.AudioRate);
-        }
+        CheckAudioChange(vccState->SystemState, configState->CurrentConfig, configState->TempConfig, configState->SoundCards);
 
         configState->CurrentConfig = configState->TempConfig;
 
@@ -857,9 +859,7 @@ extern "C" {
           vccState->SystemState.ResetPending = 2;
         }
 
-        if ((configState->CurrentConfig.SndOutDev != configState->TempConfig.SndOutDev) || (configState->CurrentConfig.AudioRate != configState->TempConfig.AudioRate)) {
-          SoundInit(vccState->SystemState.WindowHandle, configState->SoundCards[configState->TempConfig.SndOutDev].Guid, configState->TempConfig.AudioRate);
-        }
+        CheckAudioChange(vccState->SystemState, configState->CurrentConfig, configState->TempConfig, configState->SoundCards);
 
         configState->CurrentConfig = configState->TempConfig;
 

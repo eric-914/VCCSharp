@@ -94,7 +94,5 @@ typedef struct {
   //[SuperIDE]  //### MODULE SPECIFIC ###//
   //"SuperIDEPath"  //TODO: Originally in [DefaultPaths]
 
-  unsigned char	SndOutDev; //**DERIVED**//
-
   char PathtoExe[MAX_PATH]; //**DERIVED**//
 } ConfigModel;
