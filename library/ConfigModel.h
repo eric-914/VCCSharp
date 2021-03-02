@@ -6,7 +6,7 @@
 
 typedef struct {
   //[Version]
-  //"Release" //ConfigState ==> char AppName[MAX_LOADSTRING]; //## WRITE-ONLY ##//
+  char* Release; //## WRITE-ONLY ##//
 
   //[CPU]
   unsigned char	CPUMultiplier;

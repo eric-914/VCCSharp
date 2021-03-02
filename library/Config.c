@@ -294,13 +294,12 @@ extern "C" {
     FileValidatePath(instance->Model.ModulePath);
     FileValidatePath(instance->Model.ExternalBasicImage);
 
-    //--A way of "versioning" the .ini file, I guess
-    WritePrivateProfileString("Version", "Release", instance->AppName, instance->IniFilePath);
-
     JoystickState* joystickState = GetJoystickState();
 
     instance->Model.Left = joystickState->Left;
     instance->Model.Right = joystickState->Right;
+    
+    instance->Model.Release = instance->AppName; //--Set "version" I guess
 
     SaveConfiguration(instance->Model, instance->IniFilePath);
   }
@@ -541,6 +540,7 @@ void SaveConfiguration(ConfigModel model, char* iniFilePath) {
   POINT tp = GetCurrentWindowSize();
 
   //[Version]
+  WritePrivateProfileString("Version", "Release", model.Release, iniFilePath); //## Write-only ##//
 
   //[CPU]
   FileWritePrivateProfileInt("CPU", "CPUMultiplier", model.CPUMultiplier, iniFilePath);
