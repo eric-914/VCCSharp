@@ -2,6 +2,8 @@
 
 #include <windows.h>
 
+#include "JoyStickModel.h"
+
 typedef struct {
   //[Version]
   //"Release" //ConfigState ==> char AppName[MAX_LOADSTRING]; //## WRITE-ONLY ##//
@@ -40,26 +42,10 @@ typedef struct {
   char ModulePath[MAX_PATH];
 
   //[LeftJoyStick]  //struct {} JoyStick
-  //UseMouse=1
-  //Left=75
-  //Right=77
-  //Up=72
-  //Down=80
-  //Fire1=59
-  //Fire2=60
-  //DiDevice=0
-  //HiResDevice=0
+  JoyStickModel Left;
 
-  //[RightJoyStick]  //struct {} JoyStick
-  //UseMouse=1
-  //Left=75
-  //Right=77
-  //Up=72
-  //Down=80
-  //Fire1=59
-  //Fire2=60
-  //DiDevice=0
-  //HiResDevice=0
+  //[RightJoyStick]
+  JoyStickModel Right;
 
   //[DefaultPaths]
   char CassPath[MAX_PATH];

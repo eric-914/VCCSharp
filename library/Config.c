@@ -206,26 +206,28 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl DecreaseOverclockSpeed(SystemState* systemState)
   {
-    if (instance->TempConfig.CPUMultiplier == 2)
+    ConfigModel configModel = instance->TempConfig;
+
+    if (configModel.CPUMultiplier == 2)
     {
       return;
     }
 
-    instance->TempConfig.CPUMultiplier = (unsigned char)(instance->TempConfig.CPUMultiplier - 1);
+    configModel.CPUMultiplier = (unsigned char)(configModel.CPUMultiplier - 1);
 
     // Send updates to the dialog if it's open.
     if (systemState->ConfigDialog != NULL)
     {
       HWND hDlg = instance->hWndConfig[1];
 
-      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, instance->TempConfig.CPUMultiplier);
+      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, configModel.CPUMultiplier);
 
-      sprintf(instance->OutBuffer, "%2.3f Mhz", (float)(instance->TempConfig.CPUMultiplier) * 0.894);
+      sprintf(instance->OutBuffer, "%2.3f Mhz", (float)(configModel.CPUMultiplier) * 0.894);
 
       SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(instance->OutBuffer), (LPARAM)(LPCSTR)(instance->OutBuffer));
     }
 
-    instance->CurrentConfig = instance->TempConfig;
+    instance->CurrentConfig = configModel;
 
     systemState->ResetPending = 4;
   }
@@ -315,26 +317,28 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl IncreaseOverclockSpeed(SystemState* systemState)
   {
-    if (instance->TempConfig.CPUMultiplier >= instance->CurrentConfig.MaxOverclock)
+    ConfigModel configModel = instance->TempConfig;
+
+    if (configModel.CPUMultiplier >= instance->CurrentConfig.MaxOverclock)
     {
       return;
     }
 
-    instance->TempConfig.CPUMultiplier = (unsigned char)(instance->TempConfig.CPUMultiplier + 1);
+    configModel.CPUMultiplier = (unsigned char)(configModel.CPUMultiplier + 1);
 
     // Send updates to the dialog if it's open.
     if (systemState->ConfigDialog != NULL)
     {
       HWND hDlg = instance->hWndConfig[1];
 
-      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, instance->TempConfig.CPUMultiplier);
+      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, configModel.CPUMultiplier);
 
-      sprintf(instance->OutBuffer, "%2.3f Mhz", (float)(instance->TempConfig.CPUMultiplier) * 0.894);
+      sprintf(instance->OutBuffer, "%2.3f Mhz", (float)(configModel.CPUMultiplier) * 0.894);
 
       SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(instance->OutBuffer), (LPARAM)(LPCSTR)(instance->OutBuffer));
     }
 
-    instance->CurrentConfig = instance->TempConfig;
+    instance->CurrentConfig = configModel;
 
     systemState->ResetPending = 4; // Without this, changing the config does nothing.
   }
@@ -455,7 +459,7 @@ unsigned char GetSoundCardIndex(char* soundCardName) {
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl ReadIniFile(SystemState* systemState)
   {
-    instance->CurrentConfig = LoadConfiguration(instance->IniFilePath);;
+    instance->CurrentConfig = LoadConfiguration(instance->IniFilePath);
 
     if (instance->CurrentConfig.KeyMapIndex > 3) {
       instance->CurrentConfig.KeyMapIndex = 0;	//Default to DECB Mapping
