@@ -198,6 +198,42 @@ extern "C" {
   }
 }
 
+void AdjustOverclockSpeed(SystemState* systemState, unsigned char change) {
+  unsigned char cpuMultiplier = instance->CurrentConfig.CPUMultiplier + change;
+
+  if (cpuMultiplier < 2 || cpuMultiplier > instance->CurrentConfig.MaxOverclock)
+  {
+    return;
+  }
+
+  // Send updates to the dialog if it's open.
+  if (systemState->ConfigDialog != NULL)
+  {
+    HWND hDlg = instance->hWndConfig[1];
+
+    SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, cpuMultiplier);
+
+    sprintf(instance->OutBuffer, "%2.3f Mhz", (float)(cpuMultiplier) * 0.894);
+
+    SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(instance->OutBuffer), (LPARAM)(LPCSTR)(instance->OutBuffer));
+  }
+
+  instance->CurrentConfig.CPUMultiplier = cpuMultiplier;
+
+  systemState->ResetPending = 4; // Without this, changing the config does nothing.
+}
+
+/**
+ * Increase the overclock speed, as seen after a POKE 65497,0.
+ * Valid values are [2,100].
+ */
+extern "C" {
+  __declspec(dllexport) void __cdecl IncreaseOverclockSpeed(SystemState* systemState)
+  {
+    AdjustOverclockSpeed(systemState, 1);
+  }
+}
+
 /**
  * Decrease the overclock speed, as seen after a POKE 65497,0.
  *
@@ -206,30 +242,7 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl DecreaseOverclockSpeed(SystemState* systemState)
   {
-    ConfigModel configModel = instance->TempConfig;
-
-    if (configModel.CPUMultiplier == 2)
-    {
-      return;
-    }
-
-    configModel.CPUMultiplier = (unsigned char)(configModel.CPUMultiplier - 1);
-
-    // Send updates to the dialog if it's open.
-    if (systemState->ConfigDialog != NULL)
-    {
-      HWND hDlg = instance->hWndConfig[1];
-
-      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, configModel.CPUMultiplier);
-
-      sprintf(instance->OutBuffer, "%2.3f Mhz", (float)(configModel.CPUMultiplier) * 0.894);
-
-      SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(instance->OutBuffer), (LPARAM)(LPCSTR)(instance->OutBuffer));
-    }
-
-    instance->CurrentConfig = configModel;
-
-    systemState->ResetPending = 4;
+    AdjustOverclockSpeed(systemState, -1);
   }
 }
 
@@ -307,40 +320,6 @@ extern "C" {
     FileWritePrivateProfileInt("RightJoyStick", "Fire2", joystickState->Right.Fire2, instance->IniFilePath);
     FileWritePrivateProfileInt("RightJoyStick", "DiDevice", joystickState->Right.DiDevice, instance->IniFilePath);
     FileWritePrivateProfileInt("RightJoyStick", "HiResDevice", joystickState->Right.HiRes, instance->IniFilePath);
-  }
-}
-
-/**
- * Increase the overclock speed, as seen after a POKE 65497,0.
- * Valid values are [2,100].
- */
-extern "C" {
-  __declspec(dllexport) void __cdecl IncreaseOverclockSpeed(SystemState* systemState)
-  {
-    ConfigModel configModel = instance->TempConfig;
-
-    if (configModel.CPUMultiplier >= instance->CurrentConfig.MaxOverclock)
-    {
-      return;
-    }
-
-    configModel.CPUMultiplier = (unsigned char)(configModel.CPUMultiplier + 1);
-
-    // Send updates to the dialog if it's open.
-    if (systemState->ConfigDialog != NULL)
-    {
-      HWND hDlg = instance->hWndConfig[1];
-
-      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, configModel.CPUMultiplier);
-
-      sprintf(instance->OutBuffer, "%2.3f Mhz", (float)(configModel.CPUMultiplier) * 0.894);
-
-      SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(instance->OutBuffer), (LPARAM)(LPCSTR)(instance->OutBuffer));
-    }
-
-    instance->CurrentConfig = configModel;
-
-    systemState->ResetPending = 4; // Without this, changing the config does nothing.
   }
 }
 
