@@ -25,9 +25,6 @@ typedef struct
   HWND hDlgBar;
   HWND hDlgTape;
 
-  JoyStickModel Left;
-  JoyStickModel Right;
-
   short int Cpuchoice[2];
   short int Monchoice[2];
   short int PaletteChoice[2];

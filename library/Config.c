@@ -297,29 +297,12 @@ extern "C" {
     //--A way of "versioning" the .ini file, I guess
     WritePrivateProfileString("Version", "Release", instance->AppName, instance->IniFilePath);
 
-    SaveConfiguration(instance->Model, instance->IniFilePath);
-
     JoystickState* joystickState = GetJoystickState();
 
-    FileWritePrivateProfileInt("LeftJoyStick", "UseMouse", joystickState->Left.UseMouse, instance->IniFilePath);
-    FileWritePrivateProfileInt("LeftJoyStick", "Left", joystickState->Left.Left, instance->IniFilePath);
-    FileWritePrivateProfileInt("LeftJoyStick", "Right", joystickState->Left.Right, instance->IniFilePath);
-    FileWritePrivateProfileInt("LeftJoyStick", "Up", joystickState->Left.Up, instance->IniFilePath);
-    FileWritePrivateProfileInt("LeftJoyStick", "Down", joystickState->Left.Down, instance->IniFilePath);
-    FileWritePrivateProfileInt("LeftJoyStick", "Fire1", joystickState->Left.Fire1, instance->IniFilePath);
-    FileWritePrivateProfileInt("LeftJoyStick", "Fire2", joystickState->Left.Fire2, instance->IniFilePath);
-    FileWritePrivateProfileInt("LeftJoyStick", "DiDevice", joystickState->Left.DiDevice, instance->IniFilePath);
-    FileWritePrivateProfileInt("LeftJoyStick", "HiResDevice", joystickState->Left.HiRes, instance->IniFilePath);
+    instance->Model.Left = joystickState->Left;
+    instance->Model.Right = joystickState->Right;
 
-    FileWritePrivateProfileInt("RightJoyStick", "UseMouse", joystickState->Right.UseMouse, instance->IniFilePath);
-    FileWritePrivateProfileInt("RightJoyStick", "Left", joystickState->Right.Left, instance->IniFilePath);
-    FileWritePrivateProfileInt("RightJoyStick", "Right", joystickState->Right.Right, instance->IniFilePath);
-    FileWritePrivateProfileInt("RightJoyStick", "Up", joystickState->Right.Up, instance->IniFilePath);
-    FileWritePrivateProfileInt("RightJoyStick", "Down", joystickState->Right.Down, instance->IniFilePath);
-    FileWritePrivateProfileInt("RightJoyStick", "Fire1", joystickState->Right.Fire1, instance->IniFilePath);
-    FileWritePrivateProfileInt("RightJoyStick", "Fire2", joystickState->Right.Fire2, instance->IniFilePath);
-    FileWritePrivateProfileInt("RightJoyStick", "DiDevice", joystickState->Right.DiDevice, instance->IniFilePath);
-    FileWritePrivateProfileInt("RightJoyStick", "HiResDevice", joystickState->Right.HiRes, instance->IniFilePath);
+    SaveConfiguration(instance->Model, instance->IniFilePath);
   }
 }
 
@@ -451,25 +434,8 @@ extern "C" {
 
     JoystickState* joystickState = GetJoystickState();
 
-    joystickState->Left.UseMouse = GetProfileByte("LeftJoyStick", "UseMouse", 1);
-    joystickState->Left.Left = GetProfileByte("LeftJoyStick", "Left", 75);
-    joystickState->Left.Right = GetProfileByte("LeftJoyStick", "Right", 77);
-    joystickState->Left.Up = GetProfileByte("LeftJoyStick", "Up", 72);
-    joystickState->Left.Down = GetProfileByte("LeftJoyStick", "Down", 80);
-    joystickState->Left.Fire1 = GetProfileByte("LeftJoyStick", "Fire1", 59);
-    joystickState->Left.Fire2 = GetProfileByte("LeftJoyStick", "Fire2", 60);
-    joystickState->Left.DiDevice = GetProfileByte("LeftJoyStick", "DiDevice", 0);
-    joystickState->Left.HiRes = GetProfileByte("LeftJoyStick", "HiResDevice", 0);
-
-    joystickState->Right.UseMouse = GetProfileByte("RightJoyStick", "UseMouse", 1);
-    joystickState->Right.Left = GetProfileByte("RightJoyStick", "Left", 75);
-    joystickState->Right.Right = GetProfileByte("RightJoyStick", "Right", 77);
-    joystickState->Right.Up = GetProfileByte("RightJoyStick", "Up", 72);
-    joystickState->Right.Down = GetProfileByte("RightJoyStick", "Down", 80);
-    joystickState->Right.Fire1 = GetProfileByte("RightJoyStick", "Fire1", 59);
-    joystickState->Right.Fire2 = GetProfileByte("RightJoyStick", "Fire2", 60);
-    joystickState->Right.DiDevice = GetProfileByte("RightJoyStick", "DiDevice", 0);
-    joystickState->Right.HiRes = GetProfileByte("RightJoyStick", "HiResDevice", 0);
+    joystickState->Left = instance->Model.Left;
+    joystickState->Right = instance->Model.Right;
 
     InsertModule(systemState, instance->Model.ModulePath);	// Should this be here?
 
@@ -576,7 +542,7 @@ void SaveConfiguration(ConfigModel model, char* iniFilePath) {
 
   //[Version]
 
-//[CPU]
+  //[CPU]
   FileWritePrivateProfileInt("CPU", "CPUMultiplier", model.CPUMultiplier, iniFilePath);
   FileWritePrivateProfileInt("CPU", "FrameSkip", model.FrameSkip, iniFilePath);
   FileWritePrivateProfileInt("CPU", "SpeedThrottle", model.SpeedThrottle, iniFilePath);
@@ -610,8 +576,26 @@ void SaveConfiguration(ConfigModel model, char* iniFilePath) {
   WritePrivateProfileString("Module", "ModulePath", model.ModulePath, iniFilePath);
 
   //[LeftJoyStick]
+  FileWritePrivateProfileInt("LeftJoyStick", "UseMouse", model.Left.UseMouse, instance->IniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "Left", model.Left.Left, instance->IniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "Right", model.Left.Right, instance->IniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "Up", model.Left.Up, instance->IniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "Down", model.Left.Down, instance->IniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "Fire1", model.Left.Fire1, instance->IniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "Fire2", model.Left.Fire2, instance->IniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "DiDevice", model.Left.DiDevice, instance->IniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "HiResDevice", model.Left.HiRes, instance->IniFilePath);
 
   //[RightJoyStick]
+  FileWritePrivateProfileInt("RightJoyStick", "UseMouse", model.Right.UseMouse, instance->IniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "Left", model.Right.Left, instance->IniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "Right", model.Right.Right, instance->IniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "Up", model.Right.Up, instance->IniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "Down", model.Right.Down, instance->IniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "Fire1", model.Right.Fire1, instance->IniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "Fire2", model.Right.Fire2, instance->IniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "DiDevice", model.Right.DiDevice, instance->IniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "HiResDevice", model.Right.HiRes, instance->IniFilePath);
 
   //[DefaultPaths]
 
@@ -658,8 +642,26 @@ ConfigModel LoadConfiguration(char* iniFilePath) {
   GetPrivateProfileString("Module", "ModulePath", "", model.ModulePath, MAX_PATH, iniFilePath);
 
   //[LeftJoyStick]
+  model.Left.UseMouse = GetPrivateProfileInt("LeftJoyStick", "UseMouse", 1, iniFilePath);
+  model.Left.Left = GetPrivateProfileInt("LeftJoyStick", "Left", 75, iniFilePath);
+  model.Left.Right = GetPrivateProfileInt("LeftJoyStick", "Right", 77, iniFilePath);
+  model.Left.Up = GetPrivateProfileInt("LeftJoyStick", "Up", 72, iniFilePath);
+  model.Left.Down = GetPrivateProfileInt("LeftJoyStick", "Down", 80, iniFilePath);
+  model.Left.Fire1 = GetPrivateProfileInt("LeftJoyStick", "Fire1", 59, iniFilePath);
+  model.Left.Fire2 = GetPrivateProfileInt("LeftJoyStick", "Fire2", 60, iniFilePath);
+  model.Left.DiDevice = GetPrivateProfileInt("LeftJoyStick", "DiDevice", 0, iniFilePath);
+  model.Left.HiRes = GetPrivateProfileInt("LeftJoyStick", "HiResDevice", 0, iniFilePath);
 
   //[RightJoyStick]
+  model.Right.UseMouse = GetPrivateProfileInt("RightJoyStick", "UseMouse", 1, iniFilePath);
+  model.Right.Left = GetPrivateProfileInt("RightJoyStick", "Left", 75, iniFilePath);
+  model.Right.Right = GetPrivateProfileInt("RightJoyStick", "Right", 77, iniFilePath);
+  model.Right.Up = GetPrivateProfileInt("RightJoyStick", "Up", 72, iniFilePath);
+  model.Right.Down = GetPrivateProfileInt("RightJoyStick", "Down", 80, iniFilePath);
+  model.Right.Fire1 = GetPrivateProfileInt("RightJoyStick", "Fire1", 59, iniFilePath);
+  model.Right.Fire2 = GetPrivateProfileInt("RightJoyStick", "Fire2", 60, iniFilePath);
+  model.Right.DiDevice = GetPrivateProfileInt("RightJoyStick", "DiDevice", 0, iniFilePath);
+  model.Right.HiRes = GetPrivateProfileInt("RightJoyStick", "HiResDevice", 0, iniFilePath);
 
   //[DefaultPaths]
   GetPrivateProfileString("DefaultPaths", "CassPath", "", model.CassPath, MAX_PATH, iniFilePath);
