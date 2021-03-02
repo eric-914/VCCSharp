@@ -37,6 +37,3 @@ extern "C" __declspec(dllexport) void __cdecl UpdateSoundBar(unsigned short, uns
 extern "C" __declspec(dllexport) void __cdecl UpdateTapeCounter(unsigned int, unsigned char);
 
 unsigned char GetSoundCardIndex(char* soundCardName);
-
-extern "C" __declspec(dllexport) void __cdecl SaveConfiguration(ConfigModel model, char* iniFilePath);
-extern "C" __declspec(dllexport) ConfigModel __cdecl LoadConfiguration(char* iniFilePath);

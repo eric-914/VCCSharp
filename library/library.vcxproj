@@ -170,6 +170,7 @@
     <ClCompile Include="Clipboard.c" />
     <ClCompile Include="CoCo.c" />
     <ClCompile Include="Config.c" />
+    <ClCompile Include="ConfigIO.c" />
     <ClCompile Include="cpudef.c" />
     <ClCompile Include="DirectDraw.c" />
     <ClCompile Include="DirectSoundEnumerateCallback.c" />
@@ -215,6 +216,7 @@
     <ClInclude Include="CoCo.h" />
     <ClInclude Include="CoCoState.h" />
     <ClInclude Include="Config.h" />
+    <ClInclude Include="ConfigIO.h" />
     <ClInclude Include="ConfigState.h" />
     <ClInclude Include="DirectDraw.h" />
     <ClInclude Include="DirectDrawState.h" />

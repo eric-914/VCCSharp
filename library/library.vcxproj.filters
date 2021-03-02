@@ -113,6 +113,9 @@
     <ClCompile Include="ConfigDialogCallbacks.c">
       <Filter>callbacks</Filter>
     </ClCompile>
+    <ClCompile Include="ConfigIO.c">
+      <Filter>config</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h" />
@@ -294,6 +297,9 @@
     </ClInclude>
     <ClInclude Include="ConfigDialogCallbacks.h">
       <Filter>callbacks</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigIO.h">
+      <Filter>config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
