@@ -2,11 +2,13 @@
 
 #include <windows.h>
 
+#include "defines.h"
+
 #include "JoyStickModel.h"
 
 typedef struct {
   //[Version]
-  char* Release; //## WRITE-ONLY ##//
+  char Release[MAX_LOADSTRING]; //## WRITE-ONLY ##//
 
   //[CPU]
   unsigned char	CPUMultiplier;
@@ -16,7 +18,7 @@ typedef struct {
   unsigned short MaxOverclock;
 
   //[Audio]
-  char SoundCardName[64];
+  char SoundCardName[MAX_LOADSTRING];
   unsigned short AudioRate;
 
   //[Video]

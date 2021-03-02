@@ -299,7 +299,7 @@ extern "C" {
     instance->Model.Left = joystickState->Left;
     instance->Model.Right = joystickState->Right;
 
-    instance->Model.Release = instance->AppName; //--Set "version" I guess
+    strcpy(instance->Model.Release, instance->AppName); //--Set "version" I guess
 
     SaveConfiguration(instance->Model, instance->IniFilePath);
   }
@@ -362,6 +362,7 @@ extern "C" {
     char* serialCaptureFilePath = instance->Model.SerialCaptureFilePath;
 
     memset(&ofn, 0, sizeof(ofn));
+
     ofn.lStructSize = sizeof(OPENFILENAME);
     ofn.hwndOwner = systemState->WindowHandle; // GetTopWindow(NULL);
     ofn.Flags = OFN_HIDEREADONLY;
@@ -381,7 +382,7 @@ extern "C" {
         MessageBox(0, "Can't Open File", "Can't open the file specified.", 0);
       }
 
-      if (serialCaptureFilePath != "") {
+      if (ofn.lpstrFile != "") {
         string tmp = ofn.lpstrFile;
         size_t idx = tmp.find_last_of("\\");
         tmp = tmp.substr(0, idx);
@@ -593,8 +594,11 @@ void SaveConfiguration(ConfigModel model, char* iniFilePath) {
   FileWritePrivateProfileInt("RightJoyStick", "HiResDevice", model.Right.HiRes, iniFilePath);
 
   //[DefaultPaths]
-  WritePrivateProfileString("DefaultPaths", "SerialCaptureFilePath", model.SerialCaptureFilePath, iniFilePath);
+  WritePrivateProfileString("DefaultPaths", "CassPath", model.CassPath, iniFilePath);
   WritePrivateProfileString("DefaultPaths", "PakPath", model.PakPath, iniFilePath);
+  WritePrivateProfileString("DefaultPaths", "FloppyPath", model.FloppyPath, iniFilePath);
+  WritePrivateProfileString("DefaultPaths", "CoCoRomPath", model.CoCoRomPath, iniFilePath);
+  WritePrivateProfileString("DefaultPaths", "SerialCaptureFilePath", model.SerialCaptureFilePath, iniFilePath);
 
   //--Flush .ini file
   WritePrivateProfileString(NULL, NULL, NULL, iniFilePath);

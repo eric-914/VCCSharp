@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #include "Cassette.h"
 
@@ -7,6 +8,8 @@
 
 #include "Config.h"
 #include "CoCo.h"
+
+using namespace std;
 
 const unsigned char One[21] = { 0x80, 0xA8, 0xC8, 0xE8, 0xE8, 0xF8, 0xF8, 0xE8, 0xC8, 0xA8, 0x78, 0x50, 0x50, 0x30, 0x10, 0x00, 0x00, 0x10, 0x30, 0x30, 0x50 };
 const unsigned char Zero[40] = { 0x80, 0x90, 0xA8, 0xB8, 0xC8, 0xD8, 0xE8, 0xE8, 0xF0, 0xF8, 0xF8, 0xF8, 0xF0, 0xE8, 0xD8, 0xC8, 0xB8, 0xA8, 0x90, 0x78, 0x78, 0x68, 0x50, 0x40, 0x30, 0x20, 0x10, 0x08, 0x00, 0x00, 0x00, 0x08, 0x10, 0x10, 0x20, 0x30, 0x40, 0x50, 0x68, 0x68 };
@@ -275,19 +278,17 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned int __cdecl LoadTape(void)
   {
-    static unsigned char DialogOpen = 0;
-    unsigned int RetVal = 0;
+    static unsigned char dialogOpen = 0;
+    unsigned int retVal = 0;
 
     HANDLE hr = NULL;
     OPENFILENAME ofn;
 
-    GetProfileText("DefaultPaths", "CassPath", "", instance->CassPath);
-
-    if (DialogOpen == 1) {	//Only allow 1 dialog open 
+    if (dialogOpen == 1) {	//Only allow 1 dialog open 
       return(0);
     }
 
-    DialogOpen = 1;
+    dialogOpen = 1;
 
     memset(&ofn, 0, sizeof(ofn));
 
@@ -302,30 +303,29 @@ extern "C" {
     ofn.nMaxFile = MAX_PATH;						  // sizeof lpstrFile
     ofn.lpstrFileTitle = NULL;						// filename and extension only
     ofn.nMaxFileTitle = MAX_PATH;					// sizeof lpstrFileTitle
-    ofn.lpstrInitialDir = instance->CassPath;				// initial directory
+    ofn.lpstrInitialDir = GetConfigState()->Model.CassPath;				// initial directory
     ofn.lpstrTitle = "Insert Tape Image";	// title bar string
 
-    RetVal = GetOpenFileName(&ofn);
+    retVal = GetOpenFileName(&ofn);
 
-    if (RetVal)
+    if (retVal)
     {
       if (MountTape(instance->TapeFileName) == 0) {
         MessageBox(NULL, "Can't open file", "Error", 0);
       }
     }
 
-    DialogOpen = 0;
-    std::string tmp = ofn.lpstrFile;
-    size_t idx;
-    idx = tmp.find_last_of("\\");
-    tmp = tmp.substr(0, idx);
-    strcpy(instance->CassPath, tmp.c_str());
+    dialogOpen = 0;
 
-    if (instance->CassPath != "") {
-      WriteProfileString("DefaultPaths", "CassPath", instance->CassPath);
+    if (ofn.lpstrFile != "") {
+      string tmp = ofn.lpstrFile;
+      size_t idx = tmp.find_last_of("\\");
+      tmp = tmp.substr(0, idx);
+
+      strcpy(GetConfigState()->Model.CassPath, tmp.c_str());
     }
 
-    return(RetVal);
+    return(retVal);
   }
 }
 
