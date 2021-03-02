@@ -13,7 +13,7 @@ extern "C" __declspec(dllexport) ConfigState * __cdecl GetConfigState();
 extern "C" __declspec(dllexport) POINT __cdecl GetIniWindowSize();
 
 extern "C" __declspec(dllexport) char* __cdecl AppDirectory();
-extern "C" __declspec(dllexport) char* __cdecl BasicRomName(void);
+extern "C" __declspec(dllexport) char* __cdecl ExternalBasicImage(void);
 
 extern "C" __declspec(dllexport) int __cdecl GetCurrentKeyboardLayout();
 extern "C" __declspec(dllexport) int __cdecl GetPaletteType();

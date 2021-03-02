@@ -268,25 +268,27 @@ extern "C" {
   __declspec(dllexport) void __cdecl CopyRom(void)
   {
     char ExecPath[MAX_PATH];
-    char COCO3ROMPath[MAX_PATH];
+    char CoCoRomPath[MAX_PATH];
     unsigned short temp = 0;
 
-    GetProfileText("DefaultPaths", "CoCoRomPath", "", COCO3ROMPath);
+    //--Try to see if rom exists at: DefaultPaths ==> CoCoRomPath
+    strcpy(CoCoRomPath, GetConfigState()->Model.CoCoRomPath);
+    strcat(CoCoRomPath, "\\coco3.rom");
 
-    strcat(COCO3ROMPath, "\\coco3.rom");
-
-    if (COCO3ROMPath != "") {
-      temp = LoadInternalRom(COCO3ROMPath);  //Try loading from the user defined path first.
+    if (CoCoRomPath != "") {
+      temp = LoadInternalRom(CoCoRomPath);  //Try loading from the user defined path first.
     }
 
     if (temp) {
-      OutputDebugString(" Found coco3.rom in COCO3ROMPath\n");
+      OutputDebugString(" Found coco3.rom in CoCoRomPath\n");
     }
 
+    //--Next, try to see if rom exists at: Memory ==> ExternalBasicImage
     if (temp == 0) {
-      temp = LoadInternalRom(BasicRomName());  //Try to load the image
+      temp = LoadInternalRom(ExternalBasicImage());  //Try to load the image
     }
 
+    //--Last, try to see if rom exists in same folder as executable
     if (temp == 0) {
       // If we can't find it use default copy
       GetModuleFileName(NULL, ExecPath, MAX_PATH);

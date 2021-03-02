@@ -89,7 +89,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) char* __cdecl BasicRomName(void)
+  __declspec(dllexport) char* __cdecl ExternalBasicImage(void)
   {
     return(instance->Model.ExternalBasicImage);
   }
@@ -292,7 +292,6 @@ extern "C" {
 
     GetCurrentModule(instance->Model.ModulePath);
     FileValidatePath(instance->Model.ModulePath);
-    FileValidatePath(instance->Model.ExternalBasicImage);
 
     JoystickState* joystickState = GetJoystickState();
 
@@ -561,7 +560,7 @@ void SaveConfiguration(ConfigModel model, char* iniFilePath) {
 
   //[Memory]
   FileWritePrivateProfileInt("Memory", "RamSize", model.RamSize, iniFilePath);
-  WritePrivateProfileString("Memory", "ExternalBasicImage", model.ExternalBasicImage, iniFilePath);
+  //WritePrivateProfileString("Memory", "ExternalBasicImage", model.ExternalBasicImage, iniFilePath); //## READ-ONLY ##//
 
   //[Misc]
   FileWritePrivateProfileInt("Misc", "AutoStart", model.AutoStart, iniFilePath);
@@ -597,7 +596,7 @@ void SaveConfiguration(ConfigModel model, char* iniFilePath) {
   WritePrivateProfileString("DefaultPaths", "CassPath", model.CassPath, iniFilePath);
   WritePrivateProfileString("DefaultPaths", "PakPath", model.PakPath, iniFilePath);
   WritePrivateProfileString("DefaultPaths", "FloppyPath", model.FloppyPath, iniFilePath);
-  WritePrivateProfileString("DefaultPaths", "CoCoRomPath", model.CoCoRomPath, iniFilePath);
+  //WritePrivateProfileString("DefaultPaths", "CoCoRomPath", model.CoCoRomPath, iniFilePath); //## READ-ONLY ##//
   WritePrivateProfileString("DefaultPaths", "SerialCaptureFilePath", model.SerialCaptureFilePath, iniFilePath);
 
   //--Flush .ini file
@@ -608,6 +607,7 @@ ConfigModel LoadConfiguration(char* iniFilePath) {
   ConfigModel model = ConfigModel();
 
   //[Version]
+  //GetPrivateProfileString("Version", "Release", "", model.Release, MAX_LOADSTRING, iniFilePath);  //## Write-only ##//
 
   //[CPU]
   model.CPUMultiplier = GetPrivateProfileInt("CPU", "CPUMultiplier", 2, iniFilePath);
@@ -618,7 +618,7 @@ ConfigModel LoadConfiguration(char* iniFilePath) {
 
   //[Audio]
   model.AudioRate = GetPrivateProfileInt("Audio", "AudioRate", 3, iniFilePath);
-  GetPrivateProfileString("Audio", "SoundCardName", "", model.SoundCardName, 63, iniFilePath);
+  GetPrivateProfileString("Audio", "SoundCardName", "", model.SoundCardName, MAX_LOADSTRING, iniFilePath);
 
   //[Video]
   model.MonitorType = GetPrivateProfileInt("Video", "MonitorType", 1, iniFilePath);

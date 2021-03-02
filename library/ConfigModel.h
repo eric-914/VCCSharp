@@ -33,7 +33,7 @@ typedef struct {
 
   //[Memory]
   unsigned char	RamSize;
-  char ExternalBasicImage[MAX_PATH];
+  char ExternalBasicImage[MAX_PATH]; //## READ-ONLY ##//
 
   //[Misc]
   unsigned char	AutoStart;
@@ -53,7 +53,7 @@ typedef struct {
   char CassPath[MAX_PATH];
   char PakPath[MAX_PATH];
   char FloppyPath[MAX_PATH];
-  char CoCoRomPath[MAX_PATH];
+  char CoCoRomPath[MAX_PATH]; //## READ-ONLY ##//
   char SerialCaptureFilePath[MAX_PATH];
  
   //[FD-502]  //### MODULE SPECIFIC ###//
