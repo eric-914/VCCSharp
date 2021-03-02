@@ -88,7 +88,7 @@ extern "C" {
         strcat(newini, ".ini");  //Add extension if none
       }
 
-      WriteIniFile(); // Flush current config
+      WriteIniFile(instance->SystemState); // Flush current config
 
       if (_stricmp(curini, newini) != 0) {
         if (!CopyFile(curini, newini, false)) { // Copy it to new file
@@ -292,9 +292,9 @@ extern "C" {
     ofn.Flags = OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
 
     if (GetOpenFileName(&ofn)) {
-      WriteIniFile();               // Flush current profile
-      SetIniFilePath(szFileName);   // Set new ini file path
-      ReadIniFile(&(instance->SystemState));                // Load it
+      WriteIniFile(instance->SystemState);    // Flush current profile
+      SetIniFilePath(szFileName);             // Set new ini file path
+      ReadIniFile(&(instance->SystemState));  // Load it
       UpdateConfig(&(instance->SystemState));
 
       instance->SystemState.ResetPending = 2;
@@ -662,7 +662,7 @@ extern "C" {
     CloseHandle(instance->hEmuThread);
     UnloadDll(&(instance->SystemState));
     SoundDeInit();
-    WriteIniFile(); //Save Any changes to ini File
+    WriteIniFile(instance->SystemState); //Save Any changes to ini File
 
     return (INT)(instance->msg.wParam);
   }

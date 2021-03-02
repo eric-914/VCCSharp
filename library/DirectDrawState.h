@@ -21,7 +21,6 @@ typedef struct {
   RECT WindowDefaultSize;
   HINSTANCE hInstance;
   WNDCLASSEX Wcex;
-  POINT RememberWinSize;
 
   unsigned int StatusBarHeight;
   unsigned char InfoBand;

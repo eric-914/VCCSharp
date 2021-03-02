@@ -260,11 +260,11 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl WriteIniFile(void)
+  __declspec(dllexport) void __cdecl WriteIniFile(SystemState systemState)
   {
-    POINT tp = GetCurrentWindowSize();
-
     instance->Model.AllowResize = 1;
+    instance->Model.WindowSizeX = systemState.WindowSizeX;
+    instance->Model.WindowSizeY = systemState.WindowSizeY;
 
     GetCurrentModule(instance->Model.ModulePath);
     FileValidatePath(instance->Model.ModulePath);
@@ -501,15 +501,13 @@ extern "C" {
       CloseHandle(hr);
 
       if (lasterror != ERROR_ALREADY_EXISTS) {
-        WriteIniFile();
+        WriteIniFile(*systemState);
       }
     }
   }
 }
 
 void SaveConfiguration(ConfigModel model, char* iniFilePath) {
-  POINT tp = GetCurrentWindowSize();
-
   //[Version]
   WritePrivateProfileString("Version", "Release", model.Release, iniFilePath); //## Write-only ##//
 
@@ -531,8 +529,8 @@ void SaveConfiguration(ConfigModel model, char* iniFilePath) {
   FileWritePrivateProfileInt("Video", "AllowResize", model.AllowResize, iniFilePath);
   FileWritePrivateProfileInt("Video", "ForceAspect", model.ForceAspect, iniFilePath);
   FileWritePrivateProfileInt("Video", "RememberSize", model.RememberSize, iniFilePath);
-  FileWritePrivateProfileInt("Video", "WindowSizeX", tp.x, iniFilePath);
-  FileWritePrivateProfileInt("Video", "WindowSizeY", tp.y, iniFilePath);
+  FileWritePrivateProfileInt("Video", "WindowSizeX", model.WindowSizeX, iniFilePath);
+  FileWritePrivateProfileInt("Video", "WindowSizeY", model.WindowSizeY, iniFilePath);
 
   //[Memory]
   FileWritePrivateProfileInt("Memory", "RamSize", model.RamSize, iniFilePath);

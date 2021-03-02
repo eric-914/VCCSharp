@@ -26,6 +26,8 @@ typedef struct
   unsigned char	EmulationRunning;
   unsigned char	ResetPending;
   POINT			WindowSize;
+  unsigned short WindowSizeX; //--For saving in config
+  unsigned short WindowSizeY;
   unsigned char	FullScreen;
   char			StatusLine[256];
 } SystemState;

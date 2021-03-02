@@ -44,12 +44,6 @@ DirectDrawState* InitializeInstance(DirectDrawState* p) {
   return p;
 }
 
-extern "C" {
-  __declspec(dllexport) POINT __cdecl GetCurrentWindowSize() {
-    return (instance->RememberWinSize);
-  }
-}
-
 // Checks if the memory associated with surfaces is lost and restores if necessary.
 extern "C" {
   __declspec(dllexport) void __cdecl CheckSurfaces()
@@ -290,15 +284,13 @@ extern "C" {
       hr = instance->DDSurface->Blt(&rcDest, instance->DDBackSurface, &rcSrc, DDBLT_WAIT, NULL); // DDBLT_WAIT
     }
 
-    static RECT CurScreen;
+    //--Store the updated WindowSizeX/Y for configuration, later.
+    static RECT windowSize;
 
-    GetClientRect(systemState->WindowHandle, &CurScreen);
+    GetClientRect(systemState->WindowHandle, &windowSize);
 
-    int clientWidth = (int)CurScreen.right;
-    int clientHeight = (int)CurScreen.bottom;
-
-    instance->RememberWinSize.x = clientWidth; // Used for saving new window size to the ini file.
-    instance->RememberWinSize.y = clientHeight - instance->StatusBarHeight;
+    systemState->WindowSizeX = (int)windowSize.right;
+    systemState->WindowSizeY = (int)windowSize.bottom - instance->StatusBarHeight;
   }
 }
 
