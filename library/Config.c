@@ -298,7 +298,7 @@ extern "C" {
 
     instance->Model.Left = joystickState->Left;
     instance->Model.Right = joystickState->Right;
-    
+
     instance->Model.Release = instance->AppName; //--Set "version" I guess
 
     SaveConfiguration(instance->Model, instance->IniFilePath);
@@ -359,9 +359,7 @@ extern "C" {
     OPENFILENAME ofn;
     char dummy[MAX_PATH] = "";
     char tempFileName[MAX_PATH] = "";
-    char captureFilePath[MAX_PATH];
-
-    GetProfileText("DefaultPaths", "SerialCaptureFilePath", "", captureFilePath);
+    char* serialCaptureFilePath = instance->Model.SerialCaptureFilePath;
 
     memset(&ofn, 0, sizeof(ofn));
     ofn.lStructSize = sizeof(OPENFILENAME);
@@ -375,7 +373,7 @@ extern "C" {
     ofn.nMaxFile = MAX_PATH;			      // sizeof lpstrFile
     ofn.lpstrFileTitle = NULL;				  // filename and extension only
     ofn.nMaxFileTitle = MAX_PATH;			  // sizeof lpstrFileTitle
-    ofn.lpstrInitialDir = captureFilePath;  // initial directory
+    ofn.lpstrInitialDir = serialCaptureFilePath;  // initial directory
     ofn.lpstrTitle = "Open print capture file";		// title bar string
 
     if (GetOpenFileName(&ofn)) {
@@ -383,15 +381,12 @@ extern "C" {
         MessageBox(0, "Can't Open File", "Can't open the file specified.", 0);
       }
 
-      string tmp = ofn.lpstrFile;
-      size_t idx = tmp.find_last_of("\\");
+      if (serialCaptureFilePath != "") {
+        string tmp = ofn.lpstrFile;
+        size_t idx = tmp.find_last_of("\\");
+        tmp = tmp.substr(0, idx);
 
-      tmp = tmp.substr(0, idx);
-
-      strcpy(captureFilePath, tmp.c_str());
-
-      if (captureFilePath != "") {
-        WritePrivateProfileString("DefaultPaths", "SerialCaptureFilePath", captureFilePath, instance->IniFilePath);
+        strcpy(instance->Model.SerialCaptureFilePath, tmp.c_str());
       }
     }
 
@@ -598,6 +593,7 @@ void SaveConfiguration(ConfigModel model, char* iniFilePath) {
   FileWritePrivateProfileInt("RightJoyStick", "HiResDevice", model.Right.HiRes, instance->IniFilePath);
 
   //[DefaultPaths]
+  WritePrivateProfileString("DefaultPaths", "SerialCaptureFilePath", instance->Model.SerialCaptureFilePath, instance->IniFilePath);
 
   //--Flush .ini file
   WritePrivateProfileString(NULL, NULL, NULL, iniFilePath);
@@ -667,6 +663,7 @@ ConfigModel LoadConfiguration(char* iniFilePath) {
   GetPrivateProfileString("DefaultPaths", "CassPath", "", model.CassPath, MAX_PATH, iniFilePath);
   GetPrivateProfileString("DefaultPaths", "FloppyPath", "", model.FloppyPath, MAX_PATH, iniFilePath);
   GetPrivateProfileString("DefaultPaths", "CoCoRomPath", "", model.CoCoRomPath, MAX_PATH, iniFilePath);
+  GetPrivateProfileString("DefaultPaths", "SerialCaptureFilePath", "", model.SerialCaptureFilePath, MAX_PATH, iniFilePath);
 
   return model;
 }

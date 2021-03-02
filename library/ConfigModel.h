@@ -52,7 +52,7 @@ typedef struct {
   //"PakPath" //PakInterfaceState ==> char PakPath[MAX_PATH]  
   char FloppyPath[MAX_PATH];
   char CoCoRomPath[MAX_PATH];
-  //"SerialCaptureFilePath" //SelectSerialCaptureFile(...) ==> char captureFilePath[MAX_PATH];
+  char SerialCaptureFilePath[MAX_PATH];
  
   //[FD-502]  //### MODULE SPECIFIC ###//
   //DiskRom=1
