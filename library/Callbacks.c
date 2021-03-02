@@ -155,7 +155,7 @@ extern "C" {
     switch (message)
     {
     case WM_INITDIALOG:
-      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETRANGE, TRUE, MAKELONG(2, configState->CurrentConfig.MaxOverclock));	//Maximum overclock
+      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETRANGE, TRUE, MAKELONG(2, configState->Model.MaxOverclock));	//Maximum overclock
 
       sprintf(configState->OutBuffer, "%2.3f Mhz", (float)(configModel.CPUMultiplier) * .894);
 
@@ -391,7 +391,7 @@ extern "C" {
       }
 
       // select the current layout
-      SendDlgItemMessage(hDlg, IDC_KBCONFIG, CB_SETCURSEL, (WPARAM)(configState->CurrentConfig.KeyMapIndex), (LPARAM)0);
+      SendDlgItemMessage(hDlg, IDC_KBCONFIG, CB_SETCURSEL, (WPARAM)(configState->Model.KeyMapIndex), (LPARAM)0);
       break;
 
     case WM_COMMAND:
@@ -453,11 +453,11 @@ extern "C" {
       EnableWindow(GetDlgItem(hDlg, IDC_LEFTJOYSTICKDEVICE), (joystickState->Left.UseMouse == 3));
       EnableWindow(GetDlgItem(hDlg, IDC_RIGHTJOYSTICKDEVICE), (joystickState->Right.UseMouse == 3));
 
-      EnableWindow(GetDlgItem(hDlg, IDC_LEFTJOYSTICK), (configState->NumberofJoysticks > 0));		//Grey the Joystick Radios if
-      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTJOYSTICK), (configState->NumberofJoysticks > 0));	  //No Joysticks are present
+      EnableWindow(GetDlgItem(hDlg, IDC_LEFTJOYSTICK), (configState->NumberOfJoysticks > 0));		//Grey the Joystick Radios if
+      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTJOYSTICK), (configState->NumberOfJoysticks > 0));	  //No Joysticks are present
 
       //populate joystick combo boxs
-      for (unsigned char index = 0; index < configState->NumberofJoysticks; index++)
+      for (unsigned char index = 0; index < configState->NumberOfJoysticks; index++)
       {
         SendDlgItemMessage(hDlg, IDC_RIGHTJOYSTICKDEVICE, CB_ADDSTRING, (WPARAM)0, (LPARAM)GetStickName(index));
         SendDlgItemMessage(hDlg, IDC_LEFTJOYSTICKDEVICE, CB_ADDSTRING, (WPARAM)0, (LPARAM)GetStickName(index));
@@ -766,7 +766,7 @@ extern "C" {
     case WM_INITDIALOG:
       InitCommonControls();
 
-      configModel = configState->CurrentConfig;
+      configModel = configState->Model;
       configState->CpuIcons[0] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_MOTO);
       configState->CpuIcons[1] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_HITACHI2);
       configState->MonIcons[0] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_COMPOSITE);
@@ -826,15 +826,15 @@ extern "C" {
         configState->hDlgTape = NULL;
         vccState->SystemState.ResetPending = 4;
 
-        if ((configState->CurrentConfig.RamSize != configModel.RamSize) || (configState->CurrentConfig.CpuType != configModel.CpuType)) {
+        if ((configState->Model.RamSize != configModel.RamSize) || (configState->Model.CpuType != configModel.CpuType)) {
           vccState->SystemState.ResetPending = 2;
         }
 
-        CheckAudioChange(vccState->SystemState, configState->CurrentConfig, configModel, configState->SoundCards);
+        CheckAudioChange(vccState->SystemState, configState->Model, configModel, configState->SoundCards);
 
-        configState->CurrentConfig = configModel;
+        configState->Model = configModel;
 
-        vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->CurrentConfig.KeyMapIndex));
+        vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->Model.KeyMapIndex));
 
         joystickState->Right = configState->Right;
         joystickState->Left = configState->Left;
@@ -857,15 +857,15 @@ extern "C" {
       case IDAPPLY:
         vccState->SystemState.ResetPending = 4;
 
-        if ((configState->CurrentConfig.RamSize != configModel.RamSize) || (configState->CurrentConfig.CpuType != configModel.CpuType)) {
+        if ((configState->Model.RamSize != configModel.RamSize) || (configState->Model.CpuType != configModel.CpuType)) {
           vccState->SystemState.ResetPending = 2;
         }
 
-        CheckAudioChange(vccState->SystemState, configState->CurrentConfig, configModel, configState->SoundCards);
+        CheckAudioChange(vccState->SystemState, configState->Model, configModel, configState->SoundCards);
 
-        configState->CurrentConfig = configModel;
+        configState->Model = configModel;
 
-        vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->CurrentConfig.KeyMapIndex));
+        vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->Model.KeyMapIndex));
 
         joystickState->Right = configState->Right;
         joystickState->Left = configState->Left;

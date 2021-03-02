@@ -47,7 +47,7 @@ extern "C" {
 
 ConfigState* InitializeInstance(ConfigState* p) {
   p->NumberOfSoundCards = 0;
-  p->NumberofJoysticks = 0;
+  p->NumberOfJoysticks = 0;
   p->PrtMon = 0;
   p->TapeCounter = 0;
   p->TextMode = 1;
@@ -91,7 +91,7 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) char* __cdecl BasicRomName(void)
   {
-    return(instance->CurrentConfig.ExternalBasicImage);
+    return(instance->Model.ExternalBasicImage);
   }
 }
 
@@ -120,19 +120,19 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) int __cdecl GetCurrentKeyboardLayout() {
-    return(instance->CurrentConfig.KeyMapIndex);
+    return(instance->Model.KeyMapIndex);
   }
 }
 
 extern "C" {
   __declspec(dllexport) int __cdecl GetPaletteType() {
-    return(instance->CurrentConfig.PaletteType);
+    return(instance->Model.PaletteType);
   }
 }
 
 extern "C" {
   __declspec(dllexport) int __cdecl GetRememberSize() {
-    return((int)(instance->CurrentConfig.RememberSize));
+    return((int)(instance->Model.RememberSize));
   }
 }
 
@@ -140,8 +140,8 @@ extern "C" {
   __declspec(dllexport) POINT __cdecl GetIniWindowSize() {
     POINT out = POINT();
 
-    out.x = instance->CurrentConfig.WindowSizeX;
-    out.y = instance->CurrentConfig.WindowSizeY;
+    out.x = instance->Model.WindowSizeX;
+    out.y = instance->Model.WindowSizeY;
 
     return(out);
   }
@@ -199,9 +199,9 @@ extern "C" {
 }
 
 void AdjustOverclockSpeed(SystemState* systemState, unsigned char change) {
-  unsigned char cpuMultiplier = instance->CurrentConfig.CPUMultiplier + change;
+  unsigned char cpuMultiplier = instance->Model.CPUMultiplier + change;
 
-  if (cpuMultiplier < 2 || cpuMultiplier > instance->CurrentConfig.MaxOverclock)
+  if (cpuMultiplier < 2 || cpuMultiplier > instance->Model.MaxOverclock)
   {
     return;
   }
@@ -218,7 +218,7 @@ void AdjustOverclockSpeed(SystemState* systemState, unsigned char change) {
     SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(instance->OutBuffer), (LPARAM)(LPCSTR)(instance->OutBuffer));
   }
 
-  instance->CurrentConfig.CPUMultiplier = cpuMultiplier;
+  instance->Model.CPUMultiplier = cpuMultiplier;
 
   systemState->ResetPending = 4; // Without this, changing the config does nothing.
 }
@@ -288,16 +288,16 @@ extern "C" {
   {
     POINT tp = GetCurrentWindowSize();
 
-    instance->CurrentConfig.AllowResize = 1;
+    instance->Model.AllowResize = 1;
 
-    GetCurrentModule(instance->CurrentConfig.ModulePath);
-    FileValidatePath(instance->CurrentConfig.ModulePath);
-    FileValidatePath(instance->CurrentConfig.ExternalBasicImage);
+    GetCurrentModule(instance->Model.ModulePath);
+    FileValidatePath(instance->Model.ModulePath);
+    FileValidatePath(instance->Model.ExternalBasicImage);
 
     //--A way of "versioning" the .ini file, I guess
     WritePrivateProfileString("Version", "Release", instance->AppName, instance->IniFilePath);
 
-    SaveConfiguration(instance->CurrentConfig, instance->IniFilePath);
+    SaveConfiguration(instance->Model, instance->IniFilePath);
 
     JoystickState* joystickState = GetJoystickState();
 
@@ -342,23 +342,23 @@ extern "C" {
 
     JoystickState* joystickState = GetJoystickState();
 
-    instance->NumberofJoysticks = EnumerateJoysticks();
+    instance->NumberOfJoysticks = EnumerateJoysticks();
 
-    for (unsigned char index = 0; index < instance->NumberofJoysticks; index++) {
+    for (unsigned char index = 0; index < instance->NumberOfJoysticks; index++) {
       temp = InitJoyStick(index);
     }
 
-    if (joystickState->Right.DiDevice > (instance->NumberofJoysticks - 1)) {
+    if (joystickState->Right.DiDevice > (instance->NumberOfJoysticks - 1)) {
       joystickState->Right.DiDevice = 0;
     }
 
-    if (joystickState->Left.DiDevice > (instance->NumberofJoysticks - 1)) {
+    if (joystickState->Left.DiDevice > (instance->NumberOfJoysticks - 1)) {
       joystickState->Left.DiDevice = 0;
     }
 
     SetStickNumbers(joystickState->Left.DiDevice, joystickState->Right.DiDevice);
 
-    if (instance->NumberofJoysticks == 0)	//Use Mouse input if no Joysticks present
+    if (instance->NumberOfJoysticks == 0)	//Use Mouse input if no Joysticks present
     {
       if (joystickState->Left.UseMouse == 3) {
         joystickState->Left.UseMouse = 1;
@@ -438,16 +438,16 @@ unsigned char GetSoundCardIndex(char* soundCardName) {
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl ReadIniFile(SystemState* systemState)
   {
-    instance->CurrentConfig = LoadConfiguration(instance->IniFilePath);
+    instance->Model = LoadConfiguration(instance->IniFilePath);
 
-    if (instance->CurrentConfig.KeyMapIndex > 3) {
-      instance->CurrentConfig.KeyMapIndex = 0;	//Default to DECB Mapping
+    if (instance->Model.KeyMapIndex > 3) {
+      instance->Model.KeyMapIndex = 0;	//Default to DECB Mapping
     }
 
-    vccKeyboardBuildRuntimeTable((keyboardlayout_e)(instance->CurrentConfig.KeyMapIndex));
+    vccKeyboardBuildRuntimeTable((keyboardlayout_e)(instance->Model.KeyMapIndex));
 
-    FileCheckPath(instance->CurrentConfig.ModulePath);
-    FileCheckPath(instance->CurrentConfig.ExternalBasicImage);
+    FileCheckPath(instance->Model.ModulePath);
+    FileCheckPath(instance->Model.ExternalBasicImage);
 
     JoystickState* joystickState = GetJoystickState();
 
@@ -471,14 +471,12 @@ extern "C" {
     joystickState->Right.DiDevice = GetProfileByte("RightJoyStick", "DiDevice", 0);
     joystickState->Right.HiRes = GetProfileByte("RightJoyStick", "HiResDevice", 0);
 
-    instance->TempConfig = instance->CurrentConfig;
+    InsertModule(systemState, instance->Model.ModulePath);	// Should this be here?
 
-    InsertModule(systemState, instance->CurrentConfig.ModulePath);	// Should this be here?
+    instance->Model.AllowResize = 1; //Checkbox removed. Remove this from the ini? 
 
-    instance->CurrentConfig.AllowResize = 1; //Checkbox removed. Remove this from the ini? 
-
-    if (instance->CurrentConfig.RememberSize) {
-      SetWindowSize(instance->CurrentConfig.WindowSizeX, instance->CurrentConfig.WindowSizeY);
+    if (instance->Model.RememberSize) {
+      SetWindowSize(instance->Model.WindowSizeX, instance->Model.WindowSizeY);
     }
     else {
       SetWindowSize(640, 480);
@@ -492,17 +490,17 @@ extern "C" {
   __declspec(dllexport) void __cdecl UpdateConfig(SystemState* systemState)
   {
     SetPaletteType();
-    SetResize(instance->CurrentConfig.AllowResize);
-    SetAspect(instance->CurrentConfig.ForceAspect);
-    SetScanLines(systemState, instance->CurrentConfig.ScanLines);
-    SetFrameSkip(instance->CurrentConfig.FrameSkip);
-    SetAutoStart(instance->CurrentConfig.AutoStart);
-    SetSpeedThrottle(instance->CurrentConfig.SpeedThrottle);
-    SetCPUMultiplayer(instance->CurrentConfig.CPUMultiplier);
-    SetRamSize(instance->CurrentConfig.RamSize);
-    SetCpuType(instance->CurrentConfig.CpuType);
-    SetMonitorType(instance->CurrentConfig.MonitorType);
-    MC6821_SetCartAutoStart(instance->CurrentConfig.CartAutoStart);
+    SetResize(instance->Model.AllowResize);
+    SetAspect(instance->Model.ForceAspect);
+    SetScanLines(systemState, instance->Model.ScanLines);
+    SetFrameSkip(instance->Model.FrameSkip);
+    SetAutoStart(instance->Model.AutoStart);
+    SetSpeedThrottle(instance->Model.SpeedThrottle);
+    SetCPUMultiplayer(instance->Model.CPUMultiplier);
+    SetRamSize(instance->Model.RamSize);
+    SetCpuType(instance->Model.CpuType);
+    SetMonitorType(instance->Model.MonitorType);
+    MC6821_SetCartAutoStart(instance->Model.CartAutoStart);
   }
 }
 
@@ -548,8 +546,8 @@ extern "C" {
     UpdateConfig(systemState);
     RefreshJoystickStatus();
 
-    unsigned char soundCardIndex = GetSoundCardIndex(instance->CurrentConfig.SoundCardName);
-    SoundInit(systemState->WindowHandle, instance->SoundCards[soundCardIndex].Guid, instance->CurrentConfig.AudioRate);
+    unsigned char soundCardIndex = GetSoundCardIndex(instance->Model.SoundCardName);
+    SoundInit(systemState->WindowHandle, instance->SoundCards[soundCardIndex].Guid, instance->Model.AudioRate);
 
     //  Try to open the config file.  Create it if necessary.  Abort if failure.
     hr = CreateFile(instance->IniFilePath,

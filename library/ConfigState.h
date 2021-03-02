@@ -36,14 +36,13 @@ typedef struct
   unsigned int LeftJoystickEmulation[3];
   unsigned int RightJoystickEmulation[3];
 
-  ConfigModel CurrentConfig;
-  ConfigModel TempConfig;
+  ConfigModel Model;
 
   TCHAR AppDataPath[MAX_PATH];
 
   char TextMode;
   char PrtMon;
-  unsigned char NumberofJoysticks;
+  unsigned char NumberOfJoysticks;
 
   char IniFilePath[MAX_PATH];
   char TapeFileName[MAX_PATH];
