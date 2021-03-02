@@ -12,3 +12,5 @@ extern "C" __declspec(dllexport) LRESULT CALLBACK CreateMiscConfigDialogCallback
 extern "C" __declspec(dllexport) LRESULT CALLBACK CreateTapeConfigDialogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 extern "C" __declspec(dllexport) LRESULT CALLBACK CreateMainConfigDialogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+
+extern "C" __declspec(dllexport) void SetDialogTapeCount(HWND hDlg, unsigned char tapeMode);

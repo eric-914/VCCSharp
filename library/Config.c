@@ -21,12 +21,12 @@
 #include "systemstate.h"
 #include "fileoperations.h"
 #include "CmdLineArguments.h"
+#include "ConfigDialogCallbacks.h"
 
 #include "macros.h"
 
 using namespace std;
 
-const char TapeModes[4][10] = { "STOP", "PLAY", "REC", "STOP" };
 const unsigned char TranslateScan2Disp[SCAN_TRANS_COUNT] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,32,38,20,33,35,40,36,24,30,31,42,43,55,52,16,34,19,21,22,23,25,26,27,45,46,0,51,44,41,39,18,37,17,29,28,47,48,49,51,0,53,54,50,66,67,0,0,0,0,0,0,0,0,0,0,58,64,60,0,62,0,63,0,59,65,61,56,57 };
 
 ConfigState* InitializeInstance(ConfigState*);
@@ -58,8 +58,6 @@ ConfigState* InitializeInstance(ConfigState* p) {
   strcpy(p->TapeFileName, "");
 
   ARRAYCOPY(TranslateScan2Disp);
-
-  STRARRAYCOPY(TapeModes);
 
   return p;
 }
@@ -223,7 +221,7 @@ extern "C" {
     sprintf(instance->OutBuffer, "%i", instance->TapeCounter);
 
     SendDlgItemMessage(instance->hDlgTape, IDC_TCOUNT, WM_SETTEXT, strlen(instance->OutBuffer), (LPARAM)(LPCSTR)(instance->OutBuffer));
-    SendDlgItemMessage(instance->hDlgTape, IDC_MODE, WM_SETTEXT, strlen(instance->TapeModes[instance->TapeMode]), (LPARAM)(LPCSTR)(instance->TapeModes[instance->TapeMode]));
+    SetDialogTapeCount(instance->hDlgTape, instance->TapeMode);
 
     GetTapeName(instance->TapeFileName);
     FilePathStripPath(instance->TapeFileName);

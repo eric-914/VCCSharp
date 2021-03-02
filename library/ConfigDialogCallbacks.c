@@ -19,6 +19,8 @@ const unsigned short int Ramchoice[4] = { IDC_128K, IDC_512K, IDC_2M, IDC_8M };
 const unsigned int LeftJoystickEmulation[3] = { IDC_LEFTSTANDARD, IDC_LEFTTHIRES, IDC_LEFTCCMAX };
 const unsigned int RightJoystickEmulation[3] = { IDC_RIGHTSTANDARD, IDC_RIGHTTHRES, IDC_RIGHTCCMAX };
 
+const char TapeModes[4][10] = { "STOP", "PLAY", "REC", "STOP" };
+
 static HICON CpuIcons[2];
 static HICON MonIcons[2];
 static HICON JoystickIcons[4];
@@ -41,6 +43,12 @@ void CheckAudioChange(SystemState systemState, ConfigModel current, ConfigModel 
 
   if ((currentSoundCardIndex != tempSoundCardIndex) || (current.AudioRate != temp.AudioRate)) {
     SoundInit(systemState.WindowHandle, soundCards[tempSoundCardIndex].Guid, temp.AudioRate);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void SetDialogTapeCount(HWND hDlg, unsigned char tapeMode) {
+    SendDlgItemMessage(hDlg, IDC_MODE, WM_SETTEXT, strlen(TapeModes[tapeMode]), (LPARAM)(LPCSTR)(TapeModes[tapeMode]));
   }
 }
 
@@ -654,7 +662,7 @@ extern "C" {
       sprintf(configState->OutBuffer, "%i", configState->TapeCounter);
 
       SendDlgItemMessage(hDlg, IDC_TCOUNT, WM_SETTEXT, strlen(configState->OutBuffer), (LPARAM)(LPCSTR)(configState->OutBuffer));
-      SendDlgItemMessage(hDlg, IDC_MODE, WM_SETTEXT, strlen(configState->TapeModes[configState->TapeMode]), (LPARAM)(LPCSTR)(configState->TapeModes[configState->TapeMode]));
+      SetDialogTapeCount(hDlg, configState->TapeMode);
 
       GetTapeName(configState->TapeFileName);
 
@@ -862,11 +870,11 @@ extern "C" {
 
         vccState->SystemState.ConfigDialog = NULL;
         break;
-      }
+        }
 
       break;
-    }
+        }
 
     return FALSE;
-  }
-}
+      }
+    }

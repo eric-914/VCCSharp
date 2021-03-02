@@ -38,7 +38,6 @@ typedef struct
 
   unsigned int TapeCounter;
   unsigned char TapeMode;
-  char TapeModes[4][10];
   int NumberOfSoundCards;
 
   SoundCardList SoundCards[MAXCARDS];
