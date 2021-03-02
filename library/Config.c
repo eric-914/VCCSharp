@@ -63,8 +63,69 @@ ConfigState* InitializeInstance(ConfigState* p) {
   return p;
 }
 
-void SaveConfiguration(ConfigModel model, char* iniFilePath);
-ConfigModel LoadConfiguration(char* iniFilePath);
+void SetWindowSize(int width, int height) {
+  HWND handle = GetActiveWindow();
+
+  SetWindowPos(handle, 0, 0, 0, width + 16, height + 81, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+}
+
+unsigned char GetSoundCardIndex(char* soundCardName) {
+  for (unsigned char index = 0; index < instance->NumberOfSoundCards; index++) {
+    if (!strcmp(instance->SoundCards[index].CardName, soundCardName)) {
+      return index;
+    }
+  }
+
+  return 0;
+}
+
+void AdjustOverclockSpeed(SystemState* systemState, unsigned char change) {
+  unsigned char cpuMultiplier = instance->Model.CPUMultiplier + change;
+
+  if (cpuMultiplier < 2 || cpuMultiplier > instance->Model.MaxOverclock)
+  {
+    return;
+  }
+
+  // Send updates to the dialog if it's open.
+  if (systemState->ConfigDialog != NULL)
+  {
+    HWND hDlg = instance->hWndConfig[1];
+
+    SetDialogCpuMultiplier(hDlg, cpuMultiplier);
+  }
+
+  instance->Model.CPUMultiplier = cpuMultiplier;
+
+  systemState->ResetPending = 4; // Without this, changing the config does nothing.
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl BuildTransDisp2ScanTable()
+  {
+    for (int i = 0; i < SCAN_TRANS_COUNT; i++) {
+      for (int j = SCAN_TRANS_COUNT - 1; j >= 0; j--) {
+        if (j == instance->TranslateScan2Disp[i]) {
+          instance->TranslateDisp2Scan[j] = (unsigned char)i;
+        }
+      }
+    }
+
+    instance->TranslateDisp2Scan[0] = 0;
+
+    // Left and Right Shift
+    instance->TranslateDisp2Scan[51] = DIK_LSHIFT;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) unsigned char __cdecl TranslateDisplay2Scan(LRESULT x)
+  {
+    assert(x >= 0 && x < SCAN_TRANS_COUNT);
+
+    return instance->TranslateDisp2Scan[x];
+  }
+}
 
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl TranslateScan2Display(int x)
@@ -134,54 +195,6 @@ extern "C" {
   }
 }
 
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl TranslateDisplay2Scan(LRESULT x)
-  {
-    assert(x >= 0 && x < SCAN_TRANS_COUNT);
-
-    return instance->TranslateDisp2Scan[x];
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl BuildTransDisp2ScanTable()
-  {
-    for (int i = 0; i < SCAN_TRANS_COUNT; i++) {
-      for (int j = SCAN_TRANS_COUNT - 1; j >= 0; j--) {
-        if (j == instance->TranslateScan2Disp[i]) {
-          instance->TranslateDisp2Scan[j] = (unsigned char)i;
-        }
-      }
-    }
-
-    instance->TranslateDisp2Scan[0] = 0;
-
-    // Left and Right Shift
-    instance->TranslateDisp2Scan[51] = DIK_LSHIFT;
-  }
-}
-
-void AdjustOverclockSpeed(SystemState* systemState, unsigned char change) {
-  unsigned char cpuMultiplier = instance->Model.CPUMultiplier + change;
-
-  if (cpuMultiplier < 2 || cpuMultiplier > instance->Model.MaxOverclock)
-  {
-    return;
-  }
-
-  // Send updates to the dialog if it's open.
-  if (systemState->ConfigDialog != NULL)
-  {
-    HWND hDlg = instance->hWndConfig[1];
-
-    SetDialogCpuMultiplier(hDlg, cpuMultiplier);
-  }
-
-  instance->Model.CPUMultiplier = cpuMultiplier;
-
-  systemState->ResetPending = 4; // Without this, changing the config does nothing.
-}
-
 /**
  * Increase the overclock speed, as seen after a POKE 65497,0.
  * Valid values are [2,100].
@@ -206,7 +219,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl UpdateTapeCounter(unsigned int counter, unsigned char tapeMode)
+  __declspec(dllexport) void __cdecl UpdateTapeDialog(unsigned int counter, unsigned char tapeMode)
   {
     if (instance->hDlgTape == NULL) {
       return;
@@ -221,28 +234,6 @@ extern "C" {
     SetDialogTapeCounter(instance->hDlgTape, instance->TapeCounter);
     SetDialogTapeMode(instance->hDlgTape, instance->TapeMode);
     SetDialogTapeFileName(instance->hDlgTape, instance->TapeFileName);
-
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl WriteIniFile(SystemState systemState)
-  {
-    instance->Model.AllowResize = 1;
-    instance->Model.WindowSizeX = systemState.WindowSizeX;
-    instance->Model.WindowSizeY = systemState.WindowSizeY;
-
-    GetCurrentModule(instance->Model.ModulePath);
-    FileValidatePath(instance->Model.ModulePath);
-
-    JoystickState* joystickState = GetJoystickState();
-
-    instance->Model.Left = joystickState->Left;
-    instance->Model.Right = joystickState->Right;
-
-    strcpy(instance->Model.Release, instance->AppName); //--Set "version" I guess
-
-    SaveConfiguration(instance->Model, instance->IniFilePath);
   }
 }
 
@@ -337,56 +328,6 @@ extern "C" {
   }
 }
 
-void SetWindowSize(int width, int height) {
-  HWND handle = GetActiveWindow();
-
-  SetWindowPos(handle, 0, 0, 0, width + 16, height + 81, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
-}
-
-unsigned char GetSoundCardIndex(char* soundCardName) {
-  for (unsigned char index = 0; index < instance->NumberOfSoundCards; index++) {
-    if (!strcmp(instance->SoundCards[index].CardName, soundCardName)) {
-      return index;
-    }
-  }
-
-  return 0;
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl ReadIniFile(SystemState* systemState)
-  {
-    instance->Model = LoadConfiguration(instance->IniFilePath);
-
-    if (instance->Model.KeyMapIndex > 3) {
-      instance->Model.KeyMapIndex = 0;	//Default to DECB Mapping
-    }
-
-    vccKeyboardBuildRuntimeTable((keyboardlayout_e)(instance->Model.KeyMapIndex));
-
-    FileCheckPath(instance->Model.ModulePath);
-    FileCheckPath(instance->Model.ExternalBasicImage);
-
-    JoystickState* joystickState = GetJoystickState();
-
-    joystickState->Left = instance->Model.Left;
-    joystickState->Right = instance->Model.Right;
-
-    InsertModule(systemState, instance->Model.ModulePath);	// Should this be here?
-
-    instance->Model.AllowResize = 1; //Checkbox removed. Remove this from the ini? 
-
-    if (instance->Model.RememberSize) {
-      SetWindowSize(instance->Model.WindowSizeX, instance->Model.WindowSizeY);
-    }
-    else {
-      SetWindowSize(640, 480);
-    }
-
-    return(0);
-  }
-}
-
 extern "C" {
   __declspec(dllexport) void __cdecl SynchSystemWithConfig(SystemState* systemState)
   {
@@ -472,3 +413,55 @@ extern "C" {
   }
 }
 
+extern "C" {
+  __declspec(dllexport) void __cdecl ReadIniFile(SystemState* systemState)
+  {
+    instance->Model = LoadConfiguration(instance->IniFilePath);
+
+    if (instance->Model.KeyMapIndex > 3) {
+      instance->Model.KeyMapIndex = 0;	//Default to DECB Mapping
+    }
+
+    vccKeyboardBuildRuntimeTable((keyboardlayout_e)(instance->Model.KeyMapIndex));
+
+    FileCheckPath(instance->Model.ModulePath);
+    FileCheckPath(instance->Model.ExternalBasicImage);
+
+    JoystickState* joystickState = GetJoystickState();
+
+    joystickState->Left = instance->Model.Left;
+    joystickState->Right = instance->Model.Right;
+
+    InsertModule(systemState, instance->Model.ModulePath);	// Should this be here?
+
+    instance->Model.AllowResize = 1; //Checkbox removed. Remove this from the ini? 
+
+    if (instance->Model.RememberSize) {
+      SetWindowSize(instance->Model.WindowSizeX, instance->Model.WindowSizeY);
+    }
+    else {
+      SetWindowSize(640, 480);
+    }
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl WriteIniFile(SystemState systemState)
+  {
+    instance->Model.AllowResize = 1;
+    instance->Model.WindowSizeX = systemState.WindowSizeX;
+    instance->Model.WindowSizeY = systemState.WindowSizeY;
+
+    GetCurrentModule(instance->Model.ModulePath);
+    FileValidatePath(instance->Model.ModulePath);
+
+    JoystickState* joystickState = GetJoystickState();
+
+    instance->Model.Left = joystickState->Left;
+    instance->Model.Right = joystickState->Right;
+
+    strcpy(instance->Model.Release, instance->AppName); //--Set "version" I guess
+
+    SaveConfiguration(instance->Model, instance->IniFilePath);
+  }
+}

@@ -20,9 +20,9 @@ extern "C" __declspec(dllexport) int __cdecl GetPaletteType();
 extern "C" __declspec(dllexport) int __cdecl GetRememberSize();
 extern "C" __declspec(dllexport) int __cdecl SelectSerialCaptureFile(SystemState*, char*);
 
-extern "C" __declspec(dllexport) unsigned char __cdecl ReadIniFile(SystemState*);
 extern "C" __declspec(dllexport) unsigned char __cdecl TranslateDisplay2Scan(LRESULT);
 extern "C" __declspec(dllexport) unsigned char __cdecl TranslateScan2Display(int);
+extern "C" __declspec(dllexport) void __cdecl ReadIniFile(SystemState*);
 extern "C" __declspec(dllexport) void __cdecl WriteIniFile(SystemState systemState);
 
 extern "C" __declspec(dllexport) void __cdecl BuildTransDisp2ScanTable();
@@ -34,6 +34,6 @@ extern "C" __declspec(dllexport) void __cdecl RefreshJoystickStatus();
 extern "C" __declspec(dllexport) void __cdecl SetIniFilePath(char*);
 extern "C" __declspec(dllexport) void __cdecl SynchSystemWithConfig(SystemState*);
 extern "C" __declspec(dllexport) void __cdecl UpdateSoundBar(unsigned short, unsigned short);
-extern "C" __declspec(dllexport) void __cdecl UpdateTapeCounter(unsigned int, unsigned char);
+extern "C" __declspec(dllexport) void __cdecl UpdateTapeDialog(unsigned int, unsigned char);
 
 unsigned char GetSoundCardIndex(char* soundCardName);

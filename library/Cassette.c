@@ -417,7 +417,7 @@ extern "C" {
       break;
     }
 
-    UpdateTapeCounter(instance->TapeOffset, instance->TapeMode);
+    UpdateTapeDialog(instance->TapeOffset, instance->TapeMode);
   }
 }
 
@@ -450,7 +450,7 @@ extern "C" {
       break;
     }
 
-    UpdateTapeCounter(instance->TapeOffset, instance->TapeMode);
+    UpdateTapeDialog(instance->TapeOffset, instance->TapeMode);
   }
 }
 
@@ -463,7 +463,7 @@ extern "C" {
       instance->TotalSize = instance->TapeOffset;
     }
 
-    UpdateTapeCounter(instance->TapeOffset, instance->TapeMode);
+    UpdateTapeDialog(instance->TapeOffset, instance->TapeMode);
   }
 }
 
@@ -564,6 +564,6 @@ extern "C" {
       break;
     }
 
-    UpdateTapeCounter(instance->TapeOffset, instance->TapeMode);
+    UpdateTapeDialog(instance->TapeOffset, instance->TapeMode);
   }
 }
