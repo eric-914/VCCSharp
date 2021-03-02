@@ -25,7 +25,6 @@ typedef struct {
   unsigned char	MonitorType;
   unsigned char PaletteType;
   unsigned char	ScanLines;
-  unsigned char	AllowResize;
   unsigned char	ForceAspect;
   unsigned short RememberSize;
   unsigned short WindowSizeX;

@@ -53,18 +53,16 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl FileValidatePath(char* path) {
-    char FullExePath[MAX_PATH] = "";
-    char TempPath[MAX_PATH] = "";
+    char exePath[MAX_PATH] = "";
+    char tempPath[MAX_PATH] = "";
 
-    GetModuleFileName(NULL, FullExePath, MAX_PATH);
+    strcpy(tempPath, path);
+    GetModuleFileName(NULL, exePath, MAX_PATH);
 
-    FilePathRemoveFileSpec(FullExePath);	  //Get path to executable
+    FilePathRemoveFileSpec(exePath);	  //Get path to executable
+    FilePathRemoveFileSpec(tempPath);		//Get path to Incoming file
 
-    strcpy(TempPath, path);
-
-    FilePathRemoveFileSpec(TempPath);		    //Get path to Incomming file
-
-    if (!strcmp(TempPath, FullExePath)) {	// If they match remove the Path
+    if (!strcmp(tempPath, exePath)) {	  // If they match remove the Path
       FilePathStripPath(path);
     }
   }

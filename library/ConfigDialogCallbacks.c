@@ -314,7 +314,6 @@ extern "C" {
       SendDlgItemMessage(hDlg, IDC_SCANLINES, BM_SETCHECK, configModel.ScanLines, 0);
       SendDlgItemMessage(hDlg, IDC_THROTTLE, BM_SETCHECK, configModel.SpeedThrottle, 0);
       SendDlgItemMessage(hDlg, IDC_FRAMESKIP, TBM_SETPOS, TRUE, configModel.FrameSkip);
-      SendDlgItemMessage(hDlg, IDC_RESIZE, BM_SETCHECK, configModel.AllowResize, 0);
       SendDlgItemMessage(hDlg, IDC_ASPECT, BM_SETCHECK, configModel.ForceAspect, 0);
       SendDlgItemMessage(hDlg, IDC_REMEMBER_SIZE, BM_SETCHECK, configModel.RememberSize, 0);
 
@@ -353,7 +352,6 @@ extern "C" {
       break;
 
     case WM_COMMAND:
-      configModel.AllowResize = 1;
       configModel.ForceAspect = (unsigned char)SendDlgItemMessage(hDlg, IDC_ASPECT, BM_GETCHECK, 0, 0);
       configModel.ScanLines = (unsigned char)SendDlgItemMessage(hDlg, IDC_SCANLINES, BM_GETCHECK, 0, 0);
       configModel.SpeedThrottle = (unsigned char)SendDlgItemMessage(hDlg, IDC_THROTTLE, BM_GETCHECK, 0, 0);
@@ -363,8 +361,6 @@ extern "C" {
       switch (LOWORD(wParam))
       {
       case IDC_REMEMBER_SIZE:
-        configModel.AllowResize = 1;
-
         SendDlgItemMessage(hDlg, IDC_RESIZE, BM_GETCHECK, 1, 0);
 
         break;

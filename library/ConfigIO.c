@@ -22,7 +22,6 @@ extern "C" {
     FileWritePrivateProfileInt("Video", "MonitorType", model.MonitorType, iniFilePath);
     FileWritePrivateProfileInt("Video", "PaletteType", model.PaletteType, iniFilePath);
     FileWritePrivateProfileInt("Video", "ScanLines", model.ScanLines, iniFilePath);
-    FileWritePrivateProfileInt("Video", "AllowResize", model.AllowResize, iniFilePath);
     FileWritePrivateProfileInt("Video", "ForceAspect", model.ForceAspect, iniFilePath);
     FileWritePrivateProfileInt("Video", "RememberSize", model.RememberSize, iniFilePath);
     FileWritePrivateProfileInt("Video", "WindowSizeX", model.WindowSizeX, iniFilePath);
@@ -96,7 +95,6 @@ extern "C" {
     model.MonitorType = GetPrivateProfileInt("Video", "MonitorType", 1, iniFilePath);
     model.PaletteType = GetPrivateProfileInt("Video", "PaletteType", 1, iniFilePath);
     model.ScanLines = GetPrivateProfileInt("Video", "ScanLines", 0, iniFilePath);
-    model.AllowResize = GetPrivateProfileInt("Video", "AllowResize", 0, iniFilePath);
     model.ForceAspect = GetPrivateProfileInt("Video", "ForceAspect", 0, iniFilePath);
     model.RememberSize = GetPrivateProfileInt("Video", "RememberSize", 0, iniFilePath);
     model.WindowSizeX = GetPrivateProfileInt("Video", "WindowSizeX", 640, iniFilePath);

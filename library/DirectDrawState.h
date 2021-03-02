@@ -24,7 +24,6 @@ typedef struct {
 
   unsigned int StatusBarHeight;
   unsigned char InfoBand;
-  unsigned char Resizeable;
   unsigned char ForceAspect;
   unsigned int Color;
 

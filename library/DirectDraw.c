@@ -35,7 +35,6 @@ DirectDrawState* InitializeInstance(DirectDrawState* p) {
 
   p->StatusBarHeight = 0;
   p->InfoBand = 1;
-  p->Resizeable = 1;
   p->ForceAspect = 1;
   p->Color = 0;
 
@@ -93,17 +92,6 @@ extern "C" {
     }
 
     return(instance->InfoBand);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl SetResize(unsigned char resizeable)
-  {
-    if (resizeable != QUERY) {
-      instance->Resizeable = resizeable;
-    }
-
-    return(instance->Resizeable);
   }
 }
 
@@ -214,7 +202,8 @@ extern "C" {
       // our destination rectangle is going to be 
       SetRect(&rcSrc, 0, 0, systemState->WindowSize.x, systemState->WindowSize.y);
 
-      if (instance->Resizeable)
+      //if (instance->Resizeable)
+      if (1) //--Currently, this is fixed at always resizable
       {
         rcDest.bottom -= instance->StatusBarHeight;
 

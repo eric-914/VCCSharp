@@ -332,7 +332,6 @@ extern "C" {
   __declspec(dllexport) void __cdecl SynchSystemWithConfig(SystemState* systemState)
   {
     SetPaletteType();
-    SetResize(instance->Model.AllowResize);
     SetAspect(instance->Model.ForceAspect);
     SetScanLines(systemState, instance->Model.ScanLines);
     SetFrameSkip(instance->Model.FrameSkip);
@@ -434,8 +433,6 @@ extern "C" {
 
     InsertModule(systemState, instance->Model.ModulePath);	// Should this be here?
 
-    instance->Model.AllowResize = 1; //Checkbox removed. Remove this from the ini? 
-
     if (instance->Model.RememberSize) {
       SetWindowSize(instance->Model.WindowSizeX, instance->Model.WindowSizeY);
     }
@@ -448,12 +445,11 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl WriteIniFile(SystemState systemState)
   {
-    instance->Model.AllowResize = 1;
     instance->Model.WindowSizeX = systemState.WindowSizeX;
     instance->Model.WindowSizeY = systemState.WindowSizeY;
 
     GetCurrentModule(instance->Model.ModulePath);
-    FileValidatePath(instance->Model.ModulePath);
+    FileValidatePath(instance->Model.ModulePath); //--If module is in same location as .exe, strip off path portion, leaving only module name
 
     JoystickState* joystickState = GetJoystickState();
 
