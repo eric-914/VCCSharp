@@ -18,20 +18,8 @@ typedef struct
   CHARFORMAT CounterText;
   CHARFORMAT ModeText;
 
-  HICON CpuIcons[2];
-  HICON MonIcons[2];
-  HICON JoystickIcons[4];
-
   HWND hDlgBar;
   HWND hDlgTape;
-
-  short int Cpuchoice[2];
-  short int Monchoice[2];
-  short int PaletteChoice[2];
-
-  unsigned short int Ramchoice[4];
-  unsigned int LeftJoystickEmulation[3];
-  unsigned int RightJoystickEmulation[3];
 
   ConfigModel Model;
 

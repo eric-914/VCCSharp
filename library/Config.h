@@ -32,8 +32,11 @@ extern "C" __declspec(dllexport) void __cdecl IncreaseOverclockSpeed(SystemState
 extern "C" __declspec(dllexport) void __cdecl LoadConfig(SystemState*, CmdLineArguments);
 extern "C" __declspec(dllexport) void __cdecl RefreshJoystickStatus();
 extern "C" __declspec(dllexport) void __cdecl SetIniFilePath(char*);
-extern "C" __declspec(dllexport) void __cdecl UpdateConfig(SystemState*);
+extern "C" __declspec(dllexport) void __cdecl SynchSystemWithConfig(SystemState*);
 extern "C" __declspec(dllexport) void __cdecl UpdateSoundBar(unsigned short, unsigned short);
 extern "C" __declspec(dllexport) void __cdecl UpdateTapeCounter(unsigned int, unsigned char);
 
 unsigned char GetSoundCardIndex(char* soundCardName);
+
+extern "C" __declspec(dllexport) void __cdecl SaveConfiguration(ConfigModel model, char* iniFilePath);
+extern "C" __declspec(dllexport) ConfigModel __cdecl LoadConfiguration(char* iniFilePath);

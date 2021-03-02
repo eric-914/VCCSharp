@@ -1,7 +1,7 @@
 #include "Audio.h"
 #include "Config.h"
 #include "Coco.h"
-#include "Callbacks.h"
+#include "DirectSoundEnumerateCallback.h"
 
 #include "defines.h"
 #include "macros.h"

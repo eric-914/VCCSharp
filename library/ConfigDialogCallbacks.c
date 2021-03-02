@@ -12,6 +12,17 @@
 #include "Cassette.h"
 #include "Joystick.h"
 
+const unsigned short int Cpuchoice[2] = { IDC_6809, IDC_6309 };
+const unsigned short int Monchoice[2] = { IDC_COMPOSITE, IDC_RGB };
+const unsigned short int PaletteChoice[2] = { IDC_ORG_PALETTE, IDC_UPD_PALETTE };
+const unsigned short int Ramchoice[4] = { IDC_128K, IDC_512K, IDC_2M, IDC_8M };
+const unsigned int LeftJoystickEmulation[3] = { IDC_LEFTSTANDARD, IDC_LEFTTHIRES, IDC_LEFTCCMAX };
+const unsigned int RightJoystickEmulation[3] = { IDC_RIGHTSTANDARD, IDC_RIGHTTHRES, IDC_RIGHTCCMAX };
+
+static HICON CpuIcons[2];
+static HICON MonIcons[2];
+static HICON JoystickIcons[4];
+
 ConfigModel configModel;
 
 /*
@@ -163,14 +174,14 @@ extern "C" {
       SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, configModel.CPUMultiplier);
 
       for (unsigned char temp = 0; temp <= 3; temp++) {
-        SendDlgItemMessage(hDlg, configState->Ramchoice[temp], BM_SETCHECK, (temp == configModel.RamSize), 0);
+        SendDlgItemMessage(hDlg, Ramchoice[temp], BM_SETCHECK, (temp == configModel.RamSize), 0);
       }
 
       for (unsigned char temp = 0; temp <= 1; temp++) {
-        SendDlgItemMessage(hDlg, configState->Cpuchoice[temp], BM_SETCHECK, (temp == configModel.CpuType), 0);
+        SendDlgItemMessage(hDlg, Cpuchoice[temp], BM_SETCHECK, (temp == configModel.CpuType), 0);
       }
 
-      SendDlgItemMessage(hDlg, IDC_CPUICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(configState->CpuIcons[configModel.CpuType]));
+      SendDlgItemMessage(hDlg, IDC_CPUICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(CpuIcons[configModel.CpuType]));
 
       break;
 
@@ -191,13 +202,13 @@ extern "C" {
       case IDC_2M:
       case IDC_8M:
         for (unsigned char temp = 0; temp <= 3; temp++) {
-          if (LOWORD(wParam) == configState->Ramchoice[temp])
+          if (LOWORD(wParam) == Ramchoice[temp])
           {
             for (unsigned char temp2 = 0; temp2 <= 3; temp2++) {
-              SendDlgItemMessage(hDlg, configState->Ramchoice[temp2], BM_SETCHECK, 0, 0);
+              SendDlgItemMessage(hDlg, Ramchoice[temp2], BM_SETCHECK, 0, 0);
             }
 
-            SendDlgItemMessage(hDlg, configState->Ramchoice[temp], BM_SETCHECK, 1, 0);
+            SendDlgItemMessage(hDlg, Ramchoice[temp], BM_SETCHECK, 1, 0);
 
             configModel.RamSize = temp;
           }
@@ -208,17 +219,17 @@ extern "C" {
       case IDC_6809:
       case IDC_6309:
         for (unsigned char temp = 0; temp <= 1; temp++) {
-          if (LOWORD(wParam) == configState->Cpuchoice[temp])
+          if (LOWORD(wParam) == Cpuchoice[temp])
           {
             for (unsigned char temp2 = 0; temp2 <= 1; temp2++) {
-              SendDlgItemMessage(hDlg, configState->Cpuchoice[temp2], BM_SETCHECK, 0, 0);
+              SendDlgItemMessage(hDlg, Cpuchoice[temp2], BM_SETCHECK, 0, 0);
             }
 
-            SendDlgItemMessage(hDlg, configState->Cpuchoice[temp], BM_SETCHECK, 1, 0);
+            SendDlgItemMessage(hDlg, Cpuchoice[temp], BM_SETCHECK, 1, 0);
 
             configModel.CpuType = temp;
 
-            SendDlgItemMessage(hDlg, IDC_CPUICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(configState->CpuIcons[configModel.CpuType]));
+            SendDlgItemMessage(hDlg, IDC_CPUICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(CpuIcons[configModel.CpuType]));
           }
         }
 
@@ -255,7 +266,7 @@ extern "C" {
       SendDlgItemMessage(hDlg, IDC_FRAMEDISPLAY, WM_SETTEXT, strlen(configState->OutBuffer), (LPARAM)(LPCSTR)(configState->OutBuffer));
 
       for (unsigned char temp = 0; temp <= 1; temp++) {
-        SendDlgItemMessage(hDlg, configState->Monchoice[temp], BM_SETCHECK, (temp == configModel.MonitorType), 0);
+        SendDlgItemMessage(hDlg, Monchoice[temp], BM_SETCHECK, (temp == configModel.MonitorType), 0);
       }
 
       if (configModel.MonitorType == 1) { //If RGB monitor is chosen, gray out palette choice
@@ -267,10 +278,10 @@ extern "C" {
         SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETDONTCLICK, 1, 0);
       }
 
-      SendDlgItemMessage(hDlg, IDC_MONTYPE, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(configState->MonIcons[configModel.MonitorType]));
+      SendDlgItemMessage(hDlg, IDC_MONTYPE, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(MonIcons[configModel.MonitorType]));
 
       for (unsigned char temp = 0; temp <= 1; temp++) {
-        SendDlgItemMessage(hDlg, configState->PaletteChoice[temp], BM_SETCHECK, (temp == configModel.PaletteType), 0);
+        SendDlgItemMessage(hDlg, PaletteChoice[temp], BM_SETCHECK, (temp == configModel.PaletteType), 0);
       }
 
       break;
@@ -304,45 +315,47 @@ extern "C" {
       case IDC_COMPOSITE:
         isRGB = FALSE;
         for (unsigned char temp = 0; temp <= 1; temp++) { //This finds the current Monitor choice, then sets both buttons in the nested loop.
-          if (LOWORD(wParam) == configState->Monchoice[temp])
+          if (LOWORD(wParam) == Monchoice[temp])
           {
             for (unsigned char temp2 = 0; temp2 <= 1; temp2++) {
-              SendDlgItemMessage(hDlg, configState->Monchoice[temp2], BM_SETCHECK, 0, 0);
+              SendDlgItemMessage(hDlg, Monchoice[temp2], BM_SETCHECK, 0, 0);
             }
 
-            SendDlgItemMessage(hDlg, configState->Monchoice[temp], BM_SETCHECK, 1, 0);
+            SendDlgItemMessage(hDlg, Monchoice[temp], BM_SETCHECK, 1, 0);
 
             configModel.MonitorType = temp;
           }
         }
 
-        SendDlgItemMessage(hDlg, IDC_MONTYPE, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(configState->MonIcons[configModel.MonitorType]));
+        SendDlgItemMessage(hDlg, IDC_MONTYPE, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(MonIcons[configModel.MonitorType]));
         SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETSTATE, 0, 0);
         SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETSTATE, 0, 0);
+
         break;
 
       case IDC_RGB:
         isRGB = TRUE;
 
         for (unsigned char temp = 0; temp <= 1; temp++) { //This finds the current Monitor choice, then sets both buttons in the nested loop.
-          if (LOWORD(wParam) == configState->Monchoice[temp])
+          if (LOWORD(wParam) == Monchoice[temp])
           {
             for (unsigned char temp2 = 0; temp2 <= 1; temp2++) {
-              SendDlgItemMessage(hDlg, configState->Monchoice[temp2], BM_SETCHECK, 0, 0);
+              SendDlgItemMessage(hDlg, Monchoice[temp2], BM_SETCHECK, 0, 0);
             }
 
-            SendDlgItemMessage(hDlg, configState->Monchoice[temp], BM_SETCHECK, 1, 0);
+            SendDlgItemMessage(hDlg, Monchoice[temp], BM_SETCHECK, 1, 0);
 
             configModel.MonitorType = temp;
           }
         }
 
-        SendDlgItemMessage(hDlg, IDC_MONTYPE, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(configState->MonIcons[configModel.MonitorType]));
+        SendDlgItemMessage(hDlg, IDC_MONTYPE, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(MonIcons[configModel.MonitorType]));
         //If RGB is chosen, disable palette buttons.
         SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETSTATE, 1, 0);
         SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETSTATE, 1, 0);
         SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETDONTCLICK, 1, 0);
         SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETDONTCLICK, 1, 0);
+
         break;
 
       case IDC_ORG_PALETTE:
@@ -418,10 +431,10 @@ extern "C" {
     switch (message)
     {
     case WM_INITDIALOG:
-      configState->JoystickIcons[0] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_KEYBOARD);
-      configState->JoystickIcons[1] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_MOUSE);
-      configState->JoystickIcons[2] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_AUDIO);
-      configState->JoystickIcons[3] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_JOYSTICK);
+      JoystickIcons[0] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_KEYBOARD);
+      JoystickIcons[1] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_MOUSE);
+      JoystickIcons[2] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_AUDIO);
+      JoystickIcons[3] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_JOYSTICK);
 
       for (unsigned char temp = 0; temp < 68; temp++)
       {
@@ -444,8 +457,8 @@ extern "C" {
 
       for (unsigned char temp = 0; temp <= 2; temp++)
       {
-        SendDlgItemMessage(hDlg, configState->LeftJoystickEmulation[temp], BM_SETCHECK, (temp == joystickState->Left.HiRes), 0);
-        SendDlgItemMessage(hDlg, configState->RightJoystickEmulation[temp], BM_SETCHECK, (temp == joystickState->Right.HiRes), 0);
+        SendDlgItemMessage(hDlg, LeftJoystickEmulation[temp], BM_SETCHECK, (temp == joystickState->Left.HiRes), 0);
+        SendDlgItemMessage(hDlg, RightJoystickEmulation[temp], BM_SETCHECK, (temp == joystickState->Right.HiRes), 0);
       }
 
       EnableWindow(GetDlgItem(hDlg, IDC_LEFTAUDIODEVICE), (joystickState->Left.UseMouse == 2));
@@ -493,8 +506,8 @@ extern "C" {
       configState->Model.Left = joystickState->Left;
       configState->Model.Right = joystickState->Right;
 
-      SendDlgItemMessage(hDlg, IDC_LEFTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(configState->JoystickIcons[joystickState->Left.UseMouse]));
-      SendDlgItemMessage(hDlg, IDC_RIGHTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(configState->JoystickIcons[joystickState->Right.UseMouse]));
+      SendDlgItemMessage(hDlg, IDC_LEFTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(JoystickIcons[joystickState->Left.UseMouse]));
+      SendDlgItemMessage(hDlg, IDC_RIGHTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(JoystickIcons[joystickState->Right.UseMouse]));
       break;
 
     case WM_COMMAND:
@@ -526,13 +539,13 @@ extern "C" {
       }
 
       for (unsigned char temp = 0; temp <= 2; temp++) {
-        if (LOWORD(wParam) == configState->LeftJoystickEmulation[temp])
+        if (LOWORD(wParam) == LeftJoystickEmulation[temp])
         {
           for (unsigned char temp2 = 0; temp2 <= 2; temp2++) {
-            SendDlgItemMessage(hDlg, configState->LeftJoystickEmulation[temp2], BM_SETCHECK, 0, 0);
+            SendDlgItemMessage(hDlg, LeftJoystickEmulation[temp2], BM_SETCHECK, 0, 0);
           }
 
-          SendDlgItemMessage(hDlg, configState->LeftJoystickEmulation[temp], BM_SETCHECK, 1, 0);
+          SendDlgItemMessage(hDlg, LeftJoystickEmulation[temp], BM_SETCHECK, 1, 0);
 
           configState->Model.Left.HiRes = temp;
         }
@@ -540,13 +553,13 @@ extern "C" {
 
       for (unsigned char temp = 0; temp <= 2; temp++)
       {
-        if (LOWORD(wParam) == configState->RightJoystickEmulation[temp])
+        if (LOWORD(wParam) == RightJoystickEmulation[temp])
         {
           for (unsigned char temp2 = 0; temp2 <= 2; temp2++) {
-            SendDlgItemMessage(hDlg, configState->RightJoystickEmulation[temp2], BM_SETCHECK, 0, 0);
+            SendDlgItemMessage(hDlg, RightJoystickEmulation[temp2], BM_SETCHECK, 0, 0);
           }
 
-          SendDlgItemMessage(hDlg, configState->RightJoystickEmulation[temp], BM_SETCHECK, 1, 0);
+          SendDlgItemMessage(hDlg, RightJoystickEmulation[temp], BM_SETCHECK, 1, 0);
 
           configState->Model.Right.HiRes = temp;
         }
@@ -584,8 +597,8 @@ extern "C" {
       configState->Model.Right.DiDevice = (unsigned char)SendDlgItemMessage(hDlg, IDC_RIGHTJOYSTICKDEVICE, CB_GETCURSEL, 0, 0);
       configState->Model.Left.DiDevice = (unsigned char)SendDlgItemMessage(hDlg, IDC_LEFTJOYSTICKDEVICE, CB_GETCURSEL, 0, 0);	//Fix Me;
 
-      SendDlgItemMessage(hDlg, IDC_LEFTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(configState->JoystickIcons[configState->Model.Left.UseMouse]));
-      SendDlgItemMessage(hDlg, IDC_RIGHTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(configState->JoystickIcons[configState->Model.Right.UseMouse]));
+      SendDlgItemMessage(hDlg, IDC_LEFTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(JoystickIcons[configState->Model.Left.UseMouse]));
+      SendDlgItemMessage(hDlg, IDC_RIGHTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(JoystickIcons[configState->Model.Right.UseMouse]));
 
       break;
     }
@@ -710,46 +723,6 @@ extern "C" {
   }
 }
 
-// Mesage handler for the About box.
-extern "C" {
-  __declspec(dllexport) LRESULT CALLBACK DialogBoxAboutCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-  {
-    VccState* vccState = GetVccState();
-
-    switch (message)
-    {
-    case WM_INITDIALOG:
-      SendDlgItemMessage(hDlg, IDC_TITLE, WM_SETTEXT, strlen(vccState->AppName), (LPARAM)(LPCSTR)(vccState->AppName));
-
-      return TRUE;
-
-    case WM_COMMAND:
-      if (LOWORD(wParam) == IDOK)
-      {
-        EndDialog(hDlg, LOWORD(wParam));
-
-        return TRUE;
-      }
-
-      break;
-    }
-
-    return FALSE;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL CALLBACK DirectSoundEnumerateCallback(LPGUID lpGuid, LPCSTR lpcstrDescription, LPCSTR lpcstrModule, LPVOID lpContext)
-  {
-    AudioState* audioState = GetAudioState();
-
-    strncpy(audioState->Cards[audioState->CardCount].CardName, lpcstrDescription, 63);
-    audioState->Cards[audioState->CardCount++].Guid = lpGuid;
-
-    return (audioState->CardCount < MAXCARDS);
-  }
-}
-
 extern "C" {
   __declspec(dllexport) LRESULT CALLBACK CreateMainConfigDialogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
   {
@@ -768,10 +741,10 @@ extern "C" {
       InitCommonControls();
 
       configModel = configState->Model;
-      configState->CpuIcons[0] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_MOTO);
-      configState->CpuIcons[1] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_HITACHI2);
-      configState->MonIcons[0] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_COMPOSITE);
-      configState->MonIcons[1] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_RGB);
+      CpuIcons[0] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_MOTO);
+      CpuIcons[1] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_HITACHI2);
+      MonIcons[0] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_COMPOSITE);
+      MonIcons[1] = LoadIcon(vccState->SystemState.Resources, (LPCTSTR)IDI_RGB);
 
       hWndTabDialog = GetDlgItem(hDlg, IDC_CONFIGTAB); //get handle of Tabbed Dialog
 
@@ -797,7 +770,7 @@ extern "C" {
 
       TabCtrl_SetCurSel(hWndTabDialog, 0);	//Set Initial Tab to 0
 
-      for (tabCount = 0;tabCount < TABS;tabCount++) {	//Hide All the Sub Panels
+      for (tabCount = 0; tabCount < TABS; tabCount++) {	//Hide All the Sub Panels
         ShowWindow(configState->hWndConfig[tabCount], SW_HIDE);
       }
 
@@ -810,7 +783,7 @@ extern "C" {
       if ((LOWORD(wParam)) == IDC_CONFIGTAB) {
         selectedTab = TabCtrl_GetCurSel(hWndTabDialog);
 
-        for (tabCount = 0;tabCount < TABS;tabCount++) {
+        for (tabCount = 0; tabCount < TABS; tabCount++) {
           ShowWindow(configState->hWndConfig[tabCount], SW_HIDE);
         }
 

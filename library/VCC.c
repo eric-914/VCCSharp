@@ -295,7 +295,7 @@ extern "C" {
       WriteIniFile(instance->SystemState);    // Flush current profile
       SetIniFilePath(szFileName);             // Set new ini file path
       ReadIniFile(&(instance->SystemState));  // Load it
-      UpdateConfig(&(instance->SystemState));
+      SynchSystemWithConfig(&(instance->SystemState));
 
       instance->SystemState.ResetPending = 2;
     }
@@ -438,7 +438,7 @@ extern "C" {
             break;
 
           case 2:	//Hard Reset
-            UpdateConfig(&(instance->SystemState));
+            SynchSystemWithConfig(&(instance->SystemState));
             DoCls(&(instance->SystemState));
             HardReset(&(instance->SystemState));
 
@@ -449,7 +449,7 @@ extern "C" {
             break;
 
           case 4:
-            UpdateConfig(&(instance->SystemState));
+            SynchSystemWithConfig(&(instance->SystemState));
             DoCls(&(instance->SystemState));
 
             break;

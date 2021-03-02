@@ -1,7 +1,8 @@
 #include <windows.h>
 
 #include "VCC.h"
-#include "Callbacks.h"
+#include "ConfigDialogCallbacks.h"
+#include "AboutBoxCallback.h"
 #include "Config.h"
 #include "Graphics.h"
 #include "Keyboard.h"

@@ -163,14 +163,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AboutBoxCallback.c" />
     <ClCompile Include="Audio.c" />
-    <ClCompile Include="Callbacks.c" />
+    <ClCompile Include="ConfigDialogCallbacks.c" />
     <ClCompile Include="Cassette.c" />
     <ClCompile Include="Clipboard.c" />
     <ClCompile Include="CoCo.c" />
     <ClCompile Include="Config.c" />
     <ClCompile Include="cpudef.c" />
     <ClCompile Include="DirectDraw.c" />
+    <ClCompile Include="DirectSoundEnumerateCallback.c" />
     <ClCompile Include="fileoperations.c" />
     <ClCompile Include="Graphics.c" />
     <ClCompile Include="HD6309.c" />
@@ -201,9 +203,10 @@
     <ClCompile Include="xDebug.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AboutBoxCallback.h" />
     <ClInclude Include="Audio.h" />
     <ClInclude Include="AudioState.h" />
-    <ClInclude Include="Callbacks.h" />
+    <ClInclude Include="ConfigDialogCallbacks.h" />
     <ClInclude Include="Cassette.h" />
     <ClInclude Include="CassetteState.h" />
     <ClInclude Include="Clipboard.h" />
@@ -215,6 +218,7 @@
     <ClInclude Include="ConfigState.h" />
     <ClInclude Include="DirectDraw.h" />
     <ClInclude Include="DirectDrawState.h" />
+    <ClInclude Include="DirectSoundEnumerateCallback.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="HD6309.h" />
     <ClInclude Include="HD6309Macros.h" />
