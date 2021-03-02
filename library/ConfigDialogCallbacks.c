@@ -654,7 +654,7 @@ extern "C" {
       sprintf(configState->OutBuffer, "%i", configState->TapeCounter);
 
       SendDlgItemMessage(hDlg, IDC_TCOUNT, WM_SETTEXT, strlen(configState->OutBuffer), (LPARAM)(LPCSTR)(configState->OutBuffer));
-      SendDlgItemMessage(hDlg, IDC_MODE, WM_SETTEXT, strlen(configState->Tmodes[configState->Tmode]), (LPARAM)(LPCSTR)(configState->Tmodes[configState->Tmode]));
+      SendDlgItemMessage(hDlg, IDC_MODE, WM_SETTEXT, strlen(configState->TapeModes[configState->TapeMode]), (LPARAM)(LPCSTR)(configState->TapeModes[configState->TapeMode]));
 
       GetTapeName(configState->TapeFileName);
 
@@ -672,30 +672,30 @@ extern "C" {
       switch (LOWORD(wParam))
       {
       case IDC_PLAY:
-        configState->Tmode = PLAY;
+        configState->TapeMode = PLAY;
 
-        SetTapeMode(configState->Tmode);
+        SetTapeMode(configState->TapeMode);
 
         break;
 
       case IDC_REC:
-        configState->Tmode = REC;
+        configState->TapeMode = REC;
 
-        SetTapeMode(configState->Tmode);
+        SetTapeMode(configState->TapeMode);
 
         break;
 
       case IDC_STOP:
-        configState->Tmode = STOP;
+        configState->TapeMode = STOP;
 
-        SetTapeMode(configState->Tmode);
+        SetTapeMode(configState->TapeMode);
 
         break;
 
       case IDC_EJECT:
-        configState->Tmode = EJECT;
+        configState->TapeMode = EJECT;
 
-        SetTapeMode(configState->Tmode);
+        SetTapeMode(configState->TapeMode);
 
         break;
 

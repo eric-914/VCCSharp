@@ -37,8 +37,8 @@ typedef struct
   char AppName[MAX_LOADSTRING];
 
   unsigned int TapeCounter;
-  unsigned char Tmode;
-  char Tmodes[4][10];
+  unsigned char TapeMode;
+  char TapeModes[4][10];
   int NumberOfSoundCards;
 
   SoundCardList SoundCards[MAXCARDS];
