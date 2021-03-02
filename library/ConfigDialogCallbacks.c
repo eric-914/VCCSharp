@@ -19,7 +19,8 @@ const unsigned short int Ramchoice[4] = { IDC_128K, IDC_512K, IDC_2M, IDC_8M };
 const unsigned int LeftJoystickEmulation[3] = { IDC_LEFTSTANDARD, IDC_LEFTTHIRES, IDC_LEFTCCMAX };
 const unsigned int RightJoystickEmulation[3] = { IDC_RIGHTSTANDARD, IDC_RIGHTTHRES, IDC_RIGHTCCMAX };
 
-const char TapeModes[4][10] = { "STOP", "PLAY", "REC", "STOP" };
+const LPSTR TabTitles[TABS] = { "Audio", "CPU", "Display", "Keyboard", "Joysticks", "Misc", "Tape", "BitBanger" };
+const LPSTR TapeModes[4] = { "STOP", "PLAY", "REC", "STOP" };
 
 static HICON CpuIcons[2];
 static HICON MonIcons[2];
@@ -47,8 +48,59 @@ void CheckAudioChange(SystemState systemState, ConfigModel current, ConfigModel 
 }
 
 extern "C" {
-  __declspec(dllexport) void SetDialogTapeCount(HWND hDlg, unsigned char tapeMode) {
+  __declspec(dllexport) void SetDialogTapeCounter(HWND hDlg, unsigned int tapeCounter) {
+    char temp[MAX_PATH];
+
+    sprintf(temp, "%i", tapeCounter);
+
+    SendDlgItemMessage(hDlg, IDC_TCOUNT, WM_SETTEXT, strlen(temp), (LPARAM)(LPCSTR)(temp));
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void SetDialogTapeMode(HWND hDlg, unsigned char tapeMode) {
     SendDlgItemMessage(hDlg, IDC_MODE, WM_SETTEXT, strlen(TapeModes[tapeMode]), (LPARAM)(LPCSTR)(TapeModes[tapeMode]));
+  
+    //--Update visual state
+    switch (tapeMode)
+    {
+    case REC:
+      SendDlgItemMessage(hDlg, IDC_MODE, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0xAF, 0, 0));
+      break;
+
+    case PLAY:
+      SendDlgItemMessage(hDlg, IDC_MODE, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0, 0xAF, 0));
+      break;
+
+    default:
+      SendDlgItemMessage(hDlg, IDC_MODE, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0, 0, 0));
+      break;
+    }
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void SetDialogTapeFileName(HWND hDlg, char* tapeFileName) {
+    SendDlgItemMessage(hDlg, IDC_TAPEFILE, WM_SETTEXT, strlen(tapeFileName), (LPARAM)(LPCSTR)(tapeFileName));
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void SetDialogCpuMultiplier(HWND hDlg, unsigned char cpuMultiplier) {
+    char temp[MAX_PATH];
+
+    SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, cpuMultiplier);
+
+    sprintf(temp, "%2.3f Mhz", (float)(cpuMultiplier) * 0.894);
+
+    SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(temp), (LPARAM)(LPCSTR)(temp));
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void SetDialogAudioBars(HWND hDlg, unsigned short left, unsigned short right) {
+    SendDlgItemMessage(hDlg, IDC_PROGRESSLEFT, PBM_SETPOS, left >> 5, 0);
+    SendDlgItemMessage(hDlg, IDC_PROGRESSRIGHT, PBM_SETPOS, right >> 5, 0);
   }
 }
 
@@ -176,10 +228,7 @@ extern "C" {
     case WM_INITDIALOG:
       SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETRANGE, TRUE, MAKELONG(2, configState->Model.MaxOverclock));	//Maximum overclock
 
-      sprintf(configState->OutBuffer, "%2.3f Mhz", (float)(configModel.CPUMultiplier) * .894);
-
-      SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(configState->OutBuffer), (LPARAM)(LPCSTR)(configState->OutBuffer));
-      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, configModel.CPUMultiplier);
+      SetDialogCpuMultiplier(hDlg, configModel.CPUMultiplier);
 
       for (unsigned char temp = 0; temp <= 3; temp++) {
         SendDlgItemMessage(hDlg, Ramchoice[temp], BM_SETCHECK, (temp == configModel.RamSize), 0);
@@ -658,13 +707,11 @@ extern "C" {
     {
     case WM_INITDIALOG:
       configState->TapeCounter = GetTapeCounter();
-
-      sprintf(configState->OutBuffer, "%i", configState->TapeCounter);
-
-      SendDlgItemMessage(hDlg, IDC_TCOUNT, WM_SETTEXT, strlen(configState->OutBuffer), (LPARAM)(LPCSTR)(configState->OutBuffer));
-      SetDialogTapeCount(hDlg, configState->TapeMode);
-
       GetTapeName(configState->TapeFileName);
+
+      SetDialogTapeCounter(hDlg, configState->TapeCounter);
+      SetDialogTapeMode(hDlg, configState->TapeMode);
+      SetDialogTapeFileName(hDlg, configState->TapeFileName);
 
       SendDlgItemMessage(hDlg, IDC_TAPEFILE, WM_SETTEXT, strlen(configState->TapeFileName), (LPARAM)(LPCSTR)(configState->TapeFileName));
       SendDlgItemMessage(hDlg, IDC_TCOUNT, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0, 0, 0));
@@ -734,7 +781,6 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) LRESULT CALLBACK CreateMainConfigDialogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
   {
-    static char tabTitles[TABS][10] = { "Audio", "CPU", "Display", "Keyboard", "Joysticks", "Misc", "Tape", "BitBanger" };
     static unsigned char tabCount = 0, selectedTab = 0;
     static HWND hWndTabDialog;
     TCITEM tabs = TCITEM();
@@ -771,7 +817,7 @@ extern "C" {
       {
         tabs.mask = TCIF_TEXT | TCIF_IMAGE;
         tabs.iImage = -1;
-        tabs.pszText = tabTitles[tabCount];
+        tabs.pszText = TabTitles[tabCount];
 
         TabCtrl_InsertItem(hWndTabDialog, tabCount, &tabs);
       }
@@ -870,11 +916,11 @@ extern "C" {
 
         vccState->SystemState.ConfigDialog = NULL;
         break;
-        }
+      }
 
       break;
-        }
+    }
 
     return FALSE;
-      }
-    }
+  }
+}

@@ -173,11 +173,7 @@ void AdjustOverclockSpeed(SystemState* systemState, unsigned char change) {
   {
     HWND hDlg = instance->hWndConfig[1];
 
-    SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, cpuMultiplier);
-
-    sprintf(instance->OutBuffer, "%2.3f Mhz", (float)(cpuMultiplier) * 0.894);
-
-    SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(instance->OutBuffer), (LPARAM)(LPCSTR)(instance->OutBuffer));
+    SetDialogCpuMultiplier(hDlg, cpuMultiplier);
   }
 
   instance->Model.CPUMultiplier = cpuMultiplier;
@@ -218,30 +214,13 @@ extern "C" {
     instance->TapeCounter = counter;
     instance->TapeMode = tapeMode;
 
-    sprintf(instance->OutBuffer, "%i", instance->TapeCounter);
-
-    SendDlgItemMessage(instance->hDlgTape, IDC_TCOUNT, WM_SETTEXT, strlen(instance->OutBuffer), (LPARAM)(LPCSTR)(instance->OutBuffer));
-    SetDialogTapeCount(instance->hDlgTape, instance->TapeMode);
-
     GetTapeName(instance->TapeFileName);
     FilePathStripPath(instance->TapeFileName);
 
-    SendDlgItemMessage(instance->hDlgTape, IDC_TAPEFILE, WM_SETTEXT, strlen(instance->TapeFileName), (LPARAM)(LPCSTR)(instance->TapeFileName));
+    SetDialogTapeCounter(instance->hDlgTape, instance->TapeCounter);
+    SetDialogTapeMode(instance->hDlgTape, instance->TapeMode);
+    SetDialogTapeFileName(instance->hDlgTape, instance->TapeFileName);
 
-    switch (instance->TapeMode)
-    {
-    case REC:
-      SendDlgItemMessage(instance->hDlgTape, IDC_MODE, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0xAF, 0, 0));
-      break;
-
-    case PLAY:
-      SendDlgItemMessage(instance->hDlgTape, IDC_MODE, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0, 0xAF, 0));
-      break;
-
-    default:
-      SendDlgItemMessage(instance->hDlgTape, IDC_MODE, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0, 0, 0));
-      break;
-    }
   }
 }
 
@@ -273,8 +252,7 @@ extern "C" {
       return;
     }
 
-    SendDlgItemMessage(instance->hDlgBar, IDC_PROGRESSLEFT, PBM_SETPOS, left >> 8, 0);
-    SendDlgItemMessage(instance->hDlgBar, IDC_PROGRESSRIGHT, PBM_SETPOS, right >> 8, 0);
+    SetDialogAudioBars(instance->hDlgBar, left, right);
   }
 }
 
