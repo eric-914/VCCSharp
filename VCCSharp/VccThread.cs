@@ -19,7 +19,7 @@ namespace VCCSharp
 
             _vcc.Run();
 
-            var retValue = _vcc.Shutdown();
+            _vcc.Shutdown();
         }
     }
 }

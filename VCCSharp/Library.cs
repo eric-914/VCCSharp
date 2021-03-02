@@ -9,7 +9,7 @@ namespace VCCSharp
     public static class Library
     {
         // ReSharper disable once InconsistentNaming
-        private const string DLL = "library.dll";
+        public const string DLL = "library.dll";
 
         public static class Vcc
         {
