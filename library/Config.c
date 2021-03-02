@@ -148,30 +148,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl GetProfileText(LPCSTR lpAppName, LPCSTR lpKeyName, LPCSTR lpDefault, LPSTR lpReturnedString) {
-    GetPrivateProfileString(lpAppName, lpKeyName, lpDefault, lpReturnedString, MAX_PATH, instance->IniFilePath);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetProfileText(LPCSTR lpAppName, LPCSTR lpKeyName, LPCSTR lpString) {
-    WritePrivateProfileString(lpAppName, lpKeyName, lpString, instance->IniFilePath);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned short __cdecl GetProfileShort(LPCSTR lpAppName, LPCSTR lpKeyName, int nDefault) {
-    return GetPrivateProfileInt(lpAppName, lpKeyName, nDefault, instance->IniFilePath);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl GetProfileByte(LPCSTR lpAppName, LPCSTR lpKeyName, int nDefault) {
-    return GetPrivateProfileInt(lpAppName, lpKeyName, nDefault, instance->IniFilePath);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) unsigned char __cdecl TranslateDisplay2Scan(LRESULT x)
   {
     assert(x >= 0 && x < SCAN_TRANS_COUNT);
