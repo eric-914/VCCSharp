@@ -49,7 +49,7 @@ typedef struct {
 
   //[DefaultPaths]
   char CassPath[MAX_PATH];
-  //"PakPath" //PakInterfaceState ==> char PakPath[MAX_PATH]  
+  char PakPath[MAX_PATH];
   char FloppyPath[MAX_PATH];
   char CoCoRomPath[MAX_PATH];
   char SerialCaptureFilePath[MAX_PATH];

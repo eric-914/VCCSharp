@@ -69,7 +69,6 @@ typedef struct {
   HMENU hMenu;
   HMENU hSubMenu[64];
 
-  char PakPath[MAX_PATH];
   unsigned char MenuIndex;
   char Modname[MAX_PATH];
 

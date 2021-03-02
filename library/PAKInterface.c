@@ -485,10 +485,9 @@ extern "C" {
 
       SetCart(1);
 
-      return(NOMODULE);
+      return(0);
 
     case 1:		//File is a DLL
-
       UnloadDll(systemState);
       instance->hInstLib = LoadLibrary(modulePath);
 
@@ -651,11 +650,6 @@ extern "C" {
   {
     OPENFILENAME ofn;
     char szFileName[MAX_PATH] = "";
-    char temp[MAX_PATH];
-
-    GetIniFilePath(temp);
-
-    GetPrivateProfileString("DefaultPaths", "PakPath", "", instance->PakPath, MAX_PATH, temp);
 
     memset(&ofn, 0, sizeof(ofn));
 
@@ -667,7 +661,7 @@ extern "C" {
     ofn.nMaxFile = MAX_PATH;					          // sizeof lpstrFile
     ofn.lpstrFileTitle = NULL;						      // filename and extension only
     ofn.nMaxFileTitle = MAX_PATH;					      // sizeof lpstrFileTitle
-    ofn.lpstrInitialDir = instance->PakPath;				      // initial directory
+    ofn.lpstrInitialDir = GetConfigState()->Model.PakPath;  // initial directory
     ofn.lpstrTitle = TEXT("Load Program Pack");	// title bar string
     ofn.Flags = OFN_HIDEREADONLY;
 
@@ -677,9 +671,7 @@ extern "C" {
         size_t idx = tmp.find_last_of("\\");
         tmp = tmp.substr(0, idx);
 
-        strcpy(instance->PakPath, tmp.c_str());
-
-        WritePrivateProfileString("DefaultPaths", "PakPath", instance->PakPath, temp);
+        strcpy(GetConfigState()->Model.PakPath, tmp.c_str());
 
         return(0);
       }

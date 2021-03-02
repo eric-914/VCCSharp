@@ -571,29 +571,30 @@ void SaveConfiguration(ConfigModel model, char* iniFilePath) {
   WritePrivateProfileString("Module", "ModulePath", model.ModulePath, iniFilePath);
 
   //[LeftJoyStick]
-  FileWritePrivateProfileInt("LeftJoyStick", "UseMouse", model.Left.UseMouse, instance->IniFilePath);
-  FileWritePrivateProfileInt("LeftJoyStick", "Left", model.Left.Left, instance->IniFilePath);
-  FileWritePrivateProfileInt("LeftJoyStick", "Right", model.Left.Right, instance->IniFilePath);
-  FileWritePrivateProfileInt("LeftJoyStick", "Up", model.Left.Up, instance->IniFilePath);
-  FileWritePrivateProfileInt("LeftJoyStick", "Down", model.Left.Down, instance->IniFilePath);
-  FileWritePrivateProfileInt("LeftJoyStick", "Fire1", model.Left.Fire1, instance->IniFilePath);
-  FileWritePrivateProfileInt("LeftJoyStick", "Fire2", model.Left.Fire2, instance->IniFilePath);
-  FileWritePrivateProfileInt("LeftJoyStick", "DiDevice", model.Left.DiDevice, instance->IniFilePath);
-  FileWritePrivateProfileInt("LeftJoyStick", "HiResDevice", model.Left.HiRes, instance->IniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "UseMouse", model.Left.UseMouse, iniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "Left", model.Left.Left, iniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "Right", model.Left.Right, iniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "Up", model.Left.Up, iniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "Down", model.Left.Down, iniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "Fire1", model.Left.Fire1, iniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "Fire2", model.Left.Fire2, iniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "DiDevice", model.Left.DiDevice, iniFilePath);
+  FileWritePrivateProfileInt("LeftJoyStick", "HiResDevice", model.Left.HiRes, iniFilePath);
 
   //[RightJoyStick]
-  FileWritePrivateProfileInt("RightJoyStick", "UseMouse", model.Right.UseMouse, instance->IniFilePath);
-  FileWritePrivateProfileInt("RightJoyStick", "Left", model.Right.Left, instance->IniFilePath);
-  FileWritePrivateProfileInt("RightJoyStick", "Right", model.Right.Right, instance->IniFilePath);
-  FileWritePrivateProfileInt("RightJoyStick", "Up", model.Right.Up, instance->IniFilePath);
-  FileWritePrivateProfileInt("RightJoyStick", "Down", model.Right.Down, instance->IniFilePath);
-  FileWritePrivateProfileInt("RightJoyStick", "Fire1", model.Right.Fire1, instance->IniFilePath);
-  FileWritePrivateProfileInt("RightJoyStick", "Fire2", model.Right.Fire2, instance->IniFilePath);
-  FileWritePrivateProfileInt("RightJoyStick", "DiDevice", model.Right.DiDevice, instance->IniFilePath);
-  FileWritePrivateProfileInt("RightJoyStick", "HiResDevice", model.Right.HiRes, instance->IniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "UseMouse", model.Right.UseMouse, iniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "Left", model.Right.Left, iniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "Right", model.Right.Right, iniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "Up", model.Right.Up, iniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "Down", model.Right.Down, iniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "Fire1", model.Right.Fire1, iniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "Fire2", model.Right.Fire2, iniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "DiDevice", model.Right.DiDevice, iniFilePath);
+  FileWritePrivateProfileInt("RightJoyStick", "HiResDevice", model.Right.HiRes, iniFilePath);
 
   //[DefaultPaths]
-  WritePrivateProfileString("DefaultPaths", "SerialCaptureFilePath", instance->Model.SerialCaptureFilePath, instance->IniFilePath);
+  WritePrivateProfileString("DefaultPaths", "SerialCaptureFilePath", model.SerialCaptureFilePath, iniFilePath);
+  WritePrivateProfileString("DefaultPaths", "PakPath", model.PakPath, iniFilePath);
 
   //--Flush .ini file
   WritePrivateProfileString(NULL, NULL, NULL, iniFilePath);
@@ -664,6 +665,7 @@ ConfigModel LoadConfiguration(char* iniFilePath) {
   GetPrivateProfileString("DefaultPaths", "FloppyPath", "", model.FloppyPath, MAX_PATH, iniFilePath);
   GetPrivateProfileString("DefaultPaths", "CoCoRomPath", "", model.CoCoRomPath, MAX_PATH, iniFilePath);
   GetPrivateProfileString("DefaultPaths", "SerialCaptureFilePath", "", model.SerialCaptureFilePath, MAX_PATH, iniFilePath);
+  GetPrivateProfileString("DefaultPaths", "PakPath", "", model.PakPath, MAX_PATH, iniFilePath);
 
   return model;
 }
