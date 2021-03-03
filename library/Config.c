@@ -435,8 +435,8 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl WriteIniFile(EmuState emuState)
   {
-    instance->Model.WindowSizeX = emuState.WindowSizeX;
-    instance->Model.WindowSizeY = emuState.WindowSizeY;
+    instance->Model.WindowSizeX = (unsigned short)emuState.WindowSize.x;
+    instance->Model.WindowSizeY = (unsigned short)emuState.WindowSize.y;
 
     GetCurrentModule(instance->Model.ModulePath);
 

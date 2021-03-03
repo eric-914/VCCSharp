@@ -24,9 +24,9 @@ typedef struct
   unsigned char	FrameSkip;
   unsigned char	BitDepth;
 
-  unsigned char* PTRsurface8;
-  unsigned short* PTRsurface16;
-  unsigned int* PTRsurface32;
+  unsigned char* pSurface8;
+  unsigned short* pSurface16;
+  unsigned int* pSurface32;
 
   long SurfacePitch;
 
@@ -35,9 +35,6 @@ typedef struct
   unsigned char	ScanLines;
   unsigned char	EmulationRunning;
   unsigned char	ResetPending;
-
-  unsigned short WindowSizeX; //--For saving in config
-  unsigned short WindowSizeY;
 
   unsigned char	FullScreen;
 

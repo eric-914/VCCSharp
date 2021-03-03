@@ -423,9 +423,9 @@ extern "C" {
       MessageBox(0, "Returning NULL!!", "ok", 0);
     }
 
-    emuState->PTRsurface8 = (unsigned char*)ddsd.lpSurface;
-    emuState->PTRsurface16 = (unsigned short*)ddsd.lpSurface;
-    emuState->PTRsurface32 = (unsigned int*)ddsd.lpSurface;
+    emuState->pSurface8 = (unsigned char*)ddsd.lpSurface;
+    emuState->pSurface16 = (unsigned short*)ddsd.lpSurface;
+    emuState->pSurface32 = (unsigned int*)ddsd.lpSurface;
 
     return(0);
   }
@@ -540,8 +540,8 @@ extern "C" {
 
     GetClientRect(emuState->WindowHandle, &windowSize);
 
-    emuState->WindowSizeX = (int)windowSize.right;
-    emuState->WindowSizeY = (int)windowSize.bottom - instance->StatusBarHeight;
+    emuState->WindowSize.x = (int)windowSize.right;
+    emuState->WindowSize.y = (int)windowSize.bottom - instance->StatusBarHeight;
   }
 }
 
@@ -589,7 +589,7 @@ extern "C" {
     case 0:
       for (y = 0;y < 480; y++) {
         for (x = 0;x < 640; x++) {
-          emuState->PTRsurface8[x + (y * emuState->SurfacePitch)] = instance->Color | 128;
+          emuState->pSurface8[x + (y * emuState->SurfacePitch)] = instance->Color | 128;
         }
       }
       break;
@@ -597,7 +597,7 @@ extern "C" {
     case 1:
       for (y = 0;y < 480; y++) {
         for (x = 0;x < 640; x++) {
-          emuState->PTRsurface16[x + (y * emuState->SurfacePitch)] = instance->Color;
+          emuState->pSurface16[x + (y * emuState->SurfacePitch)] = instance->Color;
         }
       }
       break;
@@ -606,9 +606,9 @@ extern "C" {
       for (y = 0;y < 480; y++) {
         for (x = 0;x < 640; x++)
         {
-          emuState->PTRsurface8[(x * 3) + (y * emuState->SurfacePitch)] = (instance->Color & 0xFF0000) >> 16;
-          emuState->PTRsurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = (instance->Color & 0x00FF00) >> 8;
-          emuState->PTRsurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = (instance->Color & 0xFF);
+          emuState->pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = (instance->Color & 0xFF0000) >> 16;
+          emuState->pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = (instance->Color & 0x00FF00) >> 8;
+          emuState->pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = (instance->Color & 0xFF);
         }
       }
       break;
@@ -616,7 +616,7 @@ extern "C" {
     case 3:
       for (y = 0;y < 480; y++) {
         for (x = 0;x < 640; x++) {
-          emuState->PTRsurface32[x + (y * emuState->SurfacePitch)] = instance->Color;
+          emuState->pSurface32[x + (y * emuState->SurfacePitch)] = instance->Color;
         }
       }
       break;
@@ -644,7 +644,7 @@ extern "C" {
 
     LockScreen(emuState);
 
-    if (emuState->PTRsurface32 == NULL) {
+    if (emuState->pSurface32 == NULL) {
       return(0);
     }
 
@@ -655,8 +655,8 @@ extern "C" {
         for (x = 0;x < 160; x++) {
           temp = rand() & 3;
 
-          emuState->PTRsurface32[x + (y * emuState->SurfacePitch >> 2)] = greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24);
-          emuState->PTRsurface32[x + ((y + 1) * emuState->SurfacePitch >> 2)] = greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24);
+          emuState->pSurface32[x + (y * emuState->SurfacePitch >> 2)] = greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24);
+          emuState->pSurface32[x + ((y + 1) * emuState->SurfacePitch >> 2)] = greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24);
         }
       }
       break;
@@ -666,8 +666,8 @@ extern "C" {
         for (x = 0;x < 320; x++) {
           temp = rand() & 31;
 
-          emuState->PTRsurface32[x + (y * emuState->SurfacePitch >> 1)] = temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27);
-          emuState->PTRsurface32[x + ((y + 1) * emuState->SurfacePitch >> 1)] = temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27);
+          emuState->pSurface32[x + (y * emuState->SurfacePitch >> 1)] = temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27);
+          emuState->pSurface32[x + ((y + 1) * emuState->SurfacePitch >> 1)] = temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27);
         }
       }
       break;
@@ -675,9 +675,9 @@ extern "C" {
     case 2:
       for (y = 0;y < 480; y++) {
         for (x = 0;x < 640; x++) {
-          emuState->PTRsurface8[(x * 3) + (y * emuState->SurfacePitch)] = temp;
-          emuState->PTRsurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = temp << 8;
-          emuState->PTRsurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = temp << 16;
+          emuState->pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = temp;
+          emuState->pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = temp << 8;
+          emuState->pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = temp << 16;
         }
       }
       break;
@@ -687,7 +687,7 @@ extern "C" {
         for (x = 0;x < 640; x++) {
           temp = rand() & 255;
 
-          emuState->PTRsurface32[x + (y * emuState->SurfacePitch)] = temp | (temp << 8) | (temp << 16);
+          emuState->pSurface32[x + (y * emuState->SurfacePitch)] = temp | (temp << 8) | (temp << 16);
         }
       }
       break;
