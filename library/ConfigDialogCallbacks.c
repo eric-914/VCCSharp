@@ -27,6 +27,9 @@ static HICON CpuIcons[2];
 static HICON MonIcons[2];
 static HICON JoystickIcons[4];
 
+static CHARFORMAT CounterText;
+static CHARFORMAT ModeText;
+
 ConfigModel configModel;
 
 /*
@@ -170,7 +173,7 @@ extern "C" {
 
       SendDlgItemMessage(hDlg, IDC_SERIALFILE, WM_SETTEXT, strlen(configState->SerialCaptureFile), (LPARAM)(LPCSTR)(configState->SerialCaptureFile));
       SendDlgItemMessage(hDlg, IDC_LF, BM_SETCHECK, configState->TextMode, 0);
-      SendDlgItemMessage(hDlg, IDC_PRINTMON, BM_SETCHECK, configState->PrtMon, 0);
+      SendDlgItemMessage(hDlg, IDC_PRINTMON, BM_SETCHECK, configState->PrintMonitorWindow, 0);
 
       break;
 
@@ -191,11 +194,11 @@ extern "C" {
 
         SendDlgItemMessage(hDlg, IDC_SERIALFILE, WM_SETTEXT, strlen(configState->SerialCaptureFile), (LPARAM)(LPCSTR)(configState->SerialCaptureFile));
 
-        configState->PrtMon = FALSE;
+        configState->PrintMonitorWindow = FALSE;
 
-        MC6821_SetMonState(configState->PrtMon);
+        MC6821_SetMonState(configState->PrintMonitorWindow);
 
-        SendDlgItemMessage(hDlg, IDC_PRINTMON, BM_SETCHECK, configState->PrtMon, 0);
+        SendDlgItemMessage(hDlg, IDC_PRINTMON, BM_SETCHECK, configState->PrintMonitorWindow, 0);
 
         break;
 
@@ -207,9 +210,9 @@ extern "C" {
         break;
 
       case IDC_PRINTMON:
-        configState->PrtMon = (char)SendDlgItemMessage(hDlg, IDC_PRINTMON, BM_GETCHECK, 0, 0);
+        configState->PrintMonitorWindow = (char)SendDlgItemMessage(hDlg, IDC_PRINTMON, BM_GETCHECK, 0, 0);
 
-        MC6821_SetMonState(configState->PrtMon);
+        MC6821_SetMonState(configState->PrintMonitorWindow);
       }
 
       break;
@@ -479,11 +482,12 @@ extern "C" {
     const int RightRadios[4] = { IDC_RIGHT_KEYBOARD, IDC_RIGHT_USEMOUSE, IDC_RIGHTAUDIO, IDC_RIGHTJOYSTICK };
 
     VccState* vccState = GetVccState();
+    ConfigState* configState = GetConfigState();
 
-    JoystickModel left = *(GetJoystickState()->Left);
-    JoystickModel right = *(GetJoystickState()->Right);
+    JoystickModel left = configState->Model.Left;
+    JoystickModel right = configState->Model.Right;
 
-    unsigned char numberOfJoysticks = GetConfigState()->NumberOfJoysticks;
+    unsigned char numberOfJoysticks = configState->NumberOfJoysticks;
 
     switch (message)
     {
@@ -695,15 +699,15 @@ extern "C" {
   {
     ConfigState* configState = GetConfigState();
 
-    configState->CounterText.cbSize = sizeof(CHARFORMAT);
-    configState->CounterText.dwMask = CFM_BOLD | CFM_COLOR;
-    configState->CounterText.dwEffects = CFE_BOLD;
-    configState->CounterText.crTextColor = RGB(255, 255, 255);
+    CounterText.cbSize = sizeof(CHARFORMAT);
+    CounterText.dwMask = CFM_BOLD | CFM_COLOR;
+    CounterText.dwEffects = CFE_BOLD;
+    CounterText.crTextColor = RGB(255, 255, 255);
 
-    configState->ModeText.cbSize = sizeof(CHARFORMAT);
-    configState->ModeText.dwMask = CFM_BOLD | CFM_COLOR;
-    configState->ModeText.dwEffects = CFE_BOLD;
-    configState->ModeText.crTextColor = RGB(255, 0, 0);
+    ModeText.cbSize = sizeof(CHARFORMAT);
+    ModeText.dwMask = CFM_BOLD | CFM_COLOR;
+    ModeText.dwEffects = CFE_BOLD;
+    ModeText.crTextColor = RGB(255, 0, 0);
 
     switch (message)
     {
@@ -717,9 +721,9 @@ extern "C" {
 
       SendDlgItemMessage(hDlg, IDC_TAPEFILE, WM_SETTEXT, strlen(configState->TapeFileName), (LPARAM)(LPCSTR)(configState->TapeFileName));
       SendDlgItemMessage(hDlg, IDC_TCOUNT, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0, 0, 0));
-      SendDlgItemMessage(hDlg, IDC_TCOUNT, EM_SETCHARFORMAT, SCF_ALL, (LPARAM) & (configState->CounterText));
+      SendDlgItemMessage(hDlg, IDC_TCOUNT, EM_SETCHARFORMAT, SCF_ALL, (LPARAM) &CounterText);
       SendDlgItemMessage(hDlg, IDC_MODE, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0, 0, 0));
-      SendDlgItemMessage(hDlg, IDC_MODE, EM_SETCHARFORMAT, SCF_ALL, (LPARAM) & (configState->CounterText));
+      SendDlgItemMessage(hDlg, IDC_MODE, EM_SETCHARFORMAT, SCF_ALL, (LPARAM) &CounterText);
 
       configState->hDlgTape = hDlg;
 
@@ -790,9 +794,8 @@ extern "C" {
     ConfigState* configState = GetConfigState();
     VccState* vccState = GetVccState();
 
-    JoystickState* joystickState = GetJoystickState();
-    JoystickModel left = *(joystickState->Left);
-    JoystickModel right = *(joystickState->Right);
+    JoystickModel left = configState->Model.Left;
+    JoystickModel right = configState->Model.Right;
 
     switch (message)
     {
@@ -834,7 +837,6 @@ extern "C" {
       }
 
       SetWindowPos(configState->hWndConfig[0], HWND_TOP, 10, 30, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW);
-      RefreshJoystickStatus();
 
       break;
 
@@ -869,9 +871,6 @@ extern "C" {
 
         vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->Model.KeyMapIndex));
 
-        //joystickState->Right = configState->Model.Right;
-        //joystickState->Left = configState->Model.Left;
-
         SetStickNumbers(left.DiDevice, right.DiDevice);
 
         for (unsigned char temp = 0; temp < TABS; temp++)
@@ -899,9 +898,6 @@ extern "C" {
         configState->Model = configModel;
 
         vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->Model.KeyMapIndex));
-
-        //joystickState->Right = configState->Model.Right;
-        //joystickState->Left = configState->Model.Left;
 
         SetStickNumbers(left.DiDevice, right.DiDevice);
 

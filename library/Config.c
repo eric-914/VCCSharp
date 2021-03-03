@@ -31,7 +31,7 @@ using namespace std;
 const unsigned char TranslateScan2Disp[SCAN_TRANS_COUNT] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 32, 38, 20, 33, 35, 40, 36, 24, 30, 31, 42, 43, 55, 52, 16, 34, 19, 21, 22, 23, 25, 26, 27, 45, 46, 0, 51, 44, 41, 39, 18, 37, 17, 29, 28, 47, 48, 49, 51, 0, 53, 54, 50, 66, 67, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, 64, 60, 0, 62, 0, 63, 0, 59, 65, 61, 56, 57 };
 const unsigned char TranslateDisp2Scan[SCAN_TRANS_COUNT] = { 78, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 30, 48, 46, 32, 18, 33, 34, 35, 23, 36, 37, 38, 50, 49, 24, 25, 16, 19, 31, 20, 22, 47, 17, 45, 21, 44, 26, 27, 43, 39, 40, 51, 52, 53, 58, 54, 29, 56, 57, 28, 82, 83, 71, 79, 73, 81, 75, 77, 72, 80, 59, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-TCHAR AppDataPath[MAX_PATH];
+static TCHAR AppDataPath[MAX_PATH];
 
 ConfigState* InitializeInstance(ConfigState*);
 
@@ -46,7 +46,7 @@ extern "C" {
 ConfigState* InitializeInstance(ConfigState* p) {
   p->NumberOfSoundCards = 0;
   p->NumberOfJoysticks = 0;
-  p->PrtMon = 0;
+  p->PrintMonitorWindow = 0;
   p->TapeCounter = 0;
   p->TextMode = 1;
   p->TapeMode = STOP;
@@ -54,7 +54,6 @@ ConfigState* InitializeInstance(ConfigState* p) {
   p->hDlgBar = NULL;
   p->hDlgTape = NULL;
 
-  strcpy(p->AppName, "");
   strcpy(p->IniFilePath, "");
   strcpy(p->OutBuffer, "");
   strcpy(p->SerialCaptureFile, "");
@@ -268,13 +267,12 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl RefreshJoystickStatus(void)
+  __declspec(dllexport) void __cdecl ConfigureJoysticks(void)
   {
     bool temp = false;
 
-    JoystickState* joystickState = GetJoystickState();
-    JoystickModel left = *(joystickState->Left);
-    JoystickModel right = *(joystickState->Right);
+    JoystickModel left = instance->Model.Left;
+    JoystickModel right = instance->Model.Right;
 
     instance->NumberOfJoysticks = EnumerateJoysticks();
 
@@ -282,11 +280,11 @@ extern "C" {
       temp = InitJoyStick(index);
     }
 
-    if (right.DiDevice > (instance->NumberOfJoysticks - 1)) {
+    if (right.DiDevice >= instance->NumberOfJoysticks) {
       right.DiDevice = 0;
     }
 
-    if (left.DiDevice > (instance->NumberOfJoysticks - 1)) {
+    if (left.DiDevice >= instance->NumberOfJoysticks) {
       left.DiDevice = 0;
     }
 
@@ -367,18 +365,14 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl LoadConfig(SystemState* systemState, CmdLineArguments cmdArg)
+  __declspec(dllexport) void __cdecl InitConfig(SystemState* systemState, CmdLineArguments cmdArg)
   {
     HANDLE hr = NULL;
     int lasterror;
 
-    //BuildTransDisp2ScanTable();
-
-    LoadString(systemState->Resources, IDS_APP_TITLE, instance->AppName, MAX_LOADSTRING);
+    LoadString(systemState->Resources, IDS_APP_TITLE, instance->Model.Release, MAX_LOADSTRING); //--A kind of "versioning" I guess
 
     GetIniFilePath(instance->IniFilePath, cmdArg.IniFile);
-
-    systemState->ScanLines = 0;
 
     instance->NumberOfSoundCards = GetSoundCardList(instance->SoundCards);
 
@@ -391,7 +385,7 @@ extern "C" {
     ReadIniFile(systemState);
 
     SynchSystemWithConfig(systemState);
-    RefreshJoystickStatus();
+    ConfigureJoysticks();
 
     unsigned char soundCardIndex = GetSoundCardIndex(instance->Model.SoundCardName);
     SoundInit(systemState->WindowHandle, instance->SoundCards[soundCardIndex].Guid, instance->Model.AudioRate);
@@ -445,8 +439,6 @@ extern "C" {
     instance->Model.WindowSizeY = systemState.WindowSizeY;
 
     GetCurrentModule(instance->Model.ModulePath);
-
-    strcpy(instance->Model.Release, instance->AppName); //--Set "version" I guess
 
     ValidateModel(instance->Model);
 

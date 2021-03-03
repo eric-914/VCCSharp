@@ -727,7 +727,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl InitInstance(HINSTANCE hInstance, HINSTANCE hResources)
+  __declspec(dllexport) BOOL __cdecl InitDirectDraw(HINSTANCE hInstance, HINSTANCE hResources)
   {
     instance->hInstance = hInstance;
 

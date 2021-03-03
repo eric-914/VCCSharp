@@ -50,15 +50,10 @@ VccState* InitializeInstance(VccState* p) {
   strcpy(p->CpuName, "CPUNAME");
   strcpy(p->AppName, "");
 
+  p->SystemState.ScanLines = 0;
+
   return p;
 }
-
-//extern "C" {
-//  __declspec(dllexport) void __cdecl Reboot()
-//  {
-//    instance->SystemState.ResetPending = 2;
-//  }
-//}
 
 extern "C" {
   __declspec(dllexport) void __cdecl SaveConfig(void) {
@@ -508,16 +503,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) HMODULE __cdecl LoadResources() {
-    HMODULE hResources = LoadLibrary("resources.dll");
-
-    instance->SystemState.Resources = hResources;
-
-    return hResources;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl CheckQuickLoad(char* qLoadFile) {
     char temp1[MAX_PATH] = "";
     char temp2[MAX_PATH] = " Running on ";
@@ -600,19 +585,20 @@ HANDLE CreateThreadHandle(HANDLE hEvent) {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, CmdLineArguments cmdArg) {
+  __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, HMODULE hResources, CmdLineArguments cmdArg) {
     HANDLE OleInitialize(NULL); //Work around fixs app crashing in "Open file" system dialogs (related to Adobe acrobat 7+
-    HMODULE hResources = LoadResources();
 
     SystemState* systemState = &(instance->SystemState);
+    
+    systemState->Resources = hResources;
+    InitDirectDraw(hInstance, hResources);
 
     CheckQuickLoad(cmdArg.QLoadFile);
-    InitInstance(hInstance, hResources);
 
     CreatePrimaryWindow();
 
     //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
-    LoadConfig(systemState, cmdArg);			//Loads the default config file Vcc.ini from the exec directory
+    InitConfig(systemState, cmdArg);			//Loads the default config file Vcc.ini from the exec directory
 
     Cls(0, systemState);
     DynamicMenuCallback(systemState, "", 0, 0);
@@ -620,8 +606,9 @@ extern "C" {
 
     SetClockSpeed(1);	//Default clock speed .89 MHZ	
 
-    (*systemState).ResetPending = 2;
-    (*systemState).EmulationRunning = instance->AutoStart;
+    systemState->ResetPending = 2;
+    systemState->EmulationRunning = instance->AutoStart;
+
     instance->BinaryRunning = true;
 
     if (strlen(cmdArg.QLoadFile) != 0)

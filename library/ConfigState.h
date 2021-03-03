@@ -1,12 +1,10 @@
 #pragma once
 
 #include <windows.h>
-#include <richedit.h>
 
 #include "defines.h"
 
 #include "ConfigModel.h"
-#include "JoystickModel.h"
 #include "SoundCardList.h"
 
 #define SCAN_TRANS_COUNT	84
@@ -15,16 +13,15 @@
 
 typedef struct
 {
-  CHARFORMAT CounterText;
-  CHARFORMAT ModeText;
-
+  HWND hWndConfig[TABS];
   HWND hDlgBar;
   HWND hDlgTape;
 
   ConfigModel Model;
 
-  char TextMode;
-  char PrtMon;
+  char TextMode;  //--Add LF to CR
+  char PrintMonitorWindow;
+
   unsigned char NumberOfJoysticks;
 
   char IniFilePath[MAX_PATH];
@@ -32,12 +29,10 @@ typedef struct
   char ExecDirectory[MAX_PATH];
   char SerialCaptureFile[MAX_PATH];
   char OutBuffer[MAX_PATH];
-  char AppName[MAX_LOADSTRING];
 
   unsigned int TapeCounter;
   unsigned char TapeMode;
-  int NumberOfSoundCards;
 
+  int NumberOfSoundCards;
   SoundCardList SoundCards[MAXCARDS];
-  HWND hWndConfig[TABS];
 } ConfigState;

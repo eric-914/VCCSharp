@@ -28,8 +28,8 @@ extern "C" __declspec(dllexport) void __cdecl WriteIniFile(SystemState systemSta
 extern "C" __declspec(dllexport) void __cdecl DecreaseOverclockSpeed(SystemState*);
 extern "C" __declspec(dllexport) void __cdecl GetIniFilePath(char*);
 extern "C" __declspec(dllexport) void __cdecl IncreaseOverclockSpeed(SystemState*);
-extern "C" __declspec(dllexport) void __cdecl LoadConfig(SystemState*, CmdLineArguments);
-extern "C" __declspec(dllexport) void __cdecl RefreshJoystickStatus();
+extern "C" __declspec(dllexport) void __cdecl InitConfig(SystemState*, CmdLineArguments);
+extern "C" __declspec(dllexport) void __cdecl ConfigureJoysticks();
 extern "C" __declspec(dllexport) void __cdecl SetIniFilePath(char*);
 extern "C" __declspec(dllexport) void __cdecl SynchSystemWithConfig(SystemState*);
 extern "C" __declspec(dllexport) void __cdecl UpdateSoundBar(unsigned short, unsigned short);

@@ -31,7 +31,6 @@ extern "C" __declspec(dllexport) void __cdecl EmuLoop();
 extern "C" __declspec(dllexport) void __cdecl HardReset(SystemState*);
 extern "C" __declspec(dllexport) void __cdecl LoadIniFile();
 extern "C" __declspec(dllexport) void __cdecl LoadPack();
-//extern "C" __declspec(dllexport) void __cdecl Reboot();
 extern "C" __declspec(dllexport) void __cdecl SaveConfig();
 extern "C" __declspec(dllexport) void __cdecl SaveLastTwoKeyDownEvents(unsigned char, unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SendSavedKeyEvents();
@@ -39,12 +38,11 @@ extern "C" __declspec(dllexport) void __cdecl SetCPUMultiplayerFlag(unsigned cha
 extern "C" __declspec(dllexport) void __cdecl SetTurboMode(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SoftReset();
 
-extern "C" __declspec(dllexport) HMODULE __cdecl LoadResources();
 extern "C" __declspec(dllexport) void __cdecl CheckQuickLoad(char* qLoadFile);
 extern "C" __declspec(dllexport) void __cdecl CreatePrimaryWindow();
 extern "C" __declspec(dllexport) void CheckScreenModeChange();
 
-extern "C" __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, CmdLineArguments cmdArg);
+extern "C" __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, HMODULE hResources, CmdLineArguments cmdArg);
 extern "C" __declspec(dllexport) void __cdecl VccRun();
 extern "C" __declspec(dllexport) INT __cdecl VccShutdown();
 

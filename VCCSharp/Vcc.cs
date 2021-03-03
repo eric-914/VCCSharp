@@ -4,9 +4,13 @@ namespace VCCSharp
 {
     public class Vcc
     {
+        private IntPtr _hResources;
+
         public void Startup(IntPtr hInstance, CmdLineArguments cmdLineArgs)
         {
-            Library.Vcc.VccStartup(hInstance, cmdLineArgs);
+            _hResources = Library.LoadLibrary("resources.dll");
+
+            Library.Vcc.VccStartup(hInstance, _hResources, cmdLineArgs);
         }
 
         public void Run()
@@ -16,7 +20,11 @@ namespace VCCSharp
 
         public int Shutdown()
         {
-            return Library.Vcc.VccShutdown();
+            var code = Library.Vcc.VccShutdown();
+
+            Library.FreeLibrary(_hResources);
+
+            return code;
         }
     }
 }
