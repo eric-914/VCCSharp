@@ -1,6 +1,6 @@
 #pragma once
 
-#include "systemstate.h"
+#include "EmuState.h"
 
 typedef struct
 {
@@ -47,7 +47,7 @@ typedef struct
   unsigned char CassBuffer[8192];
 
   void (*AudioEvent)(void);
-  void (*DrawTopBorder[4]) (SystemState*);
-  void (*DrawBottomBorder[4]) (SystemState*);
-  void (*UpdateScreen[4]) (SystemState*);
+  void (*DrawTopBorder[4]) (EmuState*);
+  void (*DrawBottomBorder[4]) (EmuState*);
+  void (*UpdateScreen[4]) (EmuState*);
 } CoCoState;

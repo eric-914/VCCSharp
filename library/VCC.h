@@ -3,7 +3,7 @@
 #include <windows.h>
 
 #include "VccState.h"
-#include "SystemState.h"
+#include "EmuState.h"
 #include "CmdLineArguments.h"
 
 #define TH_RUNNING	0
@@ -28,7 +28,7 @@ extern "C" __declspec(dllexport) unsigned char __cdecl SetRamSize(unsigned char)
 extern "C" __declspec(dllexport) unsigned char __cdecl SetSpeedThrottle(unsigned char);
 
 extern "C" __declspec(dllexport) void __cdecl EmuLoop();
-extern "C" __declspec(dllexport) void __cdecl HardReset(SystemState*);
+extern "C" __declspec(dllexport) void __cdecl HardReset(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl LoadIniFile();
 extern "C" __declspec(dllexport) void __cdecl LoadPack();
 extern "C" __declspec(dllexport) void __cdecl SaveConfig();

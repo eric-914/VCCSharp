@@ -4,7 +4,7 @@
 
 #include "defines.h"
 
-#include "SystemState.h"
+#include "EmuState.h"
 
 typedef struct
 {
@@ -34,5 +34,5 @@ typedef struct
   unsigned char KB_save2;
   int KeySaveToggle;
 
-  SystemState SystemState;
+  EmuState EmuState;
 } VccState;

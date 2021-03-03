@@ -21,11 +21,11 @@ This file is part of VCC (Virtual Color Computer).
 
 #include "defines.h"
 #include "Graphics.h"
-#include "systemstate.h"
+#include "EmuState.h"
 
 extern "C" {
   __declspec(dllexport)
-    void __cdecl UpdateScreen32(SystemState* systemState)
+    void __cdecl UpdateScreen32(EmuState* emuState)
   {
     register unsigned int yStride = 0;
     unsigned char pixel = 0;
@@ -35,11 +35,11 @@ extern "C" {
     char pix = 0, bit = 0, phase = 0;
     char carry1 = 1, carry2 = 0;
     char color = 0;
-    unsigned int* szSurface32 = systemState->PTRsurface32;
-    unsigned short y = systemState->LineCounter;
-    long Xpitch = systemState->SurfacePitch;
-    unsigned short* WideBuffer = (unsigned short*)systemState->RamBuffer;
-    unsigned char* buffer = systemState->RamBuffer;
+    unsigned int* szSurface32 = emuState->PTRsurface32;
+    unsigned short y = emuState->LineCounter;
+    long Xpitch = emuState->SurfacePitch;
+    unsigned short* WideBuffer = (unsigned short*)emuState->RamBuffer;
+    unsigned char* buffer = emuState->RamBuffer;
 
     GraphicsState* gs = GetGraphicsState();
 
@@ -48,13 +48,13 @@ extern "C" {
       {
         szSurface32[x + (((y + gs->VertCenter) * 2) * Xpitch)] = gs->BorderColor32;
 
-        if (!systemState->ScanLines) {
+        if (!emuState->ScanLines) {
           szSurface32[x + (((y + gs->VertCenter) * 2 + 1) * Xpitch)] = gs->BorderColor32;
         }
 
         szSurface32[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((y + gs->VertCenter) * 2) * Xpitch)] = gs->BorderColor32;
 
-        if (!systemState->ScanLines) {
+        if (!emuState->ScanLines) {
           szSurface32[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((y + gs->VertCenter) * 2 + 1) * Xpitch)] = gs->BorderColor32;
         }
       }
@@ -111,7 +111,7 @@ extern "C" {
         szSurface32[yStride += 1] = textPallete[(pixel >> 1) & 1];
         szSurface32[yStride += 1] = textPallete[pixel & 1];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (8);
           yStride += Xpitch;
@@ -170,7 +170,7 @@ extern "C" {
         szSurface32[yStride += 1] = textPallete[(pixel & 1)];
         szSurface32[yStride += 1] = textPallete[(pixel & 1)];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (16);
           yStride += Xpitch;
@@ -409,7 +409,7 @@ extern "C" {
         szSurface32[yStride += 1] = textPallete[(pixel & 1)];
         szSurface32[yStride += 1] = textPallete[(pixel & 1)];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (16);
           yStride += Xpitch;
@@ -456,7 +456,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[1 & (WidePixel >> 9)];
         szSurface32[yStride += 1] = gs->Pallete32Bit[1 & (WidePixel >> 8)];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (16);
           yStride += Xpitch;
@@ -521,7 +521,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[1 & (WidePixel >> 8)];
         szSurface32[yStride += 1] = gs->Pallete32Bit[1 & (WidePixel >> 8)];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (32);
           yStride += Xpitch;
@@ -635,7 +635,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[1 & (WidePixel >> 8)];
         szSurface32[yStride += 1] = gs->Pallete32Bit[1 & (WidePixel >> 8)];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (64);
           yStride += Xpitch;
@@ -848,7 +848,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[1 & (WidePixel >> 8)];
         szSurface32[yStride += 1] = gs->Pallete32Bit[1 & (WidePixel >> 8)];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (128);
           yStride += Xpitch;
@@ -999,7 +999,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[3 & (WidePixel >> 10)];
         szSurface32[yStride += 1] = gs->Pallete32Bit[3 & (WidePixel >> 8)];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (8);
           yStride += Xpitch;
@@ -1038,7 +1038,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[3 & (WidePixel >> 8)];
         szSurface32[yStride += 1] = gs->Pallete32Bit[3 & (WidePixel >> 8)];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (16);
           yStride += Xpitch;
@@ -1103,7 +1103,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[3 & (WidePixel >> 8)];
         szSurface32[yStride += 1] = gs->Pallete32Bit[3 & (WidePixel >> 8)];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (32);
           yStride += Xpitch;
@@ -1220,7 +1220,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[3 & (WidePixel >> 8)];
         szSurface32[yStride += 1] = gs->Pallete32Bit[3 & (WidePixel >> 8)];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (64);
           yStride += Xpitch;
@@ -1426,7 +1426,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[3 & (WidePixel >> 8)];
         szSurface32[yStride += 1] = gs->Pallete32Bit[3 & (WidePixel >> 8)];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (128);
           yStride += Xpitch;
@@ -1572,7 +1572,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[15 & (WidePixel >> 12)];
         szSurface32[yStride += 1] = gs->Pallete32Bit[15 & (WidePixel >> 8)];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (4);
           yStride += Xpitch;
@@ -1599,7 +1599,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[15 & (WidePixel >> 8)];
         szSurface32[yStride += 1] = gs->Pallete32Bit[15 & (WidePixel >> 8)];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (8);
           yStride += Xpitch;
@@ -1640,7 +1640,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[15 & (WidePixel >> 8)];
         szSurface32[yStride += 1] = gs->Pallete32Bit[15 & (WidePixel >> 8)];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (16);
           yStride += Xpitch;
@@ -1709,7 +1709,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[15 & (WidePixel >> 8)];
         szSurface32[yStride += 1] = gs->Pallete32Bit[15 & (WidePixel >> 8)];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (32);
           yStride += Xpitch;
@@ -1819,7 +1819,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[15 & (WidePixel >> 8)];
         szSurface32[yStride += 1] = gs->Pallete32Bit[15 & (WidePixel >> 8)];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (64);
           yStride += Xpitch;
@@ -1932,7 +1932,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (1 & (WidePixel >> 9))];
         szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (1 & (WidePixel >> 8))];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (16);
           yStride += Xpitch;
@@ -1990,13 +1990,13 @@ extern "C" {
               color = 3;
               szSurface32[yStride - 1] = gs->Afacts32[gs->ColorInvert][3];
 
-              if (!systemState->ScanLines) {
+              if (!emuState->ScanLines) {
                 szSurface32[yStride + Xpitch - 1] = gs->Afacts32[gs->ColorInvert][3];
               }
 
               szSurface32[yStride] = gs->Afacts32[gs->ColorInvert][3];
 
-              if (!systemState->ScanLines) {
+              if (!emuState->ScanLines) {
                 szSurface32[yStride + Xpitch] = gs->Afacts32[gs->ColorInvert][3];
               }
 
@@ -2009,13 +2009,13 @@ extern "C" {
 
             szSurface32[yStride += 1] = gs->Afacts32[gs->ColorInvert][color];
 
-            if (!systemState->ScanLines) {
+            if (!emuState->ScanLines) {
               szSurface32[yStride + Xpitch] = gs->Afacts32[gs->ColorInvert][color];
             }
 
             szSurface32[yStride += 1] = gs->Afacts32[gs->ColorInvert][color];
 
-            if (!systemState->ScanLines) {
+            if (!emuState->ScanLines) {
               szSurface32[yStride + Xpitch] = gs->Afacts32[gs->ColorInvert][color];
             }
 
@@ -2048,13 +2048,13 @@ extern "C" {
               color = 3;
               szSurface32[yStride - 1] = gs->Afacts32[gs->ColorInvert][3];
 
-              if (!systemState->ScanLines) {
+              if (!emuState->ScanLines) {
                 szSurface32[yStride + Xpitch - 1] = gs->Afacts32[gs->ColorInvert][3];
               }
 
               szSurface32[yStride] = gs->Afacts32[gs->ColorInvert][3];
 
-              if (!systemState->ScanLines) {
+              if (!emuState->ScanLines) {
                 szSurface32[yStride + Xpitch] = gs->Afacts32[gs->ColorInvert][3];
               }
 
@@ -2067,13 +2067,13 @@ extern "C" {
 
             szSurface32[yStride += 1] = gs->Afacts32[gs->ColorInvert][color];
 
-            if (!systemState->ScanLines) {
+            if (!emuState->ScanLines) {
               szSurface32[yStride + Xpitch] = gs->Afacts32[gs->ColorInvert][color];
             }
 
             szSurface32[yStride += 1] = gs->Afacts32[gs->ColorInvert][color];
 
-            if (!systemState->ScanLines) {
+            if (!emuState->ScanLines) {
               szSurface32[yStride + Xpitch] = gs->Afacts32[gs->ColorInvert][color];
             }
 
@@ -2116,7 +2116,7 @@ extern "C" {
           szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (1 & (WidePixel >> 8))];
           szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (1 & (WidePixel >> 8))];
 
-          if (!systemState->ScanLines)
+          if (!emuState->ScanLines)
           {
             yStride -= (32);
             yStride += Xpitch;
@@ -2231,7 +2231,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (1 & (WidePixel >> 8))];
         szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (1 & (WidePixel >> 8))];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (64);
           yStride += Xpitch;
@@ -2444,7 +2444,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (1 & (WidePixel >> 8))];
         szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (1 & (WidePixel >> 8))];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (128);
           yStride += Xpitch;
@@ -2595,7 +2595,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (3 & (WidePixel >> 10))];
         szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (3 & (WidePixel >> 8))];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (8);
           yStride += Xpitch;
@@ -2634,7 +2634,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (3 & (WidePixel >> 8))];
         szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (3 & (WidePixel >> 8))];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (16);
           yStride += Xpitch;
@@ -2699,7 +2699,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (3 & (WidePixel >> 8))];
         szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (3 & (WidePixel >> 8))];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (32);
           yStride += Xpitch;
@@ -2816,7 +2816,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (3 & (WidePixel >> 8))];
         szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (3 & (WidePixel >> 8))];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (64);
           yStride += Xpitch;
@@ -3022,7 +3022,7 @@ extern "C" {
         szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (3 & (WidePixel >> 8))];
         szSurface32[yStride += 1] = gs->Pallete32Bit[gs->PalleteIndex + (3 & (WidePixel >> 8))];
 
-        if (!systemState->ScanLines)
+        if (!emuState->ScanLines)
         {
           yStride -= (128);
           yStride += Xpitch;
@@ -3199,7 +3199,7 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport)
-    void __cdecl DrawTopBorder32(SystemState* systemState)
+    void __cdecl DrawTopBorder32(EmuState* emuState)
   {
     GraphicsState* gs = GetGraphicsState();
 
@@ -3207,12 +3207,12 @@ extern "C" {
       return;
     }
 
-    for (unsigned short x = 0; x < systemState->WindowSize.x; x++)
+    for (unsigned short x = 0; x < emuState->WindowSize.x; x++)
     {
-      systemState->PTRsurface32[x + ((systemState->LineCounter * 2) * systemState->SurfacePitch)] = gs->BorderColor32;
+      emuState->PTRsurface32[x + ((emuState->LineCounter * 2) * emuState->SurfacePitch)] = gs->BorderColor32;
 
-      if (!systemState->ScanLines) {
-        systemState->PTRsurface32[x + ((systemState->LineCounter * 2 + 1) * systemState->SurfacePitch)] = gs->BorderColor32;
+      if (!emuState->ScanLines) {
+        emuState->PTRsurface32[x + ((emuState->LineCounter * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor32;
       }
     }
   }
@@ -3220,7 +3220,7 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport)
-    void __cdecl DrawBottomBorder32(SystemState* systemState)
+    void __cdecl DrawBottomBorder32(EmuState* emuState)
   {
     GraphicsState* gs = GetGraphicsState();
 
@@ -3228,12 +3228,12 @@ extern "C" {
       return;
     }
 
-    for (unsigned short x = 0; x < systemState->WindowSize.x; x++)
+    for (unsigned short x = 0; x < emuState->WindowSize.x; x++)
     {
-      systemState->PTRsurface32[x + (2 * (systemState->LineCounter + gs->LinesperScreen + gs->VertCenter) * systemState->SurfacePitch)] = gs->BorderColor32;
+      emuState->PTRsurface32[x + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor32;
 
-      if (!systemState->ScanLines) {
-        systemState->PTRsurface32[x + systemState->SurfacePitch + (2 * (systemState->LineCounter + gs->LinesperScreen + gs->VertCenter) * systemState->SurfacePitch)] = gs->BorderColor32;
+      if (!emuState->ScanLines) {
+        emuState->PTRsurface32[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor32;
       }
     }
   }

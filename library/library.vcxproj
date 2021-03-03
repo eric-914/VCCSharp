@@ -257,7 +257,7 @@
     <ClInclude Include="library.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="SystemState.h" />
+    <ClInclude Include="EmuState.h" />
     <ClInclude Include="tcc1014graphics-16.h" />
     <ClInclude Include="tcc1014graphics-24.h" />
     <ClInclude Include="tcc1014graphics-32.h" />

@@ -3,7 +3,7 @@
 #include <windows.h>
 #include <stdint.h>
 
-#include "systemstate.h"
+#include "EmuState.h"
 
 #define ID_SDYNAMENU 5000	//Defines the start and end IDs for the dynamic menus
 #define ID_EDYNAMENU 5100
@@ -91,24 +91,24 @@ typedef struct {
 extern "C" __declspec(dllexport) PakInterfaceState * __cdecl GetPakInterfaceState();
 
 extern "C" __declspec(dllexport) int __cdecl FileID(char*);
-extern "C" __declspec(dllexport) int __cdecl InsertModule(SystemState*, char*);
-extern "C" __declspec(dllexport) int __cdecl LoadCart(SystemState*);
-extern "C" __declspec(dllexport) int __cdecl LoadROMPack(SystemState*, char*);
+extern "C" __declspec(dllexport) int __cdecl InsertModule(EmuState*, char*);
+extern "C" __declspec(dllexport) int __cdecl LoadCart(EmuState*);
+extern "C" __declspec(dllexport) int __cdecl LoadROMPack(EmuState*, char*);
 
 extern "C" __declspec(dllexport) unsigned char __cdecl PakMem8Read(unsigned short);
 extern "C" __declspec(dllexport) unsigned char __cdecl PakPortRead(unsigned char);
 
 extern "C" __declspec(dllexport) unsigned short __cdecl PakAudioSample(void);
 
-extern "C" __declspec(dllexport) void __cdecl DynamicMenuActivated(SystemState*, unsigned char);
-extern "C" __declspec(dllexport) void __cdecl DynamicMenuCallback(SystemState*, char*, int, int);
+extern "C" __declspec(dllexport) void __cdecl DynamicMenuActivated(EmuState*, unsigned char);
+extern "C" __declspec(dllexport) void __cdecl DynamicMenuCallback(EmuState*, char*, int, int);
 extern "C" __declspec(dllexport) void __cdecl GetCurrentModule(char*);
-extern "C" __declspec(dllexport) void __cdecl GetModuleStatus(SystemState*);
+extern "C" __declspec(dllexport) void __cdecl GetModuleStatus(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl PakMem8Write(unsigned char, unsigned char);
 extern "C" __declspec(dllexport) void __cdecl PakPortWrite(unsigned char, unsigned char);
 extern "C" __declspec(dllexport) void __cdecl PakTimer();
-extern "C" __declspec(dllexport) void __cdecl RefreshDynamicMenu(SystemState*);
+extern "C" __declspec(dllexport) void __cdecl RefreshDynamicMenu(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl ResetBus();
-extern "C" __declspec(dllexport) void __cdecl UnloadDll(SystemState*);
-extern "C" __declspec(dllexport) void __cdecl UnloadPack(SystemState*);
+extern "C" __declspec(dllexport) void __cdecl UnloadDll(EmuState*);
+extern "C" __declspec(dllexport) void __cdecl UnloadPack(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl UpdateBusPointer();

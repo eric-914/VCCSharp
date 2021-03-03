@@ -1,6 +1,6 @@
 #pragma once
 
-#include "systemstate.h"
+#include "EmuState.h"
 
 typedef struct
 {
@@ -74,7 +74,7 @@ extern "C" __declspec(dllexport) GraphicsState * __cdecl GetGraphicsState();
 
 extern "C" __declspec(dllexport) unsigned char __cdecl CheckState(unsigned char);
 extern "C" __declspec(dllexport) unsigned char __cdecl SetMonitorType(unsigned char);
-extern "C" __declspec(dllexport) unsigned char __cdecl SetScanLines(SystemState*, unsigned char);
+extern "C" __declspec(dllexport) unsigned char __cdecl SetScanLines(EmuState*, unsigned char);
 
 extern "C" __declspec(dllexport) void MakeRGBPalette(void);
 

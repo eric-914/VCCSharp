@@ -8,7 +8,7 @@
 #include "cpudef.h"
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl QuickLoad(SystemState* systemState, char* binFileName)
+  __declspec(dllexport) unsigned char __cdecl QuickLoad(EmuState* emuState, char* binFileName)
   {
     FILE* binImage = NULL;
     unsigned int memIndex = 0;
@@ -45,7 +45,7 @@ extern "C" {
 
     if ((strcmp(extension, ".rom") == 0) || (strcmp(extension, ".ccc") == 0) || (strcmp(extension, "*.pak") == 0))
     {
-      InsertModule(systemState, binFileName);
+      InsertModule(emuState, binFileName);
 
       return(0);
     }

@@ -6,7 +6,7 @@
 #include "MC6821.h"
 #include "Config.h"
 #include "TC1014MMU.h"
-#include "systemstate.h"
+#include "EmuState.h"
 #include "cpudef.h"
 #include "fileoperations.h"
 
@@ -106,13 +106,13 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl GetModuleStatus(SystemState* systemState)
+  __declspec(dllexport) void __cdecl GetModuleStatus(EmuState* emuState)
   {
     if (instance->ModuleStatus != NULL) {
-      instance->ModuleStatus(systemState->StatusLine);
+      instance->ModuleStatus(emuState->StatusLine);
     }
     else {
-      sprintf(systemState->StatusLine, "");
+      sprintf(emuState->StatusLine, "");
     }
   }
 }
@@ -178,7 +178,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl RefreshDynamicMenu(SystemState* systemState)
+  __declspec(dllexport) void __cdecl RefreshDynamicMenu(EmuState* emuState)
   {
     MENUITEMINFO Mii;
     char MenuTitle[32] = "Cartridge";
@@ -186,14 +186,14 @@ extern "C" {
     static HWND hOld = 0;
     int SubMenuIndex = 0;
 
-    if ((instance->hMenu == NULL) || (systemState->WindowHandle != hOld)) {
-      instance->hMenu = GetMenu(systemState->WindowHandle);
+    if ((instance->hMenu == NULL) || (emuState->WindowHandle != hOld)) {
+      instance->hMenu = GetMenu(emuState->WindowHandle);
     }
     else {
       DeleteMenu(instance->hMenu, 3, MF_BYPOSITION);
     }
 
-    hOld = systemState->WindowHandle;
+    hOld = emuState->WindowHandle;
     instance->hSubMenu[SubMenuIndex] = CreatePopupMenu();
 
     memset(&Mii, 0, sizeof(MENUITEMINFO));
@@ -287,12 +287,12 @@ extern "C" {
       }
     }
 
-    DrawMenuBar(systemState->WindowHandle);
+    DrawMenuBar(emuState->WindowHandle);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DynamicMenuCallback(SystemState* systemState, char* menuName, int menuId, int type)
+  __declspec(dllexport) void __cdecl DynamicMenuCallback(EmuState* emuState, char* menuName, int menuId, int type)
   {
     char temp[256] = "";
 
@@ -302,18 +302,18 @@ extern "C" {
     case 0:
       instance->MenuIndex = 0;
 
-      DynamicMenuCallback(systemState, "Cartridge", 6000, HEAD);	//Recursion is fun
-      DynamicMenuCallback(systemState, "Load Cart", 5001, SLAVE);
+      DynamicMenuCallback(emuState, "Cartridge", 6000, HEAD);	//Recursion is fun
+      DynamicMenuCallback(emuState, "Load Cart", 5001, SLAVE);
 
       sprintf(temp, "Eject Cart: ");
       strcat(temp, instance->Modname);
 
-      DynamicMenuCallback(systemState, temp, 5002, SLAVE);
+      DynamicMenuCallback(emuState, temp, 5002, SLAVE);
 
       break;
 
     case 1:
-      RefreshDynamicMenu(systemState);
+      RefreshDynamicMenu(emuState);
       break;
 
     default:
@@ -330,9 +330,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl UnloadDll(SystemState* systemState)
+  __declspec(dllexport) void __cdecl UnloadDll(EmuState* emuState)
   {
-    if ((instance->DialogOpen == true) && (systemState->EmulationRunning == 1))
+    if ((instance->DialogOpen == true) && (emuState->EmulationRunning == 1))
     {
       MessageBox(0, "Close Configuration Dialog before unloading", "Ok", 0);
 
@@ -358,8 +358,8 @@ extern "C" {
 
     instance->hInstLib = NULL;
 
-    DynamicMenuCallback(systemState, "", 0, 0); //Refresh Menus
-    DynamicMenuCallback(systemState, "", 1, 0);
+    DynamicMenuCallback(emuState, "", 0, 0); //Refresh Menus
+    DynamicMenuCallback(emuState, "", 1, 0);
   }
 }
 
@@ -368,7 +368,7 @@ Load a ROM pack
 return total bytes loaded, or 0 on failure
 */
 extern "C" {
-  __declspec(dllexport) int __cdecl LoadROMPack(SystemState* systemState, char* filename)
+  __declspec(dllexport) int __cdecl LoadROMPack(EmuState* emuState, char* filename)
   {
     constexpr size_t PAK_MAX_MEM = 0x40000;
 
@@ -401,7 +401,7 @@ extern "C" {
 
     fclose(rom_handle);
 
-    UnloadDll(systemState);
+    UnloadDll(emuState);
 
     instance->BankedCartOffset = 0;
     instance->RomPackLoaded = true;
@@ -411,9 +411,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl UnloadPack(SystemState* systemState)
+  __declspec(dllexport) void __cdecl UnloadPack(EmuState* emuState)
   {
-    UnloadDll(systemState);
+    UnloadDll(emuState);
 
     strcpy(instance->DllPath, "");
     strcpy(instance->Modname, "Blank");
@@ -428,10 +428,10 @@ extern "C" {
 
     instance->ExternalRomBuffer = nullptr;
 
-    systemState->ResetPending = 2;
+    emuState->ResetPending = 2;
 
-    DynamicMenuCallback(systemState, "", 0, 0); //Refresh Menus
-    DynamicMenuCallback(systemState, "", 1, 0);
+    DynamicMenuCallback(emuState, "", 0, 0); //Refresh Menus
+    DynamicMenuCallback(emuState, "", 1, 0);
   }
 }
 
@@ -449,11 +449,11 @@ extern "C" {
 */
 void DynamicMenuCallback(char* menuName, int menuId, int type)
 {
-  DynamicMenuCallback(&(GetVccState()->SystemState), menuName, menuId, type);
+  DynamicMenuCallback(&(GetVccState()->EmuState), menuName, menuId, type);
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl InsertModule(SystemState* systemState, char* modulePath)
+  __declspec(dllexport) int __cdecl InsertModule(EmuState* emuState, char* modulePath)
   {
     char catNumber[MAX_LOADSTRING] = "";
     char temp[MAX_LOADSTRING] = "";
@@ -470,25 +470,25 @@ extern "C" {
       break;
 
     case 2:		//File is a ROM image
-      UnloadDll(systemState);
+      UnloadDll(emuState);
 
-      LoadROMPack(systemState, modulePath);
+      LoadROMPack(emuState, modulePath);
 
       strncpy(instance->Modname, modulePath, MAX_PATH);
 
       FilePathStripPath(instance->Modname);
 
-      DynamicMenuCallback(systemState, "", 0, 0); //Refresh Menus
-      DynamicMenuCallback(systemState, "", 1, 0);
+      DynamicMenuCallback(emuState, "", 0, 0); //Refresh Menus
+      DynamicMenuCallback(emuState, "", 1, 0);
 
-      systemState->ResetPending = 2;
+      emuState->ResetPending = 2;
 
       SetCart(1);
 
       return(0);
 
     case 1:		//File is a DLL
-      UnloadDll(systemState);
+      UnloadDll(emuState);
       instance->hInstLib = LoadLibrary(modulePath);
 
       if (instance->hInstLib == NULL) {
@@ -636,7 +636,7 @@ extern "C" {
 
       strcpy(instance->DllPath, modulePath);
 
-      systemState->ResetPending = 2;
+      emuState->ResetPending = 2;
 
       return(0);
     }
@@ -646,7 +646,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl LoadCart(SystemState* systemState)
+  __declspec(dllexport) int __cdecl LoadCart(EmuState* emuState)
   {
     OPENFILENAME ofn;
     char szFileName[MAX_PATH] = "";
@@ -654,7 +654,7 @@ extern "C" {
     memset(&ofn, 0, sizeof(ofn));
 
     ofn.lStructSize = sizeof(OPENFILENAME);
-    ofn.hwndOwner = systemState->WindowHandle;
+    ofn.hwndOwner = emuState->WindowHandle;
     ofn.lpstrFilter = "Program Packs\0*.ROM;*.ccc;*.DLL;*.pak\0\0";			// filter string
     ofn.nFilterIndex = 1;							          // current filter index
     ofn.lpstrFile = szFileName;				          // contains full path and filename on return
@@ -666,7 +666,7 @@ extern "C" {
     ofn.Flags = OFN_HIDEREADONLY;
 
     if (GetOpenFileName(&ofn)) {
-      if (!InsertModule(systemState, szFileName)) {
+      if (!InsertModule(emuState, szFileName)) {
         string tmp = ofn.lpstrFile;
         size_t idx = tmp.find_last_of("\\");
         tmp = tmp.substr(0, idx);
@@ -682,7 +682,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DynamicMenuActivated(SystemState* systemState, unsigned char menuItem)
+  __declspec(dllexport) void __cdecl DynamicMenuActivated(EmuState* emuState, unsigned char menuItem)
   {
     switch (menuItem)
     {
@@ -691,7 +691,7 @@ extern "C" {
       break;
 
     case 2:
-      UnloadPack(systemState);
+      UnloadPack(emuState);
       break;
 
     default:

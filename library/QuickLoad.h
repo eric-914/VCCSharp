@@ -1,5 +1,5 @@
 #pragma once
 
-#include "SystemState.h"
+#include "EmuState.h"
 
-extern "C" __declspec(dllexport) unsigned char __cdecl QuickLoad(SystemState*, char*);
+extern "C" __declspec(dllexport) unsigned char __cdecl QuickLoad(EmuState*, char*);

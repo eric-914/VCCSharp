@@ -50,7 +50,7 @@ VccState* InitializeInstance(VccState* p) {
   strcpy(p->CpuName, "CPUNAME");
   strcpy(p->AppName, "");
 
-  p->SystemState.ScanLines = 0;
+  p->EmuState.ScanLines = 0;
 
   return p;
 }
@@ -67,7 +67,7 @@ extern "C" {
     memset(&ofn, 0, sizeof(ofn));
 
     ofn.lStructSize = sizeof(OPENFILENAME);
-    ofn.hwndOwner = instance->SystemState.WindowHandle;
+    ofn.hwndOwner = instance->EmuState.WindowHandle;
     ofn.lpstrFilter = "INI\0*.ini\0\0";      // filter string
     ofn.nFilterIndex = 1;                    // current filter index
     ofn.lpstrFile = newini;                  // contains full path on return
@@ -83,7 +83,7 @@ extern "C" {
         strcat(newini, ".ini");  //Add extension if none
       }
 
-      WriteIniFile(instance->SystemState); // Flush current config
+      WriteIniFile(instance->EmuState); // Flush current config
 
       if (_stricmp(curini, newini) != 0) {
         if (!CopyFile(curini, newini, false)) { // Copy it to new file
@@ -132,16 +132,16 @@ extern "C" {
   {
     SetClockSpeed(1);
 
-    instance->SystemState.DoubleSpeedFlag = double_speed;
+    instance->EmuState.DoubleSpeedFlag = double_speed;
 
-    if (instance->SystemState.DoubleSpeedFlag) {
-      SetClockSpeed(instance->SystemState.DoubleSpeedMultiplyer * instance->SystemState.TurboSpeedFlag);
+    if (instance->EmuState.DoubleSpeedFlag) {
+      SetClockSpeed(instance->EmuState.DoubleSpeedMultiplyer * instance->EmuState.TurboSpeedFlag);
     }
 
-    instance->SystemState.CPUCurrentSpeed = .894;
+    instance->EmuState.CPUCurrentSpeed = .894;
 
-    if (instance->SystemState.DoubleSpeedFlag) {
-      instance->SystemState.CPUCurrentSpeed *= ((double)instance->SystemState.DoubleSpeedMultiplyer * (double)instance->SystemState.TurboSpeedFlag);
+    if (instance->EmuState.DoubleSpeedFlag) {
+      instance->EmuState.CPUCurrentSpeed *= ((double)instance->EmuState.DoubleSpeedMultiplyer * (double)instance->EmuState.TurboSpeedFlag);
     }
   }
 }
@@ -151,12 +151,12 @@ extern "C" {
   {
     if (multiplayer != QUERY)
     {
-      instance->SystemState.DoubleSpeedMultiplyer = multiplayer;
+      instance->EmuState.DoubleSpeedMultiplyer = multiplayer;
 
-      SetCPUMultiplayerFlag(instance->SystemState.DoubleSpeedFlag);
+      SetCPUMultiplayerFlag(instance->EmuState.DoubleSpeedFlag);
     }
 
-    return(instance->SystemState.DoubleSpeedMultiplyer);
+    return(instance->EmuState.DoubleSpeedMultiplyer);
   }
 }
 
@@ -166,21 +166,21 @@ extern "C" {
     switch (cpuType)
     {
     case 0:
-      instance->SystemState.CpuType = 0;
+      instance->EmuState.CpuType = 0;
 
       strcpy(instance->CpuName, "MC6809");
 
       break;
 
     case 1:
-      instance->SystemState.CpuType = 1;
+      instance->EmuState.CpuType = 1;
 
       strcpy(instance->CpuName, "HD6309");
 
       break;
     }
 
-    return(instance->SystemState.CpuType);
+    return(instance->EmuState.CpuType);
   }
 }
 
@@ -188,10 +188,10 @@ extern "C" {
   __declspec(dllexport) unsigned char __cdecl SetFrameSkip(unsigned char skip)
   {
     if (skip != QUERY) {
-      instance->SystemState.FrameSkip = skip;
+      instance->EmuState.FrameSkip = skip;
     }
 
-    return(instance->SystemState.FrameSkip);
+    return(instance->EmuState.FrameSkip);
   }
 }
 
@@ -199,10 +199,10 @@ extern "C" {
   __declspec(dllexport) unsigned char __cdecl SetRamSize(unsigned char size)
   {
     if (size != QUERY) {
-      instance->SystemState.RamSize = size;
+      instance->EmuState.RamSize = size;
     }
 
-    return(instance->SystemState.RamSize);
+    return(instance->EmuState.RamSize);
   }
 }
 
@@ -220,18 +220,18 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl SetTurboMode(unsigned char data)
   {
-    instance->SystemState.TurboSpeedFlag = (data & 1) + 1;
+    instance->EmuState.TurboSpeedFlag = (data & 1) + 1;
 
     SetClockSpeed(1);
 
-    if (instance->SystemState.DoubleSpeedFlag) {
-      SetClockSpeed(instance->SystemState.DoubleSpeedMultiplyer * instance->SystemState.TurboSpeedFlag);
+    if (instance->EmuState.DoubleSpeedFlag) {
+      SetClockSpeed(instance->EmuState.DoubleSpeedMultiplyer * instance->EmuState.TurboSpeedFlag);
     }
 
-    instance->SystemState.CPUCurrentSpeed = .894;
+    instance->EmuState.CPUCurrentSpeed = .894;
 
-    if (instance->SystemState.DoubleSpeedFlag) {
-      instance->SystemState.CPUCurrentSpeed *= ((double)instance->SystemState.DoubleSpeedMultiplyer * (double)instance->SystemState.TurboSpeedFlag);
+    if (instance->EmuState.DoubleSpeedFlag) {
+      instance->EmuState.CPUCurrentSpeed *= ((double)instance->EmuState.DoubleSpeedMultiplyer * (double)instance->EmuState.TurboSpeedFlag);
     }
   }
 }
@@ -239,9 +239,9 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned __stdcall CartLoad(void* dummy)
   {
-    LoadCart(&(instance->SystemState));
+    LoadCart(&(instance->EmuState));
 
-    instance->SystemState.EmulationRunning = TRUE;
+    instance->EmuState.EmulationRunning = TRUE;
     instance->DialogOpen = false;
 
     return(NULL);
@@ -275,7 +275,7 @@ extern "C" {
     memset(&ofn, 0, sizeof(ofn));
 
     ofn.lStructSize = sizeof(OPENFILENAME);
-    ofn.hwndOwner = instance->SystemState.WindowHandle;
+    ofn.hwndOwner = instance->EmuState.WindowHandle;
     ofn.lpstrFilter = "INI\0*.ini\0\0";
     ofn.nFilterIndex = 1;
     ofn.lpstrFile = szFileName;
@@ -287,12 +287,12 @@ extern "C" {
     ofn.Flags = OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
 
     if (GetOpenFileName(&ofn)) {
-      WriteIniFile(instance->SystemState);    // Flush current profile
+      WriteIniFile(instance->EmuState);    // Flush current profile
       SetIniFilePath(szFileName);             // Set new ini file path
-      ReadIniFile(&(instance->SystemState));  // Load it
-      SynchSystemWithConfig(&(instance->SystemState));
+      ReadIniFile(&(instance->EmuState));  // Load it
+      SynchSystemWithConfig(&(instance->EmuState));
 
-      instance->SystemState.ResetPending = 2;
+      instance->EmuState.ResetPending = 2;
     }
   }
 }
@@ -340,17 +340,17 @@ extern "C" {
     CopyRom();
     ResetBus();
 
-    instance->SystemState.TurboSpeedFlag = 1;
+    instance->EmuState.TurboSpeedFlag = 1;
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl HardReset(SystemState* systemState)
+  __declspec(dllexport) void __cdecl HardReset(EmuState* emuState)
   {
-    systemState->RamBuffer = MmuInit(systemState->RamSize);	//Allocate RAM/ROM & copy ROM Images from source
-    systemState->WRamBuffer = (unsigned short*)systemState->RamBuffer;
+    emuState->RamBuffer = MmuInit(emuState->RamSize);	//Allocate RAM/ROM & copy ROM Images from source
+    emuState->WRamBuffer = (unsigned short*)emuState->RamBuffer;
 
-    if (systemState->RamBuffer == NULL)
+    if (emuState->RamBuffer == NULL)
     {
       MessageBox(NULL, "Can't allocate enough RAM, Out of memory", "Error", 0);
 
@@ -359,7 +359,7 @@ extern "C" {
 
     CPU* cpu = GetCPU();
 
-    if (systemState->CpuType == 1)
+    if (emuState->CpuType == 1)
     {
       cpu->CPUInit = HD6309Init;
       cpu->CPUExec = HD6309Exec;
@@ -387,7 +387,7 @@ extern "C" {
     GimeReset();
     UpdateBusPointer();
 
-    instance->SystemState.TurboSpeedFlag = 1;
+    instance->EmuState.TurboSpeedFlag = 1;
 
     ResetBus();
     SetClockSpeed(1);
@@ -416,36 +416,36 @@ extern "C" {
       {
         instance->Qflag = 0;
 
-        QuickLoad(&(instance->SystemState), instance->QuickLoadFile);
+        QuickLoad(&(instance->EmuState), instance->QuickLoadFile);
       }
 
       StartRender();
 
-      for (uint8_t frames = 1; frames <= instance->SystemState.FrameSkip; frames++)
+      for (uint8_t frames = 1; frames <= instance->EmuState.FrameSkip; frames++)
       {
         frameCounter++;
 
-        if (instance->SystemState.ResetPending != 0) {
-          switch (instance->SystemState.ResetPending)
+        if (instance->EmuState.ResetPending != 0) {
+          switch (instance->EmuState.ResetPending)
           {
           case 1:	//Soft Reset
             SoftReset();
             break;
 
           case 2:	//Hard Reset
-            SynchSystemWithConfig(&(instance->SystemState));
-            DoCls(&(instance->SystemState));
-            HardReset(&(instance->SystemState));
+            SynchSystemWithConfig(&(instance->EmuState));
+            DoCls(&(instance->EmuState));
+            HardReset(&(instance->EmuState));
 
             break;
 
           case 3:
-            DoCls(&(instance->SystemState));
+            DoCls(&(instance->EmuState));
             break;
 
           case 4:
-            SynchSystemWithConfig(&(instance->SystemState));
-            DoCls(&(instance->SystemState));
+            SynchSystemWithConfig(&(instance->EmuState));
+            DoCls(&(instance->EmuState));
 
             break;
 
@@ -453,28 +453,28 @@ extern "C" {
             break;
           }
 
-          instance->SystemState.ResetPending = 0;
+          instance->EmuState.ResetPending = 0;
         }
 
-        if (instance->SystemState.EmulationRunning == 1) {
-          fps += RenderFrame(&(instance->SystemState));
+        if (instance->EmuState.EmulationRunning == 1) {
+          fps += RenderFrame(&(instance->EmuState));
         }
         else {
-          fps += Static(&(instance->SystemState));
+          fps += Static(&(instance->EmuState));
         }
       }
 
-      EndRender(instance->SystemState.FrameSkip);
+      EndRender(instance->EmuState.FrameSkip);
 
-      fps /= instance->SystemState.FrameSkip;
+      fps /= instance->EmuState.FrameSkip;
 
-      GetModuleStatus(&(instance->SystemState));
+      GetModuleStatus(&(instance->EmuState));
 
       char ttbuff[256];
 
-      snprintf(ttbuff, sizeof(ttbuff), "Skip:%2.2i | FPS:%3.0f | %s @ %2.2fMhz| %s", instance->SystemState.FrameSkip, fps, instance->CpuName, instance->SystemState.CPUCurrentSpeed, instance->SystemState.StatusLine);
+      snprintf(ttbuff, sizeof(ttbuff), "Skip:%2.2i | FPS:%3.0f | %s @ %2.2fMhz| %s", instance->EmuState.FrameSkip, fps, instance->CpuName, instance->EmuState.CPUCurrentSpeed, instance->EmuState.StatusLine);
 
-      SetStatusBarText(ttbuff, &(instance->SystemState));
+      SetStatusBarText(ttbuff, &(instance->EmuState));
 
       if (instance->Throttle) { //Do nothing untill the frame is over returning unused time to OS
         FrameWait();
@@ -536,7 +536,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 extern "C" {
   __declspec(dllexport) void __cdecl CreatePrimaryWindow() {
-    if (!CreateDirectDrawWindow(&(instance->SystemState), WndProc))
+    if (!CreateDirectDrawWindow(&(instance->EmuState), WndProc))
     {
       MessageBox(0, "Can't create primary window", "Error", 0);
 
@@ -588,9 +588,9 @@ extern "C" {
   __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, HMODULE hResources, CmdLineArguments cmdArg) {
     HANDLE OleInitialize(NULL); //Work around fixs app crashing in "Open file" system dialogs (related to Adobe acrobat 7+
 
-    SystemState* systemState = &(instance->SystemState);
+    EmuState* emuState = &(instance->EmuState);
     
-    systemState->Resources = hResources;
+    emuState->Resources = hResources;
     InitDirectDraw(hInstance, hResources);
 
     CheckQuickLoad(cmdArg.QLoadFile);
@@ -598,23 +598,23 @@ extern "C" {
     CreatePrimaryWindow();
 
     //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
-    InitConfig(systemState, cmdArg);			//Loads the default config file Vcc.ini from the exec directory
+    InitConfig(emuState, cmdArg);			//Loads the default config file Vcc.ini from the exec directory
 
-    Cls(0, systemState);
-    DynamicMenuCallback(systemState, "", 0, 0);
-    DynamicMenuCallback(systemState, "", 1, 0);
+    Cls(0, emuState);
+    DynamicMenuCallback(emuState, "", 0, 0);
+    DynamicMenuCallback(emuState, "", 1, 0);
 
     SetClockSpeed(1);	//Default clock speed .89 MHZ	
 
-    systemState->ResetPending = 2;
-    systemState->EmulationRunning = instance->AutoStart;
+    emuState->ResetPending = 2;
+    emuState->EmulationRunning = instance->AutoStart;
 
     instance->BinaryRunning = true;
 
     if (strlen(cmdArg.QLoadFile) != 0)
     {
       instance->Qflag = 255;
-      instance->SystemState.EmulationRunning = 1;
+      instance->EmuState.EmulationRunning = 1;
     }
 
     instance->hEventThread = CreateEventHandle();
@@ -647,9 +647,9 @@ extern "C" {
   __declspec(dllexport) INT __cdecl VccShutdown() {
     CloseHandle(instance->hEventThread);
     CloseHandle(instance->hEmuThread);
-    UnloadDll(&(instance->SystemState));
+    UnloadDll(&(instance->EmuState));
     SoundDeInit();
-    WriteIniFile(instance->SystemState); //Save Any changes to ini File
+    WriteIniFile(instance->EmuState); //Save Any changes to ini File
 
     return (INT)(instance->msg.wParam);
   }

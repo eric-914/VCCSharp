@@ -169,9 +169,6 @@
     <ClInclude Include="ConfigModel.h">
       <Filter>models</Filter>
     </ClInclude>
-    <ClInclude Include="SystemState.h">
-      <Filter>models</Filter>
-    </ClInclude>
     <ClInclude Include="Audio.h">
       <Filter>audio</Filter>
     </ClInclude>
@@ -300,6 +297,9 @@
     </ClInclude>
     <ClInclude Include="ConfigIO.h">
       <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="EmuState.h">
+      <Filter>models</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

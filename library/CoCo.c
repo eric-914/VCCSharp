@@ -536,7 +536,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) float __cdecl RenderFrame(SystemState* systemState)
+  __declspec(dllexport) float __cdecl RenderFrame(EmuState* emuState)
   {
     static unsigned short FrameCounter = 0;
 
@@ -545,35 +545,35 @@ extern "C" {
 
     MC6821_irq_fs(0);				//FS low to High transition start of display Blink needs this
 
-    for (systemState->LineCounter = 0; systemState->LineCounter < 13; systemState->LineCounter++) {		//Vertical Blanking 13 H lines
+    for (emuState->LineCounter = 0; emuState->LineCounter < 13; emuState->LineCounter++) {		//Vertical Blanking 13 H lines
       CPUCycle();
     }
 
-    for (systemState->LineCounter = 0; systemState->LineCounter < 4; systemState->LineCounter++) {		//4 non-Rendered top Border lines
+    for (emuState->LineCounter = 0; emuState->LineCounter < 4; emuState->LineCounter++) {		//4 non-Rendered top Border lines
       CPUCycle();
     }
 
-    if (!(FrameCounter % systemState->FrameSkip)) {
-      if (LockScreen(systemState)) {
+    if (!(FrameCounter % emuState->FrameSkip)) {
+      if (LockScreen(emuState)) {
         return(0);
       }
     }
 
-    for (systemState->LineCounter = 0; systemState->LineCounter < (instance->TopBorder - 4); systemState->LineCounter++)
+    for (emuState->LineCounter = 0; emuState->LineCounter < (instance->TopBorder - 4); emuState->LineCounter++)
     {
-      if (!(FrameCounter % systemState->FrameSkip)) {
-        instance->DrawTopBorder[systemState->BitDepth](systemState);
+      if (!(FrameCounter % emuState->FrameSkip)) {
+        instance->DrawTopBorder[emuState->BitDepth](emuState);
       }
 
       CPUCycle();
     }
 
-    for (systemState->LineCounter = 0; systemState->LineCounter < instance->LinesperScreen; systemState->LineCounter++)		//Active Display area		
+    for (emuState->LineCounter = 0; emuState->LineCounter < instance->LinesperScreen; emuState->LineCounter++)		//Active Display area		
     {
       CPUCycle();
 
-      if (!(FrameCounter % systemState->FrameSkip)) {
-        instance->UpdateScreen[systemState->BitDepth](systemState);
+      if (!(FrameCounter % emuState->FrameSkip)) {
+        instance->UpdateScreen[emuState->BitDepth](emuState);
       }
     }
 
@@ -583,22 +583,22 @@ extern "C" {
       GimeAssertVertInterrupt();
     }
 
-    for (systemState->LineCounter = 0; systemState->LineCounter < (instance->BottomBorder); systemState->LineCounter++)	// Bottom border
+    for (emuState->LineCounter = 0; emuState->LineCounter < (instance->BottomBorder); emuState->LineCounter++)	// Bottom border
     {
       CPUCycle();
 
-      if (!(FrameCounter % systemState->FrameSkip)) {
-        instance->DrawBottomBorder[systemState->BitDepth](systemState);
+      if (!(FrameCounter % emuState->FrameSkip)) {
+        instance->DrawBottomBorder[emuState->BitDepth](emuState);
       }
     }
 
-    if (!(FrameCounter % systemState->FrameSkip))
+    if (!(FrameCounter % emuState->FrameSkip))
     {
-      UnlockScreen(systemState);
+      UnlockScreen(emuState);
       SetBorderChange(0);
     }
 
-    for (systemState->LineCounter = 0; systemState->LineCounter < 6; systemState->LineCounter++) {		//Vertical Retrace 6 H lines
+    for (emuState->LineCounter = 0; emuState->LineCounter < 6; emuState->LineCounter++) {		//Vertical Retrace 6 H lines
       CPUCycle();
     }
 

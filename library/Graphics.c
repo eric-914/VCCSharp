@@ -615,13 +615,13 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl SetScanLines(SystemState* systemState, unsigned char lines)
+  __declspec(dllexport) unsigned char __cdecl SetScanLines(EmuState* emuState, unsigned char lines)
   {
     if (lines != QUERY)
     {
-      systemState->ScanLines = lines;
+      emuState->ScanLines = lines;
 
-      Cls(0, systemState);
+      Cls(0, emuState);
 
       instance->BorderChange = 3;
     }

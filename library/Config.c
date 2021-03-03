@@ -18,7 +18,7 @@
 #include "Graphics.h"
 #include "Audio.h"
 
-#include "systemstate.h"
+#include "EmuState.h"
 #include "fileoperations.h"
 #include "CmdLineArguments.h"
 #include "ConfigDialogCallbacks.h"
@@ -85,7 +85,7 @@ unsigned char GetSoundCardIndex(char* soundCardName) {
   return 0;
 }
 
-void AdjustOverclockSpeed(SystemState* systemState, unsigned char change) {
+void AdjustOverclockSpeed(EmuState* emuState, unsigned char change) {
   unsigned char cpuMultiplier = instance->Model.CPUMultiplier + change;
 
   if (cpuMultiplier < 2 || cpuMultiplier > instance->Model.MaxOverclock)
@@ -94,7 +94,7 @@ void AdjustOverclockSpeed(SystemState* systemState, unsigned char change) {
   }
 
   // Send updates to the dialog if it's open.
-  if (systemState->ConfigDialog != NULL)
+  if (emuState->ConfigDialog != NULL)
   {
     HWND hDlg = instance->hWndConfig[1];
 
@@ -103,7 +103,7 @@ void AdjustOverclockSpeed(SystemState* systemState, unsigned char change) {
 
   instance->Model.CPUMultiplier = cpuMultiplier;
 
-  systemState->ResetPending = 4; // Without this, changing the config does nothing.
+  emuState->ResetPending = 4; // Without this, changing the config does nothing.
 }
 
 void GetIniFilePath(char* iniFilePath, char* argIniFile) {
@@ -218,9 +218,9 @@ extern "C" {
  * Valid values are [2,100].
  */
 extern "C" {
-  __declspec(dllexport) void __cdecl IncreaseOverclockSpeed(SystemState* systemState)
+  __declspec(dllexport) void __cdecl IncreaseOverclockSpeed(EmuState* emuState)
   {
-    AdjustOverclockSpeed(systemState, 1);
+    AdjustOverclockSpeed(emuState, 1);
   }
 }
 
@@ -230,9 +230,9 @@ extern "C" {
  * Setting this value to 0 will make the emulator pause.  Hence the minimum of 2.
  */
 extern "C" {
-  __declspec(dllexport) void __cdecl DecreaseOverclockSpeed(SystemState* systemState)
+  __declspec(dllexport) void __cdecl DecreaseOverclockSpeed(EmuState* emuState)
   {
-    AdjustOverclockSpeed(systemState, -1);
+    AdjustOverclockSpeed(emuState, -1);
   }
 }
 
@@ -304,7 +304,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl SelectSerialCaptureFile(SystemState* systemState, char* filename)
+  __declspec(dllexport) int __cdecl SelectSerialCaptureFile(EmuState* emuState, char* filename)
   {
     OPENFILENAME ofn;
     char dummy[MAX_PATH] = "";
@@ -314,7 +314,7 @@ extern "C" {
     memset(&ofn, 0, sizeof(ofn));
 
     ofn.lStructSize = sizeof(OPENFILENAME);
-    ofn.hwndOwner = systemState->WindowHandle; // GetTopWindow(NULL);
+    ofn.hwndOwner = emuState->WindowHandle; // GetTopWindow(NULL);
     ofn.Flags = OFN_HIDEREADONLY;
     ofn.hInstance = GetModuleHandle(0);
     ofn.lpstrDefExt = "txt";
@@ -348,11 +348,11 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SynchSystemWithConfig(SystemState* systemState)
+  __declspec(dllexport) void __cdecl SynchSystemWithConfig(EmuState* emuState)
   {
     SetPaletteType();
     SetAspect(instance->Model.ForceAspect);
-    SetScanLines(systemState, instance->Model.ScanLines);
+    SetScanLines(emuState, instance->Model.ScanLines);
     SetFrameSkip(instance->Model.FrameSkip);
     SetAutoStart(instance->Model.AutoStart);
     SetSpeedThrottle(instance->Model.SpeedThrottle);
@@ -365,12 +365,12 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl InitConfig(SystemState* systemState, CmdLineArguments cmdArg)
+  __declspec(dllexport) void __cdecl InitConfig(EmuState* emuState, CmdLineArguments cmdArg)
   {
     HANDLE hr = NULL;
     int lasterror;
 
-    LoadString(systemState->Resources, IDS_APP_TITLE, instance->Model.Release, MAX_LOADSTRING); //--A kind of "versioning" I guess
+    LoadString(emuState->Resources, IDS_APP_TITLE, instance->Model.Release, MAX_LOADSTRING); //--A kind of "versioning" I guess
 
     GetIniFilePath(instance->IniFilePath, cmdArg.IniFile);
 
@@ -382,13 +382,13 @@ extern "C" {
     joystickState->Left = &(instance->Model.Left);
     joystickState->Right = &(instance->Model.Right);
 
-    ReadIniFile(systemState);
+    ReadIniFile(emuState);
 
-    SynchSystemWithConfig(systemState);
+    SynchSystemWithConfig(emuState);
     ConfigureJoysticks();
 
     unsigned char soundCardIndex = GetSoundCardIndex(instance->Model.SoundCardName);
-    SoundInit(systemState->WindowHandle, instance->SoundCards[soundCardIndex].Guid, instance->Model.AudioRate);
+    SoundInit(emuState->WindowHandle, instance->SoundCards[soundCardIndex].Guid, instance->Model.AudioRate);
 
     //  Try to open the config file.  Create it if necessary.  Abort if failure.
     hr = CreateFile(instance->IniFilePath,
@@ -406,14 +406,14 @@ extern "C" {
       CloseHandle(hr);
 
       if (lasterror != ERROR_ALREADY_EXISTS) {
-        WriteIniFile(*systemState);
+        WriteIniFile(*emuState);
       }
     }
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl ReadIniFile(SystemState* systemState)
+  __declspec(dllexport) void __cdecl ReadIniFile(EmuState* emuState)
   {
     instance->Model = LoadConfiguration(instance->IniFilePath);
 
@@ -421,7 +421,7 @@ extern "C" {
 
     vccKeyboardBuildRuntimeTable((keyboardlayout_e)(instance->Model.KeyMapIndex));
 
-    InsertModule(systemState, instance->Model.ModulePath);	// Should this be here?
+    InsertModule(emuState, instance->Model.ModulePath);	// Should this be here?
 
     if (instance->Model.RememberSize) {
       SetWindowSize(instance->Model.WindowSizeX, instance->Model.WindowSizeY);
@@ -433,10 +433,10 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl WriteIniFile(SystemState systemState)
+  __declspec(dllexport) void __cdecl WriteIniFile(EmuState emuState)
   {
-    instance->Model.WindowSizeX = systemState.WindowSizeX;
-    instance->Model.WindowSizeY = systemState.WindowSizeY;
+    instance->Model.WindowSizeX = emuState.WindowSizeX;
+    instance->Model.WindowSizeY = emuState.WindowSizeY;
 
     GetCurrentModule(instance->Model.ModulePath);
 

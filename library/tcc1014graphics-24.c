@@ -16,25 +16,25 @@ This file is part of VCC (Virtual Color Computer).
     along with VCC (Virtual Color Computer).  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "systemstate.h"
+#include "EmuState.h"
 
 extern "C" {
   __declspec(dllexport)
-    void __cdecl UpdateScreen24(SystemState* systemState)
+    void __cdecl UpdateScreen24(EmuState* emuState)
   {
   }
 }
 
 extern "C" {
   __declspec(dllexport)
-    void __cdecl DrawTopBorder24(SystemState* systemState)
+    void __cdecl DrawTopBorder24(EmuState* emuState)
   {
   }
 }
 
 extern "C" {
   __declspec(dllexport)
-    void __cdecl DrawBottomBorder24(SystemState* systemState)
+    void __cdecl DrawBottomBorder24(EmuState* emuState)
   {
   }
 }

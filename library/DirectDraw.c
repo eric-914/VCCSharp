@@ -14,7 +14,7 @@
 #include "Graphics.h"
 #include "Audio.h"
 
-#include "systemstate.h"
+#include "EmuState.h"
 
 static POINT WindowSize;
 
@@ -46,7 +46,7 @@ DirectDrawState* InitializeInstance(DirectDrawState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) bool __cdecl CreateDirectDrawWindow(SystemState* systemState, WNDPROC WndProc)
+  __declspec(dllexport) bool __cdecl CreateDirectDrawWindow(EmuState* emuState, WNDPROC WndProc)
   {
     const unsigned char ColorValues[4] = { 0, 85, 170, 255 };
 
@@ -77,13 +77,13 @@ extern "C" {
     rc.right = WindowSize.x;
     rc.bottom = WindowSize.y;
 
-    if (systemState->WindowHandle != NULL) //If its go a value it must be a mode switch
+    if (emuState->WindowHandle != NULL) //If its go a value it must be a mode switch
     {
       if (instance->DD != NULL) {
         instance->DD->Release();	//Destroy the current Window
       }
 
-      DestroyWindow(systemState->WindowHandle);
+      DestroyWindow(emuState->WindowHandle);
 
       UnregisterClass(instance->Wcex.lpszClassName, instance->Wcex.hInstance);
     }
@@ -94,13 +94,13 @@ extern "C" {
     instance->Wcex.cbClsExtra = 0;
     instance->Wcex.cbWndExtra = 0;
     instance->Wcex.hInstance = instance->hInstance;
-    instance->Wcex.hIcon = LoadIcon(systemState->Resources, (LPCTSTR)IDI_COCO3);
-    instance->Wcex.hIconSm = LoadIcon(systemState->Resources, (LPCTSTR)IDI_COCO3);
+    instance->Wcex.hIcon = LoadIcon(emuState->Resources, (LPCTSTR)IDI_COCO3);
+    instance->Wcex.hIconSm = LoadIcon(emuState->Resources, (LPCTSTR)IDI_COCO3);
     instance->Wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     instance->Wcex.lpszClassName = instance->AppNameText;
     instance->Wcex.lpszMenuName = NULL;	//Menu is set on WM_CREATE
 
-    if (!systemState->FullScreen)
+    if (!emuState->FullScreen)
     {
       instance->Wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
     }
@@ -112,7 +112,7 @@ extern "C" {
       return FALSE;
     }
 
-    switch (systemState->FullScreen)
+    switch (emuState->FullScreen)
     {
     case 0: //Windowed Mode
       // Calculates the required size of the window rectangle, based on the desired client-rectangle size
@@ -120,16 +120,16 @@ extern "C" {
       AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, TRUE);
 
       // We create the Main window 
-      systemState->WindowHandle = CreateWindow(instance->AppNameText, instance->TitleBarText, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0,
+      emuState->WindowHandle = CreateWindow(instance->AppNameText, instance->TitleBarText, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0,
         rc.right - rc.left, rc.bottom - rc.top,
         NULL, NULL, instance->hInstance, NULL);
 
-      if (!systemState->WindowHandle) {	// Can't create window
+      if (!emuState->WindowHandle) {	// Can't create window
         return FALSE;
       }
 
       // Create the Status Bar Window at the bottom
-      instance->hWndStatusBar = CreateStatusWindow(WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | CCS_BOTTOM, "Ready", systemState->WindowHandle, 2);
+      instance->hWndStatusBar = CreateStatusWindow(WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | CCS_BOTTOM, "Ready", emuState->WindowHandle, 2);
 
       if (!instance->hWndStatusBar) { // Can't create Status bar
         return FALSE;
@@ -143,16 +143,16 @@ extern "C" {
 
       // Get the size of main window and add height of status bar then resize Main
       // re-using rStatBar RECT even though it's the main window
-      GetWindowRect(systemState->WindowHandle, &rStatBar);
-      MoveWindow(systemState->WindowHandle, rStatBar.left, rStatBar.top, // using MoveWindow to resize 
+      GetWindowRect(emuState->WindowHandle, &rStatBar);
+      MoveWindow(emuState->WindowHandle, rStatBar.left, rStatBar.top, // using MoveWindow to resize 
         rStatBar.right - rStatBar.left, (rStatBar.bottom + instance->StatusBarHeight) - rStatBar.top,
         1);
 
       SendMessage(instance->hWndStatusBar, WM_SIZE, 0, 0); // Redraw Status bar in new position
 
-      GetWindowRect(systemState->WindowHandle, &(instance->WindowDefaultSize));	// And save the Final size of the Window 
-      ShowWindow(systemState->WindowHandle, SW_SHOWDEFAULT);
-      UpdateWindow(systemState->WindowHandle);
+      GetWindowRect(emuState->WindowHandle, &(instance->WindowDefaultSize));	// And save the Final size of the Window 
+      ShowWindow(emuState->WindowHandle, SW_SHOWDEFAULT);
+      UpdateWindow(emuState->WindowHandle);
 
       // Create an instance of a DirectDraw object
       hr = DirectDrawCreate(NULL, &(instance->DD), NULL);
@@ -162,7 +162,7 @@ extern "C" {
       }
 
       // Initialize the DirectDraw object
-      hr = instance->DD->SetCooperativeLevel(systemState->WindowHandle, DDSCL_NORMAL);	// Set DDSCL_NORMAL to use windowed mode
+      hr = instance->DD->SetCooperativeLevel(emuState->WindowHandle, DDSCL_NORMAL);	// Set DDSCL_NORMAL to use windowed mode
       if (FAILED(hr)) {
         return FALSE;
       }
@@ -206,7 +206,7 @@ extern "C" {
         return FALSE;
       }
 
-      hr = instance->DDClipper->SetHWnd(0, systemState->WindowHandle);	// Assign your window's HWND to the clipper
+      hr = instance->DDClipper->SetHWnd(0, emuState->WindowHandle);	// Assign your window's HWND to the clipper
 
       if (FAILED(hr)) {
         return FALSE;
@@ -236,15 +236,15 @@ extern "C" {
       ddsd.lPitch = 0;
       ddsd.ddpfPixelFormat.dwRGBBitCount = 0;
 
-      systemState->WindowHandle = CreateWindow(instance->AppNameText, NULL, WS_POPUP | WS_VISIBLE, 0, 0, WindowSize.x, WindowSize.y, NULL, NULL, instance->hInstance, NULL);
+      emuState->WindowHandle = CreateWindow(instance->AppNameText, NULL, WS_POPUP | WS_VISIBLE, 0, 0, WindowSize.x, WindowSize.y, NULL, NULL, instance->hInstance, NULL);
 
-      if (!systemState->WindowHandle) {
+      if (!emuState->WindowHandle) {
         return FALSE;
       }
 
-      GetWindowRect(systemState->WindowHandle, &(instance->WindowDefaultSize));
-      ShowWindow(systemState->WindowHandle, SW_SHOWMAXIMIZED);
-      UpdateWindow(systemState->WindowHandle);
+      GetWindowRect(emuState->WindowHandle, &(instance->WindowDefaultSize));
+      ShowWindow(emuState->WindowHandle, SW_SHOWMAXIMIZED);
+      UpdateWindow(emuState->WindowHandle);
 
       hr = DirectDrawCreate(NULL, &(instance->DD), NULL);		// Initialize DirectDraw
 
@@ -252,7 +252,7 @@ extern "C" {
         return FALSE;
       }
 
-      hr = instance->DD->SetCooperativeLevel(systemState->WindowHandle, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN | DDSCL_NOWINDOWCHANGES);
+      hr = instance->DD->SetCooperativeLevel(emuState->WindowHandle, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN | DDSCL_NOWINDOWCHANGES);
 
       if (FAILED(hr)) {
         return FALSE;
@@ -298,8 +298,8 @@ extern "C" {
       break;
     }
 
-    systemState->WindowSize.x = WindowSize.x;
-    systemState->WindowSize.y = WindowSize.y;
+    emuState->WindowSize.x = WindowSize.x;
+    emuState->WindowSize.y = WindowSize.y;
 
     return TRUE;
   }
@@ -324,9 +324,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetStatusBarText(char* textBuffer, SystemState* systemState)
+  __declspec(dllexport) void __cdecl SetStatusBarText(char* textBuffer, EmuState* emuState)
   {
-    if (!systemState->FullScreen)
+    if (!emuState->FullScreen)
     {
       SendMessage(instance->hWndStatusBar, WM_SETTEXT, strlen(textBuffer), (LPARAM)(LPCSTR)textBuffer);
       SendMessage(instance->hWndStatusBar, WM_SIZE, 0, 0);
@@ -338,9 +338,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl Cls(unsigned int ClsColor, SystemState* systemState)
+  __declspec(dllexport) void __cdecl Cls(unsigned int ClsColor, EmuState* emuState)
   {
-    systemState->ResetPending = 3; //Tell Main loop to hold Emu
+    emuState->ResetPending = 3; //Tell Main loop to hold Emu
 
     instance->Color = ClsColor;
   }
@@ -369,7 +369,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl LockScreen(SystemState* systemState)
+  __declspec(dllexport) unsigned char __cdecl LockScreen(EmuState* emuState)
   {
     HRESULT	hr;
     DDSURFACEDESC ddsd;				      // A structure to describe the surfaces we want
@@ -390,14 +390,14 @@ extern "C" {
     switch (ddsd.ddpfPixelFormat.dwRGBBitCount)
     {
     case 8:
-      systemState->SurfacePitch = ddsd.lPitch;
-      systemState->BitDepth = 0;
+      emuState->SurfacePitch = ddsd.lPitch;
+      emuState->BitDepth = 0;
       break;
 
     case 15:
     case 16:
-      systemState->SurfacePitch = ddsd.lPitch / 2;
-      systemState->BitDepth = 1;
+      emuState->SurfacePitch = ddsd.lPitch / 2;
+      emuState->BitDepth = 1;
       break;
 
     case 24:
@@ -405,13 +405,13 @@ extern "C" {
 
       exit(0);
 
-      systemState->SurfacePitch = ddsd.lPitch;
-      systemState->BitDepth = 2;
+      emuState->SurfacePitch = ddsd.lPitch;
+      emuState->BitDepth = 2;
       break;
 
     case 32:
-      systemState->SurfacePitch = ddsd.lPitch / 4;
-      systemState->BitDepth = 3;
+      emuState->SurfacePitch = ddsd.lPitch / 4;
+      emuState->BitDepth = 3;
       break;
 
     default:
@@ -423,16 +423,16 @@ extern "C" {
       MessageBox(0, "Returning NULL!!", "ok", 0);
     }
 
-    systemState->PTRsurface8 = (unsigned char*)ddsd.lpSurface;
-    systemState->PTRsurface16 = (unsigned short*)ddsd.lpSurface;
-    systemState->PTRsurface32 = (unsigned int*)ddsd.lpSurface;
+    emuState->PTRsurface8 = (unsigned char*)ddsd.lpSurface;
+    emuState->PTRsurface16 = (unsigned short*)ddsd.lpSurface;
+    emuState->PTRsurface32 = (unsigned int*)ddsd.lpSurface;
 
     return(0);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DisplayFlip(SystemState* systemState)	// Double buffering flip
+  __declspec(dllexport) void __cdecl DisplayFlip(EmuState* emuState)	// Double buffering flip
   {
     using namespace std;
 
@@ -442,7 +442,7 @@ extern "C" {
     static RECT	   rect;
     static POINT   p = POINT();
 
-    if (systemState->FullScreen) {	// if we're windowed do the blit, else just Flip
+    if (emuState->FullScreen) {	// if we're windowed do the blit, else just Flip
       hr = instance->DDSurface->Flip(NULL, DDFLIP_NOVSYNC | DDFLIP_DONOTWAIT); //DDFLIP_WAIT
     }
     else
@@ -452,10 +452,10 @@ extern "C" {
       // The ClientToScreen function converts the client-area coordinates of a specified point to screen coordinates.
       // in other word the client rectangle of the main windows 0, 0 (upper-left corner) 
       // in a screen x,y coords which is put back into p  
-      ClientToScreen(systemState->WindowHandle, &p);  // find out where on the primary surface our window lives
+      ClientToScreen(emuState->WindowHandle, &p);  // find out where on the primary surface our window lives
 
       // get the actual client rectangle, which is always 0,0 - w,h
-      GetClientRect(systemState->WindowHandle, &rcDest);
+      GetClientRect(emuState->WindowHandle, &rcDest);
 
       // The OffsetRect function moves the specified rectangle by the specified offsets
       // add the delta screen point we got above, which gives us the client rect in screen coordinates.
@@ -479,7 +479,7 @@ extern "C" {
           //                         because rcDest has already been converted to screen cords, right?   
           static RECT rcClient;
 
-          GetClientRect(systemState->WindowHandle, &rcClient);  // x,y is always 0,0 so right, bottom is w,h
+          GetClientRect(emuState->WindowHandle, &rcClient);  // x,y is always 0,0 so right, bottom is w,h
 
           rcClient.bottom -= instance->StatusBarHeight;
 
@@ -507,13 +507,13 @@ extern "C" {
 
           pDstLeftTop.x = (long)dstX; pDstLeftTop.y = (long)dstY;
 
-          ClientToScreen(systemState->WindowHandle, &pDstLeftTop);
+          ClientToScreen(emuState->WindowHandle, &pDstLeftTop);
 
           static POINT pDstRightBottom = POINT();
 
           pDstRightBottom.x = (long)(dstX + dstWidth); pDstRightBottom.y = (long)(dstY + dstHeight);
 
-          ClientToScreen(systemState->WindowHandle, &pDstRightBottom);
+          ClientToScreen(emuState->WindowHandle, &pDstRightBottom);
 
           SetRect(&rcDest, pDstLeftTop.x, pDstLeftTop.y, pDstRightBottom.x, pDstRightBottom.y);
         }
@@ -524,8 +524,8 @@ extern "C" {
         rcDest.right = rcDest.left + WindowSize.x;
         rcDest.bottom = rcDest.top + WindowSize.y;
 
-        GetWindowRect(systemState->WindowHandle, &rect);
-        MoveWindow(systemState->WindowHandle, rect.left, rect.top, instance->WindowDefaultSize.right - instance->WindowDefaultSize.left, instance->WindowDefaultSize.bottom - instance->WindowDefaultSize.top, 1);
+        GetWindowRect(emuState->WindowHandle, &rect);
+        MoveWindow(emuState->WindowHandle, rect.left, rect.top, instance->WindowDefaultSize.right - instance->WindowDefaultSize.left, instance->WindowDefaultSize.bottom - instance->WindowDefaultSize.top, 1);
       }
 
       if (instance->DDBackSurface == NULL) {
@@ -538,21 +538,21 @@ extern "C" {
     //--Store the updated WindowSizeX/Y for configuration, later.
     static RECT windowSize;
 
-    GetClientRect(systemState->WindowHandle, &windowSize);
+    GetClientRect(emuState->WindowHandle, &windowSize);
 
-    systemState->WindowSizeX = (int)windowSize.right;
-    systemState->WindowSizeY = (int)windowSize.bottom - instance->StatusBarHeight;
+    emuState->WindowSizeX = (int)windowSize.right;
+    emuState->WindowSizeY = (int)windowSize.bottom - instance->StatusBarHeight;
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl UnlockScreen(SystemState* systemState)
+  __declspec(dllexport) void __cdecl UnlockScreen(EmuState* emuState)
   {
     static HRESULT hr;
     static size_t index = 0;
     static HDC hdc;
 
-    if (systemState->FullScreen & instance->InfoBand) //Put StatusText for full screen here
+    if (emuState->FullScreen & instance->InfoBand) //Put StatusText for full screen here
     {
       instance->DDBackSurface->GetDC(&hdc);
       SetBkColor(hdc, RGB(0, 0, 0));
@@ -571,25 +571,25 @@ extern "C" {
 
     hr = instance->DDBackSurface->Unlock(NULL);
 
-    DisplayFlip(systemState);
+    DisplayFlip(emuState);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DoCls(SystemState* systemState)
+  __declspec(dllexport) void __cdecl DoCls(EmuState* emuState)
   {
     unsigned short x = 0, y = 0;
 
-    if (LockScreen(systemState)) {
+    if (LockScreen(emuState)) {
       return;
     }
 
-    switch (systemState->BitDepth)
+    switch (emuState->BitDepth)
     {
     case 0:
       for (y = 0;y < 480; y++) {
         for (x = 0;x < 640; x++) {
-          systemState->PTRsurface8[x + (y * systemState->SurfacePitch)] = instance->Color | 128;
+          emuState->PTRsurface8[x + (y * emuState->SurfacePitch)] = instance->Color | 128;
         }
       }
       break;
@@ -597,7 +597,7 @@ extern "C" {
     case 1:
       for (y = 0;y < 480; y++) {
         for (x = 0;x < 640; x++) {
-          systemState->PTRsurface16[x + (y * systemState->SurfacePitch)] = instance->Color;
+          emuState->PTRsurface16[x + (y * emuState->SurfacePitch)] = instance->Color;
         }
       }
       break;
@@ -606,9 +606,9 @@ extern "C" {
       for (y = 0;y < 480; y++) {
         for (x = 0;x < 640; x++)
         {
-          systemState->PTRsurface8[(x * 3) + (y * systemState->SurfacePitch)] = (instance->Color & 0xFF0000) >> 16;
-          systemState->PTRsurface8[(x * 3) + 1 + (y * systemState->SurfacePitch)] = (instance->Color & 0x00FF00) >> 8;
-          systemState->PTRsurface8[(x * 3) + 2 + (y * systemState->SurfacePitch)] = (instance->Color & 0xFF);
+          emuState->PTRsurface8[(x * 3) + (y * emuState->SurfacePitch)] = (instance->Color & 0xFF0000) >> 16;
+          emuState->PTRsurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = (instance->Color & 0x00FF00) >> 8;
+          emuState->PTRsurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = (instance->Color & 0xFF);
         }
       }
       break;
@@ -616,7 +616,7 @@ extern "C" {
     case 3:
       for (y = 0;y < 480; y++) {
         for (x = 0;x < 640; x++) {
-          systemState->PTRsurface32[x + (y * systemState->SurfacePitch)] = instance->Color;
+          emuState->PTRsurface32[x + (y * emuState->SurfacePitch)] = instance->Color;
         }
       }
       break;
@@ -625,12 +625,12 @@ extern "C" {
       return;
     }
 
-    UnlockScreen(systemState);
+    UnlockScreen(emuState);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) float __cdecl Static(SystemState* systemState)
+  __declspec(dllexport) float __cdecl Static(EmuState* emuState)
   {
     unsigned short x = 0;
     static unsigned short y = 0;
@@ -642,21 +642,21 @@ extern "C" {
     static unsigned char greyScales[4] = { 128, 135, 184, 191 };
     HDC hdc;
 
-    LockScreen(systemState);
+    LockScreen(emuState);
 
-    if (systemState->PTRsurface32 == NULL) {
+    if (emuState->PTRsurface32 == NULL) {
       return(0);
     }
 
-    switch (systemState->BitDepth)
+    switch (emuState->BitDepth)
     {
     case 0:
       for (y = 0;y < 480;y += 2) {
         for (x = 0;x < 160; x++) {
           temp = rand() & 3;
 
-          systemState->PTRsurface32[x + (y * systemState->SurfacePitch >> 2)] = greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24);
-          systemState->PTRsurface32[x + ((y + 1) * systemState->SurfacePitch >> 2)] = greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24);
+          emuState->PTRsurface32[x + (y * emuState->SurfacePitch >> 2)] = greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24);
+          emuState->PTRsurface32[x + ((y + 1) * emuState->SurfacePitch >> 2)] = greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24);
         }
       }
       break;
@@ -666,8 +666,8 @@ extern "C" {
         for (x = 0;x < 320; x++) {
           temp = rand() & 31;
 
-          systemState->PTRsurface32[x + (y * systemState->SurfacePitch >> 1)] = temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27);
-          systemState->PTRsurface32[x + ((y + 1) * systemState->SurfacePitch >> 1)] = temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27);
+          emuState->PTRsurface32[x + (y * emuState->SurfacePitch >> 1)] = temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27);
+          emuState->PTRsurface32[x + ((y + 1) * emuState->SurfacePitch >> 1)] = temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27);
         }
       }
       break;
@@ -675,9 +675,9 @@ extern "C" {
     case 2:
       for (y = 0;y < 480; y++) {
         for (x = 0;x < 640; x++) {
-          systemState->PTRsurface8[(x * 3) + (y * systemState->SurfacePitch)] = temp;
-          systemState->PTRsurface8[(x * 3) + 1 + (y * systemState->SurfacePitch)] = temp << 8;
-          systemState->PTRsurface8[(x * 3) + 2 + (y * systemState->SurfacePitch)] = temp << 16;
+          emuState->PTRsurface8[(x * 3) + (y * emuState->SurfacePitch)] = temp;
+          emuState->PTRsurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = temp << 8;
+          emuState->PTRsurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = temp << 16;
         }
       }
       break;
@@ -687,7 +687,7 @@ extern "C" {
         for (x = 0;x < 640; x++) {
           temp = rand() & 255;
 
-          systemState->PTRsurface32[x + (y * systemState->SurfacePitch)] = temp | (temp << 8) | (temp << 16);
+          emuState->PTRsurface32[x + (y * emuState->SurfacePitch)] = temp | (temp << 8) | (temp << 16);
         }
       }
       break;
@@ -720,7 +720,7 @@ extern "C" {
 
     instance->DDBackSurface->ReleaseDC(hdc);
 
-    UnlockScreen(systemState);
+    UnlockScreen(emuState);
 
     return(CalculateFPS());
   }
@@ -745,7 +745,7 @@ extern "C" {
 
     PauseAudio(true);
 
-    if (!CreateDirectDrawWindow(&(vccState->SystemState), WndProc))
+    if (!CreateDirectDrawWindow(&(vccState->EmuState), WndProc))
     {
       MessageBox(0, "Can't rebuild primary Window", "Error", 0);
 
@@ -753,9 +753,9 @@ extern "C" {
     }
 
     InvalidateBorder();
-    RefreshDynamicMenu(&(vccState->SystemState));
+    RefreshDynamicMenu(&(vccState->EmuState));
 
-    vccState->SystemState.ConfigDialog = NULL;
+    vccState->EmuState.ConfigDialog = NULL;
 
     PauseAudio(false);
   }

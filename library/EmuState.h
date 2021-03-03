@@ -42,4 +42,4 @@ typedef struct
   unsigned char	FullScreen;
 
   char StatusLine[256];
-} SystemState;
+} EmuState;

@@ -15,7 +15,7 @@ extern "C" {
   __declspec(dllexport) void __cdecl HelpAbout(HWND hWnd) {
     VccState* vccState = GetVccState();
 
-    DialogBox(vccState->SystemState.Resources, (LPCTSTR)IDD_ABOUTBOX, hWnd, (DLGPROC)DialogBoxAboutCallback);
+    DialogBox(vccState->EmuState.Resources, (LPCTSTR)IDD_ABOUTBOX, hWnd, (DLGPROC)DialogBoxAboutCallback);
   }
 }
 
@@ -23,8 +23,8 @@ extern "C" {
   __declspec(dllexport) void __cdecl CreateMainMenu(HWND hWnd) {
     VccState* vccState = GetVccState();
 
-    if (!vccState->SystemState.FullScreen) {
-      SetMenu(hWnd, LoadMenu(vccState->SystemState.Resources, MAKEINTRESOURCE(IDR_MENU)));
+    if (!vccState->EmuState.FullScreen) {
+      SetMenu(hWnd, LoadMenu(vccState->EmuState.Resources, MAKEINTRESOURCE(IDR_MENU)));
     }
     else {
       SetMenu(hWnd, NULL);
@@ -44,12 +44,12 @@ extern "C" {
     // open config dialog if not already open
     // opens modeless so you can control the cassette
     // while emulator is still running (assumed)
-    if (vccState->SystemState.ConfigDialog == NULL)
+    if (vccState->EmuState.ConfigDialog == NULL)
     {
-      vccState->SystemState.ConfigDialog = CreateDialog(vccState->SystemState.Resources, (LPCTSTR)IDD_TCONFIG, vccState->SystemState.WindowHandle, (DLGPROC)CreateMainConfigDialogCallback);
+      vccState->EmuState.ConfigDialog = CreateDialog(vccState->EmuState.Resources, (LPCTSTR)IDD_TCONFIG, vccState->EmuState.WindowHandle, (DLGPROC)CreateMainConfigDialogCallback);
 
       // open modeless
-      ShowWindow(vccState->SystemState.ConfigDialog, SW_SHOWNORMAL);
+      ShowWindow(vccState->EmuState.ConfigDialog, SW_SHOWNORMAL);
     }
 #endif
   }
@@ -59,8 +59,8 @@ extern "C" {
   __declspec(dllexport) void __cdecl EmuReset(unsigned char state) {
     VccState* vccState = GetVccState();
 
-    if (vccState->SystemState.EmulationRunning) {
-      vccState->SystemState.ResetPending = state;
+    if (vccState->EmuState.EmulationRunning) {
+      vccState->EmuState.ResetPending = state;
     }
   }
 }
@@ -69,7 +69,7 @@ extern "C" {
   __declspec(dllexport) void __cdecl EmuRun() {
     VccState* vccState = GetVccState();
 
-    vccState->SystemState.EmulationRunning = TRUE;
+    vccState->EmuState.EmulationRunning = TRUE;
 
     InvalidateBorder();
   }
@@ -100,12 +100,12 @@ extern "C" {
 
     VccState* vccState = GetVccState();
 
-    if (vccState->SystemState.EmulationRunning)
+    if (vccState->EmuState.EmulationRunning)
     {
       unsigned int x = LOWORD(lParam);
       unsigned int y = HIWORD(lParam);
 
-      GetClientRect(vccState->SystemState.WindowHandle, &clientSize);
+      GetClientRect(vccState->EmuState.WindowHandle, &clientSize);
 
       x /= ((clientSize.right - clientSize.left) >> 6);
       y /= (((clientSize.bottom - clientSize.top) - 20) >> 6);
@@ -119,13 +119,13 @@ extern "C" {
   __declspec(dllexport) void __cdecl ToggleOnOff() {
     VccState* vccState = GetVccState();
 
-    vccState->SystemState.EmulationRunning = !vccState->SystemState.EmulationRunning;
+    vccState->EmuState.EmulationRunning = !vccState->EmuState.EmulationRunning;
 
-    if (vccState->SystemState.EmulationRunning) {
-      vccState->SystemState.ResetPending = 2;
+    if (vccState->EmuState.EmulationRunning) {
+      vccState->EmuState.ResetPending = 2;
     }
     else {
-      SetStatusBarText("", &(vccState->SystemState));
+      SetStatusBarText("", &(vccState->EmuState));
     }
   }
 }
@@ -137,7 +137,7 @@ extern "C" {
     if (vccState->FlagEmuStop == TH_RUNNING)
     {
       vccState->FlagEmuStop = TH_REQWAIT;
-      vccState->SystemState.FullScreen = !vccState->SystemState.FullScreen;
+      vccState->EmuState.FullScreen = !vccState->EmuState.FullScreen;
     }
   }
 }
@@ -149,7 +149,7 @@ extern "C" {
     VccState* vccState = GetVccState();
 
     // send other keystrokes to the emulator if it is active
-    if (vccState->SystemState.EmulationRunning)
+    if (vccState->EmuState.EmulationRunning)
     {
       vccKeyboardHandleKey((unsigned char)wParam, OEMscan, kEventKeyDown);
 
@@ -182,7 +182,7 @@ extern "C" {
   __declspec(dllexport) void __cdecl SlowDown() {
     VccState* vccState = GetVccState();
 
-    DecreaseOverclockSpeed(&(vccState->SystemState));
+    DecreaseOverclockSpeed(&(vccState->EmuState));
   }
 }
 
@@ -190,6 +190,6 @@ extern "C" {
   __declspec(dllexport) void __cdecl SpeedUp() {
     VccState* vccState = GetVccState();
 
-    IncreaseOverclockSpeed(&(vccState->SystemState));
+    IncreaseOverclockSpeed(&(vccState->EmuState));
   }
 }
