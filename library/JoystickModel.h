@@ -10,4 +10,4 @@ typedef struct {
   unsigned char Fire2;
   unsigned char DiDevice;
   unsigned char HiRes;
-} JoyStickModel;
+} JoystickModel;

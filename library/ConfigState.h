@@ -23,8 +23,6 @@ typedef struct
 
   ConfigModel Model;
 
-  TCHAR AppDataPath[MAX_PATH];
-
   char TextMode;
   char PrtMon;
   unsigned char NumberOfJoysticks;
@@ -42,7 +40,4 @@ typedef struct
 
   SoundCardList SoundCards[MAXCARDS];
   HWND hWndConfig[TABS];
-
-  unsigned char TranslateDisp2Scan[SCAN_TRANS_COUNT];
-  unsigned char TranslateScan2Disp[SCAN_TRANS_COUNT];
 } ConfigState;

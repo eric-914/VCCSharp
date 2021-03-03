@@ -43,10 +43,10 @@ typedef struct {
   char ModulePath[MAX_PATH];
 
   //[LeftJoyStick]  //struct {} JoyStick
-  JoyStickModel Left;
+  JoystickModel Left;
 
   //[RightJoyStick]
-  JoyStickModel Right;
+  JoystickModel Right;
 
   //[DefaultPaths]
   char CassPath[MAX_PATH];

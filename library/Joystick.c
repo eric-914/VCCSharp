@@ -21,17 +21,18 @@ extern "C" {
 
 JoystickState* InitializeInstance(JoystickState* p) {
   p->StickValue = 0;
+
+  p->LeftStickNumber = 0;
   p->LeftStickX = 32;
   p->LeftStickY = 32;
+  p->LeftButton1Status = 0;
+  p->LeftButton2Status = 0;
+
+  p->RightStickNumber = 0;
   p->RightStickX = 32;
   p->RightStickY = 32;
-
-  p->LeftButton1Status = 0;
   p->RightButton1Status = 0;
-  p->LeftButton2Status = 0;
   p->RightButton2Status = 0;
-  p->LeftStickNumber = 0;
-  p->RightStickNumber = 0;
 
   return p;
 }
@@ -165,13 +166,13 @@ extern "C"
       y = 63;
     }
 
-    if (instance->Left.UseMouse == 1)
+    if (instance->Left->UseMouse == 1)
     {
       instance->LeftStickX = x;
       instance->LeftStickY = y;
     }
 
-    if (instance->Right.UseMouse == 1)
+    if (instance->Right->UseMouse == 1)
     {
       instance->RightStickX = x;
       instance->RightStickY = y;
@@ -194,25 +195,25 @@ extern "C"
 {
   __declspec(dllexport) unsigned short __cdecl get_pot_value(unsigned char pot)
   {
-    DIJOYSTATE2 Stick1;
+    DIJOYSTATE2 stick;
 
-    if (instance->Left.UseMouse == 3)
+    if (instance->Left->UseMouse == 3)
     {
-      JoyStickPoll(&Stick1, instance->LeftStickNumber);
+      JoyStickPoll(&stick, instance->LeftStickNumber);
 
-      instance->LeftStickX = (unsigned short)Stick1.lX >> 10;
-      instance->LeftStickY = (unsigned short)Stick1.lY >> 10;
-      instance->LeftButton1Status = Stick1.rgbButtons[0] >> 7;
-      instance->LeftButton2Status = Stick1.rgbButtons[1] >> 7;
+      instance->LeftStickX = (unsigned short)stick.lX >> 10;
+      instance->LeftStickY = (unsigned short)stick.lY >> 10;
+      instance->LeftButton1Status = stick.rgbButtons[0] >> 7;
+      instance->LeftButton2Status = stick.rgbButtons[1] >> 7;
     }
 
-    if (instance->Right.UseMouse == 3)
+    if (instance->Right->UseMouse == 3)
     {
-      JoyStickPoll(&Stick1, instance->RightStickNumber);
-      instance->RightStickX = (unsigned short)Stick1.lX >> 10;
-      instance->RightStickY = (unsigned short)Stick1.lY >> 10;
-      instance->RightButton1Status = Stick1.rgbButtons[0] >> 7;
-      instance->RightButton2Status = Stick1.rgbButtons[1] >> 7;
+      JoyStickPoll(&stick, instance->RightStickNumber);
+      instance->RightStickX = (unsigned short)stick.lX >> 10;
+      instance->RightStickY = (unsigned short)stick.lY >> 10;
+      instance->RightButton1Status = stick.rgbButtons[0] >> 7;
+      instance->RightButton2Status = stick.rgbButtons[1] >> 7;
     }
 
     switch (pot)
@@ -245,7 +246,7 @@ extern "C"
   {
     unsigned char buttonStatus = (side << 1) | state;
 
-    if (instance->Left.UseMouse == 1)
+    if (instance->Left->UseMouse == 1)
       switch (buttonStatus)
       {
       case 0:
@@ -265,7 +266,7 @@ extern "C"
         break;
       }
 
-    if (instance->Right.UseMouse == 1)
+    if (instance->Right->UseMouse == 1)
       switch (buttonStatus)
       {
       case 0:
@@ -296,78 +297,78 @@ extern "C"
     switch (phase)
     {
     case 0:
-      if (instance->Left.UseMouse == 0)
+      if (instance->Left->UseMouse == 0)
       {
-        if (scanCode == instance->Left.Left)
+        if (scanCode == instance->Left->Left)
         {
           instance->LeftStickX = 32;
           retValue = 0;
         }
 
-        if (scanCode == instance->Left.Right)
+        if (scanCode == instance->Left->Right)
         {
           instance->LeftStickX = 32;
           retValue = 0;
         }
 
-        if (scanCode == instance->Left.Up)
+        if (scanCode == instance->Left->Up)
         {
           instance->LeftStickY = 32;
           retValue = 0;
         }
 
-        if (scanCode == instance->Left.Down)
+        if (scanCode == instance->Left->Down)
         {
           instance->LeftStickY = 32;
           retValue = 0;
         }
 
-        if (scanCode == instance->Left.Fire1)
+        if (scanCode == instance->Left->Fire1)
         {
           instance->LeftButton1Status = 0;
           retValue = 0;
         }
 
-        if (scanCode == instance->Left.Fire2)
+        if (scanCode == instance->Left->Fire2)
         {
           instance->LeftButton2Status = 0;
           retValue = 0;
         }
       }
 
-      if (instance->Right.UseMouse == 0)
+      if (instance->Right->UseMouse == 0)
       {
-        if (scanCode == instance->Right.Left)
+        if (scanCode == instance->Right->Left)
         {
           instance->RightStickX = 32;
           retValue = 0;
         }
 
-        if (scanCode == instance->Right.Right)
+        if (scanCode == instance->Right->Right)
         {
           instance->RightStickX = 32;
           retValue = 0;
         }
 
-        if (scanCode == instance->Right.Up)
+        if (scanCode == instance->Right->Up)
         {
           instance->RightStickY = 32;
           retValue = 0;
         }
 
-        if (scanCode == instance->Right.Down)
+        if (scanCode == instance->Right->Down)
         {
           instance->RightStickY = 32;
           retValue = 0;
         }
 
-        if (scanCode == instance->Right.Fire1)
+        if (scanCode == instance->Right->Fire1)
         {
           instance->RightButton1Status = 0;
           retValue = 0;
         }
 
-        if (scanCode == instance->Right.Fire2)
+        if (scanCode == instance->Right->Fire2)
         {
           instance->RightButton2Status = 0;
           retValue = 0;
@@ -376,78 +377,78 @@ extern "C"
       break;
 
     case 1:
-      if (instance->Left.UseMouse == 0)
+      if (instance->Left->UseMouse == 0)
       {
-        if (scanCode == instance->Left.Left)
+        if (scanCode == instance->Left->Left)
         {
           instance->LeftStickX = 0;
           retValue = 0;
         }
 
-        if (scanCode == instance->Left.Right)
+        if (scanCode == instance->Left->Right)
         {
           instance->LeftStickX = 63;
           retValue = 0;
         }
 
-        if (scanCode == instance->Left.Up)
+        if (scanCode == instance->Left->Up)
         {
           instance->LeftStickY = 0;
           retValue = 0;
         }
 
-        if (scanCode == instance->Left.Down)
+        if (scanCode == instance->Left->Down)
         {
           instance->LeftStickY = 63;
           retValue = 0;
         }
 
-        if (scanCode == instance->Left.Fire1)
+        if (scanCode == instance->Left->Fire1)
         {
           instance->LeftButton1Status = 1;
           retValue = 0;
         }
 
-        if (scanCode == instance->Left.Fire2)
+        if (scanCode == instance->Left->Fire2)
         {
           instance->LeftButton2Status = 1;
           retValue = 0;
         }
       }
 
-      if (instance->Right.UseMouse == 0)
+      if (instance->Right->UseMouse == 0)
       {
-        if (scanCode == instance->Right.Left)
+        if (scanCode == instance->Right->Left)
         {
           retValue = 0;
           instance->RightStickX = 0;
         }
 
-        if (scanCode == instance->Right.Right)
+        if (scanCode == instance->Right->Right)
         {
           instance->RightStickX = 63;
           retValue = 0;
         }
 
-        if (scanCode == instance->Right.Up)
+        if (scanCode == instance->Right->Up)
         {
           instance->RightStickY = 0;
           retValue = 0;
         }
 
-        if (scanCode == instance->Right.Down)
+        if (scanCode == instance->Right->Down)
         {
           instance->RightStickY = 63;
           retValue = 0;
         }
 
-        if (scanCode == instance->Right.Fire1)
+        if (scanCode == instance->Right->Fire1)
         {
           instance->RightButton1Status = 1;
           retValue = 0;
         }
 
-        if (scanCode == instance->Right.Fire2)
+        if (scanCode == instance->Right->Fire2)
         {
           instance->RightButton2Status = 1;
           retValue = 0;

@@ -25,7 +25,6 @@ extern "C" __declspec(dllexport) unsigned char __cdecl TranslateScan2Display(int
 extern "C" __declspec(dllexport) void __cdecl ReadIniFile(SystemState*);
 extern "C" __declspec(dllexport) void __cdecl WriteIniFile(SystemState systemState);
 
-extern "C" __declspec(dllexport) void __cdecl BuildTransDisp2ScanTable();
 extern "C" __declspec(dllexport) void __cdecl DecreaseOverclockSpeed(SystemState*);
 extern "C" __declspec(dllexport) void __cdecl GetIniFilePath(char*);
 extern "C" __declspec(dllexport) void __cdecl IncreaseOverclockSpeed(SystemState*);

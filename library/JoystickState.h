@@ -5,18 +5,19 @@
 typedef struct
 {
   unsigned short StickValue;
+
+  unsigned char LeftStickNumber;
+  unsigned char LeftButton1Status;
+  unsigned char LeftButton2Status;
   unsigned short LeftStickX;
   unsigned short LeftStickY;
+
+  unsigned char RightStickNumber;
+  unsigned char RightButton1Status;
+  unsigned char RightButton2Status;
   unsigned short RightStickX;
   unsigned short RightStickY;
 
-  unsigned char LeftButton1Status;
-  unsigned char RightButton1Status;
-  unsigned char LeftButton2Status;
-  unsigned char RightButton2Status;
-  unsigned char LeftStickNumber;
-  unsigned char RightStickNumber;
-
-  JoyStickModel Left;
-  JoyStickModel Right;
+  JoystickModel* Left;
+  JoystickModel* Right;
 } JoystickState;

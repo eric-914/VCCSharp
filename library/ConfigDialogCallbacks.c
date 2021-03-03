@@ -11,6 +11,7 @@
 #include "Keyboard.h"
 #include "Cassette.h"
 #include "Joystick.h"
+#include "JoystickModel.h"
 
 const unsigned short int Cpuchoice[2] = { IDC_6809, IDC_6309 };
 const unsigned short int Monchoice[2] = { IDC_COMPOSITE, IDC_RGB };
@@ -60,7 +61,7 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void SetDialogTapeMode(HWND hDlg, unsigned char tapeMode) {
     SendDlgItemMessage(hDlg, IDC_MODE, WM_SETTEXT, strlen(TapeModes[tapeMode]), (LPARAM)(LPCSTR)(TapeModes[tapeMode]));
-  
+
     //--Update visual state
     switch (tapeMode)
     {
@@ -472,14 +473,17 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) LRESULT CALLBACK CreateJoyStickConfigDialogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
   {
-    static int LeftJoyStick[6] = { IDC_LEFT_LEFT, IDC_LEFT_RIGHT, IDC_LEFT_UP, IDC_LEFT_DOWN, IDC_LEFT_FIRE1, IDC_LEFT_FIRE2 };
-    static int RightJoyStick[6] = { IDC_RIGHT_LEFT, IDC_RIGHT_RIGHT, IDC_RIGHT_UP, IDC_RIGHT_DOWN, IDC_RIGHT_FIRE1, IDC_RIGHT_FIRE2 };
-    static int LeftRadios[4] = { IDC_LEFT_KEYBOARD, IDC_LEFT_USEMOUSE, IDC_LEFTAUDIO, IDC_LEFTJOYSTICK };
-    static int RightRadios[4] = { IDC_RIGHT_KEYBOARD, IDC_RIGHT_USEMOUSE, IDC_RIGHTAUDIO, IDC_RIGHTJOYSTICK };
+    const int LeftJoyStick[6] = { IDC_LEFT_LEFT, IDC_LEFT_RIGHT, IDC_LEFT_UP, IDC_LEFT_DOWN, IDC_LEFT_FIRE1, IDC_LEFT_FIRE2 };
+    const int RightJoyStick[6] = { IDC_RIGHT_LEFT, IDC_RIGHT_RIGHT, IDC_RIGHT_UP, IDC_RIGHT_DOWN, IDC_RIGHT_FIRE1, IDC_RIGHT_FIRE2 };
+    const int LeftRadios[4] = { IDC_LEFT_KEYBOARD, IDC_LEFT_USEMOUSE, IDC_LEFTAUDIO, IDC_LEFTJOYSTICK };
+    const int RightRadios[4] = { IDC_RIGHT_KEYBOARD, IDC_RIGHT_USEMOUSE, IDC_RIGHTAUDIO, IDC_RIGHTJOYSTICK };
 
-    ConfigState* configState = GetConfigState();
-    JoystickState* joystickState = GetJoystickState();
     VccState* vccState = GetVccState();
+
+    JoystickModel left = *(GetJoystickState()->Left);
+    JoystickModel right = *(GetJoystickState()->Right);
+
+    unsigned char numberOfJoysticks = GetConfigState()->NumberOfJoysticks;
 
     switch (message)
     {
@@ -500,67 +504,65 @@ extern "C" {
 
       for (unsigned char temp = 0; temp < 6; temp++)
       {
-        EnableWindow(GetDlgItem(hDlg, LeftJoyStick[temp]), (joystickState->Left.UseMouse == 0));
+        EnableWindow(GetDlgItem(hDlg, LeftJoyStick[temp]), (left.UseMouse == 0));
       }
 
       for (unsigned char temp = 0; temp < 6; temp++)
       {
-        EnableWindow(GetDlgItem(hDlg, RightJoyStick[temp]), (joystickState->Right.UseMouse == 0));
+        EnableWindow(GetDlgItem(hDlg, RightJoyStick[temp]), (right.UseMouse == 0));
       }
 
       for (unsigned char temp = 0; temp <= 2; temp++)
       {
-        SendDlgItemMessage(hDlg, LeftJoystickEmulation[temp], BM_SETCHECK, (temp == joystickState->Left.HiRes), 0);
-        SendDlgItemMessage(hDlg, RightJoystickEmulation[temp], BM_SETCHECK, (temp == joystickState->Right.HiRes), 0);
+        SendDlgItemMessage(hDlg, LeftJoystickEmulation[temp], BM_SETCHECK, (temp == left.HiRes), 0);
+        SendDlgItemMessage(hDlg, RightJoystickEmulation[temp], BM_SETCHECK, (temp == right.HiRes), 0);
       }
 
-      EnableWindow(GetDlgItem(hDlg, IDC_LEFTAUDIODEVICE), (joystickState->Left.UseMouse == 2));
-      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTAUDIODEVICE), (joystickState->Right.UseMouse == 2));
-      EnableWindow(GetDlgItem(hDlg, IDC_LEFTJOYSTICKDEVICE), (joystickState->Left.UseMouse == 3));
-      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTJOYSTICKDEVICE), (joystickState->Right.UseMouse == 3));
+      EnableWindow(GetDlgItem(hDlg, IDC_LEFTAUDIODEVICE), (left.UseMouse == 2));
+      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTAUDIODEVICE), (right.UseMouse == 2));
+      EnableWindow(GetDlgItem(hDlg, IDC_LEFTJOYSTICKDEVICE), (left.UseMouse == 3));
+      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTJOYSTICKDEVICE), (right.UseMouse == 3));
 
-      EnableWindow(GetDlgItem(hDlg, IDC_LEFTJOYSTICK), (configState->NumberOfJoysticks > 0));		//Grey the Joystick Radios if
-      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTJOYSTICK), (configState->NumberOfJoysticks > 0));	  //No Joysticks are present
+      EnableWindow(GetDlgItem(hDlg, IDC_LEFTJOYSTICK), (numberOfJoysticks > 0));		//Grey the Joystick Radios if
+      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTJOYSTICK), (numberOfJoysticks > 0));	  //No Joysticks are present
 
       //populate joystick combo boxs
-      for (unsigned char index = 0; index < configState->NumberOfJoysticks; index++)
+      for (unsigned char index = 0; index < numberOfJoysticks; index++)
       {
         SendDlgItemMessage(hDlg, IDC_RIGHTJOYSTICKDEVICE, CB_ADDSTRING, (WPARAM)0, (LPARAM)GetStickName(index));
         SendDlgItemMessage(hDlg, IDC_LEFTJOYSTICKDEVICE, CB_ADDSTRING, (WPARAM)0, (LPARAM)GetStickName(index));
       }
 
-      SendDlgItemMessage(hDlg, IDC_RIGHTJOYSTICKDEVICE, CB_SETCURSEL, (WPARAM)joystickState->Right.DiDevice, (LPARAM)0);
-      SendDlgItemMessage(hDlg, IDC_LEFTJOYSTICKDEVICE, CB_SETCURSEL, (WPARAM)joystickState->Left.DiDevice, (LPARAM)0);
+      SendDlgItemMessage(hDlg, IDC_RIGHTJOYSTICKDEVICE, CB_SETCURSEL, (WPARAM)right.DiDevice, (LPARAM)0);
+      SendDlgItemMessage(hDlg, IDC_LEFTJOYSTICKDEVICE, CB_SETCURSEL, (WPARAM)left.DiDevice, (LPARAM)0);
 
-      SendDlgItemMessage(hDlg, LeftJoyStick[0], CB_SETCURSEL, (WPARAM)TranslateScan2Display(joystickState->Left.Left), (LPARAM)0);
-      SendDlgItemMessage(hDlg, LeftJoyStick[1], CB_SETCURSEL, (WPARAM)TranslateScan2Display(joystickState->Left.Right), (LPARAM)0);
-      SendDlgItemMessage(hDlg, LeftJoyStick[2], CB_SETCURSEL, (WPARAM)TranslateScan2Display(joystickState->Left.Up), (LPARAM)0);
-      SendDlgItemMessage(hDlg, LeftJoyStick[3], CB_SETCURSEL, (WPARAM)TranslateScan2Display(joystickState->Left.Down), (LPARAM)0);
-      SendDlgItemMessage(hDlg, LeftJoyStick[4], CB_SETCURSEL, (WPARAM)TranslateScan2Display(joystickState->Left.Fire1), (LPARAM)0);
-      SendDlgItemMessage(hDlg, LeftJoyStick[5], CB_SETCURSEL, (WPARAM)TranslateScan2Display(joystickState->Left.Fire2), (LPARAM)0);
+      SendDlgItemMessage(hDlg, LeftJoyStick[0], CB_SETCURSEL, (WPARAM)TranslateScan2Display(left.Left), (LPARAM)0);
+      SendDlgItemMessage(hDlg, LeftJoyStick[1], CB_SETCURSEL, (WPARAM)TranslateScan2Display(left.Right), (LPARAM)0);
+      SendDlgItemMessage(hDlg, LeftJoyStick[2], CB_SETCURSEL, (WPARAM)TranslateScan2Display(left.Up), (LPARAM)0);
+      SendDlgItemMessage(hDlg, LeftJoyStick[3], CB_SETCURSEL, (WPARAM)TranslateScan2Display(left.Down), (LPARAM)0);
+      SendDlgItemMessage(hDlg, LeftJoyStick[4], CB_SETCURSEL, (WPARAM)TranslateScan2Display(left.Fire1), (LPARAM)0);
+      SendDlgItemMessage(hDlg, LeftJoyStick[5], CB_SETCURSEL, (WPARAM)TranslateScan2Display(left.Fire2), (LPARAM)0);
 
-      SendDlgItemMessage(hDlg, RightJoyStick[0], CB_SETCURSEL, (WPARAM)TranslateScan2Display(joystickState->Right.Left), (LPARAM)0);
-      SendDlgItemMessage(hDlg, RightJoyStick[1], CB_SETCURSEL, (WPARAM)TranslateScan2Display(joystickState->Right.Right), (LPARAM)0);
-      SendDlgItemMessage(hDlg, RightJoyStick[2], CB_SETCURSEL, (WPARAM)TranslateScan2Display(joystickState->Right.Up), (LPARAM)0);
-      SendDlgItemMessage(hDlg, RightJoyStick[3], CB_SETCURSEL, (WPARAM)TranslateScan2Display(joystickState->Right.Down), (LPARAM)0);
-      SendDlgItemMessage(hDlg, RightJoyStick[4], CB_SETCURSEL, (WPARAM)TranslateScan2Display(joystickState->Right.Fire1), (LPARAM)0);
-      SendDlgItemMessage(hDlg, RightJoyStick[5], CB_SETCURSEL, (WPARAM)TranslateScan2Display(joystickState->Right.Fire2), (LPARAM)0);
+      SendDlgItemMessage(hDlg, RightJoyStick[0], CB_SETCURSEL, (WPARAM)TranslateScan2Display(right.Left), (LPARAM)0);
+      SendDlgItemMessage(hDlg, RightJoyStick[1], CB_SETCURSEL, (WPARAM)TranslateScan2Display(right.Right), (LPARAM)0);
+      SendDlgItemMessage(hDlg, RightJoyStick[2], CB_SETCURSEL, (WPARAM)TranslateScan2Display(right.Up), (LPARAM)0);
+      SendDlgItemMessage(hDlg, RightJoyStick[3], CB_SETCURSEL, (WPARAM)TranslateScan2Display(right.Down), (LPARAM)0);
+      SendDlgItemMessage(hDlg, RightJoyStick[4], CB_SETCURSEL, (WPARAM)TranslateScan2Display(right.Fire1), (LPARAM)0);
+      SendDlgItemMessage(hDlg, RightJoyStick[5], CB_SETCURSEL, (WPARAM)TranslateScan2Display(right.Fire2), (LPARAM)0);
 
       for (unsigned char temp = 0; temp <= 3; temp++)
       {
-        SendDlgItemMessage(hDlg, LeftRadios[temp], BM_SETCHECK, temp == joystickState->Left.UseMouse, 0);
+        SendDlgItemMessage(hDlg, LeftRadios[temp], BM_SETCHECK, temp == left.UseMouse, 0);
       }
 
       for (unsigned char temp = 0; temp <= 3; temp++)
       {
-        SendDlgItemMessage(hDlg, RightRadios[temp], BM_SETCHECK, temp == joystickState->Right.UseMouse, 0);
+        SendDlgItemMessage(hDlg, RightRadios[temp], BM_SETCHECK, temp == right.UseMouse, 0);
       }
 
-      configState->Model.Left = joystickState->Left;
-      configState->Model.Right = joystickState->Right;
+      SendDlgItemMessage(hDlg, IDC_LEFTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(JoystickIcons[left.UseMouse]));
+      SendDlgItemMessage(hDlg, IDC_RIGHTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(JoystickIcons[right.UseMouse]));
 
-      SendDlgItemMessage(hDlg, IDC_LEFTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(JoystickIcons[joystickState->Left.UseMouse]));
-      SendDlgItemMessage(hDlg, IDC_RIGHTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(JoystickIcons[joystickState->Right.UseMouse]));
       break;
 
     case WM_COMMAND:
@@ -574,7 +576,7 @@ extern "C" {
 
           SendDlgItemMessage(hDlg, LeftRadios[temp], BM_SETCHECK, 1, 0);
 
-          configState->Model.Left.UseMouse = temp;
+          left.UseMouse = temp;
         }
       }
 
@@ -587,7 +589,7 @@ extern "C" {
 
           SendDlgItemMessage(hDlg, RightRadios[temp], BM_SETCHECK, 1, 0);
 
-          configState->Model.Right.UseMouse = temp;
+          right.UseMouse = temp;
         }
       }
 
@@ -600,7 +602,7 @@ extern "C" {
 
           SendDlgItemMessage(hDlg, LeftJoystickEmulation[temp], BM_SETCHECK, 1, 0);
 
-          configState->Model.Left.HiRes = temp;
+          left.HiRes = temp;
         }
       }
 
@@ -614,44 +616,48 @@ extern "C" {
 
           SendDlgItemMessage(hDlg, RightJoystickEmulation[temp], BM_SETCHECK, 1, 0);
 
-          configState->Model.Right.HiRes = temp;
+          right.HiRes = temp;
         }
       }
 
       for (unsigned char temp = 0; temp < 6; temp++)
       {
-        EnableWindow(GetDlgItem(hDlg, LeftJoyStick[temp]), (configState->Model.Left.UseMouse == 0));
+        EnableWindow(GetDlgItem(hDlg, LeftJoyStick[temp]), (left.UseMouse == 0));
       }
 
       for (unsigned char temp = 0; temp < 6; temp++)
       {
-        EnableWindow(GetDlgItem(hDlg, RightJoyStick[temp]), (configState->Model.Right.UseMouse == 0));
+        EnableWindow(GetDlgItem(hDlg, RightJoyStick[temp]), (right.UseMouse == 0));
       }
 
-      EnableWindow(GetDlgItem(hDlg, IDC_LEFTAUDIODEVICE), (configState->Model.Left.UseMouse == 2));
-      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTAUDIODEVICE), (configState->Model.Right.UseMouse == 2));
-      EnableWindow(GetDlgItem(hDlg, IDC_LEFTJOYSTICKDEVICE), (configState->Model.Left.UseMouse == 3));
-      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTJOYSTICKDEVICE), (configState->Model.Right.UseMouse == 3));
+      EnableWindow(GetDlgItem(hDlg, IDC_LEFTAUDIODEVICE), (left.UseMouse == 2));
+      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTAUDIODEVICE), (right.UseMouse == 2));
+      EnableWindow(GetDlgItem(hDlg, IDC_LEFTJOYSTICKDEVICE), (left.UseMouse == 3));
+      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTJOYSTICKDEVICE), (right.UseMouse == 3));
 
-      configState->Model.Left.Left = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[0], CB_GETCURSEL, 0, 0));
-      configState->Model.Left.Right = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[1], CB_GETCURSEL, 0, 0));
-      configState->Model.Left.Up = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[2], CB_GETCURSEL, 0, 0));
-      configState->Model.Left.Down = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[3], CB_GETCURSEL, 0, 0));
-      configState->Model.Left.Fire1 = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[4], CB_GETCURSEL, 0, 0));
-      configState->Model.Left.Fire2 = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[5], CB_GETCURSEL, 0, 0));
+      left.Left = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[0], CB_GETCURSEL, 0, 0));
+      left.Right = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[1], CB_GETCURSEL, 0, 0));
+      left.Up = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[2], CB_GETCURSEL, 0, 0));
+      left.Down = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[3], CB_GETCURSEL, 0, 0));
+      left.Fire1 = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[4], CB_GETCURSEL, 0, 0));
+      left.Fire2 = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[5], CB_GETCURSEL, 0, 0));
 
-      configState->Model.Right.Left = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[0], CB_GETCURSEL, 0, 0));
-      configState->Model.Right.Right = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[1], CB_GETCURSEL, 0, 0));
-      configState->Model.Right.Up = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[2], CB_GETCURSEL, 0, 0));
-      configState->Model.Right.Down = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[3], CB_GETCURSEL, 0, 0));
-      configState->Model.Right.Fire1 = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[4], CB_GETCURSEL, 0, 0));
-      configState->Model.Right.Fire2 = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[5], CB_GETCURSEL, 0, 0));
+      char t[10];
+      _itoa((int)left.Fire2, t, 10);
+      OutputDebugString(t);
 
-      configState->Model.Right.DiDevice = (unsigned char)SendDlgItemMessage(hDlg, IDC_RIGHTJOYSTICKDEVICE, CB_GETCURSEL, 0, 0);
-      configState->Model.Left.DiDevice = (unsigned char)SendDlgItemMessage(hDlg, IDC_LEFTJOYSTICKDEVICE, CB_GETCURSEL, 0, 0);	//Fix Me;
+      right.Left = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[0], CB_GETCURSEL, 0, 0));
+      right.Right = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[1], CB_GETCURSEL, 0, 0));
+      right.Up = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[2], CB_GETCURSEL, 0, 0));
+      right.Down = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[3], CB_GETCURSEL, 0, 0));
+      right.Fire1 = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[4], CB_GETCURSEL, 0, 0));
+      right.Fire2 = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[5], CB_GETCURSEL, 0, 0));
 
-      SendDlgItemMessage(hDlg, IDC_LEFTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(JoystickIcons[configState->Model.Left.UseMouse]));
-      SendDlgItemMessage(hDlg, IDC_RIGHTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(JoystickIcons[configState->Model.Right.UseMouse]));
+      right.DiDevice = (unsigned char)SendDlgItemMessage(hDlg, IDC_RIGHTJOYSTICKDEVICE, CB_GETCURSEL, 0, 0);
+      left.DiDevice = (unsigned char)SendDlgItemMessage(hDlg, IDC_LEFTJOYSTICKDEVICE, CB_GETCURSEL, 0, 0);	//Fix Me;
+
+      SendDlgItemMessage(hDlg, IDC_LEFTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(JoystickIcons[left.UseMouse]));
+      SendDlgItemMessage(hDlg, IDC_RIGHTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(JoystickIcons[right.UseMouse]));
 
       break;
     }
@@ -782,8 +788,11 @@ extern "C" {
     TCITEM tabs = TCITEM();
 
     ConfigState* configState = GetConfigState();
-    JoystickState* joystickState = GetJoystickState();
     VccState* vccState = GetVccState();
+
+    JoystickState* joystickState = GetJoystickState();
+    JoystickModel left = *(joystickState->Left);
+    JoystickModel right = *(joystickState->Right);
 
     switch (message)
     {
@@ -860,10 +869,10 @@ extern "C" {
 
         vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->Model.KeyMapIndex));
 
-        joystickState->Right = configState->Model.Right;
-        joystickState->Left = configState->Model.Left;
+        //joystickState->Right = configState->Model.Right;
+        //joystickState->Left = configState->Model.Left;
 
-        SetStickNumbers(joystickState->Left.DiDevice, joystickState->Right.DiDevice);
+        SetStickNumbers(left.DiDevice, right.DiDevice);
 
         for (unsigned char temp = 0; temp < TABS; temp++)
         {
@@ -891,10 +900,10 @@ extern "C" {
 
         vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->Model.KeyMapIndex));
 
-        joystickState->Right = configState->Model.Right;
-        joystickState->Left = configState->Model.Left;
+        //joystickState->Right = configState->Model.Right;
+        //joystickState->Left = configState->Model.Left;
 
-        SetStickNumbers(joystickState->Left.DiDevice, joystickState->Right.DiDevice);
+        SetStickNumbers(left.DiDevice, right.DiDevice);
 
         break;
 

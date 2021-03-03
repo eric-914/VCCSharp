@@ -28,7 +28,10 @@
 
 using namespace std;
 
-const unsigned char TranslateScan2Disp[SCAN_TRANS_COUNT] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,32,38,20,33,35,40,36,24,30,31,42,43,55,52,16,34,19,21,22,23,25,26,27,45,46,0,51,44,41,39,18,37,17,29,28,47,48,49,51,0,53,54,50,66,67,0,0,0,0,0,0,0,0,0,0,58,64,60,0,62,0,63,0,59,65,61,56,57 };
+const unsigned char TranslateScan2Disp[SCAN_TRANS_COUNT] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 32, 38, 20, 33, 35, 40, 36, 24, 30, 31, 42, 43, 55, 52, 16, 34, 19, 21, 22, 23, 25, 26, 27, 45, 46, 0, 51, 44, 41, 39, 18, 37, 17, 29, 28, 47, 48, 49, 51, 0, 53, 54, 50, 66, 67, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, 64, 60, 0, 62, 0, 63, 0, 59, 65, 61, 56, 57 };
+const unsigned char TranslateDisp2Scan[SCAN_TRANS_COUNT] = { 78, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 30, 48, 46, 32, 18, 33, 34, 35, 23, 36, 37, 38, 50, 49, 24, 25, 16, 19, 31, 20, 22, 47, 17, 45, 21, 44, 26, 27, 43, 39, 40, 51, 52, 53, 58, 54, 29, 56, 57, 28, 82, 83, 71, 79, 73, 81, 75, 77, 72, 80, 59, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+TCHAR AppDataPath[MAX_PATH];
 
 ConfigState* InitializeInstance(ConfigState*);
 
@@ -52,13 +55,17 @@ ConfigState* InitializeInstance(ConfigState* p) {
   p->hDlgTape = NULL;
 
   strcpy(p->AppName, "");
-  strcpy(p->ExecDirectory, "");
   strcpy(p->IniFilePath, "");
   strcpy(p->OutBuffer, "");
   strcpy(p->SerialCaptureFile, "");
   strcpy(p->TapeFileName, "");
 
-  ARRAYCOPY(TranslateScan2Disp);
+  GetModuleFileName(NULL, p->ExecDirectory, MAX_PATH);
+  FilePathRemoveFileSpec(p->ExecDirectory);
+
+  if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, AppDataPath))) {
+    OutputDebugString(AppDataPath);
+  }
 
   return p;
 }
@@ -100,22 +107,34 @@ void AdjustOverclockSpeed(SystemState* systemState, unsigned char change) {
   systemState->ResetPending = 4; // Without this, changing the config does nothing.
 }
 
-extern "C" {
-  __declspec(dllexport) void __cdecl BuildTransDisp2ScanTable()
-  {
-    for (int i = 0; i < SCAN_TRANS_COUNT; i++) {
-      for (int j = SCAN_TRANS_COUNT - 1; j >= 0; j--) {
-        if (j == instance->TranslateScan2Disp[i]) {
-          instance->TranslateDisp2Scan[j] = (unsigned char)i;
-        }
-      }
+void GetIniFilePath(char* iniFilePath, char* argIniFile) {
+  const char vccFolder[] = "\\VCC";
+  const char iniFileName[] = "\\Vcc.ini";
+
+  if (*argIniFile) {
+    GetFullPathName(argIniFile, MAX_PATH, instance->IniFilePath, 0);
+  }
+  else {
+    strcat(AppDataPath, vccFolder);
+
+    if (_mkdir(AppDataPath) != 0) {
+      OutputDebugString("Unable to create VCC config folder.");
     }
 
-    instance->TranslateDisp2Scan[0] = 0;
-
-    // Left and Right Shift
-    instance->TranslateDisp2Scan[51] = DIK_LSHIFT;
+    strcpy(iniFilePath, AppDataPath);
+    strcat(iniFilePath, iniFileName);
   }
+}
+
+void ValidateModel(ConfigModel model) {
+  if (instance->Model.KeyMapIndex > 3) {
+    instance->Model.KeyMapIndex = 0;	//Default to DECB Mapping
+  }
+
+  FileCheckPath(instance->Model.ModulePath);
+  FileCheckPath(instance->Model.ExternalBasicImage);
+
+  FileValidatePath(instance->Model.ModulePath); //--If module is in same location as .exe, strip off path portion, leaving only module name
 }
 
 extern "C" {
@@ -123,7 +142,7 @@ extern "C" {
   {
     assert(x >= 0 && x < SCAN_TRANS_COUNT);
 
-    return instance->TranslateDisp2Scan[x];
+    return TranslateDisp2Scan[x];
   }
 }
 
@@ -132,7 +151,7 @@ extern "C" {
   {
     assert(x >= 0 && x < SCAN_TRANS_COUNT);
 
-    return instance->TranslateScan2Disp[x];
+    return TranslateScan2Disp[x];
   }
 }
 
@@ -162,7 +181,7 @@ extern "C" {
   __declspec(dllexport) char* __cdecl AppDirectory()
   {
     // This only works after LoadConfig has been called
-    return instance->AppDataPath;
+    return AppDataPath;
   }
 }
 
@@ -254,6 +273,8 @@ extern "C" {
     bool temp = false;
 
     JoystickState* joystickState = GetJoystickState();
+    JoystickModel left = *(joystickState->Left);
+    JoystickModel right = *(joystickState->Right);
 
     instance->NumberOfJoysticks = EnumerateJoysticks();
 
@@ -261,24 +282,24 @@ extern "C" {
       temp = InitJoyStick(index);
     }
 
-    if (joystickState->Right.DiDevice > (instance->NumberOfJoysticks - 1)) {
-      joystickState->Right.DiDevice = 0;
+    if (right.DiDevice > (instance->NumberOfJoysticks - 1)) {
+      right.DiDevice = 0;
     }
 
-    if (joystickState->Left.DiDevice > (instance->NumberOfJoysticks - 1)) {
-      joystickState->Left.DiDevice = 0;
+    if (left.DiDevice > (instance->NumberOfJoysticks - 1)) {
+      left.DiDevice = 0;
     }
 
-    SetStickNumbers(joystickState->Left.DiDevice, joystickState->Right.DiDevice);
+    SetStickNumbers(left.DiDevice, right.DiDevice);
 
     if (instance->NumberOfJoysticks == 0)	//Use Mouse input if no Joysticks present
     {
-      if (joystickState->Left.UseMouse == 3) {
-        joystickState->Left.UseMouse = 1;
+      if (left.UseMouse == 3) {
+        left.UseMouse = 1;
       }
 
-      if (joystickState->Right.UseMouse == 3) {
-        joystickState->Right.UseMouse = 1;
+      if (right.UseMouse == 3) {
+        right.UseMouse = 1;
       }
     }
   }
@@ -350,37 +371,22 @@ extern "C" {
   {
     HANDLE hr = NULL;
     int lasterror;
-    char iniFileName[] = "Vcc.ini";
 
-    BuildTransDisp2ScanTable();
+    //BuildTransDisp2ScanTable();
 
     LoadString(systemState->Resources, IDS_APP_TITLE, instance->AppName, MAX_LOADSTRING);
-    GetModuleFileName(NULL, instance->ExecDirectory, MAX_PATH);
 
-    FilePathRemoveFileSpec(instance->ExecDirectory);
-
-    if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, instance->AppDataPath))) {
-      OutputDebugString(instance->AppDataPath);
-    }
-
-    strcat(instance->AppDataPath, "\\VCC");
-
-    if (_mkdir(instance->AppDataPath) != 0) {
-      OutputDebugString("Unable to create VCC config folder.");
-    }
-
-    if (*cmdArg.IniFile) {
-      GetFullPathNameA(cmdArg.IniFile, MAX_PATH, instance->IniFilePath, 0);
-    }
-    else {
-      strcpy(instance->IniFilePath, instance->AppDataPath);
-      strcat(instance->IniFilePath, "\\");
-      strcat(instance->IniFilePath, iniFileName);
-    }
+    GetIniFilePath(instance->IniFilePath, cmdArg.IniFile);
 
     systemState->ScanLines = 0;
 
     instance->NumberOfSoundCards = GetSoundCardList(instance->SoundCards);
+
+    //--Synch joysticks to config instance
+    JoystickState* joystickState = GetJoystickState();
+
+    joystickState->Left = &(instance->Model.Left);
+    joystickState->Right = &(instance->Model.Right);
 
     ReadIniFile(systemState);
 
@@ -417,19 +423,9 @@ extern "C" {
   {
     instance->Model = LoadConfiguration(instance->IniFilePath);
 
-    if (instance->Model.KeyMapIndex > 3) {
-      instance->Model.KeyMapIndex = 0;	//Default to DECB Mapping
-    }
+    ValidateModel(instance->Model);
 
     vccKeyboardBuildRuntimeTable((keyboardlayout_e)(instance->Model.KeyMapIndex));
-
-    FileCheckPath(instance->Model.ModulePath);
-    FileCheckPath(instance->Model.ExternalBasicImage);
-
-    JoystickState* joystickState = GetJoystickState();
-
-    joystickState->Left = instance->Model.Left;
-    joystickState->Right = instance->Model.Right;
 
     InsertModule(systemState, instance->Model.ModulePath);	// Should this be here?
 
@@ -449,14 +445,10 @@ extern "C" {
     instance->Model.WindowSizeY = systemState.WindowSizeY;
 
     GetCurrentModule(instance->Model.ModulePath);
-    FileValidatePath(instance->Model.ModulePath); //--If module is in same location as .exe, strip off path portion, leaving only module name
-
-    JoystickState* joystickState = GetJoystickState();
-
-    instance->Model.Left = joystickState->Left;
-    instance->Model.Right = joystickState->Right;
 
     strcpy(instance->Model.Release, instance->AppName); //--Set "version" I guess
+
+    ValidateModel(instance->Model);
 
     SaveConfiguration(instance->Model, instance->IniFilePath);
   }

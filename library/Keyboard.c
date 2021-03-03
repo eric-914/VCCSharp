@@ -467,7 +467,7 @@ extern "C" {
 
       // Key Down
     case kEventKeyDown:
-      if ((joystickState->Left.UseMouse == 0) || (joystickState->Right.UseMouse == 0))
+      if ((joystickState->Left->UseMouse == 0) || (joystickState->Right->UseMouse == 0))
       {
         scanCode = SetMouseStatus(scanCode, 1);
       }
@@ -486,7 +486,7 @@ extern "C" {
 
       // Key Up
     case kEventKeyUp:
-      if ((joystickState->Left.UseMouse == 0) || (joystickState->Right.UseMouse == 0))
+      if ((joystickState->Left->UseMouse == 0) || (joystickState->Right->UseMouse == 0))
       {
         scanCode = SetMouseStatus(scanCode, 0);
       }
