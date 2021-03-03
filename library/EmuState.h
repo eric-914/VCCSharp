@@ -24,10 +24,6 @@ typedef struct
   unsigned char	FrameSkip;
   unsigned char	BitDepth;
 
-  unsigned char* pSurface8;
-  unsigned short* pSurface16;
-  unsigned int* pSurface32;
-
   long SurfacePitch;
 
   unsigned short LineCounter;

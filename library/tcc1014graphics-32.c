@@ -35,13 +35,14 @@ extern "C" {
     char pix = 0, bit = 0, phase = 0;
     char carry1 = 1, carry2 = 0;
     char color = 0;
-    unsigned int* szSurface32 = emuState->pSurface32;
     unsigned short y = emuState->LineCounter;
     long Xpitch = emuState->SurfacePitch;
     unsigned short* WideBuffer = (unsigned short*)emuState->RamBuffer;
     unsigned char* buffer = emuState->RamBuffer;
 
     GraphicsState* gs = GetGraphicsState();
+
+    unsigned int* szSurface32 = gs->pSurface32;
 
     if ((gs->HorzCenter != 0) && (gs->BorderChange > 0)) {
       for (unsigned short x = 0; x < gs->HorzCenter; x++)
@@ -3209,10 +3210,10 @@ extern "C" {
 
     for (unsigned short x = 0; x < emuState->WindowSize.x; x++)
     {
-      emuState->pSurface32[x + ((emuState->LineCounter * 2) * emuState->SurfacePitch)] = gs->BorderColor32;
+      gs->pSurface32[x + ((emuState->LineCounter * 2) * emuState->SurfacePitch)] = gs->BorderColor32;
 
       if (!emuState->ScanLines) {
-        emuState->pSurface32[x + ((emuState->LineCounter * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor32;
+        gs->pSurface32[x + ((emuState->LineCounter * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor32;
       }
     }
   }
@@ -3230,10 +3231,10 @@ extern "C" {
 
     for (unsigned short x = 0; x < emuState->WindowSize.x; x++)
     {
-      emuState->pSurface32[x + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor32;
+      gs->pSurface32[x + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor32;
 
       if (!emuState->ScanLines) {
-        emuState->pSurface32[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor32;
+        gs->pSurface32[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor32;
       }
     }
   }

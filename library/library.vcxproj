@@ -222,6 +222,7 @@
     <ClInclude Include="DirectDrawState.h" />
     <ClInclude Include="DirectSoundEnumerateCallback.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="GraphicsState.h" />
     <ClInclude Include="HD6309.h" />
     <ClInclude Include="HD6309Macros.h" />
     <ClInclude Include="HD6309OpCodes.h" />

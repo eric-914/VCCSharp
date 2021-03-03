@@ -374,6 +374,8 @@ extern "C" {
     HRESULT	hr;
     DDSURFACEDESC ddsd;				      // A structure to describe the surfaces we want
 
+    GraphicsState* graphicsState = GetGraphicsState();
+
     memset(&ddsd, 0, sizeof(ddsd));	// Clear all members of the structure to 0
     ddsd.dwSize = sizeof(ddsd);		  // The first parameter of the structure must contain the size of the structure
 
@@ -423,9 +425,9 @@ extern "C" {
       MessageBox(0, "Returning NULL!!", "ok", 0);
     }
 
-    emuState->pSurface8 = (unsigned char*)ddsd.lpSurface;
-    emuState->pSurface16 = (unsigned short*)ddsd.lpSurface;
-    emuState->pSurface32 = (unsigned int*)ddsd.lpSurface;
+    graphicsState->pSurface8 = (unsigned char*)ddsd.lpSurface;
+    graphicsState->pSurface16 = (unsigned short*)ddsd.lpSurface;
+    graphicsState->pSurface32 = (unsigned int*)ddsd.lpSurface;
 
     return(0);
   }
@@ -580,6 +582,8 @@ extern "C" {
   {
     unsigned short x = 0, y = 0;
 
+    GraphicsState* graphicsState = GetGraphicsState();
+
     if (LockScreen(emuState)) {
       return;
     }
@@ -587,9 +591,9 @@ extern "C" {
     switch (emuState->BitDepth)
     {
     case 0:
-      for (y = 0;y < 480; y++) {
-        for (x = 0;x < 640; x++) {
-          emuState->pSurface8[x + (y * emuState->SurfacePitch)] = instance->Color | 128;
+      for (y = 0; y < 480; y++) {
+        for (x = 0; x < 640; x++) {
+          graphicsState->pSurface8[x + (y * emuState->SurfacePitch)] = instance->Color | 128;
         }
       }
       break;
@@ -597,7 +601,7 @@ extern "C" {
     case 1:
       for (y = 0;y < 480; y++) {
         for (x = 0;x < 640; x++) {
-          emuState->pSurface16[x + (y * emuState->SurfacePitch)] = instance->Color;
+          graphicsState->pSurface16[x + (y * emuState->SurfacePitch)] = instance->Color;
         }
       }
       break;
@@ -606,9 +610,9 @@ extern "C" {
       for (y = 0;y < 480; y++) {
         for (x = 0;x < 640; x++)
         {
-          emuState->pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = (instance->Color & 0xFF0000) >> 16;
-          emuState->pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = (instance->Color & 0x00FF00) >> 8;
-          emuState->pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = (instance->Color & 0xFF);
+          graphicsState->pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = (instance->Color & 0xFF0000) >> 16;
+          graphicsState->pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = (instance->Color & 0x00FF00) >> 8;
+          graphicsState->pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = (instance->Color & 0xFF);
         }
       }
       break;
@@ -616,7 +620,7 @@ extern "C" {
     case 3:
       for (y = 0;y < 480; y++) {
         for (x = 0;x < 640; x++) {
-          emuState->pSurface32[x + (y * emuState->SurfacePitch)] = instance->Color;
+          graphicsState->pSurface32[x + (y * emuState->SurfacePitch)] = instance->Color;
         }
       }
       break;
@@ -642,9 +646,11 @@ extern "C" {
     static unsigned char greyScales[4] = { 128, 135, 184, 191 };
     HDC hdc;
 
+    GraphicsState* graphicsState = GetGraphicsState();
+
     LockScreen(emuState);
 
-    if (emuState->pSurface32 == NULL) {
+    if (graphicsState->pSurface32 == NULL) {
       return(0);
     }
 
@@ -655,8 +661,8 @@ extern "C" {
         for (x = 0;x < 160; x++) {
           temp = rand() & 3;
 
-          emuState->pSurface32[x + (y * emuState->SurfacePitch >> 2)] = greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24);
-          emuState->pSurface32[x + ((y + 1) * emuState->SurfacePitch >> 2)] = greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24);
+          graphicsState->pSurface32[x + (y * emuState->SurfacePitch >> 2)] = greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24);
+          graphicsState->pSurface32[x + ((y + 1) * emuState->SurfacePitch >> 2)] = greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24);
         }
       }
       break;
@@ -666,8 +672,8 @@ extern "C" {
         for (x = 0;x < 320; x++) {
           temp = rand() & 31;
 
-          emuState->pSurface32[x + (y * emuState->SurfacePitch >> 1)] = temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27);
-          emuState->pSurface32[x + ((y + 1) * emuState->SurfacePitch >> 1)] = temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27);
+          graphicsState->pSurface32[x + (y * emuState->SurfacePitch >> 1)] = temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27);
+          graphicsState->pSurface32[x + ((y + 1) * emuState->SurfacePitch >> 1)] = temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27);
         }
       }
       break;
@@ -675,9 +681,9 @@ extern "C" {
     case 2:
       for (y = 0;y < 480; y++) {
         for (x = 0;x < 640; x++) {
-          emuState->pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = temp;
-          emuState->pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = temp << 8;
-          emuState->pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = temp << 16;
+          graphicsState->pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = temp;
+          graphicsState->pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = temp << 8;
+          graphicsState->pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = temp << 16;
         }
       }
       break;
@@ -687,7 +693,7 @@ extern "C" {
         for (x = 0;x < 640; x++) {
           temp = rand() & 255;
 
-          emuState->pSurface32[x + (y * emuState->SurfacePitch)] = temp | (temp << 8) | (temp << 16);
+          graphicsState->pSurface32[x + (y * emuState->SurfacePitch)] = temp | (temp << 8) | (temp << 16);
         }
       }
       break;
