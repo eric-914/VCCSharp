@@ -11,8 +11,6 @@ typedef struct
 
   POINT WindowSize;
 
-  unsigned char* RamBuffer;
-  unsigned short* WRamBuffer;
   unsigned char	RamSize;
 
   double CPUCurrentSpeed;

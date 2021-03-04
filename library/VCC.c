@@ -347,12 +347,13 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl HardReset(EmuState* emuState)
   {
-    emuState->RamBuffer = MmuInit(emuState->RamSize);	//Allocate RAM/ROM & copy ROM Images from source
-    emuState->WRamBuffer = (unsigned short*)emuState->RamBuffer;
+    GraphicsState* gs = GetGraphicsState();
 
-    if (emuState->RamBuffer == NULL)
+    gs->RamBuffer = MmuInit(emuState->RamSize);	//Allocate RAM/ROM & copy ROM Images from source
+
+    if (gs->RamBuffer == NULL)
     {
-      MessageBox(NULL, "Can't allocate enough RAM, Out of memory", "Error", 0);
+      MessageBox(NULL, "Can't allocate enough RAM, out of memory", "Error", 0);
 
       exit(0);
     }

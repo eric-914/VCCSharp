@@ -35,9 +35,11 @@ extern "C" {
     char pix = 0, bit = 0, phase = 0;
     char carry1 = 1, carry2 = 0;
     char color = 0;
-    unsigned char* buffer = emuState->RamBuffer;
 
     GraphicsState* gs = GetGraphicsState();
+
+    unsigned char* ramBuffer = gs->RamBuffer;
+    unsigned short* wRamBuffer = (unsigned short*)ramBuffer;
 
     if ((gs->HorzCenter != 0) && (gs->BorderChange > 0))
       for (unsigned short x = 0; x < gs->HorzCenter; x++)
@@ -72,12 +74,12 @@ extern "C" {
       attributes = 0;
       for (unsigned short beam = 0; beam < gs->BytesperRow * gs->ExtendedText; beam += gs->ExtendedText)
       {
-        character = buffer[gs->VidMask & (start + (unsigned char)(beam + gs->Hoffset))];
+        character = ramBuffer[gs->VidMask & (start + (unsigned char)(beam + gs->Hoffset))];
         pixel = cc3Fontdata8x12[character * 12 + (emuState->LineCounter % gs->LinesperRow)];
 
         if (gs->ExtendedText == 2)
         {
-          attributes = buffer[gs->VidMask & (start + (unsigned char)(beam + gs->Hoffset) + 1)];
+          attributes = ramBuffer[gs->VidMask & (start + (unsigned char)(beam + gs->Hoffset) + 1)];
 
           if ((attributes & 64) && (emuState->LineCounter % gs->LinesperRow == (gs->LinesperRow - 1))) {	//UnderLine
             pixel = 255;
@@ -122,12 +124,12 @@ extern "C" {
 
       for (unsigned short beam = 0; beam < gs->BytesperRow * gs->ExtendedText; beam += gs->ExtendedText)
       {
-        character = buffer[gs->VidMask & (start + (unsigned char)(beam + gs->Hoffset))];
+        character = ramBuffer[gs->VidMask & (start + (unsigned char)(beam + gs->Hoffset))];
         pixel = cc3Fontdata8x12[character * 12 + (emuState->LineCounter % gs->LinesperRow)];
 
         if (gs->ExtendedText == 2)
         {
-          attributes = buffer[gs->VidMask & (start + (unsigned char)(beam + gs->Hoffset) + 1)];
+          attributes = ramBuffer[gs->VidMask & (start + (unsigned char)(beam + gs->Hoffset) + 1)];
 
           if ((attributes & 64) && (emuState->LineCounter % gs->LinesperRow == (gs->LinesperRow - 1))) { //UnderLine
             pixel = 255;
@@ -249,10 +251,10 @@ extern "C" {
 
       for (unsigned short beam = 0; beam < gs->BytesperRow * gs->ExtendedText; beam += gs->ExtendedText)
       {
-        character = buffer[gs->VidMask & (start + (unsigned char)(beam + gs->Hoffset))];
+        character = ramBuffer[gs->VidMask & (start + (unsigned char)(beam + gs->Hoffset))];
 
         if (gs->ExtendedText == 2) {
-          attributes = buffer[gs->VidMask & (start + (unsigned char)(beam + gs->Hoffset) + 1)];
+          attributes = ramBuffer[gs->VidMask & (start + (unsigned char)(beam + gs->Hoffset) + 1)];
         }
         else {
           attributes = 0;
@@ -349,7 +351,7 @@ extern "C" {
 
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam++)
       {
-        character = buffer[gs->VidMask & (start + (unsigned char)(beam + gs->Hoffset))];
+        character = ramBuffer[gs->VidMask & (start + (unsigned char)(beam + gs->Hoffset))];
 
         switch ((character & 192) >> 6)
         {
@@ -427,7 +429,7 @@ extern "C" {
     case 128 + 0: //Bpp=0 Sr=0 1BPP Stretch=1
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //1bbp Stretch=1
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[1 & (WidePixel >> 7)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[1 & (WidePixel >> 6)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[1 & (WidePixel >> 5)];
@@ -475,7 +477,7 @@ extern "C" {
     case 128 + 2:	//Bpp=0 Sr=2 
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //1bbp Stretch=2
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
 
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[1 & (WidePixel >> 7)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[1 & (WidePixel >> 7)];
@@ -557,7 +559,7 @@ extern "C" {
     case 128 + 6: //Bpp=0 Sr=6
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //1bbp Stretch=4
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
 
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[1 & (WidePixel >> 7)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[1 & (WidePixel >> 7)];
@@ -707,7 +709,7 @@ extern "C" {
     case 128 + 14: //Bpp=0 Sr=14
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //1bbp Stretch=8
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[1 & (WidePixel >> 7)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[1 & (WidePixel >> 7)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[1 & (WidePixel >> 7)];
@@ -978,7 +980,7 @@ extern "C" {
     case 128 + 16: //BPP=1 Sr=0  2BPP Stretch=1
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //2bbp Stretch=1
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[3 & (WidePixel >> 6)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[3 & (WidePixel >> 4)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[3 & (WidePixel >> 2)];
@@ -1009,7 +1011,7 @@ extern "C" {
     case 128 + 18: //Bpp=1 Sr=2
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //2bbp Stretch=2
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[3 & (WidePixel >> 6)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[3 & (WidePixel >> 6)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[3 & (WidePixel >> 4)];
@@ -1058,7 +1060,7 @@ extern "C" {
     case 128 + 22: //Bpp=1 Sr=6
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //2bbp Stretch=4
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[3 & (WidePixel >> 6)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[3 & (WidePixel >> 6)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[3 & (WidePixel >> 6)];
@@ -1143,7 +1145,7 @@ extern "C" {
     case 128 + 30: //Bpp=1 Sr=14
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //2bbp Stretch=8
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[3 & (WidePixel >> 6)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[3 & (WidePixel >> 6)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[3 & (WidePixel >> 6)];
@@ -1285,7 +1287,7 @@ extern "C" {
     case 128 + 31: //Bpp=1 Sr=15 2BPP Stretch=16 
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //2bbp Stretch=16
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[3 & (WidePixel >> 6)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[3 & (WidePixel >> 6)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[3 & (WidePixel >> 6)];
@@ -1555,7 +1557,7 @@ extern "C" {
     case 128 + 32: //Bpp=2 Sr=0 4BPP Stretch=1
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //4bbp Stretch=1
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[15 & (WidePixel >> 4)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[15 & WidePixel];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[15 & (WidePixel >> 12)];
@@ -1578,7 +1580,7 @@ extern "C" {
     case 128 + 34: //Bpp=2 Sr=2
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //4bbp Stretch=2
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[15 & (WidePixel >> 4)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[15 & (WidePixel >> 4)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[15 & WidePixel];
@@ -1611,7 +1613,7 @@ extern "C" {
     case 128 + 38: //Bpp=2 Sr=6 
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //4bbp Stretch=4
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[15 & (WidePixel >> 4)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[15 & (WidePixel >> 4)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[15 & (WidePixel >> 4)];
@@ -1664,7 +1666,7 @@ extern "C" {
     case 128 + 46: //Bpp=2 Sr=14 
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //4bbp Stretch=8
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[15 & (WidePixel >> 4)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[15 & (WidePixel >> 4)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[15 & (WidePixel >> 4)];
@@ -1742,7 +1744,7 @@ extern "C" {
     case 128 + 47: //Bpp=2 Sr=15 4BPP Stretch=16
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //4bbp Stretch=16
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[15 & (WidePixel >> 4)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[15 & (WidePixel >> 4)];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[15 & (WidePixel >> 4)];
@@ -1903,7 +1905,7 @@ extern "C" {
     case 192 + 0: //Bpp=0 Sr=0 1BPP Stretch=1
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //1bbp Stretch=1
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (1 & (WidePixel >> 7))];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (1 & (WidePixel >> 6))];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (1 & (WidePixel >> 5))];
@@ -1950,7 +1952,7 @@ extern "C" {
     case 192 + 2:	//Bpp=0 Sr=2 
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //1bbp Stretch=2
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
 
         if (!gs->MonType)
         { //Pcolor
@@ -2153,7 +2155,7 @@ extern "C" {
     case 192 + 6: //Bpp=0 Sr=6
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //1bbp Stretch=4
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
 
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (1 & (WidePixel >> 7))];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (1 & (WidePixel >> 7))];
@@ -2303,7 +2305,7 @@ extern "C" {
     case 192 + 14: //Bpp=0 Sr=14
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //1bbp Stretch=8
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (1 & (WidePixel >> 7))];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (1 & (WidePixel >> 7))];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (1 & (WidePixel >> 7))];
@@ -2574,7 +2576,7 @@ extern "C" {
     case 192 + 16: //BPP=1 Sr=0  2BPP Stretch=1
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //2bbp Stretch=1
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (3 & (WidePixel >> 6))];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (3 & (WidePixel >> 4))];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (3 & (WidePixel >> 2))];
@@ -2605,7 +2607,7 @@ extern "C" {
     case 192 + 18: //Bpp=1 Sr=2
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //2bbp Stretch=2
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (3 & (WidePixel >> 6))];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (3 & (WidePixel >> 6))];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (3 & (WidePixel >> 4))];
@@ -2654,7 +2656,7 @@ extern "C" {
     case 192 + 22: //Bpp=1 Sr=6
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //2bbp Stretch=4
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (3 & (WidePixel >> 6))];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (3 & (WidePixel >> 6))];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (3 & (WidePixel >> 6))];
@@ -2739,7 +2741,7 @@ extern "C" {
     case 192 + 30: //Bpp=1 Sr=14
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //2bbp Stretch=8
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (3 & (WidePixel >> 6))];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (3 & (WidePixel >> 6))];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (3 & (WidePixel >> 6))];
@@ -2881,7 +2883,7 @@ extern "C" {
     case 192 + 31: //Bpp=1 Sr=15 2BPP Stretch=16 
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam += 2) //2bbp Stretch=16
       {
-        WidePixel = emuState->WRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
+        WidePixel = wRamBuffer[(gs->VidMask & (start + (unsigned char)(gs->Hoffset + beam))) >> 1];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (3 & (WidePixel >> 6))];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (3 & (WidePixel >> 6))];
         gs->pSurface16[yStride += 1] = gs->Pallete16Bit[gs->PalleteIndex + (3 & (WidePixel >> 6))];
