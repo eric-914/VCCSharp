@@ -14,7 +14,14 @@ namespace VCCSharp
 
             _emuState.Resources = _hResources;
 
+            Library.DirectDraw.InitDirectDraw(hInstance, _hResources);
+            
+            Library.Vcc.CheckQuickLoad(cmdLineArgs.QLoadFile);
+            Library.CoCo.SetClockSpeed(1);  //Default clock speed .89 MHZ	
+
             Library.Vcc.VccStartup(hInstance, ref cmdLineArgs, ref _emuState);
+
+            Library.Vcc.VccStartupThreading();
         }
 
         public void Run()

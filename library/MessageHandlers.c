@@ -13,9 +13,7 @@
 
 extern "C" {
   __declspec(dllexport) void __cdecl HelpAbout(HWND hWnd) {
-    VccState* vccState = GetVccState();
-
-    DialogBox(vccState->EmuState->Resources, (LPCTSTR)IDD_ABOUTBOX, hWnd, (DLGPROC)DialogBoxAboutCallback);
+    DialogBox(GetVccState()->EmuState->Resources, (LPCTSTR)IDD_ABOUTBOX, hWnd, (DLGPROC)DialogBoxAboutCallback);
   }
 }
 
@@ -67,9 +65,7 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl EmuRun() {
-    VccState* vccState = GetVccState();
-
-    vccState->EmuState->EmulationRunning = TRUE;
+    GetVccState()->EmuState->EmulationRunning = TRUE;
 
     InvalidateBorder();
   }
@@ -77,9 +73,7 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl EmuExit() {
-    VccState* vccState = GetVccState();
-
-    vccState->BinaryRunning = 0;
+    GetVccState()->BinaryRunning = false;
   }
 }
 
@@ -146,10 +140,8 @@ extern "C" {
   __declspec(dllexport) void __cdecl KeyDown(WPARAM wParam, LPARAM lParam) {
     unsigned char OEMscan = (unsigned char)((lParam & 0x00FF0000) >> 16); // just get the scan code
 
-    VccState* vccState = GetVccState();
-
     // send other keystrokes to the emulator if it is active
-    if (vccState->EmuState->EmulationRunning)
+    if (GetVccState()->EmuState->EmulationRunning)
     {
       vccKeyboardHandleKey((unsigned char)wParam, OEMscan, kEventKeyDown);
 
@@ -180,16 +172,12 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl SlowDown() {
-    VccState* vccState = GetVccState();
-
-    DecreaseOverclockSpeed(vccState->EmuState);
+    DecreaseOverclockSpeed(GetVccState()->EmuState);
   }
 }
 
 extern "C" {
   __declspec(dllexport) void __cdecl SpeedUp() {
-    VccState* vccState = GetVccState();
-
-    IncreaseOverclockSpeed(vccState->EmuState);
+    IncreaseOverclockSpeed(GetVccState()->EmuState);
   }
 }

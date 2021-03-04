@@ -16,9 +16,6 @@ namespace VCCSharp
         public static class Vcc
         {
             [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-            public static extern HMODULE LoadResources();
-
-            [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
             public static extern void VccStartup(HINSTANCE hInstance, ref CmdLineArguments cmdLineArgs, ref EmuState emu);
 
             [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
@@ -28,7 +25,22 @@ namespace VCCSharp
             public static extern INT VccShutdown();
 
             [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-            public static extern CmdLineArguments GetCmdLineArgs(PSTR lpCmdLine);
+            public static extern INT VccStartupThreading();
+
+            [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+            public static extern void CheckQuickLoad(string qLoadFile);
+        }
+
+        public static class CoCo
+        {
+            [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+            public static extern void SetClockSpeed(ushort cycles);
+        }
+
+        public static class DirectDraw
+        {
+            [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+            public static extern bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources);
         }
 
         [DllImport("kernel32.dll")]

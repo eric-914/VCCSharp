@@ -32,6 +32,12 @@ extern "C" {
   }
 }
 
+extern "C" {
+  __declspec(dllexport) EmuState* __cdecl GetEmuState() {
+    return instance->EmuState;
+  }
+}
+
 VccState* InitializeInstance(VccState* p) {
   p->DialogOpen = false;
 
@@ -516,6 +522,8 @@ extern "C" {
       strcat(temp1, temp2);
       strcat(temp1, instance->AppName);
       strcpy(instance->AppName, temp1);
+
+      instance->Qflag = 0xFF;
     }
   };
 }
@@ -582,18 +590,24 @@ HANDLE CreateThreadHandle(HANDLE hEvent) {
 static EmuState _emu = EmuState();
 
 extern "C" {
+  __declspec(dllexport) void __cdecl VccStartupThreading() {
+    instance->hEventThread = CreateEventHandle();
+    instance->hEmuThread = CreateThreadHandle(instance->hEventThread);
+
+    WaitForSingleObject(instance->hEventThread, INFINITE);
+    SetThreadPriority(instance->hEmuThread, THREAD_PRIORITY_NORMAL);
+  }
+}
+
+extern "C" {
   __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, CmdLineArguments* cmdArg, EmuState* emu) {
     HANDLE OleInitialize(NULL); //Work around fixs app crashing in "Open file" system dialogs (related to Adobe acrobat 7+)
 
     EmuState* emuState = emu;
     emuState = &(_emu);
     instance->EmuState = emuState;
-    
+
     emuState->Resources = emu->Resources;
-
-    InitDirectDraw(hInstance, emuState->Resources);
-
-    CheckQuickLoad(cmdArg->QLoadFile);
 
     CreatePrimaryWindow();
 
@@ -602,7 +616,6 @@ extern "C" {
 
     if (strlen(cmdArg->QLoadFile) != 0)
     {
-      instance->Qflag = 0xFF;
       emuState->EmulationRunning = 1;
     }
 
@@ -610,17 +623,10 @@ extern "C" {
     DynamicMenuCallback(emuState, "", 0, 0);
     DynamicMenuCallback(emuState, "", 1, 0);
 
-    SetClockSpeed(1);	//Default clock speed .89 MHZ	
-
     emuState->ResetPending = 2;
     emuState->EmulationRunning = instance->AutoStart;
 
     instance->BinaryRunning = true;
-    instance->hEventThread = CreateEventHandle();
-    instance->hEmuThread = CreateThreadHandle(instance->hEventThread);
-
-    WaitForSingleObject(instance->hEventThread, INFINITE);
-    SetThreadPriority(instance->hEmuThread, THREAD_PRIORITY_NORMAL);
   }
 }
 
