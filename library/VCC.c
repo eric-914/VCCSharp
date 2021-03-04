@@ -582,21 +582,29 @@ HANDLE CreateThreadHandle(HANDLE hEvent) {
 static EmuState _emu = EmuState();
 
 extern "C" {
-  __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, HMODULE hResources, CmdLineArguments cmdArg, EmuState emu) {
-    HANDLE OleInitialize(NULL); //Work around fixs app crashing in "Open file" system dialogs (related to Adobe acrobat 7+
+  __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, CmdLineArguments* cmdArg, EmuState* emu) {
+    HANDLE OleInitialize(NULL); //Work around fixs app crashing in "Open file" system dialogs (related to Adobe acrobat 7+)
 
-    EmuState* emuState = &(_emu);
+    EmuState* emuState = emu;
+    emuState = &(_emu);
     instance->EmuState = emuState;
     
-    emuState->Resources = hResources;
-    InitDirectDraw(hInstance, hResources);
+    emuState->Resources = emu->Resources;
 
-    CheckQuickLoad(cmdArg.QLoadFile);
+    InitDirectDraw(hInstance, emuState->Resources);
+
+    CheckQuickLoad(cmdArg->QLoadFile);
 
     CreatePrimaryWindow();
 
     //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
     InitConfig(emuState, cmdArg);			//Loads the default config file Vcc.ini from the exec directory
+
+    if (strlen(cmdArg->QLoadFile) != 0)
+    {
+      instance->Qflag = 0xFF;
+      emuState->EmulationRunning = 1;
+    }
 
     Cls(0, emuState);
     DynamicMenuCallback(emuState, "", 0, 0);
@@ -608,13 +616,6 @@ extern "C" {
     emuState->EmulationRunning = instance->AutoStart;
 
     instance->BinaryRunning = true;
-
-    if (strlen(cmdArg.QLoadFile) != 0)
-    {
-      instance->Qflag = 255;
-      instance->EmuState->EmulationRunning = 1;
-    }
-
     instance->hEventThread = CreateEventHandle();
     instance->hEmuThread = CreateThreadHandle(instance->hEventThread);
 

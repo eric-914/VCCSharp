@@ -12,7 +12,9 @@ namespace VCCSharp
         {
             _hResources = Library.LoadLibrary("resources.dll");
 
-            Library.Vcc.VccStartup(hInstance, _hResources, cmdLineArgs, _emuState);
+            _emuState.Resources = _hResources;
+
+            Library.Vcc.VccStartup(hInstance, ref cmdLineArgs, ref _emuState);
         }
 
         public void Run()

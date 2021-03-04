@@ -365,14 +365,14 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl InitConfig(EmuState* emuState, CmdLineArguments cmdArg)
+  __declspec(dllexport) void __cdecl InitConfig(EmuState* emuState, CmdLineArguments* cmdArg)
   {
     HANDLE hr = NULL;
     int lasterror;
 
     LoadString(emuState->Resources, IDS_APP_TITLE, instance->Model.Release, MAX_LOADSTRING); //--A kind of "versioning" I guess
 
-    GetIniFilePath(instance->IniFilePath, cmdArg.IniFile);
+    GetIniFilePath(instance->IniFilePath, cmdArg->IniFile);
 
     instance->NumberOfSoundCards = GetSoundCardList(instance->SoundCards);
 
