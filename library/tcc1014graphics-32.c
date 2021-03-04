@@ -22,6 +22,7 @@ This file is part of VCC (Virtual Color Computer).
 #include "defines.h"
 #include "Graphics.h"
 #include "EmuState.h"
+#include "TC1014Mmu.h"
 
 extern "C" {
   __declspec(dllexport)
@@ -35,14 +36,17 @@ extern "C" {
     char pix = 0, bit = 0, phase = 0;
     char carry1 = 1, carry2 = 0;
     char color = 0;
-    unsigned short y = emuState->LineCounter;
-    long Xpitch = emuState->SurfacePitch;
 
     GraphicsState* gs = GetGraphicsState();
-    unsigned char* ramBuffer = gs->RamBuffer;
+    TC1014MmuState* mmu = GetTC1014MmuState();
+
+    unsigned char* ramBuffer = mmu->Memory;
     unsigned short* wRamBuffer = (unsigned short*)ramBuffer;
 
     unsigned int* szSurface32 = gs->pSurface32;
+
+    unsigned short y = emuState->LineCounter;
+    long Xpitch = emuState->SurfacePitch;
 
     if ((gs->HorzCenter != 0) && (gs->BorderChange > 0)) {
       for (unsigned short x = 0; x < gs->HorzCenter; x++)

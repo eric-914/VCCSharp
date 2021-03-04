@@ -22,6 +22,7 @@ This file is part of VCC (Virtual Color Computer).
 #include "defines.h"
 #include "Graphics.h"
 #include "EmuState.h"
+#include "TC1014Mmu.h"
 
 extern "C" {
   __declspec(dllexport)
@@ -37,8 +38,9 @@ extern "C" {
     char color = 0;
 
     GraphicsState* gs = GetGraphicsState();
+    TC1014MmuState* mmu = GetTC1014MmuState();
 
-    unsigned char* ramBuffer = gs->RamBuffer;
+    unsigned char* ramBuffer = mmu->Memory;
     unsigned short* wRamBuffer = (unsigned short*)ramBuffer;
 
     if ((gs->HorzCenter != 0) && (gs->BorderChange > 0))

@@ -304,6 +304,9 @@
     <ClInclude Include="GraphicsState.h">
       <Filter>models</Filter>
     </ClInclude>
+    <ClInclude Include="TC1014MmuState.h">
+      <Filter>models</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="audio">

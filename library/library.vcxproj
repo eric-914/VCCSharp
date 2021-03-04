@@ -244,6 +244,7 @@
     <ClInclude Include="ProcessKeyDownMessage.h" />
     <ClInclude Include="ProcessMessage.h" />
     <ClInclude Include="QuickLoad.h" />
+    <ClInclude Include="TC1014MmuState.h" />
     <ClInclude Include="TC1014Registers.h" />
     <ClInclude Include="SoundCardList.h" />
     <ClInclude Include="cc2font.h" />

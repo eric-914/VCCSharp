@@ -315,14 +315,11 @@ extern "C" {
 * Returns NULL if any of the above fail.                                                 *
 *****************************************************************************************/
 extern "C" {
-  __declspec(dllexport) unsigned char* __cdecl MmuInit(unsigned char ramConfig)
+  __declspec(dllexport) unsigned char __cdecl MmuInit(unsigned char ramSizeOption)
   {
-    unsigned int index = 0;
-    unsigned int ramSize;
+    unsigned int ramSize = instance->MemConfig[ramSizeOption];
 
-    ramSize = instance->MemConfig[ramConfig];
-
-    instance->CurrentRamConfig = ramConfig;
+    instance->CurrentRamConfig = ramSizeOption;
 
     if (instance->Memory != NULL) {
       free(instance->Memory);
@@ -334,7 +331,7 @@ extern "C" {
       return(NULL);
     }
 
-    for (index = 0;index < ramSize;index++)
+    for (unsigned int index = 0; index < ramSize; index++)
     {
       instance->Memory[index] = index & 1 ? 0 : 0xFF;
     }
@@ -356,7 +353,7 @@ extern "C" {
     CopyRom();
     MmuReset();
 
-    return(instance->Memory);
+    return(instance->Memory != NULL);
   }
 }
 
