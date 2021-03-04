@@ -34,5 +34,5 @@ typedef struct
   unsigned char KB_save2;
   int KeySaveToggle;
 
-  EmuState EmuState;
+  EmuState* EmuState;
 } VccState;

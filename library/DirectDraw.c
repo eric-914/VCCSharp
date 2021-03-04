@@ -751,7 +751,7 @@ extern "C" {
 
     PauseAudio(true);
 
-    if (!CreateDirectDrawWindow(&(vccState->EmuState), WndProc))
+    if (!CreateDirectDrawWindow(vccState->EmuState, WndProc))
     {
       MessageBox(0, "Can't rebuild primary Window", "Error", 0);
 
@@ -759,9 +759,9 @@ extern "C" {
     }
 
     InvalidateBorder();
-    RefreshDynamicMenu(&(vccState->EmuState));
+    RefreshDynamicMenu(vccState->EmuState);
 
-    vccState->EmuState.ConfigDialog = NULL;
+    vccState->EmuState->ConfigDialog = NULL;
 
     PauseAudio(false);
   }

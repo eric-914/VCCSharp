@@ -15,7 +15,7 @@ typedef struct
 
   double CPUCurrentSpeed;
 
-  unsigned char	DoubleSpeedMultiplyer;
+  unsigned char	DoubleSpeedMultiplier;
   unsigned char	DoubleSpeedFlag;
   unsigned char	TurboSpeedFlag;
   unsigned char	CpuType;

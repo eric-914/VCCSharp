@@ -406,7 +406,7 @@ extern "C" {
       CloseHandle(hr);
 
       if (lasterror != ERROR_ALREADY_EXISTS) {
-        WriteIniFile(*emuState);
+        WriteIniFile(emuState);
       }
     }
   }
@@ -433,10 +433,10 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl WriteIniFile(EmuState emuState)
+  __declspec(dllexport) void __cdecl WriteIniFile(EmuState* emuState)
   {
-    instance->Model.WindowSizeX = (unsigned short)emuState.WindowSize.x;
-    instance->Model.WindowSizeY = (unsigned short)emuState.WindowSize.y;
+    instance->Model.WindowSizeX = (unsigned short)emuState->WindowSize.x;
+    instance->Model.WindowSizeY = (unsigned short)emuState->WindowSize.y;
 
     GetCurrentModule(instance->Model.ModulePath);
 

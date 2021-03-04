@@ -23,7 +23,7 @@ extern "C" __declspec(dllexport) int __cdecl SelectSerialCaptureFile(EmuState*, 
 extern "C" __declspec(dllexport) unsigned char __cdecl TranslateDisplay2Scan(LRESULT);
 extern "C" __declspec(dllexport) unsigned char __cdecl TranslateScan2Display(int);
 extern "C" __declspec(dllexport) void __cdecl ReadIniFile(EmuState*);
-extern "C" __declspec(dllexport) void __cdecl WriteIniFile(EmuState);
+extern "C" __declspec(dllexport) void __cdecl WriteIniFile(EmuState*);
 
 extern "C" __declspec(dllexport) void __cdecl DecreaseOverclockSpeed(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl GetIniFilePath(char*);

@@ -1,16 +1,18 @@
 ﻿using System;
+using VCCSharp.Models;
 
 namespace VCCSharp
 {
     public class Vcc
     {
         private IntPtr _hResources;
+        private EmuState _emuState;
 
         public void Startup(IntPtr hInstance, CmdLineArguments cmdLineArgs)
         {
             _hResources = Library.LoadLibrary("resources.dll");
 
-            Library.Vcc.VccStartup(hInstance, _hResources, cmdLineArgs);
+            Library.Vcc.VccStartup(hInstance, _hResources, cmdLineArgs, _emuState);
         }
 
         public void Run()

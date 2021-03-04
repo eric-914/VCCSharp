@@ -42,12 +42,12 @@ char* GetKeyName(int x)
   return keyNames[x];
 }
 
-void CheckAudioChange(EmuState emuState, ConfigModel current, ConfigModel temp, SoundCardList* soundCards) {
+void CheckAudioChange(EmuState* emuState, ConfigModel current, ConfigModel temp, SoundCardList* soundCards) {
   unsigned char currentSoundCardIndex = GetSoundCardIndex(current.SoundCardName);
   unsigned char tempSoundCardIndex = GetSoundCardIndex(temp.SoundCardName);
 
   if ((currentSoundCardIndex != tempSoundCardIndex) || (current.AudioRate != temp.AudioRate)) {
-    SoundInit(emuState.WindowHandle, soundCards[tempSoundCardIndex].Guid, temp.AudioRate);
+    SoundInit(emuState->WindowHandle, soundCards[tempSoundCardIndex].Guid, temp.AudioRate);
   }
 }
 
@@ -182,7 +182,7 @@ extern "C" {
       switch (LOWORD(wParam))
       {
       case IDC_OPEN:
-        SelectSerialCaptureFile(&(vccState->EmuState), configState->SerialCaptureFile);
+        SelectSerialCaptureFile(vccState->EmuState, configState->SerialCaptureFile);
 
         SendDlgItemMessage(hDlg, IDC_SERIALFILE, WM_SETTEXT, strlen(configState->SerialCaptureFile), (LPARAM)(LPCSTR)(configState->SerialCaptureFile));
 
@@ -492,10 +492,10 @@ extern "C" {
     switch (message)
     {
     case WM_INITDIALOG:
-      JoystickIcons[0] = LoadIcon(vccState->EmuState.Resources, (LPCTSTR)IDI_KEYBOARD);
-      JoystickIcons[1] = LoadIcon(vccState->EmuState.Resources, (LPCTSTR)IDI_MOUSE);
-      JoystickIcons[2] = LoadIcon(vccState->EmuState.Resources, (LPCTSTR)IDI_AUDIO);
-      JoystickIcons[3] = LoadIcon(vccState->EmuState.Resources, (LPCTSTR)IDI_JOYSTICK);
+      JoystickIcons[0] = LoadIcon(vccState->EmuState->Resources, (LPCTSTR)IDI_KEYBOARD);
+      JoystickIcons[1] = LoadIcon(vccState->EmuState->Resources, (LPCTSTR)IDI_MOUSE);
+      JoystickIcons[2] = LoadIcon(vccState->EmuState->Resources, (LPCTSTR)IDI_AUDIO);
+      JoystickIcons[3] = LoadIcon(vccState->EmuState->Resources, (LPCTSTR)IDI_JOYSTICK);
 
       for (unsigned char temp = 0; temp < 68; temp++)
       {
@@ -803,22 +803,22 @@ extern "C" {
       InitCommonControls();
 
       configModel = configState->Model;
-      CpuIcons[0] = LoadIcon(vccState->EmuState.Resources, (LPCTSTR)IDI_MOTO);
-      CpuIcons[1] = LoadIcon(vccState->EmuState.Resources, (LPCTSTR)IDI_HITACHI2);
-      MonIcons[0] = LoadIcon(vccState->EmuState.Resources, (LPCTSTR)IDI_COMPOSITE);
-      MonIcons[1] = LoadIcon(vccState->EmuState.Resources, (LPCTSTR)IDI_RGB);
+      CpuIcons[0] = LoadIcon(vccState->EmuState->Resources, (LPCTSTR)IDI_MOTO);
+      CpuIcons[1] = LoadIcon(vccState->EmuState->Resources, (LPCTSTR)IDI_HITACHI2);
+      MonIcons[0] = LoadIcon(vccState->EmuState->Resources, (LPCTSTR)IDI_COMPOSITE);
+      MonIcons[1] = LoadIcon(vccState->EmuState->Resources, (LPCTSTR)IDI_RGB);
 
       hWndTabDialog = GetDlgItem(hDlg, IDC_CONFIGTAB); //get handle of Tabbed Dialog
 
       //get handles to all the sub panels in the control
-      configState->hWndConfig[0] = CreateDialog(vccState->EmuState.Resources, MAKEINTRESOURCE(IDD_AUDIO), hWndTabDialog, (DLGPROC)CreateAudioConfigDialogCallback);
-      configState->hWndConfig[1] = CreateDialog(vccState->EmuState.Resources, MAKEINTRESOURCE(IDD_CPU), hWndTabDialog, (DLGPROC)CreateCpuConfigDialogCallback);
-      configState->hWndConfig[2] = CreateDialog(vccState->EmuState.Resources, MAKEINTRESOURCE(IDD_DISPLAY), hWndTabDialog, (DLGPROC)CreateDisplayConfigDialogCallback);
-      configState->hWndConfig[3] = CreateDialog(vccState->EmuState.Resources, MAKEINTRESOURCE(IDD_INPUT), hWndTabDialog, (DLGPROC)CreateInputConfigDialogCallback);
-      configState->hWndConfig[4] = CreateDialog(vccState->EmuState.Resources, MAKEINTRESOURCE(IDD_JOYSTICK), hWndTabDialog, (DLGPROC)CreateJoyStickConfigDialogCallback);
-      configState->hWndConfig[5] = CreateDialog(vccState->EmuState.Resources, MAKEINTRESOURCE(IDD_MISC), hWndTabDialog, (DLGPROC)CreateMiscConfigDialogCallback);
-      configState->hWndConfig[6] = CreateDialog(vccState->EmuState.Resources, MAKEINTRESOURCE(IDD_CASSETTE), hWndTabDialog, (DLGPROC)CreateTapeConfigDialogCallback);
-      configState->hWndConfig[7] = CreateDialog(vccState->EmuState.Resources, MAKEINTRESOURCE(IDD_BITBANGER), hWndTabDialog, (DLGPROC)CreateBitBangerConfigDialogCallback);
+      configState->hWndConfig[0] = CreateDialog(vccState->EmuState->Resources, MAKEINTRESOURCE(IDD_AUDIO), hWndTabDialog, (DLGPROC)CreateAudioConfigDialogCallback);
+      configState->hWndConfig[1] = CreateDialog(vccState->EmuState->Resources, MAKEINTRESOURCE(IDD_CPU), hWndTabDialog, (DLGPROC)CreateCpuConfigDialogCallback);
+      configState->hWndConfig[2] = CreateDialog(vccState->EmuState->Resources, MAKEINTRESOURCE(IDD_DISPLAY), hWndTabDialog, (DLGPROC)CreateDisplayConfigDialogCallback);
+      configState->hWndConfig[3] = CreateDialog(vccState->EmuState->Resources, MAKEINTRESOURCE(IDD_INPUT), hWndTabDialog, (DLGPROC)CreateInputConfigDialogCallback);
+      configState->hWndConfig[4] = CreateDialog(vccState->EmuState->Resources, MAKEINTRESOURCE(IDD_JOYSTICK), hWndTabDialog, (DLGPROC)CreateJoyStickConfigDialogCallback);
+      configState->hWndConfig[5] = CreateDialog(vccState->EmuState->Resources, MAKEINTRESOURCE(IDD_MISC), hWndTabDialog, (DLGPROC)CreateMiscConfigDialogCallback);
+      configState->hWndConfig[6] = CreateDialog(vccState->EmuState->Resources, MAKEINTRESOURCE(IDD_CASSETTE), hWndTabDialog, (DLGPROC)CreateTapeConfigDialogCallback);
+      configState->hWndConfig[7] = CreateDialog(vccState->EmuState->Resources, MAKEINTRESOURCE(IDD_BITBANGER), hWndTabDialog, (DLGPROC)CreateBitBangerConfigDialogCallback);
 
       //Set the title text for all tabs
       for (tabCount = 0; tabCount < TABS; tabCount++)
@@ -859,10 +859,10 @@ extern "C" {
       case IDOK:
         configState->hDlgBar = NULL;
         configState->hDlgTape = NULL;
-        vccState->EmuState.ResetPending = 4;
+        vccState->EmuState->ResetPending = 4;
 
         if ((configState->Model.RamSize != configModel.RamSize) || (configState->Model.CpuType != configModel.CpuType)) {
-          vccState->EmuState.ResetPending = 2;
+          vccState->EmuState->ResetPending = 2;
         }
 
         CheckAudioChange(vccState->EmuState, configState->Model, configModel, configState->SoundCards);
@@ -883,14 +883,14 @@ extern "C" {
 #else
         DestroyWindow(hDlg);
 #endif
-        vccState->EmuState.ConfigDialog = NULL;
+        vccState->EmuState->ConfigDialog = NULL;
         break;
 
       case IDAPPLY:
-        vccState->EmuState.ResetPending = 4;
+        vccState->EmuState->ResetPending = 4;
 
         if ((configState->Model.RamSize != configModel.RamSize) || (configState->Model.CpuType != configModel.CpuType)) {
-          vccState->EmuState.ResetPending = 2;
+          vccState->EmuState->ResetPending = 2;
         }
 
         CheckAudioChange(vccState->EmuState, configState->Model, configModel, configState->SoundCards);
@@ -915,7 +915,7 @@ extern "C" {
         DestroyWindow(hDlg);
 #endif
 
-        vccState->EmuState.ConfigDialog = NULL;
+        vccState->EmuState->ConfigDialog = NULL;
         break;
       }
 

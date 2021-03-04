@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using VCCSharp.Models;
 using HINSTANCE = System.IntPtr;
 using HMODULE = System.IntPtr;
 using INT = System.Int32;
@@ -18,7 +19,7 @@ namespace VCCSharp
             public static extern HMODULE LoadResources();
 
             [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-            public static extern void VccStartup(HINSTANCE hInstance, HMODULE hResources, CmdLineArguments cmdLineArgs);
+            public static extern void VccStartup(HINSTANCE hInstance, HMODULE hResources, CmdLineArguments cmdLineArgs, EmuState emu);
 
             [DllImport(DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
             public static extern void VccRun();
