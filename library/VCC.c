@@ -21,6 +21,7 @@
 #include "cpudef.h"
 #include "fileoperations.h"
 #include "ProcessMessage.h"
+#include "EmuState.h"
 
 VccState* InitializeInstance(VccState*);
 
@@ -41,7 +42,7 @@ extern "C" {
 VccState* InitializeInstance(VccState* p) {
   p->DialogOpen = false;
 
-  p->AutoStart = 1;
+  p->AutoStart = true;
   p->KB_save1 = 0;
   p->KB_save2 = 0;
   p->KeySaveToggle = 0;
@@ -245,7 +246,7 @@ extern "C" {
   {
     LoadCart(instance->EmuState);
 
-    instance->EmuState->EmulationRunning = TRUE;
+    instance->EmuState->EmulationRunning = true;
     instance->DialogOpen = false;
 
     return(NULL);
@@ -296,7 +297,7 @@ extern "C" {
       ReadIniFile(instance->EmuState);     // Load it
       SynchSystemWithConfig(instance->EmuState);
 
-      instance->EmuState->ResetPending = 2;
+      instance->EmuState->ResetPending = RESET_HARD;
     }
   }
 }
@@ -426,25 +427,25 @@ extern "C" {
       {
         frameCounter++;
 
-        if (instance->EmuState->ResetPending != 0) {
+        if (instance->EmuState->ResetPending != RESET_CLEAR) {
           switch (instance->EmuState->ResetPending)
           {
-          case 1:	//Soft Reset
+          case RESET_SOFT:	//Soft Reset
             SoftReset();
             break;
 
-          case 2:	//Hard Reset
+          case RESET_HARD:	//Hard Reset
             SynchSystemWithConfig(instance->EmuState);
             DoCls(instance->EmuState);
             HardReset(instance->EmuState);
 
             break;
 
-          case 3:
+          case RESET_CLS:
             DoCls(instance->EmuState);
             break;
 
-          case 4:
+          case RESET_CLS_SYNCH:
             SynchSystemWithConfig(instance->EmuState);
             DoCls(instance->EmuState);
 
@@ -454,10 +455,10 @@ extern "C" {
             break;
           }
 
-          instance->EmuState->ResetPending = 0;
+          instance->EmuState->ResetPending = RESET_CLEAR;
         }
 
-        if (instance->EmuState->EmulationRunning == 1) {
+        if (instance->EmuState->EmulationRunning) {
           fps += RenderFrame(instance->EmuState);
         }
         else {
@@ -616,14 +617,14 @@ extern "C" {
 
     if (strlen(cmdArg->QLoadFile) != 0)
     {
-      emuState->EmulationRunning = 1;
+      emuState->EmulationRunning = true;
     }
 
     Cls(0, emuState);
     DynamicMenuCallback(emuState, "", 0, 0);
     DynamicMenuCallback(emuState, "", 1, 0);
 
-    emuState->ResetPending = 2;
+    emuState->ResetPending = RESET_HARD;
     emuState->EmulationRunning = instance->AutoStart;
 
     instance->BinaryRunning = true;

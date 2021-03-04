@@ -13,16 +13,16 @@
 
 extern "C" {
   __declspec(dllexport) void __cdecl HelpAbout(HWND hWnd) {
-    DialogBox(GetVccState()->EmuState->Resources, (LPCTSTR)IDD_ABOUTBOX, hWnd, (DLGPROC)DialogBoxAboutCallback);
+    DialogBox(GetEmuState()->Resources, (LPCTSTR)IDD_ABOUTBOX, hWnd, (DLGPROC)DialogBoxAboutCallback);
   }
 }
 
 extern "C" {
   __declspec(dllexport) void __cdecl CreateMainMenu(HWND hWnd) {
-    VccState* vccState = GetVccState();
+    EmuState* emuState = GetEmuState();
 
-    if (!vccState->EmuState->FullScreen) {
-      SetMenu(hWnd, LoadMenu(vccState->EmuState->Resources, MAKEINTRESOURCE(IDR_MENU)));
+    if (!emuState->FullScreen) {
+      SetMenu(hWnd, LoadMenu(emuState->Resources, MAKEINTRESOURCE(IDR_MENU)));
     }
     else {
       SetMenu(hWnd, NULL);
@@ -32,22 +32,22 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl ShowConfiguration() {
-    VccState* vccState = GetVccState();
+    EmuState* emuState = GetEmuState();
 
 #ifdef CONFIG_DIALOG_MODAL
     // open config dialog modally
-    DialogBox(vccState->EmuState.Resources, (LPCTSTR)IDD_TCONFIG, hWnd, (DLGPROC)Config);
+    DialogBox(emuState->Resources, (LPCTSTR)IDD_TCONFIG, hWnd, (DLGPROC)Config);
 #else
 
     // open config dialog if not already open
     // opens modeless so you can control the cassette
     // while emulator is still running (assumed)
-    if (vccState->EmuState->ConfigDialog == NULL)
+    if (emuState->ConfigDialog == NULL)
     {
-      vccState->EmuState->ConfigDialog = CreateDialog(vccState->EmuState->Resources, (LPCTSTR)IDD_TCONFIG, vccState->EmuState->WindowHandle, (DLGPROC)CreateMainConfigDialogCallback);
+      emuState->ConfigDialog = CreateDialog(emuState->Resources, (LPCTSTR)IDD_TCONFIG, emuState->WindowHandle, (DLGPROC)CreateMainConfigDialogCallback);
 
       // open modeless
-      ShowWindow(vccState->EmuState->ConfigDialog, SW_SHOWNORMAL);
+      ShowWindow(emuState->ConfigDialog, SW_SHOWNORMAL);
     }
 #endif
   }
@@ -55,17 +55,17 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl EmuReset(unsigned char state) {
-    VccState* vccState = GetVccState();
+    EmuState* emuState = GetEmuState();
 
-    if (vccState->EmuState->EmulationRunning) {
-      vccState->EmuState->ResetPending = state;
+    if (emuState->EmulationRunning) {
+      emuState->ResetPending = state;
     }
   }
 }
 
 extern "C" {
   __declspec(dllexport) void __cdecl EmuRun() {
-    GetVccState()->EmuState->EmulationRunning = TRUE;
+    GetEmuState()->EmulationRunning = true;
 
     InvalidateBorder();
   }
@@ -92,14 +92,14 @@ extern "C" {
   __declspec(dllexport) void __cdecl MouseMove(LPARAM lParam) {
     RECT clientSize;
 
-    VccState* vccState = GetVccState();
+    EmuState* emuState = GetEmuState();
 
-    if (vccState->EmuState->EmulationRunning)
+    if (emuState->EmulationRunning)
     {
       unsigned int x = LOWORD(lParam);
       unsigned int y = HIWORD(lParam);
 
-      GetClientRect(vccState->EmuState->WindowHandle, &clientSize);
+      GetClientRect(emuState->WindowHandle, &clientSize);
 
       x /= ((clientSize.right - clientSize.left) >> 6);
       y /= (((clientSize.bottom - clientSize.top) - 20) >> 6);
@@ -111,15 +111,15 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl ToggleOnOff() {
-    VccState* vccState = GetVccState();
+    EmuState* emuState = GetEmuState();
 
-    vccState->EmuState->EmulationRunning = !vccState->EmuState->EmulationRunning;
+    emuState->EmulationRunning = !emuState->EmulationRunning;
 
-    if (vccState->EmuState->EmulationRunning) {
-      vccState->EmuState->ResetPending = 2;
+    if (emuState->EmulationRunning) {
+      emuState->ResetPending = RESET_HARD;
     }
     else {
-      SetStatusBarText("", vccState->EmuState);
+      SetStatusBarText("", emuState);
     }
   }
 }
@@ -141,7 +141,7 @@ extern "C" {
     unsigned char OEMscan = (unsigned char)((lParam & 0x00FF0000) >> 16); // just get the scan code
 
     // send other keystrokes to the emulator if it is active
-    if (GetVccState()->EmuState->EmulationRunning)
+    if (GetEmuState()->EmulationRunning)
     {
       vccKeyboardHandleKey((unsigned char)wParam, OEMscan, kEventKeyDown);
 
@@ -172,12 +172,12 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl SlowDown() {
-    DecreaseOverclockSpeed(GetVccState()->EmuState);
+    DecreaseOverclockSpeed(GetEmuState());
   }
 }
 
 extern "C" {
   __declspec(dllexport) void __cdecl SpeedUp() {
-    IncreaseOverclockSpeed(GetVccState()->EmuState);
+    IncreaseOverclockSpeed(GetEmuState());
   }
 }

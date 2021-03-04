@@ -2,6 +2,13 @@
 
 #include <windows.h>
 
+//Reset Pending states
+#define RESET_CLEAR     0
+#define RESET_SOFT      1
+#define RESET_HARD      2
+#define RESET_CLS       3
+#define RESET_CLS_SYNCH 4
+
 typedef struct
 {
   HINSTANCE Resources;

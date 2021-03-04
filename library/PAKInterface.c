@@ -332,7 +332,7 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl UnloadDll(EmuState* emuState)
   {
-    if ((instance->DialogOpen == true) && (emuState->EmulationRunning == 1))
+    if ((instance->DialogOpen) && (emuState->EmulationRunning))
     {
       MessageBox(0, "Close Configuration Dialog before unloading", "Ok", 0);
 
@@ -428,7 +428,7 @@ extern "C" {
 
     instance->ExternalRomBuffer = nullptr;
 
-    emuState->ResetPending = 2;
+    emuState->ResetPending = RESET_HARD;
 
     DynamicMenuCallback(emuState, "", 0, 0); //Refresh Menus
     DynamicMenuCallback(emuState, "", 1, 0);
@@ -481,7 +481,7 @@ extern "C" {
       DynamicMenuCallback(emuState, "", 0, 0); //Refresh Menus
       DynamicMenuCallback(emuState, "", 1, 0);
 
-      emuState->ResetPending = 2;
+      emuState->ResetPending = RESET_HARD;
 
       SetCart(1);
 
@@ -636,7 +636,7 @@ extern "C" {
 
       strcpy(instance->DllPath, modulePath);
 
-      emuState->ResetPending = 2;
+      emuState->ResetPending = RESET_HARD;
 
       return(0);
     }
