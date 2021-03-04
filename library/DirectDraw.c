@@ -748,10 +748,11 @@ extern "C" {
   __declspec(dllexport) void __cdecl FullScreenToggle(WNDPROC WndProc)
   {
     VccState* vccState = GetVccState();
+    EmuState* emuState = GetEmuState();
 
     PauseAudio(true);
 
-    if (!CreateDirectDrawWindow(vccState->EmuState, WndProc))
+    if (!CreateDirectDrawWindow(emuState, WndProc))
     {
       MessageBox(0, "Can't rebuild primary Window", "Error", 0);
 
@@ -759,9 +760,9 @@ extern "C" {
     }
 
     InvalidateBorder();
-    RefreshDynamicMenu(vccState->EmuState);
+    RefreshDynamicMenu(emuState);
 
-    vccState->EmuState->ConfigDialog = NULL;
+    emuState->ConfigDialog = NULL;
 
     PauseAudio(false);
   }

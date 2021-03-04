@@ -127,11 +127,12 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl ToggleFullScreen() {
     VccState* vccState = GetVccState();
+    EmuState* emuState = GetEmuState();
 
     if (vccState->FlagEmuStop == TH_RUNNING)
     {
       vccState->FlagEmuStop = TH_REQWAIT;
-      vccState->EmuState->FullScreen = !vccState->EmuState->FullScreen;
+      emuState->FullScreen = !emuState->FullScreen;
     }
   }
 }
