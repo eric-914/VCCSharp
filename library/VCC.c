@@ -21,12 +21,12 @@
 #include "cpudef.h"
 #include "fileoperations.h"
 #include "ProcessMessage.h"
-#include "EmuState.h"
+#include "Emu.h"
 
 VccState* InitializeInstance(VccState*);
 
 static VccState* instance = InitializeInstance(new VccState());
-static EmuState* _emu = GetEmuState();
+//static EmuState* _emu;
 
 extern "C" {
   __declspec(dllexport) VccState* __cdecl GetVccState() {
@@ -60,6 +60,8 @@ extern "C" {
     OPENFILENAME ofn;
     char curini[MAX_PATH];
     char newini[MAX_PATH + 4];  // Save room for '.ini' if needed
+
+    static EmuState* _emu = GetEmuState();
 
     GetIniFilePath(curini);  // EJJ get current ini file path
     strcpy(newini, curini);   // Let GetOpenFilename suggest it
@@ -130,6 +132,8 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl SetCPUMultiplierFlag(unsigned char double_speed)
   {
+    static EmuState* _emu = GetEmuState();
+
     SetClockSpeed(1);
 
     _emu->DoubleSpeedFlag = double_speed;
@@ -149,6 +153,8 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl SetCPUMultiplier(unsigned char multiplier)
   {
+    static EmuState* _emu = GetEmuState();
+
     if (multiplier != QUERY)
     {
       _emu->DoubleSpeedMultiplier = multiplier;
@@ -163,6 +169,8 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl SetCpuType(unsigned char cpuType)
   {
+    static EmuState* _emu = GetEmuState();
+
     switch (cpuType)
     {
     case 0:
@@ -187,6 +195,8 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl SetFrameSkip(unsigned char skip)
   {
+    static EmuState* _emu = GetEmuState();
+
     if (skip != QUERY) {
       _emu->FrameSkip = skip;
     }
@@ -198,6 +208,8 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl SetRamSize(unsigned char size)
   {
+    static EmuState* _emu = GetEmuState();
+
     if (size != QUERY) {
       _emu->RamSize = size;
     }
@@ -220,6 +232,8 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl SetTurboMode(unsigned char data)
   {
+    static EmuState* _emu = GetEmuState();
+
     _emu->TurboSpeedFlag = (data & 1) + 1;
 
     SetClockSpeed(1);
@@ -239,6 +253,8 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned __stdcall CartLoad(void* dummy)
   {
+    static EmuState* _emu = GetEmuState();
+
     LoadCart(_emu);
 
     _emu->EmulationRunning = true;
@@ -269,6 +285,8 @@ extern "C" {
   {
     OPENFILENAME ofn;
     char szFileName[MAX_PATH] = "";
+
+    static EmuState* _emu = GetEmuState();
 
     GetIniFilePath(szFileName); // EJJ load current ini file path
 
@@ -339,6 +357,8 @@ extern "C" {
     CopyRom();
     ResetBus();
 
+    static EmuState* _emu = GetEmuState();
+
     _emu->TurboSpeedFlag = 1;
   }
 }
@@ -384,6 +404,8 @@ extern "C" {
     GimeReset();
     UpdateBusPointer();
 
+    static EmuState* _emu = GetEmuState();
+
     _emu->TurboSpeedFlag = 1;
 
     ResetBus();
@@ -395,6 +417,8 @@ extern "C" {
   __declspec(dllexport) void __cdecl EmuLoop() {
     static float fps;
     static unsigned int frameCounter = 0;
+
+    static EmuState* _emu = GetEmuState();
 
     while (true)
     {
@@ -535,6 +559,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 extern "C" {
   __declspec(dllexport) void __cdecl CreatePrimaryWindow() {
+    static EmuState* _emu = GetEmuState();
+
     if (!CreateDirectDrawWindow(_emu, WndProc))
     {
       MessageBox(0, "Can't create primary window", "Error", 0);
@@ -597,27 +623,24 @@ extern "C" {
   __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, CmdLineArguments* cmdArg, EmuState* emu) {
     HANDLE OleInitialize(NULL); //Work around fixs app crashing in "Open file" system dialogs (related to Adobe acrobat 7+)
 
-    EmuState* emuState = emu;
-    emuState = _emu;
-
-    emuState->Resources = emu->Resources;
+    SetEmuState(emu);
 
     CreatePrimaryWindow();
 
     //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
-    InitConfig(emuState, cmdArg);			//Loads the default config file Vcc.ini from the exec directory
+    InitConfig(emu, cmdArg);			//Loads the default config file Vcc.ini from the exec directory
 
     if (strlen(cmdArg->QLoadFile) != 0)
     {
-      emuState->EmulationRunning = true;
+      emu->EmulationRunning = true;
     }
 
-    Cls(0, emuState);
-    DynamicMenuCallback(emuState, "", 0, 0);
-    DynamicMenuCallback(emuState, "", 1, 0);
+    Cls(0, emu);
+    DynamicMenuCallback(emu, "", 0, 0);
+    DynamicMenuCallback(emu, "", 1, 0);
 
-    emuState->ResetPending = RESET_HARD;
-    emuState->EmulationRunning = instance->AutoStart;
+    emu->ResetPending = RESET_HARD;
+    emu->EmulationRunning = instance->AutoStart;
 
     instance->BinaryRunning = true;
   }
@@ -643,6 +666,8 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) INT __cdecl VccShutdown() {
+    static EmuState* _emu = GetEmuState();
+
     CloseHandle(instance->hEventThread);
     CloseHandle(instance->hEmuThread);
     UnloadDll(_emu);

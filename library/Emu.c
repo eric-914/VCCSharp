@@ -2,11 +2,19 @@
 
 EmuState* InitializeInstance(EmuState*);
 
-static EmuState* instance = InitializeInstance(new EmuState());
+static EmuState* instance;
+
+EmuState* GetInstance() {
+  if (instance == NULL) {
+    instance = InitializeInstance(new EmuState());
+  }
+
+  return instance;
+}
 
 extern "C" {
   __declspec(dllexport) EmuState* __cdecl GetEmuState() {
-    return instance;
+    return GetInstance();
   }
 }
 

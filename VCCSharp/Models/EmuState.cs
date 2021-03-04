@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace VCCSharp.Models
 {
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct EmuState
     {
         public IntPtr Resources;
@@ -10,30 +12,28 @@ namespace VCCSharp.Models
         public IntPtr WindowHandle;
         public IntPtr ConfigDialog;
 
-        public POINT WindowSize;
+        public Point WindowSize;
 
-        public byte RamSize;
-
-        public double CPUCurrentSpeed;
-
-        public byte DoubleSpeedMultiplier;
-        public byte DoubleSpeedFlag;
-        public byte TurboSpeedFlag;
-        public byte CpuType;
-        public byte FrameSkip;
         public byte BitDepth;
-
-        public long SurfacePitch;
+        public byte CpuType;
+        public byte DoubleSpeedFlag;
+        public byte DoubleSpeedMultiplier;
+        public byte EmulationRunning;
+        public byte FrameSkip;
+        public byte FullScreen;
+        public byte RamSize;
+        public byte ResetPending;
+        public byte ScanLines;
+        public byte TurboSpeedFlag;
 
         public short LineCounter;
 
-        public byte ScanLines;
-        public byte EmulationRunning;
-        public byte ResetPending;
+        public double CPUCurrentSpeed;
+  
+        public long SurfacePitch;
 
-        public byte FullScreen;
-
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-        public string StatusLine;
+        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
+        //public string StatusLine;
+        public unsafe fixed byte StatusLine[256];
     }
 }
