@@ -356,7 +356,7 @@ extern "C" {
     SetFrameSkip(instance->Model.FrameSkip);
     SetAutoStart(instance->Model.AutoStart);
     SetSpeedThrottle(instance->Model.SpeedThrottle);
-    SetCPUMultiplayer(instance->Model.CPUMultiplier);
+    SetCPUMultiplier(instance->Model.CPUMultiplier);
     SetRamSize(instance->Model.RamSize);
     SetCpuType(instance->Model.CpuType);
     SetMonitorType(instance->Model.MonitorType);

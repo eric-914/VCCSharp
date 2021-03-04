@@ -116,6 +116,9 @@
     <ClCompile Include="ConfigIO.c">
       <Filter>config</Filter>
     </ClCompile>
+    <ClCompile Include="Emu.c">
+      <Filter>emu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h" />
@@ -307,6 +310,9 @@
     <ClInclude Include="TC1014MmuState.h">
       <Filter>models</Filter>
     </ClInclude>
+    <ClInclude Include="Emu.h">
+      <Filter>emu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="audio">
@@ -404,6 +410,9 @@
     </Filter>
     <Filter Include="events">
       <UniqueIdentifier>{a1eac0da-ece6-40f6-9e6f-7c28f6152beb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="emu">
+      <UniqueIdentifier>{5f8f0b1c-f4d2-45c3-aa61-d4c3def83656}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

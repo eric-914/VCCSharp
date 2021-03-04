@@ -26,17 +26,11 @@
 VccState* InitializeInstance(VccState*);
 
 static VccState* instance = InitializeInstance(new VccState());
-static EmuState _emu = EmuState();
+static EmuState* _emu = GetEmuState();
 
 extern "C" {
   __declspec(dllexport) VccState* __cdecl GetVccState() {
     return instance;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) EmuState* __cdecl GetEmuState() {
-    return &_emu;
   }
 }
 
@@ -73,7 +67,7 @@ extern "C" {
     memset(&ofn, 0, sizeof(ofn));
 
     ofn.lStructSize = sizeof(OPENFILENAME);
-    ofn.hwndOwner = _emu.WindowHandle;
+    ofn.hwndOwner = _emu->WindowHandle;
     ofn.lpstrFilter = "INI\0*.ini\0\0";      // filter string
     ofn.nFilterIndex = 1;                    // current filter index
     ofn.lpstrFile = newini;                  // contains full path on return
@@ -89,7 +83,7 @@ extern "C" {
         strcat(newini, ".ini");  //Add extension if none
       }
 
-      WriteIniFile(&_emu); // Flush current config
+      WriteIniFile(_emu); // Flush current config
 
       if (_stricmp(curini, newini) != 0) {
         if (!CopyFile(curini, newini, false)) { // Copy it to new file
@@ -134,35 +128,35 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetCPUMultiplayerFlag(unsigned char double_speed)
+  __declspec(dllexport) void __cdecl SetCPUMultiplierFlag(unsigned char double_speed)
   {
     SetClockSpeed(1);
 
-    _emu.DoubleSpeedFlag = double_speed;
+    _emu->DoubleSpeedFlag = double_speed;
 
-    if (_emu.DoubleSpeedFlag) {
-      SetClockSpeed(_emu.DoubleSpeedMultiplier * _emu.TurboSpeedFlag);
+    if (_emu->DoubleSpeedFlag) {
+      SetClockSpeed(_emu->DoubleSpeedMultiplier * _emu->TurboSpeedFlag);
     }
 
-    _emu.CPUCurrentSpeed = .894;
+    _emu->CPUCurrentSpeed = .894;
 
-    if (_emu.DoubleSpeedFlag) {
-      _emu.CPUCurrentSpeed *= ((double)_emu.DoubleSpeedMultiplier * (double)_emu.TurboSpeedFlag);
+    if (_emu->DoubleSpeedFlag) {
+      _emu->CPUCurrentSpeed *= ((double)_emu->DoubleSpeedMultiplier * (double)_emu->TurboSpeedFlag);
     }
   }
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl SetCPUMultiplayer(unsigned char multiplier)
+  __declspec(dllexport) unsigned char __cdecl SetCPUMultiplier(unsigned char multiplier)
   {
     if (multiplier != QUERY)
     {
-      _emu.DoubleSpeedMultiplier = multiplier;
+      _emu->DoubleSpeedMultiplier = multiplier;
 
-      SetCPUMultiplayerFlag(_emu.DoubleSpeedFlag);
+      SetCPUMultiplierFlag(_emu->DoubleSpeedFlag);
     }
 
-    return(_emu.DoubleSpeedMultiplier);
+    return(_emu->DoubleSpeedMultiplier);
   }
 }
 
@@ -172,21 +166,21 @@ extern "C" {
     switch (cpuType)
     {
     case 0:
-      _emu.CpuType = 0;
+      _emu->CpuType = 0;
 
       strcpy(instance->CpuName, "MC6809");
 
       break;
 
     case 1:
-      _emu.CpuType = 1;
+      _emu->CpuType = 1;
 
       strcpy(instance->CpuName, "HD6309");
 
       break;
     }
 
-    return(_emu.CpuType);
+    return(_emu->CpuType);
   }
 }
 
@@ -194,10 +188,10 @@ extern "C" {
   __declspec(dllexport) unsigned char __cdecl SetFrameSkip(unsigned char skip)
   {
     if (skip != QUERY) {
-      _emu.FrameSkip = skip;
+      _emu->FrameSkip = skip;
     }
 
-    return(_emu.FrameSkip);
+    return(_emu->FrameSkip);
   }
 }
 
@@ -205,10 +199,10 @@ extern "C" {
   __declspec(dllexport) unsigned char __cdecl SetRamSize(unsigned char size)
   {
     if (size != QUERY) {
-      _emu.RamSize = size;
+      _emu->RamSize = size;
     }
 
-    return(_emu.RamSize);
+    return(_emu->RamSize);
   }
 }
 
@@ -226,18 +220,18 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl SetTurboMode(unsigned char data)
   {
-    _emu.TurboSpeedFlag = (data & 1) + 1;
+    _emu->TurboSpeedFlag = (data & 1) + 1;
 
     SetClockSpeed(1);
 
-    if (_emu.DoubleSpeedFlag) {
-      SetClockSpeed(_emu.DoubleSpeedMultiplier * _emu.TurboSpeedFlag);
+    if (_emu->DoubleSpeedFlag) {
+      SetClockSpeed(_emu->DoubleSpeedMultiplier * _emu->TurboSpeedFlag);
     }
 
-    _emu.CPUCurrentSpeed = .894;
+    _emu->CPUCurrentSpeed = .894;
 
-    if (_emu.DoubleSpeedFlag) {
-      _emu.CPUCurrentSpeed *= ((double)_emu.DoubleSpeedMultiplier * (double)_emu.TurboSpeedFlag);
+    if (_emu->DoubleSpeedFlag) {
+      _emu->CPUCurrentSpeed *= ((double)_emu->DoubleSpeedMultiplier * (double)_emu->TurboSpeedFlag);
     }
   }
 }
@@ -245,9 +239,9 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned __stdcall CartLoad(void* dummy)
   {
-    LoadCart(&_emu);
+    LoadCart(_emu);
 
-    _emu.EmulationRunning = true;
+    _emu->EmulationRunning = true;
     instance->DialogOpen = false;
 
     return(NULL);
@@ -281,7 +275,7 @@ extern "C" {
     memset(&ofn, 0, sizeof(ofn));
 
     ofn.lStructSize = sizeof(OPENFILENAME);
-    ofn.hwndOwner = _emu.WindowHandle;
+    ofn.hwndOwner = _emu->WindowHandle;
     ofn.lpstrFilter = "INI\0*.ini\0\0";
     ofn.nFilterIndex = 1;
     ofn.lpstrFile = szFileName;
@@ -293,12 +287,12 @@ extern "C" {
     ofn.Flags = OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
 
     if (GetOpenFileName(&ofn)) {
-      WriteIniFile(&_emu);    // Flush current profile
+      WriteIniFile(_emu);    // Flush current profile
       SetIniFilePath(szFileName);          // Set new ini file path
-      ReadIniFile(&_emu);     // Load it
-      SynchSystemWithConfig(&_emu);
+      ReadIniFile(_emu);     // Load it
+      SynchSystemWithConfig(_emu);
 
-      _emu.ResetPending = RESET_HARD;
+      _emu->ResetPending = RESET_HARD;
     }
   }
 }
@@ -345,7 +339,7 @@ extern "C" {
     CopyRom();
     ResetBus();
 
-    _emu.TurboSpeedFlag = 1;
+    _emu->TurboSpeedFlag = 1;
   }
 }
 
@@ -390,7 +384,7 @@ extern "C" {
     GimeReset();
     UpdateBusPointer();
 
-    _emu.TurboSpeedFlag = 1;
+    _emu->TurboSpeedFlag = 1;
 
     ResetBus();
     SetClockSpeed(1);
@@ -419,36 +413,36 @@ extern "C" {
       {
         instance->Qflag = 0;
 
-        QuickLoad(&_emu, instance->QuickLoadFile);
+        QuickLoad(_emu, instance->QuickLoadFile);
       }
 
       StartRender();
 
-      for (uint8_t frames = 1; frames <= _emu.FrameSkip; frames++)
+      for (uint8_t frames = 1; frames <= _emu->FrameSkip; frames++)
       {
         frameCounter++;
 
-        if (_emu.ResetPending != RESET_CLEAR) {
-          switch (_emu.ResetPending)
+        if (_emu->ResetPending != RESET_CLEAR) {
+          switch (_emu->ResetPending)
           {
           case RESET_SOFT:	//Soft Reset
             SoftReset();
             break;
 
           case RESET_HARD:	//Hard Reset
-            SynchSystemWithConfig(&_emu);
-            DoCls(&_emu);
-            HardReset(&_emu);
+            SynchSystemWithConfig(_emu);
+            DoCls(_emu);
+            HardReset(_emu);
 
             break;
 
           case RESET_CLS:
-            DoCls(&_emu);
+            DoCls(_emu);
             break;
 
           case RESET_CLS_SYNCH:
-            SynchSystemWithConfig(&_emu);
-            DoCls(&_emu);
+            SynchSystemWithConfig(_emu);
+            DoCls(_emu);
 
             break;
 
@@ -456,28 +450,28 @@ extern "C" {
             break;
           }
 
-          _emu.ResetPending = RESET_CLEAR;
+          _emu->ResetPending = RESET_CLEAR;
         }
 
-        if (_emu.EmulationRunning) {
-          fps += RenderFrame(&_emu);
+        if (_emu->EmulationRunning) {
+          fps += RenderFrame(_emu);
         }
         else {
-          fps += Static(&_emu);
+          fps += Static(_emu);
         }
       }
 
-      EndRender(_emu.FrameSkip);
+      EndRender(_emu->FrameSkip);
 
-      fps /= _emu.FrameSkip;
+      fps /= _emu->FrameSkip;
 
-      GetModuleStatus(&_emu);
+      GetModuleStatus(_emu);
 
       char ttbuff[256];
 
-      snprintf(ttbuff, sizeof(ttbuff), "Skip:%2.2i | FPS:%3.0f | %s @ %2.2fMhz| %s", _emu.FrameSkip, fps, instance->CpuName, _emu.CPUCurrentSpeed, _emu.StatusLine);
+      snprintf(ttbuff, sizeof(ttbuff), "Skip:%2.2i | FPS:%3.0f | %s @ %2.2fMhz| %s", _emu->FrameSkip, fps, instance->CpuName, _emu->CPUCurrentSpeed, _emu->StatusLine);
 
-      SetStatusBarText(ttbuff, &_emu);
+      SetStatusBarText(ttbuff, _emu);
 
       if (instance->Throttle) { //Do nothing until the frame is over returning unused time to OS
         FrameWait();
@@ -541,7 +535,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 extern "C" {
   __declspec(dllexport) void __cdecl CreatePrimaryWindow() {
-    if (!CreateDirectDrawWindow(&_emu, WndProc))
+    if (!CreateDirectDrawWindow(_emu, WndProc))
     {
       MessageBox(0, "Can't create primary window", "Error", 0);
 
@@ -604,7 +598,7 @@ extern "C" {
     HANDLE OleInitialize(NULL); //Work around fixs app crashing in "Open file" system dialogs (related to Adobe acrobat 7+)
 
     EmuState* emuState = emu;
-    emuState = &(_emu);
+    emuState = _emu;
 
     emuState->Resources = emu->Resources;
 
@@ -651,9 +645,9 @@ extern "C" {
   __declspec(dllexport) INT __cdecl VccShutdown() {
     CloseHandle(instance->hEventThread);
     CloseHandle(instance->hEmuThread);
-    UnloadDll(&_emu);
+    UnloadDll(_emu);
     SoundDeInit();
-    WriteIniFile(&_emu); //Save Any changes to ini File
+    WriteIniFile(_emu); //Save Any changes to ini File
 
     return (INT)(instance->msg.wParam);
   }

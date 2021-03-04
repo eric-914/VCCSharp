@@ -174,6 +174,7 @@
     <ClCompile Include="cpudef.c" />
     <ClCompile Include="DirectDraw.c" />
     <ClCompile Include="DirectSoundEnumerateCallback.c" />
+    <ClCompile Include="Emu.c" />
     <ClCompile Include="fileoperations.c" />
     <ClCompile Include="Graphics.c" />
     <ClCompile Include="HD6309.c" />
@@ -221,6 +222,7 @@
     <ClInclude Include="DirectDraw.h" />
     <ClInclude Include="DirectDrawState.h" />
     <ClInclude Include="DirectSoundEnumerateCallback.h" />
+    <ClInclude Include="Emu.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsState.h" />
     <ClInclude Include="HD6309.h" />

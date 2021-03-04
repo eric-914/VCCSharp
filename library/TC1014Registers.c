@@ -211,11 +211,11 @@ extern "C" {
     }
 
     if ((port == 0xD7) || (port == 0xD9)) {
-      SetCPUMultiplayerFlag(1);
+      SetCPUMultiplierFlag(1);
     }
 
     if ((port == 0xD6) || (port == 0xD8)) {
-      SetCPUMultiplayerFlag(0);
+      SetCPUMultiplierFlag(0);
     }
   }
 }
