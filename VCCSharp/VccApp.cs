@@ -12,6 +12,8 @@ namespace VCCSharp
         private IntPtr _hResources;
         //private EmuState _emuState;
 
+        private readonly Vcc _vcc = new Vcc();
+        private readonly Emu _emu = new Emu();
         private readonly DirectDraw _directDraw = new DirectDraw();
         private readonly CoCo _coco = new CoCo();
         private readonly Config _config = new Config();
@@ -26,13 +28,13 @@ namespace VCCSharp
             {
                 _hResources = Kernel.LoadLibrary("resources.dll");
 
-                EmuState* emuState = Library.Emu.GetEmuState();
-                VccState* vccState = Library.Vcc.GetVccState();
+                EmuState* emuState = _emu.GetEmuState();
+                VccState* vccState = _vcc.GetVccState();
 
                 emuState->Resources = _hResources;
 
                 //TODO: Redundant at the moment
-                Library.Emu.SetEmuState(emuState);
+                _emu.SetEmuState(emuState);
 
                 _directDraw.InitDirectDraw(hInstance, _hResources);
 
@@ -42,13 +44,13 @@ namespace VCCSharp
                 {
                     if (_quickLoad.QuickStart(emuState, cmdLineArgs.QLoadFile) == (int)QuickStartStatuses.Ok)
                     {
-                        Library.Vcc.SetAppTitle(_hResources, cmdLineArgs.QLoadFile); //TODO: No app title if no quick load
+                        _vcc.SetAppTitle(_hResources, cmdLineArgs.QLoadFile); //TODO: No app title if no quick load
                     }
 
                     emuState->EmulationRunning = Define.TRUE;
                 }
 
-                Library.Vcc.CreatePrimaryWindow();
+                _vcc.CreatePrimaryWindow();
 
                 //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
                 //Loads the default config file Vcc.ini from the exec directory
@@ -72,10 +74,10 @@ namespace VCCSharp
         {
             unsafe
             {
-                VccState* vccState = Library.Vcc.GetVccState();
+                VccState* vccState = _vcc.GetVccState();
 
-                vccState->hEventThread = Library.Vcc.CreateEventHandle();
-                vccState->hEmuThread = Library.Vcc.CreateThreadHandle(vccState->hEventThread);
+                vccState->hEventThread = _vcc.CreateEventHandle();
+                vccState->hEmuThread = _vcc.CreateThreadHandle(vccState->hEventThread);
 
                 Kernel.WaitForSingleObject(vccState->hEventThread, Define.INFINITE);
                 Kernel.SetThreadPriority(vccState->hEmuThread, Define.THREAD_PRIORITY_NORMAL);
@@ -86,11 +88,11 @@ namespace VCCSharp
         {
             unsafe
             {
-                VccState* vccState = Library.Vcc.GetVccState();
+                VccState* vccState = _vcc.GetVccState();
 
                 while (vccState->BinaryRunning == Define.TRUE)
                 {
-                    Library.Vcc.CheckScreenModeChange();
+                    _vcc.CheckScreenModeChange();
 
                     MSG* msg = &(vccState->msg);
 
@@ -107,8 +109,8 @@ namespace VCCSharp
         {
             unsafe
             {
-                VccState* vccState = Library.Vcc.GetVccState();
-                EmuState* emuState = Library.Emu.GetEmuState();
+                VccState* vccState = _vcc.GetVccState();
+                EmuState* emuState = _emu.GetEmuState();
 
                 Kernel.CloseHandle(vccState->hEventThread);
                 Kernel.CloseHandle(vccState->hEmuThread);
