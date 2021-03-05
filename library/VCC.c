@@ -566,7 +566,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void CheckScreenModeChange() {
+  __declspec(dllexport) void __cdecl CheckScreenModeChange() {
     if (instance->FlagEmuStop == TH_WAITING)		//Need to stop the EMU thread for screen mode change
     {								                  //As it holds the Secondary screen buffer open while running
       FullScreenToggle(WndProc);
@@ -576,41 +576,35 @@ extern "C" {
   }
 }
 
-HANDLE CreateEventHandle() {
-  HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+extern "C" {
+  __declspec(dllexport) HANDLE __cdecl CreateEventHandle() {
+    HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 
-  if (hEvent == NULL)
-  {
-    MessageBox(0, "Can't create event thread!!", "Error", 0);
+    if (hEvent == NULL)
+    {
+      MessageBox(0, "Can't create event thread!!", "Error", 0);
 
-    exit(0);
+      exit(0);
+    }
+
+    return hEvent;
   }
-
-  return hEvent;
-}
-
-HANDLE CreateThreadHandle(HANDLE hEvent) {
-  unsigned threadID;
-
-  HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &EmuLoopRun, hEvent, 0, &threadID);
-
-  if (hThread == NULL)
-  {
-    MessageBox(0, "Can't Start main Emulation Thread!", "Ok", 0);
-
-    exit(0);
-  }
-
-  return hThread;
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl VccStartupThreading() {
-    instance->hEventThread = CreateEventHandle();
-    instance->hEmuThread = CreateThreadHandle(instance->hEventThread);
+  __declspec(dllexport) HANDLE __cdecl CreateThreadHandle(HANDLE hEvent) {
+    unsigned threadID;
 
-    WaitForSingleObject(instance->hEventThread, INFINITE);
-    SetThreadPriority(instance->hEmuThread, THREAD_PRIORITY_NORMAL);
+    HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &EmuLoopRun, hEvent, 0, &threadID);
+
+    if (hThread == NULL)
+    {
+      MessageBox(0, "Can't Start main Emulation Thread!", "Ok", 0);
+
+      exit(0);
+    }
+
+    return hThread;
   }
 }
 

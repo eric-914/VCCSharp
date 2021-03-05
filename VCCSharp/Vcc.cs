@@ -59,7 +59,16 @@ namespace VCCSharp
 
         public void Threading()
         {
-            Library.Vcc.VccStartupThreading();
+            unsafe
+            {
+                VccState* vccState = Library.Vcc.GetVccState();
+
+                vccState->hEventThread = Library.Vcc.CreateEventHandle();
+                vccState->hEmuThread = Library.Vcc.CreateThreadHandle(vccState->hEventThread);
+
+                Library.WaitForSingleObject(vccState->hEventThread, Define.INFINITE);
+                Library.SetThreadPriority(vccState->hEmuThread, Define.THREAD_PRIORITY_NORMAL);
+            }
         }
 
         public void Run()
