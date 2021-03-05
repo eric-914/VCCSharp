@@ -15,7 +15,6 @@ namespace VCCSharp
 
             Library.DirectDraw.InitDirectDraw(hInstance, _hResources);
             
-            Library.Vcc.CheckQuickLoad(cmdLineArgs.QLoadFile);
             Library.CoCo.SetClockSpeed(1);  //Default clock speed .89 MHZ	
 
             unsafe
@@ -26,16 +25,21 @@ namespace VCCSharp
                 //TODO: Redundant at the moment
                 Library.Emu.SetEmuState(emuState);
 
+                if (!string.IsNullOrEmpty(cmdLineArgs.QLoadFile))
+                {
+                    if (Library.QuickLoad.QuickStart(emuState, cmdLineArgs.QLoadFile) == 0)
+                    {
+                        Library.Vcc.SetAppTitle(_hResources, cmdLineArgs.QLoadFile);
+                    }
+
+                    emuState->EmulationRunning = 1; //true
+                }
+
                 Library.Vcc.CreatePrimaryWindow();
 
                 //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
                 //Loads the default config file Vcc.ini from the exec directory
                 Library.Config.InitConfig(emuState, ref cmdLineArgs);
-
-                if (!string.IsNullOrEmpty(cmdLineArgs.QLoadFile))
-                {
-                    emuState->EmulationRunning = 1; //true
-                }
 
                 Library.DirectDraw.ClearScreen();
 

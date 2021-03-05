@@ -1,3 +1,5 @@
+#include "EmuState.h"
+
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
 // Used by library.rc
@@ -16,3 +18,5 @@
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
+
+extern "C" __declspec(dllexport) void __cdecl ResourceAppTitle(HINSTANCE hResources, char* buffer);

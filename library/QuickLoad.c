@@ -8,8 +8,12 @@
 #include "cpudef.h"
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl QuickLoad(EmuState* emuState, char* binFileName)
+  __declspec(dllexport) int __cdecl QuickStart(EmuState* emuState, char* binFileName)
   {
+    if (strlen(binFileName) == 0) {
+      return QL_NO_ACTION;
+    }
+
     FILE* binImage = NULL;
     unsigned int memIndex = 0;
     unsigned char fileType = 0;
@@ -22,14 +26,14 @@ extern "C" {
     HANDLE hr = CreateFile(binFileName, NULL, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (hr == INVALID_HANDLE_VALUE) {
-      return(1);				//File Not Found
+      return QL_FILE_NOT_FOUND;				//File Not Found
     }
 
     CloseHandle(hr);
     binImage = fopen(binFileName, "rb");
 
     if (binImage == NULL) {
-      return(2);				//Can't Open File
+      return QL_CANNOT_OPEN_FILE;				//Can't Open File
     }
 
     memImage = (unsigned char*)malloc(65535);
@@ -37,7 +41,7 @@ extern "C" {
     if (memImage == NULL)
     {
       MessageBox(NULL, "Can't alocate ram", "Error", 0);
-      return(3);				//Not enough memory
+      return QL_OUT_OF_MEMORY;				//Not enough memory
     }
 
     strcpy(extension, FilePathFindExtension(binFileName));
@@ -47,7 +51,7 @@ extern "C" {
     {
       InsertModule(emuState, binFileName);
 
-      return(0);
+      return(QL_OK);
     }
 
     if (strcmp(extension, ".bin") == 0)
@@ -77,25 +81,25 @@ extern "C" {
           {
             MessageBox(NULL, ".Bin file is corrupt or invalid Transfer Address", "Error", 0);
 
-            return(3);
+            return QL_INVALID_TRANSFER;
           }
 
           fclose(binImage);
           free(memImage);
           GetCPU()->CPUForcePC(xferAddress);
 
-          return(0);
+          return(QL_OK);
 
         default:
           MessageBox(NULL, ".Bin file is corrupt or invalid", "Error", 0);
           fclose(binImage);
           free(memImage);
 
-          return(3);
+          return QL_INVALID_FILE_TYPE;
         }
       }
     }
 
-    return(255); //Invalid File type
+    return QL_UNKNOWN;
   }
 }

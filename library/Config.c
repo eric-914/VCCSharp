@@ -26,6 +26,8 @@
 
 #include "macros.h"
 
+#include "resource.h"
+
 using namespace std;
 
 const unsigned char TranslateScan2Disp[SCAN_TRANS_COUNT] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 32, 38, 20, 33, 35, 40, 36, 24, 30, 31, 42, 43, 55, 52, 16, 34, 19, 21, 22, 23, 25, 26, 27, 45, 46, 0, 51, 44, 41, 39, 18, 37, 17, 29, 28, 47, 48, 49, 51, 0, 53, 54, 50, 66, 67, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, 64, 60, 0, 62, 0, 63, 0, 59, 65, 61, 56, 57 };
@@ -370,7 +372,7 @@ extern "C" {
     HANDLE hr = NULL;
     int lasterror;
 
-    LoadString(emuState->Resources, IDS_APP_TITLE, instance->Model.Release, MAX_LOADSTRING); //--A kind of "versioning" I guess
+    ResourceAppTitle(emuState->Resources, instance->Model.Release);  //--A kind of "versioning" I guess
 
     GetIniFilePath(instance->IniFilePath, cmdArg->IniFile);
 

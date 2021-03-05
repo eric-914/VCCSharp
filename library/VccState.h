@@ -16,12 +16,10 @@ typedef struct
   char AppName[MAX_LOADSTRING];
   unsigned char FlagEmuStop;
 
-  char QuickLoadFile[256];
   bool BinaryRunning;
   bool DialogOpen;
   unsigned char Throttle;
   unsigned char AutoStart;
-  unsigned char Qflag;
 
   //--------------------------------------------------------------------------
   // When the main window is about to lose keyboard focus there are one

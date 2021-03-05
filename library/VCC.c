@@ -24,6 +24,8 @@
 #include "Emu.h"
 #include "MenuCallbacks.h"
 
+#include "resource.h"
+
 VccState* InitializeInstance(VccState*);
 
 static VccState* instance = InitializeInstance(new VccState());
@@ -41,7 +43,6 @@ VccState* InitializeInstance(VccState* p) {
   p->KB_save1 = 0;
   p->KB_save2 = 0;
   p->KeySaveToggle = 0;
-  p->Qflag = 0;
   p->SC_save1 = 0;
   p->SC_save2 = 0;
   p->Throttle = 0;
@@ -433,13 +434,6 @@ extern "C" {
 
       fps = 0;
 
-      if ((instance->Qflag == 255) && (frameCounter == 30))
-      {
-        instance->Qflag = 0;
-
-        QuickLoad(_emu, instance->QuickLoadFile);
-      }
-
       StartRender();
 
       for (uint8_t frames = 1; frames <= _emu->FrameSkip; frames++)
@@ -524,14 +518,15 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl CheckQuickLoad(char* qLoadFile) {
+  __declspec(dllexport) void __cdecl SetAppTitle(HINSTANCE hResources, char* binFileName) {
     char temp1[MAX_PATH] = "";
     char temp2[MAX_PATH] = " Running on ";
 
-    if (strlen(qLoadFile) != 0)
+    ResourceAppTitle(hResources, instance->AppName);
+
+    if (strlen(binFileName) != 0)
     {
-      strcpy(instance->QuickLoadFile, qLoadFile);
-      strcpy(temp1, qLoadFile);
+      strcpy(temp1, binFileName);
 
       FilePathStripPath(temp1);
 
@@ -542,10 +537,8 @@ extern "C" {
       strcat(temp1, temp2);
       strcat(temp1, instance->AppName);
       strcpy(instance->AppName, temp1);
-
-      instance->Qflag = 0xFF;
     }
-  };
+  }
 }
 
 /*--------------------------------------------------------------------------*/

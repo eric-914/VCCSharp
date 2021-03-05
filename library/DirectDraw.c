@@ -5,6 +5,7 @@
 #include <commctrl.h>	// Windows common controls
 
 #include "../resources/resource.h"
+#include "resource.h"
 
 #include "DirectDraw.h"
 #include "Throttle.h"
@@ -735,8 +736,8 @@ extern "C" {
   {
     instance->hInstance = hInstance;
 
-    LoadString(hResources, IDS_APP_TITLE, instance->TitleBarText, MAX_LOADSTRING);
-    LoadString(hResources, IDS_APP_TITLE, instance->AppNameText, MAX_LOADSTRING);
+    ResourceAppTitle(hResources, instance->TitleBarText);
+    ResourceAppTitle(hResources, instance->AppNameText);
 
     return TRUE;
   }

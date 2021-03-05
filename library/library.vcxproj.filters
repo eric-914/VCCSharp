@@ -122,6 +122,9 @@
     <ClCompile Include="MenuCallbacks.c">
       <Filter>callbacks</Filter>
     </ClCompile>
+    <ClCompile Include="resource.c">
+      <Filter>resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h" />

@@ -35,7 +35,7 @@ namespace VCCSharp
             public static extern INT VccStartupThreading();
 
             [DllImport(DLL)]
-            public static extern void CheckQuickLoad(string qLoadFile);
+            public static extern void SetAppTitle(HINSTANCE hResources, string binFileName);
 
             [DllImport(DLL)]
             public static extern void CreatePrimaryWindow();
@@ -66,6 +66,12 @@ namespace VCCSharp
         {
             [DllImport(DLL)]
             public static extern unsafe void DynamicMenuCallback(EmuState *emu, string menuName, int menuId, int type);
+        }
+
+        public static class QuickLoad
+        {
+            [DllImport(DLL)]
+            public static extern unsafe int QuickStart(EmuState *emu, string binFileName);
         }
 
         [DllImport("kernel32.dll")]
