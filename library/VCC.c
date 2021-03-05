@@ -623,11 +623,9 @@ extern "C" {
   __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, CmdLineArguments* cmdArg, EmuState* emuState) {
     HANDLE OleInitialize(NULL); //Work around fixs app crashing in "Open file" system dialogs (related to Adobe acrobat 7+)
 
-    ClearScreen();
-    emuState->ResetPending = RESET_CLS;
+    //emuState->ResetPending = RESET_CLS;
 
-    DynamicMenuCallback(emuState, "", 0, 0);
-    DynamicMenuCallback(emuState, "", 1, 0);
+    DynamicMenuCallback(emuState, "", MENU_REFRESH, IGNORE);
 
     emuState->ResetPending = RESET_HARD;
     emuState->EmulationRunning = instance->AutoStart;

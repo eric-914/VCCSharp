@@ -299,7 +299,7 @@ extern "C" {
     //MenuId=0 Flush Buffer MenuId=1 Done 
     switch (menuId)
     {
-    case 0:
+    case MENU_FLUSH:
       instance->MenuIndex = 0;
 
       DynamicMenuCallback(emuState, "Cartridge", 6000, HEAD);	//Recursion is fun
@@ -312,8 +312,13 @@ extern "C" {
 
       break;
 
-    case 1:
+    case MENU_DONE:
       RefreshDynamicMenu(emuState);
+      break;
+
+    case MENU_REFRESH:
+      DynamicMenuCallback(emuState, "", MENU_FLUSH, IGNORE);
+      DynamicMenuCallback(emuState, "", MENU_DONE, IGNORE);
       break;
 
     default:
@@ -358,8 +363,7 @@ extern "C" {
 
     instance->hInstLib = NULL;
 
-    DynamicMenuCallback(emuState, "", 0, 0); //Refresh Menus
-    DynamicMenuCallback(emuState, "", 1, 0);
+    DynamicMenuCallback(emuState, "", MENU_REFRESH, IGNORE);
   }
 }
 
@@ -430,8 +434,7 @@ extern "C" {
 
     emuState->ResetPending = RESET_HARD;
 
-    DynamicMenuCallback(emuState, "", 0, 0); //Refresh Menus
-    DynamicMenuCallback(emuState, "", 1, 0);
+    DynamicMenuCallback(emuState, "", MENU_REFRESH, IGNORE);
   }
 }
 
@@ -478,8 +481,7 @@ extern "C" {
 
       FilePathStripPath(instance->Modname);
 
-      DynamicMenuCallback(emuState, "", 0, 0); //Refresh Menus
-      DynamicMenuCallback(emuState, "", 1, 0);
+      DynamicMenuCallback(emuState, "", MENU_REFRESH, IGNORE);
 
       emuState->ResetPending = RESET_HARD;
 

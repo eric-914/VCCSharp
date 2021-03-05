@@ -1,4 +1,5 @@
 ﻿using System;
+using VCCSharp.Enums;
 using VCCSharp.Models;
 
 namespace VCCSharp
@@ -35,6 +36,10 @@ namespace VCCSharp
                 {
                     emuState->EmulationRunning = 1; //true
                 }
+
+                Library.DirectDraw.ClearScreen();
+
+                emuState->ResetPending = (byte)ResetPendingStates.Cls;
 
                 Library.Vcc.VccStartup(hInstance, ref cmdLineArgs, emuState);
             }

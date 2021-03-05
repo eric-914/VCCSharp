@@ -57,6 +57,9 @@ namespace VCCSharp
         {
             [DllImport(DLL)]
             public static extern bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources);
+
+            [DllImport(DLL)]
+            public static extern void ClearScreen();
         }
 
         [DllImport("kernel32.dll")]
