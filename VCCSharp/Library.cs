@@ -39,6 +39,9 @@ namespace VCCSharp
 
             [DllImport(DLL)]
             public static extern void CreatePrimaryWindow();
+
+            [DllImport(DLL)]
+            public static extern void CheckScreenModeChange();
         }
 
         public static class CoCo

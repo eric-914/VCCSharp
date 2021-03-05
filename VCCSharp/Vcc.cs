@@ -26,7 +26,7 @@ namespace VCCSharp
                 Library.DirectDraw.InitDirectDraw(hInstance, _hResources);
 
                 Library.CoCo.SetClockSpeed(1);  //Default clock speed .89 MHZ	
-                
+
                 if (!string.IsNullOrEmpty(cmdLineArgs.QLoadFile))
                 {
                     if (Library.QuickLoad.QuickStart(emuState, cmdLineArgs.QLoadFile) == 0)
@@ -61,7 +61,17 @@ namespace VCCSharp
 
         public void Run()
         {
-            Library.Vcc.VccRun();
+            unsafe
+            {
+                VccState* vccState = Library.Vcc.GetVccState();
+
+                while (vccState->BinaryRunning != 0)
+                {
+                    Library.Vcc.CheckScreenModeChange();
+
+                    Library.Vcc.VccRun();
+                }
+            }
         }
 
         public int Shutdown()

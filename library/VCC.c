@@ -616,17 +616,11 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl VccRun() {
+    GetMessage(&msg, NULL, 0, 0);		//Seems if the main loop stops polling for Messages the child threads stall
 
-    while (instance->BinaryRunning)
-    {
-      CheckScreenModeChange();
+    TranslateMessage(&msg);
 
-      GetMessage(&msg, NULL, 0, 0);		//Seems if the main loop stops polling for Messages the child threads stall
-
-      TranslateMessage(&msg);
-
-      DispatchMessage(&msg);
-    }
+    DispatchMessage(&msg);
   }
 }
 
