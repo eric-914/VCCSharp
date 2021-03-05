@@ -16,9 +16,9 @@
 #define MENU_REFRESH 2
 
 //Type 0= HEAD TAG 1= Slave Tag 2=StandAlone
-#define	HEAD 0
-#define SLAVE 1
-#define STANDALONE 2
+#define	MENU_PARENT     0
+#define MENU_CHILD      1
+#define MENU_STANDALONE 2
 
 extern "C" __declspec(dllexport) VccState * __cdecl GetVccState();
 extern "C" __declspec(dllexport) EmuState* __cdecl GetEmuState();

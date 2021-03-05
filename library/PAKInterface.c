@@ -180,11 +180,11 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl RefreshDynamicMenu(EmuState* emuState)
   {
-    MENUITEMINFO Mii;
-    char MenuTitle[32] = "Cartridge";
-    unsigned char tempIndex = 0, Index = 0;
+    MENUITEMINFO mii;
+    char menuTitle[32] = "Cartridge";
+    unsigned char tempIndex = 0, index = 0;
     static HWND hOld = 0;
-    int SubMenuIndex = 0;
+    int subMenuIndex = 0;
 
     if ((instance->hMenu == NULL) || (emuState->WindowHandle != hOld)) {
       instance->hMenu = GetMenu(emuState->WindowHandle);
@@ -194,94 +194,77 @@ extern "C" {
     }
 
     hOld = emuState->WindowHandle;
-    instance->hSubMenu[SubMenuIndex] = CreatePopupMenu();
+    instance->hSubMenu[subMenuIndex] = CreatePopupMenu();
 
-    memset(&Mii, 0, sizeof(MENUITEMINFO));
+    memset(&mii, 0, sizeof(MENUITEMINFO));
 
-    Mii.cbSize = sizeof(MENUITEMINFO);
-    Mii.fMask = MIIM_TYPE | MIIM_SUBMENU | MIIM_ID;
-    Mii.fType = MFT_STRING;
-    Mii.wID = 4999;
-    Mii.hSubMenu = instance->hSubMenu[SubMenuIndex];
-    Mii.dwTypeData = MenuTitle;
-    Mii.cch = (UINT)strlen(MenuTitle);
+    mii.cbSize = sizeof(MENUITEMINFO);
+    mii.fMask = MIIM_TYPE | MIIM_SUBMENU | MIIM_ID;
+    mii.fType = MFT_STRING;
+    mii.wID = 4999;
+    mii.hSubMenu = instance->hSubMenu[subMenuIndex];
+    mii.dwTypeData = menuTitle;
+    mii.cch = (UINT)strlen(menuTitle);
 
-    InsertMenuItem(instance->hMenu, 3, TRUE, &Mii);
+    InsertMenuItem(instance->hMenu, 3, TRUE, &mii);
 
-    SubMenuIndex++;
+    subMenuIndex++;
 
     for (tempIndex = 0; tempIndex < instance->MenuIndex; tempIndex++)
     {
       if (strlen(instance->MenuItem[tempIndex].MenuName) == 0) {
-        instance->MenuItem[tempIndex].Type = STANDALONE;
+        instance->MenuItem[tempIndex].Type = MENU_STANDALONE;
       }
 
       //Create Menu item in title bar if no exist already
       switch (instance->MenuItem[tempIndex].Type)
       {
-      case HEAD:
-        SubMenuIndex++;
+      case MENU_PARENT:
+        subMenuIndex++;
 
-        instance->hSubMenu[SubMenuIndex] = CreatePopupMenu();
+        instance->hSubMenu[subMenuIndex] = CreatePopupMenu();
 
-        memset(&Mii, 0, sizeof(MENUITEMINFO));
+        memset(&mii, 0, sizeof(MENUITEMINFO));
 
-        Mii.cbSize = sizeof(MENUITEMINFO);
-        Mii.fMask = MIIM_TYPE | MIIM_SUBMENU | MIIM_ID;
-        Mii.fType = MFT_STRING;
-        Mii.wID = instance->MenuItem[tempIndex].MenuId;
-        Mii.hSubMenu = instance->hSubMenu[SubMenuIndex];
-        Mii.dwTypeData = instance->MenuItem[tempIndex].MenuName;
-        Mii.cch = (UINT)strlen(instance->MenuItem[tempIndex].MenuName);
+        mii.cbSize = sizeof(MENUITEMINFO);
+        mii.fMask = MIIM_TYPE | MIIM_SUBMENU | MIIM_ID;
+        mii.fType = MFT_STRING;
+        mii.wID = instance->MenuItem[tempIndex].MenuId;
+        mii.hSubMenu = instance->hSubMenu[subMenuIndex];
+        mii.dwTypeData = instance->MenuItem[tempIndex].MenuName;
+        mii.cch = (UINT)strlen(instance->MenuItem[tempIndex].MenuName);
 
-        InsertMenuItem(instance->hSubMenu[0], 0, FALSE, &Mii);
-
-        break;
-
-      case SLAVE:
-        memset(&Mii, 0, sizeof(MENUITEMINFO));
-
-        Mii.cbSize = sizeof(MENUITEMINFO);
-        Mii.fMask = MIIM_TYPE | MIIM_ID;
-        Mii.fType = MFT_STRING;
-        Mii.wID = instance->MenuItem[tempIndex].MenuId;
-        Mii.hSubMenu = instance->hSubMenu[SubMenuIndex];
-        Mii.dwTypeData = instance->MenuItem[tempIndex].MenuName;
-        Mii.cch = (UINT)strlen(instance->MenuItem[tempIndex].MenuName);
-
-        InsertMenuItem(instance->hSubMenu[SubMenuIndex], 0, FALSE, &Mii);
+        InsertMenuItem(instance->hSubMenu[0], 0, FALSE, &mii);
 
         break;
 
-      case STANDALONE:
-        if (strlen(instance->MenuItem[tempIndex].MenuName) == 0)
-        {
-          memset(&Mii, 0, sizeof(MENUITEMINFO));
+      case MENU_CHILD:
+        memset(&mii, 0, sizeof(MENUITEMINFO));
 
-          Mii.cbSize = sizeof(MENUITEMINFO);
-          Mii.fMask = MIIM_TYPE | MIIM_ID;
-          Mii.fType = MF_SEPARATOR;
-          Mii.wID = instance->MenuItem[tempIndex].MenuId;
-          Mii.hSubMenu = instance->hMenu;
-          Mii.dwTypeData = instance->MenuItem[tempIndex].MenuName;
-          Mii.cch = (UINT)strlen(instance->MenuItem[tempIndex].MenuName);
+        mii.cbSize = sizeof(MENUITEMINFO);
+        mii.fMask = MIIM_TYPE | MIIM_ID;
+        mii.fType = MFT_STRING;
+        mii.wID = instance->MenuItem[tempIndex].MenuId;
+        mii.hSubMenu = instance->hSubMenu[subMenuIndex];
+        mii.dwTypeData = instance->MenuItem[tempIndex].MenuName;
+        mii.cch = (UINT)strlen(instance->MenuItem[tempIndex].MenuName);
 
-          InsertMenuItem(instance->hSubMenu[0], 0, FALSE, &Mii);
-        }
-        else
-        {
-          memset(&Mii, 0, sizeof(MENUITEMINFO));
+        InsertMenuItem(instance->hSubMenu[subMenuIndex], 0, FALSE, &mii);
 
-          Mii.cbSize = sizeof(MENUITEMINFO);
-          Mii.fMask = MIIM_TYPE | MIIM_ID;
-          Mii.fType = MFT_STRING;
-          Mii.wID = instance->MenuItem[tempIndex].MenuId;
-          Mii.hSubMenu = instance->hMenu;
-          Mii.dwTypeData = instance->MenuItem[tempIndex].MenuName;
-          Mii.cch = (UINT)strlen(instance->MenuItem[tempIndex].MenuName);
+        break;
 
-          InsertMenuItem(instance->hSubMenu[0], 0, FALSE, &Mii);
-        }
+      case MENU_STANDALONE:
+        memset(&mii, 0, sizeof(MENUITEMINFO));
+
+        mii.cbSize = sizeof(MENUITEMINFO);
+        mii.fMask = MIIM_TYPE | MIIM_ID;
+        mii.fType = strlen(instance->MenuItem[tempIndex].MenuName) == 0 ? MF_SEPARATOR : MFT_STRING;
+        mii.wID = instance->MenuItem[tempIndex].MenuId;
+        mii.hSubMenu = instance->hMenu;
+        mii.dwTypeData = instance->MenuItem[tempIndex].MenuName;
+        mii.cch = (UINT)strlen(instance->MenuItem[tempIndex].MenuName);
+
+        InsertMenuItem(instance->hSubMenu[0], 0, FALSE, &mii);
 
         break;
       }
@@ -302,13 +285,13 @@ extern "C" {
     case MENU_FLUSH:
       instance->MenuIndex = 0;
 
-      DynamicMenuCallback(emuState, "Cartridge", 6000, HEAD);	//Recursion is fun
-      DynamicMenuCallback(emuState, "Load Cart", 5001, SLAVE);
+      DynamicMenuCallback(emuState, "Cartridge", 6000, MENU_PARENT);	//Recursion is fun
+      DynamicMenuCallback(emuState, "Load Cart", 5001, MENU_CHILD);
 
       sprintf(temp, "Eject Cart: ");
       strcat(temp, instance->Modname);
 
-      DynamicMenuCallback(emuState, temp, 5002, SLAVE);
+      DynamicMenuCallback(emuState, temp, 5002, MENU_CHILD);
 
       break;
 
