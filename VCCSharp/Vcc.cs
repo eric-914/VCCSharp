@@ -85,9 +85,11 @@ namespace VCCSharp
 
                     MSG* msg = &(vccState->msg);
 
-                    //User32.GetMessageA(msg, IntPtr.Zero, 0, 0);
+                    User32.GetMessageA(msg, IntPtr.Zero, 0, 0);   //Seems if the main loop stops polling for Messages the child threads stall
 
-                    Library.Vcc.VccRun();
+                    User32.TranslateMessage(msg);
+
+                    User32.DispatchMessageA(msg);
                 }
             }
         }

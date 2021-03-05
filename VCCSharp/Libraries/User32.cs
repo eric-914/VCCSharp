@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using HWND = System.IntPtr;
+using LRESULT = System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
@@ -16,5 +17,17 @@ namespace VCCSharp.Libraries
         //);
         [DllImport(USER32)]
         public static extern unsafe int GetMessageA(MSG *lpMsg, HWND hWnd, ushort wMsgFilterMin, ushort wMsgFilterMax);
+
+        //BOOL TranslateMessage(
+        //const MSG *lpMsg
+        //    );
+        [DllImport(USER32)]
+        public static extern unsafe int TranslateMessage(MSG *lpMsg);
+
+        //LRESULT DispatchMessageA(
+        //const MSG *lpMsg
+        //    );
+        [DllImport(USER32)]
+        public static extern unsafe LRESULT DispatchMessageA(MSG *lpMsg);
     }
 }

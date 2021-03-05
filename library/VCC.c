@@ -605,15 +605,3 @@ extern "C" {
     return hThread;
   }
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl VccRun() {
-    MSG* msg = &(instance->msg);
-
-    GetMessage(msg, NULL, 0, 0);		//Seems if the main loop stops polling for Messages the child threads stall
-
-    TranslateMessage(msg);
-
-    DispatchMessage(msg);
-  }
-}

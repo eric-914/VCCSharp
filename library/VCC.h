@@ -40,5 +40,3 @@ extern "C" __declspec(dllexport) void __cdecl CheckScreenModeChange();
 
 extern "C" __declspec(dllexport) HANDLE __cdecl CreateEventHandle();
 extern "C" __declspec(dllexport) HANDLE __cdecl CreateThreadHandle(HANDLE hEvent);
-
-extern "C" __declspec(dllexport) void __cdecl VccRun();
