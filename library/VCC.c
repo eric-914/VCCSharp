@@ -26,8 +26,6 @@
 
 #include "resource.h"
 
-MSG msg;
-
 VccState* InitializeInstance(VccState*);
 
 static VccState* instance = InitializeInstance(new VccState());
@@ -610,16 +608,18 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl VccRun() {
-    GetMessage(&msg, NULL, 0, 0);		//Seems if the main loop stops polling for Messages the child threads stall
+    MSG* msg = &(instance->msg);
 
-    TranslateMessage(&msg);
+    GetMessage(msg, NULL, 0, 0);		//Seems if the main loop stops polling for Messages the child threads stall
 
-    DispatchMessage(&msg);
+    TranslateMessage(msg);
+
+    DispatchMessage(msg);
   }
 }
 
 extern "C" {
   __declspec(dllexport) INT __cdecl VccShutdown() {
-    return (INT)(msg.wParam);
+    return (INT)(instance->msg.wParam);
   }
 }

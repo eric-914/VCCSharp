@@ -29,5 +29,7 @@ namespace VCCSharp.Models
 
         public unsafe fixed byte CpuName[20];
         public unsafe fixed byte AppName[100];
+
+        public MSG msg;
     }
 }

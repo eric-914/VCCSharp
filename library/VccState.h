@@ -31,4 +31,6 @@ typedef struct
 
   char CpuName[20];
   char AppName[MAX_LOADSTRING];
+
+  MSG msg;
 } VccState;
