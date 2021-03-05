@@ -29,7 +29,12 @@ namespace VCCSharp
 
                 //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
                 //Loads the default config file Vcc.ini from the exec directory
-                //Library.Config.InitConfig(ref cmdLineArgs, emuState);
+                Library.Config.InitConfig(emuState, ref cmdLineArgs);
+
+                if (!string.IsNullOrEmpty(cmdLineArgs.QLoadFile))
+                {
+                    emuState->EmulationRunning = 1; //true
+                }
 
                 Library.Vcc.VccStartup(hInstance, ref cmdLineArgs, emuState);
             }

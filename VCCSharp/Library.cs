@@ -49,9 +49,8 @@ namespace VCCSharp
 
         public static class Config
         {
-            //void __cdecl InitConfig(EmuState* emuState, CmdLineArguments* cmdArg)
             [DllImport(DLL)]
-            public static extern unsafe void InitConfig(ref CmdLineArguments cmdLineArgs, EmuState *emu);
+            public static extern unsafe void InitConfig(EmuState *emu, ref CmdLineArguments cmdLineArgs);
         }
 
         public static class DirectDraw

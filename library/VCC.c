@@ -446,7 +446,7 @@ extern "C" {
       {
         frameCounter++;
 
-        if (_emu->ResetPending != RESET_CLEAR) {
+        if (_emu->ResetPending != RESET_NONE) {
           switch (_emu->ResetPending)
           {
           case RESET_SOFT:	//Soft Reset
@@ -474,7 +474,7 @@ extern "C" {
             break;
           }
 
-          _emu->ResetPending = RESET_CLEAR;
+          _emu->ResetPending = RESET_NONE;
         }
 
         if (_emu->EmulationRunning) {
@@ -620,22 +620,17 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, CmdLineArguments* cmdArg, EmuState* emu) {
+  __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, CmdLineArguments* cmdArg, EmuState* emuState) {
     HANDLE OleInitialize(NULL); //Work around fixs app crashing in "Open file" system dialogs (related to Adobe acrobat 7+)
 
-    InitConfig(emu, cmdArg);
+    ClearScreen();
+    emuState->ResetPending = RESET_CLS;
 
-    if (strlen(cmdArg->QLoadFile) != 0)
-    {
-      emu->EmulationRunning = true;
-    }
+    DynamicMenuCallback(emuState, "", 0, 0);
+    DynamicMenuCallback(emuState, "", 1, 0);
 
-    Cls(0, emu);
-    DynamicMenuCallback(emu, "", 0, 0);
-    DynamicMenuCallback(emu, "", 1, 0);
-
-    emu->ResetPending = RESET_HARD;
-    emu->EmulationRunning = instance->AutoStart;
+    emuState->ResetPending = RESET_HARD;
+    emuState->EmulationRunning = instance->AutoStart;
 
     instance->BinaryRunning = true;
   }

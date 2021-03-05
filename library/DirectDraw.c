@@ -338,11 +338,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl Cls(unsigned int ClsColor, EmuState* emuState)
+  __declspec(dllexport) void __cdecl ClearScreen()
   {
-    emuState->ResetPending = 3; //Tell Main loop to hold Emu
-
-    instance->Color = ClsColor;
+    instance->Color = 0;
   }
 }
 
@@ -393,13 +391,13 @@ extern "C" {
     {
     case 8:
       emuState->SurfacePitch = ddsd.lPitch;
-      emuState->BitDepth = 0;
+      emuState->BitDepth = BIT_8;
       break;
 
     case 15:
     case 16:
       emuState->SurfacePitch = ddsd.lPitch / 2;
-      emuState->BitDepth = 1;
+      emuState->BitDepth = BIT_16;
       break;
 
     case 24:
@@ -408,12 +406,12 @@ extern "C" {
       exit(0);
 
       emuState->SurfacePitch = ddsd.lPitch;
-      emuState->BitDepth = 2;
+      emuState->BitDepth = BIT_24;
       break;
 
     case 32:
       emuState->SurfacePitch = ddsd.lPitch / 4;
-      emuState->BitDepth = 3;
+      emuState->BitDepth = BIT_32;
       break;
 
     default:
@@ -590,7 +588,7 @@ extern "C" {
 
     switch (emuState->BitDepth)
     {
-    case 0:
+    case BIT_8:
       for (y = 0; y < 480; y++) {
         for (x = 0; x < 640; x++) {
           graphicsState->pSurface8[x + (y * emuState->SurfacePitch)] = instance->Color | 128;
@@ -598,17 +596,17 @@ extern "C" {
       }
       break;
 
-    case 1:
-      for (y = 0;y < 480; y++) {
-        for (x = 0;x < 640; x++) {
+    case BIT_16:
+      for (y = 0; y < 480; y++) {
+        for (x = 0; x < 640; x++) {
           graphicsState->pSurface16[x + (y * emuState->SurfacePitch)] = instance->Color;
         }
       }
       break;
 
-    case 2:
-      for (y = 0;y < 480; y++) {
-        for (x = 0;x < 640; x++)
+    case BIT_24:
+      for (y = 0; y < 480; y++) {
+        for (x = 0; x < 640; x++)
         {
           graphicsState->pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = (instance->Color & 0xFF0000) >> 16;
           graphicsState->pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = (instance->Color & 0x00FF00) >> 8;
@@ -617,9 +615,9 @@ extern "C" {
       }
       break;
 
-    case 3:
-      for (y = 0;y < 480; y++) {
-        for (x = 0;x < 640; x++) {
+    case BIT_32:
+      for (y = 0; y < 480; y++) {
+        for (x = 0; x < 640; x++) {
           graphicsState->pSurface32[x + (y * emuState->SurfacePitch)] = instance->Color;
         }
       }
@@ -656,9 +654,9 @@ extern "C" {
 
     switch (emuState->BitDepth)
     {
-    case 0:
-      for (y = 0;y < 480;y += 2) {
-        for (x = 0;x < 160; x++) {
+    case BIT_8:
+      for (y = 0; y < 480; y += 2) {
+        for (x = 0; x < 160; x++) {
           temp = rand() & 3;
 
           graphicsState->pSurface32[x + (y * emuState->SurfacePitch >> 2)] = greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24);
@@ -667,9 +665,9 @@ extern "C" {
       }
       break;
 
-    case 1:
-      for (y = 0;y < 480;y += 2) {
-        for (x = 0;x < 320; x++) {
+    case BIT_16:
+      for (y = 0; y < 480; y += 2) {
+        for (x = 0; x < 320; x++) {
           temp = rand() & 31;
 
           graphicsState->pSurface32[x + (y * emuState->SurfacePitch >> 1)] = temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27);
@@ -678,9 +676,9 @@ extern "C" {
       }
       break;
 
-    case 2:
-      for (y = 0;y < 480; y++) {
-        for (x = 0;x < 640; x++) {
+    case BIT_24:
+      for (y = 0; y < 480; y++) {
+        for (x = 0; x < 640; x++) {
           graphicsState->pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = temp;
           graphicsState->pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = temp << 8;
           graphicsState->pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = temp << 16;
@@ -688,9 +686,9 @@ extern "C" {
       }
       break;
 
-    case 3:
-      for (y = 0;y < 480; y++) {
-        for (x = 0;x < 640; x++) {
+    case BIT_32:
+      for (y = 0; y < 480; y++) {
+        for (x = 0; x < 640; x++) {
           temp = rand() & 255;
 
           graphicsState->pSurface32[x + (y * emuState->SurfacePitch)] = temp | (temp << 8) | (temp << 16);

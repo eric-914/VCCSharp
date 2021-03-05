@@ -3,11 +3,17 @@
 #include <windows.h>
 
 //Reset Pending states
-#define RESET_CLEAR     0
+#define RESET_NONE      0
 #define RESET_SOFT      1
 #define RESET_HARD      2
 #define RESET_CLS       3
 #define RESET_CLS_SYNCH 4
+
+//Bit Depth states
+#define BIT_8   0
+#define BIT_16  1
+#define BIT_24  2
+#define BIT_32  3
 
 typedef struct
 {

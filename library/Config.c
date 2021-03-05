@@ -103,7 +103,7 @@ void AdjustOverclockSpeed(EmuState* emuState, unsigned char change) {
 
   instance->Model.CPUMultiplier = cpuMultiplier;
 
-  emuState->ResetPending = 4; // Without this, changing the config does nothing.
+  emuState->ResetPending = RESET_CLS_SYNCH; // Without this, changing the config does nothing.
 }
 
 void GetIniFilePath(char* iniFilePath, char* argIniFile) {

@@ -39,7 +39,7 @@ EmuState* InitializeInstance(EmuState* p) {
   p->LineCounter = 0;
   p->ScanLines = false;
   p->EmulationRunning = false;
-  p->ResetPending = RESET_CLEAR;
+  p->ResetPending = RESET_NONE;
   p->FullScreen = false;
 
   strcpy(p->StatusLine, "");

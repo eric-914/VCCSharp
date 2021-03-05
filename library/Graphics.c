@@ -620,8 +620,9 @@ extern "C" {
     if (lines != QUERY)
     {
       emuState->ScanLines = lines;
+      emuState->ResetPending = RESET_CLS;
 
-      Cls(0, emuState);
+      ClearScreen();
 
       instance->BorderChange = 3;
     }

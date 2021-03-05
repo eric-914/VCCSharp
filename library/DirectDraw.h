@@ -21,7 +21,7 @@ extern "C" __declspec(dllexport) unsigned char __cdecl SetAspect(unsigned char);
 extern "C" __declspec(dllexport) unsigned char __cdecl SetInfoBand(unsigned char);
 
 extern "C" __declspec(dllexport) void __cdecl CheckSurfaces();
-extern "C" __declspec(dllexport) void __cdecl Cls(unsigned int, EmuState*);
+extern "C" __declspec(dllexport) void __cdecl ClearScreen();
 extern "C" __declspec(dllexport) void __cdecl DisplayFlip(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl DoCls(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl FullScreenToggle(WNDPROC);
