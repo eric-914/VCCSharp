@@ -40,4 +40,4 @@ extern "C" __declspec(dllexport) void CheckScreenModeChange();
 
 extern "C" __declspec(dllexport) void __cdecl VccStartupThreading();
 extern "C" __declspec(dllexport) void __cdecl VccRun();
-extern "C" __declspec(dllexport) INT __cdecl VccShutdown();
+extern "C" __declspec(dllexport) INT __cdecl VccShutdown(EmuState* emuState);

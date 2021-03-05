@@ -625,14 +625,13 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) INT __cdecl VccShutdown() {
-    static EmuState* _emu = GetEmuState();
+  __declspec(dllexport) INT __cdecl VccShutdown(EmuState* emuState) {
 
     CloseHandle(instance->hEventThread);
     CloseHandle(instance->hEmuThread);
-    UnloadDll(_emu);
+    UnloadDll(emuState);
     SoundDeInit();
-    WriteIniFile(_emu); //Save Any changes to ini File
+    WriteIniFile(emuState); //Save any changes to ini File
 
     return (INT)(msg.wParam);
   }

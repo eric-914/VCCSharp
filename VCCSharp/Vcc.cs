@@ -55,7 +55,10 @@ namespace VCCSharp
 
                 vccState->BinaryRunning = 1; //true
             }
+        }
 
+        public void Threading()
+        {
             Library.Vcc.VccStartupThreading();
         }
 
@@ -76,11 +79,16 @@ namespace VCCSharp
 
         public int Shutdown()
         {
-            var code = Library.Vcc.VccShutdown();
+            unsafe
+            {
+                EmuState* emuState = Library.Emu.GetEmuState();
 
-            Library.FreeLibrary(_hResources);
+                var code = Library.Vcc.VccShutdown(emuState);
 
-            return code;
+                Library.FreeLibrary(_hResources);
+
+                return code;
+            }
         }
     }
 }

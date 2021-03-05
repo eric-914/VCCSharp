@@ -29,7 +29,7 @@ namespace VCCSharp
             public static extern void VccRun();
 
             [DllImport(DLL)]
-            public static extern INT VccShutdown();
+            public static extern unsafe INT VccShutdown(EmuState *emuState);
 
             [DllImport(DLL)]
             public static extern INT VccStartupThreading();

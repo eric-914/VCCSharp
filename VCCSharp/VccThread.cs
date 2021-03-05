@@ -18,6 +18,8 @@ namespace VCCSharp
 
             _vcc.Startup(Process.GetCurrentProcess().Handle, args.Value);
 
+            _vcc.Threading();
+
             _vcc.Run();
 
             _vcc.Shutdown();
