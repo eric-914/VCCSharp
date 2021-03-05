@@ -29,12 +29,12 @@ namespace VCCSharp
 
                 if (!string.IsNullOrEmpty(cmdLineArgs.QLoadFile))
                 {
-                    if (Library.QuickLoad.QuickStart(emuState, cmdLineArgs.QLoadFile) == 0)
+                    if (Library.QuickLoad.QuickStart(emuState, cmdLineArgs.QLoadFile) == (int)QuickStartStatuses.Ok)
                     {
                         Library.Vcc.SetAppTitle(_hResources, cmdLineArgs.QLoadFile); //TODO: No app title if no quick load
                     }
 
-                    emuState->EmulationRunning = 1; //true
+                    emuState->EmulationRunning = Define.TRUE;
                 }
 
                 Library.Vcc.CreatePrimaryWindow();
@@ -47,13 +47,13 @@ namespace VCCSharp
 
                 emuState->ResetPending = (byte)ResetPendingStates.Cls;
 
-                Library.MenuCallbacks.DynamicMenuCallback(emuState, null, (int)MenuActions.Refresh, 0);
+                Library.MenuCallbacks.DynamicMenuCallback(emuState, null, (int)MenuActions.Refresh, Define.IGNORE);
 
                 emuState->ResetPending = (byte)ResetPendingStates.Hard;
 
                 emuState->EmulationRunning = vccState->AutoStart;
 
-                vccState->BinaryRunning = 1; //true
+                vccState->BinaryRunning = Define.TRUE;
             }
         }
 
@@ -68,7 +68,7 @@ namespace VCCSharp
             {
                 VccState* vccState = Library.Vcc.GetVccState();
 
-                while (vccState->BinaryRunning != 0)
+                while (vccState->BinaryRunning == Define.TRUE)
                 {
                     Library.Vcc.CheckScreenModeChange();
 
