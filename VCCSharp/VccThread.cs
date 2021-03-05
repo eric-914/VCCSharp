@@ -6,7 +6,7 @@ namespace VCCSharp
     public class VccThread
     {
         private readonly CommandLineParser _commandLineParser = new CommandLineParser();
-        private readonly Vcc _vcc = new Vcc();
+        private readonly VccApp _vccApp = new VccApp();
 
         public void Run()
         {
@@ -16,13 +16,13 @@ namespace VCCSharp
                 return;
             }
 
-            _vcc.Startup(Process.GetCurrentProcess().Handle, args.Value);
+            _vccApp.Startup(Process.GetCurrentProcess().Handle, args.Value);
 
-            _vcc.Threading();
+            _vccApp.Threading();
 
-            _vcc.Run();
+            _vccApp.Run();
 
-            _vcc.Shutdown();
+            _vccApp.Shutdown();
         }
     }
 }

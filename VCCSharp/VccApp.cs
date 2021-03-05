@@ -7,7 +7,7 @@ using VCCSharp.Modules;
 
 namespace VCCSharp
 {
-    public class Vcc
+    public class VccApp
     {
         private IntPtr _hResources;
         //private EmuState _emuState;
