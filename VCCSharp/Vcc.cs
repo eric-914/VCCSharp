@@ -41,6 +41,10 @@ namespace VCCSharp
 
                 emuState->ResetPending = (byte)ResetPendingStates.Cls;
 
+                Library.MenuCallbacks.DynamicMenuCallback(emuState, null, (int)MenuActions.Refresh, 0);
+
+                emuState->ResetPending = (byte)ResetPendingStates.Hard;
+
                 Library.Vcc.VccStartup(hInstance, ref cmdLineArgs, emuState);
             }
 

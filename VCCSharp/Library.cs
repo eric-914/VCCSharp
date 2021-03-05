@@ -62,6 +62,12 @@ namespace VCCSharp
             public static extern void ClearScreen();
         }
 
+        public static class MenuCallbacks
+        {
+            [DllImport(DLL)]
+            public static extern unsafe void DynamicMenuCallback(EmuState *emu, string menuName, int menuId, int type);
+        }
+
         [DllImport("kernel32.dll")]
         public static extern HMODULE LoadLibrary(string dllToLoad);
 

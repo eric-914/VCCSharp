@@ -205,7 +205,7 @@ extern "C" {
 
     instance->hInstLib = NULL;
 
-    DynamicMenuCallback(emuState, "", MENU_REFRESH, IGNORE);
+    DynamicMenuCallback(emuState, NULL, MENU_REFRESH, IGNORE);
   }
 }
 
@@ -276,7 +276,7 @@ extern "C" {
 
     emuState->ResetPending = RESET_HARD;
 
-    DynamicMenuCallback(emuState, "", MENU_REFRESH, IGNORE);
+    DynamicMenuCallback(emuState, NULL, MENU_REFRESH, IGNORE);
   }
 }
 
@@ -315,7 +315,7 @@ extern "C" {
 
       FilePathStripPath(instance->Modname);
 
-      DynamicMenuCallback(emuState, "", MENU_REFRESH, IGNORE);
+      DynamicMenuCallback(emuState, NULL, MENU_REFRESH, IGNORE);
 
       emuState->ResetPending = RESET_HARD;
 

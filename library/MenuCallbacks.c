@@ -137,8 +137,8 @@ extern "C" {
       break;
 
     case MENU_REFRESH:
-      DynamicMenuCallback(emuState, "", MENU_FLUSH, IGNORE);
-      DynamicMenuCallback(emuState, "", MENU_DONE, IGNORE);
+      DynamicMenuCallback(emuState, NULL, MENU_FLUSH, IGNORE);
+      DynamicMenuCallback(emuState, NULL, MENU_DONE, IGNORE);
       break;
 
     default:
