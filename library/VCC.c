@@ -623,12 +623,7 @@ extern "C" {
   __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, CmdLineArguments* cmdArg, EmuState* emu) {
     HANDLE OleInitialize(NULL); //Work around fixs app crashing in "Open file" system dialogs (related to Adobe acrobat 7+)
 
-    SetEmuState(emu);
-
-    CreatePrimaryWindow();
-
-    //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
-    InitConfig(emu, cmdArg);			//Loads the default config file Vcc.ini from the exec directory
+    InitConfig(emu, cmdArg);
 
     if (strlen(cmdArg->QLoadFile) != 0)
     {

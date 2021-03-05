@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace VCCSharp
+namespace VCCSharp.Models
 {
     public struct CmdLineArguments
     {

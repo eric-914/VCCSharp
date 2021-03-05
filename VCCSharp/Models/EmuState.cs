@@ -32,8 +32,6 @@ namespace VCCSharp.Models
   
         public long SurfacePitch;
 
-        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-        //public string StatusLine;
         public unsafe fixed byte StatusLine[256];
     }
 }

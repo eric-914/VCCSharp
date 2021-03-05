@@ -1,11 +1,8 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using VCCSharp.Models;
 using HINSTANCE = System.IntPtr;
 using HMODULE = System.IntPtr;
 using INT = System.Int32;
-using PSTR = System.String;
-//using LRESULT = System.Int64;
 
 namespace VCCSharp
 {
@@ -20,7 +17,7 @@ namespace VCCSharp
             public static extern unsafe EmuState *GetEmuState();
 
             [DllImport(DLL)]
-            public static extern void SetEmuState(ref EmuState emu);
+            public static extern unsafe void SetEmuState(EmuState *emuState);
         }
 
         public static class Vcc
@@ -39,12 +36,22 @@ namespace VCCSharp
 
             [DllImport(DLL)]
             public static extern void CheckQuickLoad(string qLoadFile);
+
+            [DllImport(DLL)]
+            public static extern void CreatePrimaryWindow();
         }
 
         public static class CoCo
         {
             [DllImport(DLL)]
             public static extern void SetClockSpeed(ushort cycles);
+        }
+
+        public static class Config
+        {
+            //void __cdecl InitConfig(EmuState* emuState, CmdLineArguments* cmdArg)
+            [DllImport(DLL)]
+            public static extern unsafe void InitConfig(ref CmdLineArguments cmdLineArgs, EmuState *emu);
         }
 
         public static class DirectDraw

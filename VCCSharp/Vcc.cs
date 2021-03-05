@@ -22,6 +22,15 @@ namespace VCCSharp
                 EmuState *emuState = Library.Emu.GetEmuState();
                 emuState->Resources = _hResources;
 
+                //TODO: Redundant at the moment
+                Library.Emu.SetEmuState(emuState);
+
+                Library.Vcc.CreatePrimaryWindow();
+
+                //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
+                //Loads the default config file Vcc.ini from the exec directory
+                //Library.Config.InitConfig(ref cmdLineArgs, emuState);
+
                 Library.Vcc.VccStartup(hInstance, ref cmdLineArgs, emuState);
             }
 
