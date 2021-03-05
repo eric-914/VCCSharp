@@ -1,16 +1,17 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Runtime.InteropServices;
+using HINSTANCE = System.IntPtr;
+using HWND = System.IntPtr;
 
 namespace VCCSharp.Models
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct EmuState
     {
-        public IntPtr Resources;
+        public HINSTANCE Resources;
 
-        public IntPtr WindowHandle;
-        public IntPtr ConfigDialog;
+        public HWND WindowHandle;
+        public HWND ConfigDialog;
 
         public Point WindowSize;
 

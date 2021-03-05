@@ -1,13 +1,13 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using HANDLE = System.IntPtr;
 
 namespace VCCSharp.Models
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct VccState
     {
-        public IntPtr hEventThread;
-        public IntPtr hEmuThread;  // Message handlers
+        public HANDLE hEventThread;
+        public HANDLE hEmuThread;  // Message handlers
 
         public byte AutoStart;
         public byte BinaryRunning;
