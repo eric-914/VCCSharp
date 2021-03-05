@@ -617,9 +617,3 @@ extern "C" {
     DispatchMessage(msg);
   }
 }
-
-extern "C" {
-  __declspec(dllexport) INT __cdecl VccShutdown() {
-    return (INT)(instance->msg.wParam);
-  }
-}

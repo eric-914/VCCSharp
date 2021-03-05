@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Interop;
 using VCCSharp.Enums;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -82,6 +83,10 @@ namespace VCCSharp
                 {
                     Library.Vcc.CheckScreenModeChange();
 
+                    MSG* msg = &(vccState->msg);
+
+                    //User32.GetMessageA(msg, IntPtr.Zero, 0, 0);
+
                     Library.Vcc.VccRun();
                 }
             }
@@ -102,7 +107,7 @@ namespace VCCSharp
 
                 Library.Config.WriteIniFile(emuState); //Save any changes to ini File
 
-                int code = Library.Vcc.VccShutdown();
+                int code = (int)vccState->msg.wParam;
 
                 Kernel.FreeLibrary(_hResources);
 

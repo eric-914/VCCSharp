@@ -36,10 +36,9 @@ extern "C" __declspec(dllexport) void __cdecl SoftReset();
 
 extern "C" __declspec(dllexport) void __cdecl SetAppTitle(HINSTANCE hResources, char *binFileName);
 extern "C" __declspec(dllexport) void __cdecl CreatePrimaryWindow();
-extern "C" __declspec(dllexport) void CheckScreenModeChange();
+extern "C" __declspec(dllexport) void __cdecl CheckScreenModeChange();
 
 extern "C" __declspec(dllexport) HANDLE __cdecl CreateEventHandle();
 extern "C" __declspec(dllexport) HANDLE __cdecl CreateThreadHandle(HANDLE hEvent);
 
 extern "C" __declspec(dllexport) void __cdecl VccRun();
-extern "C" __declspec(dllexport) INT __cdecl VccShutdown();

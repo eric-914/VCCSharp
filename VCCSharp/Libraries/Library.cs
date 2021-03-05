@@ -29,9 +29,6 @@ namespace VCCSharp.Libraries
             public static extern void VccRun();
 
             [DllImport(LIBRARY)]
-            public static extern INT VccShutdown();
-
-            [DllImport(LIBRARY)]
             public static extern void SetAppTitle(HINSTANCE hResources, string binFileName);
 
             [DllImport(LIBRARY)]

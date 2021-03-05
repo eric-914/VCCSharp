@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Windows.Interop;
 using HANDLE = System.IntPtr;
 
 namespace VCCSharp.Models
