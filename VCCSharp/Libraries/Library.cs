@@ -29,7 +29,7 @@ namespace VCCSharp.Libraries
             public static extern void VccRun();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe INT VccShutdown(EmuState* emuState);
+            public static extern INT VccShutdown();
 
             [DllImport(LIBRARY)]
             public static extern void SetAppTitle(HINSTANCE hResources, string binFileName);
@@ -47,6 +47,13 @@ namespace VCCSharp.Libraries
             public static extern HANDLE CreateThreadHandle(HANDLE hEvent);
         }
 
+        public static class Audio
+        {
+            //int __cdecl SoundDeInit(void)
+            [DllImport(LIBRARY)]
+            public static extern short SoundDeInit();
+        }
+
         public static class CoCo
         {
             [DllImport(LIBRARY)]
@@ -57,6 +64,10 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe void InitConfig(EmuState* emu, ref CmdLineArguments cmdLineArgs);
+
+            //void __cdecl WriteIniFile(EmuState* emuState)
+            [DllImport(LIBRARY)]
+            public static extern unsafe void WriteIniFile(EmuState* emu);
         }
 
         public static class DirectDraw
@@ -72,6 +83,12 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe void DynamicMenuCallback(EmuState* emu, string menuName, int menuId, int type);
+        }
+
+        public static class PAKInterface
+        {
+            [DllImport(LIBRARY)]
+            public static extern unsafe void UnloadDll(EmuState* emu);
         }
 
         public static class QuickLoad

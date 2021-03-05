@@ -619,14 +619,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) INT __cdecl VccShutdown(EmuState* emuState) {
-
-    CloseHandle(instance->hEventThread);
-    CloseHandle(instance->hEmuThread);
-    UnloadDll(emuState);
-    SoundDeInit();
-    WriteIniFile(emuState); //Save any changes to ini File
-
+  __declspec(dllexport) INT __cdecl VccShutdown() {
     return (INT)(msg.wParam);
   }
 }

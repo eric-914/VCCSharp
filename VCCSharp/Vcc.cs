@@ -91,9 +91,18 @@ namespace VCCSharp
         {
             unsafe
             {
+                VccState* vccState = Library.Vcc.GetVccState();
                 EmuState* emuState = Library.Emu.GetEmuState();
 
-                var code = Library.Vcc.VccShutdown(emuState);
+                Kernel.CloseHandle(vccState->hEventThread);
+                Kernel.CloseHandle(vccState->hEmuThread);
+
+                Library.PAKInterface.UnloadDll(emuState);
+                Library.Audio.SoundDeInit();
+
+                Library.Config.WriteIniFile(emuState); //Save any changes to ini File
+
+                int code = Library.Vcc.VccShutdown();
 
                 Kernel.FreeLibrary(_hResources);
 

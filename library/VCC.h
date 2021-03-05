@@ -42,4 +42,4 @@ extern "C" __declspec(dllexport) HANDLE __cdecl CreateEventHandle();
 extern "C" __declspec(dllexport) HANDLE __cdecl CreateThreadHandle(HANDLE hEvent);
 
 extern "C" __declspec(dllexport) void __cdecl VccRun();
-extern "C" __declspec(dllexport) INT __cdecl VccShutdown(EmuState* emuState);
+extern "C" __declspec(dllexport) INT __cdecl VccShutdown();

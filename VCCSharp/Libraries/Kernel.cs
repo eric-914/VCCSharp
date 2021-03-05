@@ -18,5 +18,8 @@ namespace VCCSharp.Libraries
 
         [DllImport(KERNEL)]
         public static extern short SetThreadPriority(IntPtr handle, short nPriority);
+
+        [DllImport(KERNEL)]
+        public static extern short CloseHandle(IntPtr hObject);
     }
 }

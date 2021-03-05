@@ -78,7 +78,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl SoundDeInit(void)
+  __declspec(dllexport) int __cdecl SoundDeInit()
   {
     if (instance->InitPassed)
     {
