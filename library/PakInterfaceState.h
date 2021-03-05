@@ -18,12 +18,6 @@ typedef struct {
   unsigned short ModualParms;
   bool DialogOpen;
 
-  Dmenu MenuItem[100];
-
-  HMENU hMenu;
-  HMENU hSubMenu[64];
-
-  unsigned char MenuIndex;
   char Modname[MAX_PATH];
 
   void (*GetModuleName)(char*, char*, DYNAMICMENUCALLBACK);

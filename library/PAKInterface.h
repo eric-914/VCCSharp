@@ -3,8 +3,6 @@
 #include "PakInterfaceState.h"
 #include "EmuState.h"
 
-#define ID_SDYNAMENU 5000	//Defines the start and end IDs for the dynamic menus
-#define ID_EDYNAMENU 5100
 #define NOMODULE	1
 #define NOTVCC	2
 
@@ -34,14 +32,11 @@ extern "C" __declspec(dllexport) unsigned char __cdecl PakPortRead(unsigned char
 
 extern "C" __declspec(dllexport) unsigned short __cdecl PakAudioSample(void);
 
-extern "C" __declspec(dllexport) void __cdecl DynamicMenuActivated(EmuState*, unsigned char);
-extern "C" __declspec(dllexport) void __cdecl DynamicMenuCallback(EmuState*, char*, int, int);
 extern "C" __declspec(dllexport) void __cdecl GetCurrentModule(char*);
 extern "C" __declspec(dllexport) void __cdecl GetModuleStatus(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl PakMem8Write(unsigned char, unsigned char);
 extern "C" __declspec(dllexport) void __cdecl PakPortWrite(unsigned char, unsigned char);
 extern "C" __declspec(dllexport) void __cdecl PakTimer();
-extern "C" __declspec(dllexport) void __cdecl RefreshDynamicMenu(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl ResetBus();
 extern "C" __declspec(dllexport) void __cdecl UnloadDll(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl UnloadPack(EmuState*);

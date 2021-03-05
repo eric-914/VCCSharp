@@ -9,10 +9,10 @@
 #include "DirectDraw.h"
 #include "Throttle.h"
 #include "Config.h"
-#include "PAKInterface.h"
 #include "VCC.h"
 #include "Graphics.h"
 #include "Audio.h"
+#include "MenuCallbacks.h"
 
 #include "EmuState.h"
 

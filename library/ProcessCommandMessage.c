@@ -3,11 +3,11 @@
 #include "../resources/resource.h"
 
 #include "VCC.h"
-#include "PAKInterface.h"
 #include "Clipboard.h"
 #include "Graphics.h"
 
 #include "MessageHandlers.h"
+#include "MenuCallbacks.h"
 
 extern "C" {
   __declspec(dllexport) void __cdecl ProcessCommandMessage(HWND hWnd, WPARAM wParam) {
@@ -23,9 +23,9 @@ extern "C" {
 
     // Parse the menu selections:
     // Added for Dynamic menu system
-    if ((wmId >= ID_SDYNAMENU) && (wmId <= ID_EDYNAMENU))
+    if ((wmId >= ID_DYNAMENU_START) && (wmId <= ID_DYNAMENU_END))
     {
-      DynamicMenuActivated(GetEmuState(), wmId - ID_SDYNAMENU);	//Calls to the loaded DLL so it can do the right thing
+      DynamicMenuActivated(GetEmuState(), wmId);	//Calls to the loaded DLL so it can do the right thing
       return;
     }
 

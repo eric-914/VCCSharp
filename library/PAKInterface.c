@@ -28,14 +28,12 @@ PakInterfaceState* InitializeInstance(PakInterfaceState* p) {
   p->ModualParms = 0;
   p->DialogOpen = false;
   p->RomPackLoaded = false;
-  p->MenuIndex = 0;
-
+  
   strcpy(p->DllPath, "");
   strcpy(p->Modname, "Blank");
 
   p->ExternalRomBuffer = nullptr;
-  p->hMenu = NULL;
-
+  
   p->GetModuleName = NULL;
   p->ConfigModule = NULL;
   p->SetInterruptCallPointer = NULL;
@@ -53,8 +51,6 @@ PakInterfaceState* InitializeInstance(PakInterfaceState* p) {
 
   return p;
 }
-
-void DynamicMenuCallback(char* menuName, int menuId, int type);
 
 extern "C" {
   __declspec(dllexport) void __cdecl GetCurrentModule(char* defaultModule)
@@ -518,176 +514,5 @@ extern "C" {
     }
 
     return(1);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl RefreshDynamicMenu(EmuState* emuState)
-  {
-    MENUITEMINFO mii;
-    char menuTitle[32] = "Cartridge";
-    unsigned char tempIndex = 0, index = 0;
-    static HWND hOld = 0;
-    int subMenuIndex = 0;
-
-    if ((instance->hMenu == NULL) || (emuState->WindowHandle != hOld)) {
-      instance->hMenu = GetMenu(emuState->WindowHandle);
-    }
-    else {
-      DeleteMenu(instance->hMenu, 3, MF_BYPOSITION);
-    }
-
-    hOld = emuState->WindowHandle;
-    instance->hSubMenu[subMenuIndex] = CreatePopupMenu();
-
-    memset(&mii, 0, sizeof(MENUITEMINFO));
-
-    mii.cbSize = sizeof(MENUITEMINFO);
-    mii.fMask = MIIM_TYPE | MIIM_SUBMENU | MIIM_ID;
-    mii.fType = MFT_STRING;
-    mii.wID = 4999;
-    mii.hSubMenu = instance->hSubMenu[subMenuIndex];
-    mii.dwTypeData = menuTitle;
-    mii.cch = (UINT)strlen(menuTitle);
-
-    InsertMenuItem(instance->hMenu, 3, TRUE, &mii);
-
-    subMenuIndex++;
-
-    for (tempIndex = 0; tempIndex < instance->MenuIndex; tempIndex++)
-    {
-      if (strlen(instance->MenuItem[tempIndex].MenuName) == 0) {
-        instance->MenuItem[tempIndex].Type = MENU_STANDALONE;
-      }
-
-      //Create Menu item in title bar if no exist already
-      switch (instance->MenuItem[tempIndex].Type)
-      {
-      case MENU_PARENT:
-        subMenuIndex++;
-
-        instance->hSubMenu[subMenuIndex] = CreatePopupMenu();
-
-        memset(&mii, 0, sizeof(MENUITEMINFO));
-
-        mii.cbSize = sizeof(MENUITEMINFO);
-        mii.fMask = MIIM_TYPE | MIIM_SUBMENU | MIIM_ID;
-        mii.fType = MFT_STRING;
-        mii.wID = instance->MenuItem[tempIndex].MenuId;
-        mii.hSubMenu = instance->hSubMenu[subMenuIndex];
-        mii.dwTypeData = instance->MenuItem[tempIndex].MenuName;
-        mii.cch = (UINT)strlen(instance->MenuItem[tempIndex].MenuName);
-
-        InsertMenuItem(instance->hSubMenu[0], 0, FALSE, &mii);
-
-        break;
-
-      case MENU_CHILD:
-        memset(&mii, 0, sizeof(MENUITEMINFO));
-
-        mii.cbSize = sizeof(MENUITEMINFO);
-        mii.fMask = MIIM_TYPE | MIIM_ID;
-        mii.fType = MFT_STRING;
-        mii.wID = instance->MenuItem[tempIndex].MenuId;
-        mii.hSubMenu = instance->hSubMenu[subMenuIndex];
-        mii.dwTypeData = instance->MenuItem[tempIndex].MenuName;
-        mii.cch = (UINT)strlen(instance->MenuItem[tempIndex].MenuName);
-
-        InsertMenuItem(instance->hSubMenu[subMenuIndex], 0, FALSE, &mii);
-
-        break;
-
-      case MENU_STANDALONE:
-        memset(&mii, 0, sizeof(MENUITEMINFO));
-
-        mii.cbSize = sizeof(MENUITEMINFO);
-        mii.fMask = MIIM_TYPE | MIIM_ID;
-        mii.fType = strlen(instance->MenuItem[tempIndex].MenuName) == 0 ? MF_SEPARATOR : MFT_STRING;
-        mii.wID = instance->MenuItem[tempIndex].MenuId;
-        mii.hSubMenu = instance->hMenu;
-        mii.dwTypeData = instance->MenuItem[tempIndex].MenuName;
-        mii.cch = (UINT)strlen(instance->MenuItem[tempIndex].MenuName);
-
-        InsertMenuItem(instance->hSubMenu[0], 0, FALSE, &mii);
-
-        break;
-      }
-    }
-
-    DrawMenuBar(emuState->WindowHandle);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DynamicMenuCallback(EmuState* emuState, char* menuName, int menuId, int type)
-  {
-    char temp[256] = "";
-
-    //MenuId=0 Flush Buffer MenuId=1 Done 
-    switch (menuId)
-    {
-    case MENU_FLUSH:
-      instance->MenuIndex = 0;
-
-      DynamicMenuCallback(emuState, "Cartridge", 6000, MENU_PARENT);	//Recursion is fun
-      DynamicMenuCallback(emuState, "Load Cart", 5001, MENU_CHILD);
-
-      sprintf(temp, "Eject Cart: ");
-      strcat(temp, instance->Modname);
-
-      DynamicMenuCallback(emuState, temp, 5002, MENU_CHILD);
-
-      break;
-
-    case MENU_DONE:
-      RefreshDynamicMenu(emuState);
-      break;
-
-    case MENU_REFRESH:
-      DynamicMenuCallback(emuState, "", MENU_FLUSH, IGNORE);
-      DynamicMenuCallback(emuState, "", MENU_DONE, IGNORE);
-      break;
-
-    default:
-      strcpy(instance->MenuItem[instance->MenuIndex].MenuName, menuName);
-
-      instance->MenuItem[instance->MenuIndex].MenuId = menuId;
-      instance->MenuItem[instance->MenuIndex].Type = type;
-
-      instance->MenuIndex++;
-
-      break;
-    }
-  }
-}
-
-/*
-* TODO: This exists because this is what the different plugins expect, but it requires the EmuState
-*/
-void DynamicMenuCallback(char* menuName, int menuId, int type)
-{
-  DynamicMenuCallback(GetEmuState(), menuName, menuId, type);
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DynamicMenuActivated(EmuState* emuState, unsigned char menuItem)
-  {
-    switch (menuItem)
-    {
-    case 1:
-      LoadPack();
-      break;
-
-    case 2:
-      UnloadPack(emuState);
-      break;
-
-    default:
-      if (instance->ConfigModule != NULL) {
-        instance->ConfigModule(menuItem);
-      }
-
-      break;
-    }
   }
 }
