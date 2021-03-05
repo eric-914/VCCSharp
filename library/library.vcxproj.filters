@@ -119,6 +119,9 @@
     <ClCompile Include="Emu.c">
       <Filter>emu</Filter>
     </ClCompile>
+    <ClCompile Include="MenuCallbacks.c">
+      <Filter>callbacks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h" />
@@ -321,6 +324,9 @@
     </ClInclude>
     <ClInclude Include="PakInterfaceDelegates.h">
       <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuCallbacks.h">
+      <Filter>callbacks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

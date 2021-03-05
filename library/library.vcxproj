@@ -188,6 +188,7 @@
     <ClCompile Include="MC6809.c" />
     <ClCompile Include="MC6809OpCodes.c" />
     <ClCompile Include="MC6821.c" />
+    <ClCompile Include="MenuCallbacks.c" />
     <ClCompile Include="MessageHandlers.c" />
     <ClCompile Include="TC1014MMU.c" />
     <ClCompile Include="PAKInterface.c" />
@@ -240,6 +241,7 @@
     <ClInclude Include="MC6809Macros.h" />
     <ClInclude Include="MC6809OpCodes.h" />
     <ClInclude Include="MC6821.h" />
+    <ClInclude Include="MenuCallbacks.h" />
     <ClInclude Include="MessageHandlers.h" />
     <ClInclude Include="PakInterfaceDelegates.h" />
     <ClInclude Include="PakInterfaceState.h" />

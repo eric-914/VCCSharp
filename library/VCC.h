@@ -10,16 +10,6 @@
 #define TH_REQWAIT	1
 #define TH_WAITING	2
 
-//Menu "Actions"
-#define MENU_FLUSH   0
-#define MENU_DONE    1
-#define MENU_REFRESH 2
-
-//Type 0= HEAD TAG 1= Slave Tag 2=StandAlone
-#define	MENU_PARENT     0
-#define MENU_CHILD      1
-#define MENU_STANDALONE 2
-
 extern "C" __declspec(dllexport) VccState * __cdecl GetVccState();
 extern "C" __declspec(dllexport) EmuState* __cdecl GetEmuState();
 

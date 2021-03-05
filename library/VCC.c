@@ -22,11 +22,11 @@
 #include "fileoperations.h"
 #include "ProcessMessage.h"
 #include "Emu.h"
+#include "MenuCallbacks.h"
 
 VccState* InitializeInstance(VccState*);
 
 static VccState* instance = InitializeInstance(new VccState());
-//static EmuState* _emu;
 
 extern "C" {
   __declspec(dllexport) VccState* __cdecl GetVccState() {
