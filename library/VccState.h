@@ -10,16 +10,12 @@ typedef struct
 {
   HANDLE hEventThread;
   HANDLE hEmuThread;  // Message handlers
-  MSG  msg;
 
-  char CpuName[20];
-  char AppName[MAX_LOADSTRING];
-  unsigned char FlagEmuStop;
-
-  bool BinaryRunning;
-  bool DialogOpen;
-  unsigned char Throttle;
   unsigned char AutoStart;
+  unsigned char BinaryRunning;
+  unsigned char DialogOpen;
+  unsigned char FlagEmuStop;
+  unsigned char Throttle;
 
   //--------------------------------------------------------------------------
   // When the main window is about to lose keyboard focus there are one
@@ -30,5 +26,9 @@ typedef struct
   unsigned char SC_save2;
   unsigned char KB_save1;
   unsigned char KB_save2;
+
   int KeySaveToggle;
+
+  char CpuName[20];
+  char AppName[MAX_LOADSTRING];
 } VccState;

@@ -23,7 +23,7 @@ namespace VCCSharp
         public static class Vcc
         {
             [DllImport(DLL)]
-            public static extern unsafe void VccStartup(EmuState *emu);
+            public static extern unsafe VccState *GetVccState();
 
             [DllImport(DLL)]
             public static extern void VccRun();

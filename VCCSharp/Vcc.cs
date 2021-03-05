@@ -11,25 +11,27 @@ namespace VCCSharp
 
         public void Startup(IntPtr hInstance, CmdLineArguments cmdLineArgs)
         {
-            _hResources = Library.LoadLibrary("resources.dll");
-
-            Library.DirectDraw.InitDirectDraw(hInstance, _hResources);
-            
-            Library.CoCo.SetClockSpeed(1);  //Default clock speed .89 MHZ	
-
             unsafe
             {
-                EmuState *emuState = Library.Emu.GetEmuState();
+                _hResources = Library.LoadLibrary("resources.dll");
+
+                EmuState* emuState = Library.Emu.GetEmuState();
+                VccState* vccState = Library.Vcc.GetVccState();
+
                 emuState->Resources = _hResources;
 
                 //TODO: Redundant at the moment
                 Library.Emu.SetEmuState(emuState);
 
+                Library.DirectDraw.InitDirectDraw(hInstance, _hResources);
+
+                Library.CoCo.SetClockSpeed(1);  //Default clock speed .89 MHZ	
+                
                 if (!string.IsNullOrEmpty(cmdLineArgs.QLoadFile))
                 {
                     if (Library.QuickLoad.QuickStart(emuState, cmdLineArgs.QLoadFile) == 0)
                     {
-                        Library.Vcc.SetAppTitle(_hResources, cmdLineArgs.QLoadFile);
+                        Library.Vcc.SetAppTitle(_hResources, cmdLineArgs.QLoadFile); //TODO: No app title if no quick load
                     }
 
                     emuState->EmulationRunning = 1; //true
@@ -49,7 +51,9 @@ namespace VCCSharp
 
                 emuState->ResetPending = (byte)ResetPendingStates.Hard;
 
-                Library.Vcc.VccStartup(emuState);
+                emuState->EmulationRunning = vccState->AutoStart;
+
+                vccState->BinaryRunning = 1; //true
             }
 
             Library.Vcc.VccStartupThreading();

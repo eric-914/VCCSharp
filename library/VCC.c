@@ -26,6 +26,8 @@
 
 #include "resource.h"
 
+MSG msg;
+
 VccState* InitializeInstance(VccState*);
 
 static VccState* instance = InitializeInstance(new VccState());
@@ -613,27 +615,17 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl VccStartup(EmuState* emuState) {
-    emuState->EmulationRunning = instance->AutoStart;
-
-    instance->BinaryRunning = true;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl VccRun() {
-
-    MSG* msg = &(instance->msg);
 
     while (instance->BinaryRunning)
     {
       CheckScreenModeChange();
 
-      GetMessage(msg, NULL, 0, 0);		//Seems if the main loop stops polling for Messages the child threads stall
+      GetMessage(&msg, NULL, 0, 0);		//Seems if the main loop stops polling for Messages the child threads stall
 
-      TranslateMessage(msg);
+      TranslateMessage(&msg);
 
-      DispatchMessage(msg);
+      DispatchMessage(&msg);
     }
   }
 }
@@ -648,6 +640,6 @@ extern "C" {
     SoundDeInit();
     WriteIniFile(_emu); //Save Any changes to ini File
 
-    return (INT)(instance->msg.wParam);
+    return (INT)(msg.wParam);
   }
 }
