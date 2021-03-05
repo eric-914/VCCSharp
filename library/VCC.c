@@ -620,7 +620,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, CmdLineArguments* cmdArg, EmuState* emuState) {
+  __declspec(dllexport) void __cdecl VccStartup(EmuState* emuState) {
     emuState->EmulationRunning = instance->AutoStart;
 
     instance->BinaryRunning = true;

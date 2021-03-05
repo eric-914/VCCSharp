@@ -23,7 +23,7 @@ namespace VCCSharp
         public static class Vcc
         {
             [DllImport(DLL)]
-            public static extern unsafe void VccStartup(HINSTANCE hInstance, ref CmdLineArguments cmdLineArgs, EmuState *emu);
+            public static extern unsafe void VccStartup(EmuState *emu);
 
             [DllImport(DLL)]
             public static extern void VccRun();

@@ -7,7 +7,7 @@ namespace VCCSharp
     public class Vcc
     {
         private IntPtr _hResources;
-        private EmuState _emuState;
+        //private EmuState _emuState;
 
         public void Startup(IntPtr hInstance, CmdLineArguments cmdLineArgs)
         {
@@ -45,7 +45,7 @@ namespace VCCSharp
 
                 emuState->ResetPending = (byte)ResetPendingStates.Hard;
 
-                Library.Vcc.VccStartup(hInstance, ref cmdLineArgs, emuState);
+                Library.Vcc.VccStartup(emuState);
             }
 
             Library.Vcc.VccStartupThreading();

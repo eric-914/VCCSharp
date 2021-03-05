@@ -39,7 +39,7 @@ extern "C" __declspec(dllexport) void __cdecl CreatePrimaryWindow();
 extern "C" __declspec(dllexport) void CheckScreenModeChange();
 
 extern "C" __declspec(dllexport) void __cdecl VccStartupThreading();
-extern "C" __declspec(dllexport) void __cdecl VccStartup(HINSTANCE hInstance, CmdLineArguments* cmdArg, EmuState* emu);
+extern "C" __declspec(dllexport) void __cdecl VccStartup(EmuState* emu);
 extern "C" __declspec(dllexport) void __cdecl VccRun();
 extern "C" __declspec(dllexport) INT __cdecl VccShutdown();
 
