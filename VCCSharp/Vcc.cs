@@ -1,5 +1,6 @@
 ﻿using System;
 using VCCSharp.Enums;
+using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp
@@ -13,7 +14,7 @@ namespace VCCSharp
         {
             unsafe
             {
-                _hResources = Library.LoadLibrary("resources.dll");
+                _hResources = Kernel.LoadLibrary("resources.dll");
 
                 EmuState* emuState = Library.Emu.GetEmuState();
                 VccState* vccState = Library.Vcc.GetVccState();
@@ -66,8 +67,8 @@ namespace VCCSharp
                 vccState->hEventThread = Library.Vcc.CreateEventHandle();
                 vccState->hEmuThread = Library.Vcc.CreateThreadHandle(vccState->hEventThread);
 
-                Library.WaitForSingleObject(vccState->hEventThread, Define.INFINITE);
-                Library.SetThreadPriority(vccState->hEmuThread, Define.THREAD_PRIORITY_NORMAL);
+                Kernel.WaitForSingleObject(vccState->hEventThread, Define.INFINITE);
+                Kernel.SetThreadPriority(vccState->hEmuThread, Define.THREAD_PRIORITY_NORMAL);
             }
         }
 
@@ -94,7 +95,7 @@ namespace VCCSharp
 
                 var code = Library.Vcc.VccShutdown(emuState);
 
-                Library.FreeLibrary(_hResources);
+                Kernel.FreeLibrary(_hResources);
 
                 return code;
             }

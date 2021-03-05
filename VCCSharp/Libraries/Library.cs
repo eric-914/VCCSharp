@@ -1,37 +1,35 @@
 ﻿using System.Runtime.InteropServices;
 using VCCSharp.Models;
 using HINSTANCE = System.IntPtr;
-using HMODULE = System.IntPtr;
 using INT = System.Int32;
 using HANDLE = System.IntPtr;
 
-namespace VCCSharp
+namespace VCCSharp.Libraries
 {
     public static class Library
     {
         // ReSharper disable once InconsistentNaming
         public const string LIBRARY = "library.dll";
-        public const string KERNEL = "kernel32.dll";
 
         public static class Emu
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe EmuState *GetEmuState();
+            public static extern unsafe EmuState* GetEmuState();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void SetEmuState(EmuState *emuState);
+            public static extern unsafe void SetEmuState(EmuState* emuState);
         }
 
         public static class Vcc
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe VccState *GetVccState();
+            public static extern unsafe VccState* GetVccState();
 
             [DllImport(LIBRARY)]
             public static extern void VccRun();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe INT VccShutdown(EmuState *emuState);
+            public static extern unsafe INT VccShutdown(EmuState* emuState);
 
             [DllImport(LIBRARY)]
             public static extern void SetAppTitle(HINSTANCE hResources, string binFileName);
@@ -58,7 +56,7 @@ namespace VCCSharp
         public static class Config
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe void InitConfig(EmuState *emu, ref CmdLineArguments cmdLineArgs);
+            public static extern unsafe void InitConfig(EmuState* emu, ref CmdLineArguments cmdLineArgs);
         }
 
         public static class DirectDraw
@@ -73,25 +71,13 @@ namespace VCCSharp
         public static class MenuCallbacks
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe void DynamicMenuCallback(EmuState *emu, string menuName, int menuId, int type);
+            public static extern unsafe void DynamicMenuCallback(EmuState* emu, string menuName, int menuId, int type);
         }
 
         public static class QuickLoad
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe int QuickStart(EmuState *emu, string binFileName);
+            public static extern unsafe int QuickStart(EmuState* emu, string binFileName);
         }
-
-        [DllImport(KERNEL)]
-        public static extern HMODULE LoadLibrary(string dllToLoad);
-
-        [DllImport(KERNEL)]
-        public static extern bool FreeLibrary(HMODULE hModule);
-
-        [DllImport(KERNEL)]
-        public static extern uint WaitForSingleObject(HANDLE handle, uint dwMilliseconds);
-
-        [DllImport(KERNEL)]
-        public static extern short SetThreadPriority(HANDLE handle, short nPriority);
     }
 }
