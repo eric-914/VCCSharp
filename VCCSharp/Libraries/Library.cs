@@ -57,11 +57,11 @@ namespace VCCSharp.Libraries
         public static class Config
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe void InitConfig(EmuState* emu, ref CmdLineArguments cmdLineArgs);
+            public static extern unsafe void InitConfig(EmuState* emuState, ref CmdLineArguments cmdLineArgs);
 
             //void __cdecl WriteIniFile(EmuState* emuState)
             [DllImport(LIBRARY)]
-            public static extern unsafe void WriteIniFile(EmuState* emu);
+            public static extern unsafe void WriteIniFile(EmuState* emuState);
         }
 
         public static class DirectDraw
@@ -76,19 +76,19 @@ namespace VCCSharp.Libraries
         public static class MenuCallbacks
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe void DynamicMenuCallback(EmuState* emu, string menuName, int menuId, int type);
+            public static extern unsafe void DynamicMenuCallback(EmuState* emuState, string menuName, int menuId, int type);
         }
 
         public static class PAKInterface
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe void UnloadDll(EmuState* emu);
+            public static extern unsafe void UnloadDll(EmuState* emuState);
         }
 
         public static class QuickLoad
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe int QuickStart(EmuState* emu, string binFileName);
+            public static extern unsafe int QuickStart(EmuState* emuState, string binFileName);
         }
     }
 }

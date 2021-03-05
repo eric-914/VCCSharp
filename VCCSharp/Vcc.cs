@@ -3,6 +3,7 @@ using System.Windows.Interop;
 using VCCSharp.Enums;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using VCCSharp.Modules;
 
 namespace VCCSharp
 {
@@ -10,6 +11,14 @@ namespace VCCSharp
     {
         private IntPtr _hResources;
         //private EmuState _emuState;
+
+        private readonly DirectDraw _directDraw = new DirectDraw();
+        private readonly CoCo _coco = new CoCo();
+        private readonly Config _config = new Config();
+        private readonly MenuCallbacks _menuCallbacks = new MenuCallbacks();
+        private readonly QuickLoad _quickLoad = new QuickLoad();
+        private readonly PAKInterface _pakInterface = new PAKInterface();
+        private readonly Audio _audio = new Audio();
 
         public void Startup(IntPtr hInstance, CmdLineArguments cmdLineArgs)
         {
@@ -25,13 +34,13 @@ namespace VCCSharp
                 //TODO: Redundant at the moment
                 Library.Emu.SetEmuState(emuState);
 
-                Library.DirectDraw.InitDirectDraw(hInstance, _hResources);
+                _directDraw.InitDirectDraw(hInstance, _hResources);
 
-                Library.CoCo.SetClockSpeed(1);  //Default clock speed .89 MHZ	
+                _coco.SetClockSpeed(1);  //Default clock speed .89 MHZ	
 
                 if (!string.IsNullOrEmpty(cmdLineArgs.QLoadFile))
                 {
-                    if (Library.QuickLoad.QuickStart(emuState, cmdLineArgs.QLoadFile) == (int)QuickStartStatuses.Ok)
+                    if (_quickLoad.QuickStart(emuState, cmdLineArgs.QLoadFile) == (int)QuickStartStatuses.Ok)
                     {
                         Library.Vcc.SetAppTitle(_hResources, cmdLineArgs.QLoadFile); //TODO: No app title if no quick load
                     }
@@ -43,13 +52,13 @@ namespace VCCSharp
 
                 //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
                 //Loads the default config file Vcc.ini from the exec directory
-                Library.Config.InitConfig(emuState, ref cmdLineArgs);
+                _config.InitConfig(emuState, ref cmdLineArgs);
 
-                Library.DirectDraw.ClearScreen();
+                _directDraw.ClearScreen();
 
                 emuState->ResetPending = (byte)ResetPendingStates.Cls;
 
-                Library.MenuCallbacks.DynamicMenuCallback(emuState, null, (int)MenuActions.Refresh, Define.IGNORE);
+                _menuCallbacks.DynamicMenuCallback(emuState, null, (int)MenuActions.Refresh, Define.IGNORE);
 
                 emuState->ResetPending = (byte)ResetPendingStates.Hard;
 
@@ -104,10 +113,10 @@ namespace VCCSharp
                 Kernel.CloseHandle(vccState->hEventThread);
                 Kernel.CloseHandle(vccState->hEmuThread);
 
-                Library.PAKInterface.UnloadDll(emuState);
-                Library.Audio.SoundDeInit();
+                _pakInterface.UnloadDll(emuState);
+                _audio.SoundDeInit();
 
-                Library.Config.WriteIniFile(emuState); //Save any changes to ini File
+                _config.WriteIniFile(emuState); //Save any changes to ini File
 
                 int code = (int)vccState->msg.wParam;
 
