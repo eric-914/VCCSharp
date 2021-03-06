@@ -13,7 +13,7 @@ namespace VCCSharp.Models
         public byte AutoStart;
         public byte BinaryRunning;
         public byte DialogOpen;
-        public byte FlagEmuStop;
+        public byte RunState;
         public byte Throttle;
 
         //--------------------------------------------------------------------------

@@ -555,17 +555,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl CheckScreenModeChange() {
-    if (instance->RunState == EMU_RUNSTATE_WAITING)		//Need to stop the EMU thread for screen mode change
-    {								                                  //As it holds the Secondary screen buffer open while running
-      FullScreenToggle();
-
-      instance->RunState = EMU_RUNSTATE_RUNNING;
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) HANDLE __cdecl CreateEventHandle() {
     HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 

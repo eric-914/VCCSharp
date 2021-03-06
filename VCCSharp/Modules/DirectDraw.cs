@@ -7,6 +7,7 @@ namespace VCCSharp.Modules
     {
         bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources);
         void ClearScreen();
+        void FullScreenToggle();
     }
 
     public class DirectDraw : IDirectDraw
@@ -19,6 +20,11 @@ namespace VCCSharp.Modules
         public void ClearScreen()
         {
             Library.DirectDraw.ClearScreen();
+        }
+
+        public void FullScreenToggle()
+        {
+            Library.DirectDraw.FullScreenToggle();
         }
     }
 }
