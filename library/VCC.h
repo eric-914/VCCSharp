@@ -15,8 +15,6 @@ extern "C" __declspec(dllexport) unsigned __stdcall EmuLoopRun(void*);
 extern "C" __declspec(dllexport) unsigned char __cdecl SetAutoStart(unsigned char);
 extern "C" __declspec(dllexport) unsigned char __cdecl SetCPUMultiplier(unsigned char);
 extern "C" __declspec(dllexport) unsigned char __cdecl SetCpuType(unsigned char);
-extern "C" __declspec(dllexport) unsigned char __cdecl SetFrameSkip(unsigned char);
-extern "C" __declspec(dllexport) unsigned char __cdecl SetRamSize(unsigned char);
 extern "C" __declspec(dllexport) unsigned char __cdecl SetSpeedThrottle(unsigned char);
 
 extern "C" __declspec(dllexport) void __cdecl EmuLoop();

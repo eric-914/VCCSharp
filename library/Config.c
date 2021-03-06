@@ -17,8 +17,8 @@
 #include "VCC.h"
 #include "Graphics.h"
 #include "Audio.h"
+#include "Emu.h"
 
-#include "EmuState.h"
 #include "fileoperations.h"
 #include "CmdLineArguments.h"
 #include "ConfigDialogCallbacks.h"

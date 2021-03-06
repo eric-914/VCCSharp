@@ -193,31 +193,6 @@ extern "C" {
   }
 }
 
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl SetFrameSkip(unsigned char skip)
-  {
-    static EmuState* _emu = GetEmuState();
-
-    if (skip != QUERY) {
-      _emu->FrameSkip = skip;
-    }
-
-    return(_emu->FrameSkip);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl SetRamSize(unsigned char size)
-  {
-    static EmuState* _emu = GetEmuState();
-
-    if (size != QUERY) {
-      _emu->RamSize = size;
-    }
-
-    return(_emu->RamSize);
-  }
-}
 
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl SetSpeedThrottle(unsigned char throttle)

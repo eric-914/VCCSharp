@@ -2,6 +2,8 @@
 
 #include "CoCo.h"
 
+#include "defines.h"
+
 EmuState* InitializeInstance(EmuState*);
 
 static EmuState* instance;
@@ -52,20 +54,40 @@ EmuState* InitializeInstance(EmuState* p) {
 extern "C" {
   __declspec(dllexport) void __cdecl SetTurboMode(unsigned char data)
   {
-    static EmuState* _emu = GetEmuState();
-
-    _emu->TurboSpeedFlag = (data & 1) + 1;
+    instance->TurboSpeedFlag = (data & 1) + 1;
 
     SetClockSpeed(1);
 
-    if (_emu->DoubleSpeedFlag) {
-      SetClockSpeed(_emu->DoubleSpeedMultiplier * _emu->TurboSpeedFlag);
+    if (instance->DoubleSpeedFlag) {
+      SetClockSpeed(instance->DoubleSpeedMultiplier * instance->TurboSpeedFlag);
     }
 
-    _emu->CPUCurrentSpeed = .894;
+    instance->CPUCurrentSpeed = .894;
 
-    if (_emu->DoubleSpeedFlag) {
-      _emu->CPUCurrentSpeed *= ((double)_emu->DoubleSpeedMultiplier * (double)_emu->TurboSpeedFlag);
+    if (instance->DoubleSpeedFlag) {
+      instance->CPUCurrentSpeed *= ((double)instance->DoubleSpeedMultiplier * (double)instance->TurboSpeedFlag);
     }
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) unsigned char __cdecl SetFrameSkip(unsigned char skip)
+  {
+    if (skip != QUERY) {
+      instance->FrameSkip = skip;
+    }
+
+    return(instance->FrameSkip);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) unsigned char __cdecl SetRamSize(unsigned char size)
+  {
+    if (size != QUERY) {
+      instance->RamSize = size;
+    }
+
+    return(instance->RamSize);
   }
 }
