@@ -1,9 +1,11 @@
-﻿using VCCSharp.Enums;
+﻿using System.Windows;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using HANDLE = System.IntPtr;
 using HINSTANCE = System.IntPtr;
+using static System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -19,10 +21,12 @@ namespace VCCSharp.Modules
 
     public class Vcc : IVcc
     {
+        private readonly IKernel _kernel;
         private readonly IDirectDraw _directDraw;
 
-        public Vcc(IModules modules)
+        public Vcc(IModules modules, IKernel kernel)
         {
+            _kernel = kernel;
             _directDraw = modules.DirectDraw;
         }
 
@@ -51,7 +55,16 @@ namespace VCCSharp.Modules
 
         public HANDLE CreateEventHandle()
         {
-            return Library.Vcc.CreateEventHandle();
+            HANDLE hEvent = _kernel.CreateEventA(Define.FALSE, Define.FALSE, null);
+
+            if (hEvent == Zero)
+            {
+                MessageBox.Show("Can't create event thread!!", "Error");
+
+                System.Environment.Exit(0);
+            }
+
+            return hEvent;
         }
 
         public HANDLE CreateThreadHandle(HANDLE hEvent)

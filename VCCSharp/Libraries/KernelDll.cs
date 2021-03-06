@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using HANDLE = System.IntPtr;
 using HMODULE = System.IntPtr;
 
@@ -22,5 +23,14 @@ namespace VCCSharp.Libraries
 
         [DllImport(DLL)]
         public static extern short CloseHandle(HANDLE hObject);
+
+        //HANDLE CreateEventA(
+        //    LPSECURITY_ATTRIBUTES lpEventAttributes,
+        //    BOOL                  bManualReset,
+        //    BOOL                  bInitialState,
+        //    LPCSTR                lpName
+        //);
+        [DllImport(DLL)]
+        public static extern HANDLE CreateEventA(IntPtr lpEventAttributes, int bManualReset, int bInitialState, string lpName);
     }
 }

@@ -555,21 +555,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) HANDLE __cdecl CreateEventHandle() {
-    HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-
-    if (hEvent == NULL)
-    {
-      MessageBox(0, "Can't create event thread!!", "Error", 0);
-
-      exit(0);
-    }
-
-    return hEvent;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) HANDLE __cdecl CreateThreadHandle(HANDLE hEvent) {
     unsigned threadID;
 

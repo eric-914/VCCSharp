@@ -32,9 +32,6 @@ namespace VCCSharp.Libraries
             public static extern void CreatePrimaryWindow();
 
             [DllImport(LIBRARY)]
-            public static extern HANDLE CreateEventHandle();
-
-            [DllImport(LIBRARY)]
             public static extern HANDLE CreateThreadHandle(HANDLE hEvent);
         }
 
