@@ -15,7 +15,11 @@ extern "C" __declspec(dllexport) unsigned char __cdecl SetAutoStart(unsigned cha
 extern "C" __declspec(dllexport) unsigned char __cdecl SetCpuType(unsigned char);
 extern "C" __declspec(dllexport) unsigned char __cdecl SetSpeedThrottle(unsigned char);
 
-extern "C" __declspec(dllexport) void __cdecl EmuLoop();
+extern "C" __declspec(dllexport) void __cdecl EmuLoop(EmuState* emuState);
 extern "C" __declspec(dllexport) void __cdecl LoadPack();
 extern "C" __declspec(dllexport) void __cdecl SaveLastTwoKeyDownEvents(unsigned char, unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SendSavedKeyEvents();
+
+extern "C" __declspec(dllexport) void __cdecl UpdateStatusBarText(EmuState* _emu, float fps);
+extern "C" __declspec(dllexport) void __cdecl WaitOnRunState();
+extern "C" __declspec(dllexport) float __cdecl Render(EmuState* _emu);

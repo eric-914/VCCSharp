@@ -107,7 +107,7 @@ namespace VCCSharp
 
         public void Threading()
         {
-            Task.Run(Library.Vcc.EmuLoop);
+            Task.Run(_vcc.EmuLoop);
         }
 
         public void Run()

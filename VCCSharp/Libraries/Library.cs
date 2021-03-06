@@ -25,7 +25,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe VccState* GetVccState();
 
             [DllImport(LIBRARY)]
-            public static extern void EmuLoop();
+            public static extern unsafe void EmuLoop(EmuState* emuState);
         }
 
         public static class Audio

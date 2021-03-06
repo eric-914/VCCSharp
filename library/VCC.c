@@ -176,86 +176,96 @@ extern "C" {
 
 
 extern "C" {
-  __declspec(dllexport) void __cdecl EmuLoop() {
-    static float fps;
-    static unsigned int frameCounter = 0;
+  __declspec(dllexport) float __cdecl Render(EmuState* _emu) {
+    float fps = 0;
+    unsigned int frameCounter = 0;
 
-    static EmuState* _emu = GetEmuState();
+    StartRender();
 
-    while (true)
+    for (uint8_t frames = 1; frames <= _emu->FrameSkip; frames++)
     {
-      if (instance->RunState == EMU_RUNSTATE_REQWAIT)
-      {
-        instance->RunState = EMU_RUNSTATE_WAITING; //Signal Main thread we are waiting
+      frameCounter++;
 
-        while (instance->RunState == EMU_RUNSTATE_WAITING) {
-          Sleep(1);
+      if (_emu->ResetPending != RESET_NONE) {
+        switch (_emu->ResetPending)
+        {
+        case RESET_SOFT:	//Soft Reset
+          SoftReset();
+          break;
+
+        case RESET_HARD:	//Hard Reset
+          SynchSystemWithConfig(_emu);
+          DoCls(_emu);
+          HardReset(_emu);
+
+          break;
+
+        case RESET_CLS:
+          DoCls(_emu);
+          break;
+
+        case RESET_CLS_SYNCH:
+          SynchSystemWithConfig(_emu);
+          DoCls(_emu);
+
+          break;
+
+        default:
+          break;
         }
+
+        _emu->ResetPending = RESET_NONE;
       }
 
-      fps = 0;
-
-      StartRender();
-
-      for (uint8_t frames = 1; frames <= _emu->FrameSkip; frames++)
-      {
-        frameCounter++;
-
-        if (_emu->ResetPending != RESET_NONE) {
-          switch (_emu->ResetPending)
-          {
-          case RESET_SOFT:	//Soft Reset
-            SoftReset();
-            break;
-
-          case RESET_HARD:	//Hard Reset
-            SynchSystemWithConfig(_emu);
-            DoCls(_emu);
-            HardReset(_emu);
-
-            break;
-
-          case RESET_CLS:
-            DoCls(_emu);
-            break;
-
-          case RESET_CLS_SYNCH:
-            SynchSystemWithConfig(_emu);
-            DoCls(_emu);
-
-            break;
-
-          default:
-            break;
-          }
-
-          _emu->ResetPending = RESET_NONE;
-        }
-
-        if (_emu->EmulationRunning) {
-          fps += RenderFrame(_emu);
-        }
-        else {
-          fps += Static(_emu);
-        }
+      if (_emu->EmulationRunning) {
+        fps += RenderFrame(_emu);
       }
+      else {
+        fps += Static(_emu);
+      }
+    }
 
-      EndRender(_emu->FrameSkip);
+    EndRender(_emu->FrameSkip);
 
-      fps /= _emu->FrameSkip;
+    return fps;
+  }
+}
 
-      GetModuleStatus(_emu);
+extern "C" {
+  __declspec(dllexport) void __cdecl WaitOnRunState() {
+    if (instance->RunState == EMU_RUNSTATE_REQWAIT)
+    {
+      instance->RunState = EMU_RUNSTATE_WAITING; //Signal Main thread we are waiting
 
-      char ttbuff[256];
-
-      snprintf(ttbuff, sizeof(ttbuff), "Skip:%2.2i | FPS:%3.0f | %s @ %2.2fMhz| %s", _emu->FrameSkip, fps, instance->CpuName, _emu->CPUCurrentSpeed, _emu->StatusLine);
-
-      SetStatusBarText(ttbuff, _emu);
-
-      if (instance->Throttle) { //Do nothing until the frame is over returning unused time to OS
-        FrameWait();
+      while (instance->RunState == EMU_RUNSTATE_WAITING) {
+        Sleep(1);
       }
     }
   }
 }
 
+extern "C" {
+  __declspec(dllexport) void __cdecl UpdateStatusBarText(EmuState* _emu, float fps) {
+    char ttbuff[256];
+
+    snprintf(ttbuff, sizeof(ttbuff), "Skip:%2.2i | FPS:%3.0f | %s @ %2.2fMhz| %s", _emu->FrameSkip, fps, instance->CpuName, _emu->CPUCurrentSpeed, _emu->StatusLine);
+
+    SetStatusBarText(ttbuff, _emu);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl EmuLoop(EmuState* emuState) {
+    WaitOnRunState();
+
+    float fps = Render(emuState) / emuState->FrameSkip;
+
+    GetModuleStatus(emuState);
+
+    UpdateStatusBarText(emuState, fps);
+
+    if (instance->Throttle) { //Do nothing until the frame is over returning unused time to OS
+      FrameWait();
+    }
+  }
+}

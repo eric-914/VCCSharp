@@ -13,6 +13,7 @@ namespace VCCSharp.Modules
         void CheckScreenModeChange();
         void CreatePrimaryWindow();
         void SetAppTitle(HINSTANCE hResources, string binFileName);
+        void EmuLoop();
     }
 
     public class Vcc : IVcc
@@ -85,6 +86,20 @@ namespace VCCSharp.Modules
                 VccState* vccState = GetVccState();
 
                 Converter.ToByteArray(appTitle, vccState->AppName);
+            }
+        }
+
+        public void EmuLoop()
+        {
+            unsafe
+            {
+                VccState* vccState = GetVccState();
+                EmuState* emuState = _emu.GetEmuState();
+
+                while (vccState->BinaryRunning == Define.TRUE)
+                {
+                    Library.Vcc.EmuLoop(emuState);
+                }
             }
         }
     }
