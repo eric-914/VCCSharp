@@ -26,12 +26,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe VccState* GetVccState();
 
             [DllImport(LIBRARY)]
-            public static extern void SetAppTitle(HINSTANCE hResources, string binFileName);
-
-            [DllImport(LIBRARY)]
-            public static extern void CreatePrimaryWindow();
-
-            [DllImport(LIBRARY)]
             public static extern HANDLE CreateThreadHandle(HANDLE hEvent);
         }
 
@@ -66,6 +60,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void FullScreenToggle();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int CreateDirectDrawWindow(EmuState* emuState);
         }
 
         public static class MenuCallbacks
@@ -84,6 +81,12 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe int QuickStart(EmuState* emuState, string binFileName);
+        }
+
+        public static class Resource
+        {
+            [DllImport(LIBRARY)]
+            public static extern void ResourceAppTitle(HINSTANCE hResources, byte[] buffer);
         }
     }
 }

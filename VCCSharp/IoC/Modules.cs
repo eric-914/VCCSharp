@@ -12,6 +12,7 @@ namespace VCCSharp.IoC
         IMenuCallbacks MenuCallbacks { get; }
         IQuickLoad QuickLoad { get; }
         IPAKInterface PAKInterface { get; }
+        IResource Resource { get; }
         IVcc Vcc { get; }
     }
 
@@ -32,6 +33,7 @@ namespace VCCSharp.IoC
         public IMenuCallbacks MenuCallbacks => _factory.Get<IMenuCallbacks>();
         public IQuickLoad QuickLoad => _factory.Get<IQuickLoad>();
         public IPAKInterface PAKInterface => _factory.Get<IPAKInterface>();
+        public IResource Resource => _factory.Get<IResource>();
         public IVcc Vcc => _factory.Get<IVcc>();
     }
 }

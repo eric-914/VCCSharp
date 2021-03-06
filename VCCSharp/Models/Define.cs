@@ -9,5 +9,7 @@
 
         public const uint INFINITE = 0xFFFFFFFF;
         public const short THREAD_PRIORITY_NORMAL = 0;
+
+        public const int MAX_LOADSTRING = 100;
     }
 }

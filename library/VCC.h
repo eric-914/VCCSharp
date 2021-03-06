@@ -30,7 +30,4 @@ extern "C" __declspec(dllexport) void __cdecl SetCPUMultiplierFlag(unsigned char
 extern "C" __declspec(dllexport) void __cdecl SetTurboMode(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SoftReset();
 
-extern "C" __declspec(dllexport) void __cdecl SetAppTitle(HINSTANCE hResources, char *binFileName);
-extern "C" __declspec(dllexport) void __cdecl CreatePrimaryWindow();
-
 extern "C" __declspec(dllexport) HANDLE __cdecl CreateThreadHandle(HANDLE hEvent);

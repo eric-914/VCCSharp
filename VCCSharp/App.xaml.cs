@@ -21,7 +21,9 @@ namespace VCCSharp
                 .Singleton<IMenuCallbacks, MenuCallbacks>()
                 .Singleton<IQuickLoad, QuickLoad>()
                 .Singleton<IPAKInterface, PAKInterface>()
+                .Singleton<IResource, Resource>()
                 .Singleton<IVcc, Vcc>()
+
                 .Singleton<IModules, IoC.Modules>()
 
                 .Bind<IKernel, Kernel>()

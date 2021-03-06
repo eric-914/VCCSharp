@@ -21,13 +21,20 @@ namespace VCCSharp.Modules
 
     public class Vcc : IVcc
     {
-        private readonly IKernel _kernel;
+        private readonly IEmu _emu;
         private readonly IDirectDraw _directDraw;
+        private readonly IResource _resource;
+
+        private readonly IKernel _kernel;
+
 
         public Vcc(IModules modules, IKernel kernel)
         {
-            _kernel = kernel;
+            _emu = modules.Emu;
             _directDraw = modules.DirectDraw;
+            _resource = modules.Resource;
+
+            _kernel = kernel;
         }
 
         public unsafe VccState* GetVccState()
@@ -69,17 +76,48 @@ namespace VCCSharp.Modules
 
         public HANDLE CreateThreadHandle(HANDLE hEvent)
         {
-            return Library.Vcc.CreateThreadHandle(hEvent);
+            HANDLE hThread = Library.Vcc.CreateThreadHandle(hEvent);
+
+            if (hThread == Zero)
+            {
+                MessageBox.Show("Can't Start main Emulation Thread!", "Ok");
+
+                System.Environment.Exit(0);
+            }
+
+            return hThread;
         }
 
         public void CreatePrimaryWindow()
         {
-            Library.Vcc.CreatePrimaryWindow();
+            unsafe
+            {
+                EmuState* emuState = _emu.GetEmuState();
+
+                if (!_directDraw.CreateDirectDrawWindow(emuState))
+                {
+                    MessageBox.Show("Can't create primary window", "Error");
+
+                    System.Environment.Exit(0);
+                }
+            }
         }
 
         public void SetAppTitle(HINSTANCE hResources, string binFileName)
         {
-            Library.Vcc.SetAppTitle(hResources, binFileName);
+            string appTitle = _resource.ResourceAppTitle(hResources);
+
+            if (!string.IsNullOrEmpty(binFileName))
+            {
+                appTitle = $"{binFileName} Running on {appTitle}";
+            }
+
+            unsafe
+            {
+                VccState* vccState = GetVccState();
+
+                Converter.ToByteArray(appTitle, vccState->AppName);
+            }
         }
     }
 }

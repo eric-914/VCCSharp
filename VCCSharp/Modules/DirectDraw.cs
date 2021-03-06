@@ -1,4 +1,5 @@
 ﻿using VCCSharp.Libraries;
+using VCCSharp.Models;
 using HINSTANCE = System.IntPtr;
 
 namespace VCCSharp.Modules
@@ -8,6 +9,7 @@ namespace VCCSharp.Modules
         bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources);
         void ClearScreen();
         void FullScreenToggle();
+        unsafe bool CreateDirectDrawWindow(EmuState* emuState);
     }
 
     public class DirectDraw : IDirectDraw
@@ -25,6 +27,11 @@ namespace VCCSharp.Modules
         public void FullScreenToggle()
         {
             Library.DirectDraw.FullScreenToggle();
+        }
+
+        public unsafe bool CreateDirectDrawWindow(EmuState* emuState)
+        {
+            return Library.DirectDraw.CreateDirectDrawWindow(emuState) == Define.TRUE;
         }
     }
 }

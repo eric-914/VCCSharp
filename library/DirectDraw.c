@@ -57,7 +57,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 extern "C" {
-  __declspec(dllexport) bool __cdecl CreateDirectDrawWindow(EmuState* emuState)
+  __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindow(EmuState* emuState)
   {
     const unsigned char ColorValues[4] = { 0, 85, 170, 255 };
 

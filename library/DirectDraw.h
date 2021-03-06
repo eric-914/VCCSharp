@@ -12,7 +12,7 @@ extern "C" __declspec(dllexport) DirectDrawState * __cdecl GetDirectDrawState();
 
 extern "C" __declspec(dllexport) BOOL __cdecl InitDirectDraw(HINSTANCE, HINSTANCE);
 
-extern "C" __declspec(dllexport) bool __cdecl CreateDirectDrawWindow(EmuState*);
+extern "C" __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindow(EmuState*);
 
 extern "C" __declspec(dllexport) float __cdecl Static(EmuState*);
 

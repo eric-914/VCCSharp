@@ -518,55 +518,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetAppTitle(HINSTANCE hResources, char* binFileName) {
-    char temp1[MAX_PATH] = "";
-    char temp2[MAX_PATH] = " Running on ";
-
-    ResourceAppTitle(hResources, instance->AppName);
-
-    if (strlen(binFileName) != 0)
-    {
-      strcpy(temp1, binFileName);
-
-      FilePathStripPath(temp1);
-
-      _strlwr(temp1);
-
-      temp1[0] = toupper(temp1[0]);
-
-      strcat(temp1, temp2);
-      strcat(temp1, instance->AppName);
-      strcpy(instance->AppName, temp1);
-    }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl CreatePrimaryWindow() {
-    static EmuState* _emu = GetEmuState();
-
-    if (!CreateDirectDrawWindow(_emu))
-    {
-      MessageBox(0, "Can't create primary window", "Error", 0);
-
-      exit(0);
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) HANDLE __cdecl CreateThreadHandle(HANDLE hEvent) {
     unsigned threadID;
 
-    HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, &EmuLoopRun, hEvent, 0, &threadID);
-
-    if (hThread == NULL)
-    {
-      MessageBox(0, "Can't Start main Emulation Thread!", "Ok", 0);
-
-      exit(0);
-    }
-
-    return hThread;
+    return (HANDLE)_beginthreadex(NULL, 0, &EmuLoopRun, hEvent, 0, &threadID);
   }
 }
