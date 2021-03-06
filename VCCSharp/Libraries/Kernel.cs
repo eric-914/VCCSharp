@@ -8,10 +8,6 @@ namespace VCCSharp.Libraries
     {
         HMODULE LoadLibrary(string dllToLoad);
         bool FreeLibrary(HMODULE hModule);
-        uint WaitForSingleObject(HANDLE handle, uint dwMilliseconds);
-        short SetThreadPriority(HANDLE handle, short nPriority);
-        short CloseHandle(HANDLE hObject);
-        HANDLE CreateEventA(int bManualReset, int bInitialState, string lpName);
     }
 
     public class Kernel : IKernel
@@ -21,17 +17,5 @@ namespace VCCSharp.Libraries
 
         public bool FreeLibrary(HMODULE hModule)
             => KernelDll.FreeLibrary(hModule);
-
-        public uint WaitForSingleObject(HANDLE handle, uint dwMilliseconds)
-            => KernelDll.WaitForSingleObject(handle, dwMilliseconds);
-
-        public short SetThreadPriority(HANDLE handle, short nPriority)
-            => KernelDll.SetThreadPriority(handle, nPriority);
-
-        public short CloseHandle(HANDLE hObject)
-            => KernelDll.CloseHandle(hObject);
-
-        public HANDLE CreateEventA(int bManualReset, int bInitialState, string lpName)
-            => KernelDll.CreateEventA(Zero, bManualReset, bInitialState, lpName);
     }
 }

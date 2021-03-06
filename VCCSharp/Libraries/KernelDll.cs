@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using HANDLE = System.IntPtr;
+﻿using System.Runtime.InteropServices;
 using HMODULE = System.IntPtr;
 
 namespace VCCSharp.Libraries
@@ -14,23 +12,5 @@ namespace VCCSharp.Libraries
 
         [DllImport(DLL)]
         public static extern bool FreeLibrary(HMODULE hModule);
-
-        [DllImport(DLL)]
-        public static extern uint WaitForSingleObject(HANDLE handle, uint dwMilliseconds);
-
-        [DllImport(DLL)]
-        public static extern short SetThreadPriority(HANDLE handle, short nPriority);
-
-        [DllImport(DLL)]
-        public static extern short CloseHandle(HANDLE hObject);
-
-        //HANDLE CreateEventA(
-        //    LPSECURITY_ATTRIBUTES lpEventAttributes,
-        //    BOOL                  bManualReset,
-        //    BOOL                  bInitialState,
-        //    LPCSTR                lpName
-        //);
-        [DllImport(DLL)]
-        public static extern HANDLE CreateEventA(IntPtr lpEventAttributes, int bManualReset, int bInitialState, string lpName);
     }
 }

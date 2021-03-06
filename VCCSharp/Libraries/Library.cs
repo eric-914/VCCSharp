@@ -25,9 +25,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe VccState* GetVccState();
 
             [DllImport(LIBRARY)]
-            public static extern HANDLE CreateThreadHandle(HANDLE hEvent);
-
-            [DllImport(LIBRARY)]
             public static extern void EmuLoop();
         }
 

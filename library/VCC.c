@@ -47,7 +47,6 @@ VccState* InitializeInstance(VccState* p) {
   p->SC_save2 = 0;
   p->Throttle = 0;
 
-  //p->hEmuThread = NULL;
   p->RunState = EMU_RUNSTATE_RUNNING;
 
   strcpy(p->CpuName, "CPUNAME");
@@ -260,28 +259,3 @@ extern "C" {
   }
 }
 
-extern "C" {
-  __declspec(dllexport) void __stdcall EmuLoopRun(HANDLE hEvent)
-  {
-    Sleep(30);
-    SetEvent(hEvent);
-
-    EmuLoop();
-  }
-}
-
-unsigned ThreadLoopRun(void* dummy) {
-  HANDLE hEvent = (HANDLE)dummy;
-
-  EmuLoopRun(hEvent);
-
-  return NULL;
-}
-
-extern "C" {
-  __declspec(dllexport) HANDLE __cdecl CreateThreadHandle(HANDLE hEvent) {
-    unsigned threadID;
-
-    return (HANDLE)_beginthreadex(NULL, 0, &ThreadLoopRun, hEvent, 0, &threadID);
-  }
-}

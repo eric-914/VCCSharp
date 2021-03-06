@@ -1,4 +1,5 @@
-﻿using System.Windows.Interop;
+﻿using System.Threading.Tasks;
+using System.Windows.Interop;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
@@ -36,9 +37,6 @@ namespace VCCSharp
         private readonly IPAKInterface _pakInterface;
         private readonly IAudio _audio;
         private readonly IThrottle _throttle;
-
-        private HANDLE _hEventThread;
-        private HANDLE _hEmuThread;
 
         public VccApp(IModules modules, IKernel kernel, IUser32 user32)
         {
@@ -109,16 +107,7 @@ namespace VCCSharp
 
         public void Threading()
         {
-            unsafe
-            {
-                VccState* vccState = _vcc.GetVccState();
-
-                _hEventThread = _vcc.CreateEventHandle();
-                _hEmuThread = _vcc.CreateThreadHandle(_hEventThread);
-
-                _kernel.WaitForSingleObject(_hEventThread, Define.INFINITE);
-                _kernel.SetThreadPriority(_hEmuThread, Define.THREAD_PRIORITY_NORMAL);
-            }
+            Task.Run(Library.Vcc.EmuLoop);
         }
 
         public void Run()
@@ -148,9 +137,6 @@ namespace VCCSharp
             {
                 VccState* vccState = _vcc.GetVccState();
                 EmuState* emuState = _emu.GetEmuState();
-
-                _kernel.CloseHandle(_hEventThread);
-                _kernel.CloseHandle(_hEmuThread);
 
                 _pakInterface.UnloadDll(emuState);
                 _audio.SoundDeInit();

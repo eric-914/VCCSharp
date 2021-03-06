@@ -1,13 +1,9 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
-using HANDLE = System.IntPtr;
 using HINSTANCE = System.IntPtr;
-using static System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -15,8 +11,6 @@ namespace VCCSharp.Modules
     {
         unsafe VccState* GetVccState();
         void CheckScreenModeChange();
-        HANDLE CreateEventHandle();
-        HANDLE CreateThreadHandle(HANDLE hEvent);
         void CreatePrimaryWindow();
         void SetAppTitle(HINSTANCE hResources, string binFileName);
     }
@@ -60,36 +54,6 @@ namespace VCCSharp.Modules
                 }
 
             }
-        }
-
-        public HANDLE CreateEventHandle()
-        {
-            HANDLE hEvent = _kernel.CreateEventA(Define.FALSE, Define.FALSE, null);
-
-            if (hEvent == Zero)
-            {
-                MessageBox.Show("Can't create event thread!!", "Error");
-
-                System.Environment.Exit(0);
-            }
-
-            return hEvent;
-        }
-
-        public HANDLE CreateThreadHandle(HANDLE hEvent)
-        {
-            //Task.Run(Library.Vcc.EmuLoop);
-            
-            HANDLE hThread = Library.Vcc.CreateThreadHandle(hEvent);
-
-            if (hThread == Zero)
-            {
-                MessageBox.Show("Can't Start main Emulation Thread!", "Ok");
-
-                System.Environment.Exit(0);
-            }
-
-            return hThread;
         }
 
         public void CreatePrimaryWindow()
