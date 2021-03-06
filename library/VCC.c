@@ -131,27 +131,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetCPUMultiplierFlag(unsigned char double_speed)
-  {
-    static EmuState* _emu = GetEmuState();
-
-    SetClockSpeed(1);
-
-    _emu->DoubleSpeedFlag = double_speed;
-
-    if (_emu->DoubleSpeedFlag) {
-      SetClockSpeed(_emu->DoubleSpeedMultiplier * _emu->TurboSpeedFlag);
-    }
-
-    _emu->CPUCurrentSpeed = .894;
-
-    if (_emu->DoubleSpeedFlag) {
-      _emu->CPUCurrentSpeed *= ((double)_emu->DoubleSpeedMultiplier * (double)_emu->TurboSpeedFlag);
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) unsigned char __cdecl SetCPUMultiplier(unsigned char multiplier)
   {
     static EmuState* _emu = GetEmuState();
