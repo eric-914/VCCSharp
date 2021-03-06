@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
@@ -21,6 +24,10 @@ namespace VCCSharp.Modules
         private readonly IEmu _emu;
         private readonly IDirectDraw _directDraw;
         private readonly IResource _resource;
+        private readonly IThrottle _throttle;
+        private readonly IPAKInterface _pakInterface;
+        private readonly ICoCo _coco;
+        private readonly IConfig _config;
 
         private readonly IKernel _kernel;
 
@@ -30,6 +37,10 @@ namespace VCCSharp.Modules
             _emu = modules.Emu;
             _directDraw = modules.DirectDraw;
             _resource = modules.Resource;
+            _throttle = modules.Throttle;
+            _pakInterface = modules.PAKInterface;
+            _coco = modules.CoCo;
+            _config = modules.Config;
 
             _kernel = kernel;
         }
@@ -98,9 +109,86 @@ namespace VCCSharp.Modules
 
                 while (vccState->BinaryRunning == Define.TRUE)
                 {
-                    Library.Vcc.EmuLoop(emuState);
+                    if (vccState->RunState == (byte)EmuRunStates.ReqWait)
+                    {
+                        vccState->RunState = (byte)EmuRunStates.Waiting; //Signal Main thread we are waiting
+
+                        while (vccState->RunState == (byte)EmuRunStates.Waiting)
+                        {
+                            Thread.Sleep(1);
+                        }
+                    }
+
+                    float fps = Render(emuState);
+
+                    _pakInterface.GetModuleStatus(emuState);
+
+                    int frameSkip = emuState->FrameSkip;
+                    string cpuName = Converter.ToString(vccState->CpuName);
+                    double mhz = emuState->CPUCurrentSpeed;
+                    string status = Converter.ToString(emuState->StatusLine);
+
+                    string statusBarText = $"Skip:{frameSkip} | FPS:{fps:F} | {cpuName} @ {mhz:0.000}Mhz| {status}";
+
+                    _directDraw.SetStatusBarText(statusBarText, emuState);
+
+                    if (vccState->Throttle == Define.TRUE)
+                    {
+                        //Do nothing until the frame is over returning unused time to OS
+                        _throttle.FrameWait();
+                    }
                 }
             }
+        }
+
+        public unsafe float Render(EmuState* emuState)
+        {
+            _throttle.StartRender();
+
+            float fps = 0;
+
+            var resetActions = new Dictionary<byte, Action>
+            {
+                {(byte) ResetPendingStates.None, () => { }},
+
+                {(byte) ResetPendingStates.Soft, () => { _emu.SoftReset(); }},
+
+                {(byte) ResetPendingStates.Hard, () =>
+                {
+                    _config.SynchSystemWithConfig(emuState);
+                    _directDraw.DoCls(emuState);
+                    _emu.HardReset(emuState);
+
+                }},
+
+                {(byte) ResetPendingStates.Cls, () => { _directDraw.DoCls(emuState);}},
+
+                {(byte) ResetPendingStates.ClsSynch, () =>
+                {
+                    _config.SynchSystemWithConfig(emuState);
+                    _directDraw.DoCls(emuState);
+                }}
+            };
+
+            for (int frames = 1; frames <= emuState->FrameSkip; frames++)
+            {
+                resetActions[emuState->ResetPending]();
+
+                emuState->ResetPending = (byte)ResetPendingStates.None;
+
+                if (emuState->EmulationRunning == Define.TRUE)
+                {
+                    fps += _coco.RenderFrame(emuState);
+                }
+                else
+                {
+                    fps += _directDraw.Static(emuState);
+                }
+            }
+
+            _throttle.EndRender(emuState->FrameSkip);
+
+            return fps;
         }
     }
 }

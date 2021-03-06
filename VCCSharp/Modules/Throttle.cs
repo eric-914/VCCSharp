@@ -5,6 +5,9 @@ namespace VCCSharp.Modules
     public interface IThrottle
     {
         void CalibrateThrottle();
+        void FrameWait();
+        void StartRender();
+        void EndRender(byte skip);
     }
 
     public class Throttle : IThrottle
@@ -12,6 +15,21 @@ namespace VCCSharp.Modules
         public void CalibrateThrottle()
         {
             Library.Throttle.CalibrateThrottle();
+        }
+
+        public void FrameWait()
+        {
+            Library.Throttle.FrameWait();
+        }
+
+        public void StartRender()
+        {
+            Library.Throttle.StartRender();
+        }
+
+        public void EndRender(byte skip)
+        {
+            Library.Throttle.EndRender(skip);
         }
     }
 }

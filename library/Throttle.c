@@ -95,7 +95,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl StartRender(void)
+  __declspec(dllexport) void __cdecl StartRender()
   {
     QueryPerformanceCounter(&(instance->StartTime));
   }

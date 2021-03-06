@@ -152,7 +152,7 @@ void GimeReset(void)
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SoftReset(void)
+  __declspec(dllexport) void __cdecl SoftReset()
   {
     MC6883Reset();
     MC6821_PiaReset();

@@ -18,7 +18,7 @@ extern "C" {
     {
     case DIK_F3:    SlowDown();           break;
     case DIK_F4:    SpeedUp();            break;
-    case DIK_F5:    EmuReset(1);          break;
+    case DIK_F5:    EmuReset(RESET_SOFT); break;
     case DIK_F6:    ToggleMonitorType();  break;
     case DIK_F8:    ToggleThrottle();     break;
     case DIK_F9:    ToggleOnOff();        break;

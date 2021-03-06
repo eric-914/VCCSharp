@@ -50,7 +50,7 @@ extern "C" {
       break;
 
     case ID_FILE_RESET:
-      EmuReset(2);
+      EmuReset(RESET_HARD);
 
       break;
 
@@ -59,7 +59,7 @@ extern "C" {
       break;
 
     case ID_FILE_RESET_SFT:
-      EmuReset(1);
+      EmuReset(RESET_SOFT);
       break;
 
     case ID_FILE_LOAD:

@@ -10,6 +10,9 @@ namespace VCCSharp.Modules
         void ClearScreen();
         void FullScreenToggle();
         unsafe bool CreateDirectDrawWindow(EmuState* emuState);
+        unsafe void SetStatusBarText(string textBuffer, EmuState* emuState);
+        unsafe float Static(EmuState* emuState);
+        unsafe void DoCls(EmuState* emuState);
     }
 
     public class DirectDraw : IDirectDraw
@@ -32,6 +35,21 @@ namespace VCCSharp.Modules
         public unsafe bool CreateDirectDrawWindow(EmuState* emuState)
         {
             return Library.DirectDraw.CreateDirectDrawWindow(emuState) == Define.TRUE;
+        }
+
+        public unsafe void SetStatusBarText(string text, EmuState* emuState)
+        {
+            Library.DirectDraw.SetStatusBarText(text, emuState);
+        }
+
+        public unsafe float Static(EmuState* emuState)
+        {
+            return Library.DirectDraw.Static(emuState);
+        }
+
+        public unsafe void DoCls(EmuState* emuState)
+        {
+            Library.DirectDraw.DoCls(emuState);
         }
     }
 }

@@ -7,6 +7,7 @@ namespace VCCSharp.Modules
     {
         unsafe void InitConfig(EmuState* emuState, ref CmdLineArguments cmdLineArgs);
         unsafe void WriteIniFile(EmuState* emuState);
+        unsafe void SynchSystemWithConfig(EmuState* emuState);
     }
 
     public class Config : IConfig
@@ -19,6 +20,11 @@ namespace VCCSharp.Modules
         public unsafe void WriteIniFile(EmuState* emuState)
         {
             Library.Config.WriteIniFile(emuState);
+        }
+
+        public unsafe void SynchSystemWithConfig(EmuState* emuState)
+        {
+            Library.Config.SynchSystemWithConfig(emuState);
         }
     }
 }

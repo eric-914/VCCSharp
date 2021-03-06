@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
+using VCCSharp.Models;
 
 namespace VCCSharp
 {
@@ -7,6 +8,18 @@ namespace VCCSharp
     {
         public static string ToString(byte[] buffer)
         {
+            return Encoding.ASCII.GetString(buffer, 0, buffer.Length).Split('\0').First();
+        }
+
+        public static unsafe string ToString(byte* source)
+        {
+            byte[] buffer = new byte[Define.MAX_LOADSTRING];
+
+            for (int index = 0; index < Define.MAX_LOADSTRING && source[index] != '\0'; index++)
+            {
+                buffer[index] = source[index];
+            }
+
             return Encoding.ASCII.GetString(buffer, 0, buffer.Length).Split('\0').First();
         }
 

@@ -17,15 +17,18 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void SetEmuState(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern void SoftReset();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void HardReset(EmuState* emuState);
         }
 
         public static class Vcc
         {
             [DllImport(LIBRARY)]
             public static extern unsafe VccState* GetVccState();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void EmuLoop(EmuState* emuState);
         }
 
         public static class Audio
@@ -38,6 +41,9 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern void SetClockSpeed(ushort cycles);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe float RenderFrame(EmuState* emuState);
         }
 
         public static class Config
@@ -47,6 +53,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void WriteIniFile(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void SynchSystemWithConfig(EmuState* emuState);
         }
 
         public static class DirectDraw
@@ -62,6 +71,15 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe int CreateDirectDrawWindow(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void SetStatusBarText(string textBuffer, EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe float Static(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DoCls(EmuState* emuState);
         }
 
         public static class MenuCallbacks
@@ -74,6 +92,9 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe void UnloadDll(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void GetModuleStatus(EmuState* emuState);
         }
 
         public static class QuickLoad
@@ -92,6 +113,15 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern void CalibrateThrottle();
+
+            [DllImport(LIBRARY)]
+            public static extern void FrameWait();
+
+            [DllImport(LIBRARY)]
+            public static extern void StartRender();
+
+            [DllImport(LIBRARY)]
+            public static extern void EndRender(byte skip);
         }
     }
 }
