@@ -160,7 +160,7 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl ToggleThrottle() {
-    SetSpeedThrottle(!SetSpeedThrottle(QUERY));
+    SetSpeedThrottle(!GetSpeedThrottle());
   }
 }
 

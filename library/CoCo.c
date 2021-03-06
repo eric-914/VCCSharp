@@ -477,7 +477,7 @@ extern "C" {
       //Remember the original throttle setting.
       //Set it to off. We need speed for this!
       if (instance->Throttle == 0) {
-        instance->Throttle = SetSpeedThrottle(QUERY);
+        instance->Throttle = GetSpeedThrottle();
 
         if (instance->Throttle == 0) {
           instance->Throttle = 2; // 2 = No throttle.

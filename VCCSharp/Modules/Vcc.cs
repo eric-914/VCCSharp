@@ -30,8 +30,7 @@ namespace VCCSharp.Modules
         private readonly IConfig _config;
 
         private readonly IKernel _kernel;
-
-
+        
         public Vcc(IModules modules, IKernel kernel)
         {
             _emu = modules.Emu;

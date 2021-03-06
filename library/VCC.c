@@ -78,18 +78,14 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl SetAutoStart(unsigned char autostart)
+  __declspec(dllexport) void __cdecl SetAutoStart(unsigned char autostart)
   {
-    if (autostart != QUERY) {
-      instance->AutoStart = autostart;
-    }
-
-    return(instance->AutoStart);
+    instance->AutoStart = autostart;
   }
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl SetCpuType(unsigned char cpuType)
+  __declspec(dllexport) void __cdecl SetCpuType(unsigned char cpuType)
   {
     static EmuState* _emu = GetEmuState();
 
@@ -109,23 +105,22 @@ extern "C" {
 
       break;
     }
-
-    return(_emu->CpuType);
   }
 }
 
+extern "C" {
+  __declspec(dllexport) void __cdecl SetSpeedThrottle(unsigned char throttle)
+  {
+    instance->Throttle = throttle;
+  }
+}
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl SetSpeedThrottle(unsigned char throttle)
+  __declspec(dllexport) unsigned char __cdecl GetSpeedThrottle()
   {
-    if (throttle != QUERY) {
-      instance->Throttle = throttle;
-    }
-
     return(instance->Throttle);
   }
 }
-
 
 extern "C" {
   __declspec(dllexport) unsigned __stdcall CartLoad(void* dummy)
