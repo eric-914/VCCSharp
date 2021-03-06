@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
@@ -76,6 +78,8 @@ namespace VCCSharp.Modules
 
         public HANDLE CreateThreadHandle(HANDLE hEvent)
         {
+            //Task.Run(Library.Vcc.EmuLoop);
+            
             HANDLE hThread = Library.Vcc.CreateThreadHandle(hEvent);
 
             if (hThread == Zero)

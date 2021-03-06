@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using VCCSharp.Models;
 using HINSTANCE = System.IntPtr;
-using INT = System.Int32;
 using HANDLE = System.IntPtr;
 
 namespace VCCSharp.Libraries
@@ -27,6 +26,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern HANDLE CreateThreadHandle(HANDLE hEvent);
+
+            [DllImport(LIBRARY)]
+            public static extern void EmuLoop();
         }
 
         public static class Audio

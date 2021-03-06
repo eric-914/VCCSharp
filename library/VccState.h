@@ -12,9 +12,6 @@
 
 typedef struct
 {
-  HANDLE hEventThread;
-  HANDLE hEmuThread;  // Message handlers
-
   unsigned char AutoStart;
   unsigned char BinaryRunning;
   unsigned char DialogOpen;

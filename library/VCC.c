@@ -47,7 +47,7 @@ VccState* InitializeInstance(VccState* p) {
   p->SC_save2 = 0;
   p->Throttle = 0;
 
-  p->hEmuThread = NULL;
+  //p->hEmuThread = NULL;
   p->RunState = EMU_RUNSTATE_RUNNING;
 
   strcpy(p->CpuName, "CPUNAME");
