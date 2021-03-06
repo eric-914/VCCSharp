@@ -48,7 +48,7 @@ VccState* InitializeInstance(VccState* p) {
   p->Throttle = 0;
 
   p->hEmuThread = NULL;
-  p->FlagEmuStop = TH_RUNNING;
+  p->RunState = EMU_RUNSTATE_RUNNING;
 
   strcpy(p->CpuName, "CPUNAME");
   strcpy(p->AppName, "");
@@ -423,11 +423,11 @@ extern "C" {
 
     while (true)
     {
-      if (instance->FlagEmuStop == TH_REQWAIT)
+      if (instance->RunState == EMU_RUNSTATE_REQWAIT)
       {
-        instance->FlagEmuStop = TH_WAITING; //Signal Main thread we are waiting
+        instance->RunState = EMU_RUNSTATE_WAITING; //Signal Main thread we are waiting
 
-        while (instance->FlagEmuStop == TH_WAITING) {
+        while (instance->RunState == EMU_RUNSTATE_WAITING) {
           Sleep(1);
         }
       }
@@ -541,20 +541,11 @@ extern "C" {
   }
 }
 
-/*--------------------------------------------------------------------------*/
-// The Window Procedure
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-  ProcessMessage(hWnd, message, wParam, lParam);
-
-  return DefWindowProc(hWnd, message, wParam, lParam);
-}
-
 extern "C" {
   __declspec(dllexport) void __cdecl CreatePrimaryWindow() {
     static EmuState* _emu = GetEmuState();
 
-    if (!CreateDirectDrawWindow(_emu, WndProc))
+    if (!CreateDirectDrawWindow(_emu))
     {
       MessageBox(0, "Can't create primary window", "Error", 0);
 
@@ -565,11 +556,11 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl CheckScreenModeChange() {
-    if (instance->FlagEmuStop == TH_WAITING)		//Need to stop the EMU thread for screen mode change
-    {								                  //As it holds the Secondary screen buffer open while running
-      FullScreenToggle(WndProc);
+    if (instance->RunState == EMU_RUNSTATE_WAITING)		//Need to stop the EMU thread for screen mode change
+    {								                                  //As it holds the Secondary screen buffer open while running
+      FullScreenToggle();
 
-      instance->FlagEmuStop = TH_RUNNING;
+      instance->RunState = EMU_RUNSTATE_RUNNING;
     }
   }
 }

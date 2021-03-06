@@ -129,9 +129,9 @@ extern "C" {
     VccState* vccState = GetVccState();
     EmuState* emuState = GetEmuState();
 
-    if (vccState->FlagEmuStop == TH_RUNNING)
+    if (vccState->RunState == EMU_RUNSTATE_RUNNING)
     {
-      vccState->FlagEmuStop = TH_REQWAIT;
+      vccState->RunState = EMU_RUNSTATE_REQWAIT;
       emuState->FullScreen = !emuState->FullScreen;
     }
   }

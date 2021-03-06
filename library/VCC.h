@@ -6,10 +6,6 @@
 #include "EmuState.h"
 #include "CmdLineArguments.h"
 
-#define TH_RUNNING	0
-#define TH_REQWAIT	1
-#define TH_WAITING	2
-
 extern "C" __declspec(dllexport) VccState * __cdecl GetVccState();
 extern "C" __declspec(dllexport) EmuState* __cdecl GetEmuState();
 

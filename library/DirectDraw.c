@@ -16,6 +16,7 @@
 #include "MenuCallbacks.h"
 
 #include "EmuState.h"
+#include "ProcessMessage.h"
 
 static POINT WindowSize;
 
@@ -46,8 +47,17 @@ DirectDrawState* InitializeInstance(DirectDrawState* p) {
   return p;
 }
 
+/*--------------------------------------------------------------------------*/
+// The Window Procedure
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+  ProcessMessage(hWnd, message, wParam, lParam);
+
+  return DefWindowProc(hWnd, message, wParam, lParam);
+}
+
 extern "C" {
-  __declspec(dllexport) bool __cdecl CreateDirectDrawWindow(EmuState* emuState, WNDPROC WndProc)
+  __declspec(dllexport) bool __cdecl CreateDirectDrawWindow(EmuState* emuState)
   {
     const unsigned char ColorValues[4] = { 0, 85, 170, 255 };
 
@@ -744,14 +754,14 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl FullScreenToggle(WNDPROC WndProc)
+  __declspec(dllexport) void __cdecl FullScreenToggle()
   {
     VccState* vccState = GetVccState();
     EmuState* emuState = GetEmuState();
 
     PauseAudio(true);
 
-    if (!CreateDirectDrawWindow(emuState, WndProc))
+    if (!CreateDirectDrawWindow(emuState))
     {
       MessageBox(0, "Can't rebuild primary Window", "Error", 0);
 

@@ -24,6 +24,10 @@ namespace VCCSharp.Modules
 
         public void CheckScreenModeChange()
         {
+            unsafe
+            {
+                VccState* vccState = GetVccState();
+            }
             Library.Vcc.CheckScreenModeChange();
         }
 

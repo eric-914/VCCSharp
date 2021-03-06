@@ -1,10 +1,10 @@
-﻿using System;
-using System.Windows.Interop;
+﻿using System.Windows.Interop;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using VCCSharp.Modules;
+using static System.IntPtr;
 using HINSTANCE = System.IntPtr;
 
 namespace VCCSharp
@@ -89,7 +89,7 @@ namespace VCCSharp
 
                 emuState->ResetPending = (byte)ResetPendingStates.Cls;
 
-                _menuCallbacks.DynamicMenuCallback(emuState, null, (int)MenuActions.Refresh, Define.IGNORE);
+                _menuCallbacks.DynamicMenuCallback(emuState, null, MenuActions.Refresh, Define.IGNORE);
 
                 emuState->ResetPending = (byte)ResetPendingStates.Hard;
 
@@ -125,7 +125,7 @@ namespace VCCSharp
 
                     MSG* msg = &(vccState->msg);
 
-                    _user32.GetMessageA(msg, IntPtr.Zero, 0, 0);   //Seems if the main loop stops polling for Messages the child threads stall
+                    _user32.GetMessageA(msg, Zero, 0, 0);   //Seems if the main loop stops polling for Messages the child threads stall
 
                     _user32.TranslateMessage(msg);
 

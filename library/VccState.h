@@ -6,6 +6,10 @@
 
 #include "EmuState.h"
 
+#define EMU_RUNSTATE_RUNNING	0
+#define EMU_RUNSTATE_REQWAIT	1
+#define EMU_RUNSTATE_WAITING	2
+
 typedef struct
 {
   HANDLE hEventThread;
@@ -14,7 +18,7 @@ typedef struct
   unsigned char AutoStart;
   unsigned char BinaryRunning;
   unsigned char DialogOpen;
-  unsigned char FlagEmuStop;
+  unsigned char RunState;  //An IRQ of sorts telling the emulator to pause during Full Screen toggle
   unsigned char Throttle;
 
   //--------------------------------------------------------------------------

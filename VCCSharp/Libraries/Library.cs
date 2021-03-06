@@ -43,7 +43,6 @@ namespace VCCSharp.Libraries
 
         public static class Audio
         {
-            //int __cdecl SoundDeInit(void)
             [DllImport(LIBRARY)]
             public static extern short SoundDeInit();
         }
@@ -59,7 +58,6 @@ namespace VCCSharp.Libraries
             [DllImport(LIBRARY)]
             public static extern unsafe void InitConfig(EmuState* emuState, ref CmdLineArguments cmdLineArgs);
 
-            //void __cdecl WriteIniFile(EmuState* emuState)
             [DllImport(LIBRARY)]
             public static extern unsafe void WriteIniFile(EmuState* emuState);
         }
@@ -71,6 +69,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void ClearScreen();
+
+            [DllImport(LIBRARY)]
+            public static extern void FullScreenToggle();
         }
 
         public static class MenuCallbacks

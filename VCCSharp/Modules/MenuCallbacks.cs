@@ -1,18 +1,19 @@
-﻿using VCCSharp.Libraries;
+﻿using VCCSharp.Enums;
+using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
     public interface IMenuCallbacks
     {
-        unsafe void DynamicMenuCallback(EmuState* emuState, string menuName, int menuId, int type);
+        unsafe void DynamicMenuCallback(EmuState* emuState, string menuName, MenuActions menuId, int type);
     }
 
     public class MenuCallbacks : IMenuCallbacks
     {
-        public unsafe void DynamicMenuCallback(EmuState* emuState, string menuName, int menuId, int type)
+        public unsafe void DynamicMenuCallback(EmuState* emuState, string menuName, MenuActions menuId, int type)
         {
-            Library.MenuCallbacks.DynamicMenuCallback(emuState, menuName, menuId, type);
+            Library.MenuCallbacks.DynamicMenuCallback(emuState, menuName, (int)menuId, type);
         }
     }
 }
