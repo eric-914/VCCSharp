@@ -36,3 +36,5 @@ extern "C" __declspec(dllexport) void __cdecl UpdateSoundBar(unsigned short, uns
 extern "C" __declspec(dllexport) void __cdecl UpdateTapeDialog(unsigned int, unsigned char);
 
 unsigned char GetSoundCardIndex(char* soundCardName);
+
+extern "C" __declspec(dllexport) void __cdecl LoadIniFile();

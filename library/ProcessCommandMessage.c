@@ -3,6 +3,7 @@
 #include "../resources/resource.h"
 
 #include "VCC.h"
+#include "Config.h"
 #include "Clipboard.h"
 #include "Graphics.h"
 

@@ -21,7 +21,6 @@ extern "C" __declspec(dllexport) unsigned char __cdecl SetSpeedThrottle(unsigned
 
 extern "C" __declspec(dllexport) void __cdecl EmuLoop();
 extern "C" __declspec(dllexport) void __cdecl HardReset(EmuState*);
-extern "C" __declspec(dllexport) void __cdecl LoadIniFile();
 extern "C" __declspec(dllexport) void __cdecl LoadPack();
 extern "C" __declspec(dllexport) void __cdecl SaveConfig();
 extern "C" __declspec(dllexport) void __cdecl SaveLastTwoKeyDownEvents(unsigned char, unsigned char);
