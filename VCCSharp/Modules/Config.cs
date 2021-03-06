@@ -3,7 +3,13 @@ using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
-    public class Config
+    public interface IConfig
+    {
+        unsafe void InitConfig(EmuState* emuState, ref CmdLineArguments cmdLineArgs);
+        unsafe void WriteIniFile(EmuState* emuState);
+    }
+
+    public class Config : IConfig
     {
         public unsafe void InitConfig(EmuState* emuState, ref CmdLineArguments cmdLineArgs)
         {

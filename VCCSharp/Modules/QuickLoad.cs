@@ -3,7 +3,12 @@ using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
-    public class QuickLoad
+    public interface IQuickLoad
+    {
+        unsafe int QuickStart(EmuState* emuState, string binFileName);
+    }
+
+    public class QuickLoad : IQuickLoad
     {
         public unsafe int QuickStart(EmuState* emuState, string binFileName)
         {

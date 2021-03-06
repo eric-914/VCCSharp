@@ -2,7 +2,12 @@
 
 namespace VCCSharp.Modules
 {
-    public class Audio
+    public interface IAudio
+    {
+        short SoundDeInit();
+    }
+
+    public class Audio : IAudio
     {
         public short SoundDeInit()
         {

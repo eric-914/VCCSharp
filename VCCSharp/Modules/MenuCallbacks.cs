@@ -3,7 +3,12 @@ using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
-    public class MenuCallbacks
+    public interface IMenuCallbacks
+    {
+        unsafe void DynamicMenuCallback(EmuState* emuState, string menuName, int menuId, int type);
+    }
+
+    public class MenuCallbacks : IMenuCallbacks
     {
         public unsafe void DynamicMenuCallback(EmuState* emuState, string menuName, int menuId, int type)
         {

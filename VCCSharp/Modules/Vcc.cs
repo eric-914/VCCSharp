@@ -5,7 +5,17 @@ using HINSTANCE = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
-    public class Vcc
+    public interface IVcc
+    {
+        unsafe VccState* GetVccState();
+        void CheckScreenModeChange();
+        HANDLE CreateEventHandle();
+        HANDLE CreateThreadHandle(HANDLE hEvent);
+        void CreatePrimaryWindow();
+        void SetAppTitle(HINSTANCE hResources, string binFileName);
+    }
+
+    public class Vcc : IVcc
     {
         public unsafe VccState* GetVccState()
         {

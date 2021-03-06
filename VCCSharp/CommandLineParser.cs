@@ -3,7 +3,13 @@ using VCCSharp.Models;
 
 namespace VCCSharp
 {
-    public class CommandLineParser
+    public interface ICommandLineParser
+    {
+        CmdLineArguments? Parse();
+        void Help();
+    }
+
+    public class CommandLineParser : ICommandLineParser
     {
         public CmdLineArguments? Parse()
         {

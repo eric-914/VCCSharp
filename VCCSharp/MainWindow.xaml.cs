@@ -1,17 +1,18 @@
 ﻿using System.Threading.Tasks;
 using System.Windows;
+using VCCSharp.IoC;
 
 namespace VCCSharp
 {
     public partial class MainWindow : Window
     {
-        private readonly VccThread _vcc = new VccThread();
+        private readonly IFactory _factory = Factory.Instance;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            Task.Run(_vcc.Run);
+            Task.Run(_factory.Get<IVccThread>().Run);
         }
     }
 }

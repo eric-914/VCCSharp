@@ -1,33 +1,25 @@
-﻿using System.Runtime.InteropServices;
-using System.Windows.Interop;
+﻿using System.Windows.Interop;
 using HWND = System.IntPtr;
 using LRESULT = System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
-    public static class User32
+    public interface IUser32
     {
-        public const string USER32 = "User32.dll";
+        unsafe int GetMessageA(MSG *lpMsg, HWND hWnd, ushort wMsgFilterMin, ushort wMsgFilterMax);
+        unsafe int TranslateMessage(MSG *lpMsg);
+        unsafe LRESULT DispatchMessageA(MSG *lpMsg);
+    }
 
-        //BOOL GetMessageA(
-        //    LPMSG lpMsg,
-        //    HWND  hWnd,
-        //    UINT  wMsgFilterMin,
-        //    UINT  wMsgFilterMax
-        //);
-        [DllImport(USER32)]
-        public static extern unsafe int GetMessageA(MSG *lpMsg, HWND hWnd, ushort wMsgFilterMin, ushort wMsgFilterMax);
+    public class User32 : IUser32
+    {
+        public unsafe int GetMessageA(MSG *lpMsg, HWND hWnd, ushort wMsgFilterMin, ushort wMsgFilterMax)
+            => User32Dll.GetMessageA(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax);
 
-        //BOOL TranslateMessage(
-        //const MSG *lpMsg
-        //    );
-        [DllImport(USER32)]
-        public static extern unsafe int TranslateMessage(MSG *lpMsg);
+        public unsafe int TranslateMessage(MSG *lpMsg)
+            => User32Dll.TranslateMessage(lpMsg);
 
-        //LRESULT DispatchMessageA(
-        //const MSG *lpMsg
-        //    );
-        [DllImport(USER32)]
-        public static extern unsafe LRESULT DispatchMessageA(MSG *lpMsg);
+        public unsafe LRESULT DispatchMessageA(MSG *lpMsg)
+            => User32Dll.DispatchMessageA(lpMsg);
     }
 }

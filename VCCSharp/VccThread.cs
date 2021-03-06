@@ -3,10 +3,21 @@ using VCCSharp.Models;
 
 namespace VCCSharp
 {
-    public class VccThread
+    public interface IVccThread
     {
-        private readonly CommandLineParser _commandLineParser = new CommandLineParser();
-        private readonly VccApp _vccApp = new VccApp();
+        void Run();
+    }
+
+    public class VccThread : IVccThread
+    {
+        private readonly ICommandLineParser _commandLineParser;
+        private readonly IVccApp _vccApp;
+
+        public VccThread(IVccApp vccApp, ICommandLineParser commandLineParser)
+        {
+            _vccApp = vccApp;
+            _commandLineParser = commandLineParser;
+        }
 
         public void Run()
         {

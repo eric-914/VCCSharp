@@ -1,32 +1,61 @@
 ﻿using System;
 using System.Windows.Interop;
 using VCCSharp.Enums;
+using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using VCCSharp.Modules;
+using HINSTANCE = System.IntPtr;
 
 namespace VCCSharp
 {
-    public class VccApp
+    public interface IVccApp
     {
-        private IntPtr _hResources;
+        void Startup(HINSTANCE hInstance, CmdLineArguments cmdLineArgs);
+        void Threading();
+        void Run();
+        int Shutdown();
+    }
+
+    public class VccApp : IVccApp
+    {
+        private readonly IKernel _kernel;
+        private readonly IUser32 _user32;
+
+        private HINSTANCE _hResources;
         //private EmuState _emuState;
 
-        private readonly Vcc _vcc = new Vcc();
-        private readonly Emu _emu = new Emu();
-        private readonly DirectDraw _directDraw = new DirectDraw();
-        private readonly CoCo _coco = new CoCo();
-        private readonly Config _config = new Config();
-        private readonly MenuCallbacks _menuCallbacks = new MenuCallbacks();
-        private readonly QuickLoad _quickLoad = new QuickLoad();
-        private readonly PAKInterface _pakInterface = new PAKInterface();
-        private readonly Audio _audio = new Audio();
+        private readonly IVcc _vcc;
+        private readonly IEmu _emu;
+        private readonly IDirectDraw _directDraw;
+        private readonly ICoCo _coco;
+        private readonly IConfig _config;
+        private readonly IMenuCallbacks _menuCallbacks;
+        private readonly IQuickLoad _quickLoad;
+        private readonly IPAKInterface _pakInterface;
+        private readonly IAudio _audio;
 
-        public void Startup(IntPtr hInstance, CmdLineArguments cmdLineArgs)
+        public VccApp(IModules modules, IKernel kernel, IUser32 user32)
+        {
+            _kernel = kernel;
+            _user32 = user32;
+
+            _vcc = modules.Vcc;
+            _emu = modules.Emu;
+            _directDraw = modules.DirectDraw;
+            _coco = modules.CoCo;
+            _config = modules.Config;
+            _menuCallbacks = modules.MenuCallbacks;
+            _quickLoad = modules.QuickLoad;
+            _pakInterface = modules.PAKInterface;
+            _audio = modules.Audio;
+        }
+
+        public void Startup(HINSTANCE hInstance, CmdLineArguments cmdLineArgs)
         {
             unsafe
             {
-                _hResources = Kernel.LoadLibrary("resources.dll");
+                _hResources = _kernel.LoadLibrary("resources.dll");
 
                 EmuState* emuState = _emu.GetEmuState();
                 VccState* vccState = _vcc.GetVccState();
@@ -79,8 +108,8 @@ namespace VCCSharp
                 vccState->hEventThread = _vcc.CreateEventHandle();
                 vccState->hEmuThread = _vcc.CreateThreadHandle(vccState->hEventThread);
 
-                Kernel.WaitForSingleObject(vccState->hEventThread, Define.INFINITE);
-                Kernel.SetThreadPriority(vccState->hEmuThread, Define.THREAD_PRIORITY_NORMAL);
+                _kernel.WaitForSingleObject(vccState->hEventThread, Define.INFINITE);
+                _kernel.SetThreadPriority(vccState->hEmuThread, Define.THREAD_PRIORITY_NORMAL);
             }
         }
 
@@ -96,11 +125,11 @@ namespace VCCSharp
 
                     MSG* msg = &(vccState->msg);
 
-                    User32.GetMessageA(msg, IntPtr.Zero, 0, 0);   //Seems if the main loop stops polling for Messages the child threads stall
+                    _user32.GetMessageA(msg, IntPtr.Zero, 0, 0);   //Seems if the main loop stops polling for Messages the child threads stall
 
-                    User32.TranslateMessage(msg);
+                    _user32.TranslateMessage(msg);
 
-                    User32.DispatchMessageA(msg);
+                    _user32.DispatchMessageA(msg);
                 }
             }
         }
@@ -112,8 +141,8 @@ namespace VCCSharp
                 VccState* vccState = _vcc.GetVccState();
                 EmuState* emuState = _emu.GetEmuState();
 
-                Kernel.CloseHandle(vccState->hEventThread);
-                Kernel.CloseHandle(vccState->hEmuThread);
+                _kernel.CloseHandle(vccState->hEventThread);
+                _kernel.CloseHandle(vccState->hEmuThread);
 
                 _pakInterface.UnloadDll(emuState);
                 _audio.SoundDeInit();
@@ -122,7 +151,7 @@ namespace VCCSharp
 
                 int code = (int)vccState->msg.wParam;
 
-                Kernel.FreeLibrary(_hResources);
+                _kernel.FreeLibrary(_hResources);
 
                 return code;
             }

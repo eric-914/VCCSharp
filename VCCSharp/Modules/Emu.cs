@@ -3,7 +3,13 @@ using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
-    public class Emu
+    public interface IEmu
+    {
+        unsafe EmuState* GetEmuState();
+        unsafe void SetEmuState(EmuState* emuState);
+    }
+
+    public class Emu : IEmu
     {
         public unsafe EmuState* GetEmuState()
         {

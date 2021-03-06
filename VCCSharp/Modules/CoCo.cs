@@ -2,7 +2,12 @@
 
 namespace VCCSharp.Modules
 {
-    public class CoCo
+    public interface ICoCo
+    {
+        void SetClockSpeed(ushort cycles);
+    }
+
+    public class CoCo : ICoCo
     {
         public void SetClockSpeed(ushort cycles)
         {

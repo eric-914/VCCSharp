@@ -1,25 +1,32 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using HANDLE = System.IntPtr;
+using HMODULE = System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
-    public static class Kernel
+    public interface IKernel
     {
-        public const string KERNEL = "kernel32.dll";
+        HMODULE LoadLibrary(string dllToLoad);
+        bool FreeLibrary(HMODULE hModule);
+        uint WaitForSingleObject(HANDLE handle, uint dwMilliseconds);
+        short SetThreadPriority(HANDLE handle, short nPriority);
+        short CloseHandle(HANDLE hObject);
+    }
 
-        [DllImport(KERNEL)]
-        public static extern IntPtr LoadLibrary(string dllToLoad);
+    public class Kernel : IKernel
+    {
+        public HMODULE LoadLibrary(string dllToLoad)
+            => KernelDll.LoadLibrary(dllToLoad);
 
-        [DllImport(KERNEL)]
-        public static extern bool FreeLibrary(IntPtr hModule);
+        public bool FreeLibrary(HMODULE  hModule)
+            => KernelDll.FreeLibrary(hModule);
 
-        [DllImport(KERNEL)]
-        public static extern uint WaitForSingleObject(IntPtr handle, uint dwMilliseconds);
+        public uint WaitForSingleObject(HANDLE handle, uint dwMilliseconds)
+            => KernelDll.WaitForSingleObject(handle, dwMilliseconds);
 
-        [DllImport(KERNEL)]
-        public static extern short SetThreadPriority(IntPtr handle, short nPriority);
+        public short SetThreadPriority(HANDLE handle, short nPriority)
+            => KernelDll.SetThreadPriority(handle, nPriority);
 
-        [DllImport(KERNEL)]
-        public static extern short CloseHandle(IntPtr hObject);
+        public short CloseHandle(HANDLE hObject)
+            => KernelDll.CloseHandle(hObject);
     }
 }

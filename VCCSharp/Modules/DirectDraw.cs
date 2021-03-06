@@ -3,7 +3,13 @@ using HINSTANCE = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
-    public class DirectDraw
+    public interface IDirectDraw
+    {
+        bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources);
+        void ClearScreen();
+    }
+
+    public class DirectDraw : IDirectDraw
     {
         public bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources)
         {
