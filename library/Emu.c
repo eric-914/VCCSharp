@@ -1,5 +1,7 @@
 #include "Emu.h"
 
+#include "CoCo.h"
+
 EmuState* InitializeInstance(EmuState*);
 
 static EmuState* instance;
@@ -45,4 +47,25 @@ EmuState* InitializeInstance(EmuState* p) {
   strcpy(p->StatusLine, "");
 
   return p;
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl SetTurboMode(unsigned char data)
+  {
+    static EmuState* _emu = GetEmuState();
+
+    _emu->TurboSpeedFlag = (data & 1) + 1;
+
+    SetClockSpeed(1);
+
+    if (_emu->DoubleSpeedFlag) {
+      SetClockSpeed(_emu->DoubleSpeedMultiplier * _emu->TurboSpeedFlag);
+    }
+
+    _emu->CPUCurrentSpeed = .894;
+
+    if (_emu->DoubleSpeedFlag) {
+      _emu->CPUCurrentSpeed *= ((double)_emu->DoubleSpeedMultiplier * (double)_emu->TurboSpeedFlag);
+    }
+  }
 }

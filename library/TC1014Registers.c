@@ -4,6 +4,7 @@
 #include "Graphics.h"
 #include "Keyboard.h"
 #include "CoCo.h"
+#include "Emu.h"
 
 #include "cpudef.h"
 #include "defines.h"

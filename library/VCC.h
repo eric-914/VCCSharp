@@ -26,7 +26,6 @@ extern "C" __declspec(dllexport) void __cdecl SaveConfig();
 extern "C" __declspec(dllexport) void __cdecl SaveLastTwoKeyDownEvents(unsigned char, unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SendSavedKeyEvents();
 extern "C" __declspec(dllexport) void __cdecl SetCPUMultiplierFlag(unsigned char);
-extern "C" __declspec(dllexport) void __cdecl SetTurboMode(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SoftReset();
 
 extern "C" __declspec(dllexport) HANDLE __cdecl CreateThreadHandle(HANDLE hEvent);
