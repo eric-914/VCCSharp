@@ -34,6 +34,7 @@ namespace VCCSharp
         private readonly IQuickLoad _quickLoad;
         private readonly IPAKInterface _pakInterface;
         private readonly IAudio _audio;
+        private readonly IThrottle _throttle;
 
         public VccApp(IModules modules, IKernel kernel, IUser32 user32)
         {
@@ -49,6 +50,7 @@ namespace VCCSharp
             _quickLoad = modules.QuickLoad;
             _pakInterface = modules.PAKInterface;
             _audio = modules.Audio;
+            _throttle = modules.Throttle;
         }
 
         public void Startup(HINSTANCE hInstance, CmdLineArguments cmdLineArgs)
@@ -96,6 +98,8 @@ namespace VCCSharp
                 emuState->EmulationRunning = vccState->AutoStart;
 
                 vccState->BinaryRunning = Define.TRUE;
+
+                _throttle.CalibrateThrottle();
             }
         }
 

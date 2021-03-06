@@ -56,47 +56,6 @@ VccState* InitializeInstance(VccState* p) {
   return p;
 }
 
-extern "C" {
-  __declspec(dllexport) void __cdecl SaveConfig(void) {
-    OPENFILENAME ofn;
-    char curini[MAX_PATH];
-    char newini[MAX_PATH + 4];  // Save room for '.ini' if needed
-
-    static EmuState* _emu = GetEmuState();
-
-    GetIniFilePath(curini);  // EJJ get current ini file path
-    strcpy(newini, curini);   // Let GetOpenFilename suggest it
-
-    memset(&ofn, 0, sizeof(ofn));
-
-    ofn.lStructSize = sizeof(OPENFILENAME);
-    ofn.hwndOwner = _emu->WindowHandle;
-    ofn.lpstrFilter = "INI\0*.ini\0\0";      // filter string
-    ofn.nFilterIndex = 1;                    // current filter index
-    ofn.lpstrFile = newini;                  // contains full path on return
-    ofn.nMaxFile = MAX_PATH;                 // sizeof lpstrFile
-    ofn.lpstrFileTitle = NULL;               // filename and extension only
-    ofn.nMaxFileTitle = MAX_PATH;            // sizeof lpstrFileTitle
-    ofn.lpstrInitialDir = AppDirectory();    // EJJ initial directory
-    ofn.lpstrTitle = TEXT("Save Vcc Config"); // title bar string
-    ofn.Flags = OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
-
-    if (GetOpenFileName(&ofn)) {
-      if (ofn.nFileExtension == 0) {
-        strcat(newini, ".ini");  //Add extension if none
-      }
-
-      WriteIniFile(_emu); // Flush current config
-
-      if (_stricmp(curini, newini) != 0) {
-        if (!CopyFile(curini, newini, false)) { // Copy it to new file
-          MessageBox(0, "Copy config failed", "error", 0);
-        }
-      }
-    }
-  }
-}
-
 // Save last two key down events
 extern "C" {
   __declspec(dllexport) void __cdecl SaveLastTwoKeyDownEvents(unsigned char kb_char, unsigned char oemScan) {
@@ -127,22 +86,6 @@ extern "C" {
     }
 
     return(instance->AutoStart);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl SetCPUMultiplier(unsigned char multiplier)
-  {
-    static EmuState* _emu = GetEmuState();
-
-    if (multiplier != QUERY)
-    {
-      _emu->DoubleSpeedMultiplier = multiplier;
-
-      SetCPUMultiplierFlag(_emu->DoubleSpeedFlag);
-    }
-
-    return(_emu->DoubleSpeedMultiplier);
   }
 }
 
@@ -232,85 +175,6 @@ extern "C" {
   }
 }
 
-void GimeReset(void)
-{
-  ResetGraphicsState();
-
-  MakeRGBPalette();
-  MakeCMPpalette(GetPaletteType());
-
-  CocoReset();
-  ResetAudio();
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SoftReset(void)
-  {
-    MC6883Reset();
-    MC6821_PiaReset();
-
-    GetCPU()->CPUReset();
-
-    GimeReset();
-    MmuReset();
-    CopyRom();
-    ResetBus();
-
-    static EmuState* _emu = GetEmuState();
-
-    _emu->TurboSpeedFlag = 1;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl HardReset(EmuState* emuState)
-  {
-    //Allocate RAM/ROM & copy ROM Images from source
-    if (MmuInit(emuState->RamSize) == NULL)
-    {
-      MessageBox(NULL, "Can't allocate enough RAM, out of memory", "Error", 0);
-
-      exit(0);
-    }
-
-    CPU* cpu = GetCPU();
-
-    if (emuState->CpuType == 1)
-    {
-      cpu->CPUInit = HD6309Init;
-      cpu->CPUExec = HD6309Exec;
-      cpu->CPUReset = HD6309Reset;
-      cpu->CPUAssertInterrupt = HD6309AssertInterrupt;
-      cpu->CPUDeAssertInterrupt = HD6309DeAssertInterrupt;
-      cpu->CPUForcePC = HD6309ForcePC;
-    }
-    else
-    {
-      cpu->CPUInit = MC6809Init;
-      cpu->CPUExec = MC6809Exec;
-      cpu->CPUReset = MC6809Reset;
-      cpu->CPUAssertInterrupt = MC6809AssertInterrupt;
-      cpu->CPUDeAssertInterrupt = MC6809DeAssertInterrupt;
-      cpu->CPUForcePC = MC6809ForcePC;
-    }
-
-    MC6821_PiaReset();
-    MC6883Reset();	//Captures interal rom pointer for CPU Interrupt Vectors
-
-    cpu->CPUInit();
-    cpu->CPUReset();		// Zero all CPU Registers and sets the PC to VRESET
-
-    GimeReset();
-    UpdateBusPointer();
-
-    static EmuState* _emu = GetEmuState();
-
-    _emu->TurboSpeedFlag = 1;
-
-    ResetBus();
-    SetClockSpeed(1);
-  }
-}
 
 extern "C" {
   __declspec(dllexport) void __cdecl EmuLoop() {
@@ -397,28 +261,27 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned __stdcall EmuLoopRun(void* dummy)
+  __declspec(dllexport) void __stdcall EmuLoopRun(HANDLE hEvent)
   {
-    HANDLE hEvent = (HANDLE)dummy;
-
-    //NOTE: This function isn't working in library.dll
-    timeBeginPeriod(1);	//Needed to get max resolution from the timer normally its 10Ms
-    CalibrateThrottle();
-    timeEndPeriod(1);
-
     Sleep(30);
     SetEvent(hEvent);
 
     EmuLoop();
-
-    return(NULL);
   }
+}
+
+unsigned ThreadLoopRun(void* dummy) {
+  HANDLE hEvent = (HANDLE)dummy;
+
+  EmuLoopRun(hEvent);
+
+  return NULL;
 }
 
 extern "C" {
   __declspec(dllexport) HANDLE __cdecl CreateThreadHandle(HANDLE hEvent) {
     unsigned threadID;
 
-    return (HANDLE)_beginthreadex(NULL, 0, &EmuLoopRun, hEvent, 0, &threadID);
+    return (HANDLE)_beginthreadex(NULL, 0, &ThreadLoopRun, hEvent, 0, &threadID);
   }
 }

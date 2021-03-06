@@ -38,3 +38,4 @@ extern "C" __declspec(dllexport) void __cdecl UpdateTapeDialog(unsigned int, uns
 unsigned char GetSoundCardIndex(char* soundCardName);
 
 extern "C" __declspec(dllexport) void __cdecl LoadIniFile();
+extern "C" __declspec(dllexport) void __cdecl SaveConfig();

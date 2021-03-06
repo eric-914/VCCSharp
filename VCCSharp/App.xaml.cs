@@ -22,6 +22,7 @@ namespace VCCSharp
                 .Singleton<IQuickLoad, QuickLoad>()
                 .Singleton<IPAKInterface, PAKInterface>()
                 .Singleton<IResource, Resource>()
+                .Singleton<IThrottle, Throttle>()
                 .Singleton<IVcc, Vcc>()
 
                 .Singleton<IModules, IoC.Modules>()

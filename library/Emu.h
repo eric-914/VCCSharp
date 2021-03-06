@@ -10,3 +10,7 @@ extern "C" __declspec(dllexport) void __cdecl SetCPUMultiplierFlag(unsigned char
 
 extern "C" __declspec(dllexport) unsigned char __cdecl SetFrameSkip(unsigned char);
 extern "C" __declspec(dllexport) unsigned char __cdecl SetRamSize(unsigned char);
+extern "C" __declspec(dllexport) unsigned char __cdecl SetCPUMultiplier(unsigned char);
+
+extern "C" __declspec(dllexport) void __cdecl SoftReset();
+extern "C" __declspec(dllexport) void __cdecl HardReset(EmuState*);

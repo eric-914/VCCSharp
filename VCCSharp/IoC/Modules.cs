@@ -13,6 +13,7 @@ namespace VCCSharp.IoC
         IQuickLoad QuickLoad { get; }
         IPAKInterface PAKInterface { get; }
         IResource Resource { get; }
+        IThrottle Throttle { get; }
         IVcc Vcc { get; }
     }
 
@@ -34,6 +35,7 @@ namespace VCCSharp.IoC
         public IQuickLoad QuickLoad => _factory.Get<IQuickLoad>();
         public IPAKInterface PAKInterface => _factory.Get<IPAKInterface>();
         public IResource Resource => _factory.Get<IResource>();
+        public IThrottle Throttle => _factory.Get<IThrottle>();
         public IVcc Vcc => _factory.Get<IVcc>();
     }
 }

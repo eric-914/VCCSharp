@@ -88,5 +88,11 @@ namespace VCCSharp.Libraries
             [DllImport(LIBRARY)]
             public static extern void ResourceAppTitle(HINSTANCE hResources, byte[] buffer);
         }
+
+        public static class Throttle
+        {
+            [DllImport(LIBRARY)]
+            public static extern void CalibrateThrottle();
+        }
     }
 }
