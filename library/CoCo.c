@@ -92,13 +92,6 @@ extern "C" {
 
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetClockSpeed(unsigned short cycles)
-  {
-    instance->OverClock = cycles;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl SetHorzInterruptState(unsigned char state)
   {
     instance->HorzInterruptEnabled = !!state;
@@ -359,7 +352,7 @@ extern "C" {
             instance->CycleDrift = instance->CyclesThisLine;
           }
 
-        AudioEvent();
+          AudioEvent();
 
           instance->PicosToInterrupt -= instance->PicosToSoundSample;
           instance->PicosToSoundSample = instance->SoundInterrupt;
@@ -505,12 +498,11 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) float __cdecl RenderFrame(EmuState* emuState)
-  {
+  __declspec(dllexport) unsigned char __cdecl RenderVideoFrame(EmuState* emuState) {
     static unsigned short FrameCounter = 0;
 
     //********************************Start of frame Render*****************************************************
-    GetGraphicsState()->BlinkState = instance->BlinkPhase;
+    SetBlinkState(instance->BlinkPhase);
 
     MC6821_irq_fs(0);				//FS low to High transition start of display Blink needs this
 
@@ -524,7 +516,7 @@ extern "C" {
 
     if (!(FrameCounter % emuState->FrameSkip)) {
       if (LockScreen(emuState)) {
-        return(0);
+        return 1;
       }
     }
 
@@ -571,6 +563,12 @@ extern "C" {
       CPUCycle();
     }
 
+    return 0;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl RenderAudioFrame() {
     switch (instance->SoundOutputMode)
     {
     case 0:
@@ -587,7 +585,5 @@ extern "C" {
     }
 
     instance->AudioIndex = 0;
-
-    return(CalculateFPS());
   }
 }

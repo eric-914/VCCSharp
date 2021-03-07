@@ -1,4 +1,5 @@
-﻿using VCCSharp.Libraries;
+﻿using VCCSharp.IoC;
+using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
@@ -9,10 +10,19 @@ namespace VCCSharp.Modules
         void SetClockSpeed(ushort cycles);
         unsafe float RenderFrame(EmuState* emuState);
         void CocoReset();
+        unsafe byte RenderVideoFrame(EmuState* emuState);
+        void RenderAudioFrame();
     }
 
     public class CoCo : ICoCo
     {
+        private readonly IThrottle _throttle;
+
+        public CoCo(IModules modules)
+        {
+            _throttle = modules.Throttle;
+        }
+
         public unsafe CoCoState* GetCoCoState()
         {
             return Library.CoCo.GetCoCoState();
@@ -20,12 +30,21 @@ namespace VCCSharp.Modules
 
         public void SetClockSpeed(ushort cycles)
         {
-            Library.CoCo.SetClockSpeed(cycles);
+            unsafe
+            {
+                GetCoCoState()->OverClock = cycles;
+            }
         }
 
         public unsafe float RenderFrame(EmuState* emuState)
         {
-            return Library.CoCo.RenderFrame(emuState);
+            if (RenderVideoFrame(emuState) == 1) {
+                return 0;
+            }
+
+            RenderAudioFrame();
+
+            return _throttle.CalculateFPS();
         }
 
         public void CocoReset()
@@ -51,6 +70,16 @@ namespace VCCSharp.Modules
                 cocoState->IntEnable = 0;
                 cocoState->AudioIndex = 0;
             }
+        }
+
+        public unsafe byte RenderVideoFrame(EmuState* emuState)
+        {
+            return Library.CoCo.RenderVideoFrame(emuState);
+        }
+
+        public void RenderAudioFrame()
+        {
+            Library.CoCo.RenderAudioFrame();
         }
     }
 }

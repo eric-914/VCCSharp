@@ -21,7 +21,7 @@ ThrottleState* InitializeInstance(ThrottleState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) float __cdecl CalculateFPS(void) //Done at end of render;
+  __declspec(dllexport) float __cdecl CalculateFPS() //Done at end of render;
   {
     static unsigned short frameCount = 0;
     static float fps = 0, fNow = 0, fLast = 0;

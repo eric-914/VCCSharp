@@ -65,12 +65,14 @@ EmuState* InitializeInstance(EmuState* p) {
 extern "C" {
   __declspec(dllexport) void __cdecl SetCPUMultiplierFlag(unsigned char double_speed)
   {
-    SetClockSpeed(1);
+    CoCoState* cocoState = GetCoCoState();
+    
+    cocoState->OverClock = 1;
 
     instance->DoubleSpeedFlag = double_speed;
 
     if (instance->DoubleSpeedFlag) {
-      SetClockSpeed(instance->DoubleSpeedMultiplier * instance->TurboSpeedFlag);
+      cocoState->OverClock = instance->DoubleSpeedMultiplier * instance->TurboSpeedFlag;
     }
 
     instance->CPUCurrentSpeed = .894;
@@ -98,12 +100,14 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl SetTurboMode(unsigned char data)
   {
+    CoCoState* cocoState = GetCoCoState();
+    
+    cocoState->OverClock = 1;
+
     instance->TurboSpeedFlag = (data & 1) + 1;
 
-    SetClockSpeed(1);
-
     if (instance->DoubleSpeedFlag) {
-      SetClockSpeed(instance->DoubleSpeedMultiplier * instance->TurboSpeedFlag);
+      cocoState->OverClock = instance->DoubleSpeedMultiplier * instance->TurboSpeedFlag;
     }
 
     instance->CPUCurrentSpeed = .894;

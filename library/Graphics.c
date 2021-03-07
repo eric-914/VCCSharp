@@ -629,3 +629,9 @@ extern "C" {
     return(0);
   }
 }
+
+extern "C" {
+  __declspec(dllexport) void __cdecl SetBlinkState(unsigned char state) {
+    instance->BlinkState = state;
+  }
+}

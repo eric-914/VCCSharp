@@ -40,13 +40,10 @@ namespace VCCSharp.Libraries
             public static extern unsafe CoCoState* GetCoCoState();
 
             [DllImport(LIBRARY)]
-            public static extern void SetClockSpeed(ushort cycles);
+            public static extern unsafe byte RenderVideoFrame(EmuState* emuState);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe float RenderFrame(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
-            public static extern void CocoReset();
+            public static extern void RenderAudioFrame();
         }
 
         public static class Config
@@ -179,6 +176,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void EndRender(byte skip);
+
+            [DllImport(LIBRARY)]
+            public static extern float CalculateFPS();
         }
 
         public static class Vcc

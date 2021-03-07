@@ -8,6 +8,7 @@ namespace VCCSharp.Modules
         void FrameWait();
         void StartRender();
         void EndRender(byte skip);
+        float CalculateFPS();
     }
 
     public class Throttle : IThrottle
@@ -30,6 +31,11 @@ namespace VCCSharp.Modules
         public void EndRender(byte skip)
         {
             Library.Throttle.EndRender(skip);
+        }
+
+        public float CalculateFPS()
+        {
+            return Library.Throttle.CalculateFPS();
         }
     }
 }
