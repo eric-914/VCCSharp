@@ -65,20 +65,20 @@ EmuState* InitializeInstance(EmuState* p) {
 extern "C" {
   __declspec(dllexport) void __cdecl SetCPUMultiplierFlag(unsigned char double_speed)
   {
-    static EmuState* _emu = GetEmuState();
+    static EmuState* emuState = GetEmuState();
 
     SetClockSpeed(1);
 
-    _emu->DoubleSpeedFlag = double_speed;
+    emuState->DoubleSpeedFlag = double_speed;
 
-    if (_emu->DoubleSpeedFlag) {
-      SetClockSpeed(_emu->DoubleSpeedMultiplier * _emu->TurboSpeedFlag);
+    if (emuState->DoubleSpeedFlag) {
+      SetClockSpeed(emuState->DoubleSpeedMultiplier * emuState->TurboSpeedFlag);
     }
 
-    _emu->CPUCurrentSpeed = .894;
+    emuState->CPUCurrentSpeed = .894;
 
-    if (_emu->DoubleSpeedFlag) {
-      _emu->CPUCurrentSpeed *= ((double)_emu->DoubleSpeedMultiplier * (double)_emu->TurboSpeedFlag);
+    if (emuState->DoubleSpeedFlag) {
+      emuState->CPUCurrentSpeed *= ((double)emuState->DoubleSpeedMultiplier * (double)emuState->TurboSpeedFlag);
     }
   }
 }
@@ -86,16 +86,16 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl SetCPUMultiplier(unsigned char multiplier)
   {
-    static EmuState* _emu = GetEmuState();
+    static EmuState* emuState = GetEmuState();
 
     if (multiplier != QUERY)
     {
-      _emu->DoubleSpeedMultiplier = multiplier;
+      emuState->DoubleSpeedMultiplier = multiplier;
 
-      SetCPUMultiplierFlag(_emu->DoubleSpeedFlag);
+      SetCPUMultiplierFlag(emuState->DoubleSpeedFlag);
     }
 
-    return(_emu->DoubleSpeedMultiplier);
+    return(emuState->DoubleSpeedMultiplier);
   }
 }
 
@@ -115,28 +115,6 @@ extern "C" {
     if (instance->DoubleSpeedFlag) {
       instance->CPUCurrentSpeed *= ((double)instance->DoubleSpeedMultiplier * (double)instance->TurboSpeedFlag);
     }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl SetFrameSkip(unsigned char skip)
-  {
-    if (skip != QUERY) {
-      instance->FrameSkip = skip;
-    }
-
-    return(instance->FrameSkip);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl SetRamSize(unsigned char size)
-  {
-    if (size != QUERY) {
-      instance->RamSize = size;
-    }
-
-    return(instance->RamSize);
   }
 }
 
