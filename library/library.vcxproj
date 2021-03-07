@@ -204,7 +204,7 @@
     <ClCompile Include="tcc1014graphics-32.c" />
     <ClCompile Include="tcc1014graphics-8.c" />
     <ClCompile Include="Throttle.c" />
-    <ClCompile Include="VCC.c" />
+    <ClCompile Include="VccState.c" />
     <ClCompile Include="xDebug.c" />
   </ItemGroup>
   <ItemGroup>
@@ -276,7 +276,6 @@
     <ClInclude Include="tcc1014graphics-8.h" />
     <ClInclude Include="Throttle.h" />
     <ClInclude Include="ThrottleState.h" />
-    <ClInclude Include="VCC.h" />
     <ClInclude Include="VccState.h" />
     <ClInclude Include="xDebug.h" />
   </ItemGroup>

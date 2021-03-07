@@ -10,7 +10,6 @@
 #include "DirectDraw.h"
 #include "Throttle.h"
 #include "Config.h"
-#include "VCC.h"
 #include "Graphics.h"
 #include "Audio.h"
 #include "MenuCallbacks.h"
@@ -756,7 +755,6 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl FullScreenToggle()
   {
-    VccState* vccState = GetVccState();
     EmuState* emuState = GetEmuState();
 
     PauseAudio(true);

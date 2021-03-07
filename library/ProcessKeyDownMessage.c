@@ -3,9 +3,10 @@
 
 #include <windows.h>
 
-#include "VCC.h"
 #include "Config.h"
 #include "MessageHandlers.h"
+
+#include "VccState.h"
 
 extern "C" {
   __declspec(dllexport) void __cdecl ProcessKeyDownMessage(WPARAM wParam, LPARAM lParam) {

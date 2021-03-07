@@ -2,7 +2,7 @@
 
 #include "../resources/resource.h"
 
-#include "VCC.h"
+#include "VccState.h"
 
 // Mesage handler for the About box.
 extern "C" {

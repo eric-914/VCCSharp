@@ -1,6 +1,5 @@
 #include <windows.h>
 
-#include "VCC.h"
 #include "ConfigDialogCallbacks.h"
 #include "AboutBoxCallback.h"
 #include "Config.h"
@@ -9,6 +8,10 @@
 #include "Joystick.h"
 #include "DirectDraw.h"
 #include "Emu.h"
+
+#include "ProcessCommandMessage.h"
+
+#include "VccState.h"
 
 #include "../resources/resource.h"
 

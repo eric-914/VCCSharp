@@ -14,7 +14,6 @@
 #include "Cassette.h"
 #include "Joystick.h"
 #include "MC6821.h"
-#include "VCC.h"
 #include "Graphics.h"
 #include "Audio.h"
 #include "Emu.h"
@@ -23,6 +22,8 @@
 #include "CmdLineArguments.h"
 #include "ConfigDialogCallbacks.h"
 #include "ConfigIO.h"
+
+#include "VccState.h"
 
 #include "macros.h"
 
@@ -346,6 +347,31 @@ extern "C" {
     strcpy(filename, tempFileName);
 
     return(1);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl SetCpuType(unsigned char cpuType)
+  {
+    VccState* vccState = GetVccState();
+    EmuState* emuState = GetEmuState();
+
+    switch (cpuType)
+    {
+    case 0:
+      emuState->CpuType = 0;
+
+      strcpy(vccState->CpuName, "MC6809");
+
+      break;
+
+    case 1:
+      emuState->CpuType = 1;
+
+      strcpy(vccState->CpuName, "HD6309");
+
+      break;
+    }
   }
 }
 

@@ -1,5 +1,4 @@
 #include "TC1014Registers.h"
-#include "VCC.h"
 #include "TC1014MMU.h"
 #include "Graphics.h"
 #include "Keyboard.h"

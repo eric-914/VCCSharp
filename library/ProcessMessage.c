@@ -1,6 +1,5 @@
 #include <windows.h>
 
-#include "VCC.h"
 #include "Joystick.h"
 #include "MessageHandlers.h"
 
@@ -28,8 +27,6 @@
 
 extern "C" {
   __declspec(dllexport) void __cdecl ProcessMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
-    VccState* vccState = GetVccState();
-
     switch (message)
     {
     case WM_CLOSE:        EmuExit();                                break;

@@ -12,7 +12,6 @@
 #include "Cassette.h"
 #include "Keyboard.h"
 #include "Clipboard.h"
-#include "VCC.h"
 #include "Throttle.h"
 #include "DirectDraw.h"
 #include "Audio.h"
@@ -21,6 +20,8 @@
 
 #include "PAKInterface.h"
 #include "TC1014Registers.h"
+
+#include "VccState.h"
 
 CoCoState* InitializeInstance(CoCoState*);
 

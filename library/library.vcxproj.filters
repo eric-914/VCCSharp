@@ -50,7 +50,7 @@
     <ClCompile Include="MC6821.c">
       <Filter>mc6821</Filter>
     </ClCompile>
-    <ClCompile Include="VCC.c">
+    <ClCompile Include="VccState.c">
       <Filter>vcc</Filter>
     </ClCompile>
     <ClCompile Include="Throttle.c">
@@ -202,9 +202,6 @@
     <ClInclude Include="MC6821.h">
       <Filter>mc6821</Filter>
     </ClInclude>
-    <ClInclude Include="VCC.h">
-      <Filter>vcc</Filter>
-    </ClInclude>
     <ClInclude Include="Throttle.h">
       <Filter>throttle</Filter>
     </ClInclude>
@@ -295,9 +292,6 @@
     <ClInclude Include="ThrottleState.h">
       <Filter>models</Filter>
     </ClInclude>
-    <ClInclude Include="VccState.h">
-      <Filter>models</Filter>
-    </ClInclude>
     <ClInclude Include="AboutBoxCallback.h">
       <Filter>callbacks</Filter>
     </ClInclude>
@@ -336,6 +330,9 @@
     </ClInclude>
     <ClInclude Include="Cartridge.h">
       <Filter>cartridge</Filter>
+    </ClInclude>
+    <ClInclude Include="VccState.h">
+      <Filter>vcc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

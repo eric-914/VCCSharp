@@ -39,3 +39,5 @@ unsigned char GetSoundCardIndex(char* soundCardName);
 
 extern "C" __declspec(dllexport) void __cdecl LoadIniFile();
 extern "C" __declspec(dllexport) void __cdecl SaveConfig();
+
+extern "C" __declspec(dllexport) void __cdecl SetCpuType(unsigned char);

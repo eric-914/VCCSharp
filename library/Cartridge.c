@@ -2,9 +2,9 @@
 #include <string>
 
 #include "Emu.h"
-#include "VCC.h"
 #include "Config.h"
 #include "PAKInterface.h"
+#include "VccState.h"
 
 extern "C" {
   __declspec(dllexport) int __cdecl OpenLoadCartFileDialog(EmuState* emuState)

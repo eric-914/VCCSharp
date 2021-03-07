@@ -3,7 +3,6 @@
 
 #include "Graphics.h"
 #include "CoCo.h"
-#include "VCC.h"
 #include "Config.h"
 #include "DirectDraw.h"
 
