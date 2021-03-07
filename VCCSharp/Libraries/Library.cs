@@ -19,16 +19,19 @@ namespace VCCSharp.Libraries
             public static extern unsafe void SetEmuState(EmuState* emuState);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void HardReset(EmuState* emuState);
+            public static extern void SetCPUToHD6309();
 
             [DllImport(LIBRARY)]
-            public static extern void GimeReset();
+            public static extern void SetCPUToMC6809();
         }
 
         public static class Audio
         {
             [DllImport(LIBRARY)]
             public static extern short SoundDeInit();
+
+            [DllImport(LIBRARY)]
+            public static extern void ResetAudio();
         }
 
         public static class CoCo
@@ -38,6 +41,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe float RenderFrame(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern void CocoReset();
         }
 
         public static class Config
@@ -50,12 +56,18 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void SynchSystemWithConfig(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern int GetPaletteType();
         }
 
         public static class CPU
         {
             [DllImport(LIBRARY)]
             public static extern void CPUReset();
+
+            [DllImport(LIBRARY)]
+            public static extern void CPUInit();
         }
 
         public static class DirectDraw
@@ -82,6 +94,18 @@ namespace VCCSharp.Libraries
             public static extern unsafe void DoCls(EmuState* emuState);
         }
 
+        public static class Graphics
+        {
+            [DllImport(LIBRARY)]
+            public static extern void ResetGraphicsState();
+
+            [DllImport(LIBRARY)]
+            public static extern void MakeRGBPalette();
+
+            [DllImport(LIBRARY)]
+            public static extern void MakeCMPPalette(int paletteType);
+        }
+
         public static class MenuCallbacks
         {
             [DllImport(LIBRARY)]
@@ -104,6 +128,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void ResetBus();
+
+            [DllImport(LIBRARY)]
+            public static extern void UpdateBusPointer();
         }
 
         public static class QuickLoad
@@ -128,6 +155,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void MmuReset();
+
+            [DllImport(LIBRARY)]
+            public static extern byte MmuInit(byte ramSizeOption);
         }
 
         public static class Throttle

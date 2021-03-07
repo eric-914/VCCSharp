@@ -63,7 +63,6 @@ namespace VCCSharp.Modules
 
                     vccState->RunState = (byte)EmuRunStates.Running;
                 }
-
             }
         }
 
@@ -77,7 +76,7 @@ namespace VCCSharp.Modules
                 {
                     MessageBox.Show("Can't create primary window", "Error");
 
-                    System.Environment.Exit(0);
+                    Environment.Exit(0);
                 }
             }
         }

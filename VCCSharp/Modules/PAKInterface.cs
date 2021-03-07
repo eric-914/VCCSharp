@@ -8,6 +8,7 @@ namespace VCCSharp.Modules
         unsafe void UnloadDll(EmuState* emuState);
         unsafe void GetModuleStatus(EmuState* emuState);
         void ResetBus();
+        void UpdateBusPointer();
     }
 
     public class PAKInterface : IPAKInterface
@@ -25,6 +26,11 @@ namespace VCCSharp.Modules
         public void ResetBus()
         {
             Library.PAKInterface.ResetBus();
+        }
+
+        public void UpdateBusPointer()
+        {
+            Library.PAKInterface.UpdateBusPointer();
         }
     }
 }

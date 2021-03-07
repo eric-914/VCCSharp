@@ -10,6 +10,7 @@ namespace VCCSharp.IoC
         ICPU CPU { get; }
         IDirectDraw DirectDraw { get; }
         IEmu Emu { get; }
+        IGraphics Graphics { get; }
         IMenuCallbacks MenuCallbacks { get; }
         IMC6821 MC6821 { get; }
         IQuickLoad QuickLoad { get; }
@@ -35,6 +36,7 @@ namespace VCCSharp.IoC
         public ICPU CPU => _factory.Get<ICPU>();
         public IDirectDraw DirectDraw => _factory.Get<IDirectDraw>();
         public IEmu Emu => _factory.Get<IEmu>();
+        public IGraphics Graphics => _factory.Get<IGraphics>();
         public IMenuCallbacks MenuCallbacks => _factory.Get<IMenuCallbacks>();
         public IMC6821 MC6821 => _factory.Get<IMC6821>();
         public IQuickLoad QuickLoad => _factory.Get<IQuickLoad>();

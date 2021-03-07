@@ -29,3 +29,10 @@ extern "C" {
     instance->CPUReset();
   }
 }
+
+extern "C" {
+  __declspec(dllexport) void __cdecl CPUInit()
+  {
+    instance->CPUInit();
+  }
+}

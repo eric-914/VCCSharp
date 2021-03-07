@@ -103,7 +103,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl CocoReset(void)
+  __declspec(dllexport) void __cdecl CocoReset()
   {
     instance->HorzInterruptEnabled = 0;
     instance->VertInterruptEnabled = 0;

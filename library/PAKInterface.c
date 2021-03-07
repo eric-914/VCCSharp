@@ -280,7 +280,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl UpdateBusPointer(void)
+  __declspec(dllexport) void __cdecl UpdateBusPointer()
   {
     if (instance->SetInterruptCallPointer != NULL) {
       instance->SetInterruptCallPointer(GetCPU()->CPUAssertInterrupt);

@@ -7,6 +7,7 @@ namespace VCCSharp.Modules
     {
         void SetClockSpeed(ushort cycles);
         unsafe float RenderFrame(EmuState* emuState);
+        void CocoReset();
     }
 
     public class CoCo : ICoCo
@@ -19,6 +20,11 @@ namespace VCCSharp.Modules
         public unsafe float RenderFrame(EmuState* emuState)
         {
             return Library.CoCo.RenderFrame(emuState);
+        }
+
+        public void CocoReset()
+        {
+            Library.CoCo.CocoReset();;
         }
     }
 }

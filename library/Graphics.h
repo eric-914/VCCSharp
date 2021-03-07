@@ -13,7 +13,7 @@ extern "C" __declspec(dllexport) void MakeRGBPalette(void);
 
 extern "C" __declspec(dllexport) void __cdecl FlipArtifacts();
 extern "C" __declspec(dllexport) void __cdecl InvalidateBorder();
-extern "C" __declspec(dllexport) void __cdecl MakeCMPpalette(int);
+extern "C" __declspec(dllexport) void __cdecl MakeCMPPalette(int);
 extern "C" __declspec(dllexport) void __cdecl ResetGraphicsState();
 extern "C" __declspec(dllexport) void __cdecl SetBorderChange(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetCompatMode(unsigned char);

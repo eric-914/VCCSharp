@@ -328,7 +328,7 @@ extern "C" {
     instance->Memory = (unsigned char*)malloc(ramSize);
 
     if (instance->Memory == NULL) {
-      return(NULL);
+      return 0;
     }
 
     for (unsigned int index = 0; index < ramSize; index++)
@@ -346,14 +346,14 @@ extern "C" {
     instance->InternalRomBuffer = (unsigned char*)malloc(0x8000);
 
     if (instance->InternalRomBuffer == NULL) {
-      return(NULL);
+      return 0;
     }
 
     memset(instance->InternalRomBuffer, 0xFF, 0x8000);
     CopyRom();
     MmuReset();
 
-    return(instance->Memory != NULL);
+    return instance->Memory == NULL ? 0 : 1;
   }
 }
 

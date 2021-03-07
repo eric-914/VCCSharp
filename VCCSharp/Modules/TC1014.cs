@@ -7,6 +7,7 @@ namespace VCCSharp.Modules
         void MC6883Reset();
         void CopyRom();
         void MmuReset();
+        byte MmuInit(byte ramSizeOption);
     }
 
     public class TC1014 : ITC1014
@@ -24,6 +25,11 @@ namespace VCCSharp.Modules
         public void MmuReset()
         {
             Library.TC1014.MmuReset();
+        }
+
+        public byte MmuInit(byte ramSizeOption)
+        {
+            return Library.TC1014.MmuInit(ramSizeOption);
         }
     }
 }

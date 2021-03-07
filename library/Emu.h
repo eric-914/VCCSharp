@@ -12,5 +12,5 @@ extern "C" __declspec(dllexport) unsigned char __cdecl SetFrameSkip(unsigned cha
 extern "C" __declspec(dllexport) unsigned char __cdecl SetRamSize(unsigned char);
 extern "C" __declspec(dllexport) unsigned char __cdecl SetCPUMultiplier(unsigned char);
 
-extern "C" __declspec(dllexport) void __cdecl GimeReset(void);
-extern "C" __declspec(dllexport) void __cdecl HardReset(EmuState*);
+extern "C" __declspec(dllexport) void __cdecl SetCPUToHD6309();
+extern "C" __declspec(dllexport) void __cdecl SetCPUToMC6809();

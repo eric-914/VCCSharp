@@ -19,6 +19,7 @@ namespace VCCSharp
                 .Singleton<ICPU, CPU>()
                 .Singleton<IDirectDraw, DirectDraw>()
                 .Singleton<IEmu, Emu>()
+                .Singleton<IGraphics, Graphics>()
                 .Singleton<IMenuCallbacks, MenuCallbacks>()
                 .Singleton<IMC6821, MC6821>()
                 .Singleton<IQuickLoad, QuickLoad>()

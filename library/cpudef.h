@@ -31,3 +31,4 @@ typedef struct
 extern "C" __declspec(dllexport) CPU* __cdecl GetCPU();
 
 extern "C" __declspec(dllexport) void __cdecl CPUReset();
+extern "C" __declspec(dllexport) void __cdecl CPUInit();

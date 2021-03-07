@@ -198,7 +198,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl ResetAudio(void)
+  __declspec(dllexport) void __cdecl ResetAudio()
   {
     SetAudioRate(instance->iRateList[instance->CurrentRate]);
 

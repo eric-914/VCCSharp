@@ -141,7 +141,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MakeRGBPalette(void)
+  __declspec(dllexport) void __cdecl MakeRGBPalette()
   {
     unsigned char r, g, b;
 
@@ -164,7 +164,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MakeCMPpalette(int paletteType)
+  __declspec(dllexport) void __cdecl MakeCMPPalette(int paletteType)
   {
     double saturation, brightness, contrast;
     int offset;
@@ -608,7 +608,7 @@ extern "C" {
     int borderColor = instance->CC3BorderColor;
 
     SetGimeBorderColor(0);
-    MakeCMPpalette(GetPaletteType());
+    MakeCMPPalette(GetPaletteType());
     SetGimeBorderColor(borderColor);
   }
 }

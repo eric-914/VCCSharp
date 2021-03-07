@@ -5,6 +5,7 @@ namespace VCCSharp.Modules
     public interface ICPU
     {
         void CPUReset();
+        void CPUInit();
     }
 
     public class CPU : ICPU
@@ -12,6 +13,11 @@ namespace VCCSharp.Modules
         public void CPUReset()
         {
             Library.CPU.CPUReset();
+        }
+
+        public void CPUInit()
+        {
+            Library.CPU.CPUInit();
         }
     }
 }
