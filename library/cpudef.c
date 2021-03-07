@@ -36,3 +36,10 @@ extern "C" {
     instance->CPUInit();
   }
 }
+
+extern "C" {
+  __declspec(dllexport) void __cdecl CPUForcePC(unsigned short xferAddress)
+  {
+    instance->CPUForcePC(xferAddress);
+  }
+}

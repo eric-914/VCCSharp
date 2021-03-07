@@ -1,4 +1,9 @@
-﻿using VCCSharp.Libraries;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows;
+using VCCSharp.Enums;
+using VCCSharp.IoC;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
@@ -10,9 +15,107 @@ namespace VCCSharp.Modules
 
     public class QuickLoad : IQuickLoad
     {
+        private readonly IPAKInterface _pakInterface;
+        private readonly ITC1014 _tc1014;
+        private readonly ICPU _cpu;
+
+        public QuickLoad(IModules modules)
+        {
+            _pakInterface = modules.PAKInterface;
+            _tc1014 = modules.TC1014;
+            _cpu = modules.CPU;
+        }
+
         public unsafe int QuickStart(EmuState* emuState, string binFileName)
         {
-            return Library.QuickLoad.QuickStart(emuState, binFileName);
+            if (string.IsNullOrEmpty(binFileName))
+            {
+                return (int)QuickStartStatuses.NoAction;
+            }
+
+            if (!File.Exists(binFileName))
+            {
+                MessageBox.Show($"Cannot find file: {binFileName}");
+
+                return (int)QuickStartStatuses.FileNotFound;
+            }
+
+            try
+            {
+                File.OpenRead(binFileName);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show($"Cannot open file: {binFileName}");
+
+                return (int)QuickStartStatuses.CannotOpenFile;
+            }
+
+            string extension = Path.GetExtension(binFileName).ToLower();
+
+            var modules = new List<string> { ".rom", ".ccc", ".pak" };
+
+            if (modules.Contains(extension))
+            {
+                _pakInterface.InsertModule(emuState, binFileName);
+            }
+
+            if (extension == ".bin")
+            {
+                return LoadBinFile(binFileName);
+            }
+
+            return (int)QuickStartStatuses.Unknown;
+        }
+
+        public int LoadBinFile(string binFileName)
+        {
+            byte[] memImage;
+
+            try
+            {
+                memImage = File.ReadAllBytes(binFileName);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Can't allocate ram", "Error");
+
+                return (int)QuickStartStatuses.OutOfMemory;
+            }
+
+            while (true)
+            {
+                //--Looks like first 5 bytes are special
+                byte fileType = memImage[0];
+                ushort fileLength = (ushort)(memImage[1] << 8 + memImage[2]);
+                ushort startAddress = (ushort)(memImage[3] << 8 + memImage[4]);
+
+                if (fileType != 0x00 && fileType != 0xFF)
+                {
+                    MessageBox.Show(".Bin file is corrupt or invalid", "Error");
+
+                    return (int)QuickStartStatuses.InvalidFileType;
+                }
+
+                if (fileType == 0)
+                {
+                    for (ushort memIndex = 0; memIndex < fileLength; memIndex++)
+                    { //Kluge!!!
+                        _tc1014.MemWrite8(memImage[memIndex], (ushort)(startAddress + memIndex));
+                    }
+                }
+                else
+                {
+                    if (startAddress == 0 || startAddress > 32767 || fileLength != 0)
+                    {
+                        MessageBox.Show(".Bin file is corrupt or invalid Transfer Address", "Error");
+
+                        return (int)QuickStartStatuses.InvalidTransfer;
+                    }
+
+                    _cpu.CPUForcePC(startAddress);
+                }
+            }
         }
     }
 }

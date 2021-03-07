@@ -71,9 +71,6 @@
     <ClCompile Include="DirectDraw.c">
       <Filter>directdraw</Filter>
     </ClCompile>
-    <ClCompile Include="QuickLoad.c">
-      <Filter>quickload</Filter>
-    </ClCompile>
     <ClCompile Include="MC6809.c">
       <Filter>mc6809</Filter>
     </ClCompile>
@@ -219,9 +216,6 @@
     </ClInclude>
     <ClInclude Include="DirectDraw.h">
       <Filter>directdraw</Filter>
-    </ClInclude>
-    <ClInclude Include="QuickLoad.h">
-      <Filter>quickload</Filter>
     </ClInclude>
     <ClInclude Include="MC6809.h">
       <Filter>mc6809</Filter>
@@ -404,9 +398,6 @@
     </Filter>
     <Filter Include="mc6821">
       <UniqueIdentifier>{2b9a7721-f759-46fe-8cae-76488c5d9ac0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="quickload">
-      <UniqueIdentifier>{916b390a-4f25-4746-8ac5-924945e99460}</UniqueIdentifier>
     </Filter>
     <Filter Include="tc1014\mmu">
       <UniqueIdentifier>{cbafe392-f6a3-489e-8d85-1b2f9e4ea199}</UniqueIdentifier>

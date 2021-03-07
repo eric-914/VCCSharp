@@ -56,14 +56,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl EndRender(unsigned char skip)
-  {
-    instance->FrameSkip = skip;
-    instance->TargetTime.QuadPart = (instance->StartTime.QuadPart + (instance->OneFrame.QuadPart * instance->FrameSkip));
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl FrameWait(void)
   {
     QueryPerformanceCounter(&(instance->CurrentTime));
@@ -98,5 +90,13 @@ extern "C" {
   __declspec(dllexport) void __cdecl StartRender()
   {
     QueryPerformanceCounter(&(instance->StartTime));
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl EndRender(unsigned char skip)
+  {
+    instance->FrameSkip = skip;
+    instance->TargetTime.QuadPart = (instance->StartTime.QuadPart + (instance->OneFrame.QuadPart * instance->FrameSkip));
   }
 }

@@ -8,6 +8,7 @@ namespace VCCSharp.Modules
         void CopyRom();
         void MmuReset();
         byte MmuInit(byte ramSizeOption);
+        void MemWrite8(byte data, ushort address);
     }
 
     public class TC1014 : ITC1014
@@ -30,6 +31,11 @@ namespace VCCSharp.Modules
         public byte MmuInit(byte ramSizeOption)
         {
             return Library.TC1014.MmuInit(ramSizeOption);
+        }
+
+        public void MemWrite8(byte data, ushort address)
+        {
+            Library.TC1014.MemWrite8(data, address);
         }
     }
 }

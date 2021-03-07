@@ -68,6 +68,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void CPUInit();
+
+            [DllImport(LIBRARY)]
+            public static extern void CPUForcePC(ushort xferAddress);
         }
 
         public static class DirectDraw
@@ -131,12 +134,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void UpdateBusPointer();
-        }
 
-        public static class QuickLoad
-        {
             [DllImport(LIBRARY)]
-            public static extern unsafe int QuickStart(EmuState* emuState, string binFileName);
+            public static extern unsafe int InsertModule(EmuState* emuState, string modulePath);
         }
 
         public static class Resource
@@ -158,6 +158,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern byte MmuInit(byte ramSizeOption);
+
+            [DllImport(LIBRARY)]
+            public static extern void MemWrite8(byte data, ushort address);
         }
 
         public static class Throttle

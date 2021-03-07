@@ -65,20 +65,18 @@ EmuState* InitializeInstance(EmuState* p) {
 extern "C" {
   __declspec(dllexport) void __cdecl SetCPUMultiplierFlag(unsigned char double_speed)
   {
-    static EmuState* emuState = GetEmuState();
-
     SetClockSpeed(1);
 
-    emuState->DoubleSpeedFlag = double_speed;
+    instance->DoubleSpeedFlag = double_speed;
 
-    if (emuState->DoubleSpeedFlag) {
-      SetClockSpeed(emuState->DoubleSpeedMultiplier * emuState->TurboSpeedFlag);
+    if (instance->DoubleSpeedFlag) {
+      SetClockSpeed(instance->DoubleSpeedMultiplier * instance->TurboSpeedFlag);
     }
 
-    emuState->CPUCurrentSpeed = .894;
+    instance->CPUCurrentSpeed = .894;
 
-    if (emuState->DoubleSpeedFlag) {
-      emuState->CPUCurrentSpeed *= ((double)emuState->DoubleSpeedMultiplier * (double)emuState->TurboSpeedFlag);
+    if (instance->DoubleSpeedFlag) {
+      instance->CPUCurrentSpeed *= ((double)instance->DoubleSpeedMultiplier * (double)instance->TurboSpeedFlag);
     }
   }
 }
@@ -86,16 +84,14 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl SetCPUMultiplier(unsigned char multiplier)
   {
-    static EmuState* emuState = GetEmuState();
-
     if (multiplier != QUERY)
     {
-      emuState->DoubleSpeedMultiplier = multiplier;
+      instance->DoubleSpeedMultiplier = multiplier;
 
-      SetCPUMultiplierFlag(emuState->DoubleSpeedFlag);
+      SetCPUMultiplierFlag(instance->DoubleSpeedFlag);
     }
 
-    return(emuState->DoubleSpeedMultiplier);
+    return(instance->DoubleSpeedMultiplier);
   }
 }
 
