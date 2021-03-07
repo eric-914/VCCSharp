@@ -14,6 +14,7 @@ namespace VCCSharp
             Factory.Instance
                 .SelfBind()
                 .Singleton<IAudio, Audio>()
+                .Singleton<ICassette, Cassette>()
                 .Singleton<ICoCo, CoCo>()
                 .Singleton<IConfig, Config>()
                 .Singleton<ICPU, CPU>()

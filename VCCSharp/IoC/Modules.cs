@@ -5,6 +5,7 @@ namespace VCCSharp.IoC
     public interface IModules
     {
         IAudio Audio { get; }
+        ICassette Cassette { get; }
         ICoCo CoCo { get; }
         IConfig Config { get; }
         ICPU CPU { get; }
@@ -31,6 +32,7 @@ namespace VCCSharp.IoC
         }
 
         public IAudio Audio => _factory.Get<IAudio>();
+        public ICassette Cassette => _factory.Get<ICassette>();
         public ICoCo CoCo => _factory.Get<ICoCo>();
         public IConfig Config => _factory.Get<IConfig>();
         public ICPU CPU => _factory.Get<ICPU>();

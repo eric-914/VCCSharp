@@ -32,6 +32,18 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void ResetAudio();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void FlushAudioBuffer(uint* aBuffer, ushort length);
+        }
+
+        public static class Cassette
+        {
+            [DllImport(LIBRARY)]
+            public static extern unsafe void FlushCassetteBuffer(byte* buffer, uint length);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void LoadCassetteBuffer(byte* cassBuffer);
         }
 
         public static class CoCo
@@ -41,9 +53,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe byte RenderVideoFrame(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
-            public static extern void RenderAudioFrame();
         }
 
         public static class Config

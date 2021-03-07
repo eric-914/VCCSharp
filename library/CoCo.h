@@ -21,4 +21,3 @@ extern "C" __declspec(dllexport) void __cdecl SetTimerInterruptState(unsigned ch
 extern "C" __declspec(dllexport) void __cdecl SetVertInterruptState(unsigned char);
 
 extern "C" __declspec(dllexport) unsigned char __cdecl RenderVideoFrame(EmuState* emuState);
-extern "C" __declspec(dllexport) void __cdecl RenderAudioFrame();

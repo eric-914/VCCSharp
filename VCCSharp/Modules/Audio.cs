@@ -6,6 +6,7 @@ namespace VCCSharp.Modules
     {
         short SoundDeInit();
         void ResetAudio();
+        unsafe void FlushAudioBuffer(uint* aBuffer, ushort length);
     }
 
     public class Audio : IAudio
@@ -18,6 +19,11 @@ namespace VCCSharp.Modules
         public void ResetAudio()
         {
             Library.Audio.ResetAudio();
+        }
+
+        public unsafe void FlushAudioBuffer(uint* aBuffer, ushort length)
+        {
+            Library.Audio.FlushAudioBuffer(aBuffer, length);
         }
     }
 }

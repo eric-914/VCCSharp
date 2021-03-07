@@ -566,24 +566,3 @@ extern "C" {
     return 0;
   }
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl RenderAudioFrame() {
-    switch (instance->SoundOutputMode)
-    {
-    case 0:
-      FlushAudioBuffer(instance->AudioBuffer, instance->AudioIndex << 2);
-      break;
-
-    case 1:
-      FlushCassetteBuffer(instance->CassBuffer, instance->AudioIndex);
-      break;
-
-    case 2:
-      LoadCassetteBuffer(instance->CassBuffer);
-      break;
-    }
-
-    instance->AudioIndex = 0;
-  }
-}
