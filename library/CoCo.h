@@ -14,7 +14,6 @@ extern "C" __declspec(dllexport) unsigned short __cdecl SetAudioRate(unsigned sh
 extern "C" __declspec(dllexport) void __cdecl AudioOut();
 extern "C" __declspec(dllexport) void __cdecl CassIn();
 extern "C" __declspec(dllexport) void __cdecl CassOut();
-extern "C" __declspec(dllexport) void __cdecl CocoReset();
 extern "C" __declspec(dllexport) void __cdecl SetClockSpeed(unsigned short);
 extern "C" __declspec(dllexport) void __cdecl SetHorzInterruptState(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetInterruptTimer(unsigned short);

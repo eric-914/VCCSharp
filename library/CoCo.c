@@ -90,27 +90,6 @@ extern "C" {
   }
 }
 
-extern "C" {
-  __declspec(dllexport) void __cdecl CocoReset()
-  {
-    instance->HorzInterruptEnabled = 0;
-    instance->VertInterruptEnabled = 0;
-    instance->TimerInterruptEnabled = 0;
-    instance->MasterTimer = 0;
-    instance->TimerClockRate = 0;
-    instance->MasterTickCounter = 0;
-    instance->UnxlatedTickCounter = 0;
-    instance->OldMaster = 0;
-
-    instance->SoundInterrupt = 0;
-    instance->PicosToSoundSample = 0;
-    instance->CycleDrift = 0;
-    instance->CyclesThisLine = 0;
-    instance->PicosThisLine = 0;
-    instance->IntEnable = 0;
-    instance->AudioIndex = 0;
-  }
-}
 
 extern "C" {
   __declspec(dllexport) void __cdecl SetClockSpeed(unsigned short cycles)

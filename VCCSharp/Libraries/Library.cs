@@ -37,6 +37,9 @@ namespace VCCSharp.Libraries
         public static class CoCo
         {
             [DllImport(LIBRARY)]
+            public static extern unsafe CoCoState* GetCoCoState();
+
+            [DllImport(LIBRARY)]
             public static extern void SetClockSpeed(ushort cycles);
 
             [DllImport(LIBRARY)]
