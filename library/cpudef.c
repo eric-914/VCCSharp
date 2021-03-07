@@ -22,3 +22,10 @@ CPU* InitializeInstance(CPU* p) {
 
   return p;
 }
+
+extern "C" {
+  __declspec(dllexport) void __cdecl CPUReset()
+  {
+    instance->CPUReset();
+  }
+}

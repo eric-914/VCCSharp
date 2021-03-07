@@ -140,33 +140,16 @@ extern "C" {
   }
 }
 
-void GimeReset(void)
-{
-  ResetGraphicsState();
-
-  MakeRGBPalette();
-  MakeCMPpalette(GetPaletteType());
-
-  CocoReset();
-  ResetAudio();
-}
-
 extern "C" {
-  __declspec(dllexport) void __cdecl SoftReset()
+  __declspec(dllexport) void __cdecl GimeReset()
   {
-    MC6883Reset();
-    MC6821_PiaReset();
+    ResetGraphicsState();
 
-    GetCPU()->CPUReset();
+    MakeRGBPalette();
+    MakeCMPpalette(GetPaletteType());
 
-    GimeReset();
-    MmuReset();
-    CopyRom();
-    ResetBus();
-
-    static EmuState* _emu = GetEmuState();
-
-    _emu->TurboSpeedFlag = 1;
+    CocoReset();
+    ResetAudio();
   }
 }
 

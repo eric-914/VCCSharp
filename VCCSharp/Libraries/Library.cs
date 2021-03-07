@@ -19,16 +19,10 @@ namespace VCCSharp.Libraries
             public static extern unsafe void SetEmuState(EmuState* emuState);
 
             [DllImport(LIBRARY)]
-            public static extern void SoftReset();
-
-            [DllImport(LIBRARY)]
             public static extern unsafe void HardReset(EmuState* emuState);
-        }
 
-        public static class Vcc
-        {
             [DllImport(LIBRARY)]
-            public static extern unsafe VccState* GetVccState();
+            public static extern void GimeReset();
         }
 
         public static class Audio
@@ -56,6 +50,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void SynchSystemWithConfig(EmuState* emuState);
+        }
+
+        public static class CPU
+        {
+            [DllImport(LIBRARY)]
+            public static extern void CPUReset();
         }
 
         public static class DirectDraw
@@ -88,6 +88,12 @@ namespace VCCSharp.Libraries
             public static extern unsafe void DynamicMenuCallback(EmuState* emuState, string menuName, int menuId, int type);
         }
 
+        public static class MC6821
+        {
+            [DllImport(LIBRARY)]
+            public static extern void MC6821_PiaReset();
+        }
+
         public static class PAKInterface
         {
             [DllImport(LIBRARY)]
@@ -95,6 +101,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void GetModuleStatus(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern void ResetBus();
         }
 
         public static class QuickLoad
@@ -107,6 +116,18 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern void ResourceAppTitle(HINSTANCE hResources, byte[] buffer);
+        }
+
+        public static class TC1014
+        {
+            [DllImport(LIBRARY)]
+            public static extern void MC6883Reset();
+
+            [DllImport(LIBRARY)]
+            public static extern void CopyRom();
+
+            [DllImport(LIBRARY)]
+            public static extern void MmuReset();
         }
 
         public static class Throttle
@@ -122,6 +143,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void EndRender(byte skip);
+        }
+
+        public static class Vcc
+        {
+            [DllImport(LIBRARY)]
+            public static extern unsafe VccState* GetVccState();
         }
     }
 }

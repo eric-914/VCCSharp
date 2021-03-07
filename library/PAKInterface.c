@@ -84,7 +84,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl PakTimer(void)
+  __declspec(dllexport) void __cdecl PakTimer()
   {
     if (instance->HeartBeat != NULL) {
       instance->HeartBeat();
@@ -93,7 +93,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl ResetBus(void)
+  __declspec(dllexport) void __cdecl ResetBus()
   {
     instance->BankedCartOffset = 0;
 

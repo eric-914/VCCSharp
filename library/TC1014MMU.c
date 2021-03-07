@@ -187,7 +187,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MmuReset(void)
+  __declspec(dllexport) void __cdecl MmuReset()
   {
     unsigned int index1 = 0, index2 = 0;
 
@@ -265,7 +265,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl CopyRom(void)
+  __declspec(dllexport) void __cdecl CopyRom()
   {
     char ExecPath[MAX_PATH];
     char CoCoRomPath[MAX_PATH];
