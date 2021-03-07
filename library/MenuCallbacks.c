@@ -6,6 +6,7 @@
 #include "PakInterface.h"
 #include "Vcc.h"
 #include "Emu.h"
+#include "Cartridge.h"
 
 static Dmenu MenuItem[100];
 

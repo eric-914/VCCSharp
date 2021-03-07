@@ -125,6 +125,9 @@
     <ClCompile Include="resource.c">
       <Filter>resources</Filter>
     </ClCompile>
+    <ClCompile Include="Cartridge.c">
+      <Filter>cartridge</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h" />
@@ -331,6 +334,9 @@
     <ClInclude Include="MenuCallbacks.h">
       <Filter>callbacks</Filter>
     </ClInclude>
+    <ClInclude Include="Cartridge.h">
+      <Filter>cartridge</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="audio">
@@ -431,6 +437,9 @@
     </Filter>
     <Filter Include="emu">
       <UniqueIdentifier>{5f8f0b1c-f4d2-45c3-aa61-d4c3def83656}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cartridge">
+      <UniqueIdentifier>{0036c795-d112-4a00-a0f6-2740c5df1c0e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

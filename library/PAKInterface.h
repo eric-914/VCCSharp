@@ -24,7 +24,6 @@ extern "C" __declspec(dllexport) PakInterfaceState * __cdecl GetPakInterfaceStat
 
 extern "C" __declspec(dllexport) int __cdecl FileID(char*);
 extern "C" __declspec(dllexport) int __cdecl InsertModule(EmuState*, char*);
-extern "C" __declspec(dllexport) int __cdecl LoadCart(EmuState*);
 extern "C" __declspec(dllexport) int __cdecl LoadROMPack(EmuState*, char*);
 
 extern "C" __declspec(dllexport) unsigned char __cdecl PakMem8Read(unsigned short);

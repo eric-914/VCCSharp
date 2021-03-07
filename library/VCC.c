@@ -17,6 +17,7 @@
 #include "QuickLoad.h"
 #include "DirectDraw.h"
 #include "Throttle.h"
+#include "Cartridge.h"
 
 #include "cpudef.h"
 #include "fileoperations.h"
@@ -101,34 +102,7 @@ extern "C" {
   }
 }
 
-extern "C" {
-  __declspec(dllexport) unsigned __stdcall CartLoad(void* dummy)
-  {
-    static EmuState* _emu = GetEmuState();
 
-    LoadCart(_emu);
-
-    _emu->EmulationRunning = true;
-    instance->DialogOpen = false;
-
-    return(NULL);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl LoadPack(void)
-  {
-    unsigned threadID;
-
-    if (instance->DialogOpen) {
-      return;
-    }
-
-    instance->DialogOpen = true;
-
-    _beginthreadex(NULL, 0, &CartLoad, CreateEvent(NULL, FALSE, FALSE, NULL), 0, &threadID);
-  }
-}
 
 // Force keys up if main widow keyboard focus is lost.  Otherwise
 // down keys will cause issues with OS-9 on return
