@@ -301,6 +301,7 @@ extern "C" {
   __declspec(dllexport) /* _inline */ int __cdecl CPUCycle(void)
   {
     CPU* cpu = GetCPU();
+    VccState* vccState = GetVccState();
 
     if (instance->HorzInterruptEnabled) {
       GimeAssertHorzInterrupt();
@@ -477,14 +478,14 @@ extern "C" {
       //Remember the original throttle setting.
       //Set it to off. We need speed for this!
       if (instance->Throttle == 0) {
-        instance->Throttle = GetSpeedThrottle();
+        instance->Throttle = vccState->Throttle;
 
         if (instance->Throttle == 0) {
           instance->Throttle = 2; // 2 = No throttle.
         }
       }
 
-      SetSpeedThrottle(0);
+      vccState->Throttle = 0;
 
       if (instance->ClipCycle == 1) {
         key = PeekClipboard();
@@ -511,10 +512,10 @@ extern "C" {
 
           //Done pasting. Reset throttle to original state
           if (instance->Throttle == 2) {
-            SetSpeedThrottle(0);
+            vccState->Throttle = 0;
           }
           else {
-            SetSpeedThrottle(1);
+            vccState->Throttle = 1;
           }
 
           //...and reset the keymap to the original state

@@ -6,6 +6,7 @@
 #include "Config.h"
 #include "Clipboard.h"
 #include "Graphics.h"
+#include "Emu.h"
 
 #include "MessageHandlers.h"
 #include "MenuCallbacks.h"

@@ -352,17 +352,21 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl SynchSystemWithConfig(EmuState* emuState)
   {
+    VccState* vccState = GetVccState();
+    ConfigModel model = instance->Model;
+
+    vccState->AutoStart = model.AutoStart;
+    vccState->Throttle = model.SpeedThrottle;
+
     SetPaletteType();
-    SetAspect(instance->Model.ForceAspect);
-    SetScanLines(emuState, instance->Model.ScanLines);
-    SetFrameSkip(instance->Model.FrameSkip);
-    SetAutoStart(instance->Model.AutoStart);
-    SetSpeedThrottle(instance->Model.SpeedThrottle);
-    SetCPUMultiplier(instance->Model.CPUMultiplier);
-    SetRamSize(instance->Model.RamSize);
-    SetCpuType(instance->Model.CpuType);
-    SetMonitorType(instance->Model.MonitorType);
-    MC6821_SetCartAutoStart(instance->Model.CartAutoStart);
+    SetAspect(model.ForceAspect);
+    SetScanLines(emuState, model.ScanLines);
+    SetFrameSkip(model.FrameSkip);
+    SetCPUMultiplier(model.CPUMultiplier);
+    SetRamSize(model.RamSize);
+    SetCpuType(model.CpuType);
+    SetMonitorType(model.MonitorType);
+    MC6821_SetCartAutoStart(model.CartAutoStart);
   }
 }
 

@@ -12,6 +12,7 @@
 #include "Cassette.h"
 #include "Joystick.h"
 #include "JoystickModel.h"
+#include "Emu.h"
 
 const unsigned short int Cpuchoice[2] = { IDC_6809, IDC_6309 };
 const unsigned short int Monchoice[2] = { IDC_COMPOSITE, IDC_RGB };

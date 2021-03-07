@@ -78,13 +78,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetAutoStart(unsigned char autostart)
-  {
-    instance->AutoStart = autostart;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl SetCpuType(unsigned char cpuType)
   {
     static EmuState* _emu = GetEmuState();
@@ -105,20 +98,6 @@ extern "C" {
 
       break;
     }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetSpeedThrottle(unsigned char throttle)
-  {
-    instance->Throttle = throttle;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl GetSpeedThrottle()
-  {
-    return(instance->Throttle);
   }
 }
 

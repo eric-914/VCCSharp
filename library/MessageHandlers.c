@@ -8,6 +8,7 @@
 #include "Keyboard.h"
 #include "Joystick.h"
 #include "DirectDraw.h"
+#include "Emu.h"
 
 #include "../resources/resource.h"
 
@@ -160,7 +161,9 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl ToggleThrottle() {
-    SetSpeedThrottle(!GetSpeedThrottle());
+    VccState* vccState = GetVccState();
+
+    vccState->Throttle = !vccState->Throttle;
   }
 }
 

@@ -2,10 +2,10 @@
 
 #include "MenuCallbacks.h"
 
-#include "EmuState.h"
 #include "PakInterfaceState.h"
 #include "PakInterface.h"
 #include "Vcc.h"
+#include "Emu.h"
 
 static Dmenu MenuItem[100];
 

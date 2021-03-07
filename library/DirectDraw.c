@@ -14,8 +14,8 @@
 #include "Graphics.h"
 #include "Audio.h"
 #include "MenuCallbacks.h"
+#include "Emu.h"
 
-#include "EmuState.h"
 #include "ProcessMessage.h"
 
 static POINT WindowSize;
