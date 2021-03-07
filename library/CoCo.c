@@ -23,6 +23,11 @@
 
 #include "VccState.h"
 
+static void (*AudioEvent)(void) = AudioOut;
+static void (*DrawTopBorder[4]) (EmuState*) = { DrawTopBorder8, DrawTopBorder16, DrawTopBorder24, DrawTopBorder32 };
+static void (*DrawBottomBorder[4]) (EmuState*) = { DrawBottomBorder8, DrawBottomBorder16, DrawBottomBorder24, DrawBottomBorder32 };
+static void (*UpdateScreen[4]) (EmuState*) = { UpdateScreen8, UpdateScreen16, UpdateScreen24, UpdateScreen32 };
+
 CoCoState* InitializeInstance(CoCoState*);
 
 static CoCoState* instance = InitializeInstance(new CoCoState());
@@ -67,23 +72,6 @@ CoCoState* InitializeInstance(CoCoState* p) {
   p->LinesPerSecond = (double)TARGETFRAMERATE * (double)LINESPERFIELD;
   p->PicosPerLine = PICOSECOND / p->LinesPerSecond;
   p->CyclesPerLine = p->CyclesPerSecord / p->LinesPerSecond;
-
-  p->AudioEvent = AudioOut;
-
-  p->DrawTopBorder[0] = DrawTopBorder8;
-  p->DrawTopBorder[1] = DrawTopBorder16;
-  p->DrawTopBorder[2] = DrawTopBorder24;
-  p->DrawTopBorder[3] = DrawTopBorder32;
-
-  p->DrawBottomBorder[0] = DrawBottomBorder8;
-  p->DrawBottomBorder[1] = DrawBottomBorder16;
-  p->DrawBottomBorder[2] = DrawBottomBorder24;
-  p->DrawBottomBorder[3] = DrawBottomBorder32;
-
-  p->UpdateScreen[0] = UpdateScreen8;
-  p->UpdateScreen[1] = UpdateScreen16;
-  p->UpdateScreen[2] = UpdateScreen24;
-  p->UpdateScreen[3] = UpdateScreen32;
 
   return p;
 }
@@ -257,14 +245,14 @@ extern "C" {
         FlushCassetteBuffer(instance->CassBuffer, instance->AudioIndex); /* Cassette.cpp */
       }
 
-      instance->AudioEvent = AudioOut;
+      AudioEvent = AudioOut;
 
       SetAudioRate(primarySoundRate);
 
       break;
 
     case 1:
-      instance->AudioEvent = CassOut;
+      AudioEvent = CassOut;
 
       primarySoundRate = instance->SoundRate;
 
@@ -273,7 +261,7 @@ extern "C" {
       break;
 
     case 2:
-      instance->AudioEvent = CassIn;
+      AudioEvent = CassIn;
 
       primarySoundRate = instance->SoundRate;
 
@@ -372,7 +360,7 @@ extern "C" {
           instance->CycleDrift = instance->CyclesThisLine;
         }
 
-        instance->AudioEvent();
+        AudioEvent();
 
         instance->PicosToInterrupt -= instance->PicosToSoundSample;
         instance->PicosToSoundSample = instance->SoundInterrupt;
@@ -392,7 +380,7 @@ extern "C" {
             instance->CycleDrift = instance->CyclesThisLine;
           }
 
-          instance->AudioEvent();
+        AudioEvent();
 
           instance->PicosToInterrupt -= instance->PicosToSoundSample;
           instance->PicosToSoundSample = instance->SoundInterrupt;
@@ -441,7 +429,7 @@ extern "C" {
             instance->CycleDrift = instance->CyclesThisLine;
           }
 
-          instance->AudioEvent();
+          AudioEvent();
 
           instance->PicosToInterrupt -= instance->PicosToSoundSample;
           instance->PicosToSoundSample = instance->SoundInterrupt;
@@ -462,7 +450,7 @@ extern "C" {
 
         GimeAssertTimerInterrupt();
 
-        instance->AudioEvent();
+        AudioEvent();
 
         instance->PicosToInterrupt = instance->MasterTickCounter;
         instance->PicosToSoundSample = instance->SoundInterrupt;
@@ -564,7 +552,7 @@ extern "C" {
     for (emuState->LineCounter = 0; emuState->LineCounter < (instance->TopBorder - 4); emuState->LineCounter++)
     {
       if (!(FrameCounter % emuState->FrameSkip)) {
-        instance->DrawTopBorder[emuState->BitDepth](emuState);
+        DrawTopBorder[emuState->BitDepth](emuState);
       }
 
       CPUCycle();
@@ -575,7 +563,7 @@ extern "C" {
       CPUCycle();
 
       if (!(FrameCounter % emuState->FrameSkip)) {
-        instance->UpdateScreen[emuState->BitDepth](emuState);
+        UpdateScreen[emuState->BitDepth](emuState);
       }
     }
 
@@ -590,7 +578,7 @@ extern "C" {
       CPUCycle();
 
       if (!(FrameCounter % emuState->FrameSkip)) {
-        instance->DrawBottomBorder[emuState->BitDepth](emuState);
+        DrawBottomBorder[emuState->BitDepth](emuState);
       }
     }
 

@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Text;
-using VCCSharp.Libraries;
+﻿using VCCSharp.Libraries;
 using VCCSharp.Models;
 using HINSTANCE = System.IntPtr;
 

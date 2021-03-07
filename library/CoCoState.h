@@ -45,9 +45,4 @@ typedef struct
 
   unsigned int AudioBuffer[16384];
   unsigned char CassBuffer[8192];
-
-  void (*AudioEvent)(void);
-  void (*DrawTopBorder[4]) (EmuState*);
-  void (*DrawBottomBorder[4]) (EmuState*);
-  void (*UpdateScreen[4]) (EmuState*);
 } CoCoState;
