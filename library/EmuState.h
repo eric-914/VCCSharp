@@ -36,6 +36,7 @@ typedef struct
   unsigned char	ScanLines;
   unsigned char	TurboSpeedFlag;
 
+  unsigned short FrameCounter;
   unsigned short LineCounter;
 
   double CPUCurrentSpeed;

@@ -27,6 +27,7 @@ namespace VCCSharp.Models
         public byte ScanLines;
         public byte TurboSpeedFlag;
 
+        public short FrameCounter;
         public short LineCounter;
 
         public double CPUCurrentSpeed;

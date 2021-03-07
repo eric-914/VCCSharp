@@ -51,7 +51,9 @@ EmuState* InitializeInstance(EmuState* p) {
 
   p->SurfacePitch = 0;
 
+  p->FrameCounter = 0;
   p->LineCounter = 0;
+
   p->ScanLines = false;
   p->EmulationRunning = false;
   p->ResetPending = RESET_NONE;

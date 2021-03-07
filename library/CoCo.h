@@ -20,4 +20,6 @@ extern "C" __declspec(dllexport) void __cdecl SetTimerClockRate(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetTimerInterruptState(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetVertInterruptState(unsigned char);
 
-extern "C" __declspec(dllexport) unsigned char __cdecl RenderVideoFrame(EmuState* emuState);
+extern "C" __declspec(dllexport) void __cdecl CoCoDrawTopBorder(EmuState* emuState);
+extern "C" __declspec(dllexport) void __cdecl CoCoUpdateScreen(EmuState* emuState);
+extern "C" __declspec(dllexport) void __cdecl CoCoDrawBottomBorder(EmuState* emuState);

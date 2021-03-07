@@ -84,7 +84,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl GimeAssertVertInterrupt(void)
+  __declspec(dllexport) void __cdecl GimeAssertVertInterrupt()
   {
     TC1014RegistersState* registersState = GetTC1014RegistersState();
 

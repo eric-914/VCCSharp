@@ -498,71 +498,19 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl RenderVideoFrame(EmuState* emuState) {
-    static unsigned short FrameCounter = 0;
+  __declspec(dllexport) void __cdecl CoCoDrawTopBorder(EmuState* emuState) {
+    DrawTopBorder[emuState->BitDepth](emuState);
+  }
+}
 
-    //********************************Start of frame Render*****************************************************
-    SetBlinkState(instance->BlinkPhase);
+extern "C" {
+  __declspec(dllexport) void __cdecl CoCoUpdateScreen(EmuState* emuState) {
+    UpdateScreen[emuState->BitDepth](emuState);
+  }
+}
 
-    MC6821_irq_fs(0);				//FS low to High transition start of display Blink needs this
-
-    for (emuState->LineCounter = 0; emuState->LineCounter < 13; emuState->LineCounter++) {		//Vertical Blanking 13 H lines
-      CPUCycle();
-    }
-
-    for (emuState->LineCounter = 0; emuState->LineCounter < 4; emuState->LineCounter++) {		//4 non-Rendered top Border lines
-      CPUCycle();
-    }
-
-    if (!(FrameCounter % emuState->FrameSkip)) {
-      if (LockScreen(emuState)) {
-        return 1;
-      }
-    }
-
-    for (emuState->LineCounter = 0; emuState->LineCounter < (instance->TopBorder - 4); emuState->LineCounter++)
-    {
-      if (!(FrameCounter % emuState->FrameSkip)) {
-        DrawTopBorder[emuState->BitDepth](emuState);
-      }
-
-      CPUCycle();
-    }
-
-    for (emuState->LineCounter = 0; emuState->LineCounter < instance->LinesperScreen; emuState->LineCounter++)		//Active Display area		
-    {
-      CPUCycle();
-
-      if (!(FrameCounter % emuState->FrameSkip)) {
-        UpdateScreen[emuState->BitDepth](emuState);
-      }
-    }
-
-    MC6821_irq_fs(1);  //End of active display FS goes High to Low
-
-    if (instance->VertInterruptEnabled) {
-      GimeAssertVertInterrupt();
-    }
-
-    for (emuState->LineCounter = 0; emuState->LineCounter < (instance->BottomBorder); emuState->LineCounter++)	// Bottom border
-    {
-      CPUCycle();
-
-      if (!(FrameCounter % emuState->FrameSkip)) {
-        DrawBottomBorder[emuState->BitDepth](emuState);
-      }
-    }
-
-    if (!(FrameCounter % emuState->FrameSkip))
-    {
-      UnlockScreen(emuState);
-      SetBorderChange(0);
-    }
-
-    for (emuState->LineCounter = 0; emuState->LineCounter < 6; emuState->LineCounter++) {		//Vertical Retrace 6 H lines
-      CPUCycle();
-    }
-
-    return 0;
+extern "C" {
+  __declspec(dllexport) void __cdecl CoCoDrawBottomBorder(EmuState* emuState) {
+    DrawBottomBorder[emuState->BitDepth](emuState);
   }
 }

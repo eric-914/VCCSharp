@@ -52,8 +52,17 @@ namespace VCCSharp.Libraries
             public static extern unsafe CoCoState* GetCoCoState();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe byte RenderVideoFrame(EmuState* emuState);
-        }
+            public static extern /* _inline */ int CPUCycle();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void CoCoDrawTopBorder(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void CoCoUpdateScreen(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void CoCoDrawBottomBorder(EmuState* emuState);
+        }   
 
         public static class Config
         {
@@ -104,6 +113,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void DoCls(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe byte LockScreen(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void UnlockScreen(EmuState* emuState);
         }
 
         public static class Graphics
@@ -116,6 +131,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void MakeCMPPalette(int paletteType);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetBlinkState(byte state);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetBorderChange(byte data);
         }
 
         public static class MenuCallbacks
@@ -128,6 +149,9 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern void MC6821_PiaReset();
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6821_irq_fs(int phase);
         }
 
         public static class PAKInterface
@@ -170,6 +194,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void MemWrite8(byte data, ushort address);
+
+            [DllImport(LIBRARY)]
+            public static extern void GimeAssertVertInterrupt();
         }
 
         public static class Throttle

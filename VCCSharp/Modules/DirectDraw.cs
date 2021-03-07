@@ -13,6 +13,8 @@ namespace VCCSharp.Modules
         unsafe void SetStatusBarText(string textBuffer, EmuState* emuState);
         unsafe float Static(EmuState* emuState);
         unsafe void DoCls(EmuState* emuState);
+        unsafe byte LockScreen(EmuState* emuState);
+        unsafe void UnlockScreen(EmuState* emuState);
     }
 
     public class DirectDraw : IDirectDraw
@@ -50,6 +52,16 @@ namespace VCCSharp.Modules
         public unsafe void DoCls(EmuState* emuState)
         {
             Library.DirectDraw.DoCls(emuState);
+        }
+
+        public unsafe byte LockScreen(EmuState* emuState)
+        {
+            return Library.DirectDraw.LockScreen(emuState);
+        }
+
+        public unsafe void UnlockScreen(EmuState* emuState)
+        {
+            Library.DirectDraw.UnlockScreen(emuState);
         }
     }
 }
