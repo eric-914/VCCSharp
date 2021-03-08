@@ -246,7 +246,80 @@ namespace VCCSharp.Modules
 
         public unsafe void CPUCycleClipboard(VccState* vccState)
         {
-            Library.CoCo.CPUCycleClipboard(vccState);
+            const char SHIFT = (char)0x36;
+            char key;
+
+            CoCoState* cocoState = GetCoCoState();
+
+            //Remember the original throttle setting.
+            //Set it to off. We need speed for this!
+            if (cocoState->Throttle == 0)
+            {
+                cocoState->Throttle = vccState->Throttle;
+
+                if (cocoState->Throttle == 0)
+                {
+                    cocoState->Throttle = 2; // 2 = No throttle.
+                }
+            }
+
+            vccState->Throttle = 0;
+
+            if (cocoState->ClipCycle == 1)
+            {
+                key = _modules.Clipboard.PeekClipboard();
+
+                if (key == SHIFT)
+                {
+                    _modules.Keyboard.vccKeyboardHandleKeyDown(SHIFT, SHIFT);  //Press shift and...
+                    _modules.Clipboard.PopClipboard();
+                    key = _modules.Clipboard.PeekClipboard();
+                }
+
+                _modules.Keyboard.vccKeyboardHandleKeyDown(key, key);
+
+                cocoState->WaitCycle = key == 0x1c ? 6000 : 2000;
+            }
+            else if (cocoState->ClipCycle == 500)
+            {
+                key = _modules.Clipboard.PeekClipboard();
+
+                _modules.Keyboard.vccKeyboardHandleKeyUp(SHIFT, SHIFT);
+                _modules.Keyboard.vccKeyboardHandleKeyUp((char)0x42, key); //TODO: What is 0x42?
+                _modules.Clipboard.PopClipboard();
+
+                //Finished?
+                if (_modules.Clipboard.ClipboardEmpty() == Define.TRUE)
+                {
+                    _modules.Keyboard.SetPaste(Define.FALSE);
+                    
+                    //Done pasting. Reset throttle to original state
+                    if (cocoState->Throttle == 2) {
+                        vccState->Throttle = 0;
+                    }
+                    else {
+                        vccState->Throttle = 1;
+                    }
+
+                    //...and reset the keymap to the original state
+                    ResetKeyMap();
+
+                    cocoState->Throttle = 0;
+                }
+            }
+
+            cocoState->ClipCycle++;
+
+            if (cocoState->ClipCycle > cocoState->WaitCycle)
+            {
+                cocoState->ClipCycle = 1;
+            }
+
+        }
+
+        public void ResetKeyMap()
+        {
+            Library.CoCo.ResetKeyMap();
         }
     }
 }

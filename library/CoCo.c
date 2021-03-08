@@ -435,67 +435,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl CPUCycleClipboard(VccState* vccState) {
-    char tmp[] = { 0x00 };
-    char kbstate = 2;
-    int z = 0;
-    char key;
-    const char SHIFT = 0x36;
-
-    //Remember the original throttle setting.
-    //Set it to off. We need speed for this!
-    if (instance->Throttle == 0) {
-      instance->Throttle = vccState->Throttle;
-
-      if (instance->Throttle == 0) {
-        instance->Throttle = 2; // 2 = No throttle.
-      }
-    }
-
-    vccState->Throttle = 0;
-
-    if (instance->ClipCycle == 1) {
-      key = PeekClipboard();
-
-      if (key == SHIFT) {
-        vccKeyboardHandleKey(SHIFT, SHIFT, kEventKeyDown);  //Press shift and...
-        PopClipboard();
-        key = PeekClipboard();
-      }
-
-      vccKeyboardHandleKey(key, key, kEventKeyDown);
-
-      instance->WaitCycle = key == 0x1c ? 6000 : 2000;
-    }
-    else if (instance->ClipCycle == 500) {
-      key = PeekClipboard();
-
-      vccKeyboardHandleKey(SHIFT, SHIFT, kEventKeyUp);
-      vccKeyboardHandleKey(0x42, key, kEventKeyUp);
-      PopClipboard();
-
-      if (ClipboardEmpty()) { //Finished?
-        SetPaste(false);
-
-        //Done pasting. Reset throttle to original state
-        if (instance->Throttle == 2) {
-          vccState->Throttle = 0;
-        }
-        else {
-          vccState->Throttle = 1;
-        }
-
-        //...and reset the keymap to the original state
-        vccKeyboardBuildRuntimeTable((keyboardlayout_e)GetCurrentKeyMap());
-
-        instance->Throttle = 0;
-      }
-    }
-
-    instance->ClipCycle++;
-
-    if (instance->ClipCycle > instance->WaitCycle) {
-      instance->ClipCycle = 1;
-    }
+  __declspec(dllexport) void __cdecl ResetKeyMap() {
+    vccKeyboardBuildRuntimeTable((keyboardlayout_e)GetCurrentKeyMap());
   }
 }

@@ -22,6 +22,7 @@ namespace VCCSharp
                 .Singleton<IDirectDraw, DirectDraw>()
                 .Singleton<IEmu, Emu>()
                 .Singleton<IGraphics, Graphics>()
+                .Singleton<IKeyboard, Keyboard>()
                 .Singleton<IMenuCallbacks, MenuCallbacks>()
                 .Singleton<IMC6821, MC6821>()
                 .Singleton<IQuickLoad, QuickLoad>()

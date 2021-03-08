@@ -50,6 +50,12 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern int ClipboardEmpty();
+
+            [DllImport(LIBRARY)]
+            public static extern char PeekClipboard();
+
+            [DllImport(LIBRARY)]
+            public static extern void PopClipboard();
         }
 
         public static class CoCo
@@ -70,7 +76,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe void CPUCyclePicos(VccState* vccState);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void CPUCycleClipboard(VccState* vccState);
+            public static extern void ResetKeyMap();
         }   
 
         public static class Config
@@ -146,6 +152,18 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetBorderChange(byte data);
+        }
+
+        public static class Keyboard
+        {
+            [DllImport(LIBRARY)]
+            public static extern void vccKeyboardHandleKeyDown(char key, char scanCode);
+
+            [DllImport(LIBRARY)]
+            public static extern void vccKeyboardHandleKeyUp(char key, char scanCode);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetPaste(int flag);
         }
 
         public static class MenuCallbacks

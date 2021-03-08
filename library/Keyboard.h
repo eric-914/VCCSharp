@@ -30,7 +30,10 @@ extern "C" __declspec(dllexport) unsigned char __cdecl GimeGetKeyboardInterruptS
 extern "C" __declspec(dllexport) unsigned char __cdecl vccKeyboardGetScan(unsigned char);
 
 extern "C" __declspec(dllexport) void __cdecl GimeSetKeyboardInterruptState(unsigned char);
-extern "C" __declspec(dllexport) void __cdecl SetPaste(bool);
+extern "C" __declspec(dllexport) void __cdecl SetPaste(BOOL);
 extern "C" __declspec(dllexport) void __cdecl vccKeyboardBuildRuntimeTable(keyboardlayout_e);
 extern "C" __declspec(dllexport) void __cdecl vccKeyboardHandleKey(unsigned char, unsigned char, keyevent_e);
 extern "C" __declspec(dllexport) void __cdecl vccKeyboardUpdateRolloverTable();
+
+extern "C" __declspec(dllexport) void __cdecl vccKeyboardHandleKeyDown(unsigned char key, unsigned char scanCode);
+extern "C" __declspec(dllexport) void __cdecl vccKeyboardHandleKeyUp(unsigned char key, unsigned char scanCode);

@@ -13,6 +13,7 @@ namespace VCCSharp.IoC
         IDirectDraw DirectDraw { get; }
         IEmu Emu { get; }
         IGraphics Graphics { get; }
+        IKeyboard Keyboard { get; }
         IMenuCallbacks MenuCallbacks { get; }
         IMC6821 MC6821 { get; }
         IQuickLoad QuickLoad { get; }
@@ -41,6 +42,7 @@ namespace VCCSharp.IoC
         public IDirectDraw DirectDraw => _factory.Get<IDirectDraw>();
         public IEmu Emu => _factory.Get<IEmu>();
         public IGraphics Graphics => _factory.Get<IGraphics>();
+        public IKeyboard Keyboard => _factory.Get<IKeyboard>();
         public IMenuCallbacks MenuCallbacks => _factory.Get<IMenuCallbacks>();
         public IMC6821 MC6821 => _factory.Get<IMC6821>();
         public IQuickLoad QuickLoad => _factory.Get<IQuickLoad>();

@@ -49,7 +49,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetPaste(bool flag) {
+  __declspec(dllexport) void __cdecl SetPaste(BOOL flag) {
     instance->Pasting = flag;
   }
 }
@@ -507,6 +507,20 @@ extern "C" {
       vccKeyboardUpdateRolloverTable();
 
       break;
+    }
+  }
+
+  extern "C" {
+    __declspec(dllexport) void __cdecl vccKeyboardHandleKeyDown(unsigned char key, unsigned char scanCode)
+    { 
+      vccKeyboardHandleKey(key, scanCode, kEventKeyDown);
+    }
+  }
+
+  extern "C" {
+    __declspec(dllexport) void __cdecl vccKeyboardHandleKeyUp(unsigned char key, unsigned char scanCode)
+    { 
+      vccKeyboardHandleKey(key, scanCode, kEventKeyUp);
     }
   }
 }
