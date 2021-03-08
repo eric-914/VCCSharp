@@ -43,3 +43,10 @@ extern "C" {
     instance->CPUForcePC(xferAddress);
   }
 }
+
+extern "C" {
+  __declspec(dllexport) int __cdecl CPUExec(int cycle)
+  {
+    return instance->CPUExec(cycle);
+  }
+}

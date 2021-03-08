@@ -95,6 +95,12 @@ extern "C" {
 }
 
 extern "C" {
+  __declspec(dllexport) void __cdecl ResetKeyMap() {
+    vccKeyboardBuildRuntimeTable((keyboardlayout_e)GetCurrentKeyMap());
+  }
+}
+
+extern "C" {
   __declspec(dllexport) void __cdecl AudioOut(void)
   {
     instance->AudioBuffer[instance->AudioIndex++] = MC6821_GetDACSample();
@@ -275,82 +281,74 @@ extern "C" {
   }
 }
 
+//No interrupts this line
 extern "C" {
-  __declspec(dllexport) void __cdecl CPUCyclePicos(VccState* vccState) {
-    CPU* cpu = GetCPU();
+  __declspec(dllexport) void __cdecl CPUCyclePicosCase0() {
+    instance->CyclesThisLine = instance->CycleDrift + (instance->PicosThisLine * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
 
-    instance->StateSwitch = 0;
-
-    if ((instance->PicosToInterrupt <= instance->PicosThisLine) && instance->IntEnable) {	//Does this iteration need to Timer Interrupt
-      instance->StateSwitch = 1;
+    if (instance->CyclesThisLine >= 1) {	//Avoid un-needed CPU engine calls
+      instance->CycleDrift = CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
+    }
+    else {
+      instance->CycleDrift = instance->CyclesThisLine;
     }
 
-    if ((instance->PicosToSoundSample <= instance->PicosThisLine) && instance->SndEnable) { //Does it need to collect an Audio sample
-      instance->StateSwitch += 2;
+    instance->PicosToInterrupt -= instance->PicosThisLine;
+    instance->PicosToSoundSample -= instance->PicosThisLine;
+    instance->PicosThisLine = 0;
+  }
+}
+
+//Only Interrupting
+extern "C" {
+  __declspec(dllexport) void __cdecl CPUCyclePicosCase1() {
+    instance->PicosThisLine -= instance->PicosToInterrupt;
+    instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToInterrupt * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
+
+    if (instance->CyclesThisLine >= 1) {
+      instance->CycleDrift = CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
+    }
+    else {
+      instance->CycleDrift = instance->CyclesThisLine;
     }
 
-    switch (instance->StateSwitch)
-    {
-    case 0:		//No interrupts this line
-      instance->CyclesThisLine = instance->CycleDrift + (instance->PicosThisLine * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
+    GimeAssertTimerInterrupt();
 
-      if (instance->CyclesThisLine >= 1) {	//Avoid un-needed CPU engine calls
-        instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-      }
-      else {
-        instance->CycleDrift = instance->CyclesThisLine;
-      }
+    instance->PicosToSoundSample -= instance->PicosToInterrupt;
+    instance->PicosToInterrupt = instance->MasterTickCounter;
+  }
+}
 
-      instance->PicosToInterrupt -= instance->PicosThisLine;
-      instance->PicosToSoundSample -= instance->PicosThisLine;
-      instance->PicosThisLine = 0;
+//Only Sampling
+extern "C" {
+  __declspec(dllexport) void __cdecl CPUCyclePicosCase2() {
+    instance->PicosThisLine -= instance->PicosToSoundSample;
+    instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
 
-      break;
+    if (instance->CyclesThisLine >= 1) {
+      instance->CycleDrift = CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
+    }
+    else {
+      instance->CycleDrift = instance->CyclesThisLine;
+    }
 
-    case 1:		//Only Interrupting
-      instance->PicosThisLine -= instance->PicosToInterrupt;
-      instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToInterrupt * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
+    AudioEvent();
 
-      if (instance->CyclesThisLine >= 1) {
-        instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-      }
-      else {
-        instance->CycleDrift = instance->CyclesThisLine;
-      }
+    instance->PicosToInterrupt -= instance->PicosToSoundSample;
+    instance->PicosToSoundSample = instance->SoundInterrupt;
+  }
+}
 
-      GimeAssertTimerInterrupt();
-
-      instance->PicosToSoundSample -= instance->PicosToInterrupt;
-      instance->PicosToInterrupt = instance->MasterTickCounter;
-
-      break;
-
-    case 2:		//Only Sampling
-      instance->PicosThisLine -= instance->PicosToSoundSample;
-      instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-      if (instance->CyclesThisLine >= 1) {
-        instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-      }
-      else {
-        instance->CycleDrift = instance->CyclesThisLine;
-      }
-
-      AudioEvent();
-
-      instance->PicosToInterrupt -= instance->PicosToSoundSample;
-      instance->PicosToSoundSample = instance->SoundInterrupt;
-
-      break;
-
-    case 3:		//Interrupting and Sampling
+//Interrupting and Sampling
+extern "C" {
+  __declspec(dllexport) void __cdecl CPUCyclePicosCase3() {
       if (instance->PicosToSoundSample < instance->PicosToInterrupt)
       {
         instance->PicosThisLine -= instance->PicosToSoundSample;
         instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
 
         if (instance->CyclesThisLine >= 1) {
-          instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
+          instance->CycleDrift = CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
         }
         else {
           instance->CycleDrift = instance->CyclesThisLine;
@@ -365,7 +363,7 @@ extern "C" {
         instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToInterrupt * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
 
         if (instance->CyclesThisLine >= 1) {
-          instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
+          instance->CycleDrift = CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
         }
         else {
           instance->CycleDrift = instance->CyclesThisLine;
@@ -376,7 +374,7 @@ extern "C" {
         instance->PicosToSoundSample -= instance->PicosToInterrupt;
         instance->PicosToInterrupt = instance->MasterTickCounter;
 
-        break;
+        return;
       }
 
       if (instance->PicosToSoundSample > instance->PicosToInterrupt)
@@ -385,7 +383,7 @@ extern "C" {
         instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToInterrupt * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
 
         if (instance->CyclesThisLine >= 1) {
-          instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
+          instance->CycleDrift = CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
         }
         else {
           instance->CycleDrift = instance->CyclesThisLine;
@@ -399,7 +397,7 @@ extern "C" {
         instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
 
         if (instance->CyclesThisLine >= 1) {
-          instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
+          instance->CycleDrift = CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
         }
         else {
           instance->CycleDrift = instance->CyclesThisLine;
@@ -410,7 +408,7 @@ extern "C" {
         instance->PicosToInterrupt -= instance->PicosToSoundSample;
         instance->PicosToSoundSample = instance->SoundInterrupt;
 
-        break;
+        return;
       }
 
       //They are the same (rare)
@@ -418,7 +416,7 @@ extern "C" {
       instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
 
       if (instance->CyclesThisLine > 1) {
-        instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
+        instance->CycleDrift = CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
       }
       else {
         instance->CycleDrift = instance->CyclesThisLine;
@@ -430,12 +428,5 @@ extern "C" {
 
       instance->PicosToInterrupt = instance->MasterTickCounter;
       instance->PicosToSoundSample = instance->SoundInterrupt;
-    }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl ResetKeyMap() {
-    vccKeyboardBuildRuntimeTable((keyboardlayout_e)GetCurrentKeyMap());
   }
 }

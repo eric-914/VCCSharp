@@ -23,5 +23,9 @@ extern "C" __declspec(dllexport) void __cdecl CoCoDrawTopBorder(EmuState* emuSta
 extern "C" __declspec(dllexport) void __cdecl CoCoUpdateScreen(EmuState* emuState);
 extern "C" __declspec(dllexport) void __cdecl CoCoDrawBottomBorder(EmuState* emuState);
 
-extern "C" __declspec(dllexport) void __cdecl CPUCyclePicos(VccState* vccState);
 extern "C" __declspec(dllexport) void __cdecl ResetKeyMap();
+
+extern "C" __declspec(dllexport) void __cdecl CPUCyclePicosCase0();
+extern "C" __declspec(dllexport) void __cdecl CPUCyclePicosCase1();
+extern "C" __declspec(dllexport) void __cdecl CPUCyclePicosCase2();
+extern "C" __declspec(dllexport) void __cdecl CPUCyclePicosCase3();

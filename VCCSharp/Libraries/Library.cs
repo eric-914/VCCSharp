@@ -73,7 +73,16 @@ namespace VCCSharp.Libraries
             public static extern unsafe void CoCoDrawBottomBorder(EmuState* emuState);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void CPUCyclePicos(VccState* vccState);
+            public static extern void CPUCyclePicosCase0();
+
+            [DllImport(LIBRARY)]
+            public static extern void CPUCyclePicosCase1();
+
+            [DllImport(LIBRARY)]
+            public static extern void CPUCyclePicosCase2();
+
+            [DllImport(LIBRARY)]
+            public static extern void CPUCyclePicosCase3();
 
             [DllImport(LIBRARY)]
             public static extern void ResetKeyMap();
@@ -104,6 +113,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void CPUForcePC(ushort xferAddress);
+
+            [DllImport(LIBRARY)]
+            public static extern int CPUExec(int cycle);
         }
 
         public static class DirectDraw

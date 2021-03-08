@@ -7,6 +7,7 @@ namespace VCCSharp.Modules
         void CPUReset();
         void CPUInit();
         void CPUForcePC(ushort xferAddress);
+        int CPUExec(int cycle);
     }
 
     public class CPU : ICPU
@@ -24,6 +25,11 @@ namespace VCCSharp.Modules
         public void CPUForcePC(ushort xferAddress)
         {
             Library.CPU.CPUForcePC(xferAddress);
+        }
+
+        public int CPUExec(int cycle)
+        {
+            return Library.CPU.CPUExec(cycle);
         }
     }
 }

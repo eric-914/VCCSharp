@@ -1,4 +1,6 @@
-﻿using VCCSharp.Enums;
+﻿using System;
+using System.Collections.Generic;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -241,7 +243,30 @@ namespace VCCSharp.Modules
 
         public unsafe void CPUCyclePicos(VccState* vccState)
         {
-            Library.CoCo.CPUCyclePicos(vccState);
+            CoCoState* cocoState = GetCoCoState();
+            cocoState->StateSwitch = 0;
+
+            //Does this iteration need to Timer Interrupt
+            if ((cocoState->PicosToInterrupt <= cocoState->PicosThisLine) && cocoState->IntEnable == Define.TRUE)
+            {
+                cocoState->StateSwitch = 1;
+            }
+
+            //Does it need to collect an Audio sample
+            if ((cocoState->PicosToSoundSample <= cocoState->PicosThisLine) && cocoState->SndEnable == Define.TRUE)
+            {
+                cocoState->StateSwitch += 2;
+            }
+
+            var cases = new Dictionary<uint, Action>
+            {
+                {0, CPUCyclePicosCase0 },
+                {1, CPUCyclePicosCase1 },
+                {2, CPUCyclePicosCase2 },
+                {3, CPUCyclePicosCase3 }
+            };
+
+            cases[cocoState->StateSwitch]();
         }
 
         public unsafe void CPUCycleClipboard(VccState* vccState)
@@ -292,12 +317,14 @@ namespace VCCSharp.Modules
                 if (_modules.Clipboard.ClipboardEmpty() == Define.TRUE)
                 {
                     _modules.Keyboard.SetPaste(Define.FALSE);
-                    
+
                     //Done pasting. Reset throttle to original state
-                    if (cocoState->Throttle == 2) {
+                    if (cocoState->Throttle == 2)
+                    {
                         vccState->Throttle = 0;
                     }
-                    else {
+                    else
+                    {
                         vccState->Throttle = 1;
                     }
 
@@ -320,6 +347,26 @@ namespace VCCSharp.Modules
         public void ResetKeyMap()
         {
             Library.CoCo.ResetKeyMap();
+        }
+
+        public void CPUCyclePicosCase0()
+        {
+            Library.CoCo.CPUCyclePicosCase0();
+        }
+
+        public void CPUCyclePicosCase1()
+        {
+            Library.CoCo.CPUCyclePicosCase1();
+        }
+
+        public void CPUCyclePicosCase2()
+        {
+            Library.CoCo.CPUCyclePicosCase2();
+        }
+
+        public void CPUCyclePicosCase3()
+        {
+            Library.CoCo.CPUCyclePicosCase3();
         }
     }
 }
