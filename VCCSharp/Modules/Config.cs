@@ -23,7 +23,7 @@ namespace VCCSharp.Modules
         {
             Library.Config.InitConfig(emuState, ref cmdLineArgs);
 
-            var tmp = GetConfigState();
+            //var tmp = GetConfigState();
         }
 
         public unsafe void WriteIniFile(EmuState* emuState)

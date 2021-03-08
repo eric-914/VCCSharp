@@ -32,7 +32,7 @@ static HICON JoystickIcons[4];
 static CHARFORMAT CounterText;
 static CHARFORMAT ModeText;
 
-ConfigModel configModel;
+static ConfigModel* configModel;
 
 /*
   for displaying key name
@@ -44,12 +44,12 @@ char* GetKeyName(int x)
   return keyNames[x];
 }
 
-void CheckAudioChange(EmuState* emuState, ConfigModel current, ConfigModel temp, SoundCardList* soundCards) {
-  unsigned char currentSoundCardIndex = GetSoundCardIndex(current.SoundCardName);
-  unsigned char tempSoundCardIndex = GetSoundCardIndex(temp.SoundCardName);
+void CheckAudioChange(EmuState* emuState, ConfigModel* current, ConfigModel* temp, SoundCardList* soundCards) {
+  unsigned char currentSoundCardIndex = GetSoundCardIndex(current->SoundCardName);
+  unsigned char tempSoundCardIndex = GetSoundCardIndex(temp->SoundCardName);
 
-  if ((currentSoundCardIndex != tempSoundCardIndex) || (current.AudioRate != temp.AudioRate)) {
-    SoundInit(emuState->WindowHandle, soundCards[tempSoundCardIndex].Guid, temp.AudioRate);
+  if ((currentSoundCardIndex != tempSoundCardIndex) || (current->AudioRate != temp->AudioRate)) {
+    SoundInit(emuState->WindowHandle, soundCards[tempSoundCardIndex].Guid, temp->AudioRate);
   }
 }
 
@@ -140,18 +140,18 @@ extern "C" {
         SendDlgItemMessage(hDlg, IDC_RATE, CB_ADDSTRING, (WPARAM)0, (LPARAM)GetRateList(index));
       }
 
-      SendDlgItemMessage(hDlg, IDC_RATE, CB_SETCURSEL, (WPARAM)(configModel.AudioRate), (LPARAM)0);
+      SendDlgItemMessage(hDlg, IDC_RATE, CB_SETCURSEL, (WPARAM)(configModel->AudioRate), (LPARAM)0);
 
-      soundCardIndex = GetSoundCardIndex(configModel.SoundCardName);
+      soundCardIndex = GetSoundCardIndex(configModel->SoundCardName);
       SendDlgItemMessage(hDlg, IDC_SOUNDCARD, CB_SETCURSEL, (WPARAM)(soundCardIndex), (LPARAM)0);
 
       break;
 
     case WM_COMMAND:
       soundCardIndex = (unsigned char)SendDlgItemMessage(hDlg, IDC_SOUNDCARD, CB_GETCURSEL, 0, 0);
-      configModel.AudioRate = (unsigned char)SendDlgItemMessage(hDlg, IDC_RATE, CB_GETCURSEL, 0, 0);
+      configModel->AudioRate = (unsigned char)SendDlgItemMessage(hDlg, IDC_RATE, CB_GETCURSEL, 0, 0);
 
-      strcpy(configModel.SoundCardName, configState->SoundCards[soundCardIndex].CardName);
+      strcpy(configModel->SoundCardName, configState->SoundCards[soundCardIndex].CardName);
 
       break;
     }
@@ -232,26 +232,26 @@ extern "C" {
     switch (message)
     {
     case WM_INITDIALOG:
-      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETRANGE, TRUE, MAKELONG(2, configState->Model.MaxOverclock));	//Maximum overclock
+      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETRANGE, TRUE, MAKELONG(2, configState->Model->MaxOverclock));	//Maximum overclock
 
-      SetDialogCpuMultiplier(hDlg, configModel.CPUMultiplier);
+      SetDialogCpuMultiplier(hDlg, configModel->CPUMultiplier);
 
       for (unsigned char temp = 0; temp <= 3; temp++) {
-        SendDlgItemMessage(hDlg, Ramchoice[temp], BM_SETCHECK, (temp == configModel.RamSize), 0);
+        SendDlgItemMessage(hDlg, Ramchoice[temp], BM_SETCHECK, (temp == configModel->RamSize), 0);
       }
 
       for (unsigned char temp = 0; temp <= 1; temp++) {
-        SendDlgItemMessage(hDlg, Cpuchoice[temp], BM_SETCHECK, (temp == configModel.CpuType), 0);
+        SendDlgItemMessage(hDlg, Cpuchoice[temp], BM_SETCHECK, (temp == configModel->CpuType), 0);
       }
 
-      SendDlgItemMessage(hDlg, IDC_CPUICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(CpuIcons[configModel.CpuType]));
+      SendDlgItemMessage(hDlg, IDC_CPUICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(CpuIcons[configModel->CpuType]));
 
       break;
 
     case WM_HSCROLL:
-      configModel.CPUMultiplier = (unsigned char)SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_GETPOS, (WPARAM)0, (WPARAM)0);
+      configModel->CPUMultiplier = (unsigned char)SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_GETPOS, (WPARAM)0, (WPARAM)0);
 
-      sprintf(configState->OutBuffer, "%2.3f Mhz", (float)(configModel.CPUMultiplier) * .894);
+      sprintf(configState->OutBuffer, "%2.3f Mhz", (float)(configModel->CPUMultiplier) * .894);
 
       SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(configState->OutBuffer), (LPARAM)(LPCSTR)(configState->OutBuffer));
 
@@ -273,7 +273,7 @@ extern "C" {
 
             SendDlgItemMessage(hDlg, Ramchoice[temp], BM_SETCHECK, 1, 0);
 
-            configModel.RamSize = temp;
+            configModel->RamSize = temp;
           }
         }
 
@@ -290,9 +290,9 @@ extern "C" {
 
             SendDlgItemMessage(hDlg, Cpuchoice[temp], BM_SETCHECK, 1, 0);
 
-            configModel.CpuType = temp;
+            configModel->CpuType = temp;
 
-            SendDlgItemMessage(hDlg, IDC_CPUICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(CpuIcons[configModel.CpuType]));
+            SendDlgItemMessage(hDlg, IDC_CPUICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(CpuIcons[configModel->CpuType]));
           }
         }
 
@@ -317,21 +317,21 @@ extern "C" {
     {
     case WM_INITDIALOG:
       SendDlgItemMessage(hDlg, IDC_FRAMESKIP, TBM_SETRANGE, TRUE, MAKELONG(1, 6));
-      SendDlgItemMessage(hDlg, IDC_SCANLINES, BM_SETCHECK, configModel.ScanLines, 0);
-      SendDlgItemMessage(hDlg, IDC_THROTTLE, BM_SETCHECK, configModel.SpeedThrottle, 0);
-      SendDlgItemMessage(hDlg, IDC_FRAMESKIP, TBM_SETPOS, TRUE, configModel.FrameSkip);
-      SendDlgItemMessage(hDlg, IDC_ASPECT, BM_SETCHECK, configModel.ForceAspect, 0);
-      SendDlgItemMessage(hDlg, IDC_REMEMBER_SIZE, BM_SETCHECK, configModel.RememberSize, 0);
+      SendDlgItemMessage(hDlg, IDC_SCANLINES, BM_SETCHECK, configModel->ScanLines, 0);
+      SendDlgItemMessage(hDlg, IDC_THROTTLE, BM_SETCHECK, configModel->SpeedThrottle, 0);
+      SendDlgItemMessage(hDlg, IDC_FRAMESKIP, TBM_SETPOS, TRUE, configModel->FrameSkip);
+      SendDlgItemMessage(hDlg, IDC_ASPECT, BM_SETCHECK, configModel->ForceAspect, 0);
+      SendDlgItemMessage(hDlg, IDC_REMEMBER_SIZE, BM_SETCHECK, configModel->RememberSize, 0);
 
-      sprintf(configState->OutBuffer, "%i", configModel.FrameSkip);
+      sprintf(configState->OutBuffer, "%i", configModel->FrameSkip);
 
       SendDlgItemMessage(hDlg, IDC_FRAMEDISPLAY, WM_SETTEXT, strlen(configState->OutBuffer), (LPARAM)(LPCSTR)(configState->OutBuffer));
 
       for (unsigned char temp = 0; temp <= 1; temp++) {
-        SendDlgItemMessage(hDlg, Monchoice[temp], BM_SETCHECK, (temp == configModel.MonitorType), 0);
+        SendDlgItemMessage(hDlg, Monchoice[temp], BM_SETCHECK, (temp == configModel->MonitorType), 0);
       }
 
-      if (configModel.MonitorType == 1) { //If RGB monitor is chosen, gray out palette choice
+      if (configModel->MonitorType == 1) { //If RGB monitor is chosen, gray out palette choice
         isRGB = TRUE;
 
         SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETSTATE, 1, 0);
@@ -340,28 +340,28 @@ extern "C" {
         SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETDONTCLICK, 1, 0);
       }
 
-      SendDlgItemMessage(hDlg, IDC_MONTYPE, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(MonIcons[configModel.MonitorType]));
+      SendDlgItemMessage(hDlg, IDC_MONTYPE, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(MonIcons[configModel->MonitorType]));
 
       for (unsigned char temp = 0; temp <= 1; temp++) {
-        SendDlgItemMessage(hDlg, PaletteChoice[temp], BM_SETCHECK, (temp == configModel.PaletteType), 0);
+        SendDlgItemMessage(hDlg, PaletteChoice[temp], BM_SETCHECK, (temp == configModel->PaletteType), 0);
       }
 
       break;
 
     case WM_HSCROLL:
-      configModel.FrameSkip = (unsigned char)SendDlgItemMessage(hDlg, IDC_FRAMESKIP, TBM_GETPOS, (WPARAM)0, (WPARAM)0);
+      configModel->FrameSkip = (unsigned char)SendDlgItemMessage(hDlg, IDC_FRAMESKIP, TBM_GETPOS, (WPARAM)0, (WPARAM)0);
 
-      sprintf(configState->OutBuffer, "%i", configModel.FrameSkip);
+      sprintf(configState->OutBuffer, "%i", configModel->FrameSkip);
 
       SendDlgItemMessage(hDlg, IDC_FRAMEDISPLAY, WM_SETTEXT, strlen(configState->OutBuffer), (LPARAM)(LPCSTR)(configState->OutBuffer));
 
       break;
 
     case WM_COMMAND:
-      configModel.ForceAspect = (unsigned char)SendDlgItemMessage(hDlg, IDC_ASPECT, BM_GETCHECK, 0, 0);
-      configModel.ScanLines = (unsigned char)SendDlgItemMessage(hDlg, IDC_SCANLINES, BM_GETCHECK, 0, 0);
-      configModel.SpeedThrottle = (unsigned char)SendDlgItemMessage(hDlg, IDC_THROTTLE, BM_GETCHECK, 0, 0);
-      configModel.RememberSize = (unsigned char)SendDlgItemMessage(hDlg, IDC_REMEMBER_SIZE, BM_GETCHECK, 0, 0);
+      configModel->ForceAspect = (unsigned char)SendDlgItemMessage(hDlg, IDC_ASPECT, BM_GETCHECK, 0, 0);
+      configModel->ScanLines = (unsigned char)SendDlgItemMessage(hDlg, IDC_SCANLINES, BM_GETCHECK, 0, 0);
+      configModel->SpeedThrottle = (unsigned char)SendDlgItemMessage(hDlg, IDC_THROTTLE, BM_GETCHECK, 0, 0);
+      configModel->RememberSize = (unsigned char)SendDlgItemMessage(hDlg, IDC_REMEMBER_SIZE, BM_GETCHECK, 0, 0);
 
       //POINT p = { 640,480 };
       switch (LOWORD(wParam))
@@ -382,11 +382,11 @@ extern "C" {
 
             SendDlgItemMessage(hDlg, Monchoice[temp], BM_SETCHECK, 1, 0);
 
-            configModel.MonitorType = temp;
+            configModel->MonitorType = temp;
           }
         }
 
-        SendDlgItemMessage(hDlg, IDC_MONTYPE, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(MonIcons[configModel.MonitorType]));
+        SendDlgItemMessage(hDlg, IDC_MONTYPE, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(MonIcons[configModel->MonitorType]));
         SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETSTATE, 0, 0);
         SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETSTATE, 0, 0);
 
@@ -404,11 +404,11 @@ extern "C" {
 
             SendDlgItemMessage(hDlg, Monchoice[temp], BM_SETCHECK, 1, 0);
 
-            configModel.MonitorType = temp;
+            configModel->MonitorType = temp;
           }
         }
 
-        SendDlgItemMessage(hDlg, IDC_MONTYPE, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(MonIcons[configModel.MonitorType]));
+        SendDlgItemMessage(hDlg, IDC_MONTYPE, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(MonIcons[configModel->MonitorType]));
         //If RGB is chosen, disable palette buttons.
         SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETSTATE, 1, 0);
         SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETSTATE, 1, 0);
@@ -422,7 +422,7 @@ extern "C" {
           //Original Composite palette
           SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETCHECK, 1, 0);
           SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETCHECK, 0, 0);
-          configModel.PaletteType = 0;
+          configModel->PaletteType = 0;
         }
         else {
           SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETSTATE, 1, 0);
@@ -434,7 +434,7 @@ extern "C" {
           //New Composite palette
           SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETCHECK, 1, 0);
           SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETCHECK, 0, 0);
-          configModel.PaletteType = 1;
+          configModel->PaletteType = 1;
         }
         else {
           SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETSTATE, 1, 0);
@@ -463,11 +463,11 @@ extern "C" {
       }
 
       // select the current layout
-      SendDlgItemMessage(hDlg, IDC_KBCONFIG, CB_SETCURSEL, (WPARAM)(configState->Model.KeyMapIndex), (LPARAM)0);
+      SendDlgItemMessage(hDlg, IDC_KBCONFIG, CB_SETCURSEL, (WPARAM)(configState->Model->KeyMapIndex), (LPARAM)0);
       break;
 
     case WM_COMMAND:
-      configModel.KeyMapIndex = (unsigned char)SendDlgItemMessage(hDlg, IDC_KBCONFIG, CB_GETCURSEL, 0, 0);
+      configModel->KeyMapIndex = (unsigned char)SendDlgItemMessage(hDlg, IDC_KBCONFIG, CB_GETCURSEL, 0, 0);
       break;
     }
 
@@ -487,8 +487,8 @@ extern "C" {
     EmuState* emuState = GetEmuState();
     ConfigState* configState = GetConfigState();
 
-    JoystickModel left = configState->Model.Left;
-    JoystickModel right = configState->Model.Right;
+    JoystickModel left = configState->Model->Left;
+    JoystickModel right = configState->Model->Right;
 
     unsigned char numberOfJoysticks = configState->NumberOfJoysticks;
 
@@ -681,14 +681,14 @@ extern "C" {
     switch (message)
     {
     case WM_INITDIALOG:
-      SendDlgItemMessage(hDlg, IDC_AUTOSTART, BM_SETCHECK, configModel.AutoStart, 0);
-      SendDlgItemMessage(hDlg, IDC_AUTOCART, BM_SETCHECK, configModel.CartAutoStart, 0);
+      SendDlgItemMessage(hDlg, IDC_AUTOSTART, BM_SETCHECK, configModel->AutoStart, 0);
+      SendDlgItemMessage(hDlg, IDC_AUTOCART, BM_SETCHECK, configModel->CartAutoStart, 0);
 
       break;
 
     case WM_COMMAND:
-      configModel.AutoStart = (unsigned char)SendDlgItemMessage(hDlg, IDC_AUTOSTART, BM_GETCHECK, 0, 0);
-      configModel.CartAutoStart = (unsigned char)SendDlgItemMessage(hDlg, IDC_AUTOCART, BM_GETCHECK, 0, 0);
+      configModel->AutoStart = (unsigned char)SendDlgItemMessage(hDlg, IDC_AUTOSTART, BM_GETCHECK, 0, 0);
+      configModel->CartAutoStart = (unsigned char)SendDlgItemMessage(hDlg, IDC_AUTOCART, BM_GETCHECK, 0, 0);
 
       break;
     }
@@ -798,8 +798,8 @@ extern "C" {
     EmuState* emuState = GetEmuState();
     VccState* vccState = GetVccState();
 
-    JoystickModel left = configState->Model.Left;
-    JoystickModel right = configState->Model.Right;
+    JoystickModel left = configState->Model->Left;
+    JoystickModel right = configState->Model->Right;
 
     switch (message)
     {
@@ -865,7 +865,7 @@ extern "C" {
         configState->hDlgTape = NULL;
         emuState->ResetPending = RESET_CLS_SYNCH;
 
-        if ((configState->Model.RamSize != configModel.RamSize) || (configState->Model.CpuType != configModel.CpuType)) {
+        if ((configState->Model->RamSize != configModel->RamSize) || (configState->Model->CpuType != configModel->CpuType)) {
           emuState->ResetPending = RESET_HARD;
         }
 
@@ -873,7 +873,7 @@ extern "C" {
 
         configState->Model = configModel;
 
-        vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->Model.KeyMapIndex));
+        vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->Model->KeyMapIndex));
 
         SetStickNumbers(left.DiDevice, right.DiDevice);
 
@@ -893,7 +893,7 @@ extern "C" {
       case IDAPPLY:
         emuState->ResetPending = RESET_CLS_SYNCH;
 
-        if ((configState->Model.RamSize != configModel.RamSize) || (configState->Model.CpuType != configModel.CpuType)) {
+        if ((configState->Model->RamSize != configModel->RamSize) || (configState->Model->CpuType != configModel->CpuType)) {
           emuState->ResetPending = RESET_HARD;
         }
 
@@ -901,7 +901,7 @@ extern "C" {
 
         configState->Model = configModel;
 
-        vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->Model.KeyMapIndex));
+        vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->Model->KeyMapIndex));
 
         SetStickNumbers(left.DiDevice, right.DiDevice);
 

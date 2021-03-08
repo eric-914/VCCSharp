@@ -303,7 +303,7 @@ extern "C" {
     ofn.nMaxFile = MAX_PATH;						  // sizeof lpstrFile
     ofn.lpstrFileTitle = NULL;						// filename and extension only
     ofn.nMaxFileTitle = MAX_PATH;					// sizeof lpstrFileTitle
-    ofn.lpstrInitialDir = GetConfigState()->Model.CassPath;				// initial directory
+    ofn.lpstrInitialDir = GetConfigState()->Model->CassPath;				// initial directory
     ofn.lpstrTitle = "Insert Tape Image";	// title bar string
 
     retVal = GetOpenFileName(&ofn);
@@ -322,7 +322,7 @@ extern "C" {
       size_t idx = tmp.find_last_of("\\");
       tmp = tmp.substr(0, idx);
 
-      strcpy(GetConfigState()->Model.CassPath, tmp.c_str());
+      strcpy(GetConfigState()->Model->CassPath, tmp.c_str());
     }
 
     return(retVal);

@@ -38,6 +38,8 @@ static TCHAR AppDataPath[MAX_PATH];
 
 ConfigState* InitializeInstance(ConfigState*);
 
+static ConfigModel* model = new ConfigModel();
+
 static ConfigState* instance = InitializeInstance(new ConfigState());
 
 extern "C" {
@@ -47,6 +49,8 @@ extern "C" {
 }
 
 ConfigState* InitializeInstance(ConfigState* p) {
+  p->Model = model;
+
   p->NumberOfSoundCards = 0;
   p->NumberOfJoysticks = 0;
   p->PrintMonitorWindow = 0;
@@ -89,9 +93,9 @@ unsigned char GetSoundCardIndex(char* soundCardName) {
 }
 
 void AdjustOverclockSpeed(EmuState* emuState, unsigned char change) {
-  unsigned char cpuMultiplier = instance->Model.CPUMultiplier + change;
+  unsigned char cpuMultiplier = instance->Model->CPUMultiplier + change;
 
-  if (cpuMultiplier < 2 || cpuMultiplier > instance->Model.MaxOverclock)
+  if (cpuMultiplier < 2 || cpuMultiplier > instance->Model->MaxOverclock)
   {
     return;
   }
@@ -104,7 +108,7 @@ void AdjustOverclockSpeed(EmuState* emuState, unsigned char change) {
     SetDialogCpuMultiplier(hDlg, cpuMultiplier);
   }
 
-  instance->Model.CPUMultiplier = cpuMultiplier;
+  instance->Model->CPUMultiplier = cpuMultiplier;
 
   emuState->ResetPending = RESET_CLS_SYNCH; // Without this, changing the config does nothing.
 }
@@ -128,15 +132,15 @@ void GetIniFilePath(char* iniFilePath, char* argIniFile) {
   }
 }
 
-void ValidateModel(ConfigModel model) {
-  if (instance->Model.KeyMapIndex > 3) {
-    instance->Model.KeyMapIndex = 0;	//Default to DECB Mapping
+void ValidateModel(ConfigModel* model) {
+  if (model->KeyMapIndex > 3) {
+    model->KeyMapIndex = 0;	//Default to DECB Mapping
   }
 
-  FileCheckPath(instance->Model.ModulePath);
-  FileCheckPath(instance->Model.ExternalBasicImage);
+  FileCheckPath(model->ModulePath);
+  FileCheckPath(model->ExternalBasicImage);
 
-  FileValidatePath(instance->Model.ModulePath); //--If module is in same location as .exe, strip off path portion, leaving only module name
+  FileValidatePath(model->ModulePath); //--If module is in same location as .exe, strip off path portion, leaving only module name
 }
 
 extern "C" {
@@ -160,7 +164,7 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) char* __cdecl ExternalBasicImage(void)
   {
-    return(instance->Model.ExternalBasicImage);
+    return(instance->Model->ExternalBasicImage);
   }
 }
 
@@ -189,19 +193,19 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) int __cdecl GetCurrentKeyboardLayout() {
-    return(instance->Model.KeyMapIndex);
+    return(instance->Model->KeyMapIndex);
   }
 }
 
 extern "C" {
   __declspec(dllexport) int __cdecl GetPaletteType() {
-    return(instance->Model.PaletteType);
+    return(instance->Model->PaletteType);
   }
 }
 
 extern "C" {
   __declspec(dllexport) int __cdecl GetRememberSize() {
-    return((int)(instance->Model.RememberSize));
+    return((int)(instance->Model->RememberSize));
   }
 }
 
@@ -209,8 +213,8 @@ extern "C" {
   __declspec(dllexport) POINT __cdecl GetIniWindowSize() {
     POINT out = POINT();
 
-    out.x = instance->Model.WindowSizeX;
-    out.y = instance->Model.WindowSizeY;
+    out.x = instance->Model->WindowSizeX;
+    out.y = instance->Model->WindowSizeY;
 
     return(out);
   }
@@ -274,8 +278,8 @@ extern "C" {
   {
     bool temp = false;
 
-    JoystickModel left = instance->Model.Left;
-    JoystickModel right = instance->Model.Right;
+    JoystickModel left = instance->Model->Left;
+    JoystickModel right = instance->Model->Right;
 
     instance->NumberOfJoysticks = EnumerateJoysticks();
 
@@ -312,7 +316,7 @@ extern "C" {
     OPENFILENAME ofn;
     char dummy[MAX_PATH] = "";
     char tempFileName[MAX_PATH] = "";
-    char* serialCaptureFilePath = instance->Model.SerialCaptureFilePath;
+    char* serialCaptureFilePath = instance->Model->SerialCaptureFilePath;
 
     memset(&ofn, 0, sizeof(ofn));
 
@@ -340,7 +344,7 @@ extern "C" {
         size_t idx = tmp.find_last_of("\\");
         tmp = tmp.substr(0, idx);
 
-        strcpy(instance->Model.SerialCaptureFilePath, tmp.c_str());
+        strcpy(instance->Model->SerialCaptureFilePath, tmp.c_str());
       }
     }
 
@@ -380,21 +384,21 @@ extern "C" {
   {
     VccState* vccState = GetVccState();
 
-    ConfigModel model = instance->Model;
+    ConfigModel* model = instance->Model;
 
-    vccState->AutoStart = model.AutoStart;
-    vccState->Throttle = model.SpeedThrottle;
+    vccState->AutoStart = model->AutoStart;
+    vccState->Throttle = model->SpeedThrottle;
 
-    emuState->RamSize = model.RamSize;
-    emuState->FrameSkip = model.FrameSkip;
+    emuState->RamSize = model->RamSize;
+    emuState->FrameSkip = model->FrameSkip;
 
     SetPaletteType();
-    SetAspect(model.ForceAspect);
-    SetScanLines(emuState, model.ScanLines);
-    SetCPUMultiplier(model.CPUMultiplier);
-    SetCpuType(model.CpuType);
-    SetMonitorType(model.MonitorType);
-    MC6821_SetCartAutoStart(model.CartAutoStart);
+    SetAspect(model->ForceAspect);
+    SetScanLines(emuState, model->ScanLines);
+    SetCPUMultiplier(model->CPUMultiplier);
+    SetCpuType(model->CpuType);
+    SetMonitorType(model->MonitorType);
+    MC6821_SetCartAutoStart(model->CartAutoStart);
   }
 }
 
@@ -404,7 +408,7 @@ extern "C" {
     HANDLE hr = NULL;
     int lasterror;
 
-    ResourceAppTitle(emuState->Resources, instance->Model.Release);  //--A kind of "versioning" I guess
+    ResourceAppTitle(emuState->Resources, instance->Model->Release);  //--A kind of "versioning" I guess
 
     GetIniFilePath(instance->IniFilePath, cmdArg->IniFile);
 
@@ -413,16 +417,16 @@ extern "C" {
     //--Synch joysticks to config instance
     JoystickState* joystickState = GetJoystickState();
 
-    joystickState->Left = &(instance->Model.Left);
-    joystickState->Right = &(instance->Model.Right);
+    joystickState->Left = &(instance->Model->Left);
+    joystickState->Right = &(instance->Model->Right);
 
     ReadIniFile(emuState);
 
     SynchSystemWithConfig(emuState);
     ConfigureJoysticks();
 
-    unsigned char soundCardIndex = GetSoundCardIndex(instance->Model.SoundCardName);
-    SoundInit(emuState->WindowHandle, instance->SoundCards[soundCardIndex].Guid, instance->Model.AudioRate);
+    unsigned char soundCardIndex = GetSoundCardIndex(instance->Model->SoundCardName);
+    SoundInit(emuState->WindowHandle, instance->SoundCards[soundCardIndex].Guid, instance->Model->AudioRate);
 
     //  Try to open the config file.  Create it if necessary.  Abort if failure.
     hr = CreateFile(instance->IniFilePath,
@@ -449,16 +453,16 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl ReadIniFile(EmuState* emuState)
   {
-    instance->Model = LoadConfiguration(instance->IniFilePath);
+    LoadConfiguration(instance->Model, instance->IniFilePath);
 
     ValidateModel(instance->Model);
 
-    vccKeyboardBuildRuntimeTable((keyboardlayout_e)(instance->Model.KeyMapIndex));
+    vccKeyboardBuildRuntimeTable((keyboardlayout_e)(instance->Model->KeyMapIndex));
 
-    InsertModule(emuState, instance->Model.ModulePath);	// Should this be here?
+    InsertModule(emuState, instance->Model->ModulePath);	// Should this be here?
 
-    if (instance->Model.RememberSize) {
-      SetWindowSize(instance->Model.WindowSizeX, instance->Model.WindowSizeY);
+    if (instance->Model->RememberSize) {
+      SetWindowSize(instance->Model->WindowSizeX, instance->Model->WindowSizeY);
     }
     else {
       SetWindowSize(640, 480);
@@ -469,10 +473,10 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl WriteIniFile(EmuState* emuState)
   {
-    instance->Model.WindowSizeX = (unsigned short)emuState->WindowSize.x;
-    instance->Model.WindowSizeY = (unsigned short)emuState->WindowSize.y;
+    instance->Model->WindowSizeX = (unsigned short)emuState->WindowSize.x;
+    instance->Model->WindowSizeY = (unsigned short)emuState->WindowSize.y;
 
-    GetCurrentModule(instance->Model.ModulePath);
+    GetCurrentModule(instance->Model->ModulePath);
 
     ValidateModel(instance->Model);
 

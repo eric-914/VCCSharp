@@ -17,7 +17,7 @@ typedef struct
   HWND hDlgBar;
   HWND hDlgTape;
 
-  ConfigModel Model;
+  ConfigModel* Model;
 
   char TextMode;  //--Add LF to CR
   char PrintMonitorWindow;

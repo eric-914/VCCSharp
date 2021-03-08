@@ -272,7 +272,7 @@ extern "C" {
     unsigned short temp = 0;
 
     //--Try to see if rom exists at: DefaultPaths ==> CoCoRomPath
-    strcpy(CoCoRomPath, GetConfigState()->Model.CoCoRomPath);
+    strcpy(CoCoRomPath, GetConfigState()->Model->CoCoRomPath);
     strcat(CoCoRomPath, "\\coco3.rom");
 
     if (CoCoRomPath != "") {
