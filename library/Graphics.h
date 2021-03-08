@@ -1,9 +1,11 @@
 #pragma once
 
 #include "GraphicsState.h"
+#include "GraphicsSurfaces.h"
 #include "EmuState.h"
 
 extern "C" __declspec(dllexport) GraphicsState * __cdecl GetGraphicsState();
+extern "C" __declspec(dllexport) GraphicsSurfaces* __cdecl GetGraphicsSurfaces();
 
 extern "C" __declspec(dllexport) unsigned char __cdecl CheckState(unsigned char);
 extern "C" __declspec(dllexport) unsigned char __cdecl SetMonitorType(unsigned char);

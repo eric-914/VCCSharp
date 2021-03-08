@@ -229,6 +229,7 @@
     <ClInclude Include="Emu.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsState.h" />
+    <ClInclude Include="GraphicsSurfaces.h" />
     <ClInclude Include="HD6309.h" />
     <ClInclude Include="HD6309Macros.h" />
     <ClInclude Include="HD6309OpCodes.h" />

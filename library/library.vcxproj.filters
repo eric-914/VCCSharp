@@ -328,6 +328,9 @@
     <ClInclude Include="VccState.h">
       <Filter>vcc</Filter>
     </ClInclude>
+    <ClInclude Include="GraphicsSurfaces.h">
+      <Filter>models</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="audio">

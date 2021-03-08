@@ -25,12 +25,12 @@ typedef struct
   unsigned char LowerCase;
   unsigned char MasterMode;
   unsigned char MonType;
-  unsigned char PalleteIndex;
+  unsigned char PaletteIndex;
   unsigned char Stretch;
   unsigned char TextBGColor;
-  unsigned char TextBGPallete;
+  unsigned char TextBGPalette;
   unsigned char TextFGColor;
-  unsigned char TextFGPallete;
+  unsigned char TextFGPalette;
   unsigned char VertCenter;
   unsigned char VresIndex;
 
@@ -55,19 +55,16 @@ typedef struct
   unsigned char  ColorTable16Bit[4];
   unsigned char  ColorTable32Bit[4];
 
-  unsigned char  Pallete[16];       //Coco 3 6 bit colors
-  unsigned char  Pallete8Bit[16];
-  unsigned short Pallete16Bit[16];  //Color values translated to 16bit 32BIT
-  unsigned int   Pallete32Bit[16];  //Color values translated to 24/32 bits
+  unsigned char  Palette[16];       //Coco 3 6 bit colors
+  unsigned char  Palette8Bit[16];
+  unsigned short Palette16Bit[16];  //Color values translated to 16bit 32BIT
+  unsigned int   Palette32Bit[16];  //Color values translated to 24/32 bits
 
-  unsigned char  PalleteLookup8[2][64];	  //0 = RGB 1=comp 8BIT
-  unsigned short PalleteLookup16[2][64];	//0 = RGB 1=comp 16BIT
-  unsigned int   PalleteLookup32[2][64];	//0 = RGB 1=comp 32BIT
+  unsigned char  PaletteLookup8[2][64];	  //0 = RGB 1=comp 8BIT
+  unsigned short PaletteLookup16[2][64];	//0 = RGB 1=comp 16BIT
+  unsigned int   PaletteLookup32[2][64];	//0 = RGB 1=comp 32BIT
 
   unsigned char  Lpf[4];
   unsigned char  VcenterTable[4];
 
-  unsigned char* pSurface8;
-  unsigned short* pSurface16;
-  unsigned int* pSurface32;
 } GraphicsState;
