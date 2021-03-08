@@ -125,7 +125,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public unsafe float Render(EmuState* emuState)
+        private unsafe float Render(EmuState* emuState)
         {
             _modules.Throttle.StartRender();
 

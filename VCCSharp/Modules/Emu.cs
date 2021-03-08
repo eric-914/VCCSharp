@@ -88,7 +88,7 @@ namespace VCCSharp.Modules
             _modules.CoCo.SetClockSpeed(1);
         }
 
-        public void GimeReset()
+        private void GimeReset()
         {
             _modules.Graphics.ResetGraphicsState();
             _modules.Graphics.MakeRGBPalette();
@@ -103,12 +103,12 @@ namespace VCCSharp.Modules
         }
 
 
-        public void SetCPUToHD6309()
+        private void SetCPUToHD6309()
         {
             Library.Emu.SetCPUToHD6309();
         }
 
-        public void SetCPUToMC6809()
+        private void SetCPUToMC6809()
         {
             Library.Emu.SetCPUToMC6809();
         }

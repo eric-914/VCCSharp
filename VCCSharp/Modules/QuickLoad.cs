@@ -15,15 +15,11 @@ namespace VCCSharp.Modules
 
     public class QuickLoad : IQuickLoad
     {
-        private readonly IPAKInterface _pakInterface;
-        private readonly ITC1014 _tc1014;
-        private readonly ICPU _cpu;
+        private readonly IModules _modules;
 
         public QuickLoad(IModules modules)
         {
-            _pakInterface = modules.PAKInterface;
-            _tc1014 = modules.TC1014;
-            _cpu = modules.CPU;
+            _modules = modules;
         }
 
         public unsafe int QuickStart(EmuState* emuState, string binFileName)
@@ -57,7 +53,7 @@ namespace VCCSharp.Modules
 
             if (modules.Contains(extension))
             {
-                _pakInterface.InsertModule(emuState, binFileName);
+                _modules.PAKInterface.InsertModule(emuState, binFileName);
             }
 
             if (extension == ".bin")
@@ -68,7 +64,7 @@ namespace VCCSharp.Modules
             return (int)QuickStartStatuses.Unknown;
         }
 
-        public int LoadBinFile(string binFileName)
+        private int LoadBinFile(string binFileName)
         {
             byte[] memImage;
 
@@ -101,7 +97,7 @@ namespace VCCSharp.Modules
                 {
                     for (ushort memIndex = 0; memIndex < fileLength; memIndex++)
                     { //Kluge!!!
-                        _tc1014.MemWrite8(memImage[memIndex], (ushort)(startAddress + memIndex));
+                        _modules.TC1014.MemWrite8(memImage[memIndex], (ushort)(startAddress + memIndex));
                     }
                 }
                 else
@@ -113,7 +109,7 @@ namespace VCCSharp.Modules
                         return (int)QuickStartStatuses.InvalidTransfer;
                     }
 
-                    _cpu.CPUForcePC(startAddress);
+                    _modules.CPU.CPUForcePC(startAddress);
                 }
             }
         }

@@ -29,26 +29,6 @@ namespace VCCSharp.Modules
             return Library.CoCo.GetCoCoState();
         }
 
-        public void SetClockSpeed(ushort cycles)
-        {
-            unsafe
-            {
-                GetCoCoState()->OverClock = cycles;
-            }
-        }
-
-        public unsafe float RenderFrame(EmuState* emuState)
-        {
-            if (RenderVideoFrame(emuState) == 1)
-            {
-                return 0;
-            }
-
-            RenderAudioFrame();
-
-            return _modules.Throttle.CalculateFPS();
-        }
-
         public void CocoReset()
         {
             unsafe
@@ -74,7 +54,29 @@ namespace VCCSharp.Modules
             }
         }
 
-        public unsafe byte RenderVideoFrame(EmuState* emuState)
+        public void SetClockSpeed(ushort cycles)
+        {
+            unsafe
+            {
+                GetCoCoState()->OverClock = cycles;
+            }
+        }
+
+        #region RenderFrame
+
+        public unsafe float RenderFrame(EmuState* emuState)
+        {
+            if (RenderVideoFrame(emuState) == 1)
+            {
+                return 0;
+            }
+
+            RenderAudioFrame();
+
+            return _modules.Throttle.CalculateFPS();
+        }
+
+        private unsafe byte RenderVideoFrame(EmuState* emuState)
         {
             CoCoState* cocoState = GetCoCoState();
 
@@ -170,7 +172,7 @@ namespace VCCSharp.Modules
             return 0;
         }
 
-        public void RenderAudioFrame()
+        private void RenderAudioFrame()
         {
             unsafe
             {
@@ -195,7 +197,11 @@ namespace VCCSharp.Modules
             }
         }
 
-        public /* _inline */ int CPUCycle()
+        #endregion
+
+        #region CPUCycle
+
+        private /* _inline */ void CPUCycle()
         {
             unsafe
             {
@@ -222,54 +228,9 @@ namespace VCCSharp.Modules
                     CPUCycleClipboard(vccState);
                 }
             }
-
-            return 0;
         }
 
-        public unsafe void CoCoDrawTopBorder(EmuState* emuState)
-        {
-            Library.CoCo.CoCoDrawTopBorder(emuState);
-        }
-
-        public unsafe void CoCoUpdateScreen(EmuState* emuState)
-        {
-            Library.CoCo.CoCoUpdateScreen(emuState);
-        }
-
-        public unsafe void CoCoDrawBottomBorder(EmuState* emuState)
-        {
-            Library.CoCo.CoCoDrawBottomBorder(emuState);
-        }
-
-        public unsafe void CPUCyclePicos(VccState* vccState)
-        {
-            CoCoState* cocoState = GetCoCoState();
-            cocoState->StateSwitch = 0;
-
-            //Does this iteration need to Timer Interrupt
-            if ((cocoState->PicosToInterrupt <= cocoState->PicosThisLine) && cocoState->IntEnable == Define.TRUE)
-            {
-                cocoState->StateSwitch = 1;
-            }
-
-            //Does it need to collect an Audio sample
-            if ((cocoState->PicosToSoundSample <= cocoState->PicosThisLine) && cocoState->SndEnable == Define.TRUE)
-            {
-                cocoState->StateSwitch += 2;
-            }
-
-            var cases = new Dictionary<uint, Action>
-            {
-                {0, CPUCyclePicosCase0 },
-                {1, CPUCyclePicosCase1 },
-                {2, CPUCyclePicosCase2 },
-                {3, CPUCyclePicosCase3 }
-            };
-
-            cases[cocoState->StateSwitch]();
-        }
-
-        public unsafe void CPUCycleClipboard(VccState* vccState)
+        private unsafe void CPUCycleClipboard(VccState* vccState)
         {
             const char SHIFT = (char)0x36;
             char key;
@@ -344,13 +305,36 @@ namespace VCCSharp.Modules
 
         }
 
-        public void ResetKeyMap()
+        private unsafe void CPUCyclePicos(VccState* vccState)
         {
-            Library.CoCo.ResetKeyMap();
+            CoCoState* cocoState = GetCoCoState();
+            cocoState->StateSwitch = 0;
+
+            //Does this iteration need to Timer Interrupt
+            if ((cocoState->PicosToInterrupt <= cocoState->PicosThisLine) && cocoState->IntEnable == Define.TRUE)
+            {
+                cocoState->StateSwitch = 1;
+            }
+
+            //Does it need to collect an Audio sample
+            if ((cocoState->PicosToSoundSample <= cocoState->PicosThisLine) && cocoState->SndEnable == Define.TRUE)
+            {
+                cocoState->StateSwitch += 2;
+            }
+
+            var cases = new Dictionary<uint, Action>
+            {
+                {0, CPUCyclePicosCase0 },
+                {1, CPUCyclePicosCase1 },
+                {2, CPUCyclePicosCase2 },
+                {3, CPUCyclePicosCase3 }
+            };
+
+            cases[cocoState->StateSwitch]();
         }
 
         //No interrupts this line
-        public void CPUCyclePicosCase0()
+        private void CPUCyclePicosCase0()
         {
             unsafe
             {
@@ -374,7 +358,7 @@ namespace VCCSharp.Modules
         }
 
         //Only Interrupting
-        public void CPUCyclePicosCase1()
+        private void CPUCyclePicosCase1()
         {
             unsafe
             {
@@ -400,7 +384,7 @@ namespace VCCSharp.Modules
         }
 
         //Only Sampling
-        public void CPUCyclePicosCase2()
+        private void CPUCyclePicosCase2()
         {
             unsafe
             {
@@ -426,7 +410,7 @@ namespace VCCSharp.Modules
         }
 
         //Interrupting and Sampling
-        public void CPUCyclePicosCase3()
+        private void CPUCyclePicosCase3()
         {
             unsafe
             {
@@ -541,9 +525,31 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void ExecuteAudioEvent()
+        #endregion
+
+        private void ExecuteAudioEvent()
         {
             Library.CoCo.ExecuteAudioEvent();
+        }
+
+        private unsafe void CoCoDrawTopBorder(EmuState* emuState)
+        {
+            Library.CoCo.CoCoDrawTopBorder(emuState);
+        }
+
+        private unsafe void CoCoUpdateScreen(EmuState* emuState)
+        {
+            Library.CoCo.CoCoUpdateScreen(emuState);
+        }
+
+        private unsafe void CoCoDrawBottomBorder(EmuState* emuState)
+        {
+            Library.CoCo.CoCoDrawBottomBorder(emuState);
+        }
+
+        private void ResetKeyMap()
+        {
+            Library.CoCo.ResetKeyMap();
         }
     }
 }
