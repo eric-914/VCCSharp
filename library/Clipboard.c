@@ -21,7 +21,7 @@ ClipboardState* InitializeInstance(ClipboardState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) bool __cdecl ClipboardEmpty() {
+  __declspec(dllexport) BOOL __cdecl ClipboardEmpty() {
     return instance->ClipboardText.empty();
   }
 }

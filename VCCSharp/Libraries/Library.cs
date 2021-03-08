@@ -46,13 +46,16 @@ namespace VCCSharp.Libraries
             public static extern unsafe void LoadCassetteBuffer(byte* cassBuffer);
         }
 
+        public static class Clipboard
+        {
+            [DllImport(LIBRARY)]
+            public static extern int ClipboardEmpty();
+        }
+
         public static class CoCo
         {
             [DllImport(LIBRARY)]
             public static extern unsafe CoCoState* GetCoCoState();
-
-            [DllImport(LIBRARY)]
-            public static extern /* _inline */ int CPUCycle();
 
             [DllImport(LIBRARY)]
             public static extern unsafe void CoCoDrawTopBorder(EmuState* emuState);
@@ -158,6 +161,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void MC6821_irq_fs(int phase);
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6821_irq_hs(int phase);
         }
 
         public static class PAKInterface
@@ -176,6 +182,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe int InsertModule(EmuState* emuState, string modulePath);
+
+            [DllImport(LIBRARY)]
+            public static extern void PakTimer();
         }
 
         public static class Resource
@@ -203,6 +212,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void GimeAssertVertInterrupt();
+
+            [DllImport(LIBRARY)]
+            public static extern void GimeAssertHorzInterrupt();
         }
 
         public static class Throttle

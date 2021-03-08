@@ -10,6 +10,7 @@ namespace VCCSharp.Modules
         byte MmuInit(byte ramSizeOption);
         void MemWrite8(byte data, ushort address);
         void GimeAssertVertInterrupt();
+        void GimeAssertHorzInterrupt();
     }
 
     public class TC1014 : ITC1014
@@ -42,6 +43,11 @@ namespace VCCSharp.Modules
         public void GimeAssertVertInterrupt()
         {
             Library.TC1014.GimeAssertVertInterrupt();
+        }
+
+        public void GimeAssertHorzInterrupt()
+        {
+            Library.TC1014.GimeAssertHorzInterrupt();
         }
     }
 }

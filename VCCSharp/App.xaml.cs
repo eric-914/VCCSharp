@@ -15,6 +15,7 @@ namespace VCCSharp
                 .SelfBind()
                 .Singleton<IAudio, Audio>()
                 .Singleton<ICassette, Cassette>()
+                .Singleton<IClipboard, Modules.Clipboard>()
                 .Singleton<ICoCo, CoCo>()
                 .Singleton<IConfig, Config>()
                 .Singleton<ICPU, CPU>()

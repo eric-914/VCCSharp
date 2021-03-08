@@ -1,4 +1,5 @@
-﻿using VCCSharp.IoC;
+﻿using VCCSharp.Enums;
+using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 
@@ -77,7 +78,7 @@ namespace VCCSharp.Modules
 
             _modules.Graphics.SetBlinkState(cocoState->BlinkPhase);
 
-            _modules.MC6821.MC6821_irq_fs(0);   //FS low to High transition start of display Blink needs this
+            _modules.MC6821.MC6821_irq_fs(PhaseStates.Falling);   //FS low to High transition start of display Blink needs this
 
             //TODO: I don't think updating emuState->LineCounter = counter is needed.
 
@@ -130,7 +131,7 @@ namespace VCCSharp.Modules
                 }
             }
 
-            _modules.MC6821.MC6821_irq_fs(1);  //End of active display FS goes High to Low
+            _modules.MC6821.MC6821_irq_fs(PhaseStates.Rising);  //End of active display FS goes High to Low
 
             if (cocoState->VertInterruptEnabled == Define.TRUE)
             {
@@ -198,9 +199,29 @@ namespace VCCSharp.Modules
             {
                 CoCoState* cocoState = GetCoCoState();
                 VccState* vccState = _modules.Vcc.GetVccState();
+
+                if (cocoState->HorzInterruptEnabled == Define.TRUE)
+                {
+                    _modules.TC1014.GimeAssertHorzInterrupt();
+                }
+
+                _modules.MC6821.MC6821_irq_hs(PhaseStates.Any);
+                _modules.PAKInterface.PakTimer();
+
+                cocoState->PicosThisLine += cocoState->PicosPerLine;
+
+                while (cocoState->PicosThisLine > 1)
+                {
+                    CPUCyclePicos(vccState);
+                }
+
+                if (_modules.Clipboard.ClipboardEmpty() == Define.FALSE)
+                {
+                    CPUCycleClipboard(vccState);
+                }
             }
 
-            return Library.CoCo.CPUCycle();
+            return 0;
         }
 
         public unsafe void CoCoDrawTopBorder(EmuState* emuState)

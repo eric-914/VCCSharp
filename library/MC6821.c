@@ -149,33 +149,27 @@ extern "C" {
       MC6821_AssertCart();
     }
 
-    CPU* cpu = GetCPU();
-
     switch (phase)
     {
-    case 0:	//FS went High to low
-      if ((instance->rega[3] & 2) == 0) { //IRQ on High to low transition
+    case FALLING:	//FS went High to low
+      if ((instance->rega[3] & 2) == 0) //IRQ on High to low transition
+      {
         instance->rega[3] = (instance->rega[3] | 128);
       }
 
-      if (instance->rega[3] & 1) {
-        cpu->CPUAssertInterrupt(IRQ, 1);
-      }
+      break;
 
-      return;
-
-    case 1:	//FS went Low to High
-
+    case RISING:	//FS went Low to High
       if ((instance->rega[3] & 2)) //IRQ  Low to High transition
       {
         instance->rega[3] = (instance->rega[3] | 128);
-
-        if (instance->rega[3] & 1) {
-          cpu->CPUAssertInterrupt(IRQ, 1);
-        }
       }
 
-      return;
+      break;
+    }
+
+    if (instance->rega[3] & 1) {
+      GetCPU()->CPUAssertInterrupt(IRQ, 1);
     }
   }
 }
