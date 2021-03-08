@@ -77,6 +77,24 @@ CoCoState* InitializeInstance(CoCoState* p) {
 }
 
 extern "C" {
+  __declspec(dllexport) void __cdecl CoCoDrawTopBorder(EmuState* emuState) {
+    DrawTopBorder[emuState->BitDepth](emuState);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl CoCoUpdateScreen(EmuState* emuState) {
+    UpdateScreen[emuState->BitDepth](emuState);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl CoCoDrawBottomBorder(EmuState* emuState) {
+    DrawBottomBorder[emuState->BitDepth](emuState);
+  }
+}
+
+extern "C" {
   __declspec(dllexport) void __cdecl AudioOut(void)
   {
     instance->AudioBuffer[instance->AudioIndex++] = MC6821_GetDACSample();
@@ -89,7 +107,6 @@ extern "C" {
     instance->VertInterruptEnabled = !!state;
   }
 }
-
 
 extern "C" {
   __declspec(dllexport) void __cdecl SetHorzInterruptState(unsigned char state)
@@ -259,9 +276,233 @@ extern "C" {
 }
 
 extern "C" {
+  __declspec(dllexport) void __cdecl CPUCyclePicos(VccState* vccState) {
+  CPU* cpu = GetCPU();
+
+  instance->StateSwitch = 0;
+
+  if ((instance->PicosToInterrupt <= instance->PicosThisLine) && instance->IntEnable) {	//Does this iteration need to Timer Interrupt
+    instance->StateSwitch = 1;
+  }
+
+  if ((instance->PicosToSoundSample <= instance->PicosThisLine) && instance->SndEnable) { //Does it need to collect an Audio sample
+    instance->StateSwitch += 2;
+  }
+
+  switch (instance->StateSwitch)
+  {
+  case 0:		//No interrupts this line
+    instance->CyclesThisLine = instance->CycleDrift + (instance->PicosThisLine * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
+
+    if (instance->CyclesThisLine >= 1) {	//Avoid un-needed CPU engine calls
+      instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
+    }
+    else {
+      instance->CycleDrift = instance->CyclesThisLine;
+    }
+
+    instance->PicosToInterrupt -= instance->PicosThisLine;
+    instance->PicosToSoundSample -= instance->PicosThisLine;
+    instance->PicosThisLine = 0;
+
+    break;
+
+  case 1:		//Only Interrupting
+    instance->PicosThisLine -= instance->PicosToInterrupt;
+    instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToInterrupt * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
+
+    if (instance->CyclesThisLine >= 1) {
+      instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
+    }
+    else {
+      instance->CycleDrift = instance->CyclesThisLine;
+    }
+
+    GimeAssertTimerInterrupt();
+
+    instance->PicosToSoundSample -= instance->PicosToInterrupt;
+    instance->PicosToInterrupt = instance->MasterTickCounter;
+
+    break;
+
+  case 2:		//Only Sampling
+    instance->PicosThisLine -= instance->PicosToSoundSample;
+    instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
+
+    if (instance->CyclesThisLine >= 1) {
+      instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
+    }
+    else {
+      instance->CycleDrift = instance->CyclesThisLine;
+    }
+
+    AudioEvent();
+
+    instance->PicosToInterrupt -= instance->PicosToSoundSample;
+    instance->PicosToSoundSample = instance->SoundInterrupt;
+
+    break;
+
+  case 3:		//Interrupting and Sampling
+    if (instance->PicosToSoundSample < instance->PicosToInterrupt)
+    {
+      instance->PicosThisLine -= instance->PicosToSoundSample;
+      instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
+
+      if (instance->CyclesThisLine >= 1) {
+        instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
+      }
+      else {
+        instance->CycleDrift = instance->CyclesThisLine;
+      }
+
+      AudioEvent();
+
+      instance->PicosToInterrupt -= instance->PicosToSoundSample;
+      instance->PicosToSoundSample = instance->SoundInterrupt;
+      instance->PicosThisLine -= instance->PicosToInterrupt;
+
+      instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToInterrupt * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
+
+      if (instance->CyclesThisLine >= 1) {
+        instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
+      }
+      else {
+        instance->CycleDrift = instance->CyclesThisLine;
+      }
+
+      GimeAssertTimerInterrupt();
+
+      instance->PicosToSoundSample -= instance->PicosToInterrupt;
+      instance->PicosToInterrupt = instance->MasterTickCounter;
+
+      break;
+    }
+
+    if (instance->PicosToSoundSample > instance->PicosToInterrupt)
+    {
+      instance->PicosThisLine -= instance->PicosToInterrupt;
+      instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToInterrupt * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
+
+      if (instance->CyclesThisLine >= 1) {
+        instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
+      }
+      else {
+        instance->CycleDrift = instance->CyclesThisLine;
+      }
+
+      GimeAssertTimerInterrupt();
+
+      instance->PicosToSoundSample -= instance->PicosToInterrupt;
+      instance->PicosToInterrupt = instance->MasterTickCounter;
+      instance->PicosThisLine -= instance->PicosToSoundSample;
+      instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
+
+      if (instance->CyclesThisLine >= 1) {
+        instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
+      }
+      else {
+        instance->CycleDrift = instance->CyclesThisLine;
+      }
+
+      AudioEvent();
+
+      instance->PicosToInterrupt -= instance->PicosToSoundSample;
+      instance->PicosToSoundSample = instance->SoundInterrupt;
+
+      break;
+    }
+
+    //They are the same (rare)
+    instance->PicosThisLine -= instance->PicosToInterrupt;
+    instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
+
+    if (instance->CyclesThisLine > 1) {
+      instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
+    }
+    else {
+      instance->CycleDrift = instance->CyclesThisLine;
+    }
+
+    GimeAssertTimerInterrupt();
+
+    AudioEvent();
+
+    instance->PicosToInterrupt = instance->MasterTickCounter;
+    instance->PicosToSoundSample = instance->SoundInterrupt;
+  }
+}
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl CPUCycleClipboard(VccState* vccState) {
+  char tmp[] = { 0x00 };
+  char kbstate = 2;
+  int z = 0;
+  char key;
+  const char SHIFT = 0x36;
+
+  //Remember the original throttle setting.
+  //Set it to off. We need speed for this!
+  if (instance->Throttle == 0) {
+    instance->Throttle = vccState->Throttle;
+
+    if (instance->Throttle == 0) {
+      instance->Throttle = 2; // 2 = No throttle.
+    }
+  }
+
+  vccState->Throttle = 0;
+
+  if (instance->ClipCycle == 1) {
+    key = PeekClipboard();
+
+    if (key == SHIFT) {
+      vccKeyboardHandleKey(SHIFT, SHIFT, kEventKeyDown);  //Press shift and...
+      PopClipboard();
+      key = PeekClipboard();
+    }
+
+    vccKeyboardHandleKey(key, key, kEventKeyDown);
+
+    instance->WaitCycle = key == 0x1c ? 6000 : 2000;
+  }
+  else if (instance->ClipCycle == 500) {
+    key = PeekClipboard();
+
+    vccKeyboardHandleKey(SHIFT, SHIFT, kEventKeyUp);
+    vccKeyboardHandleKey(0x42, key, kEventKeyUp);
+    PopClipboard();
+
+    if (ClipboardEmpty()) { //Finished?
+      SetPaste(false);
+
+      //Done pasting. Reset throttle to original state
+      if (instance->Throttle == 2) {
+        vccState->Throttle = 0;
+      }
+      else {
+        vccState->Throttle = 1;
+      }
+
+      //...and reset the keymap to the original state
+      vccKeyboardBuildRuntimeTable((keyboardlayout_e)GetCurrentKeyMap());
+
+      instance->Throttle = 0;
+    }
+  }
+
+  instance->ClipCycle++;
+
+  if (instance->ClipCycle > instance->WaitCycle) {
+    instance->ClipCycle = 1;
+  }
+}
+}
+
+extern "C" {
   __declspec(dllexport) /* _inline */ int __cdecl CPUCycle(void)
   {
-    CPU* cpu = GetCPU();
     VccState* vccState = GetVccState();
 
     if (instance->HorzInterruptEnabled) {
@@ -275,242 +516,13 @@ extern "C" {
 
     while (instance->PicosThisLine > 1)
     {
-      instance->StateSwitch = 0;
-
-      if ((instance->PicosToInterrupt <= instance->PicosThisLine) && instance->IntEnable) {	//Does this iteration need to Timer Interrupt
-        instance->StateSwitch = 1;
-      }
-
-      if ((instance->PicosToSoundSample <= instance->PicosThisLine) && instance->SndEnable) { //Does it need to collect an Audio sample
-        instance->StateSwitch += 2;
-      }
-
-      switch (instance->StateSwitch)
-      {
-      case 0:		//No interrupts this line
-        instance->CyclesThisLine = instance->CycleDrift + (instance->PicosThisLine * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-        if (instance->CyclesThisLine >= 1) {	//Avoid un-needed CPU engine calls
-          instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-        }
-        else {
-          instance->CycleDrift = instance->CyclesThisLine;
-        }
-
-        instance->PicosToInterrupt -= instance->PicosThisLine;
-        instance->PicosToSoundSample -= instance->PicosThisLine;
-        instance->PicosThisLine = 0;
-
-        break;
-
-      case 1:		//Only Interrupting
-        instance->PicosThisLine -= instance->PicosToInterrupt;
-        instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToInterrupt * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-        if (instance->CyclesThisLine >= 1) {
-          instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-        }
-        else {
-          instance->CycleDrift = instance->CyclesThisLine;
-        }
-
-        GimeAssertTimerInterrupt();
-
-        instance->PicosToSoundSample -= instance->PicosToInterrupt;
-        instance->PicosToInterrupt = instance->MasterTickCounter;
-
-        break;
-
-      case 2:		//Only Sampling
-        instance->PicosThisLine -= instance->PicosToSoundSample;
-        instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-        if (instance->CyclesThisLine >= 1) {
-          instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-        }
-        else {
-          instance->CycleDrift = instance->CyclesThisLine;
-        }
-
-        AudioEvent();
-
-        instance->PicosToInterrupt -= instance->PicosToSoundSample;
-        instance->PicosToSoundSample = instance->SoundInterrupt;
-
-        break;
-
-      case 3:		//Interrupting and Sampling
-        if (instance->PicosToSoundSample < instance->PicosToInterrupt)
-        {
-          instance->PicosThisLine -= instance->PicosToSoundSample;
-          instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-          if (instance->CyclesThisLine >= 1) {
-            instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-          }
-          else {
-            instance->CycleDrift = instance->CyclesThisLine;
-          }
-
-          AudioEvent();
-
-          instance->PicosToInterrupt -= instance->PicosToSoundSample;
-          instance->PicosToSoundSample = instance->SoundInterrupt;
-          instance->PicosThisLine -= instance->PicosToInterrupt;
-
-          instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToInterrupt * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-          if (instance->CyclesThisLine >= 1) {
-            instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-          }
-          else {
-            instance->CycleDrift = instance->CyclesThisLine;
-          }
-
-          GimeAssertTimerInterrupt();
-
-          instance->PicosToSoundSample -= instance->PicosToInterrupt;
-          instance->PicosToInterrupt = instance->MasterTickCounter;
-
-          break;
-        }
-
-        if (instance->PicosToSoundSample > instance->PicosToInterrupt)
-        {
-          instance->PicosThisLine -= instance->PicosToInterrupt;
-          instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToInterrupt * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-          if (instance->CyclesThisLine >= 1) {
-            instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-          }
-          else {
-            instance->CycleDrift = instance->CyclesThisLine;
-          }
-
-          GimeAssertTimerInterrupt();
-
-          instance->PicosToSoundSample -= instance->PicosToInterrupt;
-          instance->PicosToInterrupt = instance->MasterTickCounter;
-          instance->PicosThisLine -= instance->PicosToSoundSample;
-          instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-          if (instance->CyclesThisLine >= 1) {
-            instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-          }
-          else {
-            instance->CycleDrift = instance->CyclesThisLine;
-          }
-
-          AudioEvent();
-
-          instance->PicosToInterrupt -= instance->PicosToSoundSample;
-          instance->PicosToSoundSample = instance->SoundInterrupt;
-
-          break;
-        }
-
-        //They are the same (rare)
-        instance->PicosThisLine -= instance->PicosToInterrupt;
-        instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-        if (instance->CyclesThisLine > 1) {
-          instance->CycleDrift = cpu->CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-        }
-        else {
-          instance->CycleDrift = instance->CyclesThisLine;
-        }
-
-        GimeAssertTimerInterrupt();
-
-        AudioEvent();
-
-        instance->PicosToInterrupt = instance->MasterTickCounter;
-        instance->PicosToSoundSample = instance->SoundInterrupt;
-      }
+      CPUCyclePicos(vccState);
     }
 
     if (!ClipboardEmpty()) {
-      char tmp[] = { 0x00 };
-      char kbstate = 2;
-      int z = 0;
-      char key;
-      const char SHIFT = 0x36;
-
-      //Remember the original throttle setting.
-      //Set it to off. We need speed for this!
-      if (instance->Throttle == 0) {
-        instance->Throttle = vccState->Throttle;
-
-        if (instance->Throttle == 0) {
-          instance->Throttle = 2; // 2 = No throttle.
-        }
-      }
-
-      vccState->Throttle = 0;
-
-      if (instance->ClipCycle == 1) {
-        key = PeekClipboard();
-
-        if (key == SHIFT) {
-          vccKeyboardHandleKey(SHIFT, SHIFT, kEventKeyDown);  //Press shift and...
-          PopClipboard();
-          key = PeekClipboard();
-        }
-
-        vccKeyboardHandleKey(key, key, kEventKeyDown);
-
-        instance->WaitCycle = key == 0x1c ? 6000 : 2000;
-      }
-      else if (instance->ClipCycle == 500) {
-        key = PeekClipboard();
-
-        vccKeyboardHandleKey(SHIFT, SHIFT, kEventKeyUp);
-        vccKeyboardHandleKey(0x42, key, kEventKeyUp);
-        PopClipboard();
-
-        if (ClipboardEmpty()) { //Finished?
-          SetPaste(false);
-
-          //Done pasting. Reset throttle to original state
-          if (instance->Throttle == 2) {
-            vccState->Throttle = 0;
-          }
-          else {
-            vccState->Throttle = 1;
-          }
-
-          //...and reset the keymap to the original state
-          vccKeyboardBuildRuntimeTable((keyboardlayout_e)GetCurrentKeyMap());
-
-          instance->Throttle = 0;
-        }
-      }
-
-      instance->ClipCycle++;
-
-      if (instance->ClipCycle > instance->WaitCycle) {
-        instance->ClipCycle = 1;
-      }
+      CPUCycleClipboard(vccState);
     }
 
     return(0);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl CoCoDrawTopBorder(EmuState* emuState) {
-    DrawTopBorder[emuState->BitDepth](emuState);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl CoCoUpdateScreen(EmuState* emuState) {
-    UpdateScreen[emuState->BitDepth](emuState);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl CoCoDrawBottomBorder(EmuState* emuState) {
-    DrawBottomBorder[emuState->BitDepth](emuState);
   }
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoCoState.h"
+#include "VccState.h"
 
 extern "C" __declspec(dllexport) CoCoState * __cdecl GetCoCoState();
 
@@ -23,3 +24,6 @@ extern "C" __declspec(dllexport) void __cdecl SetVertInterruptState(unsigned cha
 extern "C" __declspec(dllexport) void __cdecl CoCoDrawTopBorder(EmuState* emuState);
 extern "C" __declspec(dllexport) void __cdecl CoCoUpdateScreen(EmuState* emuState);
 extern "C" __declspec(dllexport) void __cdecl CoCoDrawBottomBorder(EmuState* emuState);
+
+extern "C" __declspec(dllexport) void __cdecl CPUCyclePicos(VccState* vccState);
+extern "C" __declspec(dllexport) void __cdecl CPUCycleClipboard(VccState* vccState);

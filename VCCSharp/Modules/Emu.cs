@@ -12,32 +12,15 @@ namespace VCCSharp.Modules
         unsafe void SetEmuState(EmuState* emuState);
         void SoftReset();
         unsafe void HardReset(EmuState* emuState);
-        void GimeReset();
-        void SetCPUToHD6309();
-        void SetCPUToMC6809();
     }
 
     public class Emu : IEmu
     {
-        private readonly ITC1014 _tc1014;
-        private readonly IMC6821 _mc6821;
-        private readonly IPAKInterface _pakInterface;
-        private readonly ICPU _cpu;
-        private readonly ICoCo _coco;
-        private readonly IGraphics _graphics;
-        private readonly IConfig _config;
-        private readonly IAudio _audio;
+        private readonly IModules _modules;
 
         public Emu(IModules modules)
         {
-            _tc1014 = modules.TC1014;
-            _mc6821 = modules.MC6821;
-            _pakInterface = modules.PAKInterface;
-            _cpu = modules.CPU;
-            _coco = modules.CoCo;
-            _graphics = modules.Graphics;
-            _config = modules.Config;
-            _audio = modules.Audio;
+            _modules = modules;
         }
 
         public unsafe EmuState* GetEmuState()
@@ -52,15 +35,15 @@ namespace VCCSharp.Modules
 
         public void SoftReset()
         {
-            _tc1014.MC6883Reset();
-            _mc6821.MC6821_PiaReset();
+            _modules.TC1014.MC6883Reset();
+            _modules.MC6821.MC6821_PiaReset();
 
-            _cpu.CPUReset();
+            _modules.CPU.CPUReset();
 
             GimeReset();
-            _tc1014.MmuReset();
-            _tc1014.CopyRom();
-            _pakInterface.ResetBus();
+            _modules.TC1014.MmuReset();
+            _modules.TC1014.CopyRom();
+            _modules.PAKInterface.ResetBus();
 
             unsafe
             {
@@ -72,7 +55,7 @@ namespace VCCSharp.Modules
 
         public unsafe void HardReset(EmuState* emuState)
         {
-            if (_tc1014.MmuInit(emuState->RamSize) == Define.FALSE)
+            if (_modules.TC1014.MmuInit(emuState->RamSize) == Define.FALSE)
             {
                 MessageBox.Show("Can't allocate enough RAM, out of memory", "Error");
 
@@ -88,35 +71,35 @@ namespace VCCSharp.Modules
                 SetCPUToMC6809();
             }
 
-            _tc1014.MC6883Reset();  //Captures internal rom pointer for CPU Interrupt Vectors
-            _mc6821.MC6821_PiaReset();
+            _modules.TC1014.MC6883Reset();  //Captures internal rom pointer for CPU Interrupt Vectors
+            _modules.MC6821.MC6821_PiaReset();
 
-            _cpu.CPUInit();
-            _cpu.CPUReset();    // Zero all CPU Registers and sets the PC to VRESET
+            _modules.CPU.CPUInit();
+            _modules.CPU.CPUReset();    // Zero all CPU Registers and sets the PC to VRESET
 
             GimeReset();
 
-            _pakInterface.UpdateBusPointer();
+            _modules.PAKInterface.UpdateBusPointer();
 
             emuState->TurboSpeedFlag = 1;
 
-            _pakInterface.ResetBus();
+            _modules.PAKInterface.ResetBus();
 
-            _coco.SetClockSpeed(1);
+            _modules.CoCo.SetClockSpeed(1);
         }
 
         public void GimeReset()
         {
-            _graphics.ResetGraphicsState();
-            _graphics.MakeRGBPalette();
+            _modules.Graphics.ResetGraphicsState();
+            _modules.Graphics.MakeRGBPalette();
 
-            int paletteType = _config.GetPaletteType();
+            int paletteType = _modules.Config.GetPaletteType();
 
-            _graphics.MakeCMPPalette(paletteType);
+            _modules.Graphics.MakeCMPPalette(paletteType);
 
-            _coco.CocoReset();
+            _modules.CoCo.CocoReset();
 
-            _audio.ResetAudio();
+            _modules.Audio.ResetAudio();
         }
 
 

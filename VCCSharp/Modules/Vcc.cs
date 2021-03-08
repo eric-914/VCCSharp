@@ -21,26 +21,12 @@ namespace VCCSharp.Modules
 
     public class Vcc : IVcc
     {
-        private readonly IEmu _emu;
-        private readonly IDirectDraw _directDraw;
-        private readonly IResource _resource;
-        private readonly IThrottle _throttle;
-        private readonly IPAKInterface _pakInterface;
-        private readonly ICoCo _coco;
-        private readonly IConfig _config;
-
+        private readonly IModules _modules;
         private readonly IKernel _kernel;
         
         public Vcc(IModules modules, IKernel kernel)
         {
-            _emu = modules.Emu;
-            _directDraw = modules.DirectDraw;
-            _resource = modules.Resource;
-            _throttle = modules.Throttle;
-            _pakInterface = modules.PAKInterface;
-            _coco = modules.CoCo;
-            _config = modules.Config;
-
+            _modules = modules;
             _kernel = kernel;
         }
 
@@ -59,7 +45,7 @@ namespace VCCSharp.Modules
                 //As it holds the Secondary screen buffer open while running
                 if (vccState->RunState == (byte)EmuRunStates.Waiting)
                 {
-                    _directDraw.FullScreenToggle();
+                    _modules.DirectDraw.FullScreenToggle();
 
                     vccState->RunState = (byte)EmuRunStates.Running;
                 }
@@ -70,9 +56,9 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                EmuState* emuState = _emu.GetEmuState();
+                EmuState* emuState = _modules.Emu.GetEmuState();
 
-                if (!_directDraw.CreateDirectDrawWindow(emuState))
+                if (!_modules.DirectDraw.CreateDirectDrawWindow(emuState))
                 {
                     MessageBox.Show("Can't create primary window", "Error");
 
@@ -83,7 +69,7 @@ namespace VCCSharp.Modules
 
         public void SetAppTitle(HINSTANCE hResources, string binFileName)
         {
-            string appTitle = _resource.ResourceAppTitle(hResources);
+            string appTitle = _modules.Resource.ResourceAppTitle(hResources);
 
             if (!string.IsNullOrEmpty(binFileName))
             {
@@ -103,7 +89,7 @@ namespace VCCSharp.Modules
             unsafe
             {
                 VccState* vccState = GetVccState();
-                EmuState* emuState = _emu.GetEmuState();
+                EmuState* emuState = _modules.Emu.GetEmuState();
 
                 while (vccState->BinaryRunning == Define.TRUE)
                 {
@@ -119,7 +105,7 @@ namespace VCCSharp.Modules
 
                     float fps = Render(emuState);
 
-                    _pakInterface.GetModuleStatus(emuState);
+                    _modules.PAKInterface.GetModuleStatus(emuState);
 
                     int frameSkip = emuState->FrameSkip;
                     string cpuName = Converter.ToString(vccState->CpuName);
@@ -128,12 +114,12 @@ namespace VCCSharp.Modules
 
                     string statusBarText = $"Skip:{frameSkip} | FPS:{fps:F} | {cpuName} @ {mhz:0.000}Mhz| {status}";
 
-                    _directDraw.SetStatusBarText(statusBarText, emuState);
+                    _modules.DirectDraw.SetStatusBarText(statusBarText, emuState);
 
                     if (vccState->Throttle == Define.TRUE)
                     {
                         //Do nothing until the frame is over returning unused time to OS
-                        _throttle.FrameWait();
+                        _modules.Throttle.FrameWait();
                     }
                 }
             }
@@ -141,7 +127,7 @@ namespace VCCSharp.Modules
 
         public unsafe float Render(EmuState* emuState)
         {
-            _throttle.StartRender();
+            _modules.Throttle.StartRender();
 
             float fps = 0;
 
@@ -149,22 +135,22 @@ namespace VCCSharp.Modules
             {
                 {(byte) ResetPendingStates.None, () => { }},
 
-                {(byte) ResetPendingStates.Soft, () => { _emu.SoftReset(); }},
+                {(byte) ResetPendingStates.Soft, () => { _modules.Emu.SoftReset(); }},
 
                 {(byte) ResetPendingStates.Hard, () =>
                 {
-                    _config.SynchSystemWithConfig(emuState);
-                    _directDraw.DoCls(emuState);
-                    _emu.HardReset(emuState);
+                    _modules.Config.SynchSystemWithConfig(emuState);
+                    _modules.DirectDraw.DoCls(emuState);
+                    _modules.Emu.HardReset(emuState);
 
                 }},
 
-                {(byte) ResetPendingStates.Cls, () => { _directDraw.DoCls(emuState);}},
+                {(byte) ResetPendingStates.Cls, () => { _modules.DirectDraw.DoCls(emuState);}},
 
                 {(byte) ResetPendingStates.ClsSynch, () =>
                 {
-                    _config.SynchSystemWithConfig(emuState);
-                    _directDraw.DoCls(emuState);
+                    _modules.Config.SynchSystemWithConfig(emuState);
+                    _modules.DirectDraw.DoCls(emuState);
                 }}
             };
 
@@ -176,15 +162,15 @@ namespace VCCSharp.Modules
 
                 if (emuState->EmulationRunning == Define.TRUE)
                 {
-                    fps += _coco.RenderFrame(emuState);
+                    fps += _modules.CoCo.RenderFrame(emuState);
                 }
                 else
                 {
-                    fps += _directDraw.Static(emuState);
+                    fps += _modules.DirectDraw.Static(emuState);
                 }
             }
 
-            _throttle.EndRender(emuState->FrameSkip);
+            _modules.Throttle.EndRender(emuState->FrameSkip);
 
             return fps;
         }

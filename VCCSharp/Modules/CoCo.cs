@@ -10,33 +10,15 @@ namespace VCCSharp.Modules
         void SetClockSpeed(ushort cycles);
         unsafe float RenderFrame(EmuState* emuState);
         void CocoReset();
-        unsafe byte RenderVideoFrame(EmuState* emuState);
-        void RenderAudioFrame();
-        int CPUCycle();
-        unsafe void CoCoDrawTopBorder(EmuState* emuState);
-        unsafe void CoCoUpdateScreen(EmuState* emuState);
-        unsafe void CoCoDrawBottomBorder(EmuState* emuState);
     }
 
     public class CoCo : ICoCo
     {
-        private readonly IThrottle _throttle;
-        private readonly IAudio _audio;
-        private readonly ICassette _cassette;
-        private readonly IGraphics _graphics;
-        private readonly IMC6821 _mc6821;
-        private readonly IDirectDraw _directDraw;
-        private readonly ITC1014 _tc1014;
+        private readonly IModules _modules;
 
         public CoCo(IModules modules)
         {
-            _throttle = modules.Throttle;
-            _audio = modules.Audio;
-            _cassette = modules.Cassette;
-            _graphics = modules.Graphics;
-            _mc6821 = modules.MC6821;
-            _directDraw = modules.DirectDraw;
-            _tc1014 = modules.TC1014;
+            _modules = modules;
         }
 
         public unsafe CoCoState* GetCoCoState()
@@ -61,7 +43,7 @@ namespace VCCSharp.Modules
 
             RenderAudioFrame();
 
-            return _throttle.CalculateFPS();
+            return _modules.Throttle.CalculateFPS();
         }
 
         public void CocoReset()
@@ -93,9 +75,9 @@ namespace VCCSharp.Modules
         {
             CoCoState* cocoState = GetCoCoState();
 
-            _graphics.SetBlinkState(cocoState->BlinkPhase);
+            _modules.Graphics.SetBlinkState(cocoState->BlinkPhase);
 
-            _mc6821.MC6821_irq_fs(0);   //FS low to High transition start of display Blink needs this
+            _modules.MC6821.MC6821_irq_fs(0);   //FS low to High transition start of display Blink needs this
 
             //TODO: I don't think updating emuState->LineCounter = counter is needed.
 
@@ -117,7 +99,7 @@ namespace VCCSharp.Modules
 
             if (emuState->FrameCounter % emuState->FrameSkip == Define.FALSE)
             {
-                if (_directDraw.LockScreen(emuState) == Define.TRUE)
+                if (_modules.DirectDraw.LockScreen(emuState) == Define.TRUE)
                 {
                     return 1;
                 }
@@ -148,11 +130,11 @@ namespace VCCSharp.Modules
                 }
             }
 
-            _mc6821.MC6821_irq_fs(1);  //End of active display FS goes High to Low
+            _modules.MC6821.MC6821_irq_fs(1);  //End of active display FS goes High to Low
 
             if (cocoState->VertInterruptEnabled == Define.TRUE)
             {
-                _tc1014.GimeAssertVertInterrupt();
+                _modules.TC1014.GimeAssertVertInterrupt();
             }
 
             //for (emuState->LineCounter = 0; emuState->LineCounter < (cocoState->BottomBorder); emuState->LineCounter++)
@@ -170,8 +152,8 @@ namespace VCCSharp.Modules
 
             if (emuState->FrameCounter % emuState->FrameSkip == Define.FALSE)
             {
-                _directDraw.UnlockScreen(emuState);
-                _graphics.SetBorderChange(0);
+                _modules.DirectDraw.UnlockScreen(emuState);
+                _modules.Graphics.SetBorderChange(0);
             }
 
             //for (emuState->LineCounter = 0; emuState->LineCounter < 6; emuState->LineCounter++)
@@ -194,15 +176,15 @@ namespace VCCSharp.Modules
                 switch (cocoState->SoundOutputMode)
                 {
                     case 0:
-                        _audio.FlushAudioBuffer(cocoState->AudioBuffer, (ushort)(cocoState->AudioIndex << 2));
+                        _modules.Audio.FlushAudioBuffer(cocoState->AudioBuffer, (ushort)(cocoState->AudioIndex << 2));
                         break;
 
                     case 1:
-                        _cassette.FlushCassetteBuffer(cocoState->CassBuffer, cocoState->AudioIndex);
+                        _modules.Cassette.FlushCassetteBuffer(cocoState->CassBuffer, cocoState->AudioIndex);
                         break;
 
                     case 2:
-                        _cassette.LoadCassetteBuffer(cocoState->CassBuffer);
+                        _modules.Cassette.LoadCassetteBuffer(cocoState->CassBuffer);
                         break;
                 }
 
@@ -212,6 +194,12 @@ namespace VCCSharp.Modules
 
         public /* _inline */ int CPUCycle()
         {
+            unsafe
+            {
+                CoCoState* cocoState = GetCoCoState();
+                VccState* vccState = _modules.Vcc.GetVccState();
+            }
+
             return Library.CoCo.CPUCycle();
         }
 
@@ -228,6 +216,16 @@ namespace VCCSharp.Modules
         public unsafe void CoCoDrawBottomBorder(EmuState* emuState)
         {
             Library.CoCo.CoCoDrawBottomBorder(emuState);
+        }
+
+        public unsafe void CPUCyclePicos(VccState* vccState)
+        {
+            Library.CoCo.CPUCyclePicos(vccState);
+        }
+
+        public unsafe void CPUCycleClipboard(VccState* vccState)
+        {
+            Library.CoCo.CPUCycleClipboard(vccState);
         }
     }
 }

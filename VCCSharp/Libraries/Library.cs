@@ -62,6 +62,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void CoCoDrawBottomBorder(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void CPUCyclePicos(VccState* vccState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void CPUCycleClipboard(VccState* vccState);
         }   
 
         public static class Config
