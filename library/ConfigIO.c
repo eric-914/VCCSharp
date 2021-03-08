@@ -40,26 +40,26 @@ extern "C" {
     WritePrivateProfileString("Module", "ModulePath", model->ModulePath, iniFilePath);
 
     //[LeftJoyStick]
-    FileWritePrivateProfileInt("LeftJoyStick", "UseMouse", model->Left.UseMouse, iniFilePath);
-    FileWritePrivateProfileInt("LeftJoyStick", "Left", model->Left.Left, iniFilePath);
-    FileWritePrivateProfileInt("LeftJoyStick", "Right", model->Left.Right, iniFilePath);
-    FileWritePrivateProfileInt("LeftJoyStick", "Up", model->Left.Up, iniFilePath);
-    FileWritePrivateProfileInt("LeftJoyStick", "Down", model->Left.Down, iniFilePath);
-    FileWritePrivateProfileInt("LeftJoyStick", "Fire1", model->Left.Fire1, iniFilePath);
-    FileWritePrivateProfileInt("LeftJoyStick", "Fire2", model->Left.Fire2, iniFilePath);
-    FileWritePrivateProfileInt("LeftJoyStick", "DiDevice", model->Left.DiDevice, iniFilePath);
-    FileWritePrivateProfileInt("LeftJoyStick", "HiResDevice", model->Left.HiRes, iniFilePath);
+    FileWritePrivateProfileInt("LeftJoyStick", "UseMouse", model->Left->UseMouse, iniFilePath);
+    FileWritePrivateProfileInt("LeftJoyStick", "Left", model->Left->Left, iniFilePath);
+    FileWritePrivateProfileInt("LeftJoyStick", "Right", model->Left->Right, iniFilePath);
+    FileWritePrivateProfileInt("LeftJoyStick", "Up", model->Left->Up, iniFilePath);
+    FileWritePrivateProfileInt("LeftJoyStick", "Down", model->Left->Down, iniFilePath);
+    FileWritePrivateProfileInt("LeftJoyStick", "Fire1", model->Left->Fire1, iniFilePath);
+    FileWritePrivateProfileInt("LeftJoyStick", "Fire2", model->Left->Fire2, iniFilePath);
+    FileWritePrivateProfileInt("LeftJoyStick", "DiDevice", model->Left->DiDevice, iniFilePath);
+    FileWritePrivateProfileInt("LeftJoyStick", "HiResDevice", model->Left->HiRes, iniFilePath);
 
     //[RightJoyStick]
-    FileWritePrivateProfileInt("RightJoyStick", "UseMouse", model->Right.UseMouse, iniFilePath);
-    FileWritePrivateProfileInt("RightJoyStick", "Left", model->Right.Left, iniFilePath);
-    FileWritePrivateProfileInt("RightJoyStick", "Right", model->Right.Right, iniFilePath);
-    FileWritePrivateProfileInt("RightJoyStick", "Up", model->Right.Up, iniFilePath);
-    FileWritePrivateProfileInt("RightJoyStick", "Down", model->Right.Down, iniFilePath);
-    FileWritePrivateProfileInt("RightJoyStick", "Fire1", model->Right.Fire1, iniFilePath);
-    FileWritePrivateProfileInt("RightJoyStick", "Fire2", model->Right.Fire2, iniFilePath);
-    FileWritePrivateProfileInt("RightJoyStick", "DiDevice", model->Right.DiDevice, iniFilePath);
-    FileWritePrivateProfileInt("RightJoyStick", "HiResDevice", model->Right.HiRes, iniFilePath);
+    FileWritePrivateProfileInt("RightJoyStick", "UseMouse", model->Right->UseMouse, iniFilePath);
+    FileWritePrivateProfileInt("RightJoyStick", "Left", model->Right->Left, iniFilePath);
+    FileWritePrivateProfileInt("RightJoyStick", "Right", model->Right->Right, iniFilePath);
+    FileWritePrivateProfileInt("RightJoyStick", "Up", model->Right->Up, iniFilePath);
+    FileWritePrivateProfileInt("RightJoyStick", "Down", model->Right->Down, iniFilePath);
+    FileWritePrivateProfileInt("RightJoyStick", "Fire1", model->Right->Fire1, iniFilePath);
+    FileWritePrivateProfileInt("RightJoyStick", "Fire2", model->Right->Fire2, iniFilePath);
+    FileWritePrivateProfileInt("RightJoyStick", "DiDevice", model->Right->DiDevice, iniFilePath);
+    FileWritePrivateProfileInt("RightJoyStick", "HiResDevice", model->Right->HiRes, iniFilePath);
 
     //[DefaultPaths]
     WritePrivateProfileString("DefaultPaths", "CassPath", model->CassPath, iniFilePath);
@@ -112,26 +112,26 @@ extern "C" {
     GetPrivateProfileString("Module", "ModulePath", "", model->ModulePath, MAX_PATH, iniFilePath);
 
     //[LeftJoyStick]
-    model->Left.UseMouse = GetPrivateProfileInt("LeftJoyStick", "UseMouse", 1, iniFilePath);
-    model->Left.Left = GetPrivateProfileInt("LeftJoyStick", "Left", 75, iniFilePath);
-    model->Left.Right = GetPrivateProfileInt("LeftJoyStick", "Right", 77, iniFilePath);
-    model->Left.Up = GetPrivateProfileInt("LeftJoyStick", "Up", 72, iniFilePath);
-    model->Left.Down = GetPrivateProfileInt("LeftJoyStick", "Down", 80, iniFilePath);
-    model->Left.Fire1 = GetPrivateProfileInt("LeftJoyStick", "Fire1", 59, iniFilePath);
-    model->Left.Fire2 = GetPrivateProfileInt("LeftJoyStick", "Fire2", 60, iniFilePath);
-    model->Left.DiDevice = GetPrivateProfileInt("LeftJoyStick", "DiDevice", 0, iniFilePath);
-    model->Left.HiRes = GetPrivateProfileInt("LeftJoyStick", "HiResDevice", 0, iniFilePath);
+    model->Left->UseMouse = GetPrivateProfileInt("LeftJoyStick", "UseMouse", 1, iniFilePath);
+    model->Left->Left = GetPrivateProfileInt("LeftJoyStick", "Left", 75, iniFilePath);
+    model->Left->Right = GetPrivateProfileInt("LeftJoyStick", "Right", 77, iniFilePath);
+    model->Left->Up = GetPrivateProfileInt("LeftJoyStick", "Up", 72, iniFilePath);
+    model->Left->Down = GetPrivateProfileInt("LeftJoyStick", "Down", 80, iniFilePath);
+    model->Left->Fire1 = GetPrivateProfileInt("LeftJoyStick", "Fire1", 59, iniFilePath);
+    model->Left->Fire2 = GetPrivateProfileInt("LeftJoyStick", "Fire2", 60, iniFilePath);
+    model->Left->DiDevice = GetPrivateProfileInt("LeftJoyStick", "DiDevice", 0, iniFilePath);
+    model->Left->HiRes = GetPrivateProfileInt("LeftJoyStick", "HiResDevice", 0, iniFilePath);
 
     //[RightJoyStick]
-    model->Right.UseMouse = GetPrivateProfileInt("RightJoyStick", "UseMouse", 1, iniFilePath);
-    model->Right.Left = GetPrivateProfileInt("RightJoyStick", "Left", 75, iniFilePath);
-    model->Right.Right = GetPrivateProfileInt("RightJoyStick", "Right", 77, iniFilePath);
-    model->Right.Up = GetPrivateProfileInt("RightJoyStick", "Up", 72, iniFilePath);
-    model->Right.Down = GetPrivateProfileInt("RightJoyStick", "Down", 80, iniFilePath);
-    model->Right.Fire1 = GetPrivateProfileInt("RightJoyStick", "Fire1", 59, iniFilePath);
-    model->Right.Fire2 = GetPrivateProfileInt("RightJoyStick", "Fire2", 60, iniFilePath);
-    model->Right.DiDevice = GetPrivateProfileInt("RightJoyStick", "DiDevice", 0, iniFilePath);
-    model->Right.HiRes = GetPrivateProfileInt("RightJoyStick", "HiResDevice", 0, iniFilePath);
+    model->Right->UseMouse = GetPrivateProfileInt("RightJoyStick", "UseMouse", 1, iniFilePath);
+    model->Right->Left = GetPrivateProfileInt("RightJoyStick", "Left", 75, iniFilePath);
+    model->Right->Right = GetPrivateProfileInt("RightJoyStick", "Right", 77, iniFilePath);
+    model->Right->Up = GetPrivateProfileInt("RightJoyStick", "Up", 72, iniFilePath);
+    model->Right->Down = GetPrivateProfileInt("RightJoyStick", "Down", 80, iniFilePath);
+    model->Right->Fire1 = GetPrivateProfileInt("RightJoyStick", "Fire1", 59, iniFilePath);
+    model->Right->Fire2 = GetPrivateProfileInt("RightJoyStick", "Fire2", 60, iniFilePath);
+    model->Right->DiDevice = GetPrivateProfileInt("RightJoyStick", "DiDevice", 0, iniFilePath);
+    model->Right->HiRes = GetPrivateProfileInt("RightJoyStick", "HiResDevice", 0, iniFilePath);
 
     //[DefaultPaths]
     GetPrivateProfileString("DefaultPaths", "CassPath", "", model->CassPath, MAX_PATH, iniFilePath);

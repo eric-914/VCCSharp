@@ -28,6 +28,7 @@
 #include "macros.h"
 
 #include "resource.h"
+#include "JoystickModel.h"
 
 using namespace std;
 
@@ -38,9 +39,10 @@ static TCHAR AppDataPath[MAX_PATH];
 
 ConfigState* InitializeInstance(ConfigState*);
 
-static ConfigModel* model = new ConfigModel();
-
 static ConfigState* instance = InitializeInstance(new ConfigState());
+static ConfigModel* model;
+static JoystickModel* left;
+static JoystickModel* right;
 
 extern "C" {
   __declspec(dllexport) ConfigState* __cdecl GetConfigState() {
@@ -49,6 +51,14 @@ extern "C" {
 }
 
 ConfigState* InitializeInstance(ConfigState* p) {
+  left = new JoystickModel();
+  right = new JoystickModel();
+
+  model = new ConfigModel();
+
+  model->Left = left;
+  model->Right = right;
+
   p->Model = model;
 
   p->NumberOfSoundCards = 0;
@@ -278,8 +288,8 @@ extern "C" {
   {
     bool temp = false;
 
-    JoystickModel left = instance->Model->Left;
-    JoystickModel right = instance->Model->Right;
+    JoystickModel* left = instance->Model->Left;
+    JoystickModel* right = instance->Model->Right;
 
     instance->NumberOfJoysticks = EnumerateJoysticks();
 
@@ -287,24 +297,24 @@ extern "C" {
       temp = InitJoyStick(index);
     }
 
-    if (right.DiDevice >= instance->NumberOfJoysticks) {
-      right.DiDevice = 0;
+    if (right->DiDevice >= instance->NumberOfJoysticks) {
+      right->DiDevice = 0;
     }
 
-    if (left.DiDevice >= instance->NumberOfJoysticks) {
-      left.DiDevice = 0;
+    if (left->DiDevice >= instance->NumberOfJoysticks) {
+      left->DiDevice = 0;
     }
 
-    SetStickNumbers(left.DiDevice, right.DiDevice);
+    SetStickNumbers(left->DiDevice, right->DiDevice);
 
     if (instance->NumberOfJoysticks == 0)	//Use Mouse input if no Joysticks present
     {
-      if (left.UseMouse == 3) {
-        left.UseMouse = 1;
+      if (left->UseMouse == 3) {
+        left->UseMouse = 1;
       }
 
-      if (right.UseMouse == 3) {
-        right.UseMouse = 1;
+      if (right->UseMouse == 3) {
+        right->UseMouse = 1;
       }
     }
   }
@@ -417,8 +427,8 @@ extern "C" {
     //--Synch joysticks to config instance
     JoystickState* joystickState = GetJoystickState();
 
-    joystickState->Left = &(instance->Model->Left);
-    joystickState->Right = &(instance->Model->Right);
+    joystickState->Left = instance->Model->Left;
+    joystickState->Right = instance->Model->Right;
 
     ReadIniFile(emuState);
 
