@@ -11,6 +11,7 @@ namespace VCCSharp.Modules
         void MemWrite8(byte data, ushort address);
         void GimeAssertVertInterrupt();
         void GimeAssertHorzInterrupt();
+        void GimeAssertTimerInterrupt();
     }
 
     public class TC1014 : ITC1014
@@ -48,6 +49,11 @@ namespace VCCSharp.Modules
         public void GimeAssertHorzInterrupt()
         {
             Library.TC1014.GimeAssertHorzInterrupt();
+        }
+
+        public void GimeAssertTimerInterrupt()
+        {
+            Library.TC1014.GimeAssertTimerInterrupt();
         }
     }
 }

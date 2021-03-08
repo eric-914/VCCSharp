@@ -73,19 +73,10 @@ namespace VCCSharp.Libraries
             public static extern unsafe void CoCoDrawBottomBorder(EmuState* emuState);
 
             [DllImport(LIBRARY)]
-            public static extern void CPUCyclePicosCase0();
-
-            [DllImport(LIBRARY)]
-            public static extern void CPUCyclePicosCase1();
-
-            [DllImport(LIBRARY)]
-            public static extern void CPUCyclePicosCase2();
-
-            [DllImport(LIBRARY)]
-            public static extern void CPUCyclePicosCase3();
-
-            [DllImport(LIBRARY)]
             public static extern void ResetKeyMap();
+
+            [DllImport(LIBRARY)]
+            public static extern void ExecuteAudioEvent();
         }   
 
         public static class Config
@@ -245,6 +236,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void GimeAssertHorzInterrupt();
+
+            [DllImport(LIBRARY)]
+            public static extern void GimeAssertTimerInterrupt();
         }
 
         public static class Throttle

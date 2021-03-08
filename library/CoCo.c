@@ -77,6 +77,12 @@ CoCoState* InitializeInstance(CoCoState* p) {
 }
 
 extern "C" {
+  __declspec(dllexport) void __cdecl ExecuteAudioEvent() {
+    AudioEvent();
+  }
+}
+
+extern "C" {
   __declspec(dllexport) void __cdecl CoCoDrawTopBorder(EmuState* emuState) {
     DrawTopBorder[emuState->BitDepth](emuState);
   }
@@ -278,155 +284,5 @@ extern "C" {
     instance->SoundOutputMode = mode;
 
     return(instance->SoundOutputMode);
-  }
-}
-
-//No interrupts this line
-extern "C" {
-  __declspec(dllexport) void __cdecl CPUCyclePicosCase0() {
-    instance->CyclesThisLine = instance->CycleDrift + (instance->PicosThisLine * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-    if (instance->CyclesThisLine >= 1) {	//Avoid un-needed CPU engine calls
-      instance->CycleDrift = CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-    }
-    else {
-      instance->CycleDrift = instance->CyclesThisLine;
-    }
-
-    instance->PicosToInterrupt -= instance->PicosThisLine;
-    instance->PicosToSoundSample -= instance->PicosThisLine;
-    instance->PicosThisLine = 0;
-  }
-}
-
-//Only Interrupting
-extern "C" {
-  __declspec(dllexport) void __cdecl CPUCyclePicosCase1() {
-    instance->PicosThisLine -= instance->PicosToInterrupt;
-    instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToInterrupt * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-    if (instance->CyclesThisLine >= 1) {
-      instance->CycleDrift = CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-    }
-    else {
-      instance->CycleDrift = instance->CyclesThisLine;
-    }
-
-    GimeAssertTimerInterrupt();
-
-    instance->PicosToSoundSample -= instance->PicosToInterrupt;
-    instance->PicosToInterrupt = instance->MasterTickCounter;
-  }
-}
-
-//Only Sampling
-extern "C" {
-  __declspec(dllexport) void __cdecl CPUCyclePicosCase2() {
-    instance->PicosThisLine -= instance->PicosToSoundSample;
-    instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-    if (instance->CyclesThisLine >= 1) {
-      instance->CycleDrift = CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-    }
-    else {
-      instance->CycleDrift = instance->CyclesThisLine;
-    }
-
-    AudioEvent();
-
-    instance->PicosToInterrupt -= instance->PicosToSoundSample;
-    instance->PicosToSoundSample = instance->SoundInterrupt;
-  }
-}
-
-//Interrupting and Sampling
-extern "C" {
-  __declspec(dllexport) void __cdecl CPUCyclePicosCase3() {
-      if (instance->PicosToSoundSample < instance->PicosToInterrupt)
-      {
-        instance->PicosThisLine -= instance->PicosToSoundSample;
-        instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-        if (instance->CyclesThisLine >= 1) {
-          instance->CycleDrift = CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-        }
-        else {
-          instance->CycleDrift = instance->CyclesThisLine;
-        }
-
-        AudioEvent();
-
-        instance->PicosToInterrupt -= instance->PicosToSoundSample;
-        instance->PicosToSoundSample = instance->SoundInterrupt;
-        instance->PicosThisLine -= instance->PicosToInterrupt;
-
-        instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToInterrupt * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-        if (instance->CyclesThisLine >= 1) {
-          instance->CycleDrift = CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-        }
-        else {
-          instance->CycleDrift = instance->CyclesThisLine;
-        }
-
-        GimeAssertTimerInterrupt();
-
-        instance->PicosToSoundSample -= instance->PicosToInterrupt;
-        instance->PicosToInterrupt = instance->MasterTickCounter;
-
-        return;
-      }
-
-      if (instance->PicosToSoundSample > instance->PicosToInterrupt)
-      {
-        instance->PicosThisLine -= instance->PicosToInterrupt;
-        instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToInterrupt * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-        if (instance->CyclesThisLine >= 1) {
-          instance->CycleDrift = CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-        }
-        else {
-          instance->CycleDrift = instance->CyclesThisLine;
-        }
-
-        GimeAssertTimerInterrupt();
-
-        instance->PicosToSoundSample -= instance->PicosToInterrupt;
-        instance->PicosToInterrupt = instance->MasterTickCounter;
-        instance->PicosThisLine -= instance->PicosToSoundSample;
-        instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-        if (instance->CyclesThisLine >= 1) {
-          instance->CycleDrift = CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-        }
-        else {
-          instance->CycleDrift = instance->CyclesThisLine;
-        }
-
-        AudioEvent();
-
-        instance->PicosToInterrupt -= instance->PicosToSoundSample;
-        instance->PicosToSoundSample = instance->SoundInterrupt;
-
-        return;
-      }
-
-      //They are the same (rare)
-      instance->PicosThisLine -= instance->PicosToInterrupt;
-      instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample * instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
-
-      if (instance->CyclesThisLine > 1) {
-        instance->CycleDrift = CPUExec((int)floor(instance->CyclesThisLine)) + (instance->CyclesThisLine - floor(instance->CyclesThisLine));
-      }
-      else {
-        instance->CycleDrift = instance->CyclesThisLine;
-      }
-
-      GimeAssertTimerInterrupt();
-
-      AudioEvent();
-
-      instance->PicosToInterrupt = instance->MasterTickCounter;
-      instance->PicosToSoundSample = instance->SoundInterrupt;
   }
 }

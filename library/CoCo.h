@@ -25,7 +25,4 @@ extern "C" __declspec(dllexport) void __cdecl CoCoDrawBottomBorder(EmuState* emu
 
 extern "C" __declspec(dllexport) void __cdecl ResetKeyMap();
 
-extern "C" __declspec(dllexport) void __cdecl CPUCyclePicosCase0();
-extern "C" __declspec(dllexport) void __cdecl CPUCyclePicosCase1();
-extern "C" __declspec(dllexport) void __cdecl CPUCyclePicosCase2();
-extern "C" __declspec(dllexport) void __cdecl CPUCyclePicosCase3();
+extern "C" __declspec(dllexport) void __cdecl ExecuteAudioEvent();

@@ -349,24 +349,201 @@ namespace VCCSharp.Modules
             Library.CoCo.ResetKeyMap();
         }
 
+        //No interrupts this line
         public void CPUCyclePicosCase0()
         {
-            Library.CoCo.CPUCyclePicosCase0();
+            unsafe
+            {
+                CoCoState* cocoState = GetCoCoState();
+
+                cocoState->CyclesThisLine = cocoState->CycleDrift + (cocoState->PicosThisLine * cocoState->CyclesPerLine * cocoState->OverClock / cocoState->PicosPerLine);
+
+                if (cocoState->CyclesThisLine >= 1)
+                {   //Avoid un-needed CPU engine calls
+                    cocoState->CycleDrift = _modules.CPU.CPUExec((int)Math.Floor(cocoState->CyclesThisLine)) + (cocoState->CyclesThisLine - Math.Floor(cocoState->CyclesThisLine));
+                }
+                else
+                {
+                    cocoState->CycleDrift = cocoState->CyclesThisLine;
+                }
+
+                cocoState->PicosToInterrupt -= cocoState->PicosThisLine;
+                cocoState->PicosToSoundSample -= cocoState->PicosThisLine;
+                cocoState->PicosThisLine = 0;
+            }
         }
 
+        //Only Interrupting
         public void CPUCyclePicosCase1()
         {
-            Library.CoCo.CPUCyclePicosCase1();
+            unsafe
+            {
+                CoCoState* cocoState = GetCoCoState();
+
+                cocoState->PicosThisLine -= cocoState->PicosToInterrupt;
+                cocoState->CyclesThisLine = cocoState->CycleDrift + (cocoState->PicosToInterrupt * cocoState->CyclesPerLine * cocoState->OverClock / cocoState->PicosPerLine);
+
+                if (cocoState->CyclesThisLine >= 1)
+                {
+                    cocoState->CycleDrift = _modules.CPU.CPUExec((int)Math.Floor(cocoState->CyclesThisLine)) + (cocoState->CyclesThisLine - Math.Floor(cocoState->CyclesThisLine));
+                }
+                else
+                {
+                    cocoState->CycleDrift = cocoState->CyclesThisLine;
+                }
+
+                _modules.TC1014.GimeAssertTimerInterrupt();
+
+                cocoState->PicosToSoundSample -= cocoState->PicosToInterrupt;
+                cocoState->PicosToInterrupt = cocoState->MasterTickCounter;
+            }
         }
 
+        //Only Sampling
         public void CPUCyclePicosCase2()
         {
-            Library.CoCo.CPUCyclePicosCase2();
+            unsafe
+            {
+                CoCoState* cocoState = GetCoCoState();
+
+                cocoState->PicosThisLine -= cocoState->PicosToSoundSample;
+                cocoState->CyclesThisLine = cocoState->CycleDrift + (cocoState->PicosToSoundSample * cocoState->CyclesPerLine * cocoState->OverClock / cocoState->PicosPerLine);
+
+                if (cocoState->CyclesThisLine >= 1)
+                {
+                    cocoState->CycleDrift = _modules.CPU.CPUExec((int)Math.Floor(cocoState->CyclesThisLine)) + (cocoState->CyclesThisLine - Math.Floor(cocoState->CyclesThisLine));
+                }
+                else
+                {
+                    cocoState->CycleDrift = cocoState->CyclesThisLine;
+                }
+
+                ExecuteAudioEvent();
+
+                cocoState->PicosToInterrupt -= cocoState->PicosToSoundSample;
+                cocoState->PicosToSoundSample = cocoState->SoundInterrupt;
+            }
         }
 
+        //Interrupting and Sampling
         public void CPUCyclePicosCase3()
         {
-            Library.CoCo.CPUCyclePicosCase3();
+            unsafe
+            {
+                CoCoState* instance = GetCoCoState();
+
+                if (instance->PicosToSoundSample < instance->PicosToInterrupt)
+                {
+                    instance->PicosThisLine -= instance->PicosToSoundSample;
+                    instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample *
+                        instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
+
+                    if (instance->CyclesThisLine >= 1)
+                    {
+                        instance->CycleDrift = _modules.CPU.CPUExec((int)Math.Floor(instance->CyclesThisLine)) +
+                                               (instance->CyclesThisLine - Math.Floor(instance->CyclesThisLine));
+                    }
+                    else
+                    {
+                        instance->CycleDrift = instance->CyclesThisLine;
+                    }
+
+                    ExecuteAudioEvent();
+
+                    instance->PicosToInterrupt -= instance->PicosToSoundSample;
+                    instance->PicosToSoundSample = instance->SoundInterrupt;
+                    instance->PicosThisLine -= instance->PicosToInterrupt;
+
+                    instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToInterrupt *
+                        instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
+
+                    if (instance->CyclesThisLine >= 1)
+                    {
+                        instance->CycleDrift = _modules.CPU.CPUExec((int)Math.Floor(instance->CyclesThisLine)) +
+                                               (instance->CyclesThisLine - Math.Floor(instance->CyclesThisLine));
+                    }
+                    else
+                    {
+                        instance->CycleDrift = instance->CyclesThisLine;
+                    }
+
+                    _modules.TC1014.GimeAssertTimerInterrupt();
+
+                    instance->PicosToSoundSample -= instance->PicosToInterrupt;
+                    instance->PicosToInterrupt = instance->MasterTickCounter;
+
+                    return;
+                }
+
+                if (instance->PicosToSoundSample > instance->PicosToInterrupt)
+                {
+                    instance->PicosThisLine -= instance->PicosToInterrupt;
+                    instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToInterrupt *
+                        instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
+
+                    if (instance->CyclesThisLine >= 1)
+                    {
+                        instance->CycleDrift = _modules.CPU.CPUExec((int)Math.Floor(instance->CyclesThisLine)) +
+                                               (instance->CyclesThisLine - Math.Floor(instance->CyclesThisLine));
+                    }
+                    else
+                    {
+                        instance->CycleDrift = instance->CyclesThisLine;
+                    }
+
+                    _modules.TC1014.GimeAssertTimerInterrupt();
+
+                    instance->PicosToSoundSample -= instance->PicosToInterrupt;
+                    instance->PicosToInterrupt = instance->MasterTickCounter;
+                    instance->PicosThisLine -= instance->PicosToSoundSample;
+                    instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample *
+                        instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
+
+                    if (instance->CyclesThisLine >= 1)
+                    {
+                        instance->CycleDrift = _modules.CPU.CPUExec((int)Math.Floor(instance->CyclesThisLine)) +
+                                               (instance->CyclesThisLine - Math.Floor(instance->CyclesThisLine));
+                    }
+                    else
+                    {
+                        instance->CycleDrift = instance->CyclesThisLine;
+                    }
+
+                    ExecuteAudioEvent();
+
+                    instance->PicosToInterrupt -= instance->PicosToSoundSample;
+                    instance->PicosToSoundSample = instance->SoundInterrupt;
+
+                    return;
+                }
+
+                //They are the same (rare)
+                instance->PicosThisLine -= instance->PicosToInterrupt;
+                instance->CyclesThisLine = instance->CycleDrift + (instance->PicosToSoundSample *
+                    instance->CyclesPerLine * instance->OverClock / instance->PicosPerLine);
+
+                if (instance->CyclesThisLine > 1)
+                {
+                    instance->CycleDrift = _modules.CPU.CPUExec((int)Math.Floor(instance->CyclesThisLine)) +
+                                           (instance->CyclesThisLine - Math.Floor(instance->CyclesThisLine));
+                }
+                else
+                {
+                    instance->CycleDrift = instance->CyclesThisLine;
+                }
+
+                _modules.TC1014.GimeAssertTimerInterrupt();
+
+                ExecuteAudioEvent();
+
+                instance->PicosToInterrupt = instance->MasterTickCounter;
+                instance->PicosToSoundSample = instance->SoundInterrupt;
+            }
+        }
+
+        public void ExecuteAudioEvent()
+        {
+            Library.CoCo.ExecuteAudioEvent();
         }
     }
 }
