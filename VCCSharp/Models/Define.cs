@@ -11,5 +11,9 @@
         public const short THREAD_PRIORITY_NORMAL = 0;
 
         public const int MAX_LOADSTRING = 100;
+
+        public const int MAX_PATH = 260;
+
+        public const int TABS = 8;
     }
 }

@@ -1,4 +1,5 @@
-﻿using VCCSharp.Libraries;
+﻿using VCCSharp.IoC;
+using VCCSharp.Libraries;
 
 namespace VCCSharp.Modules
 {
@@ -16,6 +17,13 @@ namespace VCCSharp.Modules
 
     public class TC1014 : ITC1014
     {
+        private readonly IModules _modules;
+
+        public TC1014(IModules modules)
+        {
+            _modules = modules;
+        }
+
         public void MC6883Reset()
         {
             Library.TC1014.MC6883Reset();

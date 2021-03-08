@@ -82,6 +82,9 @@ namespace VCCSharp.Libraries
         public static class Config
         {
             [DllImport(LIBRARY)]
+            public static extern unsafe ConfigState* GetConfigState();
+
+            [DllImport(LIBRARY)]
             public static extern unsafe void InitConfig(EmuState* emuState, ref CmdLineArguments cmdLineArgs);
 
             [DllImport(LIBRARY)]
