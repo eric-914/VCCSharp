@@ -28,13 +28,16 @@ namespace VCCSharp.Libraries
         public static class Audio
         {
             [DllImport(LIBRARY)]
-            public static extern short SoundDeInit();
-
-            [DllImport(LIBRARY)]
             public static extern void ResetAudio();
 
             [DllImport(LIBRARY)]
             public static extern unsafe void FlushAudioBuffer(uint* aBuffer, ushort length);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe AudioState* GetAudioState();
+
+            [DllImport(LIBRARY)]
+            public static extern void StopAndRelease();
         }
 
         public static class Cassette

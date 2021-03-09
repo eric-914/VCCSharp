@@ -92,17 +92,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl SoundDeInit()
-  {
-    if (instance->InitPassed)
-    {
-      instance->InitPassed = 0;
-
-      _directSoundState->lpdsbuffer1->Stop();
-      _directSoundState->lpds->Release();
-    }
-
-    return(0);
+  __declspec(dllexport) void __cdecl StopAndRelease() {
+    _directSoundState->lpdsbuffer1->Stop();
+    _directSoundState->lpds->Release();
   }
 }
 
@@ -240,105 +232,105 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) int __cdecl SoundInit(HWND hWnd, _GUID* guid, unsigned short rate)
-{
-  rate = (rate & 3);
-
-  if (rate != 0) {	//Force 44100 or Mute
-    rate = 3;
-  }
-
-  instance->CurrentRate = rate;
-
-  if (instance->InitPassed)
   {
-    instance->InitPassed = 0;
-    _directSoundState->lpdsbuffer1->Stop();
+    rate = (rate & 3);
 
-    if (_directSoundState->lpdsbuffer1 != NULL)
+    if (rate != 0) {	//Force 44100 or Mute
+      rate = 3;
+    }
+
+    instance->CurrentRate = rate;
+
+    if (instance->InitPassed)
     {
-      instance->hr = _directSoundState->lpdsbuffer1->Release();
-      _directSoundState->lpdsbuffer1 = NULL;
+      instance->InitPassed = 0;
+      _directSoundState->lpdsbuffer1->Stop();
+
+      if (_directSoundState->lpdsbuffer1 != NULL)
+      {
+        instance->hr = _directSoundState->lpdsbuffer1->Release();
+        _directSoundState->lpdsbuffer1 = NULL;
+      }
+
+      if (_directSoundState->lpds != NULL)
+      {
+        instance->hr = _directSoundState->lpds->Release();
+        _directSoundState->lpds = NULL;
+      }
     }
 
-    if (_directSoundState->lpds != NULL)
+    instance->SndLength1 = 0;
+    instance->SndLength2 = 0;
+    instance->BuffOffset = 0;
+    instance->AuxBufferPointer = 0;
+    instance->BitRate = instance->iRateList[rate];
+    instance->BlockSize = instance->BitRate * 4 / TARGETFRAMERATE;
+    instance->SndBuffLength = (instance->BlockSize * AUDIOBUFFERS);
+
+    if (rate)
     {
-      instance->hr = _directSoundState->lpds->Release();
-      _directSoundState->lpds = NULL;
+      instance->hr = DirectSoundCreate(guid, &(_directSoundState->lpds), NULL);	// create a directsound object
+
+      if (instance->hr != DS_OK) {
+        return(1);
+      }
+
+      instance->hr = _directSoundState->lpds->SetCooperativeLevel(hWnd, DSSCL_NORMAL); // set cooperation level normal DSSCL_EXCLUSIVE
+
+      if (instance->hr != DS_OK) {
+        return(1);
+      }
+
+      // set up the format data structure
+      memset(&(_directSoundState->pcmwf), 0, sizeof(WAVEFORMATEX));
+      _directSoundState->pcmwf.wFormatTag = WAVE_FORMAT_PCM;
+      _directSoundState->pcmwf.nChannels = 2;
+      _directSoundState->pcmwf.nSamplesPerSec = instance->BitRate;
+      _directSoundState->pcmwf.wBitsPerSample = 16;
+      _directSoundState->pcmwf.nBlockAlign = (_directSoundState->pcmwf.wBitsPerSample * _directSoundState->pcmwf.nChannels) >> 3;
+      _directSoundState->pcmwf.nAvgBytesPerSec = _directSoundState->pcmwf.nSamplesPerSec * _directSoundState->pcmwf.nBlockAlign;
+      _directSoundState->pcmwf.cbSize = 0;
+
+      // create the secondary buffer 
+      memset(&(_directSoundState->dsbd), 0, sizeof(DSBUFFERDESC));
+      _directSoundState->dsbd.dwSize = sizeof(DSBUFFERDESC);
+      _directSoundState->dsbd.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_LOCSOFTWARE | DSBCAPS_STATIC | DSBCAPS_GLOBALFOCUS;
+      _directSoundState->dsbd.dwBufferBytes = instance->SndBuffLength;
+      _directSoundState->dsbd.lpwfxFormat = &(_directSoundState->pcmwf);
+
+      instance->hr = _directSoundState->lpds->CreateSoundBuffer(&(_directSoundState->dsbd), &(_directSoundState->lpdsbuffer1), NULL);
+
+      if (instance->hr != DS_OK) {
+        return(1);
+      }
+
+      // Clear out sound buffers
+      instance->hr = _directSoundState->lpdsbuffer1->Lock(0, instance->SndBuffLength, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2), DSBLOCK_ENTIREBUFFER);
+
+      if (instance->hr != DS_OK) {
+        return(1);
+      }
+
+      memset(instance->SndPointer1, 0, instance->SndBuffLength);
+      instance->hr = _directSoundState->lpdsbuffer1->Unlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);
+
+      if (instance->hr != DS_OK) {
+        return(1);
+      }
+
+      _directSoundState->lpdsbuffer1->SetCurrentPosition(0);
+      instance->hr = _directSoundState->lpdsbuffer1->Play(0, 0, DSBPLAY_LOOPING);	// play the sound in looping mode
+
+      if (instance->hr != DS_OK) {
+        return(1);
+      }
+
+      instance->InitPassed = 1;
+      instance->AudioPause = 0;
     }
+
+    SetAudioRate(instance->iRateList[rate]);
+
+    return(0);
   }
-
-  instance->SndLength1 = 0;
-  instance->SndLength2 = 0;
-  instance->BuffOffset = 0;
-  instance->AuxBufferPointer = 0;
-  instance->BitRate = instance->iRateList[rate];
-  instance->BlockSize = instance->BitRate * 4 / TARGETFRAMERATE;
-  instance->SndBuffLength = (instance->BlockSize * AUDIOBUFFERS);
-
-  if (rate)
-  {
-    instance->hr = DirectSoundCreate(guid, &(_directSoundState->lpds), NULL);	// create a directsound object
-
-    if (instance->hr != DS_OK) {
-      return(1);
-    }
-
-    instance->hr = _directSoundState->lpds->SetCooperativeLevel(hWnd, DSSCL_NORMAL); // set cooperation level normal DSSCL_EXCLUSIVE
-
-    if (instance->hr != DS_OK) {
-      return(1);
-    }
-
-    // set up the format data structure
-    memset(&(_directSoundState->pcmwf), 0, sizeof(WAVEFORMATEX));
-    _directSoundState->pcmwf.wFormatTag = WAVE_FORMAT_PCM;
-    _directSoundState->pcmwf.nChannels = 2;
-    _directSoundState->pcmwf.nSamplesPerSec = instance->BitRate;
-    _directSoundState->pcmwf.wBitsPerSample = 16;
-    _directSoundState->pcmwf.nBlockAlign = (_directSoundState->pcmwf.wBitsPerSample * _directSoundState->pcmwf.nChannels) >> 3;
-    _directSoundState->pcmwf.nAvgBytesPerSec = _directSoundState->pcmwf.nSamplesPerSec * _directSoundState->pcmwf.nBlockAlign;
-    _directSoundState->pcmwf.cbSize = 0;
-
-    // create the secondary buffer 
-    memset(&(_directSoundState->dsbd), 0, sizeof(DSBUFFERDESC));
-    _directSoundState->dsbd.dwSize = sizeof(DSBUFFERDESC);
-    _directSoundState->dsbd.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_LOCSOFTWARE | DSBCAPS_STATIC | DSBCAPS_GLOBALFOCUS;
-    _directSoundState->dsbd.dwBufferBytes = instance->SndBuffLength;
-    _directSoundState->dsbd.lpwfxFormat = &(_directSoundState->pcmwf);
-
-    instance->hr = _directSoundState->lpds->CreateSoundBuffer(&(_directSoundState->dsbd), &(_directSoundState->lpdsbuffer1), NULL);
-
-    if (instance->hr != DS_OK) {
-      return(1);
-    }
-
-    // Clear out sound buffers
-    instance->hr = _directSoundState->lpdsbuffer1->Lock(0, instance->SndBuffLength, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2), DSBLOCK_ENTIREBUFFER);
-
-    if (instance->hr != DS_OK) {
-      return(1);
-    }
-
-    memset(instance->SndPointer1, 0, instance->SndBuffLength);
-    instance->hr = _directSoundState->lpdsbuffer1->Unlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);
-
-    if (instance->hr != DS_OK) {
-      return(1);
-    }
-
-    _directSoundState->lpdsbuffer1->SetCurrentPosition(0);
-    instance->hr = _directSoundState->lpdsbuffer1->Play(0, 0, DSBPLAY_LOOPING);	// play the sound in looping mode
-
-    if (instance->hr != DS_OK) {
-      return(1);
-    }
-
-    instance->InitPassed = 1;
-    instance->AudioPause = 0;
-  }
-
-  SetAudioRate(instance->iRateList[rate]);
-
-  return(0);
-}
 }
