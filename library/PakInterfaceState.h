@@ -9,7 +9,7 @@ typedef struct {
   HINSTANCE hInstLib;
 
   // Storage for Pak ROMs
-  uint8_t* ExternalRomBuffer;
+  unsigned char* ExternalRomBuffer;
   bool RomPackLoaded;
 
   unsigned int BankedCartOffset;

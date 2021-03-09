@@ -46,20 +46,20 @@ PakInterfaceState* InitializeInstance(PakInterfaceState* p) {
 }
 
 PakInterfaceDelegates* InitializeDelegates(PakInterfaceDelegates* p) {
-  p->GetModuleName = NULL;
   p->ConfigModule = NULL;
-  p->SetInterruptCallPointer = NULL;
   p->DmaMemPointer = NULL;
+  p->GetModuleName = NULL;
   p->HeartBeat = NULL;
-  p->PakPortWrite = NULL;
-  p->PakPortRead = NULL;
-  p->PakMemWrite8 = NULL;
-  p->PakMemRead8 = NULL;
-  p->ModuleStatus = NULL;
   p->ModuleAudioSample = NULL;
   p->ModuleReset = NULL;
-  p->SetIniPath = NULL;
+  p->ModuleStatus = NULL;
+  p->PakMemRead8 = NULL;
+  p->PakMemWrite8 = NULL;
+  p->PakPortRead = NULL;
+  p->PakPortWrite = NULL;
   p->PakSetCart = NULL;
+  p->SetIniPath = NULL;
+  p->SetInterruptCallPointer = NULL;
 
   return p;
 }
@@ -198,18 +198,18 @@ extern "C" {
       return;
     }
 
-    delegates->GetModuleName = NULL;
     delegates->ConfigModule = NULL;
-    delegates->PakPortWrite = NULL;
-    delegates->PakPortRead = NULL;
-    delegates->SetInterruptCallPointer = NULL;
     delegates->DmaMemPointer = NULL;
+    delegates->GetModuleName = NULL;
     delegates->HeartBeat = NULL;
-    delegates->PakMemWrite8 = NULL;
-    delegates->PakMemRead8 = NULL;
-    delegates->ModuleStatus = NULL;
     delegates->ModuleAudioSample = NULL;
     delegates->ModuleReset = NULL;
+    delegates->ModuleStatus = NULL;
+    delegates->PakMemRead8 = NULL;
+    delegates->PakMemWrite8 = NULL;
+    delegates->PakPortRead = NULL;
+    delegates->PakPortWrite = NULL;
+    delegates->SetInterruptCallPointer = NULL;
 
     if (instance->hInstLib != NULL) {
       FreeLibrary(instance->hInstLib);
@@ -492,4 +492,3 @@ extern "C" {
     return(NOMODULE);
   }
 }
-

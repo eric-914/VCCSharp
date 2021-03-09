@@ -208,6 +208,9 @@ namespace VCCSharp.Libraries
         public static class PAKInterface
         {
             [DllImport(LIBRARY)]
+            public static extern unsafe PakInterfaceState* GetPakInterfaceState();
+
+            [DllImport(LIBRARY)]
             public static extern unsafe void UnloadDll(EmuState* emuState);
 
             [DllImport(LIBRARY)]

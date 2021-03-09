@@ -1,10 +1,12 @@
-﻿using VCCSharp.Libraries;
+﻿using VCCSharp.IoC;
+using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
     public interface IPAKInterface
     {
+        unsafe PakInterfaceState* GetPakInterfaceState();
         unsafe void UnloadDll(EmuState* emuState);
         unsafe void GetModuleStatus(EmuState* emuState);
         void ResetBus();
@@ -15,6 +17,18 @@ namespace VCCSharp.Modules
 
     public class PAKInterface : IPAKInterface
     {
+        private readonly IModules _modules;
+
+        public PAKInterface(IModules modules)
+        {
+            _modules = modules;
+        }
+
+        public unsafe PakInterfaceState* GetPakInterfaceState()
+        {
+            return Library.PAKInterface.GetPakInterfaceState();
+        }
+
         public unsafe void UnloadDll(EmuState* emuState)
         {
             Library.PAKInterface.UnloadDll(emuState);
