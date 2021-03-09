@@ -26,7 +26,5 @@ extern "C" __declspec(dllexport) void __cdecl MemWrite8(unsigned char, unsigned 
 extern "C" __declspec(dllexport) void __cdecl MemWrite16(unsigned short, unsigned short);
 extern "C" __declspec(dllexport) void __cdecl MemWrite32(unsigned int, unsigned short);
 
-extern "C" __declspec(dllexport) void __cdecl GetExecPath(char* buffer);
-
 extern "C" __declspec(dllexport) void __cdecl FreeMemory(unsigned char* target);
 extern "C" __declspec(dllexport) unsigned char* __cdecl AllocateMemory(unsigned int size);

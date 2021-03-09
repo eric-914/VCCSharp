@@ -191,17 +191,7 @@ Could not locate {ROM} in any of these locations:
 
         public string GetExecPath()
         {
-            unsafe
-            {
-                byte[] buffer = new byte[Define.MAX_PATH];
-
-                fixed (byte* b = buffer)
-                {
-                    Library.TC1014.GetExecPath(b);
-                }
-
-                return Converter.ToString(buffer);
-            }
+            return System.Reflection.Assembly.GetExecutingAssembly().Location;
         }
 
         public unsafe void FreeMemory(byte* target)

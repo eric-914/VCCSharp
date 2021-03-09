@@ -261,12 +261,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl GetExecPath(char* buffer) {
-    GetModuleFileName(NULL, buffer, MAX_PATH);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl FreeMemory(unsigned char* target) {
     if (target != NULL) {
       free(target);

@@ -256,9 +256,6 @@ namespace VCCSharp.Libraries
             public static extern void GimeAssertTimerInterrupt();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void GetExecPath(byte* buffer);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe void FreeMemory(byte* target);
 
             [DllImport(LIBRARY)]
