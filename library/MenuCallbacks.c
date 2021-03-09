@@ -4,6 +4,7 @@
 
 #include "PakInterfaceState.h"
 #include "PakInterface.h"
+#include "PakInterfaceDelegates.h"
 #include "Emu.h"
 #include "Cartridge.h"
 

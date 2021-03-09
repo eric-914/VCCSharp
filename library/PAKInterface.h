@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PakInterfaceState.h"
+#include "PakInterfaceDelegates.h"
 #include "EmuState.h"
 
 #define NOMODULE	1

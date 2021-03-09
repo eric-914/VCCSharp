@@ -2,6 +2,7 @@
 #include <string>
 
 #include "PAKInterface.h"
+#include "PakInterfaceDelegates.h"
 #include "MC6821.h"
 #include "Config.h"
 #include "TC1014MMU.h"
