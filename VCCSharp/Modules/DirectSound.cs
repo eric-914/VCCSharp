@@ -12,12 +12,12 @@ namespace VCCSharp.Modules
     {
         public void StopAndRelease()
         {
-            Library.DirectSound.StopAndRelease();
+            Library.DirectSound.DirectSoundStopAndRelease();
         }
 
         public void SetCurrentPosition(ulong position)
         {
-            Library.DirectSound.SetCurrentPosition(position);
+            Library.DirectSound.DirectSoundSetCurrentPosition(position);
         }
     }
 }

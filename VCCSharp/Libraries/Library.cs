@@ -157,10 +157,10 @@ namespace VCCSharp.Libraries
         public static class DirectSound
         {
             [DllImport(LIBRARY)]
-            public static extern void StopAndRelease();
+            public static extern void DirectSoundStopAndRelease();
 
             [DllImport(LIBRARY)]
-            public static extern void SetCurrentPosition(ulong position);
+            public static extern void DirectSoundSetCurrentPosition(ulong position);
         }
 
         public static class Graphics

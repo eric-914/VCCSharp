@@ -111,8 +111,6 @@ extern "C" {
     unsigned char flag = 0;
     unsigned char* Abuffer2 = (unsigned char*)aBuffer;
 
-    DirectSoundState* directSoundState = GetDirectSoundState();
-
     leftAverage = aBuffer[0] >> 16;
     rightAverage = aBuffer[0] & 0xFFFF;
 
@@ -132,7 +130,7 @@ extern "C" {
       return;
     }
 
-    instance->hr = directSoundState->lpdsbuffer1->Lock(instance->BuffOffset, length, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2), 0);
+    instance->hr = DirectSoundLock(instance->BuffOffset, length, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2));
 
     if (instance->hr != DS_OK) {
       return;
@@ -144,7 +142,7 @@ extern "C" {
       memcpy(instance->SndPointer2, Abuffer2 + instance->SndLength1, instance->SndLength2);
     }
 
-    instance->hr = directSoundState->lpdsbuffer1->Unlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);// unlock the buffer
+    instance->hr = DirectSoundUnlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);// unlock the buffer
 
     instance->BuffOffset = (instance->BuffOffset + length) % instance->SndBuffLength;	//Where to write next
   }
