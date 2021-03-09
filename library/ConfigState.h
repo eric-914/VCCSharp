@@ -13,10 +13,6 @@
 
 typedef struct
 {
-  HWND hWndConfig[TABS];
-  HWND hDlgBar;
-  HWND hDlgTape;
-
   ConfigModel* Model;
 
   char TextMode;  //--Add LF to CR
@@ -35,4 +31,8 @@ typedef struct
 
   int NumberOfSoundCards;
   SoundCardList SoundCards[MAXCARDS];
+
+  HWND hWndConfig[TABS];
+  HWND hDlgBar;
+  HWND hDlgTape;
 } ConfigState;

@@ -85,6 +85,15 @@ namespace VCCSharp.Libraries
             public static extern unsafe ConfigState* GetConfigState();
 
             [DllImport(LIBRARY)]
+            public static extern unsafe ConfigModel* GetConfigModel();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe JoystickModel* GetLeftJoystick();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe JoystickModel* GetRightJoystick();
+
+            [DllImport(LIBRARY)]
             public static extern unsafe void InitConfig(EmuState* emuState, ref CmdLineArguments cmdLineArgs);
 
             [DllImport(LIBRARY)]

@@ -19,11 +19,29 @@ namespace VCCSharp.Modules
             return Library.Config.GetConfigState();
         }
 
+        public unsafe ConfigModel* GetConfigModel()
+        {
+            return Library.Config.GetConfigModel();
+        }
+        
+        public unsafe JoystickModel* GetLeftJoystick()
+        {
+            return Library.Config.GetLeftJoystick();
+        }
+        
+        public unsafe JoystickModel* GetRightJoystick()
+        {
+            return Library.Config.GetRightJoystick();
+        }
+        
         public unsafe void InitConfig(EmuState* emuState, ref CmdLineArguments cmdLineArgs)
         {
             Library.Config.InitConfig(emuState, ref cmdLineArgs);
 
-            //var tmp = GetConfigState();
+            //var left = GetLeftJoystick();
+            //var right = GetRightJoystick();
+            //var model = GetConfigModel();
+            //var state = GetConfigState();
         }
 
         public unsafe void WriteIniFile(EmuState* emuState)

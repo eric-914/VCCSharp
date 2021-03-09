@@ -9,6 +9,9 @@
 #include "EmuState.h"
 
 extern "C" __declspec(dllexport) ConfigState * __cdecl GetConfigState();
+extern "C" __declspec(dllexport) ConfigModel * __cdecl GetConfigModel();
+extern "C" __declspec(dllexport) JoystickModel * __cdecl GetLeftJoystick();
+extern "C" __declspec(dllexport) JoystickModel * __cdecl GetRightJoystick();
 
 extern "C" __declspec(dllexport) POINT __cdecl GetIniWindowSize();
 

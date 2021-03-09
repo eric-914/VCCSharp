@@ -1,17 +1,15 @@
-﻿using HWND = System.IntPtr;
+﻿using System.Runtime.InteropServices;
+using HWND = System.IntPtr;
 
 namespace VCCSharp.Models
 {
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct ConfigState
     {
-        public unsafe HWND* hWndConfig; //[Define.TABS]
-        public HWND hDlgBar;
-        public HWND hDlgTape;
+        public unsafe ConfigModel* Model;
 
-        public ConfigModel Model;
-
-        public char TextMode;  //--Add LF to CR
-        public char PrintMonitorWindow;
+        public byte TextMode;  //--Add LF to CR
+        public byte PrintMonitorWindow;
 
         public byte NumberOfJoysticks;
 
@@ -25,6 +23,13 @@ namespace VCCSharp.Models
         public byte TapeMode;
 
         public int NumberOfSoundCards;
+
+        //TODO: SoundCardList* is really a pointer to an array of SoundCardList items.  Haven't figured how to define it as such yet.
         public unsafe SoundCardList* SoundCards; //[Define.MAXCARDS];
+
+        //TODO: HWND* is really a pointer to an array of HWND items.  Haven't figured how to define it as such yet.
+        public unsafe HWND* hWndConfig; //[Define.TABS]
+        public HWND hDlgBar;
+        public HWND hDlgTape;
     }
 }

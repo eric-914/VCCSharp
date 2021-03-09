@@ -50,6 +50,24 @@ extern "C" {
   }
 }
 
+extern "C" {
+  __declspec(dllexport) ConfigModel* __cdecl GetConfigModel() {
+    return model;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) JoystickModel* __cdecl GetLeftJoystick() {
+    return left;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) JoystickModel* __cdecl GetRightJoystick() {
+    return right;
+  }
+}
+
 ConfigState* InitializeInstance(ConfigState* p) {
   left = new JoystickModel();
   right = new JoystickModel();

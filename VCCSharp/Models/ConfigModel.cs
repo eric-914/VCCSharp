@@ -1,5 +1,8 @@
-﻿namespace VCCSharp.Models
+﻿using System.Runtime.InteropServices;
+
+namespace VCCSharp.Models
 {
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct ConfigModel
     {
         //[Version]
@@ -39,10 +42,10 @@
         public unsafe fixed byte ModulePath[Define.MAX_PATH];
 
         //[LeftJoyStick]  //struct {} JoyStick
-        public JoystickModel Left;
+        public unsafe JoystickModel* Left;
 
         //[RightJoyStick]
-        public JoystickModel Right;
+        public unsafe JoystickModel* Right;
 
         //[DefaultPaths]
         public unsafe fixed byte CassPath[Define.MAX_PATH];
