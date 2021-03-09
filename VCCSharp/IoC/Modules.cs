@@ -11,6 +11,7 @@ namespace VCCSharp.IoC
         IConfig Config { get; }
         ICPU CPU { get; }
         IDirectDraw DirectDraw { get; }
+        IDirectSound DirectSound { get; }
         IEmu Emu { get; }
         IGraphics Graphics { get; }
         IKeyboard Keyboard { get; }
@@ -40,6 +41,7 @@ namespace VCCSharp.IoC
         public IConfig Config => _factory.Get<IConfig>();
         public ICPU CPU => _factory.Get<ICPU>();
         public IDirectDraw DirectDraw => _factory.Get<IDirectDraw>();
+        public IDirectSound DirectSound => _factory.Get<IDirectSound>();
         public IEmu Emu => _factory.Get<IEmu>();
         public IGraphics Graphics => _factory.Get<IGraphics>();
         public IKeyboard Keyboard => _factory.Get<IKeyboard>();

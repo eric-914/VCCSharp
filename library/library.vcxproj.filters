@@ -125,6 +125,9 @@
     <ClCompile Include="Cartridge.c">
       <Filter>cartridge</Filter>
     </ClCompile>
+    <ClCompile Include="DirectSound.c">
+      <Filter>audio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h" />
@@ -333,6 +336,9 @@
     </ClInclude>
     <ClInclude Include="DirectSoundState.h">
       <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectSound.h">
+      <Filter>audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

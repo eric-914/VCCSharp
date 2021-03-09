@@ -35,9 +35,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe AudioState* GetAudioState();
-
-            [DllImport(LIBRARY)]
-            public static extern void StopAndRelease();
         }
 
         public static class Cassette
@@ -155,6 +152,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void UnlockScreen(EmuState* emuState);
+        }
+
+        public static class DirectSound
+        {
+            [DllImport(LIBRARY)]
+            public static extern void StopAndRelease();
         }
 
         public static class Graphics

@@ -149,7 +149,7 @@ extern "C" {
       return;
     }
 
-    if ((port == 0x40) && (instance->RomPackLoaded == true)) {
+    if ((port == 0x40) && (instance->RomPackLoaded)) {
       instance->BankedCartOffset = (data & 15) << 14;
     }
   }

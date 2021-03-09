@@ -20,6 +20,7 @@ namespace VCCSharp
                 .Singleton<IConfig, Config>()
                 .Singleton<ICPU, CPU>()
                 .Singleton<IDirectDraw, DirectDraw>()
+                .Singleton<IDirectSound, DirectSound>()
                 .Singleton<IEmu, Emu>()
                 .Singleton<IGraphics, Graphics>()
                 .Singleton<IKeyboard, Keyboard>()

@@ -20,5 +20,3 @@ extern "C" __declspec(dllexport) unsigned short __cdecl GetSoundStatus();
 extern "C" __declspec(dllexport) void __cdecl FlushAudioBuffer(unsigned int*, unsigned short);
 extern "C" __declspec(dllexport) void __cdecl PurgeAuxBuffer();
 extern "C" __declspec(dllexport) void __cdecl ResetAudio();
-
-extern "C" __declspec(dllexport) void __cdecl StopAndRelease();

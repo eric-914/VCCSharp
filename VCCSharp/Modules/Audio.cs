@@ -1,4 +1,5 @@
-﻿using VCCSharp.Libraries;
+﻿using VCCSharp.IoC;
+using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
@@ -13,6 +14,13 @@ namespace VCCSharp.Modules
 
     public class Audio : IAudio
     {
+        private readonly IModules _modules;
+
+        public Audio(IModules modules)
+        {
+            _modules = modules;
+        }
+
         public unsafe AudioState* GetAudioState()
         {
             return Library.Audio.GetAudioState();
@@ -28,7 +36,7 @@ namespace VCCSharp.Modules
                 {
                     audioState->InitPassed = 0;
 
-                    StopAndRelease();
+                    _modules.DirectSound.StopAndRelease();
                 }
 
                 return 0;
@@ -43,11 +51,6 @@ namespace VCCSharp.Modules
         public unsafe void FlushAudioBuffer(uint* aBuffer, ushort length)
         {
             Library.Audio.FlushAudioBuffer(aBuffer, length);
-        }
-
-        public void StopAndRelease()
-        {
-            Library.Audio.StopAndRelease();
         }
     }
 }

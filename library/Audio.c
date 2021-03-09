@@ -1,5 +1,5 @@
 #include "AudioState.h"
-#include "DirectSoundState.h"
+#include "DirectSound.h"
 
 #include "Config.h"
 #include "Coco.h"
@@ -12,20 +12,12 @@ const char RateList[4][7] = { "Mute", "11025", "22050", "44100" };
 const unsigned short iRateList[4] = { 0, 11025, 22050, 44100 };
 
 AudioState* InitializeInstance(AudioState*);
-DirectSoundState* InitializeDirectSoundState(DirectSoundState*);
 
 static AudioState* instance = InitializeInstance(new AudioState());
-static DirectSoundState* _directSoundState = InitializeDirectSoundState(new DirectSoundState());
 
 extern "C" {
   __declspec(dllexport) AudioState* __cdecl GetAudioState() {
     return instance;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) DirectSoundState* __cdecl GetDirectSoundState() {
-    return _directSoundState;
   }
 }
 
@@ -53,12 +45,6 @@ AudioState* InitializeInstance(AudioState* p) {
   return p;
 }
 
-DirectSoundState* InitializeDirectSoundState(DirectSoundState* p) {
-  p->lpdsbuffer1 = NULL;
-  p->lpdsbuffer2 = NULL;
-  return p;
-}
-
 extern "C" {
   __declspec(dllexport) unsigned short __cdecl GetSoundStatus(void)
   {
@@ -69,15 +55,17 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl PauseAudio(unsigned char pause)
   {
+    DirectSoundState* directSoundState = GetDirectSoundState();
+
     instance->AudioPause = pause;
 
     if (instance->InitPassed)
     {
       if (instance->AudioPause == 1) {
-        instance->hr = _directSoundState->lpdsbuffer1->Stop();
+        instance->hr = directSoundState->lpdsbuffer1->Stop();
       }
       else {
-        instance->hr = _directSoundState->lpdsbuffer1->Play(0, 0, DSBPLAY_LOOPING);
+        instance->hr = directSoundState->lpdsbuffer1->Play(0, 0, DSBPLAY_LOOPING);
       }
     }
 
@@ -92,23 +80,18 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl StopAndRelease() {
-    _directSoundState->lpdsbuffer1->Stop();
-    _directSoundState->lpds->Release();
-  }
-}
-
-extern "C" {
   __declspec(dllexport) int __cdecl GetFreeBlockCount(void) //return 0 on full buffer
   {
     unsigned long writeCursor = 0, playCursor = 0;
     long retVal = 0, maxSize = 0;
 
+    DirectSoundState* directSoundState = GetDirectSoundState();
+
     if ((!instance->InitPassed) || (instance->AudioPause)) {
       return(AUDIOBUFFERS);
     }
 
-    retVal = _directSoundState->lpdsbuffer1->GetCurrentPosition(&playCursor, &writeCursor);
+    retVal = directSoundState->lpdsbuffer1->GetCurrentPosition(&playCursor, &writeCursor);
 
     if (instance->BuffOffset <= playCursor) {
       maxSize = playCursor - instance->BuffOffset;
@@ -127,6 +110,8 @@ extern "C" {
     unsigned short leftAverage = 0, rightAverage = 0, index = 0;
     unsigned char flag = 0;
     unsigned char* Abuffer2 = (unsigned char*)aBuffer;
+
+    DirectSoundState* directSoundState = GetDirectSoundState();
 
     leftAverage = aBuffer[0] >> 16;
     rightAverage = aBuffer[0] & 0xFFFF;
@@ -147,7 +132,7 @@ extern "C" {
       return;
     }
 
-    instance->hr = _directSoundState->lpdsbuffer1->Lock(instance->BuffOffset, length, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2), 0);
+    instance->hr = directSoundState->lpdsbuffer1->Lock(instance->BuffOffset, length, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2), 0);
 
     if (instance->hr != DS_OK) {
       return;
@@ -159,7 +144,7 @@ extern "C" {
       memcpy(instance->SndPointer2, Abuffer2 + instance->SndLength1, instance->SndLength2);
     }
 
-    instance->hr = _directSoundState->lpdsbuffer1->Unlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);// unlock the buffer
+    instance->hr = directSoundState->lpdsbuffer1->Unlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);// unlock the buffer
 
     instance->BuffOffset = (instance->BuffOffset + length) % instance->SndBuffLength;	//Where to write next
   }
@@ -168,6 +153,8 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl PurgeAuxBuffer(void)
   {
+    DirectSoundState* directSoundState = GetDirectSoundState();
+
     if ((!instance->InitPassed) || (instance->AudioPause)) {
       return;
     }
@@ -180,7 +167,7 @@ extern "C" {
     {
       while ((GetFreeBlockCount() <= 0)) {};
 
-      instance->hr = _directSoundState->lpdsbuffer1->Lock(instance->BuffOffset, instance->BlockSize, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2), 0);
+      instance->hr = directSoundState->lpdsbuffer1->Lock(instance->BuffOffset, instance->BlockSize, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2), 0);
 
       if (instance->hr != DS_OK) {
         return;
@@ -194,7 +181,7 @@ extern "C" {
 
       instance->BuffOffset = (instance->BuffOffset + instance->BlockSize) % instance->SndBuffLength;
 
-      instance->hr = _directSoundState->lpdsbuffer1->Unlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);
+      instance->hr = directSoundState->lpdsbuffer1->Unlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);
 
       instance->AuxBufferPointer--;
     }
@@ -206,11 +193,13 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl ResetAudio()
   {
+    DirectSoundState* directSoundState = GetDirectSoundState();
+
     SetAudioRate(instance->iRateList[instance->CurrentRate]);
 
     //	SetAudioRate(44100);
     if (instance->InitPassed) {
-      _directSoundState->lpdsbuffer1->SetCurrentPosition(0);
+      directSoundState->lpdsbuffer1->SetCurrentPosition(0);
     }
 
     instance->BuffOffset = 0;
@@ -233,6 +222,8 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) int __cdecl SoundInit(HWND hWnd, _GUID* guid, unsigned short rate)
   {
+    DirectSoundState* directSoundState = GetDirectSoundState();
+
     rate = (rate & 3);
 
     if (rate != 0) {	//Force 44100 or Mute
@@ -244,18 +235,18 @@ extern "C" {
     if (instance->InitPassed)
     {
       instance->InitPassed = 0;
-      _directSoundState->lpdsbuffer1->Stop();
+      directSoundState->lpdsbuffer1->Stop();
 
-      if (_directSoundState->lpdsbuffer1 != NULL)
+      if (directSoundState->lpdsbuffer1 != NULL)
       {
-        instance->hr = _directSoundState->lpdsbuffer1->Release();
-        _directSoundState->lpdsbuffer1 = NULL;
+        instance->hr = directSoundState->lpdsbuffer1->Release();
+        directSoundState->lpdsbuffer1 = NULL;
       }
 
-      if (_directSoundState->lpds != NULL)
+      if (directSoundState->lpds != NULL)
       {
-        instance->hr = _directSoundState->lpds->Release();
-        _directSoundState->lpds = NULL;
+        instance->hr = directSoundState->lpds->Release();
+        directSoundState->lpds = NULL;
       }
     }
 
@@ -269,57 +260,57 @@ extern "C" {
 
     if (rate)
     {
-      instance->hr = DirectSoundCreate(guid, &(_directSoundState->lpds), NULL);	// create a directsound object
+      instance->hr = DirectSoundCreate(guid, &(directSoundState->lpds), NULL);	// create a directsound object
 
       if (instance->hr != DS_OK) {
         return(1);
       }
 
-      instance->hr = _directSoundState->lpds->SetCooperativeLevel(hWnd, DSSCL_NORMAL); // set cooperation level normal DSSCL_EXCLUSIVE
+      instance->hr = directSoundState->lpds->SetCooperativeLevel(hWnd, DSSCL_NORMAL); // set cooperation level normal DSSCL_EXCLUSIVE
 
       if (instance->hr != DS_OK) {
         return(1);
       }
 
       // set up the format data structure
-      memset(&(_directSoundState->pcmwf), 0, sizeof(WAVEFORMATEX));
-      _directSoundState->pcmwf.wFormatTag = WAVE_FORMAT_PCM;
-      _directSoundState->pcmwf.nChannels = 2;
-      _directSoundState->pcmwf.nSamplesPerSec = instance->BitRate;
-      _directSoundState->pcmwf.wBitsPerSample = 16;
-      _directSoundState->pcmwf.nBlockAlign = (_directSoundState->pcmwf.wBitsPerSample * _directSoundState->pcmwf.nChannels) >> 3;
-      _directSoundState->pcmwf.nAvgBytesPerSec = _directSoundState->pcmwf.nSamplesPerSec * _directSoundState->pcmwf.nBlockAlign;
-      _directSoundState->pcmwf.cbSize = 0;
+      memset(&(directSoundState->pcmwf), 0, sizeof(WAVEFORMATEX));
+      directSoundState->pcmwf.wFormatTag = WAVE_FORMAT_PCM;
+      directSoundState->pcmwf.nChannels = 2;
+      directSoundState->pcmwf.nSamplesPerSec = instance->BitRate;
+      directSoundState->pcmwf.wBitsPerSample = 16;
+      directSoundState->pcmwf.nBlockAlign = (directSoundState->pcmwf.wBitsPerSample * directSoundState->pcmwf.nChannels) >> 3;
+      directSoundState->pcmwf.nAvgBytesPerSec = directSoundState->pcmwf.nSamplesPerSec * directSoundState->pcmwf.nBlockAlign;
+      directSoundState->pcmwf.cbSize = 0;
 
       // create the secondary buffer 
-      memset(&(_directSoundState->dsbd), 0, sizeof(DSBUFFERDESC));
-      _directSoundState->dsbd.dwSize = sizeof(DSBUFFERDESC);
-      _directSoundState->dsbd.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_LOCSOFTWARE | DSBCAPS_STATIC | DSBCAPS_GLOBALFOCUS;
-      _directSoundState->dsbd.dwBufferBytes = instance->SndBuffLength;
-      _directSoundState->dsbd.lpwfxFormat = &(_directSoundState->pcmwf);
+      memset(&(directSoundState->dsbd), 0, sizeof(DSBUFFERDESC));
+      directSoundState->dsbd.dwSize = sizeof(DSBUFFERDESC);
+      directSoundState->dsbd.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_LOCSOFTWARE | DSBCAPS_STATIC | DSBCAPS_GLOBALFOCUS;
+      directSoundState->dsbd.dwBufferBytes = instance->SndBuffLength;
+      directSoundState->dsbd.lpwfxFormat = &(directSoundState->pcmwf);
 
-      instance->hr = _directSoundState->lpds->CreateSoundBuffer(&(_directSoundState->dsbd), &(_directSoundState->lpdsbuffer1), NULL);
+      instance->hr = directSoundState->lpds->CreateSoundBuffer(&(directSoundState->dsbd), &(directSoundState->lpdsbuffer1), NULL);
 
       if (instance->hr != DS_OK) {
         return(1);
       }
 
       // Clear out sound buffers
-      instance->hr = _directSoundState->lpdsbuffer1->Lock(0, instance->SndBuffLength, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2), DSBLOCK_ENTIREBUFFER);
+      instance->hr = directSoundState->lpdsbuffer1->Lock(0, instance->SndBuffLength, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2), DSBLOCK_ENTIREBUFFER);
 
       if (instance->hr != DS_OK) {
         return(1);
       }
 
       memset(instance->SndPointer1, 0, instance->SndBuffLength);
-      instance->hr = _directSoundState->lpdsbuffer1->Unlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);
+      instance->hr = directSoundState->lpdsbuffer1->Unlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);
 
       if (instance->hr != DS_OK) {
         return(1);
       }
 
-      _directSoundState->lpdsbuffer1->SetCurrentPosition(0);
-      instance->hr = _directSoundState->lpdsbuffer1->Play(0, 0, DSBPLAY_LOOPING);	// play the sound in looping mode
+      directSoundState->lpdsbuffer1->SetCurrentPosition(0);
+      instance->hr = directSoundState->lpdsbuffer1->Play(0, 0, DSBPLAY_LOOPING);	// play the sound in looping mode
 
       if (instance->hr != DS_OK) {
         return(1);
