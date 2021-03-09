@@ -339,6 +339,20 @@ extern "C" {
   }
 }
 
+extern "C" {
+  __declspec(dllexport) void __cdecl FreeMemory(unsigned char* target) {
+    if (target != NULL) {
+      free(target);
+    }
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) unsigned char* __cdecl AllocateMemory(unsigned int size) {
+    return (unsigned char*)malloc(size);
+  }
+}
+
 /*****************************************************************************************
 * MmuInit Initialize and allocate memory for RAM Internal and External ROM Images.        *
 * Copy Rom Images to buffer space and reset GIME MMU registers to 0                      *
@@ -347,43 +361,9 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl MmuInit(unsigned char ramSizeOption)
   {
-    unsigned int ramSize = instance->MemConfig[ramSizeOption];
+    SetVidMask(instance->VidMask[instance->CurrentRamConfig]);
 
-    instance->CurrentRamConfig = ramSizeOption;
-
-    if (instance->Memory != NULL) {
-      free(instance->Memory);
-    }
-
-    instance->Memory = (unsigned char*)malloc(ramSize);
-
-    if (instance->Memory == NULL) {
-      return 0;
-    }
-
-    for (unsigned int index = 0; index < ramSize; index++)
-    {
-      instance->Memory[index] = index & 1 ? 0 : 0xFF;
-    }
-
-    GetGraphicsState()->VidMask = instance->VidMask[instance->CurrentRamConfig];
-
-    if (instance->InternalRomBuffer != NULL) {
-      free(instance->InternalRomBuffer);
-    }
-
-    instance->InternalRomBuffer = NULL;
-    instance->InternalRomBuffer = (unsigned char*)malloc(0x8000);
-
-    if (instance->InternalRomBuffer == NULL) {
-      return 0;
-    }
-
-    memset(instance->InternalRomBuffer, 0xFF, 0x8000);
-    CopyRom();
-    MmuReset();
-
-    return instance->Memory == NULL ? 0 : 1;
+    return 0;
   }
 }
 

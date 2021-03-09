@@ -29,6 +29,11 @@ namespace VCCSharp.Modules
             _modules = modules;
         }
 
+        public unsafe TC1014MmuState* GetTC1014MmuState()
+        {
+            return Library.TC1014.GetTC1014MmuState();
+        }
+
         public void MC6883Reset()
         {
             Library.TC1014.MC6883Reset();
@@ -42,7 +47,7 @@ namespace VCCSharp.Modules
             unsafe
             {
                 ConfigState* configState = _modules.Config.GetConfigState();
-                
+
                 //--Try loading from Vcc.ini >> CoCoRomPath
                 string cocoRomPath = Converter.ToString(configState->Model->CoCoRomPath);
 
@@ -92,11 +97,55 @@ Could not locate {ROM} in any of these locations:
             Library.TC1014.MmuReset();
         }
 
+        /*****************************************************************************************
+        * MmuInit Initialize and allocate memory for RAM Internal and External ROM Images.        *
+        * Copy Rom Images to buffer space and reset GIME MMU registers to 0                      *
+        * Returns NULL if any of the above fail.                                                 *
+        *****************************************************************************************/
         public byte MmuInit(byte ramSizeOption)
         {
-            //Library.TC1014.CopyRom();
+            unsafe
+            {
+                TC1014MmuState* mmuState = GetTC1014MmuState();
 
-            return Library.TC1014.MmuInit(ramSizeOption);
+                uint ramSize = mmuState->MemConfig[ramSizeOption];
+
+                mmuState->CurrentRamConfig = ramSizeOption;
+
+                FreeMemory(mmuState->Memory);
+
+                mmuState->Memory = AllocateMemory(ramSize);
+
+                if (mmuState->Memory == null) {
+                    return 0;
+                }
+
+                //--Well, this explains the vertical bands when you start a graphics mode in BASIC w/out PCLS
+                for (uint index = 0; index < ramSize; index++)
+                {
+                    mmuState->Memory[index] = (byte)((index & 1) == 0 ? 0 : 0xFF);
+                }
+
+                _modules.Graphics.SetVidMask(mmuState->VidMask[mmuState->CurrentRamConfig]);
+
+                FreeMemory(mmuState->InternalRomBuffer);
+                mmuState->InternalRomBuffer = AllocateMemory(0x8000);
+
+                if (mmuState->InternalRomBuffer == null) {
+                    return 0;
+                }
+
+                //memset(mmuState->InternalRomBuffer, 0xFF, 0x8000);
+                for (uint index = 0; index <= 0x8000; index++)
+                {
+                    mmuState->InternalRomBuffer[index] = 0xFF;
+                }
+
+                CopyRom();
+                MmuReset();
+
+                return 1;
+            }
         }
 
         public void MemWrite8(byte data, ushort address)
@@ -137,6 +186,16 @@ Could not locate {ROM} in any of these locations:
 
                 return Converter.ToString(buffer);
             }
+        }
+
+        public unsafe void FreeMemory(byte* target)
+        {
+            Library.TC1014.FreeMemory(target);
+        }
+
+        public unsafe byte* AllocateMemory(uint size)
+        {
+            return Library.TC1014.AllocateMemory(size);
         }
     }
 }

@@ -170,6 +170,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetBorderChange(byte data);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetVidMask(uint mask);
         }
 
         public static class Keyboard
@@ -232,6 +235,9 @@ namespace VCCSharp.Libraries
         public static class TC1014
         {
             [DllImport(LIBRARY)]
+            public static extern unsafe TC1014MmuState* GetTC1014MmuState();
+
+            [DllImport(LIBRARY)]
             public static extern void MC6883Reset();
 
             [DllImport(LIBRARY)]
@@ -260,6 +266,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void GetExecPath(byte* buffer);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void FreeMemory(byte* target);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe byte* AllocateMemory(uint size);
         }
 
         public static class Throttle

@@ -9,6 +9,7 @@ namespace VCCSharp.Modules
         void MakeCMPPalette(int paletteType);
         void SetBlinkState(byte state);
         void SetBorderChange(byte data);
+        void SetVidMask(uint mask);
     }
 
     public class Graphics : IGraphics
@@ -36,6 +37,11 @@ namespace VCCSharp.Modules
         public void SetBorderChange(byte data)
         {
             Library.Graphics.SetBorderChange(data);
+        }
+
+        public void SetVidMask(uint mask)
+        {
+            Library.Graphics.SetVidMask(mask);
         }
     }
 }

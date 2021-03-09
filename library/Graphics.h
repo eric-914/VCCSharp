@@ -34,3 +34,5 @@ extern "C" __declspec(dllexport) void __cdecl SetVideoBank(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetupDisplay(void);
 
 extern "C" __declspec(dllexport) void __cdecl SetBlinkState(unsigned char state);
+
+extern "C" __declspec(dllexport) void __cdecl SetVidMask(unsigned int mask);
