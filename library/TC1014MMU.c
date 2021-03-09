@@ -289,56 +289,6 @@ extern "C" {
   }
 }
 
-//==========================================================
-//TODO: This has been pulled into C#
-//      But is still being used by MmuInit(...) below
-//      Remove when MmuInit has been ported.
-//==========================================================
-extern "C" {
-  __declspec(dllexport) void __cdecl CopyRom()
-  {
-    char execPath[MAX_PATH];
-    char cocoRomPath[MAX_PATH];
-    unsigned short temp = 0;
-
-    //--Try to see if rom exists at: DefaultPaths ==> CoCoRomPath
-    strcpy(cocoRomPath, GetConfigState()->Model->CoCoRomPath);
-    strcat(cocoRomPath, "\\coco3.rom");
-
-    if (cocoRomPath != "") {
-      temp = LoadInternalRom(cocoRomPath);  //Try loading from the user defined path first.
-    }
-
-    if (temp) {
-      OutputDebugString("Found coco3.rom in CoCoRomPath\n");
-    }
-
-    //--Next, try to see if rom exists at: Memory ==> ExternalBasicImage
-    if (temp == 0) {
-      temp = LoadInternalRom(ExternalBasicImage());  //Try to load the image
-    }
-
-    //--Last, try to see if rom exists in same folder as executable
-    if (temp == 0) {
-      // If we can't find it use default copy
-      GetExecPath(execPath);
-
-      FilePathRemoveFileSpec(execPath);
-
-      strcat(execPath, "coco3.rom");
-
-      temp = LoadInternalRom(execPath);
-    }
-
-    if (temp == 0)
-    {
-      MessageBox(0, "Missing file coco3.rom", "Error", 0);
-
-      exit(0);
-    }
-  }
-}
-
 extern "C" {
   __declspec(dllexport) void __cdecl FreeMemory(unsigned char* target) {
     if (target != NULL) {
@@ -350,20 +300,6 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned char* __cdecl AllocateMemory(unsigned int size) {
     return (unsigned char*)malloc(size);
-  }
-}
-
-/*****************************************************************************************
-* MmuInit Initialize and allocate memory for RAM Internal and External ROM Images.        *
-* Copy Rom Images to buffer space and reset GIME MMU registers to 0                      *
-* Returns NULL if any of the above fail.                                                 *
-*****************************************************************************************/
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl MmuInit(unsigned char ramSizeOption)
-  {
-    SetVidMask(instance->VidMask[instance->CurrentRamConfig]);
-
-    return 0;
   }
 }
 

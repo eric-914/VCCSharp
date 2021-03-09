@@ -241,13 +241,7 @@ namespace VCCSharp.Libraries
             public static extern void MC6883Reset();
 
             [DllImport(LIBRARY)]
-            public static extern void CopyRom();
-
-            [DllImport(LIBRARY)]
             public static extern void MmuReset();
-
-            [DllImport(LIBRARY)]
-            public static extern byte MmuInit(byte ramSizeOption);
 
             [DllImport(LIBRARY)]
             public static extern void MemWrite8(byte data, ushort address);
