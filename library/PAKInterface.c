@@ -188,6 +188,10 @@ extern "C" {
   }
 }
 
+//===============================================================
+//TODO: Partially ported to C#
+// Used by LoadROMPack(...), UnloadPack(...), InsertModule(...)
+//===============================================================
 extern "C" {
   __declspec(dllexport) void __cdecl UnloadDll(EmuState* emuState)
   {
@@ -231,9 +235,7 @@ extern "C" {
     constexpr size_t PAK_MAX_MEM = 0x40000;
 
     // If there is an existing ROM, ditch it
-    if (instance->ExternalRomBuffer != nullptr) {
-      free(instance->ExternalRomBuffer);
-    }
+    FreeMemory(instance->ExternalRomBuffer);
 
     // Allocate memory for the ROM
     instance->ExternalRomBuffer = (uint8_t*)malloc(PAK_MAX_MEM);
@@ -280,11 +282,9 @@ extern "C" {
 
     SetCart(0);
 
-    if (instance->ExternalRomBuffer != nullptr) {
-      free(instance->ExternalRomBuffer);
-    }
+    FreeMemory(instance->ExternalRomBuffer);
 
-    instance->ExternalRomBuffer = nullptr;
+    instance->ExternalRomBuffer = NULL;
 
     emuState->ResetPending = RESET_HARD;
 
@@ -301,192 +301,215 @@ extern "C" {
   }
 }
 
+BOOL SetDelegates(HINSTANCE hInstLib) {
+  delegates->GetModuleName = (GETNAME)GetProcAddress(hInstLib, "ModuleName");
+  delegates->ConfigModule = (CONFIGIT)GetProcAddress(hInstLib, "ModuleConfig");
+  delegates->PakPortWrite = (PACKPORTWRITE)GetProcAddress(hInstLib, "PackPortWrite");
+  delegates->PakPortRead = (PACKPORTREAD)GetProcAddress(hInstLib, "PackPortRead");
+  delegates->SetInterruptCallPointer = (SETINTERRUPTCALLPOINTER)GetProcAddress(hInstLib, "AssertInterrupt");
+  delegates->DmaMemPointer = (DMAMEMPOINTERS)GetProcAddress(hInstLib, "MemPointers");
+  delegates->HeartBeat = (HEARTBEAT)GetProcAddress(hInstLib, "HeartBeat");
+  delegates->PakMemWrite8 = (MEMWRITE8)GetProcAddress(hInstLib, "PakMemWrite8");
+  delegates->PakMemRead8 = (MEMREAD8)GetProcAddress(hInstLib, "PakMemRead8");
+  delegates->ModuleStatus = (MODULESTATUS)GetProcAddress(hInstLib, "ModuleStatus");
+  delegates->ModuleAudioSample = (MODULEAUDIOSAMPLE)GetProcAddress(hInstLib, "ModuleAudioSample");
+  delegates->ModuleReset = (MODULERESET)GetProcAddress(hInstLib, "ModuleReset");
+  delegates->SetIniPath = (SETINIPATH)GetProcAddress(hInstLib, "SetIniPath");
+  delegates->PakSetCart = (SETCARTPOINTER)GetProcAddress(hInstLib, "SetCart");
+
+  return delegates->GetModuleName == NULL;
+}
+
+//File doesn't exist
 extern "C" {
-  __declspec(dllexport) int __cdecl InsertModule(EmuState* emuState, char* modulePath)
-  {
+  __declspec(dllexport) int __cdecl InsertModuleCase0() {
+    return(NOMODULE);
+  }
+}
+
+//File is a DLL
+extern "C" {
+  __declspec(dllexport) int __cdecl InsertModuleCase1(EmuState* emuState, char* modulePath) {
     char catNumber[MAX_LOADSTRING] = "";
     char temp[MAX_LOADSTRING] = "";
     char text[1024] = "";
     char ini[MAX_PATH] = "";
-    unsigned char fileType = 0;
 
-    fileType = FileID(modulePath);
+    UnloadDll(emuState);
+    instance->hInstLib = LoadLibrary(modulePath);
+
+    if (instance->hInstLib == NULL) {
+      return(NOMODULE);
+    }
+
+    SetCart(0);
+
+    if (SetDelegates(instance->hInstLib))
+    {
+      FreeLibrary(instance->hInstLib);
+
+      instance->hInstLib = NULL;
+
+      return(NOTVCC);
+    };
+
+    instance->BankedCartOffset = 0;
+
+    if (delegates->DmaMemPointer != NULL) {
+      delegates->DmaMemPointer(MemRead8, MemWrite8);
+    }
+
+    if (delegates->SetInterruptCallPointer != NULL) {
+      delegates->SetInterruptCallPointer(GetCPU()->CPUAssertInterrupt);
+    }
+
+    delegates->GetModuleName(instance->Modname, catNumber, DynamicMenuCallback);  //Instantiate the menus from HERE!
+
+    sprintf(temp, "Configure %s", instance->Modname);
+
+    strcat(text, "Module Name: ");
+    strcat(text, instance->Modname);
+    strcat(text, "\n");
+
+    if (delegates->ConfigModule != NULL)
+    {
+      instance->ModualParms |= 1;
+
+      strcat(text, "Has Configurable options\n");
+    }
+
+    if (delegates->PakPortWrite != NULL)
+    {
+      instance->ModualParms |= 2;
+
+      strcat(text, "Is IO writable\n");
+    }
+
+    if (delegates->PakPortRead != NULL)
+    {
+      instance->ModualParms |= 4;
+
+      strcat(text, "Is IO readable\n");
+    }
+
+    if (delegates->SetInterruptCallPointer != NULL)
+    {
+      instance->ModualParms |= 8;
+
+      strcat(text, "Generates Interrupts\n");
+    }
+
+    if (delegates->DmaMemPointer != NULL)
+    {
+      instance->ModualParms |= 16;
+
+      strcat(text, "Generates DMA Requests\n");
+    }
+
+    if (delegates->HeartBeat != NULL)
+    {
+      instance->ModualParms |= 32;
+
+      strcat(text, "Needs Heartbeat\n");
+    }
+
+    if (delegates->ModuleAudioSample != NULL)
+    {
+      instance->ModualParms |= 64;
+
+      strcat(text, "Analog Audio Outputs\n");
+    }
+
+    if (delegates->PakMemWrite8 != NULL)
+    {
+      instance->ModualParms |= 128;
+
+      strcat(text, "Needs ChipSelect Write\n");
+    }
+
+    if (delegates->PakMemRead8 != NULL)
+    {
+      instance->ModualParms |= 256;
+
+      strcat(text, "Needs ChipSelect Read\n");
+    }
+
+    if (delegates->ModuleStatus != NULL)
+    {
+      instance->ModualParms |= 512;
+
+      strcat(text, "Returns Status\n");
+    }
+
+    if (delegates->ModuleReset != NULL)
+    {
+      instance->ModualParms |= 1024;
+
+      strcat(text, "Needs Reset Notification\n");
+    }
+
+    if (delegates->SetIniPath != NULL)
+    {
+      instance->ModualParms |= 2048;
+
+      GetIniFilePath(ini);
+
+      delegates->SetIniPath(ini);
+    }
+
+    if (delegates->PakSetCart != NULL)
+    {
+      instance->ModualParms |= 4096;
+
+      strcat(text, "Can Assert CART\n");
+
+      delegates->PakSetCart(SetCart);
+    }
+
+    strcpy(instance->DllPath, modulePath);
+
+    emuState->ResetPending = RESET_HARD;
+
+    return(0);
+  }
+}
+
+//File is a ROM image
+extern "C" {
+  __declspec(dllexport) int __cdecl InsertModuleCase2(EmuState* emuState, char* modulePath) {
+    UnloadDll(emuState);
+
+    LoadROMPack(emuState, modulePath);
+
+    strncpy(instance->Modname, modulePath, MAX_PATH);
+
+    FilePathStripPath(instance->Modname);
+
+    DynamicMenuCallback(emuState, NULL, MENU_REFRESH, IGNORE);
+
+    emuState->ResetPending = RESET_HARD;
+
+    SetCart(1);
+
+    return(0);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) int __cdecl InsertModule(EmuState* emuState, char* modulePath)
+  {
+    unsigned char fileType = fileType = FileID(modulePath);
 
     switch (fileType)
     {
     case 0:		//File doesn't exist
-      return(NOMODULE);
-      break;
-
-    case 2:		//File is a ROM image
-      UnloadDll(emuState);
-
-      LoadROMPack(emuState, modulePath);
-
-      strncpy(instance->Modname, modulePath, MAX_PATH);
-
-      FilePathStripPath(instance->Modname);
-
-      DynamicMenuCallback(emuState, NULL, MENU_REFRESH, IGNORE);
-
-      emuState->ResetPending = RESET_HARD;
-
-      SetCart(1);
-
-      return(0);
+      return InsertModuleCase0();
 
     case 1:		//File is a DLL
-      UnloadDll(emuState);
-      instance->hInstLib = LoadLibrary(modulePath);
+      return InsertModuleCase1(emuState, modulePath);
 
-      if (instance->hInstLib == NULL) {
-        return(NOMODULE);
-      }
-
-      SetCart(0);
-
-      delegates->GetModuleName = (GETNAME)GetProcAddress(instance->hInstLib, "ModuleName");
-      delegates->ConfigModule = (CONFIGIT)GetProcAddress(instance->hInstLib, "ModuleConfig");
-      delegates->PakPortWrite = (PACKPORTWRITE)GetProcAddress(instance->hInstLib, "PackPortWrite");
-      delegates->PakPortRead = (PACKPORTREAD)GetProcAddress(instance->hInstLib, "PackPortRead");
-      delegates->SetInterruptCallPointer = (SETINTERRUPTCALLPOINTER)GetProcAddress(instance->hInstLib, "AssertInterrupt");
-      delegates->DmaMemPointer = (DMAMEMPOINTERS)GetProcAddress(instance->hInstLib, "MemPointers");
-      delegates->HeartBeat = (HEARTBEAT)GetProcAddress(instance->hInstLib, "HeartBeat");
-      delegates->PakMemWrite8 = (MEMWRITE8)GetProcAddress(instance->hInstLib, "PakMemWrite8");
-      delegates->PakMemRead8 = (MEMREAD8)GetProcAddress(instance->hInstLib, "PakMemRead8");
-      delegates->ModuleStatus = (MODULESTATUS)GetProcAddress(instance->hInstLib, "ModuleStatus");
-      delegates->ModuleAudioSample = (MODULEAUDIOSAMPLE)GetProcAddress(instance->hInstLib, "ModuleAudioSample");
-      delegates->ModuleReset = (MODULERESET)GetProcAddress(instance->hInstLib, "ModuleReset");
-      delegates->SetIniPath = (SETINIPATH)GetProcAddress(instance->hInstLib, "SetIniPath");
-      delegates->PakSetCart = (SETCARTPOINTER)GetProcAddress(instance->hInstLib, "SetCart");
-
-      if (delegates->GetModuleName == NULL)
-      {
-        FreeLibrary(instance->hInstLib);
-
-        instance->hInstLib = NULL;
-
-        return(NOTVCC);
-      }
-
-      instance->BankedCartOffset = 0;
-
-      if (delegates->DmaMemPointer != NULL) {
-        delegates->DmaMemPointer(MemRead8, MemWrite8);
-      }
-
-      if (delegates->SetInterruptCallPointer != NULL) {
-        delegates->SetInterruptCallPointer(GetCPU()->CPUAssertInterrupt);
-      }
-
-      delegates->GetModuleName(instance->Modname, catNumber, DynamicMenuCallback);  //Instantiate the menus from HERE!
-
-      sprintf(temp, "Configure %s", instance->Modname);
-
-      strcat(text, "Module Name: ");
-      strcat(text, instance->Modname);
-      strcat(text, "\n");
-
-      if (delegates->ConfigModule != NULL)
-      {
-        instance->ModualParms |= 1;
-
-        strcat(text, "Has Configurable options\n");
-      }
-
-      if (delegates->PakPortWrite != NULL)
-      {
-        instance->ModualParms |= 2;
-
-        strcat(text, "Is IO writable\n");
-      }
-
-      if (delegates->PakPortRead != NULL)
-      {
-        instance->ModualParms |= 4;
-
-        strcat(text, "Is IO readable\n");
-      }
-
-      if (delegates->SetInterruptCallPointer != NULL)
-      {
-        instance->ModualParms |= 8;
-
-        strcat(text, "Generates Interrupts\n");
-      }
-
-      if (delegates->DmaMemPointer != NULL)
-      {
-        instance->ModualParms |= 16;
-
-        strcat(text, "Generates DMA Requests\n");
-      }
-
-      if (delegates->HeartBeat != NULL)
-      {
-        instance->ModualParms |= 32;
-
-        strcat(text, "Needs Heartbeat\n");
-      }
-
-      if (delegates->ModuleAudioSample != NULL)
-      {
-        instance->ModualParms |= 64;
-
-        strcat(text, "Analog Audio Outputs\n");
-      }
-
-      if (delegates->PakMemWrite8 != NULL)
-      {
-        instance->ModualParms |= 128;
-
-        strcat(text, "Needs ChipSelect Write\n");
-      }
-
-      if (delegates->PakMemRead8 != NULL)
-      {
-        instance->ModualParms |= 256;
-
-        strcat(text, "Needs ChipSelect Read\n");
-      }
-
-      if (delegates->ModuleStatus != NULL)
-      {
-        instance->ModualParms |= 512;
-
-        strcat(text, "Returns Status\n");
-      }
-
-      if (delegates->ModuleReset != NULL)
-      {
-        instance->ModualParms |= 1024;
-
-        strcat(text, "Needs Reset Notification\n");
-      }
-
-      if (delegates->SetIniPath != NULL)
-      {
-        instance->ModualParms |= 2048;
-
-        GetIniFilePath(ini);
-
-        delegates->SetIniPath(ini);
-      }
-
-      if (delegates->PakSetCart != NULL)
-      {
-        instance->ModualParms |= 4096;
-
-        strcat(text, "Can Assert CART\n");
-
-        delegates->PakSetCart(SetCart);
-      }
-
-      strcpy(instance->DllPath, modulePath);
-
-      emuState->ResetPending = RESET_HARD;
-
-      return(0);
+    case 2:		//File is a ROM image
+      return InsertModuleCase2(emuState, modulePath);
     }
 
     return(NOMODULE);

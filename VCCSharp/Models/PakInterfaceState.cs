@@ -4,16 +4,16 @@ namespace VCCSharp.Models
 {
     public struct PakInterfaceState
     {
-        HINSTANCE hInstLib;
+        public HINSTANCE hInstLib;
 
         // Storage for Pak ROMs
-        unsafe byte* ExternalRomBuffer;
-        bool RomPackLoaded;
+        public unsafe byte* ExternalRomBuffer;
+        public int RomPackLoaded;
 
-        uint BankedCartOffset;
+        public uint BankedCartOffset;
         public unsafe fixed byte DllPath[256];
-        ushort ModualParms;
-        bool DialogOpen;
+        public ushort ModualParms;
+        public int DialogOpen;
 
         public unsafe fixed byte Modname[Define.MAX_PATH];
     }

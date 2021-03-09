@@ -227,6 +227,15 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void PakTimer();
+            
+            [DllImport(LIBRARY)]
+            public static extern int InsertModuleCase0();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int InsertModuleCase1(EmuState* emuState, byte* modulePath);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int InsertModuleCase2(EmuState* emuState, byte* modulePath);
         }
 
         public static class Resource

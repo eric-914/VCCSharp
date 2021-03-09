@@ -10,12 +10,12 @@ typedef struct {
 
   // Storage for Pak ROMs
   unsigned char* ExternalRomBuffer;
-  bool RomPackLoaded;
+  BOOL RomPackLoaded;
 
   unsigned int BankedCartOffset;
   char DllPath[256];
   unsigned short ModualParms;
-  bool DialogOpen;
+  BOOL DialogOpen;
 
   char Modname[MAX_PATH];
 } PakInterfaceState;
