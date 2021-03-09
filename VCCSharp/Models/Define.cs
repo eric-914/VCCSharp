@@ -2,7 +2,7 @@
 {
     public static class Define
     {
-        public const byte TRUE = 1;
+        public const byte TRUE = 1;     //--Need to be careful, as TRUE doesn't necessarily mean NOT FALSE
         public const byte FALSE = 0;
 
         public const int IGNORE = 0;

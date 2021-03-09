@@ -104,6 +104,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern int GetPaletteType();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe byte* ExternalBasicImage();
         }
 
         public static class CPU
@@ -251,6 +254,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void GimeAssertTimerInterrupt();
+
+            [DllImport(LIBRARY)]
+            public static extern ushort LoadInternalRom(string filename);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void GetExecPath(byte* buffer);
         }
 
         public static class Throttle

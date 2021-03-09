@@ -18,7 +18,7 @@ extern "C" __declspec(dllexport) void __cdecl SetMapType(unsigned char);
 
 extern "C" __declspec(dllexport) void __cdecl MmuReset(void);
 extern "C" __declspec(dllexport) void __cdecl SetDistoRamBank(unsigned char);
-extern "C" __declspec(dllexport) int __cdecl LoadInternalRom(char*);
+extern "C" __declspec(dllexport) unsigned short __cdecl LoadInternalRom(char*);
 
 extern "C" __declspec(dllexport) void __cdecl CopyRom(void);
 extern "C" __declspec(dllexport) unsigned char __cdecl MmuInit(unsigned char);
@@ -29,3 +29,5 @@ extern "C" __declspec(dllexport) unsigned int __cdecl MemRead32(unsigned short);
 extern "C" __declspec(dllexport) void __cdecl MemWrite8(unsigned char, unsigned short);
 extern "C" __declspec(dllexport) void __cdecl MemWrite16(unsigned short, unsigned short);
 extern "C" __declspec(dllexport) void __cdecl MemWrite32(unsigned int, unsigned short);
+
+extern "C" __declspec(dllexport) void __cdecl GetExecPath(char* buffer);

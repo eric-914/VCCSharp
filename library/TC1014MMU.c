@@ -80,6 +80,22 @@ extern "C" {
 }
 
 extern "C" {
+  __declspec(dllexport) void __cdecl MemWrite16(unsigned short data, unsigned short addr)
+  {
+    MemWrite8(data >> 8, addr);
+    MemWrite8(data & 0xFF, addr + 1);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl MemWrite32(unsigned int data, unsigned short addr)
+  {
+    MemWrite16(data >> 16, addr);
+    MemWrite16(data & 0xFFFF, addr + 2);
+  }
+}
+
+extern "C" {
   __declspec(dllexport) void __cdecl UpdateMmuArray(void)
   {
     if (instance->MapType) {
@@ -245,9 +261,12 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl LoadInternalRom(char* filename)
+  __declspec(dllexport) unsigned short __cdecl LoadInternalRom(char* filename)
   {
     unsigned short index = 0;
+
+    OutputDebugString(filename);
+
     FILE* rom_handle = fopen(filename, "rb");
 
     if (rom_handle == NULL) {
@@ -265,22 +284,33 @@ extern "C" {
 }
 
 extern "C" {
+  __declspec(dllexport) void __cdecl GetExecPath(char* buffer) {
+    GetModuleFileName(NULL, buffer, MAX_PATH);
+  }
+}
+
+//==========================================================
+//TODO: This has been pulled into C#
+//      But is still being used by MmuInit(...) below
+//      Remove when MmuInit has been ported.
+//==========================================================
+extern "C" {
   __declspec(dllexport) void __cdecl CopyRom()
   {
-    char ExecPath[MAX_PATH];
-    char CoCoRomPath[MAX_PATH];
+    char execPath[MAX_PATH];
+    char cocoRomPath[MAX_PATH];
     unsigned short temp = 0;
 
     //--Try to see if rom exists at: DefaultPaths ==> CoCoRomPath
-    strcpy(CoCoRomPath, GetConfigState()->Model->CoCoRomPath);
-    strcat(CoCoRomPath, "\\coco3.rom");
+    strcpy(cocoRomPath, GetConfigState()->Model->CoCoRomPath);
+    strcat(cocoRomPath, "\\coco3.rom");
 
-    if (CoCoRomPath != "") {
-      temp = LoadInternalRom(CoCoRomPath);  //Try loading from the user defined path first.
+    if (cocoRomPath != "") {
+      temp = LoadInternalRom(cocoRomPath);  //Try loading from the user defined path first.
     }
 
     if (temp) {
-      OutputDebugString(" Found coco3.rom in CoCoRomPath\n");
+      OutputDebugString("Found coco3.rom in CoCoRomPath\n");
     }
 
     //--Next, try to see if rom exists at: Memory ==> ExternalBasicImage
@@ -291,13 +321,13 @@ extern "C" {
     //--Last, try to see if rom exists in same folder as executable
     if (temp == 0) {
       // If we can't find it use default copy
-      GetModuleFileName(NULL, ExecPath, MAX_PATH);
+      GetExecPath(execPath);
 
-      FilePathRemoveFileSpec(ExecPath);
+      FilePathRemoveFileSpec(execPath);
 
-      strcat(ExecPath, "coco3.rom");
+      strcat(execPath, "coco3.rom");
 
-      temp = LoadInternalRom(ExecPath);
+      temp = LoadInternalRom(execPath);
     }
 
     if (temp == 0)
@@ -424,21 +454,5 @@ extern "C" {
     else if (instance->MapType || (instance->MmuRegisters[instance->MmuState][address >> 13] < instance->VectorMaska[instance->CurrentRamConfig]) || (instance->MmuRegisters[instance->MmuState][address >> 13] > instance->VectorMask[instance->CurrentRamConfig])) {
       instance->MemPages[instance->MmuRegisters[instance->MmuState][address >> 13]][address & 0x1FFF] = data;
     }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl MemWrite16(unsigned short data, unsigned short addr)
-  {
-    MemWrite8(data >> 8, addr);
-    MemWrite8(data & 0xFF, addr + 1);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl MemWrite32(unsigned int data, unsigned short addr)
-  {
-    MemWrite16(data >> 16, addr);
-    MemWrite16(data & 0xFFFF, addr + 2);
   }
 }

@@ -10,6 +10,7 @@ namespace VCCSharp.Modules
         unsafe void WriteIniFile(EmuState* emuState);
         unsafe void SynchSystemWithConfig(EmuState* emuState);
         int GetPaletteType();
+        string ExternalBasicImage();
     }
 
     public class Config : IConfig
@@ -57,6 +58,16 @@ namespace VCCSharp.Modules
         public int GetPaletteType()
         {
             return Library.Config.GetPaletteType();
+        }
+
+        public string ExternalBasicImage()
+        {
+            unsafe
+            {
+                byte* data = Library.Config.ExternalBasicImage();
+
+                return Converter.ToString(data);
+            }
         }
     }
 }

@@ -190,7 +190,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) char* __cdecl ExternalBasicImage(void)
+  __declspec(dllexport) char* __cdecl ExternalBasicImage()
   {
     return(instance->Model->ExternalBasicImage);
   }
