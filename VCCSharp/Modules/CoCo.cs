@@ -13,6 +13,7 @@ namespace VCCSharp.Modules
         void SetClockSpeed(ushort cycles);
         unsafe float RenderFrame(EmuState* emuState);
         void CocoReset();
+        ushort SetAudioRate(ushort rate);
     }
 
     public class CoCo : ICoCo
@@ -550,6 +551,11 @@ namespace VCCSharp.Modules
         private void ResetKeyMap()
         {
             Library.CoCo.ResetKeyMap();
+        }
+
+        public ushort SetAudioRate(ushort rate)
+        {
+            return Library.CoCo.SetAudioRate(rate);
         }
     }
 }

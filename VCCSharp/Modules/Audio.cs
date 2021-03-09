@@ -45,7 +45,17 @@ namespace VCCSharp.Modules
 
         public void ResetAudio()
         {
-            Library.Audio.ResetAudio();
+            unsafe
+            {
+                AudioState* audioState = GetAudioState();
+
+                _modules.CoCo.SetAudioRate(audioState->iRateList[audioState->CurrentRate]);
+
+                _modules.DirectSound.SetCurrentPosition(0);
+
+                audioState->BuffOffset = 0;
+                audioState->AuxBufferPointer = 0;
+            }
         }
 
         public unsafe void FlushAudioBuffer(uint* aBuffer, ushort length)

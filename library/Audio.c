@@ -191,23 +191,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl ResetAudio()
-  {
-    DirectSoundState* directSoundState = GetDirectSoundState();
-
-    SetAudioRate(instance->iRateList[instance->CurrentRate]);
-
-    //	SetAudioRate(44100);
-    if (instance->InitPassed) {
-      directSoundState->lpdsbuffer1->SetCurrentPosition(0);
-    }
-
-    instance->BuffOffset = 0;
-    instance->AuxBufferPointer = 0;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) int __cdecl GetSoundCardList(SoundCardList* list)
   {
     instance->CardCount = 0;

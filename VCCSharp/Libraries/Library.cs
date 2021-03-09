@@ -28,9 +28,6 @@ namespace VCCSharp.Libraries
         public static class Audio
         {
             [DllImport(LIBRARY)]
-            public static extern void ResetAudio();
-
-            [DllImport(LIBRARY)]
             public static extern unsafe void FlushAudioBuffer(uint* aBuffer, ushort length);
 
             [DllImport(LIBRARY)]
@@ -77,6 +74,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void ExecuteAudioEvent();
+
+            [DllImport(LIBRARY)]
+            public static extern ushort SetAudioRate(ushort rate);
         }   
 
         public static class Config
@@ -158,6 +158,9 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern void StopAndRelease();
+
+            [DllImport(LIBRARY)]
+            public static extern void SetCurrentPosition(ulong position);
         }
 
         public static class Graphics

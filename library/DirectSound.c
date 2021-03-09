@@ -21,9 +21,13 @@ DirectSoundState* InitializeDirectSoundState(DirectSoundState* p) {
 
 extern "C" {
   __declspec(dllexport) void __cdecl StopAndRelease() {
-    DirectSoundState* directSoundState = GetDirectSoundState();
+    instance->lpdsbuffer1->Stop();
+    instance->lpds->Release();
+  }
+}
 
-    directSoundState->lpdsbuffer1->Stop();
-    directSoundState->lpds->Release();
+extern "C" {
+  __declspec(dllexport) void __cdecl SetCurrentPosition(DWORD position) {
+    instance->lpdsbuffer1->SetCurrentPosition(position);
   }
 }
