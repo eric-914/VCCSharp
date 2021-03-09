@@ -4,14 +4,14 @@
 
 typedef struct
 {
-  _LARGE_INTEGER StartTime;
-  _LARGE_INTEGER EndTime;
-  _LARGE_INTEGER OneFrame;
-  _LARGE_INTEGER CurrentTime;
-  _LARGE_INTEGER SleepRes;
-  _LARGE_INTEGER TargetTime, OneMs;
-  _LARGE_INTEGER MasterClock;
-  _LARGE_INTEGER Now;
+  LARGE_INTEGER StartTime;
+  LARGE_INTEGER EndTime;
+  LARGE_INTEGER OneFrame;
+  LARGE_INTEGER CurrentTime;
+  LARGE_INTEGER SleepRes;
+  LARGE_INTEGER TargetTime, OneMs;
+  LARGE_INTEGER MasterClock;
+  LARGE_INTEGER Now;
 
   unsigned char FrameSkip;
   float fMasterClock;

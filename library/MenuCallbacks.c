@@ -176,11 +176,11 @@ extern "C" {
       break;
 
     default:
-      PakInterfaceState* instance = GetPakInterfaceState();
+      PakInterfaceDelegates* delegates = GetPakInterfaceDelegates();
 
-      if (instance->ConfigModule != NULL) {
+      if (delegates->ConfigModule != NULL) {
         //--Original code was passing an unsigned char, though the menu ids are integers
-        instance->ConfigModule((unsigned char)(menuItem - ID_DYNAMENU_START));
+        delegates->ConfigModule((unsigned char)(menuItem - ID_DYNAMENU_START));
       }
 
       break;

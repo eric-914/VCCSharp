@@ -21,6 +21,7 @@
 #define ASSERTCART		4096
 
 extern "C" __declspec(dllexport) PakInterfaceState * __cdecl GetPakInterfaceState();
+extern "C" __declspec(dllexport) PakInterfaceDelegates* __cdecl GetPakInterfaceDelegates();
 
 extern "C" __declspec(dllexport) int __cdecl FileID(char*);
 extern "C" __declspec(dllexport) int __cdecl InsertModule(EmuState*, char*);

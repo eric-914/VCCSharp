@@ -129,7 +129,7 @@ Could not locate {ROM} in any of these locations:
                 _modules.Graphics.SetVidMask(mmuState->VidMask[mmuState->CurrentRamConfig]);
 
                 FreeMemory(mmuState->InternalRomBuffer);
-                mmuState->InternalRomBuffer = AllocateMemory(0x8000);
+                mmuState->InternalRomBuffer = AllocateMemory(0x8001); //--TODO: Weird that the extra byte is needed here
 
                 if (mmuState->InternalRomBuffer == null) {
                     return 0;

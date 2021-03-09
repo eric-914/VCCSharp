@@ -19,7 +19,9 @@ typedef struct {
   bool DialogOpen;
 
   char Modname[MAX_PATH];
+} PakInterfaceState;
 
+typedef struct {
   void (*GetModuleName)(char*, char*, DYNAMICMENUCALLBACK);
   void (*ConfigModule)(unsigned char);
   void (*SetInterruptCallPointer) (ASSERTINTERRUPT);
@@ -34,4 +36,4 @@ typedef struct {
   void (*ModuleReset) (void);
   void (*SetIniPath) (char*);
   void (*PakSetCart)(SETCART);
-} PakInterfaceState;
+} PakInterfaceDelegates;
