@@ -261,29 +261,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned short __cdecl LoadInternalRom(char* filename)
-  {
-    unsigned short index = 0;
-
-    OutputDebugString(filename);
-
-    FILE* rom_handle = fopen(filename, "rb");
-
-    if (rom_handle == NULL) {
-      return(0);
-    }
-
-    while ((feof(rom_handle) == 0) && (index < 0x8000)) {
-      instance->InternalRomBuffer[index++] = fgetc(rom_handle);
-    }
-
-    fclose(rom_handle);
-
-    return(index);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl GetExecPath(char* buffer) {
     GetModuleFileName(NULL, buffer, MAX_PATH);
   }

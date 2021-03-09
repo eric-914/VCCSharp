@@ -170,7 +170,23 @@ Could not locate {ROM} in any of these locations:
 
         public ushort LoadInternalRom(string filename)
         {
-            return Library.TC1014.LoadInternalRom(filename);
+            Debug.WriteLine($"LoadInternalRom: {filename}");
+
+            if (!File.Exists(filename)) return 0;
+
+            byte[] bytes = File.ReadAllBytes(filename);
+
+            unsafe
+            {
+                TC1014MmuState* instance = GetTC1014MmuState();
+
+                for (ushort index = 0; index < bytes.Length; index++)
+                {
+                    instance->InternalRomBuffer[index] = bytes[index];
+                }
+            }
+
+            return (ushort)bytes.Length;
         }
 
         public string GetExecPath()

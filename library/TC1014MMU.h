@@ -18,7 +18,6 @@ extern "C" __declspec(dllexport) void __cdecl SetMapType(unsigned char);
 
 extern "C" __declspec(dllexport) void __cdecl MmuReset(void);
 extern "C" __declspec(dllexport) void __cdecl SetDistoRamBank(unsigned char);
-extern "C" __declspec(dllexport) unsigned short __cdecl LoadInternalRom(char*);
 
 extern "C" __declspec(dllexport) unsigned char __cdecl MemRead8(unsigned short);
 extern "C" __declspec(dllexport) unsigned short __cdecl MemRead16(unsigned short);
