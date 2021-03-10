@@ -47,6 +47,12 @@ namespace VCCSharp.Libraries
             public static extern unsafe int SoundInit(HWND hWnd, _GUID* guid, ushort rate);
         }
 
+        public static class Callbacks
+        {
+            [DllImport(LIBRARY)]
+            public static extern void SetDialogAudioBars(HWND hDlg, ushort left, ushort right);
+        }
+
         public static class Cassette
         {
             [DllImport(LIBRARY)]
@@ -114,9 +120,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe byte* ExternalBasicImage();
-
-            [DllImport(LIBRARY)]
-            public static extern void UpdateSoundBar(ushort left, ushort right);
 
             [DllImport(LIBRARY)]
             public static extern unsafe void GetIniFilePath(byte* iniFilePath, string argIniFile);

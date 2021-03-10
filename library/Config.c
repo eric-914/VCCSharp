@@ -294,17 +294,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl UpdateSoundBar(unsigned short left, unsigned short right)
-  {
-    if (instance->hDlgBar == NULL) {
-      return;
-    }
-
-    SetDialogAudioBars(instance->hDlgBar, left, right);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) int __cdecl SelectSerialCaptureFile(EmuState* emuState, char* filename)
   {
     OPENFILENAME ofn;

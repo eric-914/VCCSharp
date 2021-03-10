@@ -150,7 +150,16 @@ namespace VCCSharp.Modules
 
         public void UpdateSoundBar(ushort left, ushort right)
         {
-            Library.Config.UpdateSoundBar(left, right);
+            unsafe
+            {
+                ConfigState* configState = GetConfigState();
+
+                if (configState->hDlgBar == null) {
+                    return;
+                }
+
+                _modules.Callbacks.SetDialogAudioBars(configState->hDlgBar, left, right);
+            }
         }
 
         public unsafe string GetIniFilePath(string argIniFile)
