@@ -17,5 +17,4 @@ extern "C" __declspec(dllexport) int __cdecl SoundInit(HWND, _GUID*, unsigned sh
 extern "C" __declspec(dllexport) unsigned char __cdecl PauseAudio(unsigned char);
 extern "C" __declspec(dllexport) unsigned short __cdecl GetSoundStatus();
 
-extern "C" __declspec(dllexport) void __cdecl FlushAudioBuffer(unsigned int*, unsigned short);
 extern "C" __declspec(dllexport) void __cdecl PurgeAuxBuffer();

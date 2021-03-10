@@ -1,4 +1,5 @@
-﻿using VCCSharp.IoC;
+﻿using System.ComponentModel;
+using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 
@@ -65,8 +66,6 @@ namespace VCCSharp.Modules
         {
             AudioState* audioState = GetAudioState();
 
-            //ushort index = 0;
-            byte flag = 0;
             byte* byteBuffer = (byte*)buffer;
 
             ushort leftAverage = (ushort)(buffer[0] >> 16);
@@ -86,9 +85,32 @@ namespace VCCSharp.Modules
                 return;
             }
 
-            //audioState->hr = _modules.DirectSound.DirectSoundLock(audioState->BuffOffset, length, &(audioState->SndPointer1), &(audioState->SndLength1), &(audioState->SndPointer2), &(audioState->SndLength2));
+            audioState->hr = _modules.DirectSound.DirectSoundLock(audioState->BuffOffset, length, &(audioState->SndPointer1), &(audioState->SndLength1), &(audioState->SndPointer2), &(audioState->SndLength2));
 
-            Library.Audio.FlushAudioBuffer(buffer, length);
+            if (audioState->hr != Define.DS_OK) {
+                return;
+            }
+
+            //memcpy(instance->SndPointer1, byteBuffer, instance->SndLength1);	// copy first section of circular buffer
+            byte* sourceBuffer = (byte*)audioState->SndPointer1;
+            for (int index = 0; index < audioState->SndLength1; index++)
+            {
+                sourceBuffer[index] = byteBuffer[index];
+            }
+
+            if (audioState->SndPointer2 != null) { // copy last section of circular buffer if wrapped
+                //memcpy(audioState->SndPointer2, byteBuffer + audioState->SndLength1, audioState->SndLength2);
+                sourceBuffer = (byte*)audioState->SndPointer2;
+                for (int index = 0; index < audioState->SndLength2; index++)
+                {
+                    sourceBuffer[index] = byteBuffer[index + audioState->SndLength1];
+                }
+            }
+
+            audioState->hr = _modules.DirectSound.DirectSoundUnlock(audioState->SndPointer1, audioState->SndLength1, audioState->SndPointer2, audioState->SndLength2);// unlock the buffer
+
+            audioState->BuffOffset = (audioState->BuffOffset + length) % audioState->SndBuffLength;	//Where to write next
+
         }
 
         public int GetFreeBlockCount()

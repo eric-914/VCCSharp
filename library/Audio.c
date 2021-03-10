@@ -114,37 +114,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl FlushAudioBuffer(unsigned int* buffer, unsigned short length)
-  {
-    unsigned short index = 0;
-    unsigned char flag = 0;
-    unsigned char* byteBuffer = (unsigned char*)buffer;
-
-    if (GetFreeBlockCount() <= 0)	//this should only kick in when frame skipping or unthrottled
-    {
-      HandleSlowAudio(byteBuffer, length);
-      return;
-    }
-
-    instance->hr = DirectSoundLock(instance->BuffOffset, length, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2));
-
-    if (instance->hr != DS_OK) {
-      return;
-    }
-
-    memcpy(instance->SndPointer1, byteBuffer, instance->SndLength1);	// copy first section of circular buffer
-
-    if (instance->SndPointer2 != NULL) { // copy last section of circular buffer if wrapped
-      memcpy(instance->SndPointer2, byteBuffer + instance->SndLength1, instance->SndLength2);
-    }
-
-    instance->hr = DirectSoundUnlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);// unlock the buffer
-
-    instance->BuffOffset = (instance->BuffOffset + length) % instance->SndBuffLength;	//Where to write next
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl PurgeAuxBuffer(void)
   {
     DirectSoundState* directSoundState = GetDirectSoundState();

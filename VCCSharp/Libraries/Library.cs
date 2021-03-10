@@ -28,9 +28,6 @@ namespace VCCSharp.Libraries
         public static class Audio
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe void FlushAudioBuffer(uint* buffer, ushort length);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe AudioState* GetAudioState();
 
             [DllImport(LIBRARY)]
@@ -173,7 +170,10 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe int DirectSoundLock(ulong buffOffset, ushort length, 
-                void** sndPointer1, ulong* sndLength1, void** sndPointer2, ulong* sndLength2);
+                void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int DirectSoundUnlock(void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
         }
 
         public static class Graphics

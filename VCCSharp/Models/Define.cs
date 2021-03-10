@@ -15,5 +15,8 @@
         public const int MAX_PATH = 260;
 
         public const int TABS = 8;
+
+        public const long S_OK = 0;
+        public const long DS_OK = S_OK;
     }
 }
