@@ -108,9 +108,29 @@ namespace VCCSharp.Modules
             Library.Config.WriteIniFile(emuState);
         }
 
+        //TODO: Still being used by LoadIniFile(...)
         public unsafe void SynchSystemWithConfig(EmuState* emuState)
         {
-            Library.Config.SynchSystemWithConfig(emuState);
+            ConfigState* configState = GetConfigState();
+            VccState* vccState = _modules.Vcc.GetVccState();
+
+            ConfigModel* model = configState->Model;
+
+            vccState->AutoStart = model->AutoStart;
+            vccState->Throttle = model->SpeedThrottle;
+
+            emuState->RamSize = model->RamSize;
+            emuState->FrameSkip = model->FrameSkip;
+
+            _modules.Graphics.SetPaletteType();
+            _modules.DirectDraw.SetAspect(model->ForceAspect);
+            _modules.Graphics.SetScanLines(emuState, model->ScanLines);
+            _modules.Emu.SetCPUMultiplier(model->CPUMultiplier);
+
+            SetCpuType(model->CpuType);
+
+            _modules.Graphics.SetMonitorType(model->MonitorType);
+            _modules.MC6821.MC6821_SetCartAutoStart(model->CartAutoStart);
         }
 
         public int GetPaletteType()

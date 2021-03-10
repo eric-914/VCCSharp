@@ -411,29 +411,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SynchSystemWithConfig(EmuState* emuState)
-  {
-    VccState* vccState = GetVccState();
-
-    ConfigModel* model = instance->Model;
-
-    vccState->AutoStart = model->AutoStart;
-    vccState->Throttle = model->SpeedThrottle;
-
-    emuState->RamSize = model->RamSize;
-    emuState->FrameSkip = model->FrameSkip;
-
-    SetPaletteType();
-    SetAspect(model->ForceAspect);
-    SetScanLines(emuState, model->ScanLines);
-    SetCPUMultiplier(model->CPUMultiplier);
-    SetCpuType(model->CpuType);
-    SetMonitorType(model->MonitorType);
-    MC6821_SetCartAutoStart(model->CartAutoStart);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl ReadIniFile(EmuState* emuState)
   {
     LoadConfiguration(instance->Model, instance->IniFilePath);
@@ -541,5 +518,31 @@ extern "C" {
         }
       }
     }
+  }
+}
+
+//======================================================================
+// TODO: This has been ported to C#, but is still being used by LoadIniFile(...)
+//======================================================================
+extern "C" {
+  __declspec(dllexport) void __cdecl SynchSystemWithConfig(EmuState* emuState)
+  {
+    VccState* vccState = GetVccState();
+
+    ConfigModel* model = instance->Model;
+
+    vccState->AutoStart = model->AutoStart;
+    vccState->Throttle = model->SpeedThrottle;
+
+    emuState->RamSize = model->RamSize;
+    emuState->FrameSkip = model->FrameSkip;
+
+    SetPaletteType();
+    SetAspect(model->ForceAspect);
+    SetScanLines(emuState, model->ScanLines);
+    SetCPUMultiplier(model->CPUMultiplier);
+    SetCpuType(model->CpuType);
+    SetMonitorType(model->MonitorType);
+    MC6821_SetCartAutoStart(model->CartAutoStart);
   }
 }

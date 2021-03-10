@@ -8,6 +8,7 @@ namespace VCCSharp.Modules
         void MC6821_PiaReset();
         void MC6821_irq_fs(PhaseStates phase);
         void MC6821_irq_hs(PhaseStates phase);
+        byte MC6821_SetCartAutoStart(byte autostart);
     }
 
     public class MC6821 : IMC6821
@@ -25,6 +26,11 @@ namespace VCCSharp.Modules
         public void MC6821_irq_hs(PhaseStates phase)
         {
             Library.MC6821.MC6821_irq_hs((int)phase);
+        }
+
+        public byte MC6821_SetCartAutoStart(byte autostart)
+        {
+            return Library.MC6821.MC6821_SetCartAutoStart(autostart);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using VCCSharp.Libraries;
+using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
@@ -10,6 +11,9 @@ namespace VCCSharp.Modules
         void SetBlinkState(byte state);
         void SetBorderChange(byte data);
         void SetVidMask(uint mask);
+        void SetPaletteType();
+        unsafe byte SetScanLines(EmuState* emuState, byte lines);
+        byte SetMonitorType(byte type);
     }
 
     public class Graphics : IGraphics
@@ -42,6 +46,21 @@ namespace VCCSharp.Modules
         public void SetVidMask(uint mask)
         {
             Library.Graphics.SetVidMask(mask);
+        }
+
+        public void SetPaletteType()
+        {
+            Library.Graphics.SetPaletteType();
+        }
+
+        public unsafe byte SetScanLines(EmuState* emuState, byte lines)
+        {
+            return Library.Graphics.SetScanLines(emuState, lines);
+        }
+
+        public byte SetMonitorType(byte type)
+        {
+            return Library.Graphics.SetMonitorType(type);
         }
     }
 }

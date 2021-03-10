@@ -24,6 +24,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetCPUToMC6809();
+
+            [DllImport(LIBRARY)]
+            public static extern byte SetCPUMultiplier(byte multiplier);
         }
 
         public static class Audio
@@ -107,9 +110,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe void WriteIniFile(EmuState* emuState);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void SynchSystemWithConfig(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
             public static extern int GetPaletteType();
 
             [DllImport(LIBRARY)]
@@ -177,6 +177,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void UnlockScreen(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern byte SetAspect(byte forceAspect);
         }
 
         public static class DirectSound
@@ -214,6 +217,15 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetVidMask(uint mask);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetPaletteType();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe byte SetScanLines(EmuState* emuState, byte lines);
+
+            [DllImport(LIBRARY)]
+            public static extern byte SetMonitorType(byte type);
         }
 
         public static class Joystick
@@ -250,6 +262,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void MC6821_irq_hs(int phase);
+
+            [DllImport(LIBRARY)]
+            public static extern byte MC6821_SetCartAutoStart(byte autostart);
         }
 
         public static class PAKInterface

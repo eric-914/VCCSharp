@@ -15,6 +15,7 @@ namespace VCCSharp.Modules
         unsafe void DoCls(EmuState* emuState);
         unsafe byte LockScreen(EmuState* emuState);
         unsafe void UnlockScreen(EmuState* emuState);
+        byte SetAspect(byte forceAspect);
     }
 
     public class DirectDraw : IDirectDraw
@@ -62,6 +63,11 @@ namespace VCCSharp.Modules
         public unsafe void UnlockScreen(EmuState* emuState)
         {
             Library.DirectDraw.UnlockScreen(emuState);
+        }
+
+        public byte SetAspect(byte forceAspect)
+        {
+            return Library.DirectDraw.SetAspect(forceAspect);
         }
     }
 }
