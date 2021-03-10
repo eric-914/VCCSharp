@@ -18,5 +18,7 @@
 
         public const long S_OK = 0;
         public const long DS_OK = S_OK;
+
+        public const int MAXCARDS = 12;
     }
 }

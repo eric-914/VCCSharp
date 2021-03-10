@@ -35,6 +35,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void HandleSlowAudio(byte* buffer, ushort length);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe short GetSoundCardList(SoundCardList* list);
         }
 
         public static class Cassette
@@ -113,6 +116,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void UpdateSoundBar(ushort left, ushort right);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void GetIniFilePath(byte* iniFilePath, string argIniFile);
         }
 
         public static class CPU
@@ -195,6 +201,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetVidMask(uint mask);
+        }
+
+        public static class Joystick
+        {
+            [DllImport(LIBRARY)]
+            public static extern unsafe JoystickState* GetJoystickState();
         }
 
         public static class Keyboard

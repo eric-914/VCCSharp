@@ -104,71 +104,60 @@ ConfigState* InitializeInstance(ConfigState* p) {
   return p;
 }
 
-void SetWindowSize(int width, int height) {
-  HWND handle = GetActiveWindow();
+extern "C" {
+  __declspec(dllexport) void __cdecl SetWindowSize(int width, int height) {
+    HWND handle = GetActiveWindow();
 
-  SetWindowPos(handle, 0, 0, 0, width + 16, height + 81, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+    SetWindowPos(handle, 0, 0, 0, width + 16, height + 81, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+  }
 }
 
-unsigned char GetSoundCardIndex(char* soundCardName) {
-  for (unsigned char index = 0; index < instance->NumberOfSoundCards; index++) {
-    if (!strcmp(instance->SoundCards[index].CardName, soundCardName)) {
-      return index;
-    }
-  }
-
-  return 0;
-}
-
-void AdjustOverclockSpeed(EmuState* emuState, unsigned char change) {
-  unsigned char cpuMultiplier = instance->Model->CPUMultiplier + change;
-
-  if (cpuMultiplier < 2 || cpuMultiplier > instance->Model->MaxOverclock)
-  {
-    return;
-  }
-
-  // Send updates to the dialog if it's open.
-  if (emuState->ConfigDialog != NULL)
-  {
-    HWND hDlg = instance->hWndConfig[1];
-
-    SetDialogCpuMultiplier(hDlg, cpuMultiplier);
-  }
-
-  instance->Model->CPUMultiplier = cpuMultiplier;
-
-  emuState->ResetPending = RESET_CLS_SYNCH; // Without this, changing the config does nothing.
-}
-
-void GetIniFilePath(char* iniFilePath, char* argIniFile) {
-  const char vccFolder[] = "\\VCC";
-  const char iniFileName[] = "\\Vcc.ini";
-
-  if (*argIniFile) {
-    GetFullPathName(argIniFile, MAX_PATH, instance->IniFilePath, 0);
-  }
-  else {
-    strcat(AppDataPath, vccFolder);
-
-    if (_mkdir(AppDataPath) != 0) {
-      OutputDebugString("Unable to create VCC config folder.");
+extern "C" {
+  __declspec(dllexport) unsigned char __cdecl GetSoundCardIndex(char* soundCardName) {
+    for (unsigned char index = 0; index < instance->NumberOfSoundCards; index++) {
+      if (!strcmp(instance->SoundCards[index].CardName, soundCardName)) {
+        return index;
+      }
     }
 
-    strcpy(iniFilePath, AppDataPath);
-    strcat(iniFilePath, iniFileName);
+    return 0;
   }
 }
 
-void ValidateModel(ConfigModel* model) {
-  if (model->KeyMapIndex > 3) {
-    model->KeyMapIndex = 0;	//Default to DECB Mapping
+extern "C" {
+  __declspec(dllexport) void __cdecl AdjustOverclockSpeed(EmuState* emuState, unsigned char change) {
+    unsigned char cpuMultiplier = instance->Model->CPUMultiplier + change;
+
+    if (cpuMultiplier < 2 || cpuMultiplier > instance->Model->MaxOverclock)
+    {
+      return;
+    }
+
+    // Send updates to the dialog if it's open.
+    if (emuState->ConfigDialog != NULL)
+    {
+      HWND hDlg = instance->hWndConfig[1];
+
+      SetDialogCpuMultiplier(hDlg, cpuMultiplier);
+    }
+
+    instance->Model->CPUMultiplier = cpuMultiplier;
+
+    emuState->ResetPending = RESET_CLS_SYNCH; // Without this, changing the config does nothing.
   }
+}
 
-  FileCheckPath(model->ModulePath);
-  FileCheckPath(model->ExternalBasicImage);
+extern "C" {
+  __declspec(dllexport) void __cdecl ValidateModel(ConfigModel* model) {
+    if (model->KeyMapIndex > 3) {
+      model->KeyMapIndex = 0;	//Default to DECB Mapping
+    }
 
-  FileValidatePath(model->ModulePath); //--If module is in same location as .exe, strip off path portion, leaving only module name
+    FileCheckPath(model->ModulePath);
+    FileCheckPath(model->ExternalBasicImage);
+
+    FileValidatePath(model->ModulePath); //--If module is in same location as .exe, strip off path portion, leaving only module name
+  }
 }
 
 extern "C" {
@@ -197,9 +186,23 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl GetIniFilePath(char* path)
-  {
-    strcpy(path, instance->IniFilePath);
+  __declspec(dllexport) void __cdecl GetIniFilePath(char* iniFilePath, char* argIniFile) {
+    const char vccFolder[] = "\\VCC";
+    const char iniFileName[] = "\\Vcc.ini";
+
+    if (*argIniFile) {
+      GetFullPathName(argIniFile, MAX_PATH, instance->IniFilePath, 0);
+    }
+    else {
+      strcat(AppDataPath, vccFolder);
+
+      if (_mkdir(AppDataPath) != 0) {
+        OutputDebugString("Unable to create VCC config folder.");
+      }
+
+      strcpy(iniFilePath, AppDataPath);
+      strcat(iniFilePath, iniFileName);
+    }
   }
 }
 
@@ -433,20 +436,11 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl InitConfig(EmuState* emuState, CmdLineArguments* cmdArg)
   {
-    HANDLE hr = NULL;
-    int lasterror;
-
-    ResourceAppTitle(emuState->Resources, instance->Model->Release);  //--A kind of "versioning" I guess
-
-    GetIniFilePath(instance->IniFilePath, cmdArg->IniFile);
-
-    instance->NumberOfSoundCards = GetSoundCardList(instance->SoundCards);
-
     //--Synch joysticks to config instance
-    JoystickState* joystickState = GetJoystickState();
+    //JoystickState* joystickState = GetJoystickState();
 
-    joystickState->Left = instance->Model->Left;
-    joystickState->Right = instance->Model->Right;
+    //joystickState->Left = instance->Model->Left;
+    //joystickState->Right = instance->Model->Right;
 
     ReadIniFile(emuState);
 
@@ -457,11 +451,11 @@ extern "C" {
     SoundInit(emuState->WindowHandle, instance->SoundCards[soundCardIndex].Guid, instance->Model->AudioRate);
 
     //  Try to open the config file.  Create it if necessary.  Abort if failure.
-    hr = CreateFile(instance->IniFilePath,
+    HANDLE hr = CreateFile(instance->IniFilePath,
       GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ,
       NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
-    lasterror = GetLastError();
+    int lasterror = GetLastError();
 
     if (hr == INVALID_HANDLE_VALUE) { // Fatal could not open ini file
       MessageBox(0, "Could not open ini file", "Error", 0);
@@ -521,7 +515,7 @@ extern "C" {
 
     static EmuState* _emu = GetEmuState();
 
-    GetIniFilePath(szFileName); // EJJ load current ini file path
+    strcpy(szFileName, instance->IniFilePath);  // EJJ load current ini file path
 
     memset(&ofn, 0, sizeof(ofn));
 
@@ -556,7 +550,7 @@ extern "C" {
 
     static EmuState* _emu = GetEmuState();
 
-    GetIniFilePath(curini);  // EJJ get current ini file path
+    strcpy(curini, instance->IniFilePath);  // EJJ get current ini file path
     strcpy(newini, curini);   // Let GetOpenFilename suggest it
 
     memset(&ofn, 0, sizeof(ofn));

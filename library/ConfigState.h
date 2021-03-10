@@ -14,6 +14,7 @@
 typedef struct
 {
   ConfigModel* Model;
+  SoundCardList SoundCards[MAXCARDS];
 
   char TextMode;  //--Add LF to CR
   char PrintMonitorWindow;
@@ -30,9 +31,10 @@ typedef struct
   unsigned char TapeMode;
 
   int NumberOfSoundCards;
-  SoundCardList SoundCards[MAXCARDS];
 
-  HWND hWndConfig[TABS];
   HWND hDlgBar;
   HWND hDlgTape;
+
+  HWND hWndConfig[TABS];
+
 } ConfigState;

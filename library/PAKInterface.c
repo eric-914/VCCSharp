@@ -452,7 +452,7 @@ extern "C" {
     {
       instance->ModualParms |= 2048;
 
-      GetIniFilePath(ini);
+      strcpy(ini, GetConfigState()->IniFilePath);
 
       delegates->SetIniPath(ini);
     }

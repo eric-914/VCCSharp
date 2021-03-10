@@ -14,6 +14,7 @@ namespace VCCSharp.IoC
         IDirectSound DirectSound { get; }
         IEmu Emu { get; }
         IGraphics Graphics { get; }
+        IJoystick Joystick{ get; }
         IKeyboard Keyboard { get; }
         IMenuCallbacks MenuCallbacks { get; }
         IMC6821 MC6821 { get; }
@@ -44,6 +45,7 @@ namespace VCCSharp.IoC
         public IDirectSound DirectSound => _factory.Get<IDirectSound>();
         public IEmu Emu => _factory.Get<IEmu>();
         public IGraphics Graphics => _factory.Get<IGraphics>();
+        public IJoystick Joystick => _factory.Get<IJoystick>();
         public IKeyboard Keyboard => _factory.Get<IKeyboard>();
         public IMenuCallbacks MenuCallbacks => _factory.Get<IMenuCallbacks>();
         public IMC6821 MC6821 => _factory.Get<IMC6821>();

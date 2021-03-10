@@ -3,10 +3,33 @@ using HWND = System.IntPtr;
 
 namespace VCCSharp.Models
 {
+    //TODO: Figure out how to convince C# to let me turn this into an array of MAXCARD items
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    public struct SoundCardListArray
+    {
+        //[Define.MAXCARDS] = 12;
+        public SoundCardList _0;
+        public SoundCardList _1;
+        public SoundCardList _2;
+        public SoundCardList _3;
+        public SoundCardList _4;
+        public SoundCardList _5;
+        public SoundCardList _6;
+        public SoundCardList _7;
+        public SoundCardList _8;
+        public SoundCardList _9;
+        public SoundCardList _A;
+        public SoundCardList _B;
+    }
+
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct ConfigState
     {
         public unsafe ConfigModel* Model;
+
+        //public unsafe fixed SoundCardList SoundCards[Define.MAXCARDS];
+        //TODO: SoundCardList* is really a pointer to an array of SoundCardList items.  Haven't figured how to define it as such yet.
+        public SoundCardListArray SoundCards;
 
         public byte TextMode;  //--Add LF to CR
         public byte PrintMonitorWindow;
@@ -19,17 +42,15 @@ namespace VCCSharp.Models
         public unsafe fixed byte SerialCaptureFile[Define.MAX_PATH];
         public unsafe fixed byte OutBuffer[Define.MAX_PATH];
 
-        public uint TapeCounter;
+        public ushort TapeCounter;
         public byte TapeMode;
 
-        public int NumberOfSoundCards;
+        public short NumberOfSoundCards;
 
-        //TODO: SoundCardList* is really a pointer to an array of SoundCardList items.  Haven't figured how to define it as such yet.
-        public unsafe SoundCardList* SoundCards; //[Define.MAXCARDS];
+        public HWND hDlgBar;
+        public HWND hDlgTape;
 
         //TODO: HWND* is really a pointer to an array of HWND items.  Haven't figured how to define it as such yet.
         public unsafe HWND* hWndConfig; //[Define.TABS]
-        public HWND hDlgBar;
-        public HWND hDlgTape;
     }
 }

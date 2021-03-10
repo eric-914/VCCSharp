@@ -15,7 +15,11 @@ namespace VCCSharp
         {
             string[] arguments = Environment.GetCommandLineArgs();
 
-            var args = new CmdLineArguments();
+            var args = new CmdLineArguments
+            {
+                IniFile = "",
+                QLoadFile = ""
+            };
 
             for (int index = 1; index < arguments.Length; index++)
             {

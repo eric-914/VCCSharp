@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using VCCSharp.IoC;
+﻿using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 
@@ -11,6 +10,7 @@ namespace VCCSharp.Modules
         short SoundDeInit();
         void ResetAudio();
         unsafe void FlushAudioBuffer(uint* buffer, ushort length);
+        unsafe short GetSoundCardList(SoundCardList* list);
     }
 
     public class Audio : IAudio
@@ -133,6 +133,11 @@ namespace VCCSharp.Modules
             //audioState->AuxBufferPointer %= 5;	//At this point we are so far behind we may as well drop the buffer
 
             Library.Audio.HandleSlowAudio(buffer, length);
+        }
+
+        public unsafe short GetSoundCardList(SoundCardList* list)
+        {
+            return Library.Audio.GetSoundCardList(list);
         }
     }
 }

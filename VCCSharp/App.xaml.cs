@@ -23,6 +23,7 @@ namespace VCCSharp
                 .Singleton<IDirectSound, DirectSound>()
                 .Singleton<IEmu, Emu>()
                 .Singleton<IGraphics, Graphics>()
+                .Singleton<IJoystick, Joystick>()
                 .Singleton<IKeyboard, Keyboard>()
                 .Singleton<IMenuCallbacks, MenuCallbacks>()
                 .Singleton<IMC6821, MC6821>()
