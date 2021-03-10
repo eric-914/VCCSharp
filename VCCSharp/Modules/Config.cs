@@ -1,4 +1,7 @@
-﻿using VCCSharp.IoC;
+﻿using System;
+using System.IO;
+using System.Windows;
+using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 
@@ -59,17 +62,45 @@ namespace VCCSharp.Modules
 
             configState->NumberOfSoundCards = _modules.Audio.GetSoundCardList(soundCards);
 
+            //--Synch joysticks to config instance
             JoystickState* joystickState = _modules.Joystick.GetJoystickState();
 
             joystickState->Left = configState->Model->Left;
             joystickState->Right = configState->Model->Right;
 
-            Library.Config.InitConfig(emuState, ref cmdLineArgs);
+            ReadIniFile(emuState);
 
-            //var left = GetLeftJoystick();
-            //var right = GetRightJoystick();
-            //var model = GetConfigModel();
-            //var state = GetConfigState();
+            SynchSystemWithConfig(emuState);
+
+            ConfigureJoysticks();
+
+            string soundCardName = Converter.ToString(configState->Model->SoundCardName);
+            byte soundCardIndex = GetSoundCardIndex(soundCardName);
+
+            var array = configState->SoundCards.ToArray();
+            SoundCardList soundCard = array[soundCardIndex];
+            _GUID* guid = soundCard.Guid;
+
+            _modules.Audio.SoundInit(emuState->WindowHandle, guid, configState->Model->AudioRate);
+
+            //  Try to open the config file.  Create it if necessary.  Abort if failure.
+            if (File.Exists(iniFile))
+            {
+                return;
+            }
+
+            try
+            {
+                File.WriteAllText(iniFile, "");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Could not open ini file", "Error");
+
+                Environment.Exit(0);
+            }
+
+            WriteIniFile(emuState);
         }
 
         public unsafe void WriteIniFile(EmuState* emuState)
@@ -110,6 +141,26 @@ namespace VCCSharp.Modules
 
                 return Converter.ToString(buffer);
             };
+        }
+
+        public unsafe void ReadIniFile(EmuState* emuState)
+        {
+            Library.Config.ReadIniFile(emuState);
+        }
+
+        public void SetCpuType(byte cpuType)
+        {
+            Library.Config.SetCpuType(cpuType);
+        }
+
+        public void ConfigureJoysticks()
+        {
+            Library.Config.ConfigureJoysticks(); ;
+        }
+
+        public byte GetSoundCardIndex(string soundCardName)
+        {
+            return Library.Config.GetSoundCardIndex(soundCardName);
         }
     }
 }

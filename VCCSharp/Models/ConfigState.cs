@@ -53,4 +53,18 @@ namespace VCCSharp.Models
         //TODO: HWND* is really a pointer to an array of HWND items.  Haven't figured how to define it as such yet.
         public unsafe HWND* hWndConfig; //[Define.TABS]
     }
+
+    public static class SoundCardListExtensions
+    {
+        //TODO: I want my arrays!
+        public static SoundCardList[] ToArray(this SoundCardListArray source)
+        {
+            return new []
+            {
+                source._0, source._1, source._2, source._3,
+                source._4, source._5, source._6, source._7,
+                source._8, source._9, source._A, source._B
+            };
+        }
+    }
 }

@@ -434,45 +434,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl InitConfig(EmuState* emuState, CmdLineArguments* cmdArg)
-  {
-    //--Synch joysticks to config instance
-    //JoystickState* joystickState = GetJoystickState();
-
-    //joystickState->Left = instance->Model->Left;
-    //joystickState->Right = instance->Model->Right;
-
-    ReadIniFile(emuState);
-
-    SynchSystemWithConfig(emuState);
-    ConfigureJoysticks();
-
-    unsigned char soundCardIndex = GetSoundCardIndex(instance->Model->SoundCardName);
-    SoundInit(emuState->WindowHandle, instance->SoundCards[soundCardIndex].Guid, instance->Model->AudioRate);
-
-    //  Try to open the config file.  Create it if necessary.  Abort if failure.
-    HANDLE hr = CreateFile(instance->IniFilePath,
-      GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ,
-      NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-
-    int lasterror = GetLastError();
-
-    if (hr == INVALID_HANDLE_VALUE) { // Fatal could not open ini file
-      MessageBox(0, "Could not open ini file", "Error", 0);
-
-      exit(0);
-    }
-    else {
-      CloseHandle(hr);
-
-      if (lasterror != ERROR_ALREADY_EXISTS) {
-        WriteIniFile(emuState);
-      }
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl ReadIniFile(EmuState* emuState)
   {
     LoadConfiguration(instance->Model, instance->IniFilePath);

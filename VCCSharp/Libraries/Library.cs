@@ -2,6 +2,7 @@
 using VCCSharp.Models;
 using HINSTANCE = System.IntPtr;
 using HANDLE = System.IntPtr;
+using HWND = System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
@@ -38,6 +39,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe short GetSoundCardList(SoundCardList* list);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int SoundInit(HWND hWnd, _GUID* guid, ushort rate);
         }
 
         public static class Cassette
@@ -100,9 +104,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe JoystickModel* GetRightJoystick();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void InitConfig(EmuState* emuState, ref CmdLineArguments cmdLineArgs);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe void WriteIniFile(EmuState* emuState);
 
             [DllImport(LIBRARY)]
@@ -119,6 +120,18 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void GetIniFilePath(byte* iniFilePath, string argIniFile);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void ReadIniFile(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetCpuType(byte cpuType);
+
+            [DllImport(LIBRARY)]
+            public static extern void ConfigureJoysticks();
+
+            [DllImport(LIBRARY)]
+            public static extern byte GetSoundCardIndex(string soundCardName);
         }
 
         public static class CPU

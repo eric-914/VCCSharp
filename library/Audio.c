@@ -166,7 +166,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl SoundInit(HWND hWnd, _GUID* guid, unsigned short rate)
+  __declspec(dllexport) int __cdecl SoundInit(HWND hWnd, GUID* guid, unsigned short rate)
   {
     DirectSoundState* directSoundState = GetDirectSoundState();
 

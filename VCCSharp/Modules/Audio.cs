@@ -1,6 +1,8 @@
-﻿using VCCSharp.IoC;
+﻿using System;
+using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -11,6 +13,7 @@ namespace VCCSharp.Modules
         void ResetAudio();
         unsafe void FlushAudioBuffer(uint* buffer, ushort length);
         unsafe short GetSoundCardList(SoundCardList* list);
+        unsafe int SoundInit(HWND hWnd, _GUID* guid, ushort rate);
     }
 
     public class Audio : IAudio
@@ -138,6 +141,11 @@ namespace VCCSharp.Modules
         public unsafe short GetSoundCardList(SoundCardList* list)
         {
             return Library.Audio.GetSoundCardList(list);
+        }
+
+        public unsafe int SoundInit(HWND hWnd, _GUID* guid, ushort rate)
+        {
+            return Library.Audio.SoundInit(hWnd, guid, rate);
         }
     }
 }
