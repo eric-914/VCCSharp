@@ -175,7 +175,43 @@ namespace VCCSharp.Modules
 
         public void ConfigureJoysticks()
         {
-            Library.Config.ConfigureJoysticks(); ;
+            int temp = 0;
+
+            unsafe
+            {
+                ConfigState* configState = GetConfigState();
+
+                JoystickModel* left = configState->Model->Left;
+                JoystickModel* right = configState->Model->Right;
+
+                configState->NumberOfJoysticks = (byte)_modules.Joystick.EnumerateJoysticks();
+
+                for (byte index = 0; index < configState->NumberOfJoysticks; index++) {
+                    temp = _modules.Joystick.InitJoyStick(index);
+                }
+
+                if (right->DiDevice >= configState->NumberOfJoysticks) {
+                    right->DiDevice = 0;
+                }
+
+                if (left->DiDevice >= configState->NumberOfJoysticks) {
+                    left->DiDevice = 0;
+                }
+
+                _modules.Joystick.SetStickNumbers(left->DiDevice, right->DiDevice);
+
+                if (configState->NumberOfJoysticks == 0)	//Use Mouse input if no Joysticks present
+                {
+                    if (left->UseMouse == 3) {
+                        left->UseMouse = 1;
+                    }
+
+                    if (right->UseMouse == 3) {
+                        right->UseMouse = 1;
+                    }
+                }
+
+            }
         }
 
         public byte GetSoundCardIndex(string soundCardName)

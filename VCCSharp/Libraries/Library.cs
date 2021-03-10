@@ -128,9 +128,6 @@ namespace VCCSharp.Libraries
             public static extern void SetCpuType(byte cpuType);
 
             [DllImport(LIBRARY)]
-            public static extern void ConfigureJoysticks();
-
-            [DllImport(LIBRARY)]
             public static extern byte GetSoundCardIndex(string soundCardName);
         }
 
@@ -232,6 +229,15 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe JoystickState* GetJoystickState();
+
+            [DllImport(LIBRARY)]
+            public static extern short EnumerateJoysticks();
+
+            [DllImport(LIBRARY)]
+            public static extern int InitJoyStick(byte stickNumber);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetStickNumbers(byte leftStickNumber, byte rightStickNumber);
         }
 
         public static class Keyboard

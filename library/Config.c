@@ -305,43 +305,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl ConfigureJoysticks(void)
-  {
-    bool temp = false;
-
-    JoystickModel* left = instance->Model->Left;
-    JoystickModel* right = instance->Model->Right;
-
-    instance->NumberOfJoysticks = EnumerateJoysticks();
-
-    for (unsigned char index = 0; index < instance->NumberOfJoysticks; index++) {
-      temp = InitJoyStick(index);
-    }
-
-    if (right->DiDevice >= instance->NumberOfJoysticks) {
-      right->DiDevice = 0;
-    }
-
-    if (left->DiDevice >= instance->NumberOfJoysticks) {
-      left->DiDevice = 0;
-    }
-
-    SetStickNumbers(left->DiDevice, right->DiDevice);
-
-    if (instance->NumberOfJoysticks == 0)	//Use Mouse input if no Joysticks present
-    {
-      if (left->UseMouse == 3) {
-        left->UseMouse = 1;
-      }
-
-      if (right->UseMouse == 3) {
-        right->UseMouse = 1;
-      }
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) int __cdecl SelectSerialCaptureFile(EmuState* emuState, char* filename)
   {
     OPENFILENAME ofn;

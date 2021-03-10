@@ -12,7 +12,7 @@ extern "C" __declspec(dllexport) JoystickState * __cdecl GetJoystickState();
 
 extern "C" __declspec(dllexport) HRESULT __cdecl JoyStickPoll(DIJOYSTATE2*, unsigned char);
 
-extern "C" __declspec(dllexport) bool __cdecl InitJoyStick(unsigned char);
+extern "C" __declspec(dllexport) BOOL __cdecl InitJoyStick(unsigned char);
 
 extern "C" __declspec(dllexport) char __cdecl SetMouseStatus(char, unsigned char);
 

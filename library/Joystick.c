@@ -44,7 +44,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl EnumerateJoysticks(void)
+  __declspec(dllexport) int __cdecl EnumerateJoysticks()
   {
     HRESULT hr;
     JoyStickIndex = 0;
@@ -73,7 +73,7 @@ BOOL CALLBACK enumCallback(const DIDEVICEINSTANCE* instance, VOID* context)
 }
 
 extern "C" {
-  __declspec(dllexport) bool __cdecl InitJoyStick(unsigned char stickNumber)
+  __declspec(dllexport) BOOL __cdecl InitJoyStick(unsigned char stickNumber)
   {
     //	DIDEVCAPS capabilities;
     HRESULT hr;
