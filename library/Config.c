@@ -433,7 +433,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SaveConfig(void) {
+  __declspec(dllexport) void __cdecl SaveConfig() {
     OPENFILENAME ofn;
     char curini[MAX_PATH];
     char newini[MAX_PATH + 4];  // Save room for '.ini' if needed

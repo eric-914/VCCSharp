@@ -18,7 +18,7 @@
             Header = "File",
             MenuItems = new MenuItems
             {
-                new MenuItemViewModel {Header = "Run"},
+                new MenuItemViewModel {Header = "Run", Action = actions.Run},
                 new MenuItemViewModel {Header = "Save Config", Action = actions.SaveConfiguration},
                 new MenuItemViewModel {Header = "Load Config", Action = actions.LoadConfiguration},
                 Separator,

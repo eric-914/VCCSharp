@@ -438,17 +438,13 @@
 #define IDC_BUTTON167                   1190
 #define IDC_ORG_PALETTE                 1191
 #define IDC_UPD_PALETTE                 1192
-#define ID_FILE_EXIT                    40002
 #define IDM_HELP_ABOUT                  40003
-#define ID_FILE_RUN                     40004
-#define ID_FILE_RESET                   40005
 #define ID_CARTS_LOAD                   40006
 #define ID_DISKS_DRIVE0                 40007
 #define ID_DISKS_DRIVE1                 40008
 #define ID_DISKS_DRIVE2                 40009
 #define ID_DISKS_DRIVE3                 40010
 #define ID_DISKS_HD                     40010
-#define ID_FILE_RESET_SFT               40011
 #define ID_DUMPMEM                      40012
 #define ID_CONSOLE                      40013
 #define ID_CPUDUMP                      40014
@@ -463,16 +459,8 @@
 #define ID_FIRQ                         40024
 #define ID_NMI                          40025
 #define ID_CARTRIDGE_INSERT             40026
-#define ID_FILE_LOAD                    40028
-#define ID_SAVE_CONFIG                  40029
 #define ID_CARTS_EJECT                  40030
-#define ID_COPY_TEXT                    40034
-#define ID_PASTE_TEXT                   40035
-#define ID_PASTE_BASIC                  40036
-#define ID_PASTE_BASIC_NEW              40037
-#define ID_FLIP_ARTIFACTS               40038
 #define IDC_REMEMBER_SIZE               40039
-#define ID_CONFIGURE_OPTIONS            65535
 
 // Next default values for new objects
 // 

@@ -45,6 +45,6 @@ namespace VCCSharp.IoC
             return _kernel.Get<TInterface>();
         }
 
-        public MainMenu MenuItems => new MainMenu(new Actions());
+        public MainMenu MenuItems => _kernel.Get<MainMenu>();
     }
 }

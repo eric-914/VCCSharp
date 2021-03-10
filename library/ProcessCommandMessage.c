@@ -87,58 +87,8 @@ extern "C" {
       HelpAbout(hWnd);
       break;
 
-    case ID_CONFIGURE_OPTIONS:
-      ShowConfiguration();
-      break;
-
     case IDOK:
       SendMessage(hWnd, WM_CLOSE, 0, 0);
-
-      break;
-
-    case ID_FILE_EXIT:
-      EmuExit();
-      break;
-
-    case ID_FILE_RESET:
-      EmuReset(RESET_HARD);
-
-      break;
-
-    case ID_FILE_RUN:
-      EmuRun();
-      break;
-
-    case ID_FILE_RESET_SFT:
-      EmuReset(RESET_SOFT);
-      break;
-
-    case ID_FILE_LOAD:
-      LoadIniFile();
-      break;
-
-    case ID_SAVE_CONFIG:
-      SaveConfig();
-      break;
-
-    case ID_COPY_TEXT:
-      CopyText();
-      break;
-
-    case ID_PASTE_TEXT:
-      PasteText();
-      break;
-
-    case ID_PASTE_BASIC:
-      PasteBASIC();
-      break;
-
-    case ID_PASTE_BASIC_NEW:
-      PasteBASICWithNew();
-      break;
-
-    case ID_FLIP_ARTIFACTS:
-      FlipArtifacts();
       break;
     }
   }

@@ -14,6 +14,7 @@ namespace VCCSharp.IoC
         IDirectDraw DirectDraw { get; }
         IDirectSound DirectSound { get; }
         IEmu Emu { get; }
+        IEvents Events { get; }
         IGraphics Graphics { get; }
         IJoystick Joystick { get; }
         IKeyboard Keyboard { get; }
@@ -46,6 +47,7 @@ namespace VCCSharp.IoC
         public IDirectDraw DirectDraw => _factory.Get<IDirectDraw>();
         public IDirectSound DirectSound => _factory.Get<IDirectSound>();
         public IEmu Emu => _factory.Get<IEmu>();
+        public IEvents Events => _factory.Get<IEvents>();
         public IGraphics Graphics => _factory.Get<IGraphics>();
         public IJoystick Joystick => _factory.Get<IJoystick>();
         public IKeyboard Keyboard => _factory.Get<IKeyboard>();

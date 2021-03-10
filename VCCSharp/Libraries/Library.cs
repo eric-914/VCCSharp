@@ -72,6 +72,18 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void PopClipboard();
+
+            [DllImport(LIBRARY)]
+            public static extern void CopyText();
+
+            [DllImport(LIBRARY)]
+            public static extern void PasteText();
+
+            [DllImport(LIBRARY)]
+            public static extern void PasteBASIC();
+
+            [DllImport(LIBRARY)]
+            public static extern void PasteBASICWithNew();
         }
 
         public static class CoCo
@@ -198,6 +210,27 @@ namespace VCCSharp.Libraries
             public static extern unsafe int DirectSoundUnlock(void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
         }
 
+        public static class Events
+        {
+            [DllImport(LIBRARY)]
+            public static extern void EmuRun();
+
+            [DllImport(LIBRARY)]
+            public static extern void EmuReset(byte state);
+
+            [DllImport(LIBRARY)]
+            public static extern void EmuExit();
+
+            [DllImport(LIBRARY)]
+            public static extern void LoadIniFile();
+
+            [DllImport(LIBRARY)]
+            public static extern void SaveConfig();
+
+            [DllImport(LIBRARY)]
+            public static extern void ShowConfiguration();
+        }
+
         public static class Graphics
         {
             [DllImport(LIBRARY)]
@@ -226,6 +259,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern byte SetMonitorType(byte type);
+
+            [DllImport(LIBRARY)]
+            public static extern void FlipArtifacts();
         }
 
         public static class Joystick

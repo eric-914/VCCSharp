@@ -1,11 +1,21 @@
 ﻿using System.Windows;
+using VCCSharp.Enums;
+using VCCSharp.IoC;
 
 namespace VCCSharp
 {
     public class Actions
     {
+        private readonly IModules _modules;
+
+        public Actions(IModules modules)
+        {
+            _modules = modules;
+        }
+
         public void ApplicationExit()
         {
+            _modules.Events.EmuExit();
             Application.Current.MainWindow?.Close();
         }
 
@@ -16,52 +26,52 @@ namespace VCCSharp
 
         public void SaveConfiguration()
         {
-            MessageBox.Show("Save Configuration");
+            _modules.Events.SaveConfig();
         }
 
         public void LoadConfiguration()
         {
-            MessageBox.Show("Load Configuration");
+            _modules.Events.LoadIniFile();
         }
 
         public void HardReset()
         {
-            MessageBox.Show("Hard Reset");
+            _modules.Events.EmuReset(ResetPendingStates.Hard);
         }
 
         public void SoftReset()
         {
-            MessageBox.Show("Soft Reset");
+            _modules.Events.EmuReset(ResetPendingStates.Soft);
         }
 
         public void CopyText()
         {
-            MessageBox.Show("Copy Text");
+            _modules.Clipboard.CopyText();
         }
 
         public void PasteText()
         {
-            MessageBox.Show("Paste Text");
+            _modules.Clipboard.PasteText();
         }
 
         public void PasteBasicCodeMerge()
         {
-            MessageBox.Show("Paste BASIC Code > Merge");
+            _modules.Clipboard.PasteBASIC();
         }
 
         public void PasteBasicCodeNew()
         {
-            MessageBox.Show("Paste BASIC Code > New");
+            _modules.Clipboard.PasteBASICWithNew();
         }
 
         public void FlipArtifactColors()
         {
-            MessageBox.Show("Flip Artifact Colors");
+            _modules.Graphics.FlipArtifacts();
         }
 
         public void OpenConfiguration()
         {
-            MessageBox.Show("Open Configuration");
+            _modules.Events.ShowConfiguration();
         }
 
         public void LoadCartridge()
@@ -72,6 +82,11 @@ namespace VCCSharp
         public void EjectCartridge()
         {
             MessageBox.Show("Eject Cartridge");
+        }
+
+        public void Run()
+        {
+            _modules.Events.EmuRun();
         }
     }
 }

@@ -38,11 +38,6 @@ extern "C" {
   __declspec(dllexport) void __cdecl ShowConfiguration() {
     EmuState* emuState = GetEmuState();
 
-#ifdef CONFIG_DIALOG_MODAL
-    // open config dialog modally
-    DialogBox(emuState->Resources, (LPCTSTR)IDD_TCONFIG, hWnd, (DLGPROC)Config);
-#else
-
     // open config dialog if not already open
     // opens modeless so you can control the cassette
     // while emulator is still running (assumed)
@@ -53,7 +48,6 @@ extern "C" {
       // open modeless
       ShowWindow(emuState->ConfigDialog, SW_SHOWNORMAL);
     }
-#endif
   }
 }
 

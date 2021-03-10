@@ -7,6 +7,10 @@ namespace VCCSharp.Modules
         int ClipboardEmpty();
         char PeekClipboard();
         void PopClipboard();
+        void CopyText();
+        void PasteText();
+        void PasteBASIC();
+        void PasteBASICWithNew();
     }
 
     public class Clipboard : IClipboard
@@ -24,6 +28,26 @@ namespace VCCSharp.Modules
         public void PopClipboard()
         {
             Library.Clipboard.PopClipboard();
+        }
+
+        public void CopyText()
+        {
+            Library.Clipboard.CopyText();
+        }
+
+        public void PasteText()
+        {
+            Library.Clipboard.PasteText();
+        }
+
+        public void PasteBASIC()
+        {
+            Library.Clipboard.PasteBASIC();
+        }
+
+        public void PasteBASICWithNew()
+        {
+            Library.Clipboard.PasteBASICWithNew();
         }
     }
 }

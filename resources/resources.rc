@@ -26,29 +26,6 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 IDR_MENU MENU
 BEGIN
-    POPUP "File"
-    BEGIN
-        MENUITEM "Run",                         ID_FILE_RUN
-        MENUITEM "Save Config",                 ID_SAVE_CONFIG
-        MENUITEM "Load Config",                 ID_FILE_LOAD
-        MENUITEM SEPARATOR
-        MENUITEM "[F9] Hard Reset",             ID_FILE_RESET
-        MENUITEM "[F5] Soft Reset",             ID_FILE_RESET_SFT
-        MENUITEM SEPARATOR
-        MENUITEM "Exit",                        ID_FILE_EXIT
-    END
-    POPUP "Edit"
-    BEGIN
-        MENUITEM "Copy Text",                   ID_COPY_TEXT
-        MENUITEM "Paste Text",                  ID_PASTE_TEXT
-        MENUITEM "Paste BASIC Code (Merge)",    ID_PASTE_BASIC
-        MENUITEM "Paste BASIC Code (with NEW)", ID_PASTE_BASIC_NEW
-    END
-    POPUP "Configuration"
-    BEGIN
-        MENUITEM "Flip Artifact Colors",        ID_FLIP_ARTIFACTS
-        MENUITEM "Config",                      ID_CONFIGURE_OPTIONS
-    END
     POPUP "Help", HELP
     BEGIN
         MENUITEM "About Vcc",                   IDM_HELP_ABOUT
