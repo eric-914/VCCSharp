@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <string>
 #include <ShlObj.h>
+#include <richedit.h>
 
 #include "../resources/resource.h"
 

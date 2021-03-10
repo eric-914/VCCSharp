@@ -4,10 +4,32 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VCCSharp"
+        xmlns:menu="clr-namespace:VCCSharp.Menu"
         mc:Ignorable="d"
         Title="VCCSharp" Height="519" Width="821">
-  <Grid Background="{DynamicResource {x:Static SystemColors.ActiveCaptionTextBrushKey}}">
-    <Image Margin="36,4,36,10" Stretch="Fill" Source="/Resources/Television.png"/>
+  <Window.Resources>
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+  </Window.Resources>
+  <DockPanel>
+    <Menu DockPanel.Dock="Top" ItemsSource="{Binding MenuItems}">
+      <Menu.ItemContainerStyle>
+        <Style TargetType="{x:Type MenuItem}">
+          <Setter Property="Command" Value="{Binding Command}" />
+          <Setter Property="IsCheckable" Value="{Binding IsCheckable}" />
+        </Style>
+      </Menu.ItemContainerStyle>
+      <Menu.ItemTemplate>
+        <HierarchicalDataTemplate DataType="{x:Type menu:MenuItemViewModel}" ItemsSource="{Binding Path=MenuItems}">
+          <Grid>
+            <TextBlock Text="{Binding Header}" Visibility="{Binding IsHeader, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <Separator Width="100" Visibility="{Binding IsSeparator, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+          </Grid>
+        </HierarchicalDataTemplate>
+      </Menu.ItemTemplate>
+    </Menu>
+    <Grid Background="{DynamicResource {x:Static SystemColors.ActiveCaptionTextBrushKey}}">
+      <Image Margin="36,4,36,10" Stretch="Fill" Source="/Resources/Television.png"/>
 
-  </Grid>
+    </Grid>
+  </DockPanel>
 </Window>

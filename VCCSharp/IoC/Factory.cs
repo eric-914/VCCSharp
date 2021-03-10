@@ -1,4 +1,5 @@
 ﻿using Ninject;
+using VCCSharp.Menu;
 
 namespace VCCSharp.IoC
 {
@@ -8,6 +9,8 @@ namespace VCCSharp.IoC
         IFactory Singleton<TInterface, TClass>() where TClass : class, TInterface;
 
         TInterface Get<TInterface>();
+
+        MainMenu MenuItems { get; }
     }
 
     public class Factory : IFactory
@@ -41,5 +44,7 @@ namespace VCCSharp.IoC
         {
             return _kernel.Get<TInterface>();
         }
+
+        public MainMenu MenuItems => new MainMenu(new Actions());
     }
 }

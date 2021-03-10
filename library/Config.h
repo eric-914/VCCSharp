@@ -1,7 +1,5 @@
 #pragma once
 
-#include <richedit.h>
-
 #include "defines.h"
 
 #include "CmdLineArguments.h"
