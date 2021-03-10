@@ -9,7 +9,7 @@ namespace VCCSharp.Modules
         unsafe AudioState* GetAudioState();
         short SoundDeInit();
         void ResetAudio();
-        unsafe void FlushAudioBuffer(uint* aBuffer, ushort length);
+        unsafe void FlushAudioBuffer(uint* buffer, ushort length);
     }
 
     public class Audio : IAudio
@@ -51,16 +51,66 @@ namespace VCCSharp.Modules
 
                 _modules.CoCo.SetAudioRate(audioState->iRateList[audioState->CurrentRate]);
 
-                _modules.DirectSound.SetCurrentPosition(0);
+                if (audioState->InitPassed == Define.TRUE)
+                {
+                    _modules.DirectSound.SetCurrentPosition(0);
+                }
 
                 audioState->BuffOffset = 0;
                 audioState->AuxBufferPointer = 0;
             }
         }
 
-        public unsafe void FlushAudioBuffer(uint* aBuffer, ushort length)
+        public unsafe void FlushAudioBuffer(uint* buffer, ushort length)
         {
-            Library.Audio.FlushAudioBuffer(aBuffer, length);
+            AudioState* audioState = GetAudioState();
+
+            //ushort index = 0;
+            byte flag = 0;
+            byte* byteBuffer = (byte*)buffer;
+
+            ushort leftAverage = (ushort)(buffer[0] >> 16);
+            ushort rightAverage = (ushort)(buffer[0] & 0xFFFF);
+
+            _modules.Config.UpdateSoundBar(leftAverage, rightAverage);
+
+            if ((audioState->InitPassed == Define.FALSE) || (audioState->AudioPause != Define.FALSE))
+            {
+                return;
+            }
+
+            if (GetFreeBlockCount() <= 0)	//this should only kick in when frame skipping or un-throttled
+            {
+                HandleSlowAudio(byteBuffer, length);
+
+                return;
+            }
+
+            //audioState->hr = _modules.DirectSound.DirectSoundLock(audioState->BuffOffset, length, &(audioState->SndPointer1), &(audioState->SndLength1), &(audioState->SndPointer2), &(audioState->SndLength2));
+
+            Library.Audio.FlushAudioBuffer(buffer, length);
+        }
+
+        public int GetFreeBlockCount()
+        {
+            return Library.Audio.GetFreeBlockCount();
+        }
+
+        public unsafe void HandleSlowAudio(byte* buffer, ushort length)
+        {
+            //memcpy(void* _Dst, void const* _Src, size_t _Size);
+            //memcpy(audioState->AuxBuffer[audioState->AuxBufferPointer], buffer, length);	
+
+            ////Saving buffer to aux stack
+            //for (ushort index = 0; index < length; index++)
+            //{
+            //    audioState->AuxBuffer[audioState->AuxBufferPointer][index] = buffer[index];
+            //}
+
+            //audioState->AuxBufferPointer++;		//and chase your own tail
+            //audioState->AuxBufferPointer %= 5;	//At this point we are so far behind we may as well drop the buffer
+
+            Library.Audio.HandleSlowAudio(buffer, length);
         }
     }
 }

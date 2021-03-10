@@ -28,10 +28,16 @@ namespace VCCSharp.Libraries
         public static class Audio
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe void FlushAudioBuffer(uint* aBuffer, ushort length);
+            public static extern unsafe void FlushAudioBuffer(uint* buffer, ushort length);
 
             [DllImport(LIBRARY)]
             public static extern unsafe AudioState* GetAudioState();
+
+            [DllImport(LIBRARY)]
+            public static extern int GetFreeBlockCount();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void HandleSlowAudio(byte* buffer, ushort length);
         }
 
         public static class Cassette
@@ -107,6 +113,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe byte* ExternalBasicImage();
+
+            [DllImport(LIBRARY)]
+            public static extern void UpdateSoundBar(ushort left, ushort right);
         }
 
         public static class CPU
@@ -161,6 +170,10 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void DirectSoundSetCurrentPosition(ulong position);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int DirectSoundLock(ulong buffOffset, ushort length, 
+                void** sndPointer1, ulong* sndLength1, void** sndPointer2, ulong* sndLength2);
         }
 
         public static class Graphics
@@ -307,4 +320,13 @@ namespace VCCSharp.Libraries
             public static extern unsafe VccState* GetVccState();
         }
     }
+
+    //void* __cdecl memcpy(
+    //_Out_writes_bytes_all_(_Size) void* _Dst,
+    //_In_reads_bytes_(_Size)       void const* _Src,
+    //_In_                          size_t      _Size
+    //);
+
+    //[System.CLSCompliant(false)]
+    //public static void MemoryCopy (void* source, void* destination, long destinationSizeInBytes, long sourceBytesToCopy);
 }

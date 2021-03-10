@@ -11,6 +11,7 @@ namespace VCCSharp.Modules
         unsafe void SynchSystemWithConfig(EmuState* emuState);
         int GetPaletteType();
         string ExternalBasicImage();
+        void UpdateSoundBar(ushort left, ushort right);
     }
 
     public class Config : IConfig
@@ -68,6 +69,11 @@ namespace VCCSharp.Modules
 
                 return Converter.ToString(data);
             }
+        }
+
+        public void UpdateSoundBar(ushort left, ushort right)
+        {
+            Library.Config.UpdateSoundBar(left, right);
         }
     }
 }

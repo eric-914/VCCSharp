@@ -80,7 +80,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl GetFreeBlockCount(void) //return 0 on full buffer
+  __declspec(dllexport) int __cdecl GetFreeBlockCount() //return 0 on full buffer
   {
     unsigned long writeCursor = 0, playCursor = 0;
     long retVal = 0, maxSize = 0;
@@ -105,28 +105,24 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl FlushAudioBuffer(unsigned int* aBuffer, unsigned short length)
+  __declspec(dllexport) void __cdecl HandleSlowAudio(unsigned char* Abuffer2, unsigned short length) {
+    memcpy(instance->AuxBuffer[instance->AuxBufferPointer], Abuffer2, length);	//Saving buffer to aux stack
+
+    instance->AuxBufferPointer++;		  //and chase your own tail
+    instance->AuxBufferPointer %= 5;	//At this point we are so far behind we may as well drop the buffer
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl FlushAudioBuffer(unsigned int* buffer, unsigned short length)
   {
-    unsigned short leftAverage = 0, rightAverage = 0, index = 0;
+    unsigned short index = 0;
     unsigned char flag = 0;
-    unsigned char* Abuffer2 = (unsigned char*)aBuffer;
-
-    leftAverage = aBuffer[0] >> 16;
-    rightAverage = aBuffer[0] & 0xFFFF;
-
-    UpdateSoundBar(leftAverage, rightAverage);
-
-    if ((!instance->InitPassed) || (instance->AudioPause)) {
-      return;
-    }
+    unsigned char* byteBuffer = (unsigned char*)buffer;
 
     if (GetFreeBlockCount() <= 0)	//this should only kick in when frame skipping or unthrottled
     {
-      memcpy(instance->AuxBuffer[instance->AuxBufferPointer], Abuffer2, length);	//Saving buffer to aux stack
-
-      instance->AuxBufferPointer++;		//and chase your own tail
-      instance->AuxBufferPointer %= 5;	//At this point we are so far behind we may as well drop the buffer
-
+      HandleSlowAudio(byteBuffer, length);
       return;
     }
 
@@ -136,10 +132,10 @@ extern "C" {
       return;
     }
 
-    memcpy(instance->SndPointer1, Abuffer2, instance->SndLength1);	// copy first section of circular buffer
+    memcpy(instance->SndPointer1, byteBuffer, instance->SndLength1);	// copy first section of circular buffer
 
     if (instance->SndPointer2 != NULL) { // copy last section of circular buffer if wrapped
-      memcpy(instance->SndPointer2, Abuffer2 + instance->SndLength1, instance->SndLength2);
+      memcpy(instance->SndPointer2, byteBuffer + instance->SndLength1, instance->SndLength2);
     }
 
     instance->hr = DirectSoundUnlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);// unlock the buffer

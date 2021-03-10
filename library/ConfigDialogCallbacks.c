@@ -48,9 +48,10 @@ void CheckAudioChange(EmuState* emuState, ConfigModel* current, ConfigModel* tem
   unsigned char currentSoundCardIndex = GetSoundCardIndex(current->SoundCardName);
   unsigned char tempSoundCardIndex = GetSoundCardIndex(temp->SoundCardName);
 
-  if ((currentSoundCardIndex != tempSoundCardIndex) || (current->AudioRate != temp->AudioRate)) {
+  //TODO: current and temp are pointing to the same object.
+  //if ((currentSoundCardIndex != tempSoundCardIndex) || (current->AudioRate != temp->AudioRate)) {
     SoundInit(emuState->WindowHandle, soundCards[tempSoundCardIndex].Guid, temp->AudioRate);
-  }
+  //}
 }
 
 extern "C" {

@@ -13,9 +13,7 @@ typedef struct {
   unsigned short BitRate;
   unsigned short BlockSize;
 
-  unsigned short iRateList[4];
-
-  int CardCount;
+  short CardCount;
 
   DWORD SndLength1;
   DWORD SndLength2;
@@ -23,7 +21,12 @@ typedef struct {
   DWORD WritePointer;
   DWORD BuffOffset;
 
+  unsigned short iRateList[4];
+
   HRESULT hr;
+
+  void* SndPointer1;
+  void* SndPointer2;
 
   SoundCardList* Cards;
 
@@ -31,6 +34,4 @@ typedef struct {
 
   char RateList[4][7];
 
-  void* SndPointer1;
-  void* SndPointer2;
 } AudioState;

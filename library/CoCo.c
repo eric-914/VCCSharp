@@ -130,8 +130,6 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned short __cdecl SetAudioRate(unsigned short rate)
   {
-    instance->SndEnable = 1;
-    instance->SoundInterrupt = 0;
     instance->CycleDrift = 0;
     instance->AudioIndex = 0;
 
@@ -141,9 +139,11 @@ extern "C" {
 
     if (rate == 0) {
       instance->SndEnable = 0;
+      instance->SoundInterrupt = 0;
     }
     else
     {
+      instance->SndEnable = 1;
       instance->SoundInterrupt = PICOSECOND / rate;
       instance->PicosToSoundSample = instance->SoundInterrupt;
     }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using HRESULT = System.IntPtr;
 
 namespace VCCSharp.Models
@@ -15,9 +14,7 @@ namespace VCCSharp.Models
         public ushort BitRate;
         public ushort BlockSize;
 
-        public unsafe fixed ushort iRateList[4];
-        
-        public int CardCount;
+        public short CardCount;
 
         public uint SndLength1;
         public uint SndLength2;
@@ -25,15 +22,17 @@ namespace VCCSharp.Models
         public uint WritePointer;
         public uint BuffOffset;
 
-        public HRESULT hr;
+        public unsafe fixed ushort iRateList[4];
+        
+        public int hr;
+
+        public unsafe void* SndPointer1;
+        public unsafe void* SndPointer2;
 
         public unsafe SoundCardList* Cards;
 
         public unsafe ushort** AuxBuffer; //[6][44100 / 60]; //Biggest block size possible
 
         public unsafe byte** RateList; //[4][7];
-
-        public unsafe void* SndPointer1;
-        public unsafe void* SndPointer2;
     }
 }

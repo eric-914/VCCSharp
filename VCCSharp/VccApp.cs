@@ -4,10 +4,8 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
-using VCCSharp.Modules;
 using static System.IntPtr;
 using HINSTANCE = System.IntPtr;
-using HANDLE = System.IntPtr;
 
 namespace VCCSharp
 {
@@ -21,79 +19,61 @@ namespace VCCSharp
 
     public class VccApp : IVccApp
     {
+        private readonly IModules _modules;
         private readonly IKernel _kernel;
         private readonly IUser32 _user32;
 
         private HINSTANCE _hResources;
         //private EmuState _emuState;
 
-        private readonly IVcc _vcc;
-        private readonly IEmu _emu;
-        private readonly IDirectDraw _directDraw;
-        private readonly ICoCo _coco;
-        private readonly IConfig _config;
-        private readonly IMenuCallbacks _menuCallbacks;
-        private readonly IQuickLoad _quickLoad;
-        private readonly IPAKInterface _pakInterface;
-        private readonly IAudio _audio;
-        private readonly IThrottle _throttle;
-
         public VccApp(IModules modules, IKernel kernel, IUser32 user32)
         {
+            _modules = modules;
             _kernel = kernel;
             _user32 = user32;
-
-            _vcc = modules.Vcc;
-            _emu = modules.Emu;
-            _directDraw = modules.DirectDraw;
-            _coco = modules.CoCo;
-            _config = modules.Config;
-            _menuCallbacks = modules.MenuCallbacks;
-            _quickLoad = modules.QuickLoad;
-            _pakInterface = modules.PAKInterface;
-            _audio = modules.Audio;
-            _throttle = modules.Throttle;
         }
 
         public void Startup(HINSTANCE hInstance, CmdLineArguments cmdLineArgs)
         {
             unsafe
             {
+                //AudioState* audioState = _modules.Audio.GetAudioState();
+
                 _hResources = _kernel.LoadLibrary("resources.dll");
 
-                EmuState* emuState = _emu.GetEmuState();
-                VccState* vccState = _vcc.GetVccState();
+                EmuState* emuState = _modules.Emu.GetEmuState();
+                VccState* vccState = _modules.Vcc.GetVccState();
 
                 emuState->Resources = _hResources;
 
                 //TODO: Redundant at the moment
-                _emu.SetEmuState(emuState);
+                _modules.Emu.SetEmuState(emuState);
 
-                _directDraw.InitDirectDraw(hInstance, _hResources);
+                _modules.DirectDraw.InitDirectDraw(hInstance, _hResources);
 
-                _coco.SetClockSpeed(1);  //Default clock speed .89 MHZ	
+                _modules.CoCo.SetClockSpeed(1);  //Default clock speed .89 MHZ	
 
                 if (!string.IsNullOrEmpty(cmdLineArgs.QLoadFile))
                 {
-                    if (_quickLoad.QuickStart(emuState, cmdLineArgs.QLoadFile) == (int)QuickStartStatuses.Ok)
+                    if (_modules.QuickLoad.QuickStart(emuState, cmdLineArgs.QLoadFile) == (int)QuickStartStatuses.Ok)
                     {
-                        _vcc.SetAppTitle(_hResources, cmdLineArgs.QLoadFile); //TODO: No app title if no quick load
+                        _modules.Vcc.SetAppTitle(_hResources, cmdLineArgs.QLoadFile); //TODO: No app title if no quick load
                     }
 
                     emuState->EmulationRunning = Define.TRUE;
                 }
 
-                _vcc.CreatePrimaryWindow();
+                _modules.Vcc.CreatePrimaryWindow();
 
                 //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
                 //Loads the default config file Vcc.ini from the exec directory
-                _config.InitConfig(emuState, ref cmdLineArgs);
+                _modules.Config.InitConfig(emuState, ref cmdLineArgs);
 
-                _directDraw.ClearScreen();
+                _modules.DirectDraw.ClearScreen();
 
                 emuState->ResetPending = (byte)ResetPendingStates.Cls;
 
-                _menuCallbacks.DynamicMenuCallback(emuState, null, MenuActions.Refresh, Define.IGNORE);
+                _modules.MenuCallbacks.DynamicMenuCallback(emuState, null, MenuActions.Refresh, Define.IGNORE);
 
                 emuState->ResetPending = (byte)ResetPendingStates.Hard;
 
@@ -101,24 +81,24 @@ namespace VCCSharp
 
                 vccState->BinaryRunning = Define.TRUE;
 
-                _throttle.CalibrateThrottle();
+                _modules.Throttle.CalibrateThrottle();
             }
         }
 
         public void Threading()
         {
-            Task.Run(_vcc.EmuLoop);
+            Task.Run(_modules.Vcc.EmuLoop);
         }
 
         public void Run()
         {
             unsafe
             {
-                VccState* vccState = _vcc.GetVccState();
+                VccState* vccState = _modules.Vcc.GetVccState();
 
                 while (vccState->BinaryRunning == Define.TRUE)
                 {
-                    _vcc.CheckScreenModeChange();
+                    _modules.Vcc.CheckScreenModeChange();
 
                     MSG* msg = &(vccState->msg);
 
@@ -135,13 +115,13 @@ namespace VCCSharp
         {
             unsafe
             {
-                VccState* vccState = _vcc.GetVccState();
-                EmuState* emuState = _emu.GetEmuState();
+                VccState* vccState = _modules.Vcc.GetVccState();
+                EmuState* emuState = _modules.Emu.GetEmuState();
 
-                _pakInterface.UnloadDll(emuState);
-                _audio.SoundDeInit();
+                _modules.PAKInterface.UnloadDll(emuState);
+                _modules.Audio.SoundDeInit();
 
-                _config.WriteIniFile(emuState); //Save any changes to ini File
+                _modules.Config.WriteIniFile(emuState); //Save any changes to ini File
 
                 int code = (int)vccState->msg.wParam;
 
