@@ -25,27 +25,27 @@ namespace VCCSharp.Models
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct ConfigState
     {
+        public byte TextMode;  //--Add LF to CR
+        public byte PrintMonitorWindow;
+
+        public byte NumberOfJoysticks;
+
+        public ushort TapeCounter;
+        public byte TapeMode;
+
+        public short NumberOfSoundCards;
+
         public unsafe ConfigModel* Model;
 
         //public unsafe fixed SoundCardList SoundCards[Define.MAXCARDS];
         //TODO: SoundCardList* is really a pointer to an array of SoundCardList items.  Haven't figured how to define it as such yet.
         public SoundCardListArray SoundCards;
 
-        public byte TextMode;  //--Add LF to CR
-        public byte PrintMonitorWindow;
-
-        public byte NumberOfJoysticks;
-
         public unsafe fixed byte IniFilePath[Define.MAX_PATH];
         public unsafe fixed byte TapeFileName[Define.MAX_PATH];
         public unsafe fixed byte ExecDirectory[Define.MAX_PATH];
         public unsafe fixed byte SerialCaptureFile[Define.MAX_PATH];
         public unsafe fixed byte OutBuffer[Define.MAX_PATH];
-
-        public ushort TapeCounter;
-        public byte TapeMode;
-
-        public short NumberOfSoundCards;
 
         public HWND hDlgBar;
         public HWND hDlgTape;

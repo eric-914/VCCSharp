@@ -13,24 +13,24 @@
 
 typedef struct
 {
-  ConfigModel* Model;
-  SoundCardList SoundCards[MAXCARDS];
-
   char TextMode;  //--Add LF to CR
   char PrintMonitorWindow;
 
   unsigned char NumberOfJoysticks;
+
+  unsigned short TapeCounter;
+  unsigned char TapeMode;
+
+  short NumberOfSoundCards;
+
+  ConfigModel* Model;
+  SoundCardList SoundCards[MAXCARDS];
 
   char IniFilePath[MAX_PATH];
   char TapeFileName[MAX_PATH];
   char ExecDirectory[MAX_PATH];
   char SerialCaptureFile[MAX_PATH];
   char OutBuffer[MAX_PATH];
-
-  unsigned int TapeCounter;
-  unsigned char TapeMode;
-
-  int NumberOfSoundCards;
 
   HWND hDlgBar;
   HWND hDlgTape;
