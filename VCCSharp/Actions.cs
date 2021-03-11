@@ -37,7 +37,8 @@ namespace VCCSharp
 
         public void HardReset()
         {
-            _modules.Events.EmuReset(ResetPendingStates.Hard);
+            //_modules.Events.EmuReset(ResetPendingStates.Hard);
+            _modules.Events.ToggleOnOff();
         }
 
         public void SoftReset()

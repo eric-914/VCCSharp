@@ -12,7 +12,6 @@ extern "C" __declspec(dllexport) void __cdecl ShowConfiguration();
 extern "C" __declspec(dllexport) void __cdecl ToggleMonitorType();
 extern "C" __declspec(dllexport) void __cdecl ToggleThrottle();
 extern "C" __declspec(dllexport) void __cdecl ToggleFullScreen();
-extern "C" __declspec(dllexport) void __cdecl ToggleOnOff();
 extern "C" __declspec(dllexport) void __cdecl ToggleInfoBand();
 
 extern "C" __declspec(dllexport) void __cdecl SlowDown();

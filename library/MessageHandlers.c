@@ -88,21 +88,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl ToggleOnOff() {
-    EmuState* emuState = GetEmuState();
-
-    emuState->EmulationRunning = !emuState->EmulationRunning;
-
-    if (emuState->EmulationRunning) {
-      emuState->ResetPending = RESET_HARD;
-    }
-    else {
-      SetStatusBarText("", emuState);
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl ToggleFullScreen() {
     VccState* vccState = GetVccState();
     EmuState* emuState = GetEmuState();

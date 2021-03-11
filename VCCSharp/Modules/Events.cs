@@ -13,6 +13,7 @@ namespace VCCSharp.Modules
         void LoadIniFile();
         void SaveConfig();
         void ShowConfiguration();
+        void ToggleOnOff();
     }
 
     public class Events : IEvents
@@ -44,11 +45,6 @@ namespace VCCSharp.Modules
                 {
                     emuState->ResetPending = (byte)state;
                 }
-
-                if (state == ResetPendingStates.Hard)
-                {
-                    _modules.Emu.SetEmuRunning(emuState->EmulationRunning != Define.TRUE);
-                }
             }
         }
 
@@ -73,6 +69,26 @@ namespace VCCSharp.Modules
         public void ShowConfiguration()
         {
             Library.Events.ShowConfiguration();
+        }
+
+        public void ToggleOnOff()
+        {
+            unsafe
+            {
+                EmuState* emuState = _modules.Emu.GetEmuState();
+
+                emuState->EmulationRunning = emuState->EmulationRunning == Define.TRUE ? Define.FALSE : Define.TRUE;
+
+                if (emuState->EmulationRunning == Define.TRUE)
+                {
+                    emuState->ResetPending = (byte)ResetPendingStates.Hard;
+                }
+                else
+                {
+                    _modules.DirectDraw.SetStatusBarText("", emuState);
+                }
+
+            }
         }
     }
 }
