@@ -59,21 +59,6 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void LoadIniFile()
-        {
-            Library.Events.LoadIniFile();
-        }
-
-        public void SaveConfig()
-        {
-            Library.Events.SaveConfig();
-        }
-
-        public void ShowConfiguration()
-        {
-            Library.Events.ShowConfiguration();
-        }
-
         public void ToggleOnOff() //F9
         {
             unsafe
@@ -108,11 +93,6 @@ namespace VCCSharp.Modules
             {
                 _modules.Config.IncreaseOverclockSpeed(_modules.Emu.GetEmuState());
             }
-        }
-
-        public void ToggleMonitorType() //F6
-        {
-            Library.Events.ToggleMonitorType();
         }
 
         public void ToggleThrottle() //F8
@@ -150,6 +130,26 @@ namespace VCCSharp.Modules
             }
 
             _modules.Graphics.InvalidateBorder();
+        }
+
+        public void LoadIniFile()
+        {
+            Library.Events.LoadIniFile();
+        }
+
+        public void SaveConfig()
+        {
+            Library.Events.SaveConfig();
+        }
+
+        public void ShowConfiguration()
+        {
+            Library.Events.ShowConfiguration();
+        }
+
+        public void ToggleMonitorType() //F6
+        {
+            Library.Events.ToggleMonitorType();
         }
     }
 }

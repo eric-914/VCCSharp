@@ -103,7 +103,14 @@ namespace VCCSharp.Modules
 
             _modules.Audio.ResetAudio();
         }
-
+        
+        public void SetEmuRunning(bool flag)
+        {
+            unsafe
+            {
+                GetEmuState()->EmulationRunning = flag ? Define.TRUE : Define.FALSE;
+            }
+        }
 
         private void SetCPUToHD6309()
         {
@@ -118,14 +125,6 @@ namespace VCCSharp.Modules
         public byte SetCPUMultiplier(byte multiplier)
         {
             return Library.Emu.SetCPUMultiplier(multiplier);
-        }
-
-        public void SetEmuRunning(bool flag)
-        {
-            unsafe
-            {
-                GetEmuState()->EmulationRunning = flag ? Define.TRUE : Define.FALSE;
-            }
         }
     }
 }

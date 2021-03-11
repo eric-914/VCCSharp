@@ -105,11 +105,6 @@ namespace VCCSharp.Modules
             WriteIniFile(emuState);
         }
 
-        public unsafe void WriteIniFile(EmuState* emuState)
-        {
-            Library.Config.WriteIniFile(emuState);
-        }
-
         //TODO: Still being used by LoadIniFile(...)
         public unsafe void SynchSystemWithConfig(EmuState* emuState)
         {
@@ -135,21 +130,6 @@ namespace VCCSharp.Modules
             _modules.MC6821.MC6821_SetCartAutoStart(model->CartAutoStart);
         }
 
-        public int GetPaletteType()
-        {
-            return Library.Config.GetPaletteType();
-        }
-
-        public string ExternalBasicImage()
-        {
-            unsafe
-            {
-                byte* data = Library.Config.ExternalBasicImage();
-
-                return Converter.ToString(data);
-            }
-        }
-
         public void UpdateSoundBar(ushort left, ushort right)
         {
             unsafe
@@ -162,26 +142,6 @@ namespace VCCSharp.Modules
 
                 _modules.Callbacks.SetDialogAudioBars(configState->hDlgBar, left, right);
             }
-        }
-
-        public unsafe string GetIniFilePath(string argIniFile)
-        {
-            fixed (byte* buffer = new byte[Define.MAX_PATH])
-            {
-                Library.Config.GetIniFilePath(buffer, argIniFile);
-
-                return Converter.ToString(buffer);
-            };
-        }
-
-        public unsafe void ReadIniFile(EmuState* emuState)
-        {
-            Library.Config.ReadIniFile(emuState);
-        }
-
-        public void SetCpuType(byte cpuType)
-        {
-            Library.Config.SetCpuType(cpuType);
         }
 
         public void ConfigureJoysticks()
@@ -225,6 +185,11 @@ namespace VCCSharp.Modules
             }
         }
 
+        public int GetPaletteType()
+        {
+            return Library.Config.GetPaletteType();
+        }
+
         public byte GetSoundCardIndex(string soundCardName)
         {
             return Library.Config.GetSoundCardIndex(soundCardName);
@@ -238,6 +203,41 @@ namespace VCCSharp.Modules
         public unsafe void IncreaseOverclockSpeed(EmuState* emuState)
         {
             Library.Config.IncreaseOverclockSpeed(emuState);
+        }
+
+        public unsafe void WriteIniFile(EmuState* emuState)
+        {
+            Library.Config.WriteIniFile(emuState);
+        }
+
+        public unsafe void ReadIniFile(EmuState* emuState)
+        {
+            Library.Config.ReadIniFile(emuState);
+        }
+
+        public void SetCpuType(byte cpuType)
+        {
+            Library.Config.SetCpuType(cpuType);
+        }
+
+        public unsafe string GetIniFilePath(string argIniFile)
+        {
+            fixed (byte* buffer = new byte[Define.MAX_PATH])
+            {
+                Library.Config.GetIniFilePath(buffer, argIniFile);
+
+                return Converter.ToString(buffer);
+            };
+        }
+
+        public string ExternalBasicImage()
+        {
+            unsafe
+            {
+                byte* data = Library.Config.ExternalBasicImage();
+
+                return Converter.ToString(data);
+            }
         }
     }
 }

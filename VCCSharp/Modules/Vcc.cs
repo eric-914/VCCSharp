@@ -22,12 +22,10 @@ namespace VCCSharp.Modules
     public class Vcc : IVcc
     {
         private readonly IModules _modules;
-        private readonly IKernel _kernel;
         
-        public Vcc(IModules modules, IKernel kernel)
+        public Vcc(IModules modules)
         {
             _modules = modules;
-            _kernel = kernel;
         }
 
         public unsafe VccState* GetVccState()

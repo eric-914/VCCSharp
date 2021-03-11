@@ -115,11 +115,6 @@ namespace VCCSharp.Modules
 
         }
 
-        public int GetFreeBlockCount()
-        {
-            return Library.Audio.GetFreeBlockCount();
-        }
-
         public unsafe void HandleSlowAudio(byte* buffer, ushort length)
         {
             //memcpy(void* _Dst, void const* _Src, size_t _Size);
@@ -135,6 +130,11 @@ namespace VCCSharp.Modules
             //audioState->AuxBufferPointer %= 5;	//At this point we are so far behind we may as well drop the buffer
 
             Library.Audio.HandleSlowAudio(buffer, length);
+        }
+
+        public int GetFreeBlockCount()
+        {
+            return Library.Audio.GetFreeBlockCount();
         }
 
         public unsafe short GetSoundCardList(SoundCardList* list)

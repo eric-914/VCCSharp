@@ -153,11 +153,6 @@ Could not locate {ROM} in any of these locations:
             Library.TC1014.MemWrite8(data, address);
         }
 
-        public void GimeAssertVertInterrupt()
-        {
-            Library.TC1014.GimeAssertVertInterrupt();
-        }
-
         public void GimeAssertHorzInterrupt()
         {
             Library.TC1014.GimeAssertHorzInterrupt();
@@ -202,6 +197,11 @@ Could not locate {ROM} in any of these locations:
         public unsafe byte* AllocateMemory(uint size)
         {
             return Library.TC1014.AllocateMemory(size);
+        }
+
+        public void GimeAssertVertInterrupt()
+        {
+            Library.TC1014.GimeAssertVertInterrupt();
         }
     }
 }
