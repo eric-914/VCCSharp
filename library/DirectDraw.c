@@ -15,6 +15,8 @@
 #include "MenuCallbacks.h"
 #include "Emu.h"
 
+#include "DirectDrawInternal.h"
+
 #include "ProcessMessage.h"
 
 static POINT WindowSize;
@@ -30,10 +32,6 @@ extern "C" {
 }
 
 DirectDrawState* InitializeInstance(DirectDrawState* p) {
-  p->DD = NULL;
-  p->DDClipper = NULL;
-  p->DDSurface = NULL;
-  p->DDBackSurface = NULL;
   p->hWndStatusBar = NULL;
 
   p->StatusBarHeight = 0;
@@ -67,6 +65,8 @@ extern "C" {
     PALETTEENTRY pal[256];
     IDirectDrawPalette* ddPalette;		  //Needed for 8bit Palette mode
 
+    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
+
     if (GetRememberSize()) {
       POINT pp = GetIniWindowSize();
 
@@ -89,36 +89,36 @@ extern "C" {
 
     if (emuState->WindowHandle != NULL) //If its go a value it must be a mode switch
     {
-      if (instance->DD != NULL) {
-        instance->DD->Release();	//Destroy the current Window
+      if (ddState->DD != NULL) {
+        ddState->DD->Release();	//Destroy the current Window
       }
 
       DestroyWindow(emuState->WindowHandle);
 
-      UnregisterClass(instance->Wcex.lpszClassName, instance->Wcex.hInstance);
+      UnregisterClass(ddState->Wcex.lpszClassName, ddState->Wcex.hInstance);
     }
 
-    instance->Wcex.cbSize = sizeof(WNDCLASSEX);	//And Rebuilt it from scratch
-    instance->Wcex.style = CS_HREDRAW | CS_VREDRAW;
-    instance->Wcex.lpfnWndProc = (WNDPROC)WndProc;
-    instance->Wcex.cbClsExtra = 0;
-    instance->Wcex.cbWndExtra = 0;
-    instance->Wcex.hInstance = instance->hInstance;
-    instance->Wcex.hIcon = LoadIcon(emuState->Resources, (LPCTSTR)IDI_COCO3);
-    instance->Wcex.hIconSm = LoadIcon(emuState->Resources, (LPCTSTR)IDI_COCO3);
-    instance->Wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-    instance->Wcex.lpszClassName = instance->AppNameText;
-    instance->Wcex.lpszMenuName = NULL;	//Menu is set on WM_CREATE
+    ddState->Wcex.cbSize = sizeof(WNDCLASSEX);	//And Rebuilt it from scratch
+    ddState->Wcex.style = CS_HREDRAW | CS_VREDRAW;
+    ddState->Wcex.lpfnWndProc = (WNDPROC)WndProc;
+    ddState->Wcex.cbClsExtra = 0;
+    ddState->Wcex.cbWndExtra = 0;
+    ddState->Wcex.hInstance = instance->hInstance;
+    ddState->Wcex.hIcon = LoadIcon(emuState->Resources, (LPCTSTR)IDI_COCO3);
+    ddState->Wcex.hIconSm = LoadIcon(emuState->Resources, (LPCTSTR)IDI_COCO3);
+    ddState->Wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+    ddState->Wcex.lpszClassName = instance->AppNameText;
+    ddState->Wcex.lpszMenuName = NULL;	//Menu is set on WM_CREATE
 
     if (!emuState->FullScreen)
     {
-      instance->Wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+      ddState->Wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
     }
     else {
-      instance->Wcex.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(IDC_NONE));
+      ddState->Wcex.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(IDC_NONE));
     }
 
-    if (!RegisterClassEx(&(instance->Wcex))) {
+    if (!RegisterClassEx(&(ddState->Wcex))) {
       return FALSE;
     }
 
@@ -160,19 +160,19 @@ extern "C" {
 
       SendMessage(instance->hWndStatusBar, WM_SIZE, 0, 0); // Redraw Status bar in new position
 
-      GetWindowRect(emuState->WindowHandle, &(instance->WindowDefaultSize));	// And save the Final size of the Window 
+      GetWindowRect(emuState->WindowHandle, &(ddState->WindowDefaultSize));	// And save the Final size of the Window 
       ShowWindow(emuState->WindowHandle, SW_SHOWDEFAULT);
       UpdateWindow(emuState->WindowHandle);
 
       // Create an instance of a DirectDraw object
-      hr = DirectDrawCreate(NULL, &(instance->DD), NULL);
+      hr = DirectDrawCreate(NULL, &(ddState->DD), NULL);
 
       if (FAILED(hr)) {
         return FALSE;
       }
 
       // Initialize the DirectDraw object
-      hr = instance->DD->SetCooperativeLevel(emuState->WindowHandle, DDSCL_NORMAL);	// Set DDSCL_NORMAL to use windowed mode
+      hr = ddState->DD->SetCooperativeLevel(emuState->WindowHandle, DDSCL_NORMAL);	// Set DDSCL_NORMAL to use windowed mode
       if (FAILED(hr)) {
         return FALSE;
       }
@@ -181,7 +181,7 @@ extern "C" {
       ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
 
       // Create our Primary Surface
-      hr = instance->DD->CreateSurface(&ddsd, &(instance->DDSurface), NULL);
+      hr = ddState->DD->CreateSurface(&ddsd, &(ddState->DDSurface), NULL);
 
       if (FAILED(hr)) {
         return FALSE;
@@ -191,11 +191,11 @@ extern "C" {
       ddsd.dwWidth = WindowSize.x;								// Make our off-screen surface 
       ddsd.dwHeight = WindowSize.y;
       ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY;				// Try to create back buffer in video RAM
-      hr = instance->DD->CreateSurface(&ddsd, &(instance->DDBackSurface), NULL);
+      hr = ddState->DD->CreateSurface(&ddsd, &(ddState->DDBackSurface), NULL);
 
       if (FAILED(hr)) {													// If not enough Video Ram 			
         ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY;			// Try to create back buffer in System RAM
-        hr = instance->DD->CreateSurface(&ddsd, &(instance->DDBackSurface), NULL);
+        hr = ddState->DD->CreateSurface(&ddsd, &(ddState->DDBackSurface), NULL);
 
         if (FAILED(hr)) {
           return FALSE;								//Giving Up
@@ -204,37 +204,37 @@ extern "C" {
         MessageBox(0, "Creating Back Buffer in System Ram!\nThis will be slower", "Performance Warning", 0);
       }
 
-      hr = instance->DD->GetDisplayMode(&ddsd);
+      hr = ddState->DD->GetDisplayMode(&ddsd);
 
       if (FAILED(hr)) {
         return FALSE;
       }
 
-      hr = instance->DD->CreateClipper(0, &(instance->DDClipper), NULL);		// Create the clipper using the DirectDraw object
+      hr = ddState->DD->CreateClipper(0, &(ddState->DDClipper), NULL);		// Create the clipper using the DirectDraw object
 
       if (FAILED(hr)) {
         return FALSE;
       }
 
-      hr = instance->DDClipper->SetHWnd(0, emuState->WindowHandle);	// Assign your window's HWND to the clipper
+      hr = ddState->DDClipper->SetHWnd(0, emuState->WindowHandle);	// Assign your window's HWND to the clipper
 
       if (FAILED(hr)) {
         return FALSE;
       }
 
-      hr = instance->DDSurface->SetClipper(instance->DDClipper);					      // Attach the clipper to the primary surface
+      hr = ddState->DDSurface->SetClipper(ddState->DDClipper);					      // Attach the clipper to the primary surface
 
       if (FAILED(hr)) {
         return FALSE;
       }
 
-      hr = instance->DDBackSurface->Lock(NULL, &ddsd, DDLOCK_WAIT, NULL);
+      hr = ddState->DDBackSurface->Lock(NULL, &ddsd, DDLOCK_WAIT, NULL);
 
       if (FAILED(hr)) {
         return FALSE;
       }
 
-      hr = instance->DDBackSurface->Unlock(NULL);						// Unlock surface
+      hr = ddState->DDBackSurface->Unlock(NULL);						// Unlock surface
 
       if (FAILED(hr)) {
         return FALSE;
@@ -252,23 +252,23 @@ extern "C" {
         return FALSE;
       }
 
-      GetWindowRect(emuState->WindowHandle, &(instance->WindowDefaultSize));
+      GetWindowRect(emuState->WindowHandle, &(ddState->WindowDefaultSize));
       ShowWindow(emuState->WindowHandle, SW_SHOWMAXIMIZED);
       UpdateWindow(emuState->WindowHandle);
 
-      hr = DirectDrawCreate(NULL, &(instance->DD), NULL);		// Initialize DirectDraw
+      hr = DirectDrawCreate(NULL, &(ddState->DD), NULL);		// Initialize DirectDraw
 
       if (FAILED(hr)) {
         return FALSE;
       }
 
-      hr = instance->DD->SetCooperativeLevel(emuState->WindowHandle, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN | DDSCL_NOWINDOWCHANGES);
+      hr = ddState->DD->SetCooperativeLevel(emuState->WindowHandle, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN | DDSCL_NOWINDOWCHANGES);
 
       if (FAILED(hr)) {
         return FALSE;
       }
 
-      hr = instance->DD->SetDisplayMode(WindowSize.x, WindowSize.y, 32);	// Set 640x480x32 Bit full-screen mode
+      hr = ddState->DD->SetDisplayMode(WindowSize.x, WindowSize.y, 32);	// Set 640x480x32 Bit full-screen mode
 
       if (FAILED(hr)) {
         return FALSE;
@@ -278,7 +278,7 @@ extern "C" {
       ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_COMPLEX | DDSCAPS_FLIP;
       ddsd.dwBackBufferCount = 1;
 
-      hr = instance->DD->CreateSurface(&ddsd, &(instance->DDSurface), NULL);
+      hr = ddState->DD->CreateSurface(&ddsd, &(ddState->DDSurface), NULL);
 
       if (FAILED(hr)) {
         return FALSE;
@@ -286,9 +286,9 @@ extern "C" {
 
       ddsd.ddsCaps.dwCaps = DDSCAPS_BACKBUFFER;
 
-      instance->DDSurface->GetAttachedSurface(&ddsd.ddsCaps, &(instance->DDBackSurface));
+      ddState->DDSurface->GetAttachedSurface(&ddsd.ddsCaps, &(ddState->DDBackSurface));
 
-      hr = instance->DD->GetDisplayMode(&ddsd);
+      hr = ddState->DD->GetDisplayMode(&ddsd);
 
       if (FAILED(hr)) {
         return FALSE;
@@ -302,8 +302,8 @@ extern "C" {
         pal[i + 128].peFlags = PC_RESERVED | PC_NOCOLLAPSE;
       }
 
-      instance->DD->CreatePalette(DDPCAPS_8BIT | DDPCAPS_ALLOW256, pal, &ddPalette, NULL);
-      instance->DDSurface->SetPalette(ddPalette); // Set pallete for Primary surface
+      ddState->DD->CreatePalette(DDPCAPS_8BIT | DDPCAPS_ALLOW256, pal, &ddPalette, NULL);
+      ddState->DDSurface->SetPalette(ddPalette); // Set pallete for Primary surface
 
       break;
     }
@@ -319,15 +319,17 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl CheckSurfaces()
   {
-    if (instance->DDSurface) {	// Check the primary surface
-      if (instance->DDSurface->IsLost() == DDERR_SURFACELOST) {
-        instance->DDSurface->Restore();
+    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
+
+    if (ddState->DDSurface) {	// Check the primary surface
+      if (ddState->DDSurface->IsLost() == DDERR_SURFACELOST) {
+        ddState->DDSurface->Restore();
       }
     }
 
-    if (instance->DDBackSurface) {	// Check the back buffer
-      if (instance->DDBackSurface->IsLost() == DDERR_SURFACELOST) {
-        instance->DDBackSurface->Restore();
+    if (ddState->DDBackSurface) {	// Check the back buffer
+      if (ddState->DDBackSurface->IsLost() == DDERR_SURFACELOST) {
+        ddState->DDBackSurface->Restore();
       }
     }
   }
@@ -372,6 +374,7 @@ extern "C" {
     DDSURFACEDESC ddsd;				      // A structure to describe the surfaces we want
 
     GraphicsSurfaces* graphicsSurfaces = GetGraphicsSurfaces();
+    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
 
     memset(&ddsd, 0, sizeof(ddsd));	// Clear all members of the structure to 0
     ddsd.dwSize = sizeof(ddsd);		  // The first parameter of the structure must contain the size of the structure
@@ -379,7 +382,7 @@ extern "C" {
     CheckSurfaces();
 
     // Lock entire surface, wait if it is busy, return surface memory pointer
-    hr = instance->DDBackSurface->Lock(NULL, &ddsd, DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR, NULL);
+    hr = ddState->DDBackSurface->Lock(NULL, &ddsd, DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR, NULL);
 
     if (FAILED(hr))
     {
@@ -441,8 +444,10 @@ extern "C" {
     static RECT	   rect;
     static POINT   p = POINT();
 
+    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
+
     if (emuState->FullScreen) {	// if we're windowed do the blit, else just Flip
-      hr = instance->DDSurface->Flip(NULL, DDFLIP_NOVSYNC | DDFLIP_DONOTWAIT); //DDFLIP_WAIT
+      hr = ddState->DDSurface->Flip(NULL, DDFLIP_NOVSYNC | DDFLIP_DONOTWAIT); //DDFLIP_WAIT
     }
     else
     {
@@ -524,14 +529,14 @@ extern "C" {
         rcDest.bottom = rcDest.top + WindowSize.y;
 
         GetWindowRect(emuState->WindowHandle, &rect);
-        MoveWindow(emuState->WindowHandle, rect.left, rect.top, instance->WindowDefaultSize.right - instance->WindowDefaultSize.left, instance->WindowDefaultSize.bottom - instance->WindowDefaultSize.top, 1);
+        MoveWindow(emuState->WindowHandle, rect.left, rect.top, ddState->WindowDefaultSize.right - ddState->WindowDefaultSize.left, ddState->WindowDefaultSize.bottom - ddState->WindowDefaultSize.top, 1);
       }
 
-      if (instance->DDBackSurface == NULL) {
+      if (ddState->DDBackSurface == NULL) {
         MessageBox(0, "Odd", "Error", 0); // yes, odd error indeed!! (??) especially since we go ahead and use it below!
       }
 
-      hr = instance->DDSurface->Blt(&rcDest, instance->DDBackSurface, &rcSrc, DDBLT_WAIT, NULL); // DDBLT_WAIT
+      hr = ddState->DDSurface->Blt(&rcDest, ddState->DDBackSurface, &rcSrc, DDBLT_WAIT, NULL); // DDBLT_WAIT
     }
 
     //--Store the updated WindowSizeX/Y for configuration, later.
@@ -551,9 +556,11 @@ extern "C" {
     static size_t index = 0;
     static HDC hdc;
 
+    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
+
     if (emuState->FullScreen & instance->InfoBand) //Put StatusText for full screen here
     {
-      instance->DDBackSurface->GetDC(&hdc);
+      ddState->DDBackSurface->GetDC(&hdc);
       SetBkColor(hdc, RGB(0, 0, 0));
       SetTextColor(hdc, RGB(255, 255, 255));
 
@@ -565,10 +572,10 @@ extern "C" {
 
       TextOut(hdc, 0, 0, instance->StatusText, 132);
 
-      instance->DDBackSurface->ReleaseDC(hdc);
+      ddState->DDBackSurface->ReleaseDC(hdc);
     }
 
-    hr = instance->DDBackSurface->Unlock(NULL);
+    hr = ddState->DDBackSurface->Unlock(NULL);
 
     DisplayFlip(emuState);
   }
@@ -644,6 +651,7 @@ extern "C" {
     HDC hdc;
 
     GraphicsSurfaces* graphicsSurfaces = GetGraphicsSurfaces();
+    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
 
     LockScreen(emuState);
 
@@ -699,7 +707,7 @@ extern "C" {
       return(0);
     }
 
-    instance->DDBackSurface->GetDC(&hdc);
+    ddState->DDBackSurface->GetDC(&hdc);
 
     SetBkColor(hdc, 0);
     SetTextColor(hdc, RGB(counter1 << 2, counter1 << 2, counter1 << 2));
@@ -721,7 +729,7 @@ extern "C" {
       textY = rand() % 470;
     }
 
-    instance->DDBackSurface->ReleaseDC(hdc);
+    ddState->DDBackSurface->ReleaseDC(hdc);
 
     UnlockScreen(emuState);
 

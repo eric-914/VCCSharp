@@ -128,6 +128,9 @@
     <ClCompile Include="DirectSound.c">
       <Filter>audio</Filter>
     </ClCompile>
+    <ClCompile Include="DirectDrawInternal.c">
+      <Filter>directdraw</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h" />
@@ -339,6 +342,12 @@
     </ClInclude>
     <ClInclude Include="DirectSound.h">
       <Filter>audio</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectDrawInternalState.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectDrawInternal.h">
+      <Filter>directdraw</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

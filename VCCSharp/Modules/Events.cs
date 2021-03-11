@@ -33,12 +33,9 @@ namespace VCCSharp.Modules
 
         public void EmuRun()
         {
-            unsafe
-            {
-                _modules.Emu.SetEmuRunning(true);
+            _modules.Emu.SetEmuRunning(true);
 
-                _modules.Graphics.InvalidateBorder();
-            }
+            _modules.Graphics.InvalidateBorder();
         }
 
         public void EmuReset(ResetPendingStates state)
@@ -124,7 +121,7 @@ namespace VCCSharp.Modules
             {
                 VccState* vccState = _modules.Vcc.GetVccState();
 
-                vccState->Throttle = vccState->Throttle ==  Define.TRUE ? Define.FALSE : Define.TRUE;
+                vccState->Throttle = vccState->Throttle == Define.TRUE ? Define.FALSE : Define.TRUE;
             }
         }
 
@@ -132,7 +129,7 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                VccState* vccState = _modules.Vcc. GetVccState();
+                VccState* vccState = _modules.Vcc.GetVccState();
                 EmuState* emuState = _modules.Emu.GetEmuState();
 
                 if (vccState->RunState == (byte)EmuRunStates.Running)

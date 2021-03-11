@@ -46,16 +46,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl EmuReset(unsigned char state) {
-    EmuState* emuState = GetEmuState();
-
-    if (emuState->EmulationRunning) {
-      emuState->ResetPending = state;
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl KeyUp(WPARAM wParam, LPARAM lParam) {
     // send emulator key up event to the emulator
     // TODO: Key up checks whether the emulation is running, this does not
