@@ -88,19 +88,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl ToggleFullScreen() {
-    VccState* vccState = GetVccState();
-    EmuState* emuState = GetEmuState();
-
-    if (vccState->RunState == EMU_RUNSTATE_RUNNING)
-    {
-      vccState->RunState = EMU_RUNSTATE_REQWAIT;
-      emuState->FullScreen = !emuState->FullScreen;
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl KeyDown(WPARAM wParam, LPARAM lParam) {
     unsigned char OEMscan = (unsigned char)((lParam & 0x00FF0000) >> 16); // just get the scan code
 
@@ -122,28 +109,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl ToggleThrottle() {
-    VccState* vccState = GetVccState();
-
-    vccState->Throttle = !vccState->Throttle;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl ToggleInfoBand() {
-    SetInfoBand(!SetInfoBand(QUERY));
-    InvalidateBorder();
-  }
-}
+    DirectDrawState* directDrawState = GetDirectDrawState();
 
-extern "C" {
-  __declspec(dllexport) void __cdecl SlowDown() {
-    DecreaseOverclockSpeed(GetEmuState());
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SpeedUp() {
-    IncreaseOverclockSpeed(GetEmuState());
+    directDrawState->InfoBand = !directDrawState->InfoBand;
   }
 }

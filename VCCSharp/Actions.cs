@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 
@@ -93,32 +92,32 @@ namespace VCCSharp
 
         public void SlowDown()
         {
-            Debug.WriteLine("Slow Down");
+            _modules.Events.SlowDown();
         }
 
         public void SpeedUp()
         {
-            Debug.WriteLine("Speed Up");
+            _modules.Events.SpeedUp();
         }
 
         public void ToggleMonitorType()
         {
-            Debug.WriteLine("ToggleMonitorType");
+            _modules.Events.ToggleMonitorType();
         }
 
         public void ToggleThrottle()
         {
-            Debug.WriteLine("ToggleThrottle");
+            _modules.Events.ToggleThrottle();
         }
 
         public void ToggleInfoBand()
         {
-            Debug.WriteLine("ToggleInfoBand");
+            _modules.Events.ToggleInfoBand();
         }
 
         public void ToggleFullScreen()
         {
-            Debug.WriteLine("ToggleFullScreen");
+            _modules.Events.ToggleFullScreen();
         }
     }
 }

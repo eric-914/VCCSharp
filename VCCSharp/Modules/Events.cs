@@ -14,6 +14,12 @@ namespace VCCSharp.Modules
         void SaveConfig();
         void ShowConfiguration();
         void ToggleOnOff();
+        void SlowDown();
+        void SpeedUp();
+        void ToggleMonitorType();
+        void ToggleThrottle();
+        void ToggleFullScreen();
+        void ToggleInfoBand();
     }
 
     public class Events : IEvents
@@ -89,6 +95,59 @@ namespace VCCSharp.Modules
                 }
 
             }
+        }
+
+        public void SlowDown()
+        {
+            unsafe
+            {
+                _modules.Config.DecreaseOverclockSpeed(_modules.Emu.GetEmuState());
+            }
+        }
+
+        public void SpeedUp()
+        {
+            unsafe
+            {
+                _modules.Config.IncreaseOverclockSpeed(_modules.Emu.GetEmuState());
+            }
+        }
+
+        public void ToggleMonitorType()
+        {
+            Library.Events.ToggleMonitorType();
+        }
+
+        public void ToggleThrottle()
+        {
+            unsafe
+            {
+                VccState* vccState = _modules.Vcc.GetVccState();
+
+                vccState->Throttle = vccState->Throttle ==  Define.TRUE ? Define.FALSE : Define.TRUE;
+            }
+        }
+
+        public void ToggleFullScreen()
+        {
+            unsafe
+            {
+                VccState* vccState = _modules.Vcc. GetVccState();
+                EmuState* emuState = _modules.Emu.GetEmuState();
+
+                if (vccState->RunState == (byte)EmuRunStates.Running)
+                {
+                    vccState->RunState = (byte)EmuRunStates.ReqWait;
+                    emuState->FullScreen = emuState->FullScreen == Define.TRUE ? Define.FALSE : Define.TRUE;
+                }
+            }
+        }
+
+        public void ToggleInfoBand()
+        {
+            Library.Events.ToggleInfoBand();
+
+            _modules.Graphics.InvalidateBorder();
         }
     }
 }

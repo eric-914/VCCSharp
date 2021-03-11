@@ -16,6 +16,8 @@ namespace VCCSharp.Modules
         int GetPaletteType();
         string ExternalBasicImage();
         void UpdateSoundBar(ushort left, ushort right);
+        unsafe void DecreaseOverclockSpeed(EmuState* emuState);
+        unsafe void IncreaseOverclockSpeed(EmuState* emuState);
     }
 
     public class Config : IConfig
@@ -226,6 +228,16 @@ namespace VCCSharp.Modules
         public byte GetSoundCardIndex(string soundCardName)
         {
             return Library.Config.GetSoundCardIndex(soundCardName);
+        }
+
+        public unsafe void DecreaseOverclockSpeed(EmuState* emuState)
+        {
+            Library.Config.DecreaseOverclockSpeed(emuState);
+        }
+
+        public unsafe void IncreaseOverclockSpeed(EmuState* emuState)
+        {
+            Library.Config.IncreaseOverclockSpeed(emuState);
         }
     }
 }

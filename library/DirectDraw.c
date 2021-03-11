@@ -355,17 +355,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl SetInfoBand(unsigned char infoBand)
-  {
-    if (infoBand != QUERY) {
-      instance->InfoBand = infoBand;
-    }
-
-    return(instance->InfoBand);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) unsigned char __cdecl SetAspect(unsigned char forceAspect)
   {
     if (forceAspect != QUERY) {

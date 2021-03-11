@@ -108,7 +108,7 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern ushort SetAudioRate(ushort rate);
-        }   
+        }
 
         public static class Config
         {
@@ -144,6 +144,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern byte GetSoundCardIndex(string soundCardName);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DecreaseOverclockSpeed(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void IncreaseOverclockSpeed(EmuState* emuState);
         }
 
         public static class CPU
@@ -203,7 +209,7 @@ namespace VCCSharp.Libraries
             public static extern void DirectSoundSetCurrentPosition(ulong position);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundLock(ulong buffOffset, ushort length, 
+            public static extern unsafe int DirectSoundLock(ulong buffOffset, ushort length,
                 void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
 
             [DllImport(LIBRARY)]
@@ -220,6 +226,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void ShowConfiguration();
+
+            [DllImport(LIBRARY)]
+            public static extern void ToggleMonitorType();
+
+            [DllImport(LIBRARY)]
+            public static extern void ToggleInfoBand();
         }
 
         public static class Graphics
@@ -328,7 +340,7 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void PakTimer();
-            
+
             [DllImport(LIBRARY)]
             public static extern int InsertModuleCase0();
 
