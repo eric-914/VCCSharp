@@ -121,7 +121,7 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl InvokeSetInterruptCallPointer() {
-    delegates->SetInterruptCallPointer(GetCPU()->CPUAssertInterrupt);
+    delegates->SetInterruptCallPointer(CPUAssertInterrupt);
   }
 }
 

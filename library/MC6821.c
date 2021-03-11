@@ -95,15 +95,13 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl MC6821_AssertCart(void)
   {
-    CPU* cpu = GetCPU();
-
     instance->regb[3] = (instance->regb[3] | 128);
 
     if (instance->regb[3] & 1) {
-      cpu->CPUAssertInterrupt(FIRQ, 0);
+      CPUAssertInterrupt(FIRQ, 0);
     }
     else {
-      cpu->CPUDeAssertInterrupt(FIRQ); //Kludge but working
+      CPUDeAssertInterrupt(FIRQ); //Kludge but working
     }
   }
 }
@@ -169,7 +167,7 @@ extern "C" {
     }
 
     if (instance->rega[3] & 1) {
-      GetCPU()->CPUAssertInterrupt(IRQ, 1);
+      CPUAssertInterrupt(IRQ, 1);
     }
   }
 }
@@ -177,8 +175,6 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl MC6821_irq_hs(int phase)	//63.5 uS
   {
-    CPU* cpu = GetCPU();
-
     switch (phase)
     {
     case FALLING:	//HS went High to low
@@ -189,7 +185,7 @@ extern "C" {
       instance->rega[1] = (instance->rega[1] | 128);
 
       if (instance->rega[1] & 1) {
-        cpu->CPUAssertInterrupt(IRQ, 1);
+        CPUAssertInterrupt(IRQ, 1);
       }
 
       break;
@@ -202,7 +198,7 @@ extern "C" {
       instance->rega[1] = (instance->rega[1] | 128);
 
       if (instance->rega[1] & 1) {
-        cpu->CPUAssertInterrupt(IRQ, 1);
+        CPUAssertInterrupt(IRQ, 1);
       }
 
       break;
@@ -211,7 +207,7 @@ extern "C" {
       instance->rega[1] = (instance->rega[1] | 128);
 
       if (instance->rega[1] & 1) {
-        cpu->CPUAssertInterrupt(IRQ, 1);
+        CPUAssertInterrupt(IRQ, 1);
       }
 
       break;

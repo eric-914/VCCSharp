@@ -120,28 +120,3 @@ extern "C" {
   }
 }
 
-extern "C" {
-  __declspec(dllexport) void __cdecl SetCPUToHD6309() {
-    CPU* cpu = GetCPU();
-
-    cpu->CPUInit = HD6309Init;
-    cpu->CPUExec = HD6309Exec;
-    cpu->CPUReset = HD6309Reset;
-    cpu->CPUAssertInterrupt = HD6309AssertInterrupt;
-    cpu->CPUDeAssertInterrupt = HD6309DeAssertInterrupt;
-    cpu->CPUForcePC = HD6309ForcePC;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetCPUToMC6809() {
-    CPU* cpu = GetCPU();
-
-    cpu->CPUInit = MC6809Init;
-    cpu->CPUExec = MC6809Exec;
-    cpu->CPUReset = MC6809Reset;
-    cpu->CPUAssertInterrupt = MC6809AssertInterrupt;
-    cpu->CPUDeAssertInterrupt = MC6809DeAssertInterrupt;
-    cpu->CPUForcePC = MC6809ForcePC;
-  }
-}

@@ -2,6 +2,9 @@
 
 #include "cpudef.h"
 
+#include "HD6309.h"
+#include "MC6809.h"
+
 CPU* InitializeInstance(CPU*);
 
 static CPU* instance = InitializeInstance(new CPU());
@@ -24,16 +27,45 @@ CPU* InitializeInstance(CPU* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl CPUReset()
-  {
-    instance->CPUReset();
+  __declspec(dllexport) void __cdecl SetCPUToHD6309() {
+    instance->CPUInit = HD6309Init;
+    instance->CPUExec = HD6309Exec;
+    instance->CPUReset = HD6309Reset;
+    instance->CPUAssertInterrupt = HD6309AssertInterrupt;
+    instance->CPUDeAssertInterrupt = HD6309DeAssertInterrupt;
+    instance->CPUForcePC = HD6309ForcePC;
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl CPUInit()
+  __declspec(dllexport) void __cdecl SetCPUToMC6809() {
+    instance->CPUInit = MC6809Init;
+    instance->CPUExec = MC6809Exec;
+    instance->CPUReset = MC6809Reset;
+    instance->CPUAssertInterrupt = MC6809AssertInterrupt;
+    instance->CPUDeAssertInterrupt = MC6809DeAssertInterrupt;
+    instance->CPUForcePC = MC6809ForcePC;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl CPUAssertInterrupt(unsigned char irq, unsigned char flag)
   {
-    instance->CPUInit();
+    instance->CPUAssertInterrupt(irq, flag);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl CPUDeAssertInterrupt(unsigned char irq)
+  {
+    instance->CPUDeAssertInterrupt(irq);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) int __cdecl CPUExec(int cycle)
+  {
+    return instance->CPUExec(cycle);
   }
 }
 
@@ -45,8 +77,15 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl CPUExec(int cycle)
+  __declspec(dllexport) void __cdecl CPUInit()
   {
-    return instance->CPUExec(cycle);
+    instance->CPUInit();
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl CPUReset()
+  {
+    instance->CPUReset();
   }
 }
