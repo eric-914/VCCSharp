@@ -41,6 +41,7 @@ namespace VCCSharp.Models
         //TODO: SoundCardList* is really a pointer to an array of SoundCardList items.  Haven't figured how to define it as such yet.
         public SoundCardListArray SoundCards;
 
+        public unsafe fixed byte AppDataPath[Define.MAX_PATH];
         public unsafe fixed byte IniFilePath[Define.MAX_PATH];
         public unsafe fixed byte TapeFileName[Define.MAX_PATH];
         public unsafe fixed byte ExecDirectory[Define.MAX_PATH];

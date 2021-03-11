@@ -197,16 +197,6 @@ Could not locate {ROM} in any of these locations:
             return System.Reflection.Assembly.GetExecutingAssembly().Location;
         }
 
-        public unsafe void FreeMemory(byte* target)
-        {
-            Library.TC1014.FreeMemory(target);
-        }
-
-        public unsafe byte* AllocateMemory(uint size)
-        {
-            return Library.TC1014.AllocateMemory(size);
-        }
-
         public void GimeAssertVertInterrupt()
         {
             unsafe
@@ -226,6 +216,16 @@ Could not locate {ROM} in any of these locations:
                     registersState->LastIrq |= 8;
                 }
             }
+        }
+
+        public unsafe void FreeMemory(byte* target)
+        {
+            Library.TC1014.FreeMemory(target);
+        }
+
+        public unsafe byte* AllocateMemory(uint size)
+        {
+            return Library.TC1014.AllocateMemory(size);
         }
     }
 }

@@ -33,6 +33,13 @@ namespace VCCSharp.Modules
             return Library.PAKInterface.GetPakInterfaceState();
         }
 
+        public void PakTimer()
+        {
+            if (HasHeartBeat() != Define.FALSE) {
+                InvokeHeartBeat();
+            }
+        }
+
         //TODO: Used by LoadROMPack(...), UnloadPack(...), InsertModule(...)
         public unsafe void UnloadDll(EmuState* emuState)
         {
@@ -69,13 +76,6 @@ namespace VCCSharp.Modules
         public void UpdateBusPointer()
         {
             Library.PAKInterface.UpdateBusPointer();
-        }
-
-        public void PakTimer()
-        {
-            if (HasHeartBeat() != Define.FALSE) {
-                InvokeHeartBeat();
-            }
         }
 
         public unsafe int InsertModule(EmuState* emuState, string modulePath)

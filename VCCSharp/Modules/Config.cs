@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using VCCSharp.IoC;
@@ -136,7 +137,8 @@ namespace VCCSharp.Modules
             {
                 ConfigState* configState = GetConfigState();
 
-                if (configState->hDlgBar == null) {
+                if (configState->hDlgBar == null)
+                {
                     return;
                 }
 
@@ -157,15 +159,18 @@ namespace VCCSharp.Modules
 
                 configState->NumberOfJoysticks = (byte)_modules.Joystick.EnumerateJoysticks();
 
-                for (byte index = 0; index < configState->NumberOfJoysticks; index++) {
+                for (byte index = 0; index < configState->NumberOfJoysticks; index++)
+                {
                     temp = _modules.Joystick.InitJoyStick(index);
                 }
 
-                if (right->DiDevice >= configState->NumberOfJoysticks) {
+                if (right->DiDevice >= configState->NumberOfJoysticks)
+                {
                     right->DiDevice = 0;
                 }
 
-                if (left->DiDevice >= configState->NumberOfJoysticks) {
+                if (left->DiDevice >= configState->NumberOfJoysticks)
+                {
                     left->DiDevice = 0;
                 }
 
@@ -173,15 +178,25 @@ namespace VCCSharp.Modules
 
                 if (configState->NumberOfJoysticks == 0)	//Use Mouse input if no Joysticks present
                 {
-                    if (left->UseMouse == 3) {
+                    if (left->UseMouse == 3)
+                    {
                         left->UseMouse = 1;
                     }
 
-                    if (right->UseMouse == 3) {
+                    if (right->UseMouse == 3)
+                    {
                         right->UseMouse = 1;
                     }
                 }
 
+            }
+        }
+
+        public string ExternalBasicImage()
+        {
+            unsafe
+            {
+                return Converter.ToString(GetConfigState()->Model->ExternalBasicImage);
             }
         }
 
@@ -222,22 +237,33 @@ namespace VCCSharp.Modules
 
         public unsafe string GetIniFilePath(string argIniFile)
         {
-            fixed (byte* buffer = new byte[Define.MAX_PATH])
+            ConfigState* configState = GetConfigState();
+
+            if (!string.IsNullOrEmpty(argIniFile))
             {
-                Library.Config.GetIniFilePath(buffer, argIniFile);
+                Converter.ToByteArray(argIniFile, configState->IniFilePath);
 
-                return Converter.ToString(buffer);
-            };
-        }
-
-        public string ExternalBasicImage()
-        {
-            unsafe
-            {
-                byte* data = Library.Config.ExternalBasicImage();
-
-                return Converter.ToString(data);
+                return argIniFile;
             }
+
+            const string vccFolder = "VCC";
+            const string iniFileName = "Vcc.ini";
+
+            string appDataPath = Path.Combine(Converter.ToString(configState->AppDataPath), vccFolder);
+
+            if (!Directory.Exists(appDataPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(appDataPath);
+                }
+                catch (Exception)
+                {
+                    Debug.WriteLine("Unable to create VCC config folder.");
+                }
+            }
+
+            return Path.Combine(appDataPath, iniFileName);
         }
     }
 }

@@ -35,8 +35,6 @@ using namespace std;
 const unsigned char TranslateScan2Disp[SCAN_TRANS_COUNT] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 32, 38, 20, 33, 35, 40, 36, 24, 30, 31, 42, 43, 55, 52, 16, 34, 19, 21, 22, 23, 25, 26, 27, 45, 46, 0, 51, 44, 41, 39, 18, 37, 17, 29, 28, 47, 48, 49, 51, 0, 53, 54, 50, 66, 67, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, 64, 60, 0, 62, 0, 63, 0, 59, 65, 61, 56, 57 };
 const unsigned char TranslateDisp2Scan[SCAN_TRANS_COUNT] = { 78, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 30, 48, 46, 32, 18, 33, 34, 35, 23, 36, 37, 38, 50, 49, 24, 25, 16, 19, 31, 20, 22, 47, 17, 45, 21, 44, 26, 27, 43, 39, 40, 51, 52, 53, 58, 54, 29, 56, 57, 28, 82, 83, 71, 79, 73, 81, 75, 77, 72, 80, 59, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-static TCHAR AppDataPath[MAX_PATH];
-
 ConfigState* InitializeInstance(ConfigState*);
 
 static ConfigState* instance = InitializeInstance(new ConfigState());
@@ -97,9 +95,13 @@ ConfigState* InitializeInstance(ConfigState* p) {
   GetModuleFileName(NULL, p->ExecDirectory, MAX_PATH);
   FilePathRemoveFileSpec(p->ExecDirectory);
 
+  static TCHAR AppDataPath[MAX_PATH];
+
   if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, AppDataPath))) {
     OutputDebugString(AppDataPath);
   }
+
+  strcpy(p->AppDataPath, AppDataPath);
 
   return p;
 }
@@ -179,46 +181,10 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) char* __cdecl ExternalBasicImage()
-  {
-    return(instance->Model->ExternalBasicImage);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl GetIniFilePath(char* iniFilePath, char* argIniFile) {
-    const char vccFolder[] = "\\VCC";
-    const char iniFileName[] = "\\Vcc.ini";
-
-    if (*argIniFile) {
-      GetFullPathName(argIniFile, MAX_PATH, instance->IniFilePath, 0);
-    }
-    else {
-      strcat(AppDataPath, vccFolder);
-
-      if (_mkdir(AppDataPath) != 0) {
-        OutputDebugString("Unable to create VCC config folder.");
-      }
-
-      strcpy(iniFilePath, AppDataPath);
-      strcat(iniFilePath, iniFileName);
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl SetIniFilePath(char* path)
   {
     //  Path must be to an existing ini file
     strcpy(instance->IniFilePath, path);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) char* __cdecl AppDirectory()
-  {
-    // This only works after LoadConfig has been called
-    return AppDataPath;
   }
 }
 
@@ -417,7 +383,7 @@ extern "C" {
     ofn.nMaxFile = MAX_PATH;
     ofn.nMaxFileTitle = MAX_PATH;
     ofn.lpstrFileTitle = NULL;
-    ofn.lpstrInitialDir = AppDirectory();
+    ofn.lpstrInitialDir = instance->AppDataPath;
     ofn.lpstrTitle = TEXT("Load Vcc Config File");
     ofn.Flags = OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
 
@@ -453,7 +419,7 @@ extern "C" {
     ofn.nMaxFile = MAX_PATH;                 // sizeof lpstrFile
     ofn.lpstrFileTitle = NULL;               // filename and extension only
     ofn.nMaxFileTitle = MAX_PATH;            // sizeof lpstrFileTitle
-    ofn.lpstrInitialDir = AppDirectory();    // EJJ initial directory
+    ofn.lpstrInitialDir = instance->AppDataPath;    // EJJ initial directory
     ofn.lpstrTitle = TEXT("Save Vcc Config"); // title bar string
     ofn.Flags = OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;
 

@@ -26,6 +26,7 @@ typedef struct
   ConfigModel* Model;
   SoundCardList SoundCards[MAXCARDS];
 
+  char AppDataPath[MAX_PATH];
   char IniFilePath[MAX_PATH];
   char TapeFileName[MAX_PATH];
   char ExecDirectory[MAX_PATH];
@@ -36,5 +37,4 @@ typedef struct
   HWND hDlgTape;
 
   HWND hWndConfig[TABS];
-
 } ConfigState;

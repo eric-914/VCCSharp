@@ -13,9 +13,6 @@ extern "C" __declspec(dllexport) JoystickModel * __cdecl GetRightJoystick();
 
 extern "C" __declspec(dllexport) POINT __cdecl GetIniWindowSize();
 
-extern "C" __declspec(dllexport) char* __cdecl AppDirectory();
-extern "C" __declspec(dllexport) char* __cdecl ExternalBasicImage(void);
-
 extern "C" __declspec(dllexport) int __cdecl GetCurrentKeyboardLayout();
 extern "C" __declspec(dllexport) int __cdecl GetPaletteType();
 extern "C" __declspec(dllexport) int __cdecl GetRememberSize();
@@ -42,5 +39,3 @@ extern "C" __declspec(dllexport) void __cdecl SetCpuType(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl ValidateModel(ConfigModel* model);
 extern "C" __declspec(dllexport) void __cdecl AdjustOverclockSpeed(EmuState* emuState, unsigned char change);
 extern "C" __declspec(dllexport) void __cdecl SetWindowSize(int width, int height);
-
-extern "C" __declspec(dllexport) void __cdecl GetIniFilePath(char* iniFilePath, char* argIniFile);
