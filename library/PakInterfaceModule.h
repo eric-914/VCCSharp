@@ -38,4 +38,3 @@ extern "C" __declspec(dllexport) unsigned char __cdecl ModulePortRead(unsigned c
 extern "C" __declspec(dllexport) unsigned short __cdecl ReadModuleAudioSample();
 
 extern "C" __declspec(dllexport) void __cdecl UnloadModule();
-extern "C" __declspec(dllexport) void __cdecl PakTimer();

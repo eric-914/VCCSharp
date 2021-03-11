@@ -13,6 +13,8 @@ namespace VCCSharp.Modules
         void UpdateBusPointer();
         unsafe int InsertModule(EmuState* emuState, string modulePath);
         void PakTimer();
+        int HasHeartBeat();
+        void InvokeHeartBeat();
     }
 
     public class PAKInterface : IPAKInterface
@@ -71,7 +73,9 @@ namespace VCCSharp.Modules
 
         public void PakTimer()
         {
-            Library.PAKInterface.PakTimer();
+            if (HasHeartBeat() != Define.FALSE) {
+                InvokeHeartBeat();
+            }
         }
 
         public unsafe int InsertModule(EmuState* emuState, string modulePath)
@@ -94,5 +98,14 @@ namespace VCCSharp.Modules
             return Library.PAKInterface.InsertModuleCase2(emuState, modulePath);
         }
 
+        public int HasHeartBeat()
+        {
+            return Library.PAKInterface.HasHeartBeat();
+        }
+
+        public void InvokeHeartBeat()
+        {
+            Library.PAKInterface.InvokeHeartBeat();
+        }
     }
 }

@@ -250,12 +250,3 @@ extern "C" {
     delegates->ConfigModule(menuItem);
   }
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl PakTimer()
-  {
-    if (HasHeartBeat()) {
-      InvokeHeartBeat();
-    }
-  }
-}

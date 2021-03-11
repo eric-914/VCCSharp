@@ -339,9 +339,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe int InsertModule(EmuState* emuState, string modulePath);
 
             [DllImport(LIBRARY)]
-            public static extern void PakTimer();
-
-            [DllImport(LIBRARY)]
             public static extern int InsertModuleCase0();
 
             [DllImport(LIBRARY)]
@@ -349,6 +346,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe int InsertModuleCase2(EmuState* emuState, byte* modulePath);
+
+            [DllImport(LIBRARY)]
+            public static extern int HasHeartBeat();
+
+            [DllImport(LIBRARY)]
+            public static extern void InvokeHeartBeat();
         }
 
         public static class Resource
