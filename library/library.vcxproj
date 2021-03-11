@@ -235,6 +235,7 @@
     <ClInclude Include="Dmenu.h" />
     <ClInclude Include="Emu.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="GraphicsColors.h" />
     <ClInclude Include="GraphicsState.h" />
     <ClInclude Include="GraphicsSurfaces.h" />
     <ClInclude Include="HD6309.h" />

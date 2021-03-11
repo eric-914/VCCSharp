@@ -355,6 +355,9 @@
     <ClInclude Include="PakInterfaceModule.h">
       <Filter>pakinterface</Filter>
     </ClInclude>
+    <ClInclude Include="GraphicsColors.h">
+      <Filter>models</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="audio">

@@ -21,6 +21,8 @@ This file is part of VCC (Virtual Color Computer).
 
 #include "defines.h"
 #include "Graphics.h"
+#include "GraphicsColors.h"
+
 #include "EmuState.h"
 #include "TC1014Mmu.h"
 

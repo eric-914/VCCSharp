@@ -3,6 +3,8 @@
 
 #include "GraphicsState.h"
 #include "GraphicsSurfaces.h"
+#include "GraphicsColors.h"
+
 #include "EmuState.h"
 
 #include "CoCo.h"
