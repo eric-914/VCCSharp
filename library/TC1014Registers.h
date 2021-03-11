@@ -1,8 +1,6 @@
 #pragma once
 
 typedef struct {
-  unsigned char* Rom;
-
   unsigned char EnhancedFIRQFlag;
   unsigned char EnhancedIRQFlag;
   unsigned char VDG_Mode;
@@ -13,9 +11,10 @@ typedef struct {
 
   unsigned short VerticalOffsetRegister;
 
-  int InterruptTimer;
+  short InterruptTimer;
 
   unsigned char GimeRegisters[256];
+  unsigned char* Rom;
 } TC1014RegistersState;
 
 extern "C" __declspec(dllexport) TC1014RegistersState * __cdecl GetTC1014RegistersState();

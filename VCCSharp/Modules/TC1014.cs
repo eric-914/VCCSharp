@@ -34,6 +34,11 @@ namespace VCCSharp.Modules
             return Library.TC1014.GetTC1014MmuState();
         }
 
+        public unsafe TC1014RegistersState* GetTC1014RegistersState()
+        {
+            return Library.TC1014.GetTC1014RegistersState();
+        }
+
         public void MC6883Reset()
         {
             Library.TC1014.MC6883Reset();
@@ -201,6 +206,11 @@ Could not locate {ROM} in any of these locations:
 
         public void GimeAssertVertInterrupt()
         {
+            unsafe
+            {
+                TC1014RegistersState* registersState = GetTC1014RegistersState();
+            }
+
             Library.TC1014.GimeAssertVertInterrupt();
         }
     }

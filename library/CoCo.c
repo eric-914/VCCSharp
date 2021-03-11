@@ -116,14 +116,14 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl SetVertInterruptState(unsigned char state)
   {
-    instance->VertInterruptEnabled = !!state;
+    instance->VertInterruptEnabled = state == 0 ? 1 : 0;
   }
 }
 
 extern "C" {
   __declspec(dllexport) void __cdecl SetHorzInterruptState(unsigned char state)
   {
-    instance->HorzInterruptEnabled = !!state;
+    instance->HorzInterruptEnabled = state == 0 ? 1 : 0;
   }
 }
 

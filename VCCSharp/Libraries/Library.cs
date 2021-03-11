@@ -366,6 +366,9 @@ namespace VCCSharp.Libraries
             public static extern unsafe TC1014MmuState* GetTC1014MmuState();
 
             [DllImport(LIBRARY)]
+            public static extern unsafe TC1014RegistersState* GetTC1014RegistersState();
+
+            [DllImport(LIBRARY)]
             public static extern void MC6883Reset();
 
             [DllImport(LIBRARY)]

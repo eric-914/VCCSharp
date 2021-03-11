@@ -138,7 +138,7 @@ namespace VCCSharp.Modules
 
             _modules.MC6821.MC6821_irq_fs(PhaseStates.Rising);  //End of active display FS goes High to Low
 
-            if (cocoState->VertInterruptEnabled == Define.TRUE)
+            if (cocoState->VertInterruptEnabled != Define.FALSE)
             {
                 _modules.TC1014.GimeAssertVertInterrupt();
             }
