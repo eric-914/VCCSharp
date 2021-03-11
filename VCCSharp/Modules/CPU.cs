@@ -1,4 +1,5 @@
-﻿using VCCSharp.Libraries;
+﻿using VCCSharp.Enums;
+using VCCSharp.Libraries;
 
 namespace VCCSharp.Modules
 {
@@ -8,6 +9,8 @@ namespace VCCSharp.Modules
         void CPUInit();
         void CPUForcePC(ushort xferAddress);
         int CPUExec(int cycle);
+        void CPUAssertInterrupt(CPUInterrupts irq, byte flag);
+        void CPUDeAssertInterrupt(CPUInterrupts irq);
     }
 
     public class CPU : ICPU
@@ -30,6 +33,16 @@ namespace VCCSharp.Modules
         public int CPUExec(int cycle)
         {
             return Library.CPU.CPUExec(cycle);
+        }
+
+        public void CPUAssertInterrupt(CPUInterrupts irq, byte flag)
+        {
+            Library.CPU.CPUAssertInterrupt((byte)irq, flag);
+        }
+
+        public void CPUDeAssertInterrupt(CPUInterrupts irq)
+        {
+            Library.CPU.CPUDeAssertInterrupt((byte)irq);
         }
     }
 }

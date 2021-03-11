@@ -82,24 +82,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl GimeAssertVertInterrupt()
-  {
-    TC1014RegistersState* registersState = GetTC1014RegistersState();
-
-    if (((registersState->GimeRegisters[0x93] & 8) != 0) && (registersState->EnhancedFIRQFlag == 1)) {
-      CPUAssertInterrupt(FIRQ, 0); //FIRQ
-
-      registersState->LastFirq = registersState->LastFirq | 8;
-    }
-    else if (((registersState->GimeRegisters[0x92] & 8) != 0) && (registersState->EnhancedIRQFlag == 1)) {
-      CPUAssertInterrupt(IRQ, 0); //IRQ moon patrol demo using this
-
-      registersState->LastIrq = registersState->LastIrq | 8;
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl GimeAssertTimerInterrupt()
   {
     TC1014RegistersState* registersState = GetTC1014RegistersState();

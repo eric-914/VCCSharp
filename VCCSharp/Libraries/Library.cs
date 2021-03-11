@@ -165,6 +165,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern int CPUExec(int cycle);
+
+            [DllImport(LIBRARY)]
+            public static extern void CPUAssertInterrupt(byte irq, byte flag);
+
+            [DllImport(LIBRARY)]
+            public static extern void CPUDeAssertInterrupt(byte irq);
         }
 
         public static class DirectDraw
@@ -376,9 +382,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void MemWrite8(byte data, ushort address);
-
-            [DllImport(LIBRARY)]
-            public static extern void GimeAssertVertInterrupt();
 
             [DllImport(LIBRARY)]
             public static extern void GimeAssertHorzInterrupt();

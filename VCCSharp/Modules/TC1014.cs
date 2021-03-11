@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -121,7 +122,8 @@ Could not locate {ROM} in any of these locations:
 
                 mmuState->Memory = AllocateMemory(ramSize);
 
-                if (mmuState->Memory == null) {
+                if (mmuState->Memory == null)
+                {
                     return 0;
                 }
 
@@ -136,7 +138,8 @@ Could not locate {ROM} in any of these locations:
                 FreeMemory(mmuState->InternalRomBuffer);
                 mmuState->InternalRomBuffer = AllocateMemory(0x8001); //--TODO: Weird that the extra byte is needed here
 
-                if (mmuState->InternalRomBuffer == null) {
+                if (mmuState->InternalRomBuffer == null)
+                {
                     return 0;
                 }
 
@@ -209,9 +212,20 @@ Could not locate {ROM} in any of these locations:
             unsafe
             {
                 TC1014RegistersState* registersState = GetTC1014RegistersState();
-            }
 
-            Library.TC1014.GimeAssertVertInterrupt();
+                if (((registersState->GimeRegisters[0x93] & 8) != 0) && (registersState->EnhancedFIRQFlag == 1))
+                {
+                    _modules.CPU.CPUAssertInterrupt(CPUInterrupts.FIRQ, 0); //FIRQ
+
+                    registersState->LastFirq |= 8;
+                }
+                else if (((registersState->GimeRegisters[0x92] & 8) != 0) && (registersState->EnhancedIRQFlag == 1))
+                {
+                    _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 0); //IRQ moon patrol demo using this
+
+                    registersState->LastIrq |= 8;
+                }
+            }
         }
     }
 }
