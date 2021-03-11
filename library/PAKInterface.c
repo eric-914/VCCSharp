@@ -3,6 +3,8 @@
 
 #include "PAKInterface.h"
 #include "PakInterfaceDelegates.h"
+#include "PakInterfaceModule.h"
+
 #include "MC6821.h"
 #include "Config.h"
 #include "TC1014MMU.h"
@@ -14,20 +16,12 @@
 using namespace std;
 
 PakInterfaceState* InitializeInstance(PakInterfaceState*);
-PakInterfaceDelegates* InitializeDelegates(PakInterfaceDelegates*);
 
 static PakInterfaceState* instance = InitializeInstance(new PakInterfaceState());
-static PakInterfaceDelegates* delegates = InitializeDelegates(new PakInterfaceDelegates());
 
 extern "C" {
   __declspec(dllexport) PakInterfaceState* __cdecl GetPakInterfaceState() {
     return instance;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) PakInterfaceDelegates* __cdecl GetPakInterfaceDelegates() {
-    return delegates;
   }
 }
 
@@ -45,24 +39,6 @@ PakInterfaceState* InitializeInstance(PakInterfaceState* p) {
   return p;
 }
 
-PakInterfaceDelegates* InitializeDelegates(PakInterfaceDelegates* p) {
-  p->ConfigModule = NULL;
-  p->DmaMemPointer = NULL;
-  p->GetModuleName = NULL;
-  p->HeartBeat = NULL;
-  p->ModuleAudioSample = NULL;
-  p->ModuleReset = NULL;
-  p->ModuleStatus = NULL;
-  p->PakMemRead8 = NULL;
-  p->PakMemWrite8 = NULL;
-  p->PakPortRead = NULL;
-  p->PakPortWrite = NULL;
-  p->PakSetCart = NULL;
-  p->SetIniPath = NULL;
-  p->SetInterruptCallPointer = NULL;
-
-  return p;
-}
 
 extern "C" {
   __declspec(dllexport) void __cdecl GetCurrentModule(char* defaultModule)
@@ -96,22 +72,14 @@ extern "C" {
   }
 }
 
-extern "C" {
-  __declspec(dllexport) void __cdecl PakTimer()
-  {
-    if (delegates->HeartBeat != NULL) {
-      delegates->HeartBeat();
-    }
-  }
-}
 
 extern "C" {
   __declspec(dllexport) void __cdecl ResetBus()
   {
     instance->BankedCartOffset = 0;
 
-    if (delegates->ModuleReset != NULL) {
-      delegates->ModuleReset();
+    if (HasModuleReset()) {
+      InvokeModuleReset();
     }
   }
 }
@@ -119,8 +87,8 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl GetModuleStatus(EmuState* emuState)
   {
-    if (delegates->ModuleStatus != NULL) {
-      delegates->ModuleStatus(emuState->StatusLine);
+    if (HasModuleStatus()) {
+      InvokeModuleStatus(emuState->StatusLine);
     }
     else {
       sprintf(emuState->StatusLine, "");
@@ -131,26 +99,21 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl PakPortRead(unsigned char port)
   {
-    if (delegates->PakPortRead != NULL) {
-      return(delegates->PakPortRead(port));
+    if (HasModulePortRead()) {
+      return ModulePortRead(port);
     }
-    else {
-      return(NULL);
-    }
+
+    return(NULL);
   }
 }
 
 extern "C" {
   __declspec(dllexport) void __cdecl PakPortWrite(unsigned char port, unsigned char data)
   {
-    if (delegates->PakPortWrite != NULL)
-    {
-      delegates->PakPortWrite(port, data);
-      return;
-    }
-
-    if ((port == 0x40) && (instance->RomPackLoaded)) {
-      instance->BankedCartOffset = (data & 15) << 14;
+    if (ModulePortWrite(port, data) == 1) {
+      if ((port == 0x40) && (instance->RomPackLoaded)) {
+        instance->BankedCartOffset = (data & 15) << 14;
+      }
     }
   }
 }
@@ -158,11 +121,12 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl PakMem8Read(unsigned short address)
   {
-    if (delegates->PakMemRead8 != NULL) {
-      return(delegates->PakMemRead8(address & 32767));
+    if (HasModuleMem8Read()) {
+      return ModuleMem8Read(address);
     }
 
     if (instance->ExternalRomBuffer != NULL) {
+      //TODO: Threading makes it possible to reach here where ExternalRomBuffer = NULL despite check.
       return(instance->ExternalRomBuffer[(address & 32767) + instance->BankedCartOffset]);
     }
 
@@ -180,8 +144,8 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned short __cdecl PakAudioSample(void)
   {
-    if (delegates->ModuleAudioSample != NULL) {
-      return(delegates->ModuleAudioSample());
+    if (HasModuleAudioSample()) {
+      return(ReadModuleAudioSample());
     }
 
     return(NULL);
@@ -202,18 +166,7 @@ extern "C" {
       return;
     }
 
-    delegates->ConfigModule = NULL;
-    delegates->DmaMemPointer = NULL;
-    delegates->GetModuleName = NULL;
-    delegates->HeartBeat = NULL;
-    delegates->ModuleAudioSample = NULL;
-    delegates->ModuleReset = NULL;
-    delegates->ModuleStatus = NULL;
-    delegates->PakMemRead8 = NULL;
-    delegates->PakMemWrite8 = NULL;
-    delegates->PakPortRead = NULL;
-    delegates->PakPortWrite = NULL;
-    delegates->SetInterruptCallPointer = NULL;
+    UnloadModule();
 
     if (instance->hInstLib != NULL) {
       FreeLibrary(instance->hInstLib);
@@ -295,29 +248,10 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl UpdateBusPointer()
   {
-    if (delegates->SetInterruptCallPointer != NULL) {
-      delegates->SetInterruptCallPointer(GetCPU()->CPUAssertInterrupt);
+    if (HasSetInterruptCallPointer()) {
+      InvokeSetInterruptCallPointer();
     }
   }
-}
-
-BOOL SetDelegates(HINSTANCE hInstLib) {
-  delegates->GetModuleName = (GETNAME)GetProcAddress(hInstLib, "ModuleName");
-  delegates->ConfigModule = (CONFIGIT)GetProcAddress(hInstLib, "ModuleConfig");
-  delegates->PakPortWrite = (PACKPORTWRITE)GetProcAddress(hInstLib, "PackPortWrite");
-  delegates->PakPortRead = (PACKPORTREAD)GetProcAddress(hInstLib, "PackPortRead");
-  delegates->SetInterruptCallPointer = (SETINTERRUPTCALLPOINTER)GetProcAddress(hInstLib, "AssertInterrupt");
-  delegates->DmaMemPointer = (DMAMEMPOINTERS)GetProcAddress(hInstLib, "MemPointers");
-  delegates->HeartBeat = (HEARTBEAT)GetProcAddress(hInstLib, "HeartBeat");
-  delegates->PakMemWrite8 = (MEMWRITE8)GetProcAddress(hInstLib, "PakMemWrite8");
-  delegates->PakMemRead8 = (MEMREAD8)GetProcAddress(hInstLib, "PakMemRead8");
-  delegates->ModuleStatus = (MODULESTATUS)GetProcAddress(hInstLib, "ModuleStatus");
-  delegates->ModuleAudioSample = (MODULEAUDIOSAMPLE)GetProcAddress(hInstLib, "ModuleAudioSample");
-  delegates->ModuleReset = (MODULERESET)GetProcAddress(hInstLib, "ModuleReset");
-  delegates->SetIniPath = (SETINIPATH)GetProcAddress(hInstLib, "SetIniPath");
-  delegates->PakSetCart = (SETCARTPOINTER)GetProcAddress(hInstLib, "SetCart");
-
-  return delegates->GetModuleName == NULL;
 }
 
 //File doesn't exist
@@ -355,15 +289,15 @@ extern "C" {
 
     instance->BankedCartOffset = 0;
 
-    if (delegates->DmaMemPointer != NULL) {
-      delegates->DmaMemPointer(MemRead8, MemWrite8);
+    if (HasDmaMemPointer()) {
+      InvokeDmaMemPointer();
     }
 
-    if (delegates->SetInterruptCallPointer != NULL) {
-      delegates->SetInterruptCallPointer(GetCPU()->CPUAssertInterrupt);
+    if (HasSetInterruptCallPointer()) {
+      InvokeSetInterruptCallPointer();
     }
 
-    delegates->GetModuleName(instance->Modname, catNumber, DynamicMenuCallback);  //Instantiate the menus from HERE!
+    InvokeGetModuleName(instance->Modname, catNumber);  //Instantiate the menus from HERE!
 
     sprintf(temp, "Configure %s", instance->Modname);
 
@@ -371,99 +305,99 @@ extern "C" {
     strcat(text, instance->Modname);
     strcat(text, "\n");
 
-    if (delegates->ConfigModule != NULL)
+    if (HasConfigModule())
     {
       instance->ModualParms |= 1;
 
       strcat(text, "Has Configurable options\n");
     }
 
-    if (delegates->PakPortWrite != NULL)
+    if (HasPakPortWrite())
     {
       instance->ModualParms |= 2;
 
       strcat(text, "Is IO writable\n");
     }
 
-    if (delegates->PakPortRead != NULL)
+    if (HasPakPortRead())
     {
       instance->ModualParms |= 4;
 
       strcat(text, "Is IO readable\n");
     }
 
-    if (delegates->SetInterruptCallPointer != NULL)
+    if (HasSetInterruptCallPointer())
     {
       instance->ModualParms |= 8;
 
       strcat(text, "Generates Interrupts\n");
     }
 
-    if (delegates->DmaMemPointer != NULL)
+    if (HasDmaMemPointer())
     {
       instance->ModualParms |= 16;
 
       strcat(text, "Generates DMA Requests\n");
     }
 
-    if (delegates->HeartBeat != NULL)
+    if (HasHeartBeat())
     {
       instance->ModualParms |= 32;
 
       strcat(text, "Needs Heartbeat\n");
     }
 
-    if (delegates->ModuleAudioSample != NULL)
+    if (HasModuleAudioSample())
     {
       instance->ModualParms |= 64;
 
       strcat(text, "Analog Audio Outputs\n");
     }
 
-    if (delegates->PakMemWrite8 != NULL)
+    if (HasPakMemWrite8())
     {
       instance->ModualParms |= 128;
 
       strcat(text, "Needs ChipSelect Write\n");
     }
 
-    if (delegates->PakMemRead8 != NULL)
+    if (HasPakMemRead8())
     {
       instance->ModualParms |= 256;
 
       strcat(text, "Needs ChipSelect Read\n");
     }
 
-    if (delegates->ModuleStatus != NULL)
+    if (HasModuleStatus())
     {
       instance->ModualParms |= 512;
 
       strcat(text, "Returns Status\n");
     }
 
-    if (delegates->ModuleReset != NULL)
+    if (HasModuleReset())
     {
       instance->ModualParms |= 1024;
 
       strcat(text, "Needs Reset Notification\n");
     }
 
-    if (delegates->SetIniPath != NULL)
+    if (HasSetIniPath())
     {
       instance->ModualParms |= 2048;
 
       strcpy(ini, GetConfigState()->IniFilePath);
 
-      delegates->SetIniPath(ini);
+      InvokeSetIniPath(ini);
     }
 
-    if (delegates->PakSetCart != NULL)
+    if (HasPakSetCart())
     {
       instance->ModualParms |= 4096;
 
       strcat(text, "Can Assert CART\n");
 
-      delegates->PakSetCart(SetCart);
+      InvokePakSetCart();
     }
 
     strcpy(instance->DllPath, modulePath);

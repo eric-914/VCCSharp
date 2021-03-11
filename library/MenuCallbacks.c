@@ -5,6 +5,7 @@
 #include "PakInterfaceState.h"
 #include "PakInterface.h"
 #include "PakInterfaceDelegates.h"
+#include "PakInterfaceModule.h"
 #include "Emu.h"
 #include "Cartridge.h"
 
@@ -177,11 +178,9 @@ extern "C" {
       break;
 
     default:
-      PakInterfaceDelegates* delegates = GetPakInterfaceDelegates();
-
-      if (delegates->ConfigModule != NULL) {
+      if (HasConfigModule()) {
         //--Original code was passing an unsigned char, though the menu ids are integers
-        delegates->ConfigModule((unsigned char)(menuItem - ID_DYNAMENU_START));
+        InvokeConfigModule((unsigned char)(menuItem - ID_DYNAMENU_START));
       }
 
       break;

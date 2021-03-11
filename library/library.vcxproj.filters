@@ -131,6 +131,9 @@
     <ClCompile Include="DirectDrawInternal.c">
       <Filter>directdraw</Filter>
     </ClCompile>
+    <ClCompile Include="PakInterfaceModule.c">
+      <Filter>pakinterface</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h" />
@@ -348,6 +351,9 @@
     </ClInclude>
     <ClInclude Include="DirectDrawInternal.h">
       <Filter>directdraw</Filter>
+    </ClInclude>
+    <ClInclude Include="PakInterfaceModule.h">
+      <Filter>pakinterface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

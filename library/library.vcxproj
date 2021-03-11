@@ -193,6 +193,7 @@
     <ClCompile Include="MC6821.c" />
     <ClCompile Include="MenuCallbacks.c" />
     <ClCompile Include="MessageHandlers.c" />
+    <ClCompile Include="PakInterfaceModule.c" />
     <ClCompile Include="resource.c" />
     <ClCompile Include="TC1014MMU.c" />
     <ClCompile Include="PAKInterface.c" />
@@ -253,6 +254,7 @@
     <ClInclude Include="MenuCallbacks.h" />
     <ClInclude Include="MessageHandlers.h" />
     <ClInclude Include="PakInterfaceDelegates.h" />
+    <ClInclude Include="PakInterfaceModule.h" />
     <ClInclude Include="PakInterfaceState.h" />
     <ClInclude Include="TC1014MMU.h" />
     <ClInclude Include="PAKInterface.h" />

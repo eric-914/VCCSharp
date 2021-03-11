@@ -22,7 +22,6 @@
 #define ASSERTCART		4096
 
 extern "C" __declspec(dllexport) PakInterfaceState * __cdecl GetPakInterfaceState();
-extern "C" __declspec(dllexport) PakInterfaceDelegates* __cdecl GetPakInterfaceDelegates();
 
 extern "C" __declspec(dllexport) int __cdecl FileID(char*);
 extern "C" __declspec(dllexport) int __cdecl InsertModule(EmuState*, char*);
@@ -37,7 +36,6 @@ extern "C" __declspec(dllexport) void __cdecl GetCurrentModule(char*);
 extern "C" __declspec(dllexport) void __cdecl GetModuleStatus(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl PakMem8Write(unsigned char, unsigned char);
 extern "C" __declspec(dllexport) void __cdecl PakPortWrite(unsigned char, unsigned char);
-extern "C" __declspec(dllexport) void __cdecl PakTimer();
 extern "C" __declspec(dllexport) void __cdecl ResetBus();
 extern "C" __declspec(dllexport) void __cdecl UnloadDll(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl UnloadPack(EmuState*);
