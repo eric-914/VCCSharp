@@ -124,4 +124,10 @@
   <data name="Television" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Television.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="vcc" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\vcc.bmp;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="_3guys" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\3guys.bmp;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

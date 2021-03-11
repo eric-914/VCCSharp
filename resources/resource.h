@@ -10,7 +10,6 @@
 #define IDD_ABOUTBOX                    104
 #define IDD_CONFIG                      105
 #define IDD_DISKS                       106
-#define IDB_VCC                         108
 #define IDI_BINFILE                     110
 #define IDB_BENDER                      111
 #define IDI_CART                        112
@@ -34,7 +33,6 @@
 #define IDI_JOYSTICK                    149
 #define IDI_MOUSE                       150
 #define IDD_MISC                        154
-#define IDB_3GUYS                       156
 #define IDD_CASSETTE                    157
 #define IDD_NEWTAPE                     158
 #define IDD_BITBANGER                   159
@@ -460,6 +458,7 @@
 #define ID_NMI                          40025
 #define ID_CARTRIDGE_INSERT             40026
 #define ID_CARTS_EJECT                  40030
+#define ID_PLACEHOLDER                  40031
 #define IDC_REMEMBER_SIZE               40039
 
 // Next default values for new objects
@@ -467,7 +466,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        170
-#define _APS_NEXT_COMMAND_VALUE         40031
+#define _APS_NEXT_COMMAND_VALUE         40032
 #define _APS_NEXT_CONTROL_VALUE         1165
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

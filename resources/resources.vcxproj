@@ -163,6 +163,7 @@
   <ItemGroup>
     <Image Include="resources\3guys.bmp" />
     <Image Include="resources\binfile.ico" />
+    <Image Include="resources\coco.ico" />
     <Image Include="resources\composite.ico" />
     <Image Include="resources\hitachi.ico" />
     <Image Include="resources\ico00004.ico" />

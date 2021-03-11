@@ -12,6 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\3guys.bmp" />
+    <None Remove="Resources\vcc.bmp" />
     <None Remove="Television.png" />
   </ItemGroup>
 
@@ -20,7 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\3guys.bmp" />
     <Resource Include="Resources\Television.png" />
+    <Resource Include="Resources\vcc.bmp" />
   </ItemGroup>
 
   <ItemGroup>

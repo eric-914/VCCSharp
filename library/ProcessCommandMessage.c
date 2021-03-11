@@ -83,10 +83,6 @@ extern "C" {
 
     switch (wmId)
     {
-    case IDM_HELP_ABOUT:
-      HelpAbout(hWnd);
-      break;
-
     case IDOK:
       SendMessage(hWnd, WM_CLOSE, 0, 0);
       break;

@@ -21,7 +21,7 @@ namespace VCCSharp
 
         public void AboutVcc()
         {
-            MessageBox.Show("About Vcc");
+            new AboutWindow().ShowDialog();
         }
 
         public void SaveConfiguration()

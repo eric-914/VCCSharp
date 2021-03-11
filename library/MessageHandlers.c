@@ -16,12 +16,6 @@
 #include "../resources/resource.h"
 
 extern "C" {
-  __declspec(dllexport) void __cdecl HelpAbout(HWND hWnd) {
-    DialogBox(GetEmuState()->Resources, (LPCTSTR)IDD_ABOUTBOX, hWnd, (DLGPROC)DialogBoxAboutCallback);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl CreateMainMenu(HWND hWnd) {
     EmuState* emuState = GetEmuState();
 
