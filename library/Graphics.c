@@ -23,9 +23,11 @@ static const unsigned int   Afacts32[2][4] = { 0, 0xFF8D1F, 0x0667FF, 0xFFFFFF, 
 
 GraphicsState* InitializeInstance(GraphicsState*);
 GraphicsSurfaces* InitializeSurfaces(GraphicsSurfaces*);
+GraphicsColors* InitializeColors(GraphicsColors*);
 
 static GraphicsState* instance = InitializeInstance(new GraphicsState());
 static GraphicsSurfaces* surfaces = InitializeSurfaces(new GraphicsSurfaces());
+static GraphicsColors* colors = InitializeColors(new GraphicsColors());
 
 GraphicsState* InitializeInstance(GraphicsState* p) {
   p->BlinkState = 1;
@@ -74,12 +76,20 @@ GraphicsState* InitializeInstance(GraphicsState* p) {
   p->BorderColor16 = 0;
   p->BorderColor32 = 0;
 
-  ARRAYCOPY(ColorTable16Bit);
-  ARRAYCOPY(ColorTable32Bit);
   ARRAYCOPY(Lpf);
   ARRAYCOPY(VcenterTable);
 
+  return p;
+}
+
+GraphicsSurfaces* InitializeSurfaces(GraphicsSurfaces* p) {
+  return p;
+}
+
+GraphicsColors* InitializeColors(GraphicsColors* p) {
   //ZEROARRAY(Palette);
+  ARRAYCOPY(ColorTable16Bit);
+  ARRAYCOPY(ColorTable32Bit);
 
   for (int i = 0; i < 16; i++) {
     p->Palette[i] = 0;
@@ -107,10 +117,6 @@ GraphicsState* InitializeInstance(GraphicsState* p) {
   return p;
 }
 
-GraphicsSurfaces* InitializeSurfaces(GraphicsSurfaces* p) {
-  return p;
-}
-
 extern "C" {
   __declspec(dllexport) GraphicsState* __cdecl GetGraphicsState() {
     return instance;
@@ -120,6 +126,12 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) GraphicsSurfaces* __cdecl GetGraphicsSurfaces() {
     return surfaces;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) GraphicsColors* __cdecl GetGraphicsColors() {
+    return colors;
   }
 }
 
@@ -162,18 +174,18 @@ extern "C" {
 
     for (unsigned char index = 0; index < 64; index++)
     {
-      instance->PaletteLookup8[1][index] = index | 128;
+      colors->PaletteLookup8[1][index] = index | 128;
 
-      r = instance->ColorTable16Bit[(index & 32) >> 4 | (index & 4) >> 2];
-      g = instance->ColorTable16Bit[(index & 16) >> 3 | (index & 2) >> 1];
-      b = instance->ColorTable16Bit[(index & 8) >> 2 | (index & 1)];
-      instance->PaletteLookup16[1][index] = (r << 11) | (g << 6) | b;
+      r = colors->ColorTable16Bit[(index & 32) >> 4 | (index & 4) >> 2];
+      g = colors->ColorTable16Bit[(index & 16) >> 3 | (index & 2) >> 1];
+      b = colors->ColorTable16Bit[(index & 8) >> 2 | (index & 1)];
+      colors->PaletteLookup16[1][index] = (r << 11) | (g << 6) | b;
 
       //32BIT
-      r = instance->ColorTable32Bit[(index & 32) >> 4 | (index & 4) >> 2];
-      g = instance->ColorTable32Bit[(index & 16) >> 3 | (index & 2) >> 1];
-      b = instance->ColorTable32Bit[(index & 8) >> 2 | (index & 1)];
-      instance->PaletteLookup32[1][index] = (r * 65536) + (g * 256) + b;
+      r = colors->ColorTable32Bit[(index & 32) >> 4 | (index & 4) >> 2];
+      g = colors->ColorTable32Bit[(index & 16) >> 3 | (index & 2) >> 1];
+      b = colors->ColorTable32Bit[(index & 8) >> 2 | (index & 1)];
+      colors->PaletteLookup32[1][index] = (r * 65536) + (g * 256) + b;
     }
   }
 }
@@ -299,17 +311,17 @@ extern "C" {
       rr = (unsigned char)r;
       gg = (unsigned char)g;
       bb = (unsigned char)b;
-      instance->PaletteLookup32[0][index] = (rr << 16) | (gg << 8) | bb;
+      colors->PaletteLookup32[0][index] = (rr << 16) | (gg << 8) | bb;
 
       rr = rr >> 3;
       gg = gg >> 3;
       bb = bb >> 3;
-      instance->PaletteLookup16[0][index] = (rr << 11) | (gg << 6) | bb;
+      colors->PaletteLookup16[0][index] = (rr << 11) | (gg << 6) | bb;
 
       rr = rr >> 3;
       gg = gg >> 3;
       bb = bb >> 3;
-      instance->PaletteLookup8[0][index] = 0x80 | ((rr & 2) << 4) | ((gg & 2) << 3) | ((bb & 2) << 2) | ((rr & 1) << 2) | ((gg & 1) << 1) | (bb & 1);
+      colors->PaletteLookup8[0][index] = 0x80 | ((rr & 2) << 4) | ((gg & 2) << 3) | ((bb & 2) << 2) | ((rr & 1) << 2) | ((gg & 1) << 1) | (bb & 1);
     }
   }
 }
@@ -319,10 +331,10 @@ extern "C" {
   {
     // Convert the 6bit rgbrgb value to rrrrrggggggbbbbb for the Real video hardware.
     //	unsigned char r,g,b;
-    instance->Palette[pallete] = ((color & 63));
-    instance->Palette8Bit[pallete] = instance->PaletteLookup8[instance->MonType][color & 63];
-    instance->Palette16Bit[pallete] = instance->PaletteLookup16[instance->MonType][color & 63];
-    instance->Palette32Bit[pallete] = instance->PaletteLookup32[instance->MonType][color & 63];
+    colors->Palette[pallete] = ((color & 63));
+    colors->Palette8Bit[pallete] = colors->PaletteLookup8[instance->MonType][color & 63];
+    colors->Palette16Bit[pallete] = colors->PaletteLookup16[instance->MonType][color & 63];
+    colors->Palette32Bit[pallete] = colors->PaletteLookup32[instance->MonType][color & 63];
   }
 }
 
@@ -468,8 +480,9 @@ extern "C" {
     }
 
     instance->BorderColor8 = ((instance->CC3BorderColor & 63) | 128);
-    instance->BorderColor16 = instance->PaletteLookup16[instance->MonType][instance->CC3BorderColor & 63];
-    instance->BorderColor32 = instance->PaletteLookup32[instance->MonType][instance->CC3BorderColor & 63];
+    instance->BorderColor16 = colors->PaletteLookup16[instance->MonType][instance->CC3BorderColor & 63];
+    instance->BorderColor32 = colors->PaletteLookup32[instance->MonType][instance->CC3BorderColor & 63];
+
     instance->NewStartofVidram = (instance->NewStartofVidram & instance->VidMask) + instance->DistoOffset; //DistoOffset for 2M configuration
     instance->MasterMode = (instance->GraphicsMode << 7) | (instance->CompatMode << 6) | ((instance->Bpp & 3) << 4) | (instance->Stretch & 15);
   }
@@ -606,9 +619,9 @@ extern "C" {
 
       for (unsigned char palIndex = 0; palIndex < 16; palIndex++)
       {
-        instance->Palette16Bit[palIndex] = instance->PaletteLookup16[instance->MonType][instance->Palette[palIndex]];
-        instance->Palette32Bit[palIndex] = instance->PaletteLookup32[instance->MonType][instance->Palette[palIndex]];
-        instance->Palette8Bit[palIndex] = instance->PaletteLookup8[instance->MonType][instance->Palette[palIndex]];
+        colors->Palette16Bit[palIndex] = colors->PaletteLookup16[instance->MonType][colors->Palette[palIndex]];
+        colors->Palette32Bit[palIndex] = colors->PaletteLookup32[instance->MonType][colors->Palette[palIndex]];
+        colors->Palette8Bit[palIndex] = colors->PaletteLookup8[instance->MonType][colors->Palette[palIndex]];
       }
     }
 

@@ -48,6 +48,12 @@ typedef struct
   unsigned short BorderColor16;
   unsigned int   BorderColor32;
 
+  unsigned char  Lpf[4];
+  unsigned char  VcenterTable[4];
+
+} GraphicsState;
+
+typedef struct {
   unsigned char  Afacts8[2][4];
   unsigned short Afacts16[2][4];
   unsigned int   Afacts32[2][4];
@@ -63,8 +69,4 @@ typedef struct
   unsigned char  PaletteLookup8[2][64];	  //0 = RGB 1=comp 8BIT
   unsigned short PaletteLookup16[2][64];	//0 = RGB 1=comp 16BIT
   unsigned int   PaletteLookup32[2][64];	//0 = RGB 1=comp 32BIT
-
-  unsigned char  Lpf[4];
-  unsigned char  VcenterTable[4];
-
-} GraphicsState;
+} GraphicsColors;
