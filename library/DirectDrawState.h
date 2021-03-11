@@ -5,17 +5,16 @@
 #include "defines.h"
 
 typedef struct {
-  HWND hWndStatusBar;
-  TCHAR TitleBarText[MAX_LOADSTRING];	// The title bar text
-  TCHAR AppNameText[MAX_LOADSTRING];	// The title bar text
-
-  HINSTANCE hInstance;
-
-  unsigned int StatusBarHeight;
   unsigned char InfoBand;
   unsigned char ForceAspect;
+
+  unsigned int StatusBarHeight;
   unsigned int Color;
 
+  char TitleBarText[MAX_LOADSTRING];	// The title bar text
+  char AppNameText[MAX_LOADSTRING];	// The title bar text
   char StatusText[255];
-} DirectDrawState;
 
+  HWND hWndStatusBar;
+  HINSTANCE hInstance;
+} DirectDrawState;

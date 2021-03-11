@@ -170,6 +170,9 @@ namespace VCCSharp.Libraries
         public static class DirectDraw
         {
             [DllImport(LIBRARY)]
+            public static extern unsafe DirectDrawState* GetDirectDrawState();
+
+            [DllImport(LIBRARY)]
             public static extern bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources);
 
             [DllImport(LIBRARY)]
@@ -229,9 +232,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void ToggleMonitorType();
-
-            [DllImport(LIBRARY)]
-            public static extern void ToggleInfoBand();
         }
 
         public static class Graphics

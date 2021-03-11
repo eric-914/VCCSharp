@@ -1,5 +1,4 @@
-﻿using System;
-using VCCSharp.IoC;
+﻿using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using HWND = System.IntPtr;

@@ -74,7 +74,7 @@ namespace VCCSharp.Modules
             Library.Events.ShowConfiguration();
         }
 
-        public void ToggleOnOff()
+        public void ToggleOnOff() //F9
         {
             unsafe
             {
@@ -94,7 +94,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void SlowDown()
+        public void SlowDown() //F3
         {
             unsafe
             {
@@ -102,7 +102,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void SpeedUp()
+        public void SpeedUp() //F4
         {
             unsafe
             {
@@ -110,12 +110,12 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void ToggleMonitorType()
+        public void ToggleMonitorType() //F6
         {
             Library.Events.ToggleMonitorType();
         }
 
-        public void ToggleThrottle()
+        public void ToggleThrottle() //F8
         {
             unsafe
             {
@@ -125,7 +125,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void ToggleFullScreen()
+        public void ToggleFullScreen() //F11
         {
             unsafe
             {
@@ -140,9 +140,14 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void ToggleInfoBand()
+        public void ToggleInfoBand() //F10
         {
-            Library.Events.ToggleInfoBand();
+            unsafe
+            {
+                DirectDrawState* directDrawState = _modules.DirectDraw.GetDirectDrawState();
+
+                directDrawState->InfoBand = directDrawState->InfoBand == Define.TRUE ? Define.FALSE : Define.TRUE;
+            }
 
             _modules.Graphics.InvalidateBorder();
         }

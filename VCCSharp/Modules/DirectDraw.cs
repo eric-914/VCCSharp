@@ -6,6 +6,7 @@ namespace VCCSharp.Modules
 {
     public interface IDirectDraw
     {
+        unsafe DirectDrawState* GetDirectDrawState();
         bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources);
         void ClearScreen();
         void FullScreenToggle();
@@ -20,6 +21,11 @@ namespace VCCSharp.Modules
 
     public class DirectDraw : IDirectDraw
     {
+        public unsafe DirectDrawState* GetDirectDrawState()
+        {
+            return Library.DirectDraw.GetDirectDrawState();
+        }
+
         public bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources)
         {
             return Library.DirectDraw.InitDirectDraw(hInstance, resources);

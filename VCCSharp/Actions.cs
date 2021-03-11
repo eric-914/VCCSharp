@@ -34,13 +34,13 @@ namespace VCCSharp
             _modules.Events.LoadIniFile();
         }
 
-        public void HardReset()
+        public void HardReset() //F9
         {
             //_modules.Events.EmuReset(ResetPendingStates.Hard);
             _modules.Events.ToggleOnOff();
         }
 
-        public void SoftReset()
+        public void SoftReset() //F5
         {
             _modules.Events.EmuReset(ResetPendingStates.Soft);
         }
@@ -65,7 +65,7 @@ namespace VCCSharp
             _modules.Clipboard.PasteBASICWithNew();
         }
 
-        public void FlipArtifactColors()
+        public void FlipArtifactColors() //F7
         {
             _modules.Graphics.FlipArtifacts();
         }
@@ -90,32 +90,32 @@ namespace VCCSharp
             _modules.Events.EmuRun();
         }
 
-        public void SlowDown()
+        public void SlowDown() //F3
         {
             _modules.Events.SlowDown();
         }
 
-        public void SpeedUp()
+        public void SpeedUp() //F4
         {
             _modules.Events.SpeedUp();
         }
 
-        public void ToggleMonitorType()
+        public void ToggleMonitorType() //F6
         {
             _modules.Events.ToggleMonitorType();
         }
 
-        public void ToggleThrottle()
+        public void ToggleThrottle() //F8
         {
             _modules.Events.ToggleThrottle();
         }
 
-        public void ToggleInfoBand()
+        public void ToggleInfoBand() //F10
         {
             _modules.Events.ToggleInfoBand();
         }
 
-        public void ToggleFullScreen()
+        public void ToggleFullScreen() //F11
         {
             _modules.Events.ToggleFullScreen();
         }

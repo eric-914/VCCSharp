@@ -97,11 +97,3 @@ extern "C" {
     SetMonitorType(!SetMonitorType(QUERY));
   }
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl ToggleInfoBand() {
-    DirectDrawState* directDrawState = GetDirectDrawState();
-
-    directDrawState->InfoBand = !directDrawState->InfoBand;
-  }
-}

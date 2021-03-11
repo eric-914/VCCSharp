@@ -9,4 +9,3 @@ extern "C" __declspec(dllexport) void __cdecl MouseMove(LPARAM);
 extern "C" __declspec(dllexport) void __cdecl ShowConfiguration();
 
 extern "C" __declspec(dllexport) void __cdecl ToggleMonitorType();
-extern "C" __declspec(dllexport) void __cdecl ToggleInfoBand();
