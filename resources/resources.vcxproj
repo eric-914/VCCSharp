@@ -161,7 +161,6 @@
     <ResourceCompile Include="resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resources\3guys.bmp" />
     <Image Include="resources\binfile.ico" />
     <Image Include="resources\coco.ico" />
     <Image Include="resources\composite.ico" />
@@ -176,7 +175,6 @@
     <Image Include="resources\rgb.ico" />
     <Image Include="resources\speaker1.bmp" />
     <Image Include="resources\speaker2.bmp" />
-    <Image Include="resources\vcc.bmp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\cursor1.cur" />

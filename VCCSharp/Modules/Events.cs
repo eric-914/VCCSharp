@@ -1,5 +1,7 @@
 ﻿using VCCSharp.Enums;
+using VCCSharp.IoC;
 using VCCSharp.Libraries;
+using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
@@ -15,19 +17,47 @@ namespace VCCSharp.Modules
 
     public class Events : IEvents
     {
+        private readonly IModules _modules;
+
+        public Events(IModules modules)
+        {
+            _modules = modules;
+        }
+
         public void EmuRun()
         {
-            Library.Events.EmuRun();
+            unsafe
+            {
+                _modules.Emu.SetEmuRunning(true);
+
+                _modules.Graphics.InvalidateBorder();
+            }
         }
 
         public void EmuReset(ResetPendingStates state)
         {
-            Library.Events.EmuReset((byte)state);
+            unsafe
+            {
+                EmuState* emuState = _modules.Emu.GetEmuState();
+
+                if (emuState->EmulationRunning == Define.TRUE)
+                {
+                    emuState->ResetPending = (byte)state;
+                }
+
+                if (state == ResetPendingStates.Hard)
+                {
+                    _modules.Emu.SetEmuRunning(emuState->EmulationRunning != Define.TRUE);
+                }
+            }
         }
 
         public void EmuExit()
         {
-            Library.Events.EmuExit();
+            unsafe
+            {
+                _modules.Vcc.GetVccState()->BinaryRunning = Define.FALSE;
+            }
         }
 
         public void LoadIniFile()

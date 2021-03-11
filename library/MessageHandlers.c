@@ -56,20 +56,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl EmuRun() {
-    GetEmuState()->EmulationRunning = true;
-
-    InvalidateBorder();
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl EmuExit() {
-    GetVccState()->BinaryRunning = false;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl KeyUp(WPARAM wParam, LPARAM lParam) {
     // send emulator key up event to the emulator
     // TODO: Key up checks whether the emulation is running, this does not

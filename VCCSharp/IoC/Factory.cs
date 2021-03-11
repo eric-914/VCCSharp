@@ -10,7 +10,7 @@ namespace VCCSharp.IoC
 
         TInterface Get<TInterface>();
 
-        MainMenu MenuItems { get; }
+        MainWindowCommands MainWindowCommands { get; }
     }
 
     public class Factory : IFactory
@@ -45,6 +45,6 @@ namespace VCCSharp.IoC
             return _kernel.Get<TInterface>();
         }
 
-        public MainMenu MenuItems => _kernel.Get<MainMenu>();
+        public MainWindowCommands MainWindowCommands => _kernel.Get<MainWindowCommands>();
     }
 }

@@ -15,6 +15,7 @@ namespace VCCSharp.Modules
         unsafe byte SetScanLines(EmuState* emuState, byte lines);
         byte SetMonitorType(byte type);
         void FlipArtifacts();
+        void InvalidateBorder();
     }
 
     public class Graphics : IGraphics
@@ -67,6 +68,11 @@ namespace VCCSharp.Modules
         public void FlipArtifacts()
         {
             Library.Graphics.FlipArtifacts();
+        }
+
+        public void InvalidateBorder()
+        {
+            Library.Graphics.InvalidateBorder();
         }
     }
 }

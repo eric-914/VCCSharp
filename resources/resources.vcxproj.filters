@@ -64,12 +64,6 @@
     <Image Include="resources\speaker2.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="resources\vcc.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\3guys.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="resources\coco.ico">
       <Filter>Resource Files</Filter>
     </Image>

@@ -327,7 +327,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl InvalidateBorder(void)
+  __declspec(dllexport) void __cdecl InvalidateBorder()
   {
     instance->BorderChange = 5;
   }

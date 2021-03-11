@@ -213,15 +213,6 @@ namespace VCCSharp.Libraries
         public static class Events
         {
             [DllImport(LIBRARY)]
-            public static extern void EmuRun();
-
-            [DllImport(LIBRARY)]
-            public static extern void EmuReset(byte state);
-
-            [DllImport(LIBRARY)]
-            public static extern void EmuExit();
-
-            [DllImport(LIBRARY)]
             public static extern void LoadIniFile();
 
             [DllImport(LIBRARY)]
@@ -262,6 +253,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void FlipArtifacts();
+
+            [DllImport(LIBRARY)]
+            public static extern void InvalidateBorder();
         }
 
         public static class Joystick

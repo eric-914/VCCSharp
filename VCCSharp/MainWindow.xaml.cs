@@ -6,7 +6,7 @@ namespace VCCSharp
 {
     public partial class MainWindow
     {
-        public MainMenu MenuItems { get; }
+        public MenuItems MenuItems { get; }
 
         private readonly IFactory _factory = Factory.Instance;
 
@@ -14,7 +14,11 @@ namespace VCCSharp
         {
             InitializeComponent();
 
-            MenuItems = _factory.MenuItems;
+            var bindings = _factory.MainWindowCommands;
+
+            MenuItems = bindings.MenuItems;
+            CommandBindings.AddRange(bindings.CommandBindings);
+            InputBindings.AddRange(bindings.InputBindings);
 
             DataContext = this;
 

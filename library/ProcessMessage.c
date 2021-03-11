@@ -1,5 +1,6 @@
 #include <windows.h>
 
+#include "VccState.h"
 #include "Joystick.h"
 #include "MessageHandlers.h"
 
@@ -29,7 +30,7 @@ extern "C" {
   __declspec(dllexport) void __cdecl ProcessMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message)
     {
-    case WM_CLOSE:        EmuExit();                                break;
+    case WM_CLOSE:        GetVccState()->BinaryRunning = false;     break;  //TODO: This is Events.EmuExit()
     case WM_COMMAND:      ProcessCommandMessage(hWnd, wParam);      break;
     case WM_CREATE:       CreateMainMenu(hWnd);                     break;
     case WM_KEYDOWN:      ProcessKeyDownMessage(wParam, lParam);    break;
