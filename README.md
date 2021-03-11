@@ -14,6 +14,14 @@ Eventually I'll try converting the other VCC modules as well.  If you build my [
 
 _coco3.rom_ can be found in [Resources](https://github.com/eric-914/VCCSharp/tree/main/resources/resources).  For now, copy it to the executable folder to run the emulator.
 
+Adding original copyright and development history as defined in the About box:
+* Copyright 2015 By Joseph Forgione
+* VCC Repository and Release Packages maintained by Bill Pierce
+* Rebased to more "modern" compilers by Gary Coulbourne
+* Adapted to VS2015 and Minor Bug Fixes by Wes Gale
+* Bug fixes and Enhancements by Bill Pierce, James Ross, Peter Westberg, James Rye, EJ Jaquay, & Trey Tomes
+* Some code from OVCC by Walter Zambotti
+		  
 Markdown files (.md): 
 https://www.markdownguide.org/getting-started
 https://stackabuse.com/markdown-by-example
