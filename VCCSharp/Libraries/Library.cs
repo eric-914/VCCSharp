@@ -255,13 +255,10 @@ namespace VCCSharp.Libraries
             public static extern void MakeCMPPalette(int paletteType);
 
             [DllImport(LIBRARY)]
-            public static extern void SetBlinkState(byte state);
-
-            [DllImport(LIBRARY)]
             public static extern void SetPaletteType();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe byte SetScanLines(EmuState* emuState, byte lines);
+            public static extern unsafe void SetScanLines(EmuState* emuState, byte lines);
 
             [DllImport(LIBRARY)]
             public static extern byte SetMonitorType(byte type);

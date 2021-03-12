@@ -13,7 +13,7 @@ namespace VCCSharp.Modules
         void SetBorderChange();
         void SetVidMask(uint mask);
         void SetPaletteType();
-        unsafe byte SetScanLines(EmuState* emuState, byte lines);
+        unsafe void SetScanLines(EmuState* emuState, byte lines);
         byte SetMonitorType(byte type);
         void FlipArtifacts();
         void InvalidateBorder();
@@ -43,7 +43,12 @@ namespace VCCSharp.Modules
 
         public void SetBlinkState(byte state)
         {
-            Library.Graphics.SetBlinkState(state);
+            unsafe
+            {
+                GraphicsState* graphicsState = GetGraphicsState();
+
+                graphicsState->BlinkState = state;
+            }
         }
 
         public void SetBorderChange()
@@ -75,9 +80,9 @@ namespace VCCSharp.Modules
             Library.Graphics.SetPaletteType();
         }
 
-        public unsafe byte SetScanLines(EmuState* emuState, byte lines)
+        public unsafe void SetScanLines(EmuState* emuState, byte lines)
         {
-            return Library.Graphics.SetScanLines(emuState, lines);
+            Library.Graphics.SetScanLines(emuState, lines);
         }
 
         public byte SetMonitorType(byte type)

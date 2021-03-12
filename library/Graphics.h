@@ -12,7 +12,7 @@ extern "C" __declspec(dllexport) GraphicsColors* __cdecl GetGraphicsColors();
 
 extern "C" __declspec(dllexport) unsigned char __cdecl CheckState(unsigned char);
 extern "C" __declspec(dllexport) unsigned char __cdecl SetMonitorType(unsigned char);
-extern "C" __declspec(dllexport) unsigned char __cdecl SetScanLines(EmuState*, unsigned char);
+extern "C" __declspec(dllexport) void __cdecl SetScanLines(EmuState*, unsigned char);
 
 extern "C" __declspec(dllexport) void MakeRGBPalette(void);
 
@@ -33,5 +33,3 @@ extern "C" __declspec(dllexport) void __cdecl SetPaletteType();
 extern "C" __declspec(dllexport) void __cdecl SetVerticalOffsetRegister(unsigned short);
 extern "C" __declspec(dllexport) void __cdecl SetVideoBank(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetupDisplay(void);
-
-extern "C" __declspec(dllexport) void __cdecl SetBlinkState(unsigned char state);

@@ -629,24 +629,13 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl SetScanLines(EmuState* emuState, unsigned char lines)
+  __declspec(dllexport) void __cdecl SetScanLines(EmuState* emuState, unsigned char lines)
   {
-    if (lines != QUERY)
-    {
-      emuState->ScanLines = lines;
-      emuState->ResetPending = RESET_CLS;
+    emuState->ScanLines = lines;
+    emuState->ResetPending = RESET_CLS;
 
-      ClearScreen();
+    ClearScreen();
 
-      instance->BorderChange = 3;
-    }
-
-    return(0);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetBlinkState(unsigned char state) {
-    instance->BlinkState = state;
+    instance->BorderChange = 3;
   }
 }
