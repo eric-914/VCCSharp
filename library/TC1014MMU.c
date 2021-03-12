@@ -16,7 +16,7 @@ const unsigned short RamMask[4] = { 15, 63, 255, 1023 };
 const unsigned char StateSwitch[4] = { 8, 56, 56, 56 };
 const unsigned char VectorMask[4] = { 15, 63, 63, 63 };
 const unsigned char VectorMaska[4] = { 12, 60, 60, 60 };
-const unsigned int VidMask[4] = { 0x1FFFF, 0x7FFFF, 0x1FFFFF, 0x7FFFFF };
+const unsigned long VidMask[4] = { 0x1FFFF, 0x7FFFF, 0x1FFFFF, 0x7FFFFF };
 
 TC1014MmuState* InitializeInstance(TC1014MmuState*);
 

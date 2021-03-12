@@ -21,7 +21,7 @@ typedef struct {
   unsigned char StateSwitch[4];
   unsigned char VectorMask[4];
   unsigned char VectorMaska[4];
-  unsigned int VidMask[4];
+  unsigned long VidMask[4];
 
   unsigned char* MemPages[1024];
   unsigned short MmuRegisters[4][8];	// $FFA0 - FFAF
