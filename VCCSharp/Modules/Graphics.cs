@@ -10,7 +10,7 @@ namespace VCCSharp.Modules
         void MakeRGBPalette();
         void MakeCMPPalette(int paletteType);
         void SetBlinkState(byte state);
-        void SetBorderChange(byte data);
+        void SetBorderChange();
         void SetVidMask(uint mask);
         void SetPaletteType();
         unsafe byte SetScanLines(EmuState* emuState, byte lines);
@@ -46,9 +46,18 @@ namespace VCCSharp.Modules
             Library.Graphics.SetBlinkState(state);
         }
 
-        public void SetBorderChange(byte data)
+        public void SetBorderChange()
         {
-            Library.Graphics.SetBorderChange(data);
+            unsafe
+            {
+                GraphicsState* graphicsState = GetGraphicsState();
+
+                if (graphicsState->BorderChange > 0)
+                {
+                    graphicsState->BorderChange--;
+                }
+
+            }
         }
 
         public void SetVidMask(uint mask)

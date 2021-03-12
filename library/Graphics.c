@@ -342,15 +342,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetBorderChange(unsigned char data)
-  {
-    if (instance->BorderChange > 0) {
-      instance->BorderChange--;
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl SetupDisplay(void)
   {
     static unsigned char CC2Bpp[8] = { 1,0,1,0,1,0,1,0 };

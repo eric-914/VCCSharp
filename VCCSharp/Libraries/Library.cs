@@ -258,9 +258,6 @@ namespace VCCSharp.Libraries
             public static extern void SetBlinkState(byte state);
 
             [DllImport(LIBRARY)]
-            public static extern void SetBorderChange(byte data);
-
-            [DllImport(LIBRARY)]
             public static extern void SetPaletteType();
 
             [DllImport(LIBRARY)]

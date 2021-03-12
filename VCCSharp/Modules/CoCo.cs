@@ -159,7 +159,7 @@ namespace VCCSharp.Modules
             if (emuState->FrameCounter % emuState->FrameSkip == Define.FALSE)
             {
                 _modules.DirectDraw.UnlockScreen(emuState);
-                _modules.Graphics.SetBorderChange(0);
+                _modules.Graphics.SetBorderChange();
             }
 
             //for (emuState->LineCounter = 0; emuState->LineCounter < 6; emuState->LineCounter++)
