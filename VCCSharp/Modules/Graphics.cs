@@ -5,6 +5,7 @@ namespace VCCSharp.Modules
 {
     public interface IGraphics
     {
+        unsafe GraphicsState* GetGraphicsState();
         void ResetGraphicsState();
         void MakeRGBPalette();
         void MakeCMPPalette(int paletteType);
@@ -20,6 +21,11 @@ namespace VCCSharp.Modules
 
     public class Graphics : IGraphics
     {
+        public unsafe GraphicsState* GetGraphicsState()
+        {
+            return Library.Graphics.GetGraphicsState();
+        }
+
         public void ResetGraphicsState()
         {
             Library.Graphics.ResetGraphicsState();
