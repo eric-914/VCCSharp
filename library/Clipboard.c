@@ -133,7 +133,7 @@ extern "C" {
     //but we need to read it first so we can set it back
     instance->CurrentKeyMap = GetCurrentKeyboardLayout();
 
-    vccKeyboardBuildRuntimeTable((keyboardlayout_e)1);
+    vccKeyboardBuildRuntimeTable(1);
 
     cliptxt = GetClipboardText().c_str();
 

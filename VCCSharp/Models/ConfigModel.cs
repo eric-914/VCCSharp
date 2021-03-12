@@ -26,8 +26,9 @@ namespace VCCSharp.Models
         public byte ScanLines;
         public byte ForceAspect;
         public ushort RememberSize;
-        public ushort WindowSizeX;
-        public ushort WindowSizeY;
+
+        public short WindowSizeX;
+        public short WindowSizeY;
 
         //[Memory]
         public byte RamSize;

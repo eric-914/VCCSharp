@@ -272,6 +272,64 @@ namespace VCCSharp.Modules
             return Path.Combine(appDataPath, iniFileName);
         }
 
+        public void SetCpuType(byte cpuType)
+        {
+            unsafe
+            {
+                VccState* vccState = _modules.Vcc.GetVccState();
+                EmuState* emuState = _modules.Emu.GetEmuState();
+
+                var cpu = new Dictionary<CPUTypes, string>
+                {
+                    {CPUTypes.MC6809, "MC6809"},
+                    {CPUTypes.HD6309, "HD6309"}
+                };
+
+                emuState->CpuType = cpuType;
+                Converter.ToByteArray(cpu[(CPUTypes)cpuType], vccState->CpuName);
+            }
+        }
+
+        public unsafe void ReadIniFile(EmuState* emuState)
+        {
+            ConfigState* configState = GetConfigState();
+
+            string iniFilePath = Converter.ToString(configState->IniFilePath);
+            string modulePath = Converter.ToString(configState->Model->ModulePath);
+
+            LoadConfiguration(configState->Model, iniFilePath);
+
+            ValidateModel(configState->Model);
+
+            _modules.Keyboard.vccKeyboardBuildRuntimeTable(configState->Model->KeyMapIndex);
+
+            _modules.PAKInterface.InsertModule(emuState, modulePath);   // Should this be here?
+
+            if (configState->Model->RememberSize == Define.TRUE)
+            {
+                SetWindowSize(configState->Model->WindowSizeX, configState->Model->WindowSizeY);
+            }
+            else
+            {
+                SetWindowSize(640, 480);
+            }
+        }
+
+        public void SetWindowSize(short width, short height)
+        {
+            Library.Config.SetWindowSize(width, height);
+        }
+
+        public unsafe void LoadConfiguration(ConfigModel* model, string iniFilePath)
+        {
+            Library.Config.LoadConfiguration(model, iniFilePath);
+        }
+
+        public unsafe void ValidateModel(ConfigModel* model)
+        {
+            Library.Config.ValidateModel(model);
+        }
+
         public int GetPaletteType()
         {
             return Library.Config.GetPaletteType();
@@ -295,31 +353,6 @@ namespace VCCSharp.Modules
         public unsafe void WriteIniFile(EmuState* emuState)
         {
             Library.Config.WriteIniFile(emuState);
-        }
-
-        public unsafe void ReadIniFile(EmuState* emuState)
-        {
-            Library.Config.ReadIniFile(emuState);
-        }
-
-        public void SetCpuType(byte cpuType)
-        {
-            unsafe
-            {
-                VccState* vccState = _modules.Vcc.GetVccState();
-                EmuState* emuState = _modules.Emu.GetEmuState();
-
-                var cpu = new Dictionary<CPUTypes, string>
-                {
-                    {CPUTypes.MC6809, "MC6809"},
-                    {CPUTypes.HD6309, "HD6309"}
-                };
-
-                emuState->CpuType = cpuType;
-                Converter.ToByteArray(cpu[(CPUTypes)cpuType], vccState->CpuName);
-            }
-
-            //Library.Config.SetCpuType(cpuType);
         }
     }
 }

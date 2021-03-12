@@ -139,12 +139,13 @@ extern "C" {
   The entries are sorted.  Any SHIFT + [char] entries need to be placed first
 */
 extern "C" {
-  __declspec(dllexport) void __cdecl vccKeyboardBuildRuntimeTable(keyboardlayout_e keyBoardLayout)
+  __declspec(dllexport) void __cdecl vccKeyboardBuildRuntimeTable(unsigned char	keyMapIndex)
   {
     int index1 = 0;
     int index2 = 0;
     keytranslationentry_t* keyLayoutTable = NULL;
     keytranslationentry_t	keyTransEntry;
+    keyboardlayout_e keyBoardLayout = (keyboardlayout_e)keyMapIndex;
 
     assert(keyBoardLayout >= 0 && keyBoardLayout < kKBLayoutCount);
 

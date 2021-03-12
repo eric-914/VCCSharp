@@ -875,7 +875,7 @@ extern "C" {
 
         configState->Model = configModel;
 
-        vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->Model->KeyMapIndex));
+        vccKeyboardBuildRuntimeTable(configState->Model->KeyMapIndex);
 
         SetStickNumbers(left->DiDevice, right->DiDevice);
 
@@ -903,7 +903,7 @@ extern "C" {
 
         configState->Model = configModel;
 
-        vccKeyboardBuildRuntimeTable((keyboardlayout_e)(configState->Model->KeyMapIndex));
+        vccKeyboardBuildRuntimeTable(configState->Model->KeyMapIndex);
 
         SetStickNumbers(left->DiDevice, right->DiDevice);
 

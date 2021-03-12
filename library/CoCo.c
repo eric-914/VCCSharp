@@ -102,7 +102,7 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl ResetKeyMap() {
-    vccKeyboardBuildRuntimeTable((keyboardlayout_e)GetCurrentKeyMap());
+    vccKeyboardBuildRuntimeTable(GetCurrentKeyMap());
   }
 }
 

@@ -27,8 +27,9 @@ typedef struct {
   unsigned char	ScanLines;
   unsigned char	ForceAspect;
   unsigned short RememberSize;
-  unsigned short WindowSizeX;
-  unsigned short WindowSizeY;
+
+  short WindowSizeX;
+  short WindowSizeY;
 
   //[Memory]
   unsigned char	RamSize;

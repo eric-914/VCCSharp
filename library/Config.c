@@ -107,7 +107,7 @@ ConfigState* InitializeInstance(ConfigState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetWindowSize(int width, int height) {
+  __declspec(dllexport) void __cdecl SetWindowSize(short width, short height) {
     HWND handle = GetActiveWindow();
 
     SetWindowPos(handle, 0, 0, 0, width + 16, height + 81, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
@@ -300,26 +300,6 @@ extern "C" {
     strcpy(filename, tempFileName);
 
     return(1);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl ReadIniFile(EmuState* emuState)
-  {
-    LoadConfiguration(instance->Model, instance->IniFilePath);
-
-    ValidateModel(instance->Model);
-
-    vccKeyboardBuildRuntimeTable((keyboardlayout_e)(instance->Model->KeyMapIndex));
-
-    InsertModule(emuState, instance->Model->ModulePath);	// Should this be here?
-
-    if (instance->Model->RememberSize) {
-      SetWindowSize(instance->Model->WindowSizeX, instance->Model->WindowSizeY);
-    }
-    else {
-      SetWindowSize(640, 480);
-    }
   }
 }
 

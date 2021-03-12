@@ -20,7 +20,6 @@ extern "C" __declspec(dllexport) int __cdecl SelectSerialCaptureFile(EmuState*, 
 
 extern "C" __declspec(dllexport) unsigned char __cdecl TranslateDisplay2Scan(LRESULT);
 extern "C" __declspec(dllexport) unsigned char __cdecl TranslateScan2Display(int);
-extern "C" __declspec(dllexport) void __cdecl ReadIniFile(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl WriteIniFile(EmuState*);
 
 extern "C" __declspec(dllexport) void __cdecl DecreaseOverclockSpeed(EmuState*);
@@ -34,4 +33,4 @@ extern "C" __declspec(dllexport) void __cdecl SaveConfig();
 
 extern "C" __declspec(dllexport) void __cdecl ValidateModel(ConfigModel* model);
 extern "C" __declspec(dllexport) void __cdecl AdjustOverclockSpeed(EmuState* emuState, unsigned char change);
-extern "C" __declspec(dllexport) void __cdecl SetWindowSize(int width, int height);
+extern "C" __declspec(dllexport) void __cdecl SetWindowSize(short width, short height);

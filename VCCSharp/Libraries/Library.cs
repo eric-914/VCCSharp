@@ -134,9 +134,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe byte* ExternalBasicImage();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void ReadIniFile(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
             public static extern byte GetSoundCardIndex(string soundCardName);
 
             [DllImport(LIBRARY)]
@@ -144,6 +141,15 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void IncreaseOverclockSpeed(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetWindowSize(short width, short height);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void LoadConfiguration(ConfigModel* model, string iniFilePath);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void ValidateModel(ConfigModel* model);
         }
 
         public static class CPU
@@ -274,6 +280,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void vccKeyboardHandleKeyUp(char key, char scanCode);
+
+            [DllImport(LIBRARY)]
+            public static extern void vccKeyboardBuildRuntimeTable(byte keyMapIndex);
 
             [DllImport(LIBRARY)]
             public static extern void SetPaste(int flag);
