@@ -137,9 +137,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe void ReadIniFile(EmuState* emuState);
 
             [DllImport(LIBRARY)]
-            public static extern void SetCpuType(byte cpuType);
-
-            [DllImport(LIBRARY)]
             public static extern byte GetSoundCardIndex(string soundCardName);
 
             [DllImport(LIBRARY)]
@@ -147,9 +144,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void IncreaseOverclockSpeed(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
-            public static extern void LoadIniFile();
         }
 
         public static class CPU

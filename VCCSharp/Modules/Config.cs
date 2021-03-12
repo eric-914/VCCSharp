@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -157,12 +158,12 @@ namespace VCCSharp.Modules
                 if (openFileDlg.ShowDialog() == true)
                 {
                     // Flush current profile
-                    WriteIniFile(emuState);     
+                    WriteIniFile(emuState);
 
                     Converter.ToByteArray(openFileDlg.FileName, configState->IniFilePath);
 
                     // Load it
-                    ReadIniFile(emuState);      
+                    ReadIniFile(emuState);
 
                     SynchSystemWithConfig(emuState);
 
@@ -303,7 +304,22 @@ namespace VCCSharp.Modules
 
         public void SetCpuType(byte cpuType)
         {
-            Library.Config.SetCpuType(cpuType);
+            unsafe
+            {
+                VccState* vccState = _modules.Vcc.GetVccState();
+                EmuState* emuState = _modules.Emu.GetEmuState();
+
+                var cpu = new Dictionary<CPUTypes, string>
+                {
+                    {CPUTypes.MC6809, "MC6809"},
+                    {CPUTypes.HD6309, "HD6309"}
+                };
+
+                emuState->CpuType = cpuType;
+                Converter.ToByteArray(cpu[(CPUTypes)cpuType], vccState->CpuName);
+            }
+
+            //Library.Config.SetCpuType(cpuType);
         }
     }
 }

@@ -304,31 +304,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetCpuType(unsigned char cpuType)
-  {
-    VccState* vccState = GetVccState();
-    EmuState* emuState = GetEmuState();
-
-    switch (cpuType)
-    {
-    case 0:
-      emuState->CpuType = 0;
-
-      strcpy(vccState->CpuName, "MC6809");
-
-      break;
-
-    case 1:
-      emuState->CpuType = 1;
-
-      strcpy(vccState->CpuName, "HD6309");
-
-      break;
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl ReadIniFile(EmuState* emuState)
   {
     LoadConfiguration(instance->Model, instance->IniFilePath);

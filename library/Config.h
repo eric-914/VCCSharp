@@ -32,8 +32,6 @@ extern "C" __declspec(dllexport) unsigned char __cdecl GetSoundCardIndex(char* s
 
 extern "C" __declspec(dllexport) void __cdecl SaveConfig();
 
-extern "C" __declspec(dllexport) void __cdecl SetCpuType(unsigned char);
-
 extern "C" __declspec(dllexport) void __cdecl ValidateModel(ConfigModel* model);
 extern "C" __declspec(dllexport) void __cdecl AdjustOverclockSpeed(EmuState* emuState, unsigned char change);
 extern "C" __declspec(dllexport) void __cdecl SetWindowSize(int width, int height);
