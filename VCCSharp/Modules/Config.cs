@@ -108,7 +108,6 @@ namespace VCCSharp.Modules
             WriteIniFile(emuState);
         }
 
-        //TODO: Still being used by LoadIniFile(...)
         public unsafe void SynchSystemWithConfig(EmuState* emuState)
         {
             ConfigState* configState = GetConfigState();
@@ -131,6 +130,45 @@ namespace VCCSharp.Modules
 
             _modules.Graphics.SetMonitorType(model->MonitorType);
             _modules.MC6821.MC6821_SetCartAutoStart(model->CartAutoStart);
+        }
+
+        // LoadIniFile allows user to browse for an ini file and reloads the config from it.
+        public void LoadIniFile()
+        {
+            unsafe
+            {
+                ConfigState* configState = GetConfigState();
+                EmuState* emuState = _modules.Emu.GetEmuState();
+
+                string szFileName = Converter.ToString(configState->IniFilePath);
+                string appPath = Path.GetDirectoryName(szFileName) ?? "C:\\";
+
+                var openFileDlg = new Microsoft.Win32.OpenFileDialog
+                {
+                    FileName = szFileName,
+                    DefaultExt = ".ini",
+                    Filter = "INI files (.ini)|*.ini",
+                    InitialDirectory = appPath,
+                    CheckFileExists = true,
+                    ShowReadOnly = false,
+                    Title = "Load Vcc Config File"
+                };
+
+                if (openFileDlg.ShowDialog() == true)
+                {
+                    // Flush current profile
+                    WriteIniFile(emuState);     
+
+                    Converter.ToByteArray(openFileDlg.FileName, configState->IniFilePath);
+
+                    // Load it
+                    ReadIniFile(emuState);      
+
+                    SynchSystemWithConfig(emuState);
+
+                    emuState->ResetPending = (byte)ResetPendingStates.Hard;
+                }
+            }
         }
 
         public void UpdateSoundBar(ushort left, ushort right)
@@ -266,45 +304,6 @@ namespace VCCSharp.Modules
         public void SetCpuType(byte cpuType)
         {
             Library.Config.SetCpuType(cpuType);
-        }
-
-        // LoadIniFile allows user to browse for an ini file and reloads the config from it.
-        public void LoadIniFile()
-        {
-            unsafe
-            {
-                ConfigState* configState = GetConfigState();
-                EmuState* emuState = _modules.Emu.GetEmuState();
-
-                string szFileName = Converter.ToString(configState->IniFilePath);
-                string appPath = Path.GetDirectoryName(szFileName) ?? "C:\\";
-
-                var openFileDlg = new Microsoft.Win32.OpenFileDialog
-                {
-                    FileName = szFileName,
-                    DefaultExt = ".ini",
-                    Filter = "INI files (.ini)|*.ini",
-                    InitialDirectory = appPath,
-                    CheckFileExists = true,
-                    ShowReadOnly = false,
-                    Title = "Load Vcc Config File"
-                };
-
-                if (openFileDlg.ShowDialog() == true)
-                {
-                    // Flush current profile
-                    WriteIniFile(emuState);     
-
-                    Converter.ToByteArray(openFileDlg.FileName, configState->IniFilePath);
-
-                    // Load it
-                    ReadIniFile(emuState);      
-
-                    SynchSystemWithConfig(emuState);
-
-                    emuState->ResetPending = (byte)ResetPendingStates.Hard;
-                }
-            }
         }
     }
 }

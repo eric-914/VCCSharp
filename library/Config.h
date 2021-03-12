@@ -26,7 +26,6 @@ extern "C" __declspec(dllexport) void __cdecl WriteIniFile(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl DecreaseOverclockSpeed(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl IncreaseOverclockSpeed(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl SetIniFilePath(char*);
-extern "C" __declspec(dllexport) void __cdecl SynchSystemWithConfig(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl UpdateTapeDialog(unsigned int, unsigned char);
 
 extern "C" __declspec(dllexport) unsigned char __cdecl GetSoundCardIndex(char* soundCardName);
