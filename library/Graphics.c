@@ -144,12 +144,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl FlipArtifacts() {
-    instance->ColorInvert = instance->ColorInvert == 0 ? 1 : 0;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl ResetGraphicsState() {
     instance->CC3Vmode = 0;
     instance->CC3Vres = 0;

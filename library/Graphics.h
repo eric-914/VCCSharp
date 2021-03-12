@@ -16,7 +16,6 @@ extern "C" __declspec(dllexport) unsigned char __cdecl SetScanLines(EmuState*, u
 
 extern "C" __declspec(dllexport) void MakeRGBPalette(void);
 
-extern "C" __declspec(dllexport) void __cdecl FlipArtifacts();
 extern "C" __declspec(dllexport) void __cdecl InvalidateBorder();
 extern "C" __declspec(dllexport) void __cdecl MakeCMPPalette(int);
 extern "C" __declspec(dllexport) void __cdecl ResetGraphicsState();

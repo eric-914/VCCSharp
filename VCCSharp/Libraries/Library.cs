@@ -273,9 +273,6 @@ namespace VCCSharp.Libraries
             public static extern byte SetMonitorType(byte type);
 
             [DllImport(LIBRARY)]
-            public static extern void FlipArtifacts();
-
-            [DllImport(LIBRARY)]
             public static extern void InvalidateBorder();
         }
 

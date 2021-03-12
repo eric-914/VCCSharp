@@ -73,7 +73,12 @@ namespace VCCSharp.Modules
 
         public void FlipArtifacts()
         {
-            Library.Graphics.FlipArtifacts();
+            unsafe
+            {
+                GraphicsState* graphicsState = GetGraphicsState();
+
+                graphicsState->ColorInvert = graphicsState->ColorInvert == Define.FALSE ? Define.TRUE : Define.FALSE;
+            }
         }
 
         public void InvalidateBorder()
