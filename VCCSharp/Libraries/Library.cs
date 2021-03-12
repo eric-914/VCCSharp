@@ -140,9 +140,6 @@ namespace VCCSharp.Libraries
             public static extern byte GetSoundCardIndex(string soundCardName);
 
             [DllImport(LIBRARY)]
-            public static extern void SetWindowSize(short width, short height);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe void LoadConfiguration(ConfigModel* model, string iniFilePath);
 
             [DllImport(LIBRARY)]

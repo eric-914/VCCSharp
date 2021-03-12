@@ -1,6 +1,6 @@
 ﻿namespace VCCSharp.Enums
 {
-    public enum ResetPendingStates
+    public enum ResetPendingStates : byte
     {
         None = 0,
         Soft = 1,

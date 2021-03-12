@@ -29,10 +29,12 @@ namespace VCCSharp.Modules
     public class Config : IConfig
     {
         private readonly IModules _modules;
+        private readonly IUser32 _user32;
 
-        public Config(IModules modules)
+        public Config(IModules modules, IUser32 user32)
         {
             _modules = modules;
+            _user32 = user32;
         }
 
         public unsafe ConfigState* GetConfigState()
@@ -359,14 +361,18 @@ namespace VCCSharp.Modules
             emuState->ResetPending = (byte)ResetPendingStates.ClsSynch; // Without this, changing the config does nothing.
         }
 
+        public void SetWindowSize(short width, short height)
+        {
+            HWND handle = _user32.GetActiveWindow();
+
+            SetWindowPosFlags flags = SetWindowPosFlags.NoMove | SetWindowPosFlags.NoOwnerZOrder | SetWindowPosFlags.NoZOrder; 
+
+            _user32.SetWindowPos(handle, Zero, 0, 0, width + 16, height + 81, (ushort)flags);
+        }
+
         public unsafe void WriteIniFile(EmuState* emuState)
         {
             Library.Config.WriteIniFile(emuState);
-        }
-
-        public void SetWindowSize(short width, short height)
-        {
-            Library.Config.SetWindowSize(width, height);
         }
 
         public unsafe void LoadConfiguration(ConfigModel* model, string iniFilePath)

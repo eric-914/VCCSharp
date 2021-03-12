@@ -20,5 +20,11 @@ namespace VCCSharp.Libraries
 
         [DllImport(DLL)]
         public static extern int ShowWindow(HWND hWnd, int nCmdShow);
+
+        [DllImport(DLL)]
+        public static extern HWND GetActiveWindow();
+
+        [DllImport(DLL)]
+        public static extern int SetWindowPos(HWND hWnd, HWND hWndInsertAfter, int  X, int  Y, int  cx, int  cy, ushort uFlags);
     }
 }

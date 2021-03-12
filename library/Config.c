@@ -107,14 +107,6 @@ ConfigState* InitializeInstance(ConfigState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetWindowSize(short width, short height) {
-    HWND handle = GetActiveWindow();
-
-    SetWindowPos(handle, 0, 0, 0, width + 16, height + 81, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) unsigned char __cdecl GetSoundCardIndex(char* soundCardName) {
     for (unsigned char index = 0; index < instance->NumberOfSoundCards; index++) {
       if (!strcmp(instance->SoundCards[index].CardName, soundCardName)) {
