@@ -30,11 +30,13 @@ namespace VCCSharp.Modules
     {
         private readonly IModules _modules;
         private readonly IUser32 _user32;
+        private readonly IKernel _kernel;
 
-        public Config(IModules modules, IUser32 user32)
+        public Config(IModules modules, IUser32 user32, IKernel kernel)
         {
             _modules = modules;
             _user32 = user32;
+            _kernel = kernel;
         }
 
         public unsafe ConfigState* GetConfigState()
@@ -339,7 +341,7 @@ namespace VCCSharp.Modules
 
         public unsafe void AdjustOverclockSpeed(EmuState* emuState, byte change)
         {
-            ConfigState * configState = GetConfigState();
+            ConfigState* configState = GetConfigState();
 
             byte cpuMultiplier = (byte)(configState->Model->CPUMultiplier + change);
 
@@ -365,19 +367,76 @@ namespace VCCSharp.Modules
         {
             HWND handle = _user32.GetActiveWindow();
 
-            SetWindowPosFlags flags = SetWindowPosFlags.NoMove | SetWindowPosFlags.NoOwnerZOrder | SetWindowPosFlags.NoZOrder; 
+            SetWindowPosFlags flags = SetWindowPosFlags.NoMove | SetWindowPosFlags.NoOwnerZOrder | SetWindowPosFlags.NoZOrder;
 
             _user32.SetWindowPos(handle, Zero, 0, 0, width + 16, height + 81, (ushort)flags);
         }
 
-        public unsafe void WriteIniFile(EmuState* emuState)
-        {
-            Library.Config.WriteIniFile(emuState);
-        }
-
         public unsafe void LoadConfiguration(ConfigModel* model, string iniFilePath)
         {
-            Library.Config.LoadConfiguration(model, iniFilePath);
+            //[Version]
+            //_kernel.GetPrivateProfileStringA("Version", "Release", "", model.Release, Define.MAX_LOADSTRING, iniFilePath);  //## Write-only ##//
+
+            //[CPU]
+            model->CPUMultiplier = (byte)_kernel.GetPrivateProfileIntA("CPU", "CPUMultiplier", 2, iniFilePath);
+            model->FrameSkip = (byte)_kernel.GetPrivateProfileIntA("CPU", "FrameSkip", 1, iniFilePath);
+            model->SpeedThrottle = (byte)_kernel.GetPrivateProfileIntA("CPU", "SpeedThrottle", 1, iniFilePath);
+            model->CpuType = (byte)_kernel.GetPrivateProfileIntA("CPU", "CpuType", 0, iniFilePath);
+            model->MaxOverclock = _kernel.GetPrivateProfileIntA("CPU", "MaxOverClock", 227, iniFilePath);
+
+            //[Audio]
+            model->AudioRate = _kernel.GetPrivateProfileIntA("Audio", "AudioRate", 3, iniFilePath);
+            _kernel.GetPrivateProfileStringA("Audio", "SoundCardName", "", model->SoundCardName, Define.MAX_LOADSTRING, iniFilePath);
+
+            //[Video]
+            model->MonitorType = (byte)_kernel.GetPrivateProfileIntA("Video", "MonitorType", 1, iniFilePath);
+            model->PaletteType = (byte)_kernel.GetPrivateProfileIntA("Video", "PaletteType", 1, iniFilePath);
+            model->ScanLines = (byte)_kernel.GetPrivateProfileIntA("Video", "ScanLines", 0, iniFilePath);
+            model->ForceAspect = (byte)_kernel.GetPrivateProfileIntA("Video", "ForceAspect", 0, iniFilePath);
+            model->RememberSize = _kernel.GetPrivateProfileIntA("Video", "RememberSize", 0, iniFilePath);
+            model->WindowSizeX = (short)_kernel.GetPrivateProfileIntA("Video", "WindowSizeX", 640, iniFilePath);
+            model->WindowSizeY = (short)_kernel.GetPrivateProfileIntA("Video", "WindowSizeY", 480, iniFilePath);
+
+            //[Memory]
+            model->RamSize = (byte)_kernel.GetPrivateProfileIntA("Memory", "RamSize", 1, iniFilePath);
+            _kernel.GetPrivateProfileStringA("Memory", "ExternalBasicImage", "", model->ExternalBasicImage, Define.MAX_PATH, iniFilePath);
+
+            //[Misc]
+            model->AutoStart = (byte)_kernel.GetPrivateProfileIntA("Misc", "AutoStart", 1, iniFilePath);
+            model->CartAutoStart = (byte)_kernel.GetPrivateProfileIntA("Misc", "CartAutoStart", 1, iniFilePath);
+            model->KeyMapIndex = (byte)_kernel.GetPrivateProfileIntA("Misc", "KeyMapIndex", 0, iniFilePath);
+
+            //[Module]
+            _kernel.GetPrivateProfileStringA("Module", "ModulePath", "", model->ModulePath, Define.MAX_PATH, iniFilePath);
+
+            //[LeftJoyStick]
+            model->Left->UseMouse = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "UseMouse", 1, iniFilePath);
+            model->Left->Left = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Left", 75, iniFilePath);
+            model->Left->Right = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Right", 77, iniFilePath);
+            model->Left->Up = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Up", 72, iniFilePath);
+            model->Left->Down = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Down", 80, iniFilePath);
+            model->Left->Fire1 = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Fire1", 59, iniFilePath);
+            model->Left->Fire2 = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Fire2", 60, iniFilePath);
+            model->Left->DiDevice = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "DiDevice", 0, iniFilePath);
+            model->Left->HiRes = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "HiResDevice", 0, iniFilePath);
+
+            //[RightJoyStick]
+            model->Right->UseMouse = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "UseMouse", 1, iniFilePath);
+            model->Right->Left = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Left", 75, iniFilePath);
+            model->Right->Right = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Right", 77, iniFilePath);
+            model->Right->Up = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Up", 72, iniFilePath);
+            model->Right->Down = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Down", 80, iniFilePath);
+            model->Right->Fire1 = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Fire1", 59, iniFilePath);
+            model->Right->Fire2 = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Fire2", 60, iniFilePath);
+            model->Right->DiDevice = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "DiDevice", 0, iniFilePath);
+            model->Right->HiRes = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "HiResDevice", 0, iniFilePath);
+
+            //[DefaultPaths]
+            _kernel.GetPrivateProfileStringA("DefaultPaths", "CassPath", "", model->CassPath, Define.MAX_PATH, iniFilePath);
+            _kernel.GetPrivateProfileStringA("DefaultPaths", "FloppyPath", "", model->FloppyPath, Define.MAX_PATH, iniFilePath);
+            _kernel.GetPrivateProfileStringA("DefaultPaths", "CoCoRomPath", "", model->CoCoRomPath, Define.MAX_PATH, iniFilePath);
+            _kernel.GetPrivateProfileStringA("DefaultPaths", "SerialCaptureFilePath", "", model->SerialCaptureFilePath, Define.MAX_PATH, iniFilePath);
+            _kernel.GetPrivateProfileStringA("DefaultPaths", "PakPath", "", model->PakPath, Define.MAX_PATH, iniFilePath);
         }
 
         public unsafe void ValidateModel(ConfigModel* model)
@@ -393,6 +452,11 @@ namespace VCCSharp.Modules
         public byte GetSoundCardIndex(string soundCardName)
         {
             return Library.Config.GetSoundCardIndex(soundCardName);
+        }
+
+        public unsafe void WriteIniFile(EmuState* emuState)
+        {
+            Library.Config.WriteIniFile(emuState);
         }
     }
 }
