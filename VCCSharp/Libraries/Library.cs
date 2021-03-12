@@ -68,7 +68,7 @@ namespace VCCSharp.Libraries
         public static class Clipboard
         {
             [DllImport(LIBRARY)]
-            public static extern int ClipboardEmpty();
+            public static extern byte ClipboardEmpty();
 
             [DllImport(LIBRARY)]
             public static extern char PeekClipboard();

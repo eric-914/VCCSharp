@@ -4,6 +4,8 @@
 #include "Graphics.h"
 #include "TC1014MMU.h"
 
+#include "ClipboardText.h"
+
 ClipboardState* InitializeInstance(ClipboardState*);
 
 static ClipboardState* instance = InitializeInstance(new ClipboardState());
@@ -20,55 +22,6 @@ ClipboardState* InitializeInstance(ClipboardState* p) {
   return p;
 }
 
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl ClipboardEmpty() {
-    return instance->ClipboardText.empty();
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) int __cdecl GetCurrentKeyMap() {
-    return instance->CurrentKeyMap;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) char __cdecl PeekClipboard() {
-    return instance->ClipboardText[0]; // get the next key in the string
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl PopClipboard() {
-    //TODO: Will get some <string> assertion failures if these 3 lines are combined into 1.
-    size_t length = instance->ClipboardText.length() - 1;
-    string remaining = instance->ClipboardText.substr(1, length);
-
-    instance->ClipboardText = remaining; //move to next key in string
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) bool __cdecl SetClipboard(const char* clipout) {
-    const size_t len = strlen(clipout) + 1;
-    HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, len);
-
-    if (hMem == 0) {
-      MessageBox(0, "Failed to access clipboard.", "Clipboard", 0);
-      return false;
-    }
-
-    memcpy(GlobalLock(hMem), clipout, len);
-
-    GlobalUnlock(hMem);
-    OpenClipboard(0);
-    EmptyClipboard();
-    SetClipboardData(CF_TEXT, hMem);
-    CloseClipboard();
-
-    return TRUE;
-  }
-}
 
 /*
 * Internal, can't expose C++/string outside "C" .dll
@@ -107,6 +60,34 @@ string GetClipboardText()
   CloseClipboard();
 
   return out;
+}
+
+extern "C" {
+  __declspec(dllexport) bool __cdecl SetClipboard(const char* clipout) {
+    const size_t len = strlen(clipout) + 1;
+    HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, len);
+
+    if (hMem == 0) {
+      MessageBox(0, "Failed to access clipboard.", "Clipboard", 0);
+      return false;
+    }
+
+    memcpy(GlobalLock(hMem), clipout, len);
+
+    GlobalUnlock(hMem);
+    OpenClipboard(0);
+    EmptyClipboard();
+    SetClipboardData(CF_TEXT, hMem);
+    CloseClipboard();
+
+    return TRUE;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) int __cdecl GetCurrentKeyMap() {
+    return instance->CurrentKeyMap;
+  }
 }
 
 extern "C" {
@@ -303,7 +284,7 @@ extern "C" {
       out += sc;
     }
 
-    instance->ClipboardText = out;
+    SetClipboardText(out);
   }
 }
 

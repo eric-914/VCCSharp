@@ -166,6 +166,7 @@
     <ClCompile Include="AboutBoxCallback.c" />
     <ClCompile Include="Audio.c" />
     <ClCompile Include="Cartridge.c" />
+    <ClCompile Include="ClipboardText.c" />
     <ClCompile Include="ConfigDialogCallbacks.c" />
     <ClCompile Include="Cassette.c" />
     <ClCompile Include="Clipboard.c" />
@@ -214,6 +215,7 @@
     <ClInclude Include="Audio.h" />
     <ClInclude Include="AudioState.h" />
     <ClInclude Include="Cartridge.h" />
+    <ClInclude Include="ClipboardText.h" />
     <ClInclude Include="ConfigDialogCallbacks.h" />
     <ClInclude Include="Cassette.h" />
     <ClInclude Include="CassetteState.h" />

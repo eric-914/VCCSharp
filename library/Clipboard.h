@@ -6,10 +6,7 @@ using namespace std;
 
 extern "C" __declspec(dllexport) ClipboardState * __cdecl GetClipboardState();
 
-extern "C" __declspec(dllexport) BOOL __cdecl ClipboardEmpty();
 extern "C" __declspec(dllexport) int __cdecl GetCurrentKeyMap();
-extern "C" __declspec(dllexport) char __cdecl PeekClipboard();
-extern "C" __declspec(dllexport) void __cdecl PopClipboard();
 extern "C" __declspec(dllexport) bool __cdecl SetClipboard(const char*);
 
 extern "C" __declspec(dllexport) void __cdecl PasteText();

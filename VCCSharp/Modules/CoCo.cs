@@ -224,7 +224,7 @@ namespace VCCSharp.Modules
                     CPUCyclePicos(vccState);
                 }
 
-                if (_modules.Clipboard.ClipboardEmpty() == Define.FALSE)
+                if (!_modules.Clipboard.ClipboardEmpty())
                 {
                     CPUCycleClipboard(vccState);
                 }
@@ -276,7 +276,7 @@ namespace VCCSharp.Modules
                 _modules.Clipboard.PopClipboard();
 
                 //Finished?
-                if (_modules.Clipboard.ClipboardEmpty() == Define.TRUE)
+                if (_modules.Clipboard.ClipboardEmpty())
                 {
                     _modules.Keyboard.SetPaste(Define.FALSE);
 
@@ -550,6 +550,7 @@ namespace VCCSharp.Modules
 
         private void ResetKeyMap()
         {
+            //vccKeyboardBuildRuntimeTable(GetCurrentKeyMap());
             Library.CoCo.ResetKeyMap();
         }
 

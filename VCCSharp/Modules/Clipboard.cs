@@ -1,10 +1,11 @@
 ﻿using VCCSharp.Libraries;
+using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
     public interface IClipboard
     {
-        int ClipboardEmpty();
+        bool ClipboardEmpty();
         char PeekClipboard();
         void PopClipboard();
         void CopyText();
@@ -15,9 +16,9 @@ namespace VCCSharp.Modules
 
     public class Clipboard : IClipboard
     {
-        public int ClipboardEmpty()
+        public bool ClipboardEmpty()
         {
-            return Library.Clipboard.ClipboardEmpty();
+            return Library.Clipboard.ClipboardEmpty() == Define.TRUE;
         }
 
         public char PeekClipboard()
