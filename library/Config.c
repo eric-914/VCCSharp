@@ -217,28 +217,6 @@ extern "C" {
   }
 }
 
-/**
- * Increase the overclock speed, as seen after a POKE 65497,0.
- * Valid values are [2,100].
- */
-extern "C" {
-  __declspec(dllexport) void __cdecl IncreaseOverclockSpeed(EmuState* emuState)
-  {
-    AdjustOverclockSpeed(emuState, 1);
-  }
-}
-
-/**
- * Decrease the overclock speed, as seen after a POKE 65497,0.
- *
- * Setting this value to 0 will make the emulator pause.  Hence the minimum of 2.
- */
-extern "C" {
-  __declspec(dllexport) void __cdecl DecreaseOverclockSpeed(EmuState* emuState)
-  {
-    AdjustOverclockSpeed(emuState, -1);
-  }
-}
 
 extern "C" {
   __declspec(dllexport) void __cdecl UpdateTapeDialog(unsigned int counter, unsigned char tapeMode)

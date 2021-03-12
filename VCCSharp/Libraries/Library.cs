@@ -132,7 +132,7 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe byte* ExternalBasicImage();
-
+    
             [DllImport(LIBRARY)]
             public static extern byte GetSoundCardIndex(string soundCardName);
 
@@ -150,6 +150,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void ValidateModel(ConfigModel* model);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void AdjustOverclockSpeed(EmuState* emuState, byte change);
         }
 
         public static class CPU

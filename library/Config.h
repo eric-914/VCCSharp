@@ -22,8 +22,6 @@ extern "C" __declspec(dllexport) unsigned char __cdecl TranslateDisplay2Scan(LRE
 extern "C" __declspec(dllexport) unsigned char __cdecl TranslateScan2Display(int);
 extern "C" __declspec(dllexport) void __cdecl WriteIniFile(EmuState*);
 
-extern "C" __declspec(dllexport) void __cdecl DecreaseOverclockSpeed(EmuState*);
-extern "C" __declspec(dllexport) void __cdecl IncreaseOverclockSpeed(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl SetIniFilePath(char*);
 extern "C" __declspec(dllexport) void __cdecl UpdateTapeDialog(unsigned int, unsigned char);
 
