@@ -261,9 +261,6 @@ namespace VCCSharp.Libraries
             public static extern void SetBorderChange(byte data);
 
             [DllImport(LIBRARY)]
-            public static extern void SetVidMask(uint mask);
-
-            [DllImport(LIBRARY)]
             public static extern void SetPaletteType();
 
             [DllImport(LIBRARY)]

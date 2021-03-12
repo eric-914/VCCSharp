@@ -53,7 +53,12 @@ namespace VCCSharp.Modules
 
         public void SetVidMask(uint mask)
         {
-            Library.Graphics.SetVidMask(mask);
+            unsafe
+            {
+                GraphicsState* graphicsState = GetGraphicsState();
+
+                graphicsState->VidMask = mask;
+            }
         }
 
         public void SetPaletteType()

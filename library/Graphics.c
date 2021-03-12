@@ -659,9 +659,3 @@ extern "C" {
     instance->BlinkState = state;
   }
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetVidMask(unsigned int mask) {
-    instance->VidMask = mask;
-  }
-}

@@ -39,14 +39,14 @@
         public ushort VerticalOffsetRegister;
         public ushort VPitch;
 
-        public ulong DistoOffset;
-        public ulong NewStartofVidram;
-        public ulong StartofVidram;
-        public ulong VidMask;
+        public uint DistoOffset;
+        public uint NewStartofVidram;
+        public uint StartofVidram;
+        public uint VidMask;
 
         public byte BorderColor8;
         public ushort BorderColor16;
-        public ulong BorderColor32;
+        public uint BorderColor32;
 
         public unsafe fixed byte Lpf[4];
         public unsafe fixed byte VcenterTable[4];
