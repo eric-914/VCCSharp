@@ -278,7 +278,7 @@ namespace VCCSharp.Modules
                 //Finished?
                 if (_modules.Clipboard.ClipboardEmpty())
                 {
-                    _modules.Keyboard.SetPaste(Define.FALSE);
+                    _modules.Keyboard.SetPaste(false);
 
                     //Done pasting. Reset throttle to original state
                     if (cocoState->Throttle == 2)

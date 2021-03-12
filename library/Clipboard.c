@@ -33,24 +33,8 @@ extern "C" {
 /*
 * Internal, can't expose C++/string outside "C" .dll
 */
-string GetClipboardText()
+string GetClipboardText(HANDLE hClip)
 {
-  if (!OpenClipboard(nullptr)) {
-    MessageBox(0, "Unable to open clipboard.", "Clipboard", 0);
-
-    return("");
-  }
-
-  HANDLE hClip = GetClipboardData(CF_TEXT);
-
-  if (hClip == nullptr) {
-    CloseClipboard();
-
-    MessageBox(0, "No text found in clipboard.", "Clipboard", 0);
-
-    return("");
-  }
-
   char* tmp = static_cast<char*>(GlobalLock(hClip));
 
   if (tmp == nullptr) {
@@ -404,32 +388,14 @@ BOOL GetLCNTRL(char letter) {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl PasteText() {
+  __declspec(dllexport) void __cdecl PasteText(const char* text) {
     string clipparse, lines, debugout, tmp;
     unsigned char sc;
     char letter;
     BOOL CSHIFT;
     BOOL LCNTRL;
 
-    int GraphicsMode = GetGraphicsState()->GraphicsMode;
-
-    if (GraphicsMode != 0) {
-      int tmp = MessageBox(0, "Warning: You are not in text mode. Continue Pasting?", "Clipboard", MB_YESNO);
-
-      if (tmp != 6) {
-        return;
-      }
-    }
-
-    SetPaste(true);
-
-    //This sets the keyboard to Natural,
-    //but we need to read it first so we can set it back
-    instance->CurrentKeyMap = GetCurrentKeyboardLayout();
-
-    vccKeyboardBuildRuntimeTable(1);
-
-    string cliptxt = GetClipboardText().c_str();
+    string cliptxt = string(text);
 
     if (instance->PasteWithNew) {
       cliptxt = "NEW\n" + cliptxt;

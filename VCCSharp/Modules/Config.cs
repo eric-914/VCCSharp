@@ -24,6 +24,7 @@ namespace VCCSharp.Modules
         unsafe void DecreaseOverclockSpeed(EmuState* emuState);
         unsafe void IncreaseOverclockSpeed(EmuState* emuState);
         void LoadIniFile();
+        short GetCurrentKeyboardLayout();
     }
 
     public class Config : IConfig
@@ -457,6 +458,11 @@ namespace VCCSharp.Modules
         public unsafe void WriteIniFile(EmuState* emuState)
         {
             Library.Config.WriteIniFile(emuState);
+        }
+
+        public short GetCurrentKeyboardLayout()
+        {
+            return Library.Config.GetCurrentKeyboardLayout();
         }
     }
 }

@@ -83,7 +83,7 @@ namespace VCCSharp.Libraries
             public static extern void CopyText();
 
             [DllImport(LIBRARY)]
-            public static extern void PasteText();
+            public static extern void PasteText(string text);
         }
 
         public static class CoCo
@@ -141,6 +141,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void ValidateModel(ConfigModel* model);
+
+            [DllImport(LIBRARY)]
+            public static extern short GetCurrentKeyboardLayout();
         }
 
         public static class CPU

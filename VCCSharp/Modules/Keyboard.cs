@@ -1,4 +1,5 @@
 ﻿using VCCSharp.Libraries;
+using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
@@ -7,7 +8,7 @@ namespace VCCSharp.Modules
         void vccKeyboardHandleKeyDown(char key, char scanCode);
         void vccKeyboardHandleKeyUp(char key, char scanCode);
         void vccKeyboardBuildRuntimeTable(byte keyMapIndex);
-        void SetPaste(int flag);
+        void SetPaste(bool flag);
     }
 
     public class Keyboard : IKeyboard
@@ -27,9 +28,9 @@ namespace VCCSharp.Modules
             Library.Keyboard.vccKeyboardBuildRuntimeTable(keyMapIndex);
         }
 
-        public void SetPaste(int flag)
+        public void SetPaste(bool flag)
         {
-            Library.Keyboard.SetPaste(flag);
+            Library.Keyboard.SetPaste(flag ? Define.TRUE : Define.FALSE);
         }
     }
 }

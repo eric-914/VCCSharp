@@ -52,7 +52,7 @@ namespace VCCSharp
 
         public void PasteText()
         {
-            _modules.Clipboard.PasteText();
+            _modules.Clipboard.PasteClipboard();
         }
 
         public void PasteBasicCodeMerge()
