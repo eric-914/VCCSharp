@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -267,9 +268,43 @@ namespace VCCSharp.Modules
             Library.Config.SetCpuType(cpuType);
         }
 
+        // LoadIniFile allows user to browse for an ini file and reloads the config from it.
         public void LoadIniFile()
         {
-            Library.Config.LoadIniFile();
+            unsafe
+            {
+                ConfigState* configState = GetConfigState();
+                EmuState* emuState = _modules.Emu.GetEmuState();
+
+                string szFileName = Converter.ToString(configState->IniFilePath);
+                string appPath = Path.GetDirectoryName(szFileName) ?? "C:\\";
+
+                var openFileDlg = new Microsoft.Win32.OpenFileDialog
+                {
+                    FileName = szFileName,
+                    DefaultExt = ".ini",
+                    Filter = "INI files (.ini)|*.ini",
+                    InitialDirectory = appPath,
+                    CheckFileExists = true,
+                    ShowReadOnly = false,
+                    Title = "Load Vcc Config File"
+                };
+
+                if (openFileDlg.ShowDialog() == true)
+                {
+                    // Flush current profile
+                    WriteIniFile(emuState);     
+
+                    Converter.ToByteArray(openFileDlg.FileName, configState->IniFilePath);
+
+                    // Load it
+                    ReadIniFile(emuState);      
+
+                    SynchSystemWithConfig(emuState);
+
+                    emuState->ResetPending = (byte)ResetPendingStates.Hard;
+                }
+            }
         }
     }
 }
