@@ -150,6 +150,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void IncreaseOverclockSpeed(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern void LoadIniFile();
         }
 
         public static class CPU
@@ -227,9 +230,6 @@ namespace VCCSharp.Libraries
 
         public static class Events
         {
-            [DllImport(LIBRARY)]
-            public static extern void LoadIniFile();
-
             [DllImport(LIBRARY)]
             public static extern void SaveConfig();
 

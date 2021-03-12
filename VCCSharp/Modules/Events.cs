@@ -13,7 +13,6 @@ namespace VCCSharp.Modules
         void EmuRun();
         void EmuReset(ResetPendingStates state);
         void EmuExit();
-        void LoadIniFile();
         void SaveConfig();
         void ShowConfiguration();
         void ToggleOnOff();
@@ -149,12 +148,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void LoadIniFile()
-        {
-            Library.Events.LoadIniFile();
-        }
-
-        public void SaveConfig()
+public void SaveConfig()
         {
             Library.Events.SaveConfig();
         }

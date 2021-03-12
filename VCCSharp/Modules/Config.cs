@@ -19,6 +19,7 @@ namespace VCCSharp.Modules
         void UpdateSoundBar(ushort left, ushort right);
         unsafe void DecreaseOverclockSpeed(EmuState* emuState);
         unsafe void IncreaseOverclockSpeed(EmuState* emuState);
+        void LoadIniFile();
     }
 
     public class Config : IConfig
@@ -200,6 +201,37 @@ namespace VCCSharp.Modules
             }
         }
 
+        public unsafe string GetIniFilePath(string argIniFile)
+        {
+            ConfigState* configState = GetConfigState();
+
+            if (!string.IsNullOrEmpty(argIniFile))
+            {
+                Converter.ToByteArray(argIniFile, configState->IniFilePath);
+
+                return argIniFile;
+            }
+
+            const string vccFolder = "VCC";
+            const string iniFileName = "Vcc.ini";
+
+            string appDataPath = Path.Combine(Converter.ToString(configState->AppDataPath), vccFolder);
+
+            if (!Directory.Exists(appDataPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(appDataPath);
+                }
+                catch (Exception)
+                {
+                    Debug.WriteLine("Unable to create VCC config folder.");
+                }
+            }
+
+            return Path.Combine(appDataPath, iniFileName);
+        }
+
         public int GetPaletteType()
         {
             return Library.Config.GetPaletteType();
@@ -235,35 +267,9 @@ namespace VCCSharp.Modules
             Library.Config.SetCpuType(cpuType);
         }
 
-        public unsafe string GetIniFilePath(string argIniFile)
+        public void LoadIniFile()
         {
-            ConfigState* configState = GetConfigState();
-
-            if (!string.IsNullOrEmpty(argIniFile))
-            {
-                Converter.ToByteArray(argIniFile, configState->IniFilePath);
-
-                return argIniFile;
-            }
-
-            const string vccFolder = "VCC";
-            const string iniFileName = "Vcc.ini";
-
-            string appDataPath = Path.Combine(Converter.ToString(configState->AppDataPath), vccFolder);
-
-            if (!Directory.Exists(appDataPath))
-            {
-                try
-                {
-                    Directory.CreateDirectory(appDataPath);
-                }
-                catch (Exception)
-                {
-                    Debug.WriteLine("Unable to create VCC config folder.");
-                }
-            }
-
-            return Path.Combine(appDataPath, iniFileName);
+            Library.Config.LoadIniFile();
         }
     }
 }
