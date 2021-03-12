@@ -51,6 +51,9 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern void SetDialogAudioBars(HWND hDlg, ushort left, ushort right);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetDialogCpuMultiplier(HWND hDlg, byte cpuMultiplier);
         }
 
         public static class Cassette
@@ -137,12 +140,6 @@ namespace VCCSharp.Libraries
             public static extern byte GetSoundCardIndex(string soundCardName);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void DecreaseOverclockSpeed(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void IncreaseOverclockSpeed(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
             public static extern void SetWindowSize(short width, short height);
 
             [DllImport(LIBRARY)]
@@ -150,9 +147,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void ValidateModel(ConfigModel* model);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void AdjustOverclockSpeed(EmuState* emuState, byte change);
         }
 
         public static class CPU

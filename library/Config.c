@@ -127,29 +127,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl AdjustOverclockSpeed(EmuState* emuState, unsigned char change) {
-    unsigned char cpuMultiplier = instance->Model->CPUMultiplier + change;
-
-    if (cpuMultiplier < 2 || cpuMultiplier > instance->Model->MaxOverclock)
-    {
-      return;
-    }
-
-    // Send updates to the dialog if it's open.
-    if (emuState->ConfigDialog != NULL)
-    {
-      HWND hDlg = instance->hWndConfig[1];
-
-      SetDialogCpuMultiplier(hDlg, cpuMultiplier);
-    }
-
-    instance->Model->CPUMultiplier = cpuMultiplier;
-
-    emuState->ResetPending = RESET_CLS_SYNCH; // Without this, changing the config does nothing.
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl ValidateModel(ConfigModel* model) {
     if (model->KeyMapIndex > 3) {
       model->KeyMapIndex = 0;	//Default to DECB Mapping

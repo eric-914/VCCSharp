@@ -7,6 +7,8 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using static System.IntPtr;
+using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -315,6 +317,53 @@ namespace VCCSharp.Modules
             }
         }
 
+        /**
+         * Decrease the overclock speed, as seen after a POKE 65497,0.
+         * Setting this value to 0 will make the emulator pause.  Hence the minimum of 2.
+         */
+        public unsafe void DecreaseOverclockSpeed(EmuState* emuState)
+        {
+            AdjustOverclockSpeed(emuState, 0xFF); //--Stupid compiler can't figure out (byte)(-1) = 0xFF
+        }
+
+        /**
+         * Increase the overclock speed, as seen after a POKE 65497,0.
+         * Valid values are [2,100].
+         */
+        public unsafe void IncreaseOverclockSpeed(EmuState* emuState)
+        {
+            AdjustOverclockSpeed(emuState, 1);
+        }
+
+        public unsafe void AdjustOverclockSpeed(EmuState* emuState, byte change)
+        {
+            ConfigState * configState = GetConfigState();
+
+            byte cpuMultiplier = (byte)(configState->Model->CPUMultiplier + change);
+
+            if (cpuMultiplier < 2 || cpuMultiplier > configState->Model->MaxOverclock)
+            {
+                return;
+            }
+
+            // Send updates to the dialog if it's open.
+            if (emuState->ConfigDialog != Zero)
+            {
+                HWND hDlg = configState->hWndConfig[1];
+
+                _modules.Callbacks.SetDialogCpuMultiplier(hDlg, cpuMultiplier);
+            }
+
+            configState->Model->CPUMultiplier = cpuMultiplier;
+
+            emuState->ResetPending = (byte)ResetPendingStates.ClsSynch; // Without this, changing the config does nothing.
+        }
+
+        public unsafe void WriteIniFile(EmuState* emuState)
+        {
+            Library.Config.WriteIniFile(emuState);
+        }
+
         public void SetWindowSize(short width, short height)
         {
             Library.Config.SetWindowSize(width, height);
@@ -338,34 +387,6 @@ namespace VCCSharp.Modules
         public byte GetSoundCardIndex(string soundCardName)
         {
             return Library.Config.GetSoundCardIndex(soundCardName);
-        }
-
-        /**
-         * Decrease the overclock speed, as seen after a POKE 65497,0.
-         * Setting this value to 0 will make the emulator pause.  Hence the minimum of 2.
-         */
-        public unsafe void DecreaseOverclockSpeed(EmuState* emuState)
-        {
-            AdjustOverclockSpeed(emuState, 0xFF); //--Stupid compiler can't figure out (byte)(-1) = 0xFF
-        }
-
-        /**
-         * Increase the overclock speed, as seen after a POKE 65497,0.
-         * Valid values are [2,100].
-         */
-        public unsafe void IncreaseOverclockSpeed(EmuState* emuState)
-        {
-            AdjustOverclockSpeed(emuState, 1);
-        }
-
-        public unsafe void WriteIniFile(EmuState* emuState)
-        {
-            Library.Config.WriteIniFile(emuState);
-        }
-
-        public unsafe void AdjustOverclockSpeed(EmuState* emuState, byte change)
-        {
-            Library.Config.AdjustOverclockSpeed(emuState, change);
         }
     }
 }

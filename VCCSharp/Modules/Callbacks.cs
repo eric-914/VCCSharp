@@ -6,6 +6,7 @@ namespace VCCSharp.Modules
     public interface ICallbacks
     {
         void SetDialogAudioBars(HWND hDlg, ushort left, ushort right);
+        void SetDialogCpuMultiplier(HWND hDlg, byte cpuMultiplier);
     }
 
     public class Callbacks : ICallbacks
@@ -13,6 +14,11 @@ namespace VCCSharp.Modules
         public void SetDialogAudioBars(HWND hDlg, ushort left, ushort right)
         {
             Library.Callbacks.SetDialogAudioBars(hDlg, left, right);
+        }
+
+        public void SetDialogCpuMultiplier(HWND hDlg, byte cpuMultiplier)
+        {
+            Library.Callbacks.SetDialogCpuMultiplier(hDlg, cpuMultiplier);
         }
     }
 }
