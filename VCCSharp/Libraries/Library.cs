@@ -246,9 +246,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe GraphicsState* GetGraphicsState();
 
             [DllImport(LIBRARY)]
-            public static extern void ResetGraphicsState();
-
-            [DllImport(LIBRARY)]
             public static extern void MakeRGBPalette();
 
             [DllImport(LIBRARY)]

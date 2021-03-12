@@ -28,17 +28,26 @@ namespace VCCSharp.Modules
 
         public void ResetGraphicsState()
         {
-            Library.Graphics.ResetGraphicsState();
-        }
+            unsafe
+            {
+                GraphicsState* graphicsState = GetGraphicsState();
 
-        public void MakeRGBPalette()
-        {
-            Library.Graphics.MakeRGBPalette();
-        }
-
-        public void MakeCMPPalette(int paletteType)
-        {
-            Library.Graphics.MakeCMPPalette(paletteType);
+                graphicsState->CC3Vmode = 0;
+                graphicsState->CC3Vres = 0;
+                graphicsState->StartofVidram = 0;
+                graphicsState->NewStartofVidram = 0;
+                graphicsState->GraphicsMode = 0;
+                graphicsState->LowerCase = 0;
+                graphicsState->InvertAll = 0;
+                graphicsState->ExtendedText = 1;
+                graphicsState->HorzOffsetReg = 0;
+                graphicsState->TagY = 0;
+                graphicsState->DistoOffset = 0;
+                graphicsState->BorderChange = 3;
+                graphicsState->CC2Offset = 0;
+                graphicsState->Hoffset = 0;
+                graphicsState->VerticalOffsetRegister = 0;
+            }
         }
 
         public void SetBlinkState(byte state)
@@ -80,11 +89,6 @@ namespace VCCSharp.Modules
             Library.Graphics.SetPaletteType();
         }
 
-        public unsafe void SetScanLines(EmuState* emuState, byte lines)
-        {
-            Library.Graphics.SetScanLines(emuState, lines);
-        }
-
         public byte SetMonitorType(byte type)
         {
             return Library.Graphics.SetMonitorType(type);
@@ -103,6 +107,21 @@ namespace VCCSharp.Modules
         public void InvalidateBorder()
         {
             Library.Graphics.InvalidateBorder();
+        }
+
+        public void MakeRGBPalette()
+        {
+            Library.Graphics.MakeRGBPalette();
+        }
+
+        public void MakeCMPPalette(int paletteType)
+        {
+            Library.Graphics.MakeCMPPalette(paletteType);
+        }
+
+        public unsafe void SetScanLines(EmuState* emuState, byte lines)
+        {
+            Library.Graphics.SetScanLines(emuState, lines);
         }
     }
 }

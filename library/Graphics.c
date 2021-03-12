@@ -144,26 +144,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl ResetGraphicsState() {
-    instance->CC3Vmode = 0;
-    instance->CC3Vres = 0;
-    instance->StartofVidram = 0;
-    instance->NewStartofVidram = 0;
-    instance->GraphicsMode = 0;
-    instance->LowerCase = 0;
-    instance->InvertAll = 0;
-    instance->ExtendedText = 1;
-    instance->HorzOffsetReg = 0;
-    instance->TagY = 0;
-    instance->DistoOffset = 0;
-    instance->BorderChange = 3;
-    instance->CC2Offset = 0;
-    instance->Hoffset = 0;
-    instance->VerticalOffsetRegister = 0;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl MakeRGBPalette()
   {
     unsigned char r, g, b;
