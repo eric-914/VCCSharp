@@ -1,10 +1,12 @@
-﻿using VCCSharp.Libraries;
+﻿using System.Windows;
+using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
     public interface IClipboard
     {
+        unsafe ClipboardState* GetClipboardState();
         bool ClipboardEmpty();
         char PeekClipboard();
         void PopClipboard();
@@ -16,6 +18,11 @@ namespace VCCSharp.Modules
 
     public class Clipboard : IClipboard
     {
+        public unsafe ClipboardState* GetClipboardState()
+        {
+            return Library.Clipboard.GetClipboardState();
+        }
+
         public bool ClipboardEmpty()
         {
             return Library.Clipboard.ClipboardEmpty() == Define.TRUE;
@@ -38,17 +45,51 @@ namespace VCCSharp.Modules
 
         public void PasteText()
         {
+            unsafe
+            {
+
+            }
+
             Library.Clipboard.PasteText();
         }
 
         public void PasteBASIC()
         {
-            Library.Clipboard.PasteBASIC();
+            unsafe
+            {
+                ClipboardState* instance = GetClipboardState();
+
+                instance->CodePaste = Define.TRUE;
+
+                PasteText();
+
+                instance->CodePaste = Define.FALSE;
+            }
         }
 
         public void PasteBASICWithNew()
         {
-            Library.Clipboard.PasteBASICWithNew();
+            const string warning = "Warning: This operation will erase the Coco's BASIC memory before pasting. Continue?";
+
+            var result = MessageBox.Show(warning, "Clipboard", MessageBoxButton.YesNo);
+
+            if (result == MessageBoxResult.No)
+            {
+                return;
+            }
+
+            unsafe
+            {
+                ClipboardState* instance = GetClipboardState();
+
+                instance->CodePaste = Define.TRUE;
+                instance->PasteWithNew = Define.TRUE;
+
+                PasteText();
+
+                instance->CodePaste = Define.FALSE;
+                instance->PasteWithNew = Define.FALSE;
+            }
         }
     }
 }

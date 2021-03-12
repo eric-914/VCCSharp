@@ -26,6 +26,8 @@ extern "C" {
   }
 }
 
-void SetClipboardText(string text) {
-  ClipboardText = text;
+extern "C" {
+  __declspec(dllexport) void __cdecl SetClipboardText(const char* text) {
+    ClipboardText = string(text);
+  }
 }

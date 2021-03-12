@@ -1,3 +1,5 @@
+#include <string>
+
 #include "Clipboard.h"
 #include "Config.h"
 #include "Keyboard.h"
@@ -22,6 +24,11 @@ ClipboardState* InitializeInstance(ClipboardState* p) {
   return p;
 }
 
+extern "C" {
+  __declspec(dllexport) int __cdecl GetCurrentKeyMap() {
+    return instance->CurrentKeyMap;
+  }
+}
 
 /*
 * Internal, can't expose C++/string outside "C" .dll
@@ -84,19 +91,325 @@ extern "C" {
   }
 }
 
-extern "C" {
-  __declspec(dllexport) int __cdecl GetCurrentKeyMap() {
-    return instance->CurrentKeyMap;
+unsigned char GetScanCode(char letter) {
+  switch (letter)
+  {
+  case '@': return 0x03;
+  case 'A': return 0x1E;
+  case 'B': return 0x30;
+  case 'C': return 0x2E;
+  case 'D': return 0x20;
+  case 'E': return 0x12;
+  case 'F': return 0x21;
+  case 'G': return 0x22;
+  case 'H': return 0x23;
+  case 'I': return 0x17;
+  case 'J': return 0x24;
+  case 'K': return 0x25;
+  case 'L': return 0x26;
+  case 'M': return 0x32;
+  case 'N': return 0x31;
+  case 'O': return 0x18;
+  case 'P': return 0x19;
+  case 'Q': return 0x10;
+  case 'R': return 0x13;
+  case 'S': return 0x1F;
+  case 'T': return 0x14;
+  case 'U': return 0x16;
+  case 'V': return 0x2F;
+  case 'W': return 0x11;
+  case 'X': return 0x2D;
+  case 'Y': return 0x15;
+  case 'Z': return 0x2C;
+  case ' ': return 0x39;
+  case 'a': return 0x1E;
+  case 'b': return 0x30;
+  case 'c': return 0x2E;
+  case 'd': return 0x20;
+  case 'e': return 0x12;
+  case 'f': return 0x21;
+  case 'g': return 0x22;
+  case 'h': return 0x23;
+  case 'i': return 0x17;
+  case 'j': return 0x24;
+  case 'k': return 0x25;
+  case 'l': return 0x26;
+  case 'm': return 0x32;
+  case 'n': return 0x31;
+  case 'o': return 0x18;
+  case 'p': return 0x19;
+  case 'q': return 0x10;
+  case 'r': return 0x13;
+  case 's': return 0x1F;
+  case 't': return 0x14;
+  case 'u': return 0x16;
+  case 'v': return 0x2F;
+  case 'w': return 0x11;
+  case 'x': return 0x2D;
+  case 'y': return 0x15;
+  case 'z': return 0x2C;
+  case '0': return 0x0B;
+  case '1': return 0x02;
+  case '2': return 0x03;
+  case '3': return 0x04;
+  case '4': return 0x05;
+  case '5': return 0x06;
+  case '6': return 0x07;
+  case '7': return 0x08;
+  case '8': return 0x09;
+  case '9': return 0x0A;
+  case '!': return 0x02;
+  case '#': return 0x04;
+  case '$': return 0x05;
+  case '%': return 0x06;
+  case '^': return 0x07;
+  case '&': return 0x08;
+  case '*': return 0x09;
+  case '(': return 0x0A;
+  case ')': return 0x0B;
+  case '-': return 0x0C;
+  case '=': return 0x0D;
+  case ';': return 0x27;
+  case '\'': return 0x28;
+  case '/': return 0x35;
+  case '.': return 0x34;
+  case ',': return 0x33;
+  case '\n': return 0x1C;
+  case '+': return 0x0D;
+  case ':': return 0x27;
+  case '\"': return 0x28;
+  case '?': return 0x35;
+  case '<': return 0x33;
+  case '>': return 0x34;
+  case '[': return 0x1A;
+  case ']': return 0x1B;
+  case '{': return 0x1A;
+  case '}': return 0x1B;
+  case '\\"': return 0x2B;
+  case '|': return 0x2B;
+  case '`': return 0x29;
+  case '~': return 0x29;
+  case '_': return 0x0C;
+  case 0x09: return 0x39;  // TAB
+  default: return 0xFF;
+  }
+}
+
+BOOL GetCSHIFT(char letter) {
+  switch (letter)
+  {
+  case '@': return TRUE;
+  case 'A': return TRUE;
+  case 'B': return TRUE;
+  case 'C': return TRUE;
+  case 'D': return TRUE;
+  case 'E': return TRUE;
+  case 'F': return TRUE;
+  case 'G': return TRUE;
+  case 'H': return TRUE;
+  case 'I': return TRUE;
+  case 'J': return TRUE;
+  case 'K': return TRUE;
+  case 'L': return TRUE;
+  case 'M': return TRUE;
+  case 'N': return TRUE;
+  case 'O': return TRUE;
+  case 'P': return TRUE;
+  case 'Q': return TRUE;
+  case 'R': return TRUE;
+  case 'S': return TRUE;
+  case 'T': return TRUE;
+  case 'U': return TRUE;
+  case 'V': return TRUE;
+  case 'W': return TRUE;
+  case 'X': return TRUE;
+  case 'Y': return TRUE;
+  case 'Z': return TRUE;
+  case ' ': return FALSE;
+  case 'a': return FALSE;
+  case 'b': return FALSE;
+  case 'c': return FALSE;
+  case 'd': return FALSE;
+  case 'e': return FALSE;
+  case 'f': return FALSE;
+  case 'g': return FALSE;
+  case 'h': return FALSE;
+  case 'i': return FALSE;
+  case 'j': return FALSE;
+  case 'k': return FALSE;
+  case 'l': return FALSE;
+  case 'm': return FALSE;
+  case 'n': return FALSE;
+  case 'o': return FALSE;
+  case 'p': return FALSE;
+  case 'q': return FALSE;
+  case 'r': return FALSE;
+  case 's': return FALSE;
+  case 't': return FALSE;
+  case 'u': return FALSE;
+  case 'v': return FALSE;
+  case 'w': return FALSE;
+  case 'x': return FALSE;
+  case 'y': return FALSE;
+  case 'z': return FALSE;
+  case '0': return FALSE;
+  case '1': return FALSE;
+  case '2': return FALSE;
+  case '3': return FALSE;
+  case '4': return FALSE;
+  case '5': return FALSE;
+  case '6': return FALSE;
+  case '7': return FALSE;
+  case '8': return FALSE;
+  case '9': return FALSE;
+  case '!': return TRUE;
+  case '#': return TRUE;
+  case '$': return TRUE;
+  case '%': return TRUE;
+  case '^': return TRUE;
+  case '&': return TRUE;
+  case '*': return TRUE;
+  case '(': return TRUE;
+  case ')': return TRUE;
+  case '-': return FALSE;
+  case '=': return FALSE;
+  case ';': return FALSE;
+  case '\'': return FALSE;
+  case '/': return FALSE;
+  case '.': return FALSE;
+  case ',': return FALSE;
+  case '\n': return FALSE;
+  case '+': return TRUE;
+  case ':': return TRUE;
+  case '\"': return TRUE;
+  case '?': return TRUE;
+  case '<': return TRUE;
+  case '>': return TRUE;
+  case '[': return FALSE;
+  case ']': return FALSE;
+  case '{': return TRUE;
+  case '}': return TRUE;
+  case '\\"': return FALSE;
+  case '|': return TRUE;
+  case '`': return FALSE;
+  case '~': return TRUE;
+  case '_': return TRUE;
+  case 0x09: return FALSE; // TAB
+  default: return FALSE;
+  }
+}
+
+BOOL GetLCNTRL(char letter) {
+  switch (letter)
+  {
+  case '@': return FALSE;
+  case 'A': return FALSE;
+  case 'B': return FALSE;
+  case 'C': return FALSE;
+  case 'D': return FALSE;
+  case 'E': return FALSE;
+  case 'F': return FALSE;
+  case 'G': return FALSE;
+  case 'H': return FALSE;
+  case 'I': return FALSE;
+  case 'J': return FALSE;
+  case 'K': return FALSE;
+  case 'L': return FALSE;
+  case 'M': return FALSE;
+  case 'N': return FALSE;
+  case 'O': return FALSE;
+  case 'P': return FALSE;
+  case 'Q': return FALSE;
+  case 'R': return FALSE;
+  case 'S': return FALSE;
+  case 'T': return FALSE;
+  case 'U': return FALSE;
+  case 'V': return FALSE;
+  case 'W': return FALSE;
+  case 'X': return FALSE;
+  case 'Y': return FALSE;
+  case 'Z': return FALSE;
+  case ' ': return FALSE;
+  case 'a': return FALSE;
+  case 'b': return FALSE;
+  case 'c': return FALSE;
+  case 'd': return FALSE;
+  case 'e': return FALSE;
+  case 'f': return FALSE;
+  case 'g': return FALSE;
+  case 'h': return FALSE;
+  case 'i': return FALSE;
+  case 'j': return FALSE;
+  case 'k': return FALSE;
+  case 'l': return FALSE;
+  case 'm': return FALSE;
+  case 'n': return FALSE;
+  case 'o': return FALSE;
+  case 'p': return FALSE;
+  case 'q': return FALSE;
+  case 'r': return FALSE;
+  case 's': return FALSE;
+  case 't': return FALSE;
+  case 'u': return FALSE;
+  case 'v': return FALSE;
+  case 'w': return FALSE;
+  case 'x': return FALSE;
+  case 'y': return FALSE;
+  case 'z': return FALSE;
+  case '0': return FALSE;
+  case '1': return FALSE;
+  case '2': return FALSE;
+  case '3': return FALSE;
+  case '4': return FALSE;
+  case '5': return FALSE;
+  case '6': return FALSE;
+  case '7': return FALSE;
+  case '8': return FALSE;
+  case '9': return FALSE;
+  case '!': return FALSE;
+  case '#': return FALSE;
+  case '$': return FALSE;
+  case '%': return FALSE;
+  case '^': return FALSE;
+  case '&': return FALSE;
+  case '*': return FALSE;
+  case '(': return FALSE;
+  case ')': return FALSE;
+  case '-': return FALSE;
+  case '=': return FALSE;
+  case ';': return FALSE;
+  case '\'': return FALSE;
+  case '/': return FALSE;
+  case '.': return FALSE;
+  case ',': return FALSE;
+  case '\n': return FALSE;
+  case '+': return FALSE;
+  case ':': return FALSE;
+  case '\"': return FALSE;
+  case '?': return FALSE;
+  case '<': return FALSE;
+  case '>': return FALSE;
+  case '[': return TRUE;
+  case ']': return TRUE;
+  case '{': return FALSE;
+  case '}': return FALSE;
+  case '\\"': return TRUE;
+  case '|': return FALSE;
+  case '`': return FALSE;
+  case '~': return FALSE;
+  case '_': return FALSE;
+  case 0x09: return FALSE; // TAB
+  default: return FALSE;
   }
 }
 
 extern "C" {
   __declspec(dllexport) void __cdecl PasteText() {
-    string cliptxt, clipparse, lines, out, debugout, tmp;
+    string clipparse, lines, debugout, tmp;
     unsigned char sc;
     char letter;
-    bool CSHIFT;
-    bool LCNTRL;
+    BOOL CSHIFT;
+    BOOL LCNTRL;
 
     int GraphicsMode = GetGraphicsState()->GraphicsMode;
 
@@ -116,7 +429,7 @@ extern "C" {
 
     vccKeyboardBuildRuntimeTable(1);
 
-    cliptxt = GetClipboardText().c_str();
+    string cliptxt = GetClipboardText().c_str();
 
     if (instance->PasteWithNew) {
       cliptxt = "NEW\n" + cliptxt;
@@ -129,7 +442,7 @@ extern "C" {
         lines += tmp;
       }
       else { //...the character is a <CR>
-        if (lines.length() > 249 && lines.length() < 257 && instance->CodePaste == true) {
+        if (lines.length() > 249 && lines.length() < 257 && instance->CodePaste == TRUE) {
           size_t b = lines.find(" ");
           string main = lines.substr(0, 249);
           string extra = lines.substr(249, lines.length() - 249);
@@ -146,7 +459,7 @@ extern "C" {
           lines.clear();
         }
 
-        if (lines.length() >= 257 && instance->CodePaste == true) {
+        if (lines.length() >= 257 && instance->CodePaste == TRUE) {
           // Line is too long to handle. Truncate.
           size_t b = lines.find(" ");
           string linestr = "Warning! Line " + lines.substr(0, b) + " is too long for BASIC and will be truncated.";
@@ -170,113 +483,14 @@ extern "C" {
 
     cliptxt = clipparse;
 
+    string out;
+
     for (int pp = 0; pp <= (int)cliptxt.size(); pp++) {
-      sc = 0;
-      CSHIFT = FALSE;
-      LCNTRL = FALSE;
       letter = cliptxt[pp];
 
-      switch (letter)
-      {
-      case '@': sc = 0x03; CSHIFT = TRUE; break;
-      case 'A': sc = 0x1E; CSHIFT = TRUE; break;
-      case 'B': sc = 0x30; CSHIFT = TRUE; break;
-      case 'C': sc = 0x2E; CSHIFT = TRUE; break;
-      case 'D': sc = 0x20; CSHIFT = TRUE; break;
-      case 'E': sc = 0x12; CSHIFT = TRUE; break;
-      case 'F': sc = 0x21; CSHIFT = TRUE; break;
-      case 'G': sc = 0x22; CSHIFT = TRUE; break;
-      case 'H': sc = 0x23; CSHIFT = TRUE; break;
-      case 'I': sc = 0x17; CSHIFT = TRUE; break;
-      case 'J': sc = 0x24; CSHIFT = TRUE; break;
-      case 'K': sc = 0x25; CSHIFT = TRUE; break;
-      case 'L': sc = 0x26; CSHIFT = TRUE; break;
-      case 'M': sc = 0x32; CSHIFT = TRUE; break;
-      case 'N': sc = 0x31; CSHIFT = TRUE; break;
-      case 'O': sc = 0x18; CSHIFT = TRUE; break;
-      case 'P': sc = 0x19; CSHIFT = TRUE; break;
-      case 'Q': sc = 0x10; CSHIFT = TRUE; break;
-      case 'R': sc = 0x13; CSHIFT = TRUE; break;
-      case 'S': sc = 0x1F; CSHIFT = TRUE; break;
-      case 'T': sc = 0x14; CSHIFT = TRUE; break;
-      case 'U': sc = 0x16; CSHIFT = TRUE; break;
-      case 'V': sc = 0x2F; CSHIFT = TRUE; break;
-      case 'W': sc = 0x11; CSHIFT = TRUE; break;
-      case 'X': sc = 0x2D; CSHIFT = TRUE; break;
-      case 'Y': sc = 0x15; CSHIFT = TRUE; break;
-      case 'Z': sc = 0x2C; CSHIFT = TRUE; break;
-      case ' ': sc = 0x39; break;
-      case 'a': sc = 0x1E; break;
-      case 'b': sc = 0x30; break;
-      case 'c': sc = 0x2E; break;
-      case 'd': sc = 0x20; break;
-      case 'e': sc = 0x12; break;
-      case 'f': sc = 0x21; break;
-      case 'g': sc = 0x22; break;
-      case 'h': sc = 0x23; break;
-      case 'i': sc = 0x17; break;
-      case 'j': sc = 0x24; break;
-      case 'k': sc = 0x25; break;
-      case 'l': sc = 0x26; break;
-      case 'm': sc = 0x32; break;
-      case 'n': sc = 0x31; break;
-      case 'o': sc = 0x18; break;
-      case 'p': sc = 0x19; break;
-      case 'q': sc = 0x10; break;
-      case 'r': sc = 0x13; break;
-      case 's': sc = 0x1F; break;
-      case 't': sc = 0x14; break;
-      case 'u': sc = 0x16; break;
-      case 'v': sc = 0x2F; break;
-      case 'w': sc = 0x11; break;
-      case 'x': sc = 0x2D; break;
-      case 'y': sc = 0x15; break;
-      case 'z': sc = 0x2C; break;
-      case '0': sc = 0x0B; break;
-      case '1': sc = 0x02; break;
-      case '2': sc = 0x03; break;
-      case '3': sc = 0x04; break;
-      case '4': sc = 0x05; break;
-      case '5': sc = 0x06; break;
-      case '6': sc = 0x07; break;
-      case '7': sc = 0x08; break;
-      case '8': sc = 0x09; break;
-      case '9': sc = 0x0A; break;
-      case '!': sc = 0x02; CSHIFT = TRUE; break;
-      case '#': sc = 0x04; CSHIFT = TRUE;	break;
-      case '$': sc = 0x05; CSHIFT = TRUE;	break;
-      case '%': sc = 0x06; CSHIFT = TRUE;	break;
-      case '^': sc = 0x07; CSHIFT = TRUE;	break;
-      case '&': sc = 0x08; CSHIFT = TRUE;	break;
-      case '*': sc = 0x09; CSHIFT = TRUE;	break;
-      case '(': sc = 0x0A; CSHIFT = TRUE;	break;
-      case ')': sc = 0x0B; CSHIFT = TRUE;	break;
-      case '-': sc = 0x0C; break;
-      case '=': sc = 0x0D; break;
-      case ';': sc = 0x27; break;
-      case '\'': sc = 0x28; break;
-      case '/': sc = 0x35; break;
-      case '.': sc = 0x34; break;
-      case ',': sc = 0x33; break;
-      case '\n': sc = 0x1C; break;
-      case '+': sc = 0x0D; CSHIFT = TRUE;	break;
-      case ':': sc = 0x27; CSHIFT = TRUE;	break;
-      case '\"': sc = 0x28; CSHIFT = TRUE; break;
-      case '?': sc = 0x35; CSHIFT = TRUE; break;
-      case '<': sc = 0x33; CSHIFT = TRUE; break;
-      case '>': sc = 0x34; CSHIFT = TRUE; break;
-      case '[': sc = 0x1A; LCNTRL = TRUE; break;
-      case ']': sc = 0x1B; LCNTRL = TRUE; break;
-      case '{': sc = 0x1A; CSHIFT = TRUE; break;
-      case '}': sc = 0x1B; CSHIFT = TRUE; break;
-      case '\\"': sc = 0x2B; LCNTRL = TRUE; break;
-      case '|': sc = 0x2B; CSHIFT = TRUE; break;
-      case '`': sc = 0x29; break;
-      case '~': sc = 0x29; CSHIFT = TRUE; break;
-      case '_': sc = 0x0C; CSHIFT = TRUE; break;
-      case 0x09: sc = 0x39; break; // TAB
-      default: sc = 0xFF;	break;
-      }
+      sc = GetScanCode(letter);
+      CSHIFT = GetCSHIFT(letter);
+      LCNTRL = GetLCNTRL(letter);
 
       if (CSHIFT) { out += 0x36; CSHIFT = FALSE; }
       if (LCNTRL) { out += 0x1D; LCNTRL = FALSE; }
@@ -284,35 +498,7 @@ extern "C" {
       out += sc;
     }
 
-    SetClipboardText(out);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl PasteBASIC() {
-    instance->CodePaste = true;
-
-    PasteText();
-
-    instance->CodePaste = false;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl PasteBASICWithNew() {
-    int tmp = MessageBox(0, "Warning: This operation will erase the Coco's BASIC memory\nbefore pasting. Continue?", "Clipboard", MB_YESNO);
-
-    if (tmp != 6) {
-      return;
-    }
-
-    instance->CodePaste = true;
-    instance->PasteWithNew = true;
-
-    PasteText();
-
-    instance->CodePaste = false;
-    instance->PasteWithNew = false;
+    SetClipboardText(out.c_str());
   }
 }
 

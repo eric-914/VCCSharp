@@ -68,6 +68,9 @@ namespace VCCSharp.Libraries
         public static class Clipboard
         {
             [DllImport(LIBRARY)]
+            public static extern unsafe ClipboardState* GetClipboardState();
+            
+            [DllImport(LIBRARY)]
             public static extern byte ClipboardEmpty();
 
             [DllImport(LIBRARY)]
@@ -81,12 +84,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void PasteText();
-
-            [DllImport(LIBRARY)]
-            public static extern void PasteBASIC();
-
-            [DllImport(LIBRARY)]
-            public static extern void PasteBASICWithNew();
         }
 
         public static class CoCo

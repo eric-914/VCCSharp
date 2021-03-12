@@ -1,11 +1,10 @@
 #pragma once
 
-#include <string>
+#include <windows.h>
 
 typedef struct
 {
-  bool CodePaste;
-  bool PasteWithNew;
+  BOOL CodePaste;
+  BOOL PasteWithNew;
   int CurrentKeyMap;
-
 } ClipboardState;
