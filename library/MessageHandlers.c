@@ -29,19 +29,8 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl ShowConfiguration() {
-    EmuState* emuState = GetEmuState();
-
-    // open config dialog if not already open
-    // opens modeless so you can control the cassette
-    // while emulator is still running (assumed)
-    if (emuState->ConfigDialog == NULL)
-    {
-      emuState->ConfigDialog = CreateDialog(emuState->Resources, (LPCTSTR)IDD_TCONFIG, emuState->WindowHandle, (DLGPROC)CreateMainConfigDialogCallback);
-
-      // open modeless
-      ShowWindow(emuState->ConfigDialog, SW_SHOWNORMAL);
-    }
+  __declspec(dllexport) HWND __cdecl CreateConfigurationDialog(HINSTANCE resources, HWND windowHandle) {
+    return CreateDialog(resources, (LPCTSTR)IDD_TCONFIG, windowHandle, (DLGPROC)CreateMainConfigDialogCallback);
   }
 }
 
@@ -89,11 +78,5 @@ extern "C" {
       // Save key down in case focus is lost
       SaveLastTwoKeyDownEvents((unsigned char)wParam, OEMscan);
     }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl ToggleMonitorType() {
-    SetMonitorType(!SetMonitorType(QUERY));
   }
 }

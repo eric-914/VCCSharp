@@ -2,6 +2,9 @@
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using HWND = System.IntPtr;
+using HINSTANCE = System.IntPtr;
+using static System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -25,10 +28,12 @@ namespace VCCSharp.Modules
     public class Events : IEvents
     {
         private readonly IModules _modules;
+        private readonly IUser32 _user32;
 
-        public Events(IModules modules)
+        public Events(IModules modules, IUser32 user32)
         {
             _modules = modules;
+            _user32 = user32;
         }
 
         public void EmuRun()
@@ -59,6 +64,44 @@ namespace VCCSharp.Modules
             }
         }
 
+        public void SlowDown() //F3
+        {
+            unsafe
+            {
+                _modules.Config.DecreaseOverclockSpeed(_modules.Emu.GetEmuState());
+            }
+        }
+
+        public void SpeedUp() //F4
+        {
+            unsafe
+            {
+                _modules.Config.IncreaseOverclockSpeed(_modules.Emu.GetEmuState());
+            }
+        }
+
+        public void ToggleMonitorType() //F6
+        {
+            unsafe
+            {
+                GraphicsState* graphicsState = _modules.Graphics.GetGraphicsState();
+
+                byte monType = graphicsState->MonType == Define.FALSE ? Define.TRUE : Define.FALSE;
+
+                _modules.Graphics.SetMonitorType(monType);
+            }
+        }
+
+        public void ToggleThrottle() //F8
+        {
+            unsafe
+            {
+                VccState* vccState = _modules.Vcc.GetVccState();
+
+                vccState->Throttle = vccState->Throttle == Define.TRUE ? Define.FALSE : Define.TRUE;
+            }
+        }
+
         public void ToggleOnOff() //F9
         {
             unsafe
@@ -79,30 +122,16 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void SlowDown() //F3
+        public void ToggleInfoBand() //F10
         {
             unsafe
             {
-                _modules.Config.DecreaseOverclockSpeed(_modules.Emu.GetEmuState());
-            }
-        }
+                DirectDrawState* directDrawState = _modules.DirectDraw.GetDirectDrawState();
 
-        public void SpeedUp() //F4
-        {
-            unsafe
-            {
-                _modules.Config.IncreaseOverclockSpeed(_modules.Emu.GetEmuState());
+                directDrawState->InfoBand = directDrawState->InfoBand == Define.TRUE ? Define.FALSE : Define.TRUE;
             }
-        }
 
-        public void ToggleThrottle() //F8
-        {
-            unsafe
-            {
-                VccState* vccState = _modules.Vcc.GetVccState();
-
-                vccState->Throttle = vccState->Throttle == Define.TRUE ? Define.FALSE : Define.TRUE;
-            }
+            _modules.Graphics.InvalidateBorder();
         }
 
         public void ToggleFullScreen() //F11
@@ -120,18 +149,6 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void ToggleInfoBand() //F10
-        {
-            unsafe
-            {
-                DirectDrawState* directDrawState = _modules.DirectDraw.GetDirectDrawState();
-
-                directDrawState->InfoBand = directDrawState->InfoBand == Define.TRUE ? Define.FALSE : Define.TRUE;
-            }
-
-            _modules.Graphics.InvalidateBorder();
-        }
-
         public void LoadIniFile()
         {
             Library.Events.LoadIniFile();
@@ -142,14 +159,30 @@ namespace VCCSharp.Modules
             Library.Events.SaveConfig();
         }
 
-        public void ShowConfiguration()
+        public HWND CreateConfigurationDialog(HINSTANCE resources, HWND windowHandle)
         {
-            Library.Events.ShowConfiguration();
+            return Library.Events.CreateConfigurationDialog(resources, windowHandle);
         }
 
-        public void ToggleMonitorType() //F6
+        public void ShowConfiguration()
         {
-            Library.Events.ToggleMonitorType();
+            unsafe
+            {
+                EmuState* emuState = _modules.Emu.GetEmuState();
+
+                // open config dialog if not already open
+                // opens modeless so you can control the cassette
+                // while emulator is still running (assumed)
+                if (emuState->ConfigDialog == Zero)
+                {
+                    emuState->ConfigDialog = CreateConfigurationDialog(emuState->Resources, emuState->WindowHandle);
+
+                    // open modeless
+                    _user32.ShowWindow(emuState->ConfigDialog, (int)ShowWindowCommands.Normal);
+                }
+
+            }
         }
+
     }
 }

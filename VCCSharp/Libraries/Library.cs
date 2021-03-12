@@ -234,10 +234,7 @@ namespace VCCSharp.Libraries
             public static extern void SaveConfig();
 
             [DllImport(LIBRARY)]
-            public static extern void ShowConfiguration();
-
-            [DllImport(LIBRARY)]
-            public static extern void ToggleMonitorType();
+            public static extern HWND CreateConfigurationDialog(HINSTANCE resources, HWND windowHandle);
         }
 
         public static class Graphics
@@ -258,7 +255,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe void SetScanLines(EmuState* emuState, byte lines);
 
             [DllImport(LIBRARY)]
-            public static extern byte SetMonitorType(byte type);
+            public static extern void SetMonitorType(byte type);
 
             [DllImport(LIBRARY)]
             public static extern void InvalidateBorder();

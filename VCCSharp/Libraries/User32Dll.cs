@@ -17,5 +17,8 @@ namespace VCCSharp.Libraries
 
         [DllImport(DLL)]
         public static extern unsafe LRESULT DispatchMessageA(MSG *lpMsg);
+
+        [DllImport(DLL)]
+        public static extern int ShowWindow(HWND hWnd, int nCmdShow);
     }
 }

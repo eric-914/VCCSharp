@@ -14,7 +14,7 @@ namespace VCCSharp.Modules
         void SetVidMask(uint mask);
         void SetPaletteType();
         unsafe void SetScanLines(EmuState* emuState, byte lines);
-        byte SetMonitorType(byte type);
+        void SetMonitorType(byte type);
         void FlipArtifacts();
         void InvalidateBorder();
     }
@@ -89,9 +89,9 @@ namespace VCCSharp.Modules
             Library.Graphics.SetPaletteType();
         }
 
-        public byte SetMonitorType(byte type)
+        public void SetMonitorType(byte type)
         {
-            return Library.Graphics.SetMonitorType(type);
+            Library.Graphics.SetMonitorType(type);
         }
 
         public void FlipArtifacts()

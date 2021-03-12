@@ -574,14 +574,12 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl SetMonitorType(unsigned char type)
+  __declspec(dllexport) void __cdecl SetMonitorType(unsigned char type)
   {
     int borderColor = instance->CC3BorderColor;
 
     SetGimeBorderColor(0);
 
-    if (type != QUERY)
-    {
       instance->MonType = type & 1;
 
       for (unsigned char palIndex = 0; palIndex < 16; palIndex++)
@@ -590,11 +588,8 @@ extern "C" {
         colors->Palette32Bit[palIndex] = colors->PaletteLookup32[instance->MonType][colors->Palette[palIndex]];
         colors->Palette8Bit[palIndex] = colors->PaletteLookup8[instance->MonType][colors->Palette[palIndex]];
       }
-    }
 
     SetGimeBorderColor(borderColor);
-
-    return(instance->MonType);
   }
 }
 
