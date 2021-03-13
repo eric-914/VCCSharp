@@ -1,4 +1,5 @@
-﻿using VCCSharp.Libraries;
+﻿using VCCSharp.IoC;
+using VCCSharp.Libraries;
 using VCCSharp.Models;
 using HINSTANCE = System.IntPtr;
 
@@ -21,6 +22,13 @@ namespace VCCSharp.Modules
 
     public class DirectDraw : IDirectDraw
     {
+        private readonly IModules _modules;
+
+        public DirectDraw(IModules modules)
+        {
+            _modules = modules;
+        }
+
         public unsafe DirectDrawState* GetDirectDrawState()
         {
             return Library.DirectDraw.GetDirectDrawState();
@@ -53,7 +61,9 @@ namespace VCCSharp.Modules
 
         public unsafe float Static(EmuState* emuState)
         {
-            return Library.DirectDraw.Static(emuState);
+            Library.DirectDraw.Static(emuState);
+
+            return _modules.Throttle.CalculateFPS();
         }
 
         public unsafe void DoCls(EmuState* emuState)

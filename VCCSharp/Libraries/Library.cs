@@ -170,7 +170,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe void SetStatusBarText(string textBuffer, EmuState* emuState);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe float Static(EmuState* emuState);
+            public static extern unsafe void Static(EmuState* emuState);
 
             [DllImport(LIBRARY)]
             public static extern unsafe void DoCls(EmuState* emuState);
@@ -369,6 +369,9 @@ namespace VCCSharp.Libraries
         public static class Throttle
         {
             [DllImport(LIBRARY)]
+            public static extern unsafe ThrottleState* GetThrottleState();
+
+            [DllImport(LIBRARY)]
             public static extern void CalibrateThrottle();
 
             [DllImport(LIBRARY)]
@@ -379,9 +382,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void EndRender(byte skip);
-
-            [DllImport(LIBRARY)]
-            public static extern float CalculateFPS();
         }
 
         public static class Vcc

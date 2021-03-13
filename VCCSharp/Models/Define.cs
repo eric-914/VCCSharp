@@ -20,5 +20,7 @@
         public const long DS_OK = S_OK;
 
         public const int MAXCARDS = 12;
+
+        public const ushort FRAMEINTERVAL = 120;
     }
 }

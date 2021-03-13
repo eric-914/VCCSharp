@@ -21,28 +21,6 @@ ThrottleState* InitializeInstance(ThrottleState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) float __cdecl CalculateFPS() //Done at end of render;
-  {
-    static unsigned short frameCount = 0;
-    static float fps = 0, fNow = 0, fLast = 0;
-
-    if (++frameCount != FRAMEINTERVAL) {
-      return(fps);
-    }
-
-    QueryPerformanceCounter(&(instance->Now));
-
-    fNow = (float)(instance->Now.QuadPart);
-    fps = (fNow - fLast) / instance->fMasterClock;
-    fLast = fNow;
-    frameCount = 0;
-    fps = FRAMEINTERVAL / fps;
-
-    return(fps);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl CalibrateThrottle(void)
   {
     timeBeginPeriod(1);	//Needed to get max resolution from the timer normally its 10Ms

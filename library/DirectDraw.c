@@ -638,7 +638,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) float __cdecl Static(EmuState* emuState)
+  __declspec(dllexport) void __cdecl Static(EmuState* emuState)
   {
     unsigned short x = 0;
     static unsigned short y = 0;
@@ -656,7 +656,7 @@ extern "C" {
     LockScreen(emuState);
 
     if (graphicsSurfaces->pSurface32 == NULL) {
-      return(0);
+      return;
     }
 
     switch (emuState->BitDepth)
@@ -704,7 +704,7 @@ extern "C" {
       break;
 
     default:
-      return(0);
+      return;
     }
 
     ddState->DDBackSurface->GetDC(&hdc);
@@ -732,8 +732,6 @@ extern "C" {
     ddState->DDBackSurface->ReleaseDC(hdc);
 
     UnlockScreen(emuState);
-
-    return(CalculateFPS());
   }
 }
 
