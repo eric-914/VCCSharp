@@ -41,9 +41,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe void HandleSlowAudio(byte* buffer, ushort length);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe short GetSoundCardList(SoundCardList* list);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe int SoundInit(HWND hWnd, _GUID* guid, ushort rate);
         }
 
@@ -202,6 +199,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe int DirectSoundUnlock(void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
+
+            [DllImport(LIBRARY)]
+            public static extern void EnumerateSoundCards();
         }
 
         public static class Events

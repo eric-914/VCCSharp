@@ -115,6 +115,18 @@ namespace VCCSharp.Modules
 
         }
 
+        public unsafe short GetSoundCardList(SoundCardList* list)
+        {
+            AudioState* audioState = GetAudioState();
+
+            audioState->CardCount = 0;
+            audioState->Cards = list;
+
+            Library.DirectSound.EnumerateSoundCards();
+
+            return audioState->CardCount;
+        }
+
         public unsafe void HandleSlowAudio(byte* buffer, ushort length)
         {
             //memcpy(void* _Dst, void const* _Src, size_t _Size);
@@ -135,11 +147,6 @@ namespace VCCSharp.Modules
         public int GetFreeBlockCount()
         {
             return Library.Audio.GetFreeBlockCount();
-        }
-
-        public unsafe short GetSoundCardList(SoundCardList* list)
-        {
-            return Library.Audio.GetSoundCardList(list);
         }
 
         public unsafe int SoundInit(HWND hWnd, _GUID* guid, ushort rate)

@@ -3,7 +3,6 @@
 
 #include "Config.h"
 #include "Coco.h"
-#include "DirectSoundEnumerateCallback.h"
 
 #include "defines.h"
 #include "macros.h"
@@ -150,18 +149,6 @@ extern "C" {
     }
 
     instance->AuxBufferPointer = 0;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) int __cdecl GetSoundCardList(SoundCardList* list)
-  {
-    instance->CardCount = 0;
-    instance->Cards = list;
-
-    DirectSoundEnumerate(DirectSoundEnumerateCallback, NULL);
-
-    return(instance->CardCount);
   }
 }
 

@@ -11,7 +11,6 @@ extern "C" __declspec(dllexport) AudioState * __cdecl GetAudioState();
 extern "C" __declspec(dllexport) const char* __cdecl GetRateList(unsigned char);
 
 extern "C" __declspec(dllexport) int __cdecl GetFreeBlockCount();
-extern "C" __declspec(dllexport) int __cdecl GetSoundCardList(SoundCardList*);
 extern "C" __declspec(dllexport) int __cdecl SoundInit(HWND, GUID*, unsigned short);
 
 extern "C" __declspec(dllexport) unsigned char __cdecl PauseAudio(unsigned char);

@@ -1,4 +1,5 @@
 #include "DirectSoundState.h"
+#include "DirectSoundEnumerateCallback.h"
 
 //--Generally a wrapper around <dsound.h>
 
@@ -41,5 +42,12 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) HRESULT __cdecl DirectSoundUnlock(void* sndPointer1, DWORD sndLength1, void* sndPointer2, DWORD sndLength2) {
     return instance->lpdsbuffer1->Unlock(sndPointer1, sndLength1, sndPointer2, sndLength2);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl EnumerateSoundCards()
+  {
+    DirectSoundEnumerate(DirectSoundEnumerateCallback, NULL);
   }
 }
