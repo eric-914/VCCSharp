@@ -21,37 +21,6 @@ ThrottleState* InitializeInstance(ThrottleState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl FrameWait(void)
-  {
-    QueryPerformanceCounter(&(instance->CurrentTime));
-
-    while ((instance->TargetTime.QuadPart - instance->CurrentTime.QuadPart) > (instance->OneMs.QuadPart * 2))	//If we have more that 2Ms till the end of the frame
-    {
-      Sleep(1);	//Give about 1Ms back to the system
-      QueryPerformanceCounter(&(instance->CurrentTime));	//And check again
-    }
-
-    if (GetSoundStatus())	//Lean on the sound card a bit for timing
-    {
-      PurgeAuxBuffer();
-
-      if (instance->FrameSkip == 1)
-      {
-        if (GetFreeBlockCount() > AUDIOBUFFERS / 2) {	//Dont let the buffer get lest that half full
-          return;
-        }
-
-        while (GetFreeBlockCount() < 1);	// Dont let it fill up either
-      }
-    }
-
-    while (instance->CurrentTime.QuadPart < instance->TargetTime.QuadPart) {	//Poll Untill frame end.
-      QueryPerformanceCounter(&(instance->CurrentTime));
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl StartRender()
   {
     QueryPerformanceCounter(&(instance->StartTime));

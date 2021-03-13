@@ -23,5 +23,7 @@
 
         public const ushort FRAMEINTERVAL = 120;
         public const int TARGETFRAMERATE = 60;
+
+        public const int AUDIOBUFFERS = 12;
     }
 }

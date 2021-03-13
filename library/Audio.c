@@ -113,7 +113,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl PurgeAuxBuffer(void)
+  __declspec(dllexport) void __cdecl PurgeAuxBuffer()
   {
     DirectSoundState* directSoundState = GetDirectSoundState();
 

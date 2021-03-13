@@ -42,6 +42,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe int SoundInit(HWND hWnd, _GUID* guid, ushort rate);
+
+            [DllImport(LIBRARY)]
+            public static extern void PurgeAuxBuffer();
         }
 
         public static class Callbacks
@@ -370,9 +373,6 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe ThrottleState* GetThrottleState();
-
-            [DllImport(LIBRARY)]
-            public static extern void FrameWait();
 
             [DllImport(LIBRARY)]
             public static extern void StartRender();

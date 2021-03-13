@@ -13,6 +13,8 @@ namespace VCCSharp.Modules
         unsafe void FlushAudioBuffer(uint* buffer, ushort length);
         unsafe short GetSoundCardList(SoundCardList* list);
         unsafe int SoundInit(HWND hWnd, _GUID* guid, ushort rate);
+        void PurgeAuxBuffer();
+        int GetFreeBlockCount();
     }
 
     public class Audio : IAudio
@@ -152,6 +154,11 @@ namespace VCCSharp.Modules
         public unsafe int SoundInit(HWND hWnd, _GUID* guid, ushort rate)
         {
             return Library.Audio.SoundInit(hWnd, guid, rate);
+        }
+
+        public void PurgeAuxBuffer()
+        {
+            Library.Audio.PurgeAuxBuffer();
         }
     }
 }
