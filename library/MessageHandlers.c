@@ -1,7 +1,6 @@
 #include <windows.h>
 
 #include "ConfigDialogCallbacks.h"
-#include "AboutBoxCallback.h"
 #include "Config.h"
 #include "Graphics.h"
 #include "Keyboard.h"

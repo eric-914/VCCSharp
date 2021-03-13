@@ -98,9 +98,6 @@
     <ClCompile Include="TC1014MMU.c">
       <Filter>tc1014\mmu</Filter>
     </ClCompile>
-    <ClCompile Include="AboutBoxCallback.c">
-      <Filter>callbacks</Filter>
-    </ClCompile>
     <ClCompile Include="DirectSoundEnumerateCallback.c">
       <Filter>callbacks</Filter>
     </ClCompile>
@@ -285,9 +282,6 @@
     </ClInclude>
     <ClInclude Include="KeyboardState.h">
       <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="AboutBoxCallback.h">
-      <Filter>callbacks</Filter>
     </ClInclude>
     <ClInclude Include="DirectSoundEnumerateCallback.h">
       <Filter>callbacks</Filter>
