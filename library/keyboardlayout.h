@@ -22,7 +22,7 @@
 
 #include "Keyboard.h"
 
-extern "C" __declspec(dllexport) keytranslationentry_t* __cdecl GetKeyTranslationsCoCo(void);
-extern "C" __declspec(dllexport) keytranslationentry_t* __cdecl GetKeyTranslationsNatural(void);
-extern "C" __declspec(dllexport) keytranslationentry_t* __cdecl GetKeyTranslationsCompact(void);
-extern "C" __declspec(dllexport) keytranslationentry_t* __cdecl GetKeyTranslationsCustom(void);
+extern "C" __declspec(dllexport) KeyTranslationEntry* __cdecl GetKeyTranslationsCoCo(void);
+extern "C" __declspec(dllexport) KeyTranslationEntry* __cdecl GetKeyTranslationsNatural(void);
+extern "C" __declspec(dllexport) KeyTranslationEntry* __cdecl GetKeyTranslationsCompact(void);
+extern "C" __declspec(dllexport) KeyTranslationEntry* __cdecl GetKeyTranslationsCustom(void);

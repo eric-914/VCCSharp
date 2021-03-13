@@ -73,7 +73,7 @@
   | [Cntl][   ][Alt][       Space       ][ @ ][   ][   ][Cntl]   [LftA][DnA][RgtA] |
   +--------------------------------------------------------------------------------+
   */
-keytranslationentry_t keyTranslationsCoCo[] =
+KeyTranslationEntry keyTranslationsCoCo[] =
 {
   // ScanCode1,     ScanCode2,      Row1,  Col1,  Row2, Col2    Char  
   { DIK_A,          0,              1,     1,     0,    0 }, //   A
@@ -170,7 +170,7 @@ keytranslationentry_t keyTranslationsCoCo[] =
   { 0,              0,              0,     0,     0,    0 }  // terminator
 };
 
-extern "C" __declspec(dllexport) keytranslationentry_t* __cdecl GetKeyTranslationsCoCo(void) {
+extern "C" __declspec(dllexport) KeyTranslationEntry* __cdecl GetKeyTranslationsCoCo(void) {
   return keyTranslationsCoCo;
 }
 
@@ -201,7 +201,7 @@ extern "C" __declspec(dllexport) keytranslationentry_t* __cdecl GetKeyTranslatio
   | [Cntl][   ][Alt][       Space       ][Alt][   ][   ][Cntl]   [LftA][DnA][RgtA]  |
   +---------------------------------------------------------------------------------+
   */
-keytranslationentry_t keyTranslationsNatural[] =
+KeyTranslationEntry keyTranslationsNatural[] =
 {
   // ScanCode1,     ScanCode2,      Row1,  Col1,  Row2, Col2    Char  
   { DIK_A,          0,              1,     1,     0,    0 }, //   A
@@ -308,7 +308,7 @@ keytranslationentry_t keyTranslationsNatural[] =
   { 0,              0,              0,     0,     0,    0 }  // terminator
 };
 
-extern "C" __declspec(dllexport) keytranslationentry_t* __cdecl GetKeyTranslationsNatural(void) {
+extern "C" __declspec(dllexport) KeyTranslationEntry* __cdecl GetKeyTranslationsNatural(void) {
   return keyTranslationsNatural;
 }
 
@@ -344,7 +344,7 @@ Differences from Natural layout:
   CLR				TAB
   ESC/BREAK		GRAVE (`)
 */
-keytranslationentry_t keyTranslationsCompact[] =
+KeyTranslationEntry keyTranslationsCompact[] =
 {
   // ScanCode1,     ScanCode2,      Row1,  Col1,  Row2, Col2    Char  
   { DIK_A,          0,              1,     1,     0,    0 }, //   A
@@ -446,7 +446,7 @@ keytranslationentry_t keyTranslationsCompact[] =
   { 0,              0,              0,     0,     0,    0 }  // terminator
 };
 
-extern "C" __declspec(dllexport) keytranslationentry_t* __cdecl GetKeyTranslationsCompact(void) {
+extern "C" __declspec(dllexport) KeyTranslationEntry* __cdecl GetKeyTranslationsCompact(void) {
   return keyTranslationsCompact;
 }
 
@@ -478,7 +478,7 @@ VCC Custom Keyboard
 | [Cntl][   ][Alt][       Space       ][Alt][   ][   ][Cntl]   [LftA][DnA][RgtA]  |
 +---------------------------------------------------------------------------------+
 */
-keytranslationentry_t keyTranslationsCustom[] =
+KeyTranslationEntry keyTranslationsCustom[] =
 {
   // ScanCode1,     ScanCode2,      Row1,  Col1,  Row2, Col2    Char  
   { DIK_A,          0,              1,     1,     0,    0 }, //   A
@@ -585,6 +585,6 @@ keytranslationentry_t keyTranslationsCustom[] =
   { 0,              0,              0,     0,     0,    0 }  // terminator
 };
 
-extern "C" __declspec(dllexport) keytranslationentry_t* __cdecl GetKeyTranslationsCustom(void) {
+extern "C" __declspec(dllexport) KeyTranslationEntry* __cdecl GetKeyTranslationsCustom(void) {
   return keyTranslationsCustom;
 }

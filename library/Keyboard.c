@@ -23,7 +23,7 @@ extern "C" {
 
 KeyboardState* InitializeInstance(KeyboardState* p) {
   p->KeyboardInterruptEnabled = 0;
-  p->Pasting = false;
+  p->Pasting = FALSE;
 
   return p;
 }
@@ -42,26 +42,14 @@ extern "C" {
   }
 }
 
-extern "C" {
-  __declspec(dllexport) bool __cdecl GetPaste() {
-    return instance->Pasting;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetPaste(BOOL flag) {
-    instance->Pasting = flag;
-  }
-}
-
 /**
   Key translation table compare function for sorting (with qsort)
 */
 extern "C" {
   __declspec(dllexport) int __cdecl KeyTransCompare(const void* e1, const void* e2)
   {
-    keytranslationentry_t* entry1 = (keytranslationentry_t*)e1;
-    keytranslationentry_t* entry2 = (keytranslationentry_t*)e2;
+    KeyTranslationEntry* entry1 = (KeyTranslationEntry*)e1;
+    KeyTranslationEntry* entry2 = (KeyTranslationEntry*)e2;
     int result = 0;
 
     // empty listing push to end
@@ -143,9 +131,9 @@ extern "C" {
   {
     int index1 = 0;
     int index2 = 0;
-    keytranslationentry_t* keyLayoutTable = NULL;
-    keytranslationentry_t	keyTransEntry;
-    keyboardlayout_e keyBoardLayout = (keyboardlayout_e)keyMapIndex;
+    KeyTranslationEntry* keyLayoutTable = NULL;
+    KeyTranslationEntry	keyTransEntry;
+    KeyboardLayouts keyBoardLayout = (KeyboardLayouts)keyMapIndex;
 
     assert(keyBoardLayout >= 0 && keyBoardLayout < kKBLayoutCount);
 
@@ -180,7 +168,7 @@ extern "C" {
 
     for (index1 = 0; ; index1++)
     {
-      memcpy(&keyTransEntry, &keyLayoutTable[index1], sizeof(keytranslationentry_t));
+      memcpy(&keyTransEntry, &keyLayoutTable[index1], sizeof(KeyTranslationEntry));
 
       //
       // Change entries to what the code expects
@@ -214,7 +202,7 @@ extern "C" {
         break;
       }
 
-      memcpy(&(instance->KeyTransTable[index2++]), &keyTransEntry, sizeof(keytranslationentry_t));
+      memcpy(&(instance->KeyTransTable[index2++]), &keyTransEntry, sizeof(KeyTranslationEntry));
 
       assert(index2 <= KBTABLE_ENTRY_COUNT && "keyboard layout table is longer than we can handle");
     }
@@ -226,7 +214,7 @@ extern "C" {
     // time a key is pressed, we want them to be in the correct 
     // order.
     //
-    qsort(instance->KeyTransTable, KBTABLE_ENTRY_COUNT, sizeof(keytranslationentry_t), KeyTransCompare);
+    qsort(instance->KeyTransTable, KBTABLE_ENTRY_COUNT, sizeof(KeyTranslationEntry), KeyTransCompare);
 
 #ifdef _DEBUG
     //
@@ -427,7 +415,7 @@ extern "C" {
   @param Status Key status - kEventKeyDown/kEventKeyUp
 */
 extern "C" {
-  __declspec(dllexport) void __cdecl vccKeyboardHandleKey(unsigned char key, unsigned char scanCode, keyevent_e keyState)
+  __declspec(dllexport) void __cdecl vccKeyboardHandleKey(unsigned char key, unsigned char scanCode, KeyStates keyState)
   {
     XTRACE("Key  : %c (%3d / 0x%02X)  Scan : %d / 0x%02X\n", key == 0 ? '0' : key, key == 0 ? '0' : key, key == 0 ? '0' : key, scanCode, scanCode);
 
@@ -435,7 +423,7 @@ extern "C" {
 
     //If requested, abort pasting operation.
     if (scanCode == 0x01 || scanCode == 0x43 || scanCode == 0x3F) {
-      instance->Pasting = false;
+      instance->Pasting = FALSE;
 
       OutputDebugString("ABORT PASTING!!!\n");
     }

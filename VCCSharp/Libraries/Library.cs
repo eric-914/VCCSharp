@@ -258,6 +258,10 @@ namespace VCCSharp.Libraries
         public static class Keyboard
         {
             [DllImport(LIBRARY)]
+            public static extern unsafe KeyboardState* GetKeyBoardState();
+            //--Spelled funny because there's a GetKeyboardState() in User32.dll
+
+            [DllImport(LIBRARY)]
             public static extern void vccKeyboardHandleKeyDown(char key, char scanCode);
 
             [DllImport(LIBRARY)]
@@ -265,9 +269,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void vccKeyboardBuildRuntimeTable(byte keyMapIndex);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetPaste(int flag);
         }
 
         public static class MenuCallbacks

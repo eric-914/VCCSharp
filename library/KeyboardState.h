@@ -2,16 +2,16 @@
 
 #define KBTABLE_ENTRY_COUNT 100	///< key translation table maximum size, (arbitrary) most of the layouts are < 80 entries
 
-typedef enum keyevent_e
+typedef enum KeyStates
 {
   kEventKeyUp = 0,
   kEventKeyDown = 1
-} keyevent_e;
+} KeyStates;
 
 /**
   Keyboard layouts
 */
-typedef enum keyboardlayout_e
+typedef enum KeyboardLayouts
 {
   kKBLayoutCoCo = 0,
   kKBLayoutNatural,
@@ -19,9 +19,9 @@ typedef enum keyboardlayout_e
   kKBLayoutCustom,
 
   kKBLayoutCount
-} keyboardlayout_e;
+} KeyboardLayouts;
 
-typedef struct keytranslationentry_t
+typedef struct KeyTranslationEntry
 {
   unsigned char ScanCode1;
   unsigned char ScanCode2;
@@ -29,18 +29,18 @@ typedef struct keytranslationentry_t
   unsigned char Col1;
   unsigned char Row2;
   unsigned char Col2;
-} keytranslationentry_t;
+} KeyTranslationEntry;
 
 typedef struct {
-  /** track all keyboard scan codes state (up/down) */
-  int ScanTable[256];
+  unsigned char KeyboardInterruptEnabled;
+  BOOL Pasting;  //Are the keyboard functions in the middle of a paste operation?
 
   /** run-time 'rollover' table to pass to the MC6821 when a key is pressed */
   unsigned char RolloverTable[8];	// CoCo 'keys' for emulator
 
-  /** run-time key translation table - convert key up/down messages to 'rollover' codes */
-  keytranslationentry_t KeyTransTable[KBTABLE_ENTRY_COUNT];	// run-time keyboard layout table (key(s) to keys(s) translation)
+  /** track all keyboard scan codes state (up/down) */
+  int ScanTable[256];
 
-  unsigned char KeyboardInterruptEnabled;
-  bool Pasting;  //Are the keyboard functions in the middle of a paste operation?
+  /** run-time key translation table - convert key up/down messages to 'rollover' codes */
+  KeyTranslationEntry KeyTransTable[KBTABLE_ENTRY_COUNT];	// run-time keyboard layout table (key(s) to keys(s) translation)
 } KeyboardState;

@@ -5,6 +5,7 @@ namespace VCCSharp.Modules
 {
     public interface IKeyboard
     {
+        unsafe KeyboardState* GetKeyboardState();
         void vccKeyboardHandleKeyDown(char key, char scanCode);
         void vccKeyboardHandleKeyUp(char key, char scanCode);
         void vccKeyboardBuildRuntimeTable(byte keyMapIndex);
@@ -13,6 +14,11 @@ namespace VCCSharp.Modules
 
     public class Keyboard : IKeyboard
     {
+        public unsafe KeyboardState* GetKeyboardState()
+        {
+            return Library.Keyboard.GetKeyBoardState();
+        }
+
         public void vccKeyboardHandleKeyDown(char key, char scanCode)
         {
             Library.Keyboard.vccKeyboardHandleKeyDown(key, scanCode);
@@ -30,7 +36,12 @@ namespace VCCSharp.Modules
 
         public void SetPaste(bool flag)
         {
-            Library.Keyboard.SetPaste(flag ? Define.TRUE : Define.FALSE);
+            unsafe
+            {
+                KeyboardState* keyboardState = GetKeyboardState();
+
+                keyboardState->Pasting = flag ? Define.TRUE : Define.FALSE;
+            }
         }
     }
 }
