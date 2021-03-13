@@ -69,9 +69,6 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe ClipboardState* GetClipboardState();
-            
-            [DllImport(LIBRARY)]
-            public static extern bool SetClipboard(string text);
         }
 
         public static class CoCo

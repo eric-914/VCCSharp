@@ -679,13 +679,8 @@ namespace VCCSharp.Modules
                     }
                 }
 
-                SetClipboard(clipOut);
+                System.Windows.Clipboard.SetText(clipOut);
             }
-        }
-
-        public void SetClipboard(string text)
-        {
-            Library.Clipboard.SetClipboard(text);
         }
     }
 }
