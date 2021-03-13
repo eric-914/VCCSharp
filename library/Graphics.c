@@ -602,15 +602,3 @@ extern "C" {
     SetGimeBorderColor(borderColor);
   }
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetScanLines(EmuState* emuState, unsigned char lines)
-  {
-    emuState->ScanLines = lines;
-    emuState->ResetPending = RESET_CLS;
-
-    ClearScreen();
-
-    instance->BorderChange = 3;
-  }
-}

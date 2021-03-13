@@ -232,9 +232,6 @@ namespace VCCSharp.Libraries
             public static extern void SetPaletteType();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void SetScanLines(EmuState* emuState, byte lines);
-
-            [DllImport(LIBRARY)]
             public static extern void SetMonitorType(byte type);
 
             [DllImport(LIBRARY)]

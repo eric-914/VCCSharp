@@ -1,4 +1,6 @@
-﻿using VCCSharp.Libraries;
+﻿using VCCSharp.Enums;
+using VCCSharp.IoC;
+using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
@@ -21,6 +23,13 @@ namespace VCCSharp.Modules
 
     public class Graphics : IGraphics
     {
+        private readonly IModules _modules;
+
+        public Graphics(IModules modules)
+        {
+            _modules = modules;
+        }
+
         public unsafe GraphicsState* GetGraphicsState()
         {
             return Library.Graphics.GetGraphicsState();
@@ -119,9 +128,17 @@ namespace VCCSharp.Modules
             Library.Graphics.MakeCMPPalette(paletteType);
         }
 
+        //TODO: ScanLines never really worked right to begin with...
         public unsafe void SetScanLines(EmuState* emuState, byte lines)
         {
-            Library.Graphics.SetScanLines(emuState, lines);
+            GraphicsState* graphicsState = GetGraphicsState();
+
+            emuState->ScanLines = lines;
+            emuState->ResetPending = (byte)ResetPendingStates.Cls;
+
+            _modules.DirectDraw.ClearScreen();
+
+            graphicsState->BorderChange = 3;
         }
     }
 }
