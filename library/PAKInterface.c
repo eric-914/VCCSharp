@@ -125,9 +125,10 @@ extern "C" {
       return ModuleMem8Read(address);
     }
 
+    int offset = (address & 32767) + instance->BankedCartOffset;
     if (instance->ExternalRomBuffer != NULL) {
       //TODO: Threading makes it possible to reach here where ExternalRomBuffer = NULL despite check.
-      return(instance->ExternalRomBuffer[(address & 32767) + instance->BankedCartOffset]);
+      return(instance->ExternalRomBuffer[offset]);
     }
 
     return(0);

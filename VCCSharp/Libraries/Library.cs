@@ -83,7 +83,7 @@ namespace VCCSharp.Libraries
             public static extern void CopyText();
 
             [DllImport(LIBRARY)]
-            public static extern void PasteText(string text);
+            public static extern void SetClipboardText(string text);
         }
 
         public static class CoCo
