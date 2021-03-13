@@ -134,9 +134,6 @@
     <ClCompile Include="PakInterfaceModule.c">
       <Filter>pakinterface</Filter>
     </ClCompile>
-    <ClCompile Include="ClipboardText.c">
-      <Filter>clipboard</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h" />
@@ -360,9 +357,6 @@
     </ClInclude>
     <ClInclude Include="GraphicsColors.h">
       <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="ClipboardText.h">
-      <Filter>clipboard</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

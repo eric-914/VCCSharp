@@ -1,7 +1,5 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
 using System.Windows;
-using Microsoft.VisualBasic;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -24,7 +22,7 @@ namespace VCCSharp.Modules
     {
         #region pcchars
 
-        private char[] pcchars32 =
+        private readonly char[] _pcchars32 =
         {
             '@', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
             'u', 'v', 'w', 'x', 'y', 'z', '[', '\\', ']', ' ', ' ',
@@ -40,7 +38,7 @@ namespace VCCSharp.Modules
             '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?'
         };
 
-        private char[] pcchars40 =
+        private readonly char[] _pcchars40 =
         {
             ' ', '!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4',
             '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?',
@@ -62,6 +60,8 @@ namespace VCCSharp.Modules
 
         #endregion
 
+        private string _clipboardText;
+
         private readonly IModules _modules;
 
         public Clipboard(IModules modules)
@@ -72,26 +72,6 @@ namespace VCCSharp.Modules
         public unsafe ClipboardState* GetClipboardState()
         {
             return Library.Clipboard.GetClipboardState();
-        }
-
-        public bool ClipboardEmpty()
-        {
-            return Library.Clipboard.ClipboardEmpty() == Define.TRUE;
-        }
-
-        public char PeekClipboard()
-        {
-            return Library.Clipboard.PeekClipboard();
-        }
-
-        public void PopClipboard()
-        {
-            Library.Clipboard.PopClipboard();
-        }
-
-        public void CopyText()
-        {
-            Library.Clipboard.CopyText();
         }
 
         public void PasteBASIC()
@@ -232,7 +212,7 @@ namespace VCCSharp.Modules
                 {
                     int blank = line.IndexOf(" ");
                     string main = line.Substring(0, 249);
-                    string extra = line.Substring(249, line.Length - 249);
+                    string extra = line[249..^249];  //Translation: from '249' to 'all but 249'
                     string spaces = "";
 
                     for (int p = 1; p < 249; p++)
@@ -272,322 +252,345 @@ namespace VCCSharp.Modules
 
         public char GetScanCode(char letter)
         {
-            switch (letter)
+            return letter switch
             {
-                case '@': return (char)0x03;
-                case 'A': return (char)0x1E;
-                case 'B': return (char)0x30;
-                case 'C': return (char)0x2E;
-                case 'D': return (char)0x20;
-                case 'E': return (char)0x12;
-                case 'F': return (char)0x21;
-                case 'G': return (char)0x22;
-                case 'H': return (char)0x23;
-                case 'I': return (char)0x17;
-                case 'J': return (char)0x24;
-                case 'K': return (char)0x25;
-                case 'L': return (char)0x26;
-                case 'M': return (char)0x32;
-                case 'N': return (char)0x31;
-                case 'O': return (char)0x18;
-                case 'P': return (char)0x19;
-                case 'Q': return (char)0x10;
-                case 'R': return (char)0x13;
-                case 'S': return (char)0x1F;
-                case 'T': return (char)0x14;
-                case 'U': return (char)0x16;
-                case 'V': return (char)0x2F;
-                case 'W': return (char)0x11;
-                case 'X': return (char)0x2D;
-                case 'Y': return (char)0x15;
-                case 'Z': return (char)0x2C;
-                case ' ': return (char)0x39;
-                case 'a': return (char)0x1E;
-                case 'b': return (char)0x30;
-                case 'c': return (char)0x2E;
-                case 'd': return (char)0x20;
-                case 'e': return (char)0x12;
-                case 'f': return (char)0x21;
-                case 'g': return (char)0x22;
-                case 'h': return (char)0x23;
-                case 'i': return (char)0x17;
-                case 'j': return (char)0x24;
-                case 'k': return (char)0x25;
-                case 'l': return (char)0x26;
-                case 'm': return (char)0x32;
-                case 'n': return (char)0x31;
-                case 'o': return (char)0x18;
-                case 'p': return (char)0x19;
-                case 'q': return (char)0x10;
-                case 'r': return (char)0x13;
-                case 's': return (char)0x1F;
-                case 't': return (char)0x14;
-                case 'u': return (char)0x16;
-                case 'v': return (char)0x2F;
-                case 'w': return (char)0x11;
-                case 'x': return (char)0x2D;
-                case 'y': return (char)0x15;
-                case 'z': return (char)0x2C;
-                case '0': return (char)0x0B;
-                case '1': return (char)0x02;
-                case '2': return (char)0x03;
-                case '3': return (char)0x04;
-                case '4': return (char)0x05;
-                case '5': return (char)0x06;
-                case '6': return (char)0x07;
-                case '7': return (char)0x08;
-                case '8': return (char)0x09;
-                case '9': return (char)0x0A;
-                case '!': return (char)0x02;
-                case '#': return (char)0x04;
-                case '$': return (char)0x05;
-                case '%': return (char)0x06;
-                case '^': return (char)0x07;
-                case '&': return (char)0x08;
-                case '*': return (char)0x09;
-                case '(': return (char)0x0A;
-                case ')': return (char)0x0B;
-                case '-': return (char)0x0C;
-                case '=': return (char)0x0D;
-                case ';': return (char)0x27;
-                case '\'': return (char)0x28;
-                case '/': return (char)0x35;
-                case '.': return (char)0x34;
-                case ',': return (char)0x33;
-                case '\n': return (char)0x1C;
-                case '+': return (char)0x0D;
-                case ':': return (char)0x27;
-                case '\"': return (char)0x28;
-                case '?': return (char)0x35;
-                case '<': return (char)0x33;
-                case '>': return (char)0x34;
-                case '[': return (char)0x1A;
-                case ']': return (char)0x1B;
-                case '{': return (char)0x1A;
-                case '}': return (char)0x1B;
-                case '\\': return (char)0x2B;
-                case '|': return (char)0x2B;
-                case '`': return (char)0x29;
-                case '~': return (char)0x29;
-                case '_': return (char)0x0C;
-                case '\t': return (char)0x39;  // TAB
-                default: return (char)0xFF;
-            }
+                '@' => (char)0x03,
+                'A' => (char)0x1E,
+                'B' => (char)0x30,
+                'C' => (char)0x2E,
+                'D' => (char)0x20,
+                'E' => (char)0x12,
+                'F' => (char)0x21,
+                'G' => (char)0x22,
+                'H' => (char)0x23,
+                'I' => (char)0x17,
+                'J' => (char)0x24,
+                'K' => (char)0x25,
+                'L' => (char)0x26,
+                'M' => (char)0x32,
+                'N' => (char)0x31,
+                'O' => (char)0x18,
+                'P' => (char)0x19,
+                'Q' => (char)0x10,
+                'R' => (char)0x13,
+                'S' => (char)0x1F,
+                'T' => (char)0x14,
+                'U' => (char)0x16,
+                'V' => (char)0x2F,
+                'W' => (char)0x11,
+                'X' => (char)0x2D,
+                'Y' => (char)0x15,
+                'Z' => (char)0x2C,
+                ' ' => (char)0x39,
+                'a' => (char)0x1E,
+                'b' => (char)0x30,
+                'c' => (char)0x2E,
+                'd' => (char)0x20,
+                'e' => (char)0x12,
+                'f' => (char)0x21,
+                'g' => (char)0x22,
+                'h' => (char)0x23,
+                'i' => (char)0x17,
+                'j' => (char)0x24,
+                'k' => (char)0x25,
+                'l' => (char)0x26,
+                'm' => (char)0x32,
+                'n' => (char)0x31,
+                'o' => (char)0x18,
+                'p' => (char)0x19,
+                'q' => (char)0x10,
+                'r' => (char)0x13,
+                's' => (char)0x1F,
+                't' => (char)0x14,
+                'u' => (char)0x16,
+                'v' => (char)0x2F,
+                'w' => (char)0x11,
+                'x' => (char)0x2D,
+                'y' => (char)0x15,
+                'z' => (char)0x2C,
+                '0' => (char)0x0B,
+                '1' => (char)0x02,
+                '2' => (char)0x03,
+                '3' => (char)0x04,
+                '4' => (char)0x05,
+                '5' => (char)0x06,
+                '6' => (char)0x07,
+                '7' => (char)0x08,
+                '8' => (char)0x09,
+                '9' => (char)0x0A,
+                '!' => (char)0x02,
+                '#' => (char)0x04,
+                '$' => (char)0x05,
+                '%' => (char)0x06,
+                '^' => (char)0x07,
+                '&' => (char)0x08,
+                '*' => (char)0x09,
+                '(' => (char)0x0A,
+                ')' => (char)0x0B,
+                '-' => (char)0x0C,
+                '=' => (char)0x0D,
+                ';' => (char)0x27,
+                '\'' => (char)0x28,
+                '/' => (char)0x35,
+                '.' => (char)0x34,
+                ',' => (char)0x33,
+                '\n' => (char)0x1C,
+                '+' => (char)0x0D,
+                ':' => (char)0x27,
+                '\"' => (char)0x28,
+                '?' => (char)0x35,
+                '<' => (char)0x33,
+                '>' => (char)0x34,
+                '[' => (char)0x1A,
+                ']' => (char)0x1B,
+                '{' => (char)0x1A,
+                '}' => (char)0x1B,
+                '\\' => (char)0x2B,
+                '|' => (char)0x2B,
+                '`' => (char)0x29,
+                '~' => (char)0x29,
+                '_' => (char)0x0C,
+                '\t' => (char)0x39 // TAB
+                ,
+                _ => (char)0xFF
+            };
         }
 
         public bool GetCSHIFT(char letter)
         {
-            switch (letter)
+            return letter switch
             {
-                case '@': return true;
-                case 'A': return true;
-                case 'B': return true;
-                case 'C': return true;
-                case 'D': return true;
-                case 'E': return true;
-                case 'F': return true;
-                case 'G': return true;
-                case 'H': return true;
-                case 'I': return true;
-                case 'J': return true;
-                case 'K': return true;
-                case 'L': return true;
-                case 'M': return true;
-                case 'N': return true;
-                case 'O': return true;
-                case 'P': return true;
-                case 'Q': return true;
-                case 'R': return true;
-                case 'S': return true;
-                case 'T': return true;
-                case 'U': return true;
-                case 'V': return true;
-                case 'W': return true;
-                case 'X': return true;
-                case 'Y': return true;
-                case 'Z': return true;
-                case ' ': return false;
-                case 'a': return false;
-                case 'b': return false;
-                case 'c': return false;
-                case 'd': return false;
-                case 'e': return false;
-                case 'f': return false;
-                case 'g': return false;
-                case 'h': return false;
-                case 'i': return false;
-                case 'j': return false;
-                case 'k': return false;
-                case 'l': return false;
-                case 'm': return false;
-                case 'n': return false;
-                case 'o': return false;
-                case 'p': return false;
-                case 'q': return false;
-                case 'r': return false;
-                case 's': return false;
-                case 't': return false;
-                case 'u': return false;
-                case 'v': return false;
-                case 'w': return false;
-                case 'x': return false;
-                case 'y': return false;
-                case 'z': return false;
-                case '0': return false;
-                case '1': return false;
-                case '2': return false;
-                case '3': return false;
-                case '4': return false;
-                case '5': return false;
-                case '6': return false;
-                case '7': return false;
-                case '8': return false;
-                case '9': return false;
-                case '!': return true;
-                case '#': return true;
-                case '$': return true;
-                case '%': return true;
-                case '^': return true;
-                case '&': return true;
-                case '*': return true;
-                case '(': return true;
-                case ')': return true;
-                case '-': return false;
-                case '=': return false;
-                case ';': return false;
-                case '\'': return false;
-                case '/': return false;
-                case '.': return false;
-                case ',': return false;
-                case '\n': return false;
-                case '+': return true;
-                case ':': return true;
-                case '\"': return true;
-                case '?': return true;
-                case '<': return true;
-                case '>': return true;
-                case '[': return false;
-                case ']': return false;
-                case '{': return true;
-                case '}': return true;
-                case '\\': return false;
-                case '|': return true;
-                case '`': return false;
-                case '~': return true;
-                case '_': return true;
-                case '\t': return false; // TAB
-                default: return false;
-            }
+                '@' => true,
+                'A' => true,
+                'B' => true,
+                'C' => true,
+                'D' => true,
+                'E' => true,
+                'F' => true,
+                'G' => true,
+                'H' => true,
+                'I' => true,
+                'J' => true,
+                'K' => true,
+                'L' => true,
+                'M' => true,
+                'N' => true,
+                'O' => true,
+                'P' => true,
+                'Q' => true,
+                'R' => true,
+                'S' => true,
+                'T' => true,
+                'U' => true,
+                'V' => true,
+                'W' => true,
+                'X' => true,
+                'Y' => true,
+                'Z' => true,
+                ' ' => false,
+                'a' => false,
+                'b' => false,
+                'c' => false,
+                'd' => false,
+                'e' => false,
+                'f' => false,
+                'g' => false,
+                'h' => false,
+                'i' => false,
+                'j' => false,
+                'k' => false,
+                'l' => false,
+                'm' => false,
+                'n' => false,
+                'o' => false,
+                'p' => false,
+                'q' => false,
+                'r' => false,
+                's' => false,
+                't' => false,
+                'u' => false,
+                'v' => false,
+                'w' => false,
+                'x' => false,
+                'y' => false,
+                'z' => false,
+                '0' => false,
+                '1' => false,
+                '2' => false,
+                '3' => false,
+                '4' => false,
+                '5' => false,
+                '6' => false,
+                '7' => false,
+                '8' => false,
+                '9' => false,
+                '!' => true,
+                '#' => true,
+                '$' => true,
+                '%' => true,
+                '^' => true,
+                '&' => true,
+                '*' => true,
+                '(' => true,
+                ')' => true,
+                '-' => false,
+                '=' => false,
+                ';' => false,
+                '\'' => false,
+                '/' => false,
+                '.' => false,
+                ',' => false,
+                '\n' => false,
+                '+' => true,
+                ':' => true,
+                '\"' => true,
+                '?' => true,
+                '<' => true,
+                '>' => true,
+                '[' => false,
+                ']' => false,
+                '{' => true,
+                '}' => true,
+                '\\' => false,
+                '|' => true,
+                '`' => false,
+                '~' => true,
+                '_' => true,
+                '\t' => false // TAB
+                ,
+                _ => false
+            };
         }
 
         public bool GetLCNTRL(char letter)
         {
-            switch (letter)
+            return letter switch
             {
-                case '@': return false;
-                case 'A': return false;
-                case 'B': return false;
-                case 'C': return false;
-                case 'D': return false;
-                case 'E': return false;
-                case 'F': return false;
-                case 'G': return false;
-                case 'H': return false;
-                case 'I': return false;
-                case 'J': return false;
-                case 'K': return false;
-                case 'L': return false;
-                case 'M': return false;
-                case 'N': return false;
-                case 'O': return false;
-                case 'P': return false;
-                case 'Q': return false;
-                case 'R': return false;
-                case 'S': return false;
-                case 'T': return false;
-                case 'U': return false;
-                case 'V': return false;
-                case 'W': return false;
-                case 'X': return false;
-                case 'Y': return false;
-                case 'Z': return false;
-                case ' ': return false;
-                case 'a': return false;
-                case 'b': return false;
-                case 'c': return false;
-                case 'd': return false;
-                case 'e': return false;
-                case 'f': return false;
-                case 'g': return false;
-                case 'h': return false;
-                case 'i': return false;
-                case 'j': return false;
-                case 'k': return false;
-                case 'l': return false;
-                case 'm': return false;
-                case 'n': return false;
-                case 'o': return false;
-                case 'p': return false;
-                case 'q': return false;
-                case 'r': return false;
-                case 's': return false;
-                case 't': return false;
-                case 'u': return false;
-                case 'v': return false;
-                case 'w': return false;
-                case 'x': return false;
-                case 'y': return false;
-                case 'z': return false;
-                case '0': return false;
-                case '1': return false;
-                case '2': return false;
-                case '3': return false;
-                case '4': return false;
-                case '5': return false;
-                case '6': return false;
-                case '7': return false;
-                case '8': return false;
-                case '9': return false;
-                case '!': return false;
-                case '#': return false;
-                case '$': return false;
-                case '%': return false;
-                case '^': return false;
-                case '&': return false;
-                case '*': return false;
-                case '(': return false;
-                case ')': return false;
-                case '-': return false;
-                case '=': return false;
-                case ';': return false;
-                case '\'': return false;
-                case '/': return false;
-                case '.': return false;
-                case ',': return false;
-                case '\n': return false;
-                case '+': return false;
-                case ':': return false;
-                case '\"': return false;
-                case '?': return false;
-                case '<': return false;
-                case '>': return false;
-                case '[': return true;
-                case ']': return true;
-                case '{': return false;
-                case '}': return false;
-                case '\\': return true;
-                case '|': return false;
-                case '`': return false;
-                case '~': return false;
-                case '_': return false;
-                case '\t': return false; // TAB
-                default: return false;
-            }
+                '@' => false,
+                'A' => false,
+                'B' => false,
+                'C' => false,
+                'D' => false,
+                'E' => false,
+                'F' => false,
+                'G' => false,
+                'H' => false,
+                'I' => false,
+                'J' => false,
+                'K' => false,
+                'L' => false,
+                'M' => false,
+                'N' => false,
+                'O' => false,
+                'P' => false,
+                'Q' => false,
+                'R' => false,
+                'S' => false,
+                'T' => false,
+                'U' => false,
+                'V' => false,
+                'W' => false,
+                'X' => false,
+                'Y' => false,
+                'Z' => false,
+                ' ' => false,
+                'a' => false,
+                'b' => false,
+                'c' => false,
+                'd' => false,
+                'e' => false,
+                'f' => false,
+                'g' => false,
+                'h' => false,
+                'i' => false,
+                'j' => false,
+                'k' => false,
+                'l' => false,
+                'm' => false,
+                'n' => false,
+                'o' => false,
+                'p' => false,
+                'q' => false,
+                'r' => false,
+                's' => false,
+                't' => false,
+                'u' => false,
+                'v' => false,
+                'w' => false,
+                'x' => false,
+                'y' => false,
+                'z' => false,
+                '0' => false,
+                '1' => false,
+                '2' => false,
+                '3' => false,
+                '4' => false,
+                '5' => false,
+                '6' => false,
+                '7' => false,
+                '8' => false,
+                '9' => false,
+                '!' => false,
+                '#' => false,
+                '$' => false,
+                '%' => false,
+                '^' => false,
+                '&' => false,
+                '*' => false,
+                '(' => false,
+                ')' => false,
+                '-' => false,
+                '=' => false,
+                ';' => false,
+                '\'' => false,
+                '/' => false,
+                '.' => false,
+                ',' => false,
+                '\n' => false,
+                '+' => false,
+                ':' => false,
+                '\"' => false,
+                '?' => false,
+                '<' => false,
+                '>' => false,
+                '[' => true,
+                ']' => true,
+                '{' => false,
+                '}' => false,
+                '\\' => true,
+                '|' => false,
+                '`' => false,
+                '~' => false,
+                '_' => false,
+                '\t' => false // TAB
+                ,
+                _ => false
+            };
         }
 
         public void SetClipboardText(string text)
         {
-            Library.Clipboard.SetClipboardText(text);
+            _clipboardText = text;
+        }
+
+        public bool ClipboardEmpty()
+        {
+            return string.IsNullOrEmpty(_clipboardText);
+        }
+
+        public char PeekClipboard()
+        {
+            return _clipboardText[0]; // get the next key in the string
+        }
+
+        public void PopClipboard()
+        {
+            _clipboardText = _clipboardText[1..];
+        }
+
+        public void CopyText()
+        {
+            Library.Clipboard.CopyText();
         }
     }
 }

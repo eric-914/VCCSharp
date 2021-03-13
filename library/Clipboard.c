@@ -6,8 +6,6 @@
 #include "Graphics.h"
 #include "TC1014MMU.h"
 
-#include "ClipboardText.h"
-
 ClipboardState* InitializeInstance(ClipboardState*);
 
 static ClipboardState* instance = InitializeInstance(new ClipboardState());
@@ -28,29 +26,6 @@ extern "C" {
   __declspec(dllexport) int __cdecl GetCurrentKeyMap() {
     return instance->CurrentKeyMap;
   }
-}
-
-/*
-* Internal, can't expose C++/string outside "C" .dll
-*/
-string GetClipboardText(HANDLE hClip)
-{
-  char* tmp = static_cast<char*>(GlobalLock(hClip));
-
-  if (tmp == nullptr) {
-    CloseClipboard();
-
-    MessageBox(0, "NULL Pointer", "Clipboard", 0);
-
-    return("");
-  }
-
-  string out(tmp);
-
-  GlobalUnlock(hClip);
-  CloseClipboard();
-
-  return out;
 }
 
 extern "C" {
