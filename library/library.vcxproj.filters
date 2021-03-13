@@ -53,9 +53,6 @@
     <ClCompile Include="VccState.c">
       <Filter>vcc</Filter>
     </ClCompile>
-    <ClCompile Include="Throttle.c">
-      <Filter>throttle</Filter>
-    </ClCompile>
     <ClCompile Include="Keyboard.c">
       <Filter>keyboard</Filter>
     </ClCompile>
@@ -208,9 +205,6 @@
     <ClInclude Include="MC6821.h">
       <Filter>mc6821</Filter>
     </ClInclude>
-    <ClInclude Include="Throttle.h">
-      <Filter>throttle</Filter>
-    </ClInclude>
     <ClInclude Include="Keyboard.h">
       <Filter>keyboard</Filter>
     </ClInclude>
@@ -290,9 +284,6 @@
       <Filter>models</Filter>
     </ClInclude>
     <ClInclude Include="KeyboardState.h">
-      <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="ThrottleState.h">
       <Filter>models</Filter>
     </ClInclude>
     <ClInclude Include="AboutBoxCallback.h">
@@ -434,9 +425,6 @@
     </Filter>
     <Filter Include="tc1014\registers">
       <UniqueIdentifier>{4241406f-da4d-467c-a2ca-e09cbdb16573}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="throttle">
-      <UniqueIdentifier>{f953503e-983d-438e-bb1f-ecfbce7b1eb4}</UniqueIdentifier>
     </Filter>
     <Filter Include="vcc">
       <UniqueIdentifier>{f9665cb7-8ba3-4c08-8d8c-e698351da699}</UniqueIdentifier>

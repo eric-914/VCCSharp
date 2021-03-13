@@ -8,7 +8,6 @@
 #include "resource.h"
 
 #include "DirectDraw.h"
-#include "Throttle.h"
 #include "Config.h"
 #include "Graphics.h"
 #include "Audio.h"

@@ -369,18 +369,6 @@ namespace VCCSharp.Libraries
             public static extern ushort GetMem(int address);
         }
 
-        public static class Throttle
-        {
-            [DllImport(LIBRARY)]
-            public static extern unsafe ThrottleState* GetThrottleState();
-
-            [DllImport(LIBRARY)]
-            public static extern void StartRender();
-
-            [DllImport(LIBRARY)]
-            public static extern void EndRender(byte skip);
-        }
-
         public static class Vcc
         {
             [DllImport(LIBRARY)]

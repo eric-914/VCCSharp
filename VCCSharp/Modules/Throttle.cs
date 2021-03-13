@@ -7,7 +7,6 @@ namespace VCCSharp.Modules
 {
     public interface IThrottle
     {
-        unsafe ThrottleState* GetThrottleState();
         void CalibrateThrottle();
         void FrameWait();
         void StartRender();
@@ -20,8 +19,19 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
         private readonly IKernel _kernel;
         private readonly IWinmm _winmm;
-        private static ushort frameCount = 0;
-        private static float fps = 0, fNow = 0, fLast = 0;
+
+        private LARGE_INTEGER _currentTime;
+        private LARGE_INTEGER _startTime;
+        private LARGE_INTEGER _masterClock;
+        private LARGE_INTEGER _now;
+        private LARGE_INTEGER _targetTime;
+        private LARGE_INTEGER _oneMs;
+        private LARGE_INTEGER _oneFrame;
+
+        private static ushort _frameCount;
+        private static float _fps, _fNow, _fLast;
+        private float _fMasterClock;
+        private byte FrameSkip;
 
         public Throttle(IModules modules, IKernel kernel, IWinmm winmm)
         {
@@ -30,25 +40,21 @@ namespace VCCSharp.Modules
             _winmm = winmm;
         }
 
-        public unsafe ThrottleState* GetThrottleState()
-        {
-            return Library.Throttle.GetThrottleState();
-        }
-
         public void CalibrateThrottle()
         {
             unsafe
             {
-                ThrottleState* throttleState = GetThrottleState();
-
-                _winmm.timeBeginPeriod(1);	//Needed to get max resolution from the timer normally its 10Ms
-                _kernel.QueryPerformanceFrequency(&(throttleState->MasterClock));
+                //Needed to get max resolution from the timer normally its 10Ms
+                _winmm.timeBeginPeriod(1);	
+                fixed (LARGE_INTEGER* p = &_masterClock)
+                {
+                    _kernel.QueryPerformanceFrequency(p);
+                }
                 _winmm.timeEndPeriod(1);
 
-                throttleState->OneFrame.QuadPart = throttleState->MasterClock.QuadPart / (Define.TARGETFRAMERATE);
-                throttleState->OneMs.QuadPart = throttleState->MasterClock.QuadPart / 1000;
-                throttleState->fMasterClock = throttleState->MasterClock.QuadPart;
-
+                _oneFrame.QuadPart = _masterClock.QuadPart / (Define.TARGETFRAMERATE);
+                _oneMs.QuadPart = _masterClock.QuadPart / 1000;
+                _fMasterClock = _masterClock.QuadPart;
             }
         }
 
@@ -56,21 +62,23 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                ThrottleState* throttleState = GetThrottleState();
-
-                if (++frameCount != Define.FRAMEINTERVAL) {
-                    return(fps);
+                if (++_frameCount != Define.FRAMEINTERVAL)
+                {
+                    return (_fps);
                 }
 
-                _kernel.QueryPerformanceCounter(&(throttleState->Now));
+                fixed (LARGE_INTEGER* p = &_now)
+                {
+                    _kernel.QueryPerformanceCounter(p);
+                }
 
-                fNow = throttleState->Now.QuadPart;
-                fps = (fNow - fLast) / throttleState->fMasterClock;
-                fLast = fNow;
-                frameCount = 0;
-                fps = Define.FRAMEINTERVAL / fps;
+                _fNow = _now.QuadPart;
+                _fps = (_fNow - _fLast) / _fMasterClock;
+                _fLast = _fNow;
+                _frameCount = 0;
+                _fps = Define.FRAMEINTERVAL / _fps;
 
-                return fps;
+                return _fps;
             }
         }
 
@@ -78,28 +86,31 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                ThrottleState* throttleState = GetThrottleState();
                 AudioState* audioState = _modules.Audio.GetAudioState();
 
-                _kernel.QueryPerformanceCounter(&(throttleState->CurrentTime));
+                UpdateCurrentTime();
 
                 //If we have more that 2Ms till the end of the frame
-                while (throttleState->TargetTime.QuadPart - throttleState->CurrentTime.QuadPart > (throttleState->OneMs.QuadPart * 2))	
+                while (_targetTime.QuadPart - _currentTime.QuadPart > (_oneMs.QuadPart * 2))
                 {
+                    //TODO: I suspect this doesn't really return us back in 1ms.
+                    //--LARGE_INTEGER SleepRes;
                     Thread.Sleep(1);	//Give about 1Ms back to the system
-                    _kernel.QueryPerformanceCounter(&(throttleState->CurrentTime));	//And check again
+
+                    UpdateCurrentTime();
                 }
 
                 if (audioState->CurrentRate == Define.TRUE)
                 {
                     _modules.Audio.PurgeAuxBuffer();
 
-                    if (throttleState->FrameSkip == 1)
+                    if (FrameSkip == 1)
                     {
                         int half = Define.AUDIOBUFFERS / 2;
 
                         //Don't let the buffer get less than half full
-                        if (_modules.Audio.GetFreeBlockCount() > half) {	
+                        if (_modules.Audio.GetFreeBlockCount() > half)
+                        {
                             return;
                         }
 
@@ -111,21 +122,40 @@ namespace VCCSharp.Modules
                     }
                 }
 
-                while (throttleState->CurrentTime.QuadPart < throttleState->TargetTime.QuadPart) {	//Poll Until frame end.
-                    _kernel.QueryPerformanceCounter(&(throttleState->CurrentTime));
+                //Poll Until frame end.
+                while (_currentTime.QuadPart < _targetTime.QuadPart)
+                {	
+                    UpdateCurrentTime();
+                }
+            }
+        }
+
+        private void UpdateCurrentTime()
+        {
+            unsafe
+            {
+                fixed (LARGE_INTEGER* p = &_currentTime)
+                {
+                    _kernel.QueryPerformanceCounter(p);
                 }
             }
         }
 
         public void StartRender()
         {
-            Library.Throttle.StartRender();
+            unsafe
+            {
+                fixed (LARGE_INTEGER* p = &_startTime)
+                {
+                    _kernel.QueryPerformanceCounter(p);
+                }
+            }
         }
 
         public void EndRender(byte skip)
         {
-            Library.Throttle.EndRender(skip);
+            FrameSkip = skip;
+            _targetTime.QuadPart = _startTime.QuadPart + _oneFrame.QuadPart * FrameSkip;
         }
-
     }
 }
