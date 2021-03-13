@@ -388,71 +388,67 @@ BOOL GetLCNTRL(char letter) {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl PasteText(const char* text) {
+  __declspec(dllexport) void __cdecl PasteText(const char* clipText) {
     string clipparse, lines, debugout, tmp;
     unsigned char sc;
     char letter;
     BOOL CSHIFT;
     BOOL LCNTRL;
 
-    string cliptxt = string(text);
+    string text = string(clipText);
 
-    if (instance->PasteWithNew) {
-      cliptxt = "NEW\n" + cliptxt;
-    }
+    //for (int t = 0; t < (int)text.length(); t++) {
+    //  char tmp = text[t];
 
-    for (int t = 0; t < (int)cliptxt.length(); t++) {
-      char tmp = cliptxt[t];
+    //  if (tmp != (char)'\n') {
+    //    lines += tmp;
+    //  }
+    //  else { //...the character is a <CR>
+    //    if (lines.length() > 249 && lines.length() < 257 && instance->CodePaste == TRUE) {
+    //      size_t b = lines.find(" ");
+    //      string main = lines.substr(0, 249);
+    //      string extra = lines.substr(249, lines.length() - 249);
+    //      string spaces;
 
-      if (tmp != (char)'\n') {
-        lines += tmp;
-      }
-      else { //...the character is a <CR>
-        if (lines.length() > 249 && lines.length() < 257 && instance->CodePaste == TRUE) {
-          size_t b = lines.find(" ");
-          string main = lines.substr(0, 249);
-          string extra = lines.substr(249, lines.length() - 249);
-          string spaces;
+    //      for (int p = 1; p < 249; p++) {
+    //        spaces.append(" ");
+    //      }
 
-          for (int p = 1; p < 249; p++) {
-            spaces.append(" ");
-          }
+    //      string linestr = lines.substr(0, b);
 
-          string linestr = lines.substr(0, b);
+    //      lines = main + "\n\nEDIT " + linestr + "\n" + spaces + "I" + extra + "\n";
+    //      clipparse += lines;
+    //      lines.clear();
+    //    }
 
-          lines = main + "\n\nEDIT " + linestr + "\n" + spaces + "I" + extra + "\n";
-          clipparse += lines;
-          lines.clear();
-        }
+    //    if (lines.length() >= 257 && instance->CodePaste == TRUE) {
+    //      // Line is too long to handle. Truncate.
+    //      size_t b = lines.find(" ");
+    //      string linestr = "Warning! Line " + lines.substr(0, b) + " is too long for BASIC and will be truncated.";
 
-        if (lines.length() >= 257 && instance->CodePaste == TRUE) {
-          // Line is too long to handle. Truncate.
-          size_t b = lines.find(" ");
-          string linestr = "Warning! Line " + lines.substr(0, b) + " is too long for BASIC and will be truncated.";
+    //      MessageBox(0, linestr.c_str(), "Clipboard", 0);
 
-          MessageBox(0, linestr.c_str(), "Clipboard", 0);
+    //      lines = (lines.substr(0, 249));
+    //    }
 
-          lines = (lines.substr(0, 249));
-        }
+    //    if (lines.length() <= 249 || instance->CodePaste == false) {
+    //      // Just a regular line.
+    //      clipparse += lines + "\n";
+    //      lines.clear();
+    //    }
+    //  }
 
-        if (lines.length() <= 249 || instance->CodePaste == false) {
-          // Just a regular line.
-          clipparse += lines + "\n";
-          lines.clear();
-        }
-      }
+    //  if (t == text.length() - 1) {
+    //    clipparse += lines;
+    //  }
+    //}
 
-      if (t == cliptxt.length() - 1) {
-        clipparse += lines;
-      }
-    }
-
-    cliptxt = clipparse;
+    //text = clipparse;
 
     string out;
 
-    for (int pp = 0; pp <= (int)cliptxt.size(); pp++) {
-      letter = cliptxt[pp];
+    for (int pp = 0; pp <= (int)text.size(); pp++) {
+      letter = text[pp];
 
       sc = GetScanCode(letter);
       CSHIFT = GetCSHIFT(letter);
