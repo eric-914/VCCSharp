@@ -40,6 +40,7 @@ namespace VCCSharp
 
                 .Bind<IKernel, Kernel>()
                 .Bind<IUser32, User32>()
+                .Bind<IWinmm, Winmm>()
 
                 .Bind<ICommandLineParser, CommandLineParser>()
                 .Bind<IVccApp, VccApp>()

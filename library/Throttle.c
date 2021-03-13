@@ -21,19 +21,6 @@ ThrottleState* InitializeInstance(ThrottleState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl CalibrateThrottle(void)
-  {
-    timeBeginPeriod(1);	//Needed to get max resolution from the timer normally its 10Ms
-    QueryPerformanceFrequency(&(instance->MasterClock));
-    timeEndPeriod(1);
-
-    instance->OneFrame.QuadPart = instance->MasterClock.QuadPart / (TARGETFRAMERATE);
-    instance->OneMs.QuadPart = instance->MasterClock.QuadPart / 1000;
-    instance->fMasterClock = (float)(instance->MasterClock.QuadPart);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl FrameWait(void)
   {
     QueryPerformanceCounter(&(instance->CurrentTime));

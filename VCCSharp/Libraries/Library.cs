@@ -372,9 +372,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe ThrottleState* GetThrottleState();
 
             [DllImport(LIBRARY)]
-            public static extern void CalibrateThrottle();
-
-            [DllImport(LIBRARY)]
             public static extern void FrameWait();
 
             [DllImport(LIBRARY)]

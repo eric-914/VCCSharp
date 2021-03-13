@@ -18,13 +18,15 @@ namespace VCCSharp.Modules
     {
         private readonly IModules _modeModules;
         private readonly IKernel _kernel;
+        private readonly IWinmm _winmm;
         private static ushort frameCount = 0;
         private static float fps = 0, fNow = 0, fLast = 0;
 
-        public Throttle(IModules modeModules, IKernel kernel)
+        public Throttle(IModules modeModules, IKernel kernel, IWinmm winmm)
         {
             _modeModules = modeModules;
             _kernel = kernel;
+            _winmm = winmm;
         }
 
         public unsafe ThrottleState* GetThrottleState()
@@ -34,22 +36,19 @@ namespace VCCSharp.Modules
 
         public void CalibrateThrottle()
         {
-            Library.Throttle.CalibrateThrottle();
-        }
+            unsafe
+            {
+                ThrottleState* throttleState = GetThrottleState();
 
-        public void FrameWait()
-        {
-            Library.Throttle.FrameWait();
-        }
+                _winmm.timeBeginPeriod(1);	//Needed to get max resolution from the timer normally its 10Ms
+                _kernel.QueryPerformanceFrequency(&(throttleState->MasterClock));
+                _winmm.timeEndPeriod(1);
 
-        public void StartRender()
-        {
-            Library.Throttle.StartRender();
-        }
+                throttleState->OneFrame.QuadPart = throttleState->MasterClock.QuadPart / (Define.TARGETFRAMERATE);
+                throttleState->OneMs.QuadPart = throttleState->MasterClock.QuadPart / 1000;
+                throttleState->fMasterClock = throttleState->MasterClock.QuadPart;
 
-        public void EndRender(byte skip)
-        {
-            Library.Throttle.EndRender(skip);
+            }
         }
 
         public float CalculateFPS()
@@ -73,5 +72,21 @@ namespace VCCSharp.Modules
                 return fps;
             }
         }
+
+        public void FrameWait()
+        {
+            Library.Throttle.FrameWait();
+        }
+
+        public void StartRender()
+        {
+            Library.Throttle.StartRender();
+        }
+
+        public void EndRender(byte skip)
+        {
+            Library.Throttle.EndRender(skip);
+        }
+
     }
 }

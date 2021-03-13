@@ -22,5 +22,8 @@ namespace VCCSharp.Libraries
 
         [DllImport(DLL)]
         public static extern unsafe int QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount);
+
+        [DllImport(DLL)]
+        public static extern unsafe int QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency);
     }
 }

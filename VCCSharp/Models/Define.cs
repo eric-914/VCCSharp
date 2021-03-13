@@ -22,5 +22,6 @@
         public const int MAXCARDS = 12;
 
         public const ushort FRAMEINTERVAL = 120;
+        public const int TARGETFRAMERATE = 60;
     }
 }

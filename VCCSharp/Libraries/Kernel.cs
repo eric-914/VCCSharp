@@ -10,6 +10,7 @@ namespace VCCSharp.Libraries
         ushort GetPrivateProfileIntA(string lpAppName, string lpKeyName, short nDefault, string lpFileName);
         unsafe uint GetPrivateProfileStringA(string lpAppName, string lpKeyName, string lpDefault, byte* lpReturnedString, uint nSize, string lpFileName);
         unsafe int QueryPerformanceCounter(LARGE_INTEGER* lpPerformanceCount);
+        unsafe int QueryPerformanceFrequency(LARGE_INTEGER* lpFrequency);
     }
 
     public class Kernel : IKernel
@@ -28,5 +29,8 @@ namespace VCCSharp.Libraries
 
         public unsafe int QueryPerformanceCounter(LARGE_INTEGER* lpPerformanceCount)
             => KernelDll.QueryPerformanceCounter(lpPerformanceCount);
+
+        public unsafe int QueryPerformanceFrequency(LARGE_INTEGER* lpFrequency)
+            => KernelDll.QueryPerformanceFrequency(lpFrequency);
     }
 }
