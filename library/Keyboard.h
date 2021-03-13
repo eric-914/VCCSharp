@@ -32,6 +32,3 @@ extern "C" __declspec(dllexport) void __cdecl GimeSetKeyboardInterruptState(unsi
 extern "C" __declspec(dllexport) void __cdecl vccKeyboardBuildRuntimeTable(unsigned char keyMapIndex);
 extern "C" __declspec(dllexport) void __cdecl vccKeyboardHandleKey(unsigned char, unsigned char, KeyStates);
 extern "C" __declspec(dllexport) void __cdecl vccKeyboardUpdateRolloverTable();
-
-extern "C" __declspec(dllexport) void __cdecl vccKeyboardHandleKeyDown(unsigned char key, unsigned char scanCode);
-extern "C" __declspec(dllexport) void __cdecl vccKeyboardHandleKeyUp(unsigned char key, unsigned char scanCode);

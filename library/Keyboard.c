@@ -498,18 +498,4 @@ extern "C" {
       break;
     }
   }
-
-  extern "C" {
-    __declspec(dllexport) void __cdecl vccKeyboardHandleKeyDown(unsigned char key, unsigned char scanCode)
-    { 
-      vccKeyboardHandleKey(key, scanCode, kEventKeyDown);
-    }
-  }
-
-  extern "C" {
-    __declspec(dllexport) void __cdecl vccKeyboardHandleKeyUp(unsigned char key, unsigned char scanCode)
-    { 
-      vccKeyboardHandleKey(key, scanCode, kEventKeyUp);
-    }
-  }
 }

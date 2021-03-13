@@ -1,4 +1,5 @@
-﻿using VCCSharp.Libraries;
+﻿using VCCSharp.Enums;
+using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
@@ -21,12 +22,12 @@ namespace VCCSharp.Modules
 
         public void vccKeyboardHandleKeyDown(char key, char scanCode)
         {
-            Library.Keyboard.vccKeyboardHandleKeyDown(key, scanCode);
+            vccKeyboardHandleKey(key, scanCode, KeyStates.kEventKeyDown);
         }
 
         public void vccKeyboardHandleKeyUp(char key, char scanCode)
         {
-            Library.Keyboard.vccKeyboardHandleKeyUp(key, scanCode);
+            vccKeyboardHandleKey(key, scanCode, KeyStates.kEventKeyUp);
         }
 
         public void vccKeyboardBuildRuntimeTable(byte keyMapIndex)
@@ -42,6 +43,11 @@ namespace VCCSharp.Modules
 
                 keyboardState->Pasting = flag ? Define.TRUE : Define.FALSE;
             }
+        }
+
+        public void vccKeyboardHandleKey(char key, char scanCode, KeyStates keyState)
+        {
+            Library.Keyboard.vccKeyboardHandleKey(key, scanCode, keyState);
         }
     }
 }

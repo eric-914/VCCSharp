@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using VCCSharp.Enums;
 using VCCSharp.Models;
 using HINSTANCE = System.IntPtr;
 using HANDLE = System.IntPtr;
@@ -262,10 +263,7 @@ namespace VCCSharp.Libraries
             //--Spelled funny because there's a GetKeyboardState() in User32.dll
 
             [DllImport(LIBRARY)]
-            public static extern void vccKeyboardHandleKeyDown(char key, char scanCode);
-
-            [DllImport(LIBRARY)]
-            public static extern void vccKeyboardHandleKeyUp(char key, char scanCode);
+            public static extern void vccKeyboardHandleKey(char key, char scanCode, KeyStates keyState);
 
             [DllImport(LIBRARY)]
             public static extern void vccKeyboardBuildRuntimeTable(byte keyMapIndex);
