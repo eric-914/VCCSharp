@@ -592,13 +592,3 @@ extern "C" {
     SetGimeBorderColor(borderColor);
   }
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetPaletteType() {
-    int borderColor = instance->CC3BorderColor;
-
-    SetGimeBorderColor(0);
-    MakeCMPPalette(GetPaletteType());
-    SetGimeBorderColor(borderColor);
-  }
-}

@@ -26,8 +26,6 @@ extern "C" __declspec(dllexport) void __cdecl SetGimeVdgMode2(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetGimeVdgOffset(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetGimeVmode(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetGimeVres(unsigned char);
-extern "C" __declspec(dllexport) void __cdecl SetPaletteType();
-extern "C" __declspec(dllexport) void __cdecl SetPaletteType();
 extern "C" __declspec(dllexport) void __cdecl SetVerticalOffsetRegister(unsigned short);
 extern "C" __declspec(dllexport) void __cdecl SetVideoBank(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetupDisplay(void);

@@ -93,16 +93,6 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void SetPaletteType()
-        {
-            Library.Graphics.SetPaletteType();
-        }
-
-        public void SetMonitorType(byte type)
-        {
-            Library.Graphics.SetMonitorType(type);
-        }
-
         public void FlipArtifacts()
         {
             unsafe
@@ -111,6 +101,24 @@ namespace VCCSharp.Modules
 
                 graphicsState->ColorInvert = graphicsState->ColorInvert == Define.FALSE ? Define.TRUE : Define.FALSE;
             }
+        }
+
+        //TODO: ScanLines never really worked right to begin with...
+        public unsafe void SetScanLines(EmuState* emuState, byte lines)
+        {
+            GraphicsState* graphicsState = GetGraphicsState();
+
+            emuState->ScanLines = lines;
+            emuState->ResetPending = (byte)ResetPendingStates.Cls;
+
+            _modules.DirectDraw.ClearScreen();
+
+            graphicsState->BorderChange = 3;
+        }
+
+        public void SetMonitorType(byte type)
+        {
+            Library.Graphics.SetMonitorType(type);
         }
 
         public void InvalidateBorder()
@@ -128,17 +136,24 @@ namespace VCCSharp.Modules
             Library.Graphics.MakeCMPPalette(paletteType);
         }
 
-        //TODO: ScanLines never really worked right to begin with...
-        public unsafe void SetScanLines(EmuState* emuState, byte lines)
+        public void SetPaletteType()
         {
-            GraphicsState* graphicsState = GetGraphicsState();
+            unsafe
+            {
+                GraphicsState* graphicsState = GetGraphicsState();
 
-            emuState->ScanLines = lines;
-            emuState->ResetPending = (byte)ResetPendingStates.Cls;
+                byte borderColor = graphicsState->CC3BorderColor;
 
-            _modules.DirectDraw.ClearScreen();
+                SetGimeBorderColor(0);
+                MakeCMPPalette(_modules.Config.GetPaletteType());
+                SetGimeBorderColor(borderColor);
 
-            graphicsState->BorderChange = 3;
+            }
+        }
+
+        public void SetGimeBorderColor(byte data)
+        {
+            Library.Graphics.SetGimeBorderColor(data);
         }
     }
 }
