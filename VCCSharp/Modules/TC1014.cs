@@ -19,6 +19,8 @@ namespace VCCSharp.Modules
         void GimeAssertVertInterrupt();
         void GimeAssertHorzInterrupt();
         void GimeAssertTimerInterrupt();
+        byte MemRead8(ushort address);
+        ushort GetMem(int address);
     }
 
     public class TC1014 : ITC1014
@@ -226,6 +228,16 @@ Could not locate {ROM} in any of these locations:
         public unsafe byte* AllocateMemory(uint size)
         {
             return Library.TC1014.AllocateMemory(size);
+        }
+
+        public byte MemRead8(ushort address)
+        {
+            return Library.TC1014.MemRead8(address);
+        }
+
+        public ushort GetMem(int address)
+        {
+            return Library.TC1014.GetMem(address);
         }
     }
 }

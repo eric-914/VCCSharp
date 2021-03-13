@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using System.Windows;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
@@ -24,18 +25,10 @@ namespace VCCSharp.Modules
 
         private readonly char[] _pcchars32 =
         {
-            '@', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-            'u', 'v', 'w', 'x', 'y', 'z', '[', '\\', ']', ' ', ' ',
-            ' ', '!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4',
-            '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?',
-            '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-            'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', ' ', ' ',
-            ' ', '!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4',
-            '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?',
-            '@', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-            'u', 'v', 'w', 'x', 'y', 'z', '[', '\\', ']', ' ', ' ',
-            ' ', '!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4',
-            '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?'
+            '@','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','[','\\',']',' ',' ',
+            ' ','!','\"','#','$','%','&','\'','(',')','*','+',',','-','.','/','0','1','2','3','4','5','6','7','8','9',':',';','<','=','>','?',
+            '@','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','[','\\',']',' ',' ',
+            ' ','!','\"','#','$','%','&','\'','(',')','*','+',',','-','.','/','0','1','2','3','4','5','6','7','8','9',':',';','<','=','>','?'
         };
 
         private readonly char[] _pcchars40 =
@@ -590,7 +583,109 @@ namespace VCCSharp.Modules
 
         public void CopyText()
         {
-            Library.Clipboard.CopyText();
+            unsafe
+            {
+                GraphicsState* graphicsState = _modules.Graphics.GetGraphicsState();
+
+                byte bytesPerRow = graphicsState->BytesperRow;
+                byte graphicsMode = graphicsState->GraphicsMode;
+                uint startOfVidram = graphicsState->StartofVidram;
+
+                if (graphicsMode != 0)
+                {
+                    const string error = "ERROR: Graphics screen can not be copied.\nCopy can ONLY use a hardware text screen.";
+                    MessageBox.Show(error, "Clipboard");
+
+                    return;
+                }
+
+                Debug.WriteLine($"StartOfVidram is: {startOfVidram}\nGraphicsMode is: {graphicsMode}");
+
+                int lines = bytesPerRow == 32 ? 15 : 23;
+                string clipOut = "";
+
+                // Read the lo-res text screen...
+                if (bytesPerRow == 32)
+                {
+                    for (int y = 0; y <= lines; y++)
+                    {
+                        int lastchar = 0;
+                        string tmpline = "";
+
+                        for (int idx = 0; idx < bytesPerRow; idx++)
+                        {
+                            ushort address = (ushort)(0x0400 + y * bytesPerRow + idx);
+                            byte tmp = _modules.TC1014.MemRead8(address);
+
+                            if (tmp != 32 && tmp != 64 && tmp != 96)
+                            {
+                                lastchar = idx + 1;
+                            }
+
+                            if (tmp < 128) //--Ignore anything beyond ASCII 
+                            {
+                                tmpline += _pcchars32[tmp];
+                            }
+                        }
+
+                        tmpline = tmpline[..lastchar];
+
+                        if (lastchar != 0)
+                        {
+                            clipOut += tmpline + "\n";
+                        }
+                    }
+
+                    if (string.IsNullOrEmpty(clipOut))
+                    {
+                        MessageBox.Show("No text found on screen.", "Clipboard");
+                    }
+
+                }
+                //TODO: This is untested since C# conversion
+                else if (bytesPerRow == 40 || bytesPerRow == 80)
+                {
+                    int offset = 32;
+
+                    for (int y = 0; y <= lines; y++)
+                    {
+                        int lastchar = 0;
+                        string tmpline = "";
+                        int tmp;
+
+                        for (int idx = 0; idx < bytesPerRow * 2; idx += 2)
+                        {
+                            int address = (int)(startOfVidram + y * (bytesPerRow * 2) + idx);
+                            tmp = _modules.TC1014.GetMem(address);
+
+                            if (tmp == 32 || tmp == 64 || tmp == 96)
+                            {
+                                tmp = offset;
+                            }
+                            else
+                            {
+                                lastchar = idx / 2 + 1;
+                            }
+
+                            tmpline += _pcchars40[tmp - offset];
+                        }
+
+                        tmpline = tmpline[..lastchar];
+
+                        if (lastchar != 0)
+                        {
+                            clipOut += tmpline; clipOut += "\n";
+                        }
+                    }
+                }
+
+                SetClipboard(clipOut);
+            }
+        }
+
+        public void SetClipboard(string text)
+        {
+            Library.Clipboard.SetClipboard(text);
         }
     }
 }

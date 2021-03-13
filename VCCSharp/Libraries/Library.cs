@@ -71,19 +71,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe ClipboardState* GetClipboardState();
             
             [DllImport(LIBRARY)]
-            public static extern byte ClipboardEmpty();
-
-            [DllImport(LIBRARY)]
-            public static extern char PeekClipboard();
-
-            [DllImport(LIBRARY)]
-            public static extern void PopClipboard();
-
-            [DllImport(LIBRARY)]
-            public static extern void CopyText();
-
-            [DllImport(LIBRARY)]
-            public static extern void SetClipboardText(string text);
+            public static extern bool SetClipboard(string text);
         }
 
         public static class CoCo
@@ -373,6 +361,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe byte* AllocateMemory(uint size);
+
+            [DllImport(LIBRARY)]
+            public static extern byte MemRead8(ushort address);
+
+            [DllImport(LIBRARY)]
+            public static extern ushort GetMem(int address);
         }
 
         public static class Throttle
