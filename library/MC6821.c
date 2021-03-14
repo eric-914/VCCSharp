@@ -141,38 +141,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MC6821_irq_fs(int phase)	//60HZ Vertical sync pulse 16.667 mS
-  {
-    if ((instance->CartInserted == 1) && (instance->CartAutoStart == 1)) {
-      MC6821_AssertCart();
-    }
-
-    switch (phase)
-    {
-    case FALLING:	//FS went High to low
-      if ((instance->rega[3] & 2) == 0) //IRQ on High to low transition
-      {
-        instance->rega[3] = (instance->rega[3] | 128);
-      }
-
-      break;
-
-    case RISING:	//FS went Low to High
-      if ((instance->rega[3] & 2)) //IRQ  Low to High transition
-      {
-        instance->rega[3] = (instance->rega[3] | 128);
-      }
-
-      break;
-    }
-
-    if (instance->rega[3] & 1) {
-      CPUAssertInterrupt(IRQ, 1);
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) int __cdecl MC6821_OpenPrintFile(char* filename)
   {
     instance->hPrintFile = CreateFile(filename, GENERIC_READ | GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);

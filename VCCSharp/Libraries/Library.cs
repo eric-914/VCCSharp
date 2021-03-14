@@ -260,7 +260,10 @@ namespace VCCSharp.Libraries
             public static extern void MC6821_PiaReset();
 
             [DllImport(LIBRARY)]
-            public static extern void MC6821_irq_fs(int phase);
+            public static extern void MC6821_AssertCart();
+
+            [DllImport(LIBRARY)]
+            public static extern void CPUAssertInterrupt(byte irq, byte flag);
         } //--MC6821
 
         public static class PAKInterface

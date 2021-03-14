@@ -38,16 +38,6 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void MC6821_PiaReset()
-        {
-            Library.MC6821.MC6821_PiaReset();
-        }
-
-        public void MC6821_irq_fs(PhaseStates phase) //60HZ Vertical sync pulse 16.667 mS
-        {
-            Library.MC6821.MC6821_irq_fs((int)phase);
-        }
-
         public void MC6821_irq_hs(PhaseStates phase) //63.5 uS
         {
             unsafe
@@ -57,26 +47,30 @@ namespace VCCSharp.Modules
                 switch (phase)
                 {
                     case PhaseStates.Falling:	//HS went High to low
-                        if ((mc6821State->rega[1] & 2) != 0) { //IRQ on low to High transition
+                        if ((mc6821State->rega[1] & 2) != 0)
+                        { //IRQ on low to High transition
                             return;
                         }
 
                         mc6821State->rega[1] = (byte)(mc6821State->rega[1] | 128);
 
-                        if ((mc6821State->rega[1] & 1) != 0) {
+                        if ((mc6821State->rega[1] & 1) != 0)
+                        {
                             _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 1);
                         }
 
                         break;
 
                     case PhaseStates.Rising:	//HS went Low to High
-                        if ((mc6821State->rega[1] & 2) == 0) { //IRQ  High to low transition
+                        if ((mc6821State->rega[1] & 2) == 0)
+                        { //IRQ  High to low transition
                             return;
                         }
 
                         mc6821State->rega[1] = (byte)(mc6821State->rega[1] | 128);
 
-                        if ((mc6821State->rega[1] & 1) != 0) {
+                        if ((mc6821State->rega[1] & 1) != 0)
+                        {
                             _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 1);
                         }
 
@@ -85,14 +79,64 @@ namespace VCCSharp.Modules
                     case PhaseStates.Any:
                         mc6821State->rega[1] = (byte)(mc6821State->rega[1] | 128);
 
-                        if ((mc6821State->rega[1] & 1) != 0) {
+                        if ((mc6821State->rega[1] & 1) != 0)
+                        {
                             _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 1);
                         }
 
                         break;
                 }
-
             }
+        }
+
+        public void MC6821_PiaReset()
+        {
+            Library.MC6821.MC6821_PiaReset();
+        }
+
+        public void MC6821_irq_fs(PhaseStates phase) //60HZ Vertical sync pulse 16.667 mS
+        {
+            unsafe
+            {
+                MC6821State* instance = GetMC6821State();
+
+                if (instance->CartInserted == 1 && instance->CartAutoStart == 1) {
+                    MC6821_AssertCart();
+                }
+
+                switch (phase)
+                {
+                    case PhaseStates.Falling:	//FS went High to low
+                        if ((instance->rega[3] & 2) == 0) //IRQ on High to low transition
+                        {
+                            instance->rega[3] = (byte)(instance->rega[3] | 128);
+                        }
+
+                        break;
+
+                    case PhaseStates.Rising:	//FS went Low to High
+                        if ((instance->rega[3] & 2) != 0) //IRQ  Low to High transition
+                        {
+                            instance->rega[3] = (byte)(instance->rega[3] | 128);
+                        }
+
+                        break;
+                }
+
+                if ((instance->rega[3] & 1) != 0) {
+                    CPUAssertInterrupt(CPUInterrupts.IRQ, 1);
+                }
+            }
+        }
+
+        public void MC6821_AssertCart()
+        {
+            Library.MC6821.MC6821_AssertCart();
+        }
+
+        public void CPUAssertInterrupt(CPUInterrupts irq, byte flag)
+        {
+            Library.MC6821.CPUAssertInterrupt((byte)irq, flag);
         }
     }
 }
