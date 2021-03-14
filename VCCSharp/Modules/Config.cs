@@ -518,7 +518,32 @@ namespace VCCSharp.Modules
 
         public unsafe void ValidateModel(ConfigModel* model)
         {
-            Library.Config.ValidateModel(model);
+            if (model->KeyMapIndex > 3)
+            {
+                model->KeyMapIndex = 0;	//Default to DECB Mapping
+            }
+
+            string exePath = Path.GetDirectoryName(_modules.Vcc.GetExecPath());
+
+            string modulePath = Converter.ToString(model->ModulePath);
+            string externalBasicImage = Converter.ToString(model->ExternalBasicImage);
+
+            //--If module is in same location as .exe, strip off path portion, leaving only module name
+
+            //--If relative to EXE path, simplify
+            if (!string.IsNullOrEmpty(modulePath) && modulePath.StartsWith(exePath))
+            {
+                modulePath = modulePath[exePath.Length..];
+            }
+
+            //--If relative to EXE path, simplify
+            if (!string.IsNullOrEmpty(externalBasicImage) && externalBasicImage.StartsWith(exePath))
+            {
+                externalBasicImage = externalBasicImage[exePath.Length..];
+            }
+
+            Converter.ToByteArray(modulePath, model->ModulePath);
+            Converter.ToByteArray(externalBasicImage, model->ExternalBasicImage);
         }
 
         public int GetPaletteType()

@@ -22,4 +22,3 @@ extern "C" __declspec(dllexport) unsigned char __cdecl TranslateScan2Display(int
 
 extern "C" __declspec(dllexport) void __cdecl SetIniFilePath(char*);
 extern "C" __declspec(dllexport) void __cdecl UpdateTapeDialog(unsigned int, unsigned char);
-extern "C" __declspec(dllexport) void __cdecl ValidateModel(ConfigModel*);

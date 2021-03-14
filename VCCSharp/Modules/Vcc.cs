@@ -17,6 +17,7 @@ namespace VCCSharp.Modules
         void CreatePrimaryWindow();
         void SetAppTitle(HINSTANCE hResources, string binFileName);
         void EmuLoop();
+        string GetExecPath();
     }
 
     public class Vcc : IVcc
@@ -171,6 +172,11 @@ namespace VCCSharp.Modules
             _modules.Throttle.EndRender(emuState->FrameSkip);
 
             return fps;
+        }
+
+        public string GetExecPath()
+        {
+            return System.Reflection.Assembly.GetExecutingAssembly().Location;
         }
     }
 }

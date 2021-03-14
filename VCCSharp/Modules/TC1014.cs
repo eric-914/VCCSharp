@@ -77,7 +77,7 @@ namespace VCCSharp.Modules
                 }
 
                 //--Try loading from current executable folder
-                string exePath = Path.GetDirectoryName(GetExecPath());
+                string exePath = Path.GetDirectoryName(_modules.Vcc.GetExecPath());
                 string exeFile = Path.Combine(exePath, ROM);
 
                 if (LoadInternalRom(exeFile) != Define.FALSE)
@@ -194,10 +194,6 @@ Could not locate {ROM} in any of these locations:
             return (ushort)bytes.Length;
         }
 
-        public string GetExecPath()
-        {
-            return System.Reflection.Assembly.GetExecutingAssembly().Location;
-        }
 
         public void GimeAssertVertInterrupt()
         {

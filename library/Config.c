@@ -119,19 +119,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl ValidateModel(ConfigModel* model) {
-    if (model->KeyMapIndex > 3) {
-      model->KeyMapIndex = 0;	//Default to DECB Mapping
-    }
-
-    FileCheckPath(model->ModulePath);
-    FileCheckPath(model->ExternalBasicImage);
-
-    FileValidatePath(model->ModulePath); //--If module is in same location as .exe, strip off path portion, leaving only module name
-  }
-}
-
-extern "C" {
   __declspec(dllexport) unsigned char __cdecl TranslateDisplay2Scan(LRESULT x)
   {
     assert(x >= 0 && x < SCAN_TRANS_COUNT);

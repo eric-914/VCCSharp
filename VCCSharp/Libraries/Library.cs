@@ -117,9 +117,6 @@ namespace VCCSharp.Libraries
             public static extern byte GetSoundCardIndex(string soundCardName);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void ValidateModel(ConfigModel* model);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe void SaveConfiguration(ConfigModel* model, string iniFilePath);
         }
 
