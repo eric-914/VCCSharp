@@ -303,7 +303,13 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void InvokeSetInterruptCallPointer();
-        } //PAKInterface
+
+            [DllImport(LIBRARY)]
+            public static extern int HasModuleReset();
+
+            [DllImport(LIBRARY)]
+            public static extern void InvokeModuleReset();
+        } //--PAKInterface
 
         public static class Resource
         {

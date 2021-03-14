@@ -80,7 +80,14 @@ namespace VCCSharp.Modules
 
         public void ResetBus()
         {
-            Library.PAKInterface.ResetBus();
+            unsafe
+            {
+                GetPakInterfaceState()->BankedCartOffset = 0;
+
+                if (HasModuleReset() == Define.TRUE) {
+                    InvokeModuleReset();
+                }
+            }
         }
 
         public void UpdateBusPointer()
@@ -128,6 +135,16 @@ namespace VCCSharp.Modules
         public void InvokeSetInterruptCallPointer()
         {
             Library.PAKInterface.InvokeSetInterruptCallPointer();
+        }
+
+        public int HasModuleReset()
+        {
+            return Library.PAKInterface.HasModuleReset();
+        }
+
+        public void InvokeModuleReset()
+        {
+            Library.PAKInterface.InvokeModuleReset();
         }
     }
 }

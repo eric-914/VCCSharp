@@ -35,7 +35,6 @@ extern "C" __declspec(dllexport) unsigned short __cdecl PakAudioSample(void);
 extern "C" __declspec(dllexport) void __cdecl GetModuleStatus(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl PakMem8Write(unsigned char, unsigned char);
 extern "C" __declspec(dllexport) void __cdecl PakPortWrite(unsigned char, unsigned char);
-extern "C" __declspec(dllexport) void __cdecl ResetBus();
 extern "C" __declspec(dllexport) void __cdecl UnloadDll(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl UnloadPack(EmuState*);
 

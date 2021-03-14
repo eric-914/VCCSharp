@@ -65,18 +65,6 @@ extern "C" {
   }
 }
 
-
-extern "C" {
-  __declspec(dllexport) void __cdecl ResetBus()
-  {
-    instance->BankedCartOffset = 0;
-
-    if (HasModuleReset()) {
-      InvokeModuleReset();
-    }
-  }
-}
-
 extern "C" {
   __declspec(dllexport) void __cdecl GetModuleStatus(EmuState* emuState)
   {
