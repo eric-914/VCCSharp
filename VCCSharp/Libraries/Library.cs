@@ -255,12 +255,6 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe MC6821State* GetMC6821State();
-
-            [DllImport(LIBRARY)]
-            public static extern void MC6821_AssertCart();
-
-            [DllImport(LIBRARY)]
-            public static extern void CPUAssertInterrupt(byte irq, byte flag);
         } //--MC6821
 
         public static class PAKInterface

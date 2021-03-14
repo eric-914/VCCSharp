@@ -95,7 +95,8 @@ namespace VCCSharp.Modules
             {
                 MC6821State* mc6821State = GetMC6821State();
 
-                if (mc6821State->CartInserted == 1 && mc6821State->CartAutoStart == 1) {
+                if (mc6821State->CartInserted == 1 && mc6821State->CartAutoStart == 1)
+                {
                     MC6821_AssertCart();
                 }
 
@@ -118,20 +119,11 @@ namespace VCCSharp.Modules
                         break;
                 }
 
-                if ((mc6821State->rega[3] & 1) != 0) {
-                    CPUAssertInterrupt(CPUInterrupts.IRQ, 1);
+                if ((mc6821State->rega[3] & 1) != 0)
+                {
+                    _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 1);
                 }
             }
-        }
-
-        public void MC6821_AssertCart()
-        {
-            Library.MC6821.MC6821_AssertCart();
-        }
-
-        public void CPUAssertInterrupt(CPUInterrupts irq, byte flag)
-        {
-            Library.MC6821.CPUAssertInterrupt((byte)irq, flag);
         }
 
         public void MC6821_PiaReset()
@@ -147,6 +139,25 @@ namespace VCCSharp.Modules
                     mc6821State->regb[index] = 0;
                     mc6821State->rega_dd[index] = 0;
                     mc6821State->regb_dd[index] = 0;
+                }
+            }
+        }
+
+        public void MC6821_AssertCart()
+        {
+            unsafe
+            {
+                MC6821State* instance = GetMC6821State();
+
+                instance->regb[3] = (byte)(instance->regb[3] | 128);
+
+                if ((instance->regb[3] & 1) != 0)
+                {
+                    _modules.CPU.CPUAssertInterrupt(CPUInterrupts.FIRQ, 0);
+                }
+                else
+                {
+                    _modules.CPU.CPUDeAssertInterrupt(CPUInterrupts.FIRQ); //Kludge but working
                 }
             }
         }

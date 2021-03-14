@@ -93,20 +93,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MC6821_AssertCart(void)
-  {
-    instance->regb[3] = (instance->regb[3] | 128);
-
-    if (instance->regb[3] & 1) {
-      CPUAssertInterrupt(FIRQ, 0);
-    }
-    else {
-      CPUDeAssertInterrupt(FIRQ); //Kludge but working
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl MC6821_ClosePrintFile(void)
   {
     CloseHandle(instance->hPrintFile);
