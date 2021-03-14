@@ -16,7 +16,6 @@ extern "C" __declspec(dllexport) void __cdecl SetMonitorType(unsigned char);
 extern "C" __declspec(dllexport) void MakeRGBPalette(void);
 
 extern "C" __declspec(dllexport) void __cdecl InvalidateBorder();
-extern "C" __declspec(dllexport) void __cdecl MakeCMPPalette(int);
 extern "C" __declspec(dllexport) void __cdecl SetCompatMode(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetGimeBorderColor(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetGimeHorzOffset(unsigned char);

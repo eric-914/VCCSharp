@@ -226,9 +226,6 @@ namespace VCCSharp.Libraries
             public static extern void MakeRGBPalette();
 
             [DllImport(LIBRARY)]
-            public static extern void MakeCMPPalette(int paletteType);
-
-            [DllImport(LIBRARY)]
             public static extern void SetMonitorType(byte type);
 
             [DllImport(LIBRARY)]
@@ -236,6 +233,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetGimeBorderColor(byte data);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetPaletteLookup(byte index, byte r, byte g, byte b);
         }
 
         public static class Joystick
