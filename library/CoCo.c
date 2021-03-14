@@ -100,12 +100,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl ResetKeyMap() {
-    vccKeyboardBuildRuntimeTable(GetCurrentKeyMap());
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl AudioOut(void)
   {
     instance->AudioBuffer[instance->AudioIndex++] = MC6821_GetDACSample();

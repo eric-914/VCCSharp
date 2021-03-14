@@ -87,9 +87,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe void CoCoDrawBottomBorder(EmuState* emuState);
 
             [DllImport(LIBRARY)]
-            public static extern void ResetKeyMap();
-
-            [DllImport(LIBRARY)]
             public static extern void ExecuteAudioEvent();
 
             [DllImport(LIBRARY)]

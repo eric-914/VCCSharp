@@ -23,6 +23,4 @@ extern "C" __declspec(dllexport) void __cdecl CoCoDrawTopBorder(EmuState* emuSta
 extern "C" __declspec(dllexport) void __cdecl CoCoUpdateScreen(EmuState* emuState);
 extern "C" __declspec(dllexport) void __cdecl CoCoDrawBottomBorder(EmuState* emuState);
 
-extern "C" __declspec(dllexport) void __cdecl ResetKeyMap();
-
 extern "C" __declspec(dllexport) void __cdecl ExecuteAudioEvent();
