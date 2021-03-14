@@ -239,15 +239,6 @@ extern "C" {
   }
 }
 
-extern "C" {
-  __declspec(dllexport) void __cdecl UpdateBusPointer()
-  {
-    if (HasSetInterruptCallPointer()) {
-      InvokeSetInterruptCallPointer();
-    }
-  }
-}
-
 //File doesn't exist
 extern "C" {
   __declspec(dllexport) int __cdecl InsertModuleCase0() {

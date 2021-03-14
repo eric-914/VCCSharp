@@ -38,7 +38,6 @@ extern "C" __declspec(dllexport) void __cdecl PakPortWrite(unsigned char, unsign
 extern "C" __declspec(dllexport) void __cdecl ResetBus();
 extern "C" __declspec(dllexport) void __cdecl UnloadDll(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl UnloadPack(EmuState*);
-extern "C" __declspec(dllexport) void __cdecl UpdateBusPointer();
 
 extern "C" __declspec(dllexport) int __cdecl InsertModuleCase0();
 extern "C" __declspec(dllexport) int __cdecl InsertModuleCase1(EmuState* emuState, char* modulePath);

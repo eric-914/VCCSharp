@@ -281,9 +281,6 @@ namespace VCCSharp.Libraries
             public static extern void ResetBus();
 
             [DllImport(LIBRARY)]
-            public static extern void UpdateBusPointer();
-
-            [DllImport(LIBRARY)]
             public static extern unsafe int InsertModule(EmuState* emuState, string modulePath);
 
             [DllImport(LIBRARY)]
@@ -300,7 +297,13 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void InvokeHeartBeat();
-        }
+
+            [DllImport(LIBRARY)]
+            public static extern int HasSetInterruptCallPointer();
+
+            [DllImport(LIBRARY)]
+            public static extern void InvokeSetInterruptCallPointer();
+        } //PAKInterface
 
         public static class Resource
         {

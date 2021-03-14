@@ -42,6 +42,14 @@ namespace VCCSharp.Modules
             }
         }
 
+        public string GetCurrentModule()
+        {
+            unsafe
+            {
+                return Converter.ToString(GetPakInterfaceState()->DllPath);
+            }
+        }
+
         //TODO: Used by LoadROMPack(...), UnloadPack(...), InsertModule(...)
         public unsafe void UnloadDll(EmuState* emuState)
         {
@@ -77,7 +85,9 @@ namespace VCCSharp.Modules
 
         public void UpdateBusPointer()
         {
-            Library.PAKInterface.UpdateBusPointer();
+            if (HasSetInterruptCallPointer() == Define.TRUE) {
+                InvokeSetInterruptCallPointer();
+            }
         }
 
         public unsafe int InsertModule(EmuState* emuState, string modulePath)
@@ -110,12 +120,14 @@ namespace VCCSharp.Modules
             Library.PAKInterface.InvokeHeartBeat();
         }
 
-        public string GetCurrentModule()
+        public int HasSetInterruptCallPointer()
         {
-            unsafe
-            {
-                return Converter.ToString(GetPakInterfaceState()->DllPath);
-            }
+            return Library.PAKInterface.HasSetInterruptCallPointer();
+        }
+
+        public void InvokeSetInterruptCallPointer()
+        {
+            Library.PAKInterface.InvokeSetInterruptCallPointer();
         }
     }
 }
