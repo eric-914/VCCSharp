@@ -104,9 +104,6 @@
     <ClCompile Include="ConfigDialogCallbacks.c">
       <Filter>callbacks</Filter>
     </ClCompile>
-    <ClCompile Include="ConfigIO.c">
-      <Filter>config</Filter>
-    </ClCompile>
     <ClCompile Include="Emu.c">
       <Filter>emu</Filter>
     </ClCompile>
@@ -288,9 +285,6 @@
     </ClInclude>
     <ClInclude Include="ConfigDialogCallbacks.h">
       <Filter>callbacks</Filter>
-    </ClInclude>
-    <ClInclude Include="ConfigIO.h">
-      <Filter>config</Filter>
     </ClInclude>
     <ClInclude Include="EmuState.h">
       <Filter>models</Filter>

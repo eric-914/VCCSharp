@@ -21,7 +21,6 @@
 #include "fileoperations.h"
 #include "CmdLineArguments.h"
 #include "ConfigDialogCallbacks.h"
-#include "ConfigIO.h"
 
 #include "VccState.h"
 

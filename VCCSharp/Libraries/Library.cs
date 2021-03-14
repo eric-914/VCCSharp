@@ -115,9 +115,6 @@ namespace VCCSharp.Libraries
     
             [DllImport(LIBRARY)]
             public static extern byte GetSoundCardIndex(string soundCardName);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void SaveConfiguration(ConfigModel* model, string iniFilePath);
         }
 
         public static class CPU

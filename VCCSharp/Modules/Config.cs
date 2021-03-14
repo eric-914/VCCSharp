@@ -511,11 +511,6 @@ namespace VCCSharp.Modules
             SaveConfiguration(configState->Model, iniFilePath);
         }
 
-        public unsafe void SaveConfiguration(ConfigModel* model, string iniFilePath)
-        {
-            Library.Config.SaveConfiguration(model, iniFilePath);
-        }
-
         public unsafe void ValidateModel(ConfigModel* model)
         {
             if (model->KeyMapIndex > 3)
@@ -557,6 +552,86 @@ namespace VCCSharp.Modules
         public byte GetSoundCardIndex(string soundCardName)
         {
             return Library.Config.GetSoundCardIndex(soundCardName);
+        }
+
+        public unsafe void SaveConfiguration(ConfigModel* model, string iniFilePath)
+        {
+            void SaveText(string group, string key, byte* value)
+            {
+                _kernel.WritePrivateProfileStringA(group, key, Converter.ToString(value), iniFilePath); //## Write-only ##//
+            }
+
+            void SaveInt(string group, string key, int value)
+            {
+                _kernel.WritePrivateProfileStringA(group, key, value.ToString(), iniFilePath); //## Write-only ##//
+            }
+
+            //[Version]
+            SaveText("Version", "Release", model->Release); //## Write-only ##//
+
+            //[CPU]
+            SaveInt("CPU", "CPUMultiplier", model->CPUMultiplier);
+            SaveInt("CPU", "FrameSkip", model->FrameSkip);
+            SaveInt("CPU", "SpeedThrottle", model->SpeedThrottle);
+            SaveInt("CPU", "CpuType", model->CpuType);
+            SaveInt("CPU", "MaxOverClock", model->MaxOverclock);
+
+            //[Audio]
+            SaveText("Audio", "SoundCardName", model->SoundCardName);
+            SaveInt("Audio", "AudioRate", model->AudioRate);
+
+            //[Video]
+            SaveInt("Video", "MonitorType", model->MonitorType);
+            SaveInt("Video", "PaletteType", model->PaletteType);
+            SaveInt("Video", "ScanLines", model->ScanLines);
+            SaveInt("Video", "ForceAspect", model->ForceAspect);
+            SaveInt("Video", "RememberSize", model->RememberSize);
+            SaveInt("Video", "WindowSizeX", model->WindowSizeX);
+            SaveInt("Video", "WindowSizeY", model->WindowSizeY);
+
+            //[Memory]
+            SaveInt("Memory", "RamSize", model->RamSize);
+            //_kernel.WritePrivateProfileStringA("Memory", "ExternalBasicImage", model->ExternalBasicImage, iniFilePath); //## READ-ONLY ##//
+
+            //[Misc]
+            SaveInt("Misc", "AutoStart", model->AutoStart);
+            SaveInt("Misc", "CartAutoStart", model->CartAutoStart);
+            SaveInt("Misc", "KeyMapIndex", model->KeyMapIndex);
+
+            //[Module]
+            SaveText("Module", "ModulePath", model->ModulePath);
+
+            //[LeftJoyStick]
+            SaveInt("LeftJoyStick", "UseMouse", model->Left->UseMouse);
+            SaveInt("LeftJoyStick", "Left", model->Left->Left);
+            SaveInt("LeftJoyStick", "Right", model->Left->Right);
+            SaveInt("LeftJoyStick", "Up", model->Left->Up);
+            SaveInt("LeftJoyStick", "Down", model->Left->Down);
+            SaveInt("LeftJoyStick", "Fire1", model->Left->Fire1);
+            SaveInt("LeftJoyStick", "Fire2", model->Left->Fire2);
+            SaveInt("LeftJoyStick", "DiDevice", model->Left->DiDevice);
+            SaveInt("LeftJoyStick", "HiResDevice", model->Left->HiRes);
+
+            //[RightJoyStick]
+            SaveInt("RightJoyStick", "UseMouse", model->Right->UseMouse);
+            SaveInt("RightJoyStick", "Left", model->Right->Left);
+            SaveInt("RightJoyStick", "Right", model->Right->Right);
+            SaveInt("RightJoyStick", "Up", model->Right->Up);
+            SaveInt("RightJoyStick", "Down", model->Right->Down);
+            SaveInt("RightJoyStick", "Fire1", model->Right->Fire1);
+            SaveInt("RightJoyStick", "Fire2", model->Right->Fire2);
+            SaveInt("RightJoyStick", "DiDevice", model->Right->DiDevice);
+            SaveInt("RightJoyStick", "HiResDevice", model->Right->HiRes);
+
+            //[DefaultPaths]
+            SaveText("DefaultPaths", "CassPath", model->CassPath);
+            SaveText("DefaultPaths", "PakPath", model->PakPath);
+            SaveText("DefaultPaths", "FloppyPath", model->FloppyPath);
+            //SaveText("DefaultPaths", "CoCoRomPath", model->CoCoRomPath); //## READ-ONLY ##//
+            SaveText("DefaultPaths", "SerialCaptureFilePath", model->SerialCaptureFilePath);
+
+            //--Flush .ini file
+            _kernel.WritePrivateProfileStringA(null, null, null, iniFilePath);
         }
     }
 }

@@ -21,6 +21,9 @@ namespace VCCSharp.Libraries
         public static extern unsafe uint GetPrivateProfileStringA(string lpAppName, string lpKeyName, string lpDefault, byte* lpReturnedString, uint  nSize, string lpFileName);
 
         [DllImport(DLL)]
+        public static extern int WritePrivateProfileStringA(string lpAppName, string lpKeyName, string lpString, string lpFileName);
+
+        [DllImport(DLL)]
         public static extern unsafe int QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount);
 
         [DllImport(DLL)]
