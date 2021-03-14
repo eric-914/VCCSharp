@@ -13,7 +13,6 @@ extern "C" __declspec(dllexport) JoystickModel * __cdecl GetRightJoystick();
 
 extern "C" __declspec(dllexport) POINT __cdecl GetIniWindowSize();
 
-extern "C" __declspec(dllexport) int __cdecl GetPaletteType();
 extern "C" __declspec(dllexport) int __cdecl GetRememberSize();
 extern "C" __declspec(dllexport) int __cdecl SelectSerialCaptureFile(EmuState*, char*);
 

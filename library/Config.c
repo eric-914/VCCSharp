@@ -158,12 +158,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl GetPaletteType() {
-    return(instance->Model->PaletteType);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) int __cdecl GetRememberSize() {
     return((int)(instance->Model->RememberSize));
   }

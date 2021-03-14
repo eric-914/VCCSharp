@@ -111,9 +111,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe JoystickModel* GetRightJoystick();
 
             [DllImport(LIBRARY)]
-            public static extern int GetPaletteType();
-
-            [DllImport(LIBRARY)]
             public static extern unsafe byte* ExternalBasicImage();
     
             [DllImport(LIBRARY)]

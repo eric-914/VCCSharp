@@ -523,7 +523,10 @@ namespace VCCSharp.Modules
 
         public int GetPaletteType()
         {
-            return Library.Config.GetPaletteType();
+            unsafe
+            {
+                return GetConfigModel()->PaletteType;
+            }
         }
 
         public byte GetSoundCardIndex(string soundCardName)
