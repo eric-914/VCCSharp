@@ -254,6 +254,9 @@ namespace VCCSharp.Libraries
         public static class MC6821
         {
             [DllImport(LIBRARY)]
+            public static extern unsafe MC6821State* GetMC6821State();
+
+            [DllImport(LIBRARY)]
             public static extern void MC6821_PiaReset();
 
             [DllImport(LIBRARY)]
@@ -261,10 +264,7 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void MC6821_irq_hs(int phase);
-
-            [DllImport(LIBRARY)]
-            public static extern byte MC6821_SetCartAutoStart(byte autostart);
-        }
+        } //--MC6821
 
         public static class PAKInterface
         {

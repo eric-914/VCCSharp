@@ -250,17 +250,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl MC6821_SetCartAutoStart(unsigned char autostart)
-  {
-    if (autostart != QUERY) {
-      instance->CartAutoStart = autostart;
-    }
-
-    return(instance->CartAutoStart);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl MC6821_SetCassetteSample(unsigned char sample)
   {
     instance->regb[0] = instance->regb[0] & 0xFE;
