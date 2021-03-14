@@ -502,7 +502,12 @@ namespace VCCSharp.Modules
 
             string modulePath = Converter.ToString(configState->Model->ModulePath);
 
-            _modules.PAKInterface.GetCurrentModule(modulePath);
+            if (string.IsNullOrEmpty(modulePath))
+            {
+                modulePath = _modules.PAKInterface.GetCurrentModule();
+            }
+
+            Converter.ToByteArray(modulePath, configState->Model->ModulePath);
 
             ValidateModel(configState->Model);
 

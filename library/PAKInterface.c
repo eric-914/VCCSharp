@@ -41,13 +41,6 @@ PakInterfaceState* InitializeInstance(PakInterfaceState* p) {
 
 
 extern "C" {
-  __declspec(dllexport) void __cdecl GetCurrentModule(char* defaultModule)
-  {
-    strcpy(defaultModule, instance->DllPath);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) int __cdecl FileID(char* filename)
   {
     FILE* handle = NULL;

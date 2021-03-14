@@ -300,9 +300,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void InvokeHeartBeat();
-
-            [DllImport(LIBRARY)]
-            public static extern void GetCurrentModule(string defaultModule);
         }
 
         public static class Resource

@@ -1,4 +1,5 @@
-﻿using VCCSharp.IoC;
+﻿using System;
+using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 
@@ -15,7 +16,7 @@ namespace VCCSharp.Modules
         void PakTimer();
         int HasHeartBeat();
         void InvokeHeartBeat();
-        void GetCurrentModule(string defaultModule);
+        string GetCurrentModule();
     }
 
     public class PAKInterface : IPAKInterface
@@ -109,9 +110,12 @@ namespace VCCSharp.Modules
             Library.PAKInterface.InvokeHeartBeat();
         }
 
-        public void GetCurrentModule(string defaultModule)
+        public string GetCurrentModule()
         {
-            Library.PAKInterface.GetCurrentModule(defaultModule);
+            unsafe
+            {
+                return Converter.ToString(GetPakInterfaceState()->DllPath);
+            }
         }
     }
 }

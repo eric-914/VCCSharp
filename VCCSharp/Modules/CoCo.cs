@@ -528,6 +528,16 @@ namespace VCCSharp.Modules
 
         #endregion
 
+        private void ResetKeyMap()
+        {
+            unsafe
+            {
+                int currentKeyMap = _modules.Clipboard.GetClipboardState()->CurrentKeyMap;
+
+                _modules.Keyboard.vccKeyboardBuildRuntimeTable((byte)currentKeyMap);
+            }
+        }
+
         private void ExecuteAudioEvent()
         {
             Library.CoCo.ExecuteAudioEvent();
@@ -546,16 +556,6 @@ namespace VCCSharp.Modules
         private unsafe void CoCoDrawBottomBorder(EmuState* emuState)
         {
             Library.CoCo.CoCoDrawBottomBorder(emuState);
-        }
-
-        private void ResetKeyMap()
-        {
-            unsafe
-            {
-                int currentKeyMap = _modules.Clipboard.GetClipboardState()->CurrentKeyMap;
-
-                _modules.Keyboard.vccKeyboardBuildRuntimeTable((byte)currentKeyMap);
-            }
         }
 
         public ushort SetAudioRate(ushort rate)

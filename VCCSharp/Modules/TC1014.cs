@@ -193,8 +193,7 @@ Could not locate {ROM} in any of these locations:
 
             return (ushort)bytes.Length;
         }
-
-
+        
         public void GimeAssertVertInterrupt()
         {
             unsafe
