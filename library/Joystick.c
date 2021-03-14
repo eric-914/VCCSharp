@@ -1,13 +1,12 @@
 #include "Joystick.h"
 
-static LPDIRECTINPUTDEVICE8 Joysticks[MAXSTICKS];
-static unsigned char JoyStickIndex = 0;
 static LPDIRECTINPUT8 di;
-BOOL CALLBACK enumCallback(const DIDEVICEINSTANCE*, VOID*);
-BOOL CALLBACK enumAxesCallback(const DIDEVICEOBJECTINSTANCE*, VOID*);
+static LPDIRECTINPUTDEVICE8 Joysticks[MAXSTICKS];
+
+static unsigned char JoyStickIndex = 0;
 static unsigned char CurrentStick;
 
-char StickName[MAXSTICKS][STRLEN];
+static char StickName[MAXSTICKS][STRLEN];
 
 JoystickState* InitializeInstance(JoystickState*);
 
@@ -49,11 +48,19 @@ extern "C" {
     HRESULT hr;
     JoyStickIndex = 0;
 
+    LPDIENUMDEVICESCALLBACKA callback = [](const DIDEVICEINSTANCE* p, VOID* v) {
+      HRESULT hr = di->CreateDevice(p->guidInstance, &Joysticks[JoyStickIndex], NULL);
+      strncpy(StickName[JoyStickIndex], p->tszProductName, STRLEN);
+      JoyStickIndex++;
+
+      return (BOOL)(JoyStickIndex < MAXSTICKS);
+    };
+
     if (FAILED(hr = DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, IID_IDirectInput8, (VOID**)&di, NULL))) {
       return(0);
     }
 
-    if (FAILED(hr = di->EnumDevices(DI8DEVCLASS_GAMECTRL, enumCallback, NULL, DIEDFL_ATTACHEDONLY))) {
+    if (FAILED(hr = di->EnumDevices(DI8DEVCLASS_GAMECTRL, callback, NULL, DIEDFL_ATTACHEDONLY))) {
       return(0);
     }
 
@@ -61,22 +68,27 @@ extern "C" {
   }
 }
 
-BOOL CALLBACK enumCallback(const DIDEVICEINSTANCE* instance, VOID* context)
-{
-  HRESULT hr;
-
-  hr = di->CreateDevice(instance->guidInstance, &Joysticks[JoyStickIndex], NULL);
-  strncpy(StickName[JoyStickIndex], instance->tszProductName, STRLEN);
-  JoyStickIndex++;
-
-  return(JoyStickIndex < MAXSTICKS);
-}
-
 extern "C" {
   __declspec(dllexport) BOOL __cdecl InitJoyStick(unsigned char stickNumber)
   {
     //	DIDEVCAPS capabilities;
     HRESULT hr;
+
+    LPDIENUMDEVICEOBJECTSCALLBACKA callback = [](const DIDEVICEOBJECTINSTANCE* p, VOID* v) {
+      DIPROPRANGE d;
+      d.diph.dwSize = sizeof(DIPROPRANGE);
+      d.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+      d.diph.dwHow = DIPH_BYID;
+      d.diph.dwObj = p->dwType;
+      d.lMin = 0;
+      d.lMax = 0xFFFF;
+
+      if (FAILED(Joysticks[CurrentStick]->SetProperty(DIPROP_RANGE, &d.diph))) {
+        return(DIENUM_STOP);
+      }
+
+      return (BOOL)(DIENUM_CONTINUE);
+    };
 
     CurrentStick = stickNumber;
 
@@ -88,30 +100,12 @@ extern "C" {
       return(0);
     }
 
-    if (FAILED(hr = Joysticks[stickNumber]->EnumObjects(enumAxesCallback, NULL, DIDFT_AXIS))) {
+    if (FAILED(hr = Joysticks[stickNumber]->EnumObjects(callback, NULL, DIDFT_AXIS))) {
       return(0);
     }
 
     return(1); //return true on success
   }
-}
-
-BOOL CALLBACK enumAxesCallback(const DIDEVICEOBJECTINSTANCE* instance, VOID* context)
-{
-  HWND hDlg = (HWND)context;
-  DIPROPRANGE propRange;
-  propRange.diph.dwSize = sizeof(DIPROPRANGE);
-  propRange.diph.dwHeaderSize = sizeof(DIPROPHEADER);
-  propRange.diph.dwHow = DIPH_BYID;
-  propRange.diph.dwObj = instance->dwType;
-  propRange.lMin = 0;
-  propRange.lMax = 0xFFFF;
-
-  if (FAILED(Joysticks[CurrentStick]->SetProperty(DIPROP_RANGE, &propRange.diph))) {
-    return(DIENUM_STOP);
-  }
-
-  return(DIENUM_CONTINUE);
 }
 
 extern "C" {

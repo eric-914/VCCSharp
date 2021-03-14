@@ -30,11 +30,6 @@ namespace VCCSharp.Modules
             vccKeyboardHandleKey(key, scanCode, KeyStates.kEventKeyUp);
         }
 
-        public void vccKeyboardBuildRuntimeTable(byte keyMapIndex)
-        {
-            Library.Keyboard.vccKeyboardBuildRuntimeTable(keyMapIndex);
-        }
-
         public void SetPaste(bool flag)
         {
             unsafe
@@ -48,6 +43,11 @@ namespace VCCSharp.Modules
         public void vccKeyboardHandleKey(char key, char scanCode, KeyStates keyState)
         {
             Library.Keyboard.vccKeyboardHandleKey(key, scanCode, keyState);
+        }
+
+        public void vccKeyboardBuildRuntimeTable(byte keyMapIndex)
+        {
+            Library.Keyboard.vccKeyboardBuildRuntimeTable(keyMapIndex);
         }
     }
 }
