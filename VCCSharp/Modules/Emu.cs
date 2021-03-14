@@ -124,7 +124,19 @@ namespace VCCSharp.Modules
 
         public void SetCPUMultiplier(byte multiplier)
         {
-            Library.Emu.SetCPUMultiplier(multiplier);
+            unsafe
+            {
+                EmuState* emuState = GetEmuState();
+
+                emuState->DoubleSpeedMultiplier = multiplier;
+
+                SetCPUMultiplierFlag(emuState->DoubleSpeedFlag);
+            }
+        }
+
+        public void SetCPUMultiplierFlag(byte double_speed)
+        {
+            Library.Emu.SetCPUMultiplierFlag(double_speed);
         }
     }
 }

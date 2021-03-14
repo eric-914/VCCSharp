@@ -27,7 +27,7 @@ namespace VCCSharp.Libraries
             public static extern void SetCPUToMC6809();
 
             [DllImport(LIBRARY)]
-            public static extern void SetCPUMultiplier(byte multiplier);
+            public static extern void SetCPUMultiplierFlag(byte double_speed);
         }
 
         public static class Audio

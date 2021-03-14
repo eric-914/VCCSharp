@@ -86,15 +86,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetCPUMultiplier(unsigned char multiplier)
-  {
-    instance->DoubleSpeedMultiplier = multiplier;
-
-    SetCPUMultiplierFlag(instance->DoubleSpeedFlag);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl SetTurboMode(unsigned char data)
   {
     CoCoState* cocoState = GetCoCoState();
@@ -114,4 +105,3 @@ extern "C" {
     }
   }
 }
-
