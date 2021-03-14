@@ -223,10 +223,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe GraphicsState* GetGraphicsState();
 
             [DllImport(LIBRARY)]
-            public static extern void MakeRGBPalette();
-
-            [DllImport(LIBRARY)]
-            public static extern void SetMonitorType(byte type);
+            public static extern void MakeRGBPalette(byte index);
 
             [DllImport(LIBRARY)]
             public static extern void InvalidateBorder();
@@ -236,6 +233,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetPaletteLookup(byte index, byte r, byte g, byte b);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetMonitorTypePalettes(byte monType, byte palIndex);
         }
 
         public static class Joystick

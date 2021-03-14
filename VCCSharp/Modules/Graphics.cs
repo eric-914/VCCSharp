@@ -255,7 +255,23 @@ namespace VCCSharp.Modules
 
         public void SetMonitorType(byte type)
         {
-            Library.Graphics.SetMonitorType(type);
+            unsafe
+            {
+                GraphicsState* graphicsState = GetGraphicsState();
+
+                byte borderColor = graphicsState->CC3BorderColor;
+
+                SetGimeBorderColor(0);
+
+                graphicsState->MonType = (type & 1) == 0 ? Define.FALSE : Define.TRUE;
+
+                for (byte palIndex = 0; palIndex < 16; palIndex++)
+                {
+                    SetMonitorTypePalettes(graphicsState->MonType, palIndex);
+                }
+
+                SetGimeBorderColor(borderColor);
+            }
         }
 
         public void InvalidateBorder()
@@ -265,7 +281,15 @@ namespace VCCSharp.Modules
 
         public void MakeRGBPalette()
         {
-            Library.Graphics.MakeRGBPalette();
+            for (byte index = 0; index < 64; index++)
+            {
+                Library.Graphics.MakeRGBPalette(index);
+            }
+        }
+
+        public void SetMonitorTypePalettes(byte monType, byte palIndex)
+        {
+            Library.Graphics.SetMonitorTypePalettes(monType, palIndex);
         }
     }
 }

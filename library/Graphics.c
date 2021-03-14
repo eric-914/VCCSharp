@@ -144,25 +144,22 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MakeRGBPalette()
+  __declspec(dllexport) void __cdecl MakeRGBPalette(unsigned char index)
   {
     unsigned char r, g, b;
 
-    for (unsigned char index = 0; index < 64; index++)
-    {
-      colors->PaletteLookup8[1][index] = index | 128;
+    colors->PaletteLookup8[1][index] = index | 128;
 
-      r = colors->ColorTable16Bit[(index & 32) >> 4 | (index & 4) >> 2];
-      g = colors->ColorTable16Bit[(index & 16) >> 3 | (index & 2) >> 1];
-      b = colors->ColorTable16Bit[(index & 8) >> 2 | (index & 1)];
-      colors->PaletteLookup16[1][index] = (r << 11) | (g << 6) | b;
+    r = colors->ColorTable16Bit[(index & 32) >> 4 | (index & 4) >> 2];
+    g = colors->ColorTable16Bit[(index & 16) >> 3 | (index & 2) >> 1];
+    b = colors->ColorTable16Bit[(index & 8) >> 2 | (index & 1)];
+    colors->PaletteLookup16[1][index] = (r << 11) | (g << 6) | b;
 
-      //32BIT
-      r = colors->ColorTable32Bit[(index & 32) >> 4 | (index & 4) >> 2];
-      g = colors->ColorTable32Bit[(index & 16) >> 3 | (index & 2) >> 1];
-      b = colors->ColorTable32Bit[(index & 8) >> 2 | (index & 1)];
-      colors->PaletteLookup32[1][index] = (r * 65536) + (g * 256) + b;
-    }
+    //32BIT
+    r = colors->ColorTable32Bit[(index & 32) >> 4 | (index & 4) >> 2];
+    g = colors->ColorTable32Bit[(index & 16) >> 3 | (index & 2) >> 1];
+    b = colors->ColorTable32Bit[(index & 8) >> 2 | (index & 1)];
+    colors->PaletteLookup32[1][index] = (r * 65536) + (g * 256) + b;
   }
 }
 
@@ -459,21 +456,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetMonitorType(unsigned char type)
-  {
-    int borderColor = instance->CC3BorderColor;
-
-    SetGimeBorderColor(0);
-
-    instance->MonType = type & 1;
-
-    for (unsigned char palIndex = 0; palIndex < 16; palIndex++)
-    {
-      colors->Palette16Bit[palIndex] = colors->PaletteLookup16[instance->MonType][colors->Palette[palIndex]];
-      colors->Palette32Bit[palIndex] = colors->PaletteLookup32[instance->MonType][colors->Palette[palIndex]];
-      colors->Palette8Bit[palIndex] = colors->PaletteLookup8[instance->MonType][colors->Palette[palIndex]];
-    }
-
-    SetGimeBorderColor(borderColor);
+  __declspec(dllexport) void __cdecl SetMonitorTypePalettes(unsigned char monType, unsigned char palIndex) {
+    colors->Palette16Bit[palIndex] = colors->PaletteLookup16[monType][colors->Palette[palIndex]];
+    colors->Palette32Bit[palIndex] = colors->PaletteLookup32[monType][colors->Palette[palIndex]];
+    colors->Palette8Bit[palIndex] = colors->PaletteLookup8[monType][colors->Palette[palIndex]];
   }
 }
