@@ -261,9 +261,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void MC6821_irq_fs(int phase);
-
-            [DllImport(LIBRARY)]
-            public static extern void MC6821_irq_hs(int phase);
         } //--MC6821
 
         public static class PAKInterface

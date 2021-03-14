@@ -32,6 +32,5 @@ extern "C" __declspec(dllexport) void __cdecl MC6821_SetMonState(BOOL);
 extern "C" __declspec(dllexport) void __cdecl MC6821_SetSerialParams(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl MC6821_WritePrintMon(char*);
 extern "C" __declspec(dllexport) void __cdecl MC6821_irq_fs(int);
-extern "C" __declspec(dllexport) void __cdecl MC6821_irq_hs(int);
 extern "C" __declspec(dllexport) void __cdecl MC6821_pia0_write(unsigned char, unsigned char);
 extern "C" __declspec(dllexport) void __cdecl MC6821_pia1_write(unsigned char, unsigned char);
