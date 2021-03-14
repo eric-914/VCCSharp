@@ -13,7 +13,6 @@ extern "C" __declspec(dllexport) JoystickModel * __cdecl GetRightJoystick();
 
 extern "C" __declspec(dllexport) POINT __cdecl GetIniWindowSize();
 
-extern "C" __declspec(dllexport) int __cdecl GetCurrentKeyboardLayout();
 extern "C" __declspec(dllexport) int __cdecl GetPaletteType();
 extern "C" __declspec(dllexport) int __cdecl GetRememberSize();
 extern "C" __declspec(dllexport) int __cdecl SelectSerialCaptureFile(EmuState*, char*);
@@ -25,4 +24,3 @@ extern "C" __declspec(dllexport) unsigned char __cdecl TranslateScan2Display(int
 extern "C" __declspec(dllexport) void __cdecl SetIniFilePath(char*);
 extern "C" __declspec(dllexport) void __cdecl UpdateTapeDialog(unsigned int, unsigned char);
 extern "C" __declspec(dllexport) void __cdecl ValidateModel(ConfigModel*);
-extern "C" __declspec(dllexport) void __cdecl WriteIniFile(EmuState*);

@@ -441,31 +441,6 @@ namespace VCCSharp.Modules
             _kernel.GetPrivateProfileStringA("DefaultPaths", "PakPath", "", model->PakPath, Define.MAX_PATH, iniFilePath);
         }
 
-        public unsafe void ValidateModel(ConfigModel* model)
-        {
-            Library.Config.ValidateModel(model);
-        }
-
-        public int GetPaletteType()
-        {
-            return Library.Config.GetPaletteType();
-        }
-
-        public byte GetSoundCardIndex(string soundCardName)
-        {
-            return Library.Config.GetSoundCardIndex(soundCardName);
-        }
-
-        public unsafe void WriteIniFile(EmuState* emuState)
-        {
-            Library.Config.WriteIniFile(emuState);
-        }
-
-        public short GetCurrentKeyboardLayout()
-        {
-            return Library.Config.GetCurrentKeyboardLayout();
-        }
-
         public void SaveConfig()
         {
             unsafe
@@ -476,7 +451,7 @@ namespace VCCSharp.Modules
                 // EJJ get current ini file path
                 string curIni = Converter.ToString(configState->IniFilePath);
 
-                // Let SaveFileDialogsuggest it
+                // Let SaveFileDialog suggest it
                 var saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
                     FileName = curIni,
@@ -510,5 +485,50 @@ namespace VCCSharp.Modules
             }
         }
 
+        public short GetCurrentKeyboardLayout()
+        {
+            unsafe
+            {
+                return GetConfigModel()->KeyMapIndex;
+            }
+        }
+
+        public unsafe void WriteIniFile(EmuState* emuState)
+        {
+            ConfigState* configState = GetConfigState();
+
+            configState->Model->WindowSizeX = (short)emuState->WindowSize.X;
+            configState->Model->WindowSizeY = (short)emuState->WindowSize.Y;
+
+            string modulePath = Converter.ToString(configState->Model->ModulePath);
+
+            _modules.PAKInterface.GetCurrentModule(modulePath);
+
+            ValidateModel(configState->Model);
+
+            string iniFilePath = Converter.ToString(configState->IniFilePath);
+
+            SaveConfiguration(configState->Model, iniFilePath);
+        }
+
+        public unsafe void SaveConfiguration(ConfigModel* model, string iniFilePath)
+        {
+            Library.Config.SaveConfiguration(model, iniFilePath);
+        }
+
+        public unsafe void ValidateModel(ConfigModel* model)
+        {
+            Library.Config.ValidateModel(model);
+        }
+
+        public int GetPaletteType()
+        {
+            return Library.Config.GetPaletteType();
+        }
+
+        public byte GetSoundCardIndex(string soundCardName)
+        {
+            return Library.Config.GetSoundCardIndex(soundCardName);
+        }
     }
 }

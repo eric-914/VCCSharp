@@ -111,9 +111,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe JoystickModel* GetRightJoystick();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void WriteIniFile(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
             public static extern int GetPaletteType();
 
             [DllImport(LIBRARY)]
@@ -123,13 +120,10 @@ namespace VCCSharp.Libraries
             public static extern byte GetSoundCardIndex(string soundCardName);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void LoadConfiguration(ConfigModel* model, string iniFilePath);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe void ValidateModel(ConfigModel* model);
 
             [DllImport(LIBRARY)]
-            public static extern short GetCurrentKeyboardLayout();
+            public static extern unsafe void SaveConfiguration(ConfigModel* model, string iniFilePath);
         }
 
         public static class CPU
@@ -318,6 +312,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void InvokeHeartBeat();
+
+            [DllImport(LIBRARY)]
+            public static extern void GetCurrentModule(string defaultModule);
         }
 
         public static class Resource

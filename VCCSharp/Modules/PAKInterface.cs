@@ -15,6 +15,7 @@ namespace VCCSharp.Modules
         void PakTimer();
         int HasHeartBeat();
         void InvokeHeartBeat();
+        void GetCurrentModule(string defaultModule);
     }
 
     public class PAKInterface : IPAKInterface
@@ -106,6 +107,11 @@ namespace VCCSharp.Modules
         public void InvokeHeartBeat()
         {
             Library.PAKInterface.InvokeHeartBeat();
+        }
+
+        public void GetCurrentModule(string defaultModule)
+        {
+            Library.PAKInterface.GetCurrentModule(defaultModule);
         }
     }
 }

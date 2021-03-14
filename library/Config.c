@@ -158,12 +158,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl GetCurrentKeyboardLayout() {
-    return(instance->Model->KeyMapIndex);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) int __cdecl GetPaletteType() {
     return(instance->Model->PaletteType);
   }
@@ -247,19 +241,5 @@ extern "C" {
     strcpy(filename, tempFileName);
 
     return(1);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl WriteIniFile(EmuState* emuState)
-  {
-    instance->Model->WindowSizeX = (unsigned short)emuState->WindowSize.x;
-    instance->Model->WindowSizeY = (unsigned short)emuState->WindowSize.y;
-
-    GetCurrentModule(instance->Model->ModulePath);
-
-    ValidateModel(instance->Model);
-
-    SaveConfiguration(instance->Model, instance->IniFilePath);
   }
 }
