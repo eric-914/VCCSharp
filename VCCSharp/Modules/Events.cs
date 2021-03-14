@@ -147,11 +147,6 @@ namespace VCCSharp.Modules
             }
         }
 
-        public HWND CreateConfigurationDialog(HINSTANCE resources, HWND windowHandle)
-        {
-            return Library.Events.CreateConfigurationDialog(resources, windowHandle);
-        }
-
         public void ShowConfiguration()
         {
             unsafe
@@ -172,5 +167,9 @@ namespace VCCSharp.Modules
             }
         }
 
+        public HWND CreateConfigurationDialog(HINSTANCE resources, HWND windowHandle)
+        {
+            return Library.Events.CreateConfigurationDialog(resources, windowHandle);
+        }
     }
 }

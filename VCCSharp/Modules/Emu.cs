@@ -12,7 +12,7 @@ namespace VCCSharp.Modules
         unsafe void SetEmuState(EmuState* emuState);
         void SoftReset();
         unsafe void HardReset(EmuState* emuState);
-        byte SetCPUMultiplier(byte multiplier);
+        void SetCPUMultiplier(byte multiplier);
         void SetEmuRunning(bool flag);
     }
 
@@ -122,9 +122,9 @@ namespace VCCSharp.Modules
             Library.Emu.SetCPUToMC6809();
         }
 
-        public byte SetCPUMultiplier(byte multiplier)
+        public void SetCPUMultiplier(byte multiplier)
         {
-            return Library.Emu.SetCPUMultiplier(multiplier);
+            Library.Emu.SetCPUMultiplier(multiplier);
         }
     }
 }

@@ -549,11 +549,6 @@ namespace VCCSharp.Modules
             }
         }
 
-        public byte GetSoundCardIndex(string soundCardName)
-        {
-            return Library.Config.GetSoundCardIndex(soundCardName);
-        }
-
         public unsafe void SaveConfiguration(ConfigModel* model, string iniFilePath)
         {
             void SaveText(string group, string key, byte* value)
@@ -632,6 +627,11 @@ namespace VCCSharp.Modules
 
             //--Flush .ini file
             _kernel.WritePrivateProfileStringA(null, null, null, iniFilePath);
+        }
+
+        public byte GetSoundCardIndex(string soundCardName)
+        {
+            return Library.Config.GetSoundCardIndex(soundCardName);
         }
     }
 }
