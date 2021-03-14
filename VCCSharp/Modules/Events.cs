@@ -13,7 +13,6 @@ namespace VCCSharp.Modules
         void EmuRun();
         void EmuReset(ResetPendingStates state);
         void EmuExit();
-        void SaveConfig();
         void ShowConfiguration();
         void ToggleOnOff();
         void SlowDown();
@@ -146,11 +145,6 @@ namespace VCCSharp.Modules
                     emuState->FullScreen = emuState->FullScreen == Define.TRUE ? Define.FALSE : Define.TRUE;
                 }
             }
-        }
-
-public void SaveConfig()
-        {
-            Library.Events.SaveConfig();
         }
 
         public HWND CreateConfigurationDialog(HINSTANCE resources, HWND windowHandle)

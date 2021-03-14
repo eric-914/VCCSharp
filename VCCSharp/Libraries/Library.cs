@@ -211,9 +211,6 @@ namespace VCCSharp.Libraries
         public static class Events
         {
             [DllImport(LIBRARY)]
-            public static extern void SaveConfig();
-
-            [DllImport(LIBRARY)]
             public static extern HWND CreateConfigurationDialog(HINSTANCE resources, HWND windowHandle);
         }
 

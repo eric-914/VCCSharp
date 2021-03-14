@@ -25,6 +25,7 @@ namespace VCCSharp.Modules
         unsafe void IncreaseOverclockSpeed(EmuState* emuState);
         void LoadIniFile();
         short GetCurrentKeyboardLayout();
+        void SaveConfig();
     }
 
     public class Config : IConfig
@@ -464,5 +465,50 @@ namespace VCCSharp.Modules
         {
             return Library.Config.GetCurrentKeyboardLayout();
         }
+
+        public void SaveConfig()
+        {
+            unsafe
+            {
+                ConfigState* configState = GetConfigState();
+                EmuState* emuState = _modules.Emu.GetEmuState();
+
+                // EJJ get current ini file path
+                string curIni = Converter.ToString(configState->IniFilePath);
+
+                // Let SaveFileDialogsuggest it
+                var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    FileName = curIni,
+                    DefaultExt = ".ini",
+                    Filter = "INI files (.ini)|*.ini",
+                    FilterIndex = 1,
+                    InitialDirectory = curIni,
+                    CheckPathExists = true,
+                    Title = "Save Vcc Config File",
+                    AddExtension = true
+                };
+
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    WriteIniFile(emuState); // Flush current config
+
+                    string newIni = saveFileDialog.FileName;
+
+                    if (newIni != curIni)
+                    {
+                        try
+                        {
+                            File.Copy(curIni, newIni, true);
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("Copy config failed", "error");
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }

@@ -26,7 +26,7 @@ namespace VCCSharp
 
         public void SaveConfiguration()
         {
-            _modules.Events.SaveConfig();
+            _modules.Config.SaveConfig();
         }
 
         public void LoadConfiguration()

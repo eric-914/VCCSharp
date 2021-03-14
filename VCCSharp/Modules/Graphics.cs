@@ -243,16 +243,6 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void SetGimeBorderColor(byte data)
-        {
-            Library.Graphics.SetGimeBorderColor(data);
-        }
-
-        public void SetPaletteLookup(byte index, byte r, byte g, byte b)
-        {
-            Library.Graphics.SetPaletteLookup(index, r, g, b);
-        }
-
         public void SetMonitorType(byte type)
         {
             unsafe
@@ -290,6 +280,16 @@ namespace VCCSharp.Modules
         public void SetMonitorTypePalettes(byte monType, byte palIndex)
         {
             Library.Graphics.SetMonitorTypePalettes(monType, palIndex);
+        }
+
+        public void SetGimeBorderColor(byte data)
+        {
+            Library.Graphics.SetGimeBorderColor(data);
+        }
+
+        public void SetPaletteLookup(byte index, byte r, byte g, byte b)
+        {
+            Library.Graphics.SetPaletteLookup(index, r, g, b);
         }
     }
 }
