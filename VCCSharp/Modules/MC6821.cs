@@ -89,41 +89,36 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void MC6821_PiaReset()
-        {
-            Library.MC6821.MC6821_PiaReset();
-        }
-
         public void MC6821_irq_fs(PhaseStates phase) //60HZ Vertical sync pulse 16.667 mS
         {
             unsafe
             {
-                MC6821State* instance = GetMC6821State();
+                MC6821State* mc6821State = GetMC6821State();
 
-                if (instance->CartInserted == 1 && instance->CartAutoStart == 1) {
+                if (mc6821State->CartInserted == 1 && mc6821State->CartAutoStart == 1) {
                     MC6821_AssertCart();
                 }
 
                 switch (phase)
                 {
                     case PhaseStates.Falling:	//FS went High to low
-                        if ((instance->rega[3] & 2) == 0) //IRQ on High to low transition
+                        if ((mc6821State->rega[3] & 2) == 0) //IRQ on High to low transition
                         {
-                            instance->rega[3] = (byte)(instance->rega[3] | 128);
+                            mc6821State->rega[3] = (byte)(mc6821State->rega[3] | 128);
                         }
 
                         break;
 
                     case PhaseStates.Rising:	//FS went Low to High
-                        if ((instance->rega[3] & 2) != 0) //IRQ  Low to High transition
+                        if ((mc6821State->rega[3] & 2) != 0) //IRQ  Low to High transition
                         {
-                            instance->rega[3] = (byte)(instance->rega[3] | 128);
+                            mc6821State->rega[3] = (byte)(mc6821State->rega[3] | 128);
                         }
 
                         break;
                 }
 
-                if ((instance->rega[3] & 1) != 0) {
+                if ((mc6821State->rega[3] & 1) != 0) {
                     CPUAssertInterrupt(CPUInterrupts.IRQ, 1);
                 }
             }
@@ -137,6 +132,23 @@ namespace VCCSharp.Modules
         public void CPUAssertInterrupt(CPUInterrupts irq, byte flag)
         {
             Library.MC6821.CPUAssertInterrupt((byte)irq, flag);
+        }
+
+        public void MC6821_PiaReset()
+        {
+            unsafe
+            {
+                MC6821State* mc6821State = GetMC6821State();
+
+                // Clear the PIA registers
+                for (byte index = 0; index < 4; index++)
+                {
+                    mc6821State->rega[index] = 0;
+                    mc6821State->regb[index] = 0;
+                    mc6821State->rega_dd[index] = 0;
+                    mc6821State->regb_dd[index] = 0;
+                }
+            }
         }
     }
 }

@@ -257,9 +257,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe MC6821State* GetMC6821State();
 
             [DllImport(LIBRARY)]
-            public static extern void MC6821_PiaReset();
-
-            [DllImport(LIBRARY)]
             public static extern void MC6821_AssertCart();
 
             [DllImport(LIBRARY)]

@@ -154,20 +154,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MC6821_PiaReset()
-  {
-    // Clear the PIA registers
-    for (uint8_t index = 0; index < 4; index++)
-    {
-      instance->rega[index] = 0;
-      instance->regb[index] = 0;
-      instance->rega_dd[index] = 0;
-      instance->regb_dd[index] = 0;
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl SetCart(unsigned char cart)
   {
     instance->CartInserted = cart;

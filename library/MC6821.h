@@ -26,7 +26,6 @@ extern "C" __declspec(dllexport) unsigned int __cdecl MC6821_GetDACSample();
 extern "C" __declspec(dllexport) void __cdecl MC6821_AssertCart();
 extern "C" __declspec(dllexport) void __cdecl MC6821_CaptureBit(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl MC6821_ClosePrintFile();
-extern "C" __declspec(dllexport) void __cdecl MC6821_PiaReset();
 extern "C" __declspec(dllexport) void __cdecl MC6821_SetCassetteSample(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl MC6821_SetMonState(BOOL);
 extern "C" __declspec(dllexport) void __cdecl MC6821_SetSerialParams(unsigned char);
