@@ -1,5 +1,6 @@
-﻿using VCCSharp.Libraries;
-using VCCSharp.Models;
+﻿//using Microsoft.DirectX.DirectInput;
+using VCCSharp.Libraries;
+using JoystickState = VCCSharp.Models.JoystickState;
 
 namespace VCCSharp.Modules
 {
@@ -20,6 +21,10 @@ namespace VCCSharp.Modules
 
         public short EnumerateJoysticks()
         {
+            //DeviceList devices = Manager.GetDevices(
+            //    DeviceClass.GameControl,
+            //    EnumDevicesFlags.AttachedOnly);
+
             return Library.Joystick.EnumerateJoysticks();
         }
 

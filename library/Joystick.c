@@ -3,7 +3,6 @@
 static LPDIRECTINPUT8 di;
 static LPDIRECTINPUTDEVICE8 Joysticks[MAXSTICKS];
 
-static unsigned char JoyStickIndex = 0;
 static unsigned char CurrentStick;
 
 static char StickName[MAXSTICKS][STRLEN];
@@ -42,18 +41,23 @@ extern "C" {
   }
 }
 
+void SetStickName(unsigned char joystickIndex, const char* joystickName) {
+  strncpy(StickName[joystickIndex], joystickName, STRLEN);
+}
+
 extern "C" {
   __declspec(dllexport) int __cdecl EnumerateJoysticks()
   {
     HRESULT hr;
-    JoyStickIndex = 0;
+    static unsigned char joystickIndex = 0;
 
     LPDIENUMDEVICESCALLBACKA callback = [](const DIDEVICEINSTANCE* p, VOID* v) {
-      HRESULT hr = di->CreateDevice(p->guidInstance, &Joysticks[JoyStickIndex], NULL);
-      strncpy(StickName[JoyStickIndex], p->tszProductName, STRLEN);
-      JoyStickIndex++;
+      HRESULT hr = di->CreateDevice(p->guidInstance, &Joysticks[joystickIndex], NULL);
+      
+      SetStickName(joystickIndex, p->tszProductName);
+      joystickIndex++;
 
-      return (BOOL)(JoyStickIndex < MAXSTICKS);
+      return (BOOL)(joystickIndex < MAXSTICKS);
     };
 
     if (FAILED(hr = DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, IID_IDirectInput8, (VOID**)&di, NULL))) {
@@ -64,7 +68,7 @@ extern "C" {
       return(0);
     }
 
-    return(JoyStickIndex);
+    return(joystickIndex);
   }
 }
 

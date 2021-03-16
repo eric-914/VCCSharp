@@ -93,7 +93,7 @@ namespace VCCSharp.Modules
 
             var array = configState->SoundCards.ToArray();
             SoundCardList soundCard = array[soundCardIndex];
-            _GUID* guid = soundCard.Guid;
+            _GUID* guid = (_GUID*)soundCard.Guid;
 
             _modules.Audio.SoundInit(emuState->WindowHandle, guid, configState->Model->AudioRate);
 

@@ -168,18 +168,16 @@ extern "C" {
     if (instance->InitPassed)
     {
       instance->InitPassed = 0;
-      directSoundState->lpdsbuffer1->Stop();
+      DirectSoundStop();
 
-      if (directSoundState->lpdsbuffer1 != NULL)
+      if (DirectSoundHasBuffer() == TRUE)
       {
-        instance->hr = directSoundState->lpdsbuffer1->Release();
-        directSoundState->lpdsbuffer1 = NULL;
+        instance->hr = DirectSoundBufferRelease();
       }
 
-      if (directSoundState->lpds != NULL)
+      if (DirectSoundHasInterface())
       {
-        instance->hr = directSoundState->lpds->Release();
-        directSoundState->lpds = NULL;
+        instance->hr = DirectSoundInterfaceRelease();
       }
     }
 
@@ -193,13 +191,13 @@ extern "C" {
 
     if (rate)
     {
-      instance->hr = DirectSoundCreate(guid, &(directSoundState->lpds), NULL);	// create a directsound object
+      instance->hr = DirectSoundInitialize(guid);	// create a directsound object
 
       if (instance->hr != DS_OK) {
         return(1);
       }
 
-      instance->hr = directSoundState->lpds->SetCooperativeLevel(hWnd, DSSCL_NORMAL); // set cooperation level normal DSSCL_EXCLUSIVE
+      instance->hr = DirectSoundSetCooperativeLevel(hWnd);
 
       if (instance->hr != DS_OK) {
         return(1);
