@@ -12,7 +12,7 @@ namespace VCCSharp.Modules
 
         unsafe int DirectSoundUnlock(void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
 
-        void EnumerateSoundCards();
+        void DirectSoundEnumerateSoundCards();
     }
 
     public class DirectSound : IDirectSound
@@ -39,9 +39,9 @@ namespace VCCSharp.Modules
             return Library.DirectSound.DirectSoundUnlock(sndPointer1, sndLength1, sndPointer2, sndLength2);
         }
 
-        public void EnumerateSoundCards()
+        public void DirectSoundEnumerateSoundCards()
         {
-            Library.DirectSound.EnumerateSoundCards();
+            Library.DirectSound.DirectSoundEnumerateSoundCards();
         }
     }
 }

@@ -187,7 +187,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe int DirectSoundUnlock(void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
 
             [DllImport(LIBRARY)]
-            public static extern void EnumerateSoundCards();
+            public static extern void DirectSoundEnumerateSoundCards();
         }
 
         public static class Events

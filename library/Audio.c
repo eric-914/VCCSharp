@@ -203,31 +203,18 @@ extern "C" {
         return(1);
       }
 
-      // set up the format data structure
-      memset(&(directSoundState->pcmwf), 0, sizeof(WAVEFORMATEX));
-      directSoundState->pcmwf.wFormatTag = WAVE_FORMAT_PCM;
-      directSoundState->pcmwf.nChannels = 2;
-      directSoundState->pcmwf.nSamplesPerSec = instance->BitRate;
-      directSoundState->pcmwf.wBitsPerSample = 16;
-      directSoundState->pcmwf.nBlockAlign = (directSoundState->pcmwf.wBitsPerSample * directSoundState->pcmwf.nChannels) >> 3;
-      directSoundState->pcmwf.nAvgBytesPerSec = directSoundState->pcmwf.nSamplesPerSec * directSoundState->pcmwf.nBlockAlign;
-      directSoundState->pcmwf.cbSize = 0;
+      DirectSoundSetupFormatDataStructure(instance->BitRate);
 
-      // create the secondary buffer 
-      memset(&(directSoundState->dsbd), 0, sizeof(DSBUFFERDESC));
-      directSoundState->dsbd.dwSize = sizeof(DSBUFFERDESC);
-      directSoundState->dsbd.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_LOCSOFTWARE | DSBCAPS_STATIC | DSBCAPS_GLOBALFOCUS;
-      directSoundState->dsbd.dwBufferBytes = instance->SndBuffLength;
-      directSoundState->dsbd.lpwfxFormat = &(directSoundState->pcmwf);
+      DirectSoundSetupSecondaryBuffer(instance->SndBuffLength);
 
-      instance->hr = directSoundState->lpds->CreateSoundBuffer(&(directSoundState->dsbd), &(directSoundState->lpdsbuffer1), NULL);
+      instance->hr = DirectSoundCreateSoundBuffer();
 
       if (instance->hr != DS_OK) {
         return(1);
       }
 
       // Clear out sound buffers
-      instance->hr = directSoundState->lpdsbuffer1->Lock(0, instance->SndBuffLength, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2), DSBLOCK_ENTIREBUFFER);
+      instance->hr = DirectSoundLock(0, (unsigned short)instance->SndBuffLength, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2));
 
       if (instance->hr != DS_OK) {
         return(1);
@@ -240,8 +227,8 @@ extern "C" {
         return(1);
       }
 
-      directSoundState->lpdsbuffer1->SetCurrentPosition(0);
-      instance->hr = directSoundState->lpdsbuffer1->Play(0, 0, DSBPLAY_LOOPING);	// play the sound in looping mode
+      DirectSoundSetCurrentPosition(0);
+      instance->hr = DirectSoundPlay();
 
       if (instance->hr != DS_OK) {
         return(1);

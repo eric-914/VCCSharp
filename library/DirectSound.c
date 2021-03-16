@@ -46,7 +46,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl EnumerateSoundCards()
+  __declspec(dllexport) void __cdecl DirectSoundEnumerateSoundCards()
   {
     DirectSoundEnumerate(DirectSoundEnumerateCallback, NULL);
   }
@@ -95,5 +95,40 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) HRESULT __cdecl DirectSoundSetCooperativeLevel(HWND hWnd) {
     return instance->lpds->SetCooperativeLevel(hWnd, DSSCL_NORMAL); // set cooperation level normal DSSCL_EXCLUSIVE
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl DirectSoundSetupFormatDataStructure(unsigned short bitRate) {
+    memset(&(instance->pcmwf), 0, sizeof(WAVEFORMATEX));
+    instance->pcmwf.wFormatTag = WAVE_FORMAT_PCM;
+    instance->pcmwf.nChannels = 2;
+    instance->pcmwf.nSamplesPerSec = bitRate;
+    instance->pcmwf.wBitsPerSample = 16;
+    instance->pcmwf.nBlockAlign = (instance->pcmwf.wBitsPerSample * instance->pcmwf.nChannels) >> 3;
+    instance->pcmwf.nAvgBytesPerSec = instance->pcmwf.nSamplesPerSec * instance->pcmwf.nBlockAlign;
+    instance->pcmwf.cbSize = 0;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl DirectSoundSetupSecondaryBuffer(DWORD sndBuffLength) {
+    memset(&(instance->dsbd), 0, sizeof(DSBUFFERDESC));
+    instance->dsbd.dwSize = sizeof(DSBUFFERDESC);
+    instance->dsbd.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_LOCSOFTWARE | DSBCAPS_STATIC | DSBCAPS_GLOBALFOCUS;
+    instance->dsbd.dwBufferBytes = sndBuffLength;
+    instance->dsbd.lpwfxFormat = &(instance->pcmwf);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DirectSoundCreateSoundBuffer() {
+    return instance->lpds->CreateSoundBuffer(&(instance->dsbd), &(instance->lpdsbuffer1), NULL);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DirectSoundPlay() {
+    return instance->lpdsbuffer1->Play(0, 0, DSBPLAY_LOOPING);	// play the sound in looping mode
   }
 }

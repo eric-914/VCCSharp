@@ -124,7 +124,7 @@ namespace VCCSharp.Modules
             audioState->CardCount = 0;
             audioState->Cards = list;
 
-            Library.DirectSound.EnumerateSoundCards();
+            _modules.DirectSound.DirectSoundEnumerateSoundCards();
 
             return audioState->CardCount;
         }
