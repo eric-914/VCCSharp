@@ -1,4 +1,5 @@
-﻿using VCCSharp.IoC;
+﻿using System.Runtime.ExceptionServices;
+using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using HWND = System.IntPtr;
@@ -91,7 +92,8 @@ namespace VCCSharp.Modules
 
             audioState->hr = _modules.DirectSound.DirectSoundLock(audioState->BuffOffset, length, &(audioState->SndPointer1), &(audioState->SndLength1), &(audioState->SndPointer2), &(audioState->SndLength2));
 
-            if (audioState->hr != Define.DS_OK) {
+            if (audioState->hr != Define.DS_OK)
+            {
                 return;
             }
 
@@ -102,7 +104,8 @@ namespace VCCSharp.Modules
                 sourceBuffer[index] = byteBuffer[index];
             }
 
-            if (audioState->SndPointer2 != null) { // copy last section of circular buffer if wrapped
+            if (audioState->SndPointer2 != null)
+            { // copy last section of circular buffer if wrapped
                 //memcpy(audioState->SndPointer2, byteBuffer + audioState->SndLength1, audioState->SndLength2);
                 sourceBuffer = (byte*)audioState->SndPointer2;
                 for (int index = 0; index < audioState->SndLength2; index++)
@@ -151,14 +154,117 @@ namespace VCCSharp.Modules
             return Library.Audio.GetFreeBlockCount();
         }
 
-        public unsafe int SoundInit(HWND hWnd, _GUID* guid, ushort rate)
-        {
-            return Library.Audio.SoundInit(hWnd, guid, rate);
-        }
-
         public void PurgeAuxBuffer()
         {
             Library.Audio.PurgeAuxBuffer();
+        }
+
+        /*****************************************************************
+        * TODO: This has been ported, but is still being used by ConfigDialogCallbacks.CheckAudioChange(...)
+        ******************************************************************/
+        public unsafe int SoundInit(HWND hWnd, _GUID* guid, ushort rate)
+        {
+            rate = (ushort)(rate & 3);
+
+            if (rate != 0)
+            {	//Force 44100 or Mute
+                rate = 3;
+            }
+
+            AudioState* instance = GetAudioState();
+
+            instance->CurrentRate = rate;
+
+            if (instance->InitPassed == Define.TRUE)
+            {
+                instance->InitPassed = 0;
+                _modules.DirectSound.DirectSoundStop();
+
+                if (_modules.DirectSound.DirectSoundHasBuffer() == Define.TRUE)
+                {
+                    instance->hr = _modules.DirectSound.DirectSoundBufferRelease();
+                }
+
+                if (_modules.DirectSound.DirectSoundHasInterface() == Define.TRUE)
+                {
+                    instance->hr = _modules.DirectSound.DirectSoundInterfaceRelease();
+                }
+            }
+
+            instance->SndLength1 = 0;
+            instance->SndLength2 = 0;
+            instance->BuffOffset = 0;
+            instance->AuxBufferPointer = 0;
+            instance->BitRate = instance->iRateList[rate];
+            instance->BlockSize = (ushort)(instance->BitRate * 4 / Define.TARGETFRAMERATE);
+            instance->SndBuffLength = (ushort)(instance->BlockSize * Define.AUDIOBUFFERS);
+
+            int result = 0;
+
+            if (rate != 0)
+            {
+                instance->hr = _modules.DirectSound.DirectSoundInitialize(guid);	// create a directsound object
+
+                if (instance->hr != Define.DS_OK)
+                {
+                    return (1);
+                }
+
+                instance->hr = _modules.DirectSound.DirectSoundSetCooperativeLevel(hWnd);
+
+                if (instance->hr != Define.DS_OK)
+                {
+                    return (1);
+                }
+
+                _modules.DirectSound.DirectSoundSetupFormatDataStructure(instance->BitRate);
+
+                _modules.DirectSound.DirectSoundSetupSecondaryBuffer(instance->SndBuffLength);
+
+                instance->hr = _modules.DirectSound.DirectSoundCreateSoundBuffer();
+
+                if (instance->hr != Define.DS_OK)
+                {
+                    return (1);
+                }
+
+                // Clear out sound buffers
+                instance->hr = _modules.DirectSound.DirectSoundLock(0, (ushort)instance->SndBuffLength, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2));
+
+                if (instance->hr != Define.DS_OK)
+                {
+                    return (1);
+                }
+
+                //memset(instance->SndPointer1, 0, instance->SndBuffLength);
+                for (int index = 0; index < instance->SndBuffLength; index++)
+                {
+                    ((byte*)(instance->SndPointer1))[index] = 0;
+                }
+
+                instance->hr = _modules.DirectSound.DirectSoundUnlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);
+
+                if (instance->hr != Define.DS_OK)
+                {
+                    return (1);
+                }
+
+                _modules.DirectSound.DirectSoundSetCurrentPosition(0);
+
+                instance->hr = _modules.DirectSound.DirectSoundPlay();
+
+                if (instance->hr != Define.DS_OK)
+                {
+                    return (1);
+                }
+
+                instance->InitPassed = 1;
+                instance->AudioPause = 0;
+
+                _modules.CoCo.SetAudioRate(instance->iRateList[rate]);
+            }
+
+            return result;
         }
     }
 }

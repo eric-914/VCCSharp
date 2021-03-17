@@ -152,11 +152,12 @@ extern "C" {
   }
 }
 
+/*****************************************************************
+* TODO: This has been ported, but is still being used by ConfigDialogCallbacks.CheckAudioChange(...)
+******************************************************************/
 extern "C" {
   __declspec(dllexport) int __cdecl SoundInit(HWND hWnd, GUID* guid, unsigned short rate)
   {
-    DirectSoundState* directSoundState = GetDirectSoundState();
-
     rate = (rate & 3);
 
     if (rate != 0) {	//Force 44100 or Mute
