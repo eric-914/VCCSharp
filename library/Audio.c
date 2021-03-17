@@ -221,7 +221,7 @@ extern "C" {
       }
 
       memset(instance->SndPointer1, 0, instance->SndBuffLength);
-      instance->hr = directSoundState->lpdsbuffer1->Unlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);
+      instance->hr = DirectSoundUnlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);
 
       if (instance->hr != DS_OK) {
         return(1);

@@ -41,7 +41,7 @@ namespace VCCSharp.Modules
                 {
                     audioState->InitPassed = 0;
 
-                    _modules.DirectSound.StopAndRelease();
+                    _modules.DirectSound.DirectSoundStopAndRelease();
                 }
 
                 return 0;
@@ -58,7 +58,7 @@ namespace VCCSharp.Modules
 
                 if (audioState->InitPassed == Define.TRUE)
                 {
-                    _modules.DirectSound.SetCurrentPosition(0);
+                    _modules.DirectSound.DirectSoundSetCurrentPosition(0);
                 }
 
                 audioState->BuffOffset = 0;

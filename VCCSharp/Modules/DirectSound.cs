@@ -1,37 +1,67 @@
 ﻿using VCCSharp.Libraries;
+using VCCSharp.Models;
+using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
     public interface IDirectSound
     {
-        void StopAndRelease();
-        void SetCurrentPosition(ulong position);
+        int DirectSoundHasBuffer();
+        int DirectSoundHasInterface();
 
-        unsafe int DirectSoundLock(ulong buffOffset, ushort length,
-            void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
-
+        int DirectSoundBufferRelease();
+        int DirectSoundCreateSoundBuffer();
+        unsafe int DirectSoundInitialize(_GUID* guid);
+        int DirectSoundInterfaceRelease();
+        unsafe int DirectSoundLock(ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
         unsafe int DirectSoundUnlock(void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
+        int DirectSoundSetCooperativeLevel(HWND hWnd);
 
         void DirectSoundEnumerateSoundCards();
+        void DirectSoundSetCurrentPosition(ulong position);
+        void DirectSoundSetupFormatDataStructure(ushort bitRate);
+        void DirectSoundSetupSecondaryBuffer(uint sndBuffLength);
+        void DirectSoundStop();
+        void DirectSoundStopAndRelease();
+
+        int DirectSoundPlay();
     }
 
     public class DirectSound : IDirectSound
     {
-        public void StopAndRelease()
+        public int DirectSoundHasBuffer()
         {
-            Library.DirectSound.DirectSoundStopAndRelease();
+            return Library.DirectSound.DirectSoundHasBuffer();
         }
 
-        public void SetCurrentPosition(ulong position)
+        public int DirectSoundHasInterface()
         {
-            Library.DirectSound.DirectSoundSetCurrentPosition(position);
+            return Library.DirectSound.DirectSoundHasInterface();
         }
 
-        public unsafe int DirectSoundLock(ulong buffOffset, ushort length,
-            void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2)
+        public int DirectSoundBufferRelease()
         {
-            return Library.DirectSound.DirectSoundLock(buffOffset, length, 
-                sndPointer1, sndLength1, sndPointer2, sndLength2);
+            return Library.DirectSound.DirectSoundBufferRelease();
+        }
+
+        public unsafe int DirectSoundInitialize(_GUID* guid)
+        {
+            return Library.DirectSound.DirectSoundInitialize(guid);
+        }
+
+        public int DirectSoundInterfaceRelease()
+        {
+            return Library.DirectSound.DirectSoundInterfaceRelease();
+        }
+
+        public int DirectSoundCreateSoundBuffer()
+        {
+            return Library.DirectSound.DirectSoundCreateSoundBuffer();
+        }
+
+        public unsafe int DirectSoundLock(ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2)
+        {
+            return Library.DirectSound.DirectSoundLock(buffOffset, length, sndPointer1, sndLength1, sndPointer2, sndLength2);
         }
 
         public unsafe int DirectSoundUnlock(void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2)
@@ -39,9 +69,44 @@ namespace VCCSharp.Modules
             return Library.DirectSound.DirectSoundUnlock(sndPointer1, sndLength1, sndPointer2, sndLength2);
         }
 
+        public int DirectSoundSetCooperativeLevel(HWND hWnd)
+        {
+            return Library.DirectSound.DirectSoundSetCooperativeLevel(hWnd);
+        }
+
         public void DirectSoundEnumerateSoundCards()
         {
             Library.DirectSound.DirectSoundEnumerateSoundCards();
+        }
+
+        public void DirectSoundSetCurrentPosition(ulong position)
+        {
+            Library.DirectSound.DirectSoundSetCurrentPosition(position);
+        }
+
+        public void DirectSoundSetupFormatDataStructure(ushort bitRate)
+        {
+            Library.DirectSound.DirectSoundSetupFormatDataStructure(bitRate);
+        }
+
+        public void DirectSoundSetupSecondaryBuffer(uint sndBuffLength)
+        {
+            Library.DirectSound.DirectSoundSetupSecondaryBuffer(sndBuffLength);
+        }
+
+        public void DirectSoundStop()
+        {
+            Library.DirectSound.DirectSoundStop();
+        }
+
+        public void DirectSoundStopAndRelease()
+        {
+            Library.DirectSound.DirectSoundStopAndRelease();
+        }
+
+        public int DirectSoundPlay()
+        {
+            return Library.DirectSound.DirectSoundPlay();
         }
     }
 }

@@ -174,20 +174,52 @@ namespace VCCSharp.Libraries
         public static class DirectSound
         {
             [DllImport(LIBRARY)]
-            public static extern void DirectSoundStopAndRelease();
+            public static extern int DirectSoundHasBuffer();
 
             [DllImport(LIBRARY)]
-            public static extern void DirectSoundSetCurrentPosition(ulong position);
+            public static extern int DirectSoundHasInterface();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundLock(ulong buffOffset, ushort length,
-                void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
+            public static extern int DirectSoundBufferRelease();
+
+            [DllImport(LIBRARY)]
+            public static extern int DirectSoundCreateSoundBuffer();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int DirectSoundInitialize(_GUID* guid);
+
+            [DllImport(LIBRARY)]
+            public static extern int DirectSoundInterfaceRelease();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int DirectSoundLock(ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
 
             [DllImport(LIBRARY)]
             public static extern unsafe int DirectSoundUnlock(void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
 
             [DllImport(LIBRARY)]
+            public static extern int DirectSoundSetCooperativeLevel(HWND hWnd);
+
+            [DllImport(LIBRARY)]
             public static extern void DirectSoundEnumerateSoundCards();
+
+            [DllImport(LIBRARY)]
+            public static extern void DirectSoundSetCurrentPosition(ulong position);
+
+            [DllImport(LIBRARY)]
+            public static extern void DirectSoundSetupFormatDataStructure(ushort bitRate);
+
+            [DllImport(LIBRARY)]
+            public static extern void DirectSoundSetupSecondaryBuffer(uint sndBuffLength);
+
+            [DllImport(LIBRARY)]
+            public static extern void DirectSoundStop();
+
+            [DllImport(LIBRARY)]
+            public static extern void DirectSoundStopAndRelease();
+
+            [DllImport(LIBRARY)]
+            public static extern int DirectSoundPlay();
         }
 
         public static class Events
