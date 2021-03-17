@@ -47,7 +47,9 @@
             MenuItems = new MenuItems
             {
                 new MenuItemViewModel {Header = "Flip Artifact Colors", Action = actions.FlipArtifactColors},
-                new MenuItemViewModel {Header = "Config", Action = actions.OpenConfiguration}
+                new MenuItemViewModel {Header = "Configuration", Action = actions.OpenConfiguration},
+                Separator,
+                new MenuItemViewModel {Header = "(Old) Config", Action = actions.OpenOldConfiguration}
             }
         };
 

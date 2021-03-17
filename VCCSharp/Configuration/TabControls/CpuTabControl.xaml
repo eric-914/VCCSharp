@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="VCCSharp.Configuration.TabControls.CpuTabControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VCCSharp.Configuration"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+  <DockPanel>
+    <StackPanel DockPanel.Dock="Top" Orientation="Vertical">
+      <Label Content="Over-Clocking" />
+      <StackPanel Orientation="Horizontal">
+        <Slider Width="250"/>
+        <Label Content="1.788 Mhz" BorderBrush="Black" BorderThickness="1"/>
+      </StackPanel>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal">
+      <Border BorderThickness="1" BorderBrush="Black">
+        <StackPanel Orientation="Vertical" >
+          <Label Content="Memory Size" />
+          <RadioButton>128K</RadioButton>
+          <RadioButton>512K</RadioButton>
+          <RadioButton>2048K</RadioButton>
+          <RadioButton>8192K</RadioButton>
+        </StackPanel>
+      </Border>
+      <Border BorderThickness="1" BorderBrush="Black">
+        <StackPanel Orientation="Vertical" >
+          <Label Content="CPU" />
+          <RadioButton>Motorola MC6809 CPU</RadioButton>
+          <RadioButton>Hitachi HD6309 CPU</RadioButton>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </DockPanel>
+</UserControl>

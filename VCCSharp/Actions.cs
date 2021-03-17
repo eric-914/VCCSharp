@@ -72,6 +72,11 @@ namespace VCCSharp
 
         public void OpenConfiguration()
         {
+            new ConfigurationWindow().Show();
+        }
+
+        public void OpenOldConfiguration()
+        {
             _modules.Events.ShowConfiguration();
         }
 

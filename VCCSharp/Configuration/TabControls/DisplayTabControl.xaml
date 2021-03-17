@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="VCCSharp.Configuration.TabControls.DisplayTabControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VCCSharp.Configuration"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+  <StackPanel Orientation="Vertical">
+    <StackPanel Orientation="Horizontal">
+      <StackPanel Orientation="Vertical">
+        <Label Content="[F6] Monitor Type" />
+        <RadioButton>RGB</RadioButton>
+        <RadioButton>Composite</RadioButton>
+        <RadioButton Margin="20,0,0,0">Updated Palette</RadioButton>
+        <RadioButton Margin="20,0,0,0">Original Palette</RadioButton>
+      </StackPanel>
+      <StackPanel Orientation="Vertical">
+        <Label>Frame Skip</Label>
+        <StackPanel Orientation="Horizontal">
+          <Slider Width="250"/>
+          <Label Content="1" BorderBrush="Black" BorderThickness="1"/>
+        </StackPanel>
+      </StackPanel>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal">
+      <CheckBox>Scan Lines</CheckBox>
+      <CheckBox>Remember Screen Size</CheckBox>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal">
+      <CheckBox>Force Aspect</CheckBox>
+      <CheckBox>[F8] Throttle Speed</CheckBox>
+    </StackPanel>
+    <Border BorderThickness="1" BorderBrush="Black">
+      <TextBlock TextWrapping="Wrap">
+        WARNING: Unchecking the "Throttle Speed" can greatly affect many functions of the VCC emulation including keyboard operation. Use with CAUTION! Please use "Over-Clocking" instead
+      </TextBlock>
+    </Border>
+  </StackPanel>
+</UserControl>
