@@ -3,16 +3,32 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:VCCSharp"
-        xmlns:configuration="clr-namespace:VCCSharp.Configuration"
         xmlns:tabControls="clr-namespace:VCCSharp.Configuration.TabControls"
         mc:Ignorable="d"
-        Title="Vcc Options" Height="450" Width="800">
+        Title="Vcc Options" Height="500" Width="800">
   <Window.Resources>
     <Style TargetType="Button">
       <Setter Property="FontSize" Value="20" />
       <Setter Property="Width" Value="100" />
       <Setter Property="Margin" Value="5,2,5,2" />
+    </Style>
+    <Style TargetType="Label">
+      <Setter Property="FontSize" Value="20" />
+      <Setter Property="Margin" Value="-2" />
+    </Style>
+    <Style TargetType="ComboBox">
+      <Setter Property="FontSize" Value="20" />
+      <Setter Property="Margin" Value="2"/>
+    </Style>
+    <Style TargetType="RadioButton">
+      <Setter Property="Margin" Value="2,2,0,0" />
+    </Style>
+    <Style TargetType="CheckBox">
+      <Setter Property="Margin" Value="2,2,0,0" />
+    </Style>
+    <Style TargetType="Border">
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="BorderBrush" Value="Black" />
     </Style>
   </Window.Resources>
   <DockPanel LastChildFill="true">

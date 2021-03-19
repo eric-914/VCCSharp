@@ -3,31 +3,67 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VCCSharp.Configuration"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-  <StackPanel Orientation="Vertical">
-    <StackPanel Orientation="Horizontal">
-      <TextBox>Sample Browse File Text</TextBox>
-      <Button>Browse</Button>
-    </StackPanel>
-    <StackPanel Orientation="Horizontal">
-      <Button>Record</Button>
-      <Button>Play</Button>
-      <Button>Stop</Button>
-      <Button>Eject</Button>
-      <Button>Rewind</Button>
-    </StackPanel>
-    <StackPanel Orientation="Horizontal">
-      <StackPanel Orientation="Vertical">
-        <Label BorderThickness="1" BorderBrush="Black">(mode)</Label>
-        <Label>Mode</Label>
-      </StackPanel>
-      <StackPanel Orientation="Vertical">
-        <Label BorderThickness="1" BorderBrush="Black">(counter)</Label>
-        <Label>Counter</Label>
-      </StackPanel>
-    </StackPanel>
-    <Label Content="Tape content goes here..." />
-  </StackPanel>
+  <Grid Margin="10">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="35"/>
+      <RowDefinition Height="20"/>
+      <RowDefinition Height="35"/>
+      <RowDefinition Height="20"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <Grid Grid.Row="0">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="10"/>
+        <ColumnDefinition Width="120"/>
+        <ColumnDefinition Width="5"/>
+      </Grid.ColumnDefinitions>
+      <TextBox Grid.Column="0">Sample Browse File Text</TextBox>
+      <Button Grid.Column="2">Browse</Button>
+    </Grid>
+    <Grid Grid.Row="2">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <Grid.Resources>
+        <Style TargetType="Button">
+          <Setter Property="Margin" Value="10,0,10,0"/>
+        </Style>
+      </Grid.Resources>
+      <Button Grid.Column="0">Record</Button>
+      <Button Grid.Column="1">Play</Button>
+      <Button Grid.Column="2">Stop</Button>
+      <Button Grid.Column="3">Eject</Button>
+      <Button Grid.Column="4">Rewind</Button>
+    </Grid>
+    <Grid Grid.Row="4" Margin="20,0,0,0">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="100"></ColumnDefinition>
+        <ColumnDefinition Width="20"></ColumnDefinition>
+        <ColumnDefinition Width="200"></ColumnDefinition>
+        <ColumnDefinition Width="*"></ColumnDefinition>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="30"/>
+        <RowDefinition Height="2"/>
+        <RowDefinition Height="30"/>
+        <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
+      <Border Grid.Row="0" Grid.Column="0">
+        <Label>(mode)</Label>
+      </Border>
+      <Label Grid.Row="2" Grid.Column="0">Mode</Label>
+
+      <Border Grid.Row="0" Grid.Column="2">
+        <Label>(counter)</Label>
+      </Border>
+      <Label Grid.Row="2" Grid.Column="2">Counter</Label>
+    </Grid>
+  </Grid>
 </UserControl>
