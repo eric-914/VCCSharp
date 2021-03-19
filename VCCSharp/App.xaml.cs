@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using VCCSharp.Configuration;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Modules;
@@ -45,6 +46,8 @@ namespace VCCSharp
                 .Bind<ICommandLineParser, CommandLineParser>()
                 .Bind<IVccApp, VccApp>()
                 .Bind<IVccThread, VccThread>()
+
+                .Bind<IConfiguration, ConfigurationManager>()
                 ;
         }
     }

@@ -1,16 +1,10 @@
-﻿using System.Windows.Controls;
-
-namespace VCCSharp.Configuration.TabControls.Controls
+﻿namespace VCCSharp.Configuration.TabControls.Controls
 {
-    public partial class JoystickInputControl : UserControl
+    public partial class JoystickInputControl
     {
-        public string Side { get; set; } = "Left";
-
         public JoystickInputControl()
         {
             InitializeComponent();
-
-            DataContext = this;
         }
     }
 }

@@ -1,11 +1,6 @@
-﻿using System.Windows.Controls;
-
-namespace VCCSharp.Configuration.TabControls
+﻿namespace VCCSharp.Configuration.TabControls
 {
-    /// <summary>
-    /// Interaction logic for CpuTabControl.xaml
-    /// </summary>
-    public partial class CpuTabControl : UserControl
+    public partial class CpuTabControl
     {
         public CpuTabControl()
         {

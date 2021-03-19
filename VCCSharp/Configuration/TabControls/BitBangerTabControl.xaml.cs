@@ -1,11 +1,6 @@
-﻿using System.Windows.Controls;
-
-namespace VCCSharp.Configuration.TabControls
+﻿namespace VCCSharp.Configuration.TabControls
 {
-    /// <summary>
-    /// Interaction logic for BitBangerTabControl.xaml
-    /// </summary>
-    public partial class BitBangerTabControl : UserControl
+    public partial class BitBangerTabControl
     {
         public BitBangerTabControl()
         {

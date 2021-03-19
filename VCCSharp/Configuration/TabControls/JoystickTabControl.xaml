@@ -4,8 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:VCCSharp.Configuration.TabControls.Controls"
+             xmlns:configuration="clr-namespace:VCCSharp.Configuration"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+  <UserControl.DataContext>
+    <configuration:ConfigurationViewModel/>
+  </UserControl.DataContext>
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*"/>
@@ -14,16 +18,16 @@
       <ColumnDefinition Width="20"/>
       <ColumnDefinition Width="*"/>
     </Grid.ColumnDefinitions>
-    <controls:JoystickInputControl Grid.Column="0" Side="Left"/>
-    <controls:JoystickInputControl Grid.Column="2" Side="Right"/>
+    <controls:JoystickInputControl Grid.Column="0" DataContext="{Binding Left}"/>
+    <controls:JoystickInputControl Grid.Column="2" DataContext="{Binding Right}"/>
     <Grid Grid.Column="4" >
       <Grid.RowDefinitions>
         <RowDefinition Height="*"/>
         <RowDefinition Height="20"/>
         <RowDefinition Height="*"/>
       </Grid.RowDefinitions>
-      <controls:JoystickEmulationControl Grid.Row="0" Side="Left"/>
-      <controls:JoystickEmulationControl Grid.Row="2" Side="Right"/>
+      <controls:JoystickEmulationControl Grid.Row="0" DataContext="{Binding Left}"/>
+      <controls:JoystickEmulationControl Grid.Row="2" DataContext="{Binding Right}"/>
     </Grid>
   </Grid>
 </UserControl>

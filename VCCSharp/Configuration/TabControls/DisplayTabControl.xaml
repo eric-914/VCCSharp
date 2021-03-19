@@ -2,9 +2,13 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:configuration="clr-namespace:VCCSharp.Configuration"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+  <UserControl.DataContext>
+    <configuration:ConfigurationViewModel/>
+  </UserControl.DataContext>
   <Grid Margin="10">
     <Grid.RowDefinitions>
       <RowDefinition Height="70"/>
@@ -65,10 +69,10 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="15"/>
           </Grid.RowDefinitions>
-          <CheckBox Grid.Row="0" Grid.Column="0">Scan Lines</CheckBox>
-          <CheckBox Grid.Row="0" Grid.Column="1">Remember Screen Size</CheckBox>
-          <CheckBox Grid.Row="1" Grid.Column="0">Force Aspect</CheckBox>
-          <CheckBox Grid.Row="1" Grid.Column="1">[F8] Throttle Speed</CheckBox>
+          <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding ScanLines}">Scan Lines</CheckBox>
+          <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding RememberSize}">Remember Screen Size</CheckBox>
+          <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding ForceAspect}">Force Aspect</CheckBox>
+          <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding SpeedThrottle}">[F8] Throttle Speed</CheckBox>
         </Grid>
         <Border>
           <TextBlock TextWrapping="Wrap">

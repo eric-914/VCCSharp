@@ -1,16 +1,10 @@
-﻿using System.Windows.Controls;
-
-namespace VCCSharp.Configuration.TabControls.Controls
+﻿namespace VCCSharp.Configuration.TabControls.Controls
 {
-    public partial class JoystickEmulationControl : UserControl
+    public partial class JoystickEmulationControl 
     {
-        public string Side { get; set; } = "Left";
-
         public JoystickEmulationControl()
         {
             InitializeComponent();
-
-            DataContext = this;
         }
     }
 }

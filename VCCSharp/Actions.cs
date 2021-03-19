@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using VCCSharp.Configuration;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 
@@ -7,10 +8,12 @@ namespace VCCSharp
     public class Actions
     {
         private readonly IModules _modules;
+        private readonly IConfiguration _configuration;
 
-        public Actions(IModules modules)
+        public Actions(IModules modules, IConfiguration configuration)
         {
             _modules = modules;
+            _configuration = configuration;
         }
 
         public void ApplicationExit()
@@ -72,7 +75,10 @@ namespace VCCSharp
 
         public void OpenConfiguration()
         {
-            new ConfigurationWindow().Show();
+            unsafe
+            {
+                _configuration.ShowDialog(*_modules.Config.GetConfigState()->Model);
+            }
         }
 
         public void OpenOldConfiguration()
