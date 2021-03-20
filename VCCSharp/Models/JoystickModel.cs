@@ -6,13 +6,14 @@ namespace VCCSharp.Models
     public struct JoystickModel
     {
         public byte UseMouse;
+        public byte DiDevice;
+        public byte HiRes;
+
         public byte Up;
         public byte Down;
         public byte Left;
         public byte Right;
         public byte Fire1;
         public byte Fire2;
-        public byte DiDevice;
-        public byte HiRes;
     }
 }

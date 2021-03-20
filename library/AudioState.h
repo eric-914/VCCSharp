@@ -4,6 +4,8 @@
 
 #include "SoundCardList.h"
 
+#define MAXCARDS	12
+
 typedef struct {
   unsigned char InitPassed;
   unsigned char AudioPause;
@@ -12,8 +14,6 @@ typedef struct {
   unsigned short CurrentRate;
   unsigned short BitRate;
   unsigned short BlockSize;
-
-  short CardCount;
 
   DWORD SndLength1;
   DWORD SndLength2;
@@ -27,8 +27,6 @@ typedef struct {
 
   void* SndPointer1;
   void* SndPointer2;
-
-  SoundCardList* Cards;
 
   unsigned short AuxBuffer[6][44100 / 60]; //Biggest block size possible
 

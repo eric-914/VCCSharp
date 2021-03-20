@@ -77,7 +77,7 @@ namespace VCCSharp
         {
             unsafe
             {
-                _configuration.ShowDialog(*_modules.Config.GetConfigState()->Model);
+                _configuration.ShowDialog(_modules.Config.GetConfigState(), _modules.Config.GetConfigState()->Model);
             }
         }
 

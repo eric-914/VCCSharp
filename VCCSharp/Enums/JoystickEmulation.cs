@@ -2,8 +2,8 @@
 {
     public enum JoystickEmulations
     {
-        Standard,
-        TandyHiRes,
-        CCMAX
+        Standard = 0,
+        TandyHiRes = 1,
+        CCMAX = 2
     }
 }

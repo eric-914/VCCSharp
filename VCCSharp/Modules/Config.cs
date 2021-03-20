@@ -74,7 +74,8 @@ namespace VCCSharp.Modules
             //--TODO: Silly way to get C# to look at the SoundCardList array correctly
             SoundCardList* soundCards = (SoundCardList*)(&configState->SoundCards);
 
-            configState->NumberOfSoundCards = _modules.Audio.GetSoundCardList(soundCards);
+            configState->NumberOfSoundCards = 0;
+            _modules.DirectSound.DirectSoundEnumerateSoundCards();
 
             //--Synch joysticks to config instance
             JoystickState* joystickState = _modules.Joystick.GetJoystickState();

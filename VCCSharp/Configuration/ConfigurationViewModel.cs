@@ -9,19 +9,28 @@ namespace VCCSharp.Configuration
 {
     public class ConfigurationViewModel : INotifyPropertyChanged
     {
-        private ConfigModel _model;
+        //TODO: Remove STATIC once safe
+        private static unsafe ConfigModel* _model;
+        private static unsafe ConfigState* _state;
 
-        public ConfigModel Model
+        public unsafe ConfigModel* Model
         {
             get => _model;
             set
             {
                 _model = value;
-                unsafe
-                {
-                    Left.Model = *_model.Left;
-                    Right.Model = *_model.Right;
-                }
+
+                Left.Model = _model->Left;
+                Right.Model = _model->Right;
+            }
+        }
+
+        public unsafe ConfigState* State
+        {
+            get => _state;
+            set
+            {
+                _state = value;
             }
         }
 
@@ -58,13 +67,109 @@ namespace VCCSharp.Configuration
         public bool CPUMultiplier { get; set; } = true;
         public bool FrameSkip { get; set; } = false;
         public bool SpeedThrottle { get; set; } = true;
-        public bool CpuType { get; set; } = false;
+
+        public int CpuType
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model->CpuType;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    Model->CpuType = (byte)value;
+                }
+            }
+        }
+
+        public CPUTypes? Cpu
+        {
+            get => (CPUTypes)CpuType;
+            set
+            {
+                if (value.HasValue)
+                {
+                    CpuType = (int)value.Value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public int MaxOverclock { get; set; } = 55;
 
         //[Audio]
-        public string SoundCardName { get; set; } = "Sound Card Name";
-        public int AudioRate { get; set; } = 3;
+        public List<string> SoundCards
+        {
+            get
+            {
+                unsafe
+                {
+                    var items = new List<string>();
+
+                    SoundCardList Lookup(int index)
+                    {
+                        switch (index)
+                        {
+                            case 0: return _state->SoundCards._0;
+                            case 1: return _state->SoundCards._1;
+                            case 2: return _state->SoundCards._2;
+                            //TODO: Fill in the rest.  Or just figure out how to turn it into an array like it should be.
+                        }
+
+                        return default;
+                    }
+
+                    for (int index = 0; index < _state->NumberOfSoundCards; index++)
+                    {
+                        var card = Lookup(index);
+
+                        items.Add(Converter.ToString(card.CardName));
+                    }
+
+                    return items;
+                }
+            }
+        }
+
+        public string SoundCardName
+        {
+            get
+            {
+                unsafe
+                {
+                    return Converter.ToString(Model->SoundCardName);
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    Converter.ToByteArray(value, Model->SoundCardName);
+                }
+            }
+        }
+
+        public int AudioRate
+        {
+            get
+            {
+                unsafe
+                {
+                    return (int)(AudioRates)Model->AudioRate;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    Model->AudioRate = (ushort)value;
+                }
+            }
+        }
 
         //[Video]
         public bool MonitorType { get; set; } = true;
@@ -76,8 +181,38 @@ namespace VCCSharp.Configuration
         public int WindowSizeX { get; set; } = 1111;
         public int WindowSizeY { get; set; } = 2222;
 
+        public MemorySizes? Memory
+        {
+            get => (MemorySizes)RamSize;
+            set
+            {
+                if (value.HasValue)
+                {
+                    RamSize = (int)value.Value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         //[Memory]
-        public int RamSize { get; set; } = 9999;
+        public int RamSize
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model->RamSize;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    Model->RamSize = (byte)value;
+                }
+            }
+        }
+
         public string ExternalBasicImage { get; set; } = "External Basic Image";
 
         //[Misc]

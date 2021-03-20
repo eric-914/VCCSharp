@@ -4,6 +4,6 @@ namespace VCCSharp.Configuration
 {
     public interface IConfiguration
     {
-        void ShowDialog(ConfigModel model);
+        unsafe void ShowDialog(ConfigState* state, ConfigModel* model);
     }
 }

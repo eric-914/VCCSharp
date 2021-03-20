@@ -4,18 +4,23 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:configuration="clr-namespace:VCCSharp.Configuration"
+             xmlns:converters="clr-namespace:VCCSharp.Converters"
+             xmlns:enums="clr-namespace:VCCSharp.Enums"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.DataContext>
     <configuration:JoystickViewModel/>
   </UserControl.DataContext>
+  <UserControl.Resources>
+    <converters:JoystickEmulationToSelectionConverter x:Key="Converter"/>
+  </UserControl.Resources>
   <StackPanel Orientation="Vertical">
     <StackPanel Orientation="Horizontal">
       <Label Content="{Binding SideText}" />
       <Label Content="Emulation" />
     </StackPanel>
-    <RadioButton Content="Standard"/>
-    <RadioButton Content="Tandy Hi-Res"/>
-    <RadioButton Content="CC-MAX"/>
+    <RadioButton Content="Standard" IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.Standard}}"/>
+    <RadioButton Content="Tandy Hi-Res" IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.TandyHiRes}}"/>
+    <RadioButton Content="CC-MAX" IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.CCMAX}}"/>
   </StackPanel>
 </UserControl>

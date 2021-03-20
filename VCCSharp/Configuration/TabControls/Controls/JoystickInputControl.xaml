@@ -4,11 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:configuration="clr-namespace:VCCSharp.Configuration"
+             xmlns:converters="clr-namespace:VCCSharp.Converters"
+             xmlns:enums="clr-namespace:VCCSharp.Enums"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="300">
   <UserControl.DataContext>
     <configuration:JoystickViewModel/>
   </UserControl.DataContext>
+  <UserControl.Resources>
+    <converters:JoystickDeviceToSelectionConverter x:Key="Selection"/>
+    <converters:JoystickDeviceToEnabledConverter x:Key="Enabled"/>
+  </UserControl.Resources>
   <StackPanel Orientation="Vertical">
     <StackPanel Orientation="Horizontal">
       <Label Content="{Binding SideText}" />
@@ -26,16 +32,18 @@
         <RowDefinition Height="*"/>
       </Grid.RowDefinitions>
 
-      <RadioButton Grid.Row="0" Grid.Column="0">Audio</RadioButton>
-      <ComboBox Grid.Row="0" Grid.Column="1"></ComboBox>
+      <!-- Doesn't appear Audio is ever enabled -->
+      <RadioButton Grid.Row="0" Grid.Column="0" Content="Audio" IsEnabled="False" IsChecked="{Binding Device, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:JoystickDevices.Audio}}"/>
+      <ComboBox Grid.Row="0" Grid.Column="1" IsEnabled="{Binding Device, Converter={StaticResource Enabled}, ConverterParameter={x:Static enums:JoystickDevices.Audio}}"/>
 
-      <RadioButton Grid.Row="1" Grid.Column="0">Joystick</RadioButton>
-      <ComboBox Grid.Row="1" Grid.Column="1"></ComboBox>
+      <!-- TODO: Re-enable once I figure out how to add 'joysticks' to the list -->
+      <RadioButton Grid.Row="1" Grid.Column="0" IsEnabled="False" Content="Joystick" IsChecked="{Binding Device, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:JoystickDevices.Joystick}}"/>
+      <ComboBox Grid.Row="1" Grid.Column="1" IsEnabled="{Binding Device, Converter={StaticResource Enabled}, ConverterParameter={x:Static enums:JoystickDevices.Joystick}}"/>
 
-      <RadioButton Grid.Row="2" Grid.Column="0">Mouse</RadioButton>
+      <RadioButton Grid.Row="2" Grid.Column="0" Content="Mouse" IsChecked="{Binding Device, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:JoystickDevices.Mouse}}"/>
 
-      <RadioButton Grid.Row="3" Grid.Column="0">Keyboard</RadioButton>
-      <Grid Grid.Row="3" Grid.Column="1" >
+      <RadioButton Grid.Row="3" Grid.Column="0" Content="Keyboard" IsChecked="{Binding Device, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:JoystickDevices.Keyboard}}"/>
+      <Grid Grid.Row="3" Grid.Column="1" IsEnabled="{Binding Device, Converter={StaticResource Enabled}, ConverterParameter={x:Static enums:JoystickDevices.Keyboard}}">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*"/>
           <ColumnDefinition Width="*"/>
@@ -49,23 +57,23 @@
           <RowDefinition Height="32"/>
         </Grid.RowDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="0">Left</Label>
-        <ComboBox Grid.Row="0" Grid.Column="1" Text="{Binding Left}"></ComboBox>
+        <Label Grid.Row="0" Grid.Column="0" Content="Left"/>
+        <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding KeyNames}" Text="{Binding Left}"/>
 
-        <Label Grid.Row="1" Grid.Column="0">Right</Label>
-        <ComboBox Grid.Row="1" Grid.Column="1" Text="{Binding Right}"></ComboBox>
+        <Label Grid.Row="1" Grid.Column="0" Content="Right"/>
+        <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding KeyNames}" Text="{Binding Right}"/>
 
-        <Label Grid.Row="2" Grid.Column="0">Up</Label>
-        <ComboBox Grid.Row="2" Grid.Column="1" Text="{Binding Up}"></ComboBox>
+        <Label Grid.Row="2" Grid.Column="0" Content="Up"/>
+        <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding KeyNames}" Text="{Binding Up}"/>
 
-        <Label Grid.Row="3" Grid.Column="0">Down</Label>
-        <ComboBox Grid.Row="3" Grid.Column="1" Text="{Binding Down}"></ComboBox>
+        <Label Grid.Row="3" Grid.Column="0" Content="Down"/>
+        <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding KeyNames}" Text="{Binding Down}"/>
 
-        <Label Grid.Row="4" Grid.Column="0">Fire 1</Label>
-        <ComboBox Grid.Row="4" Grid.Column="1" Text="{Binding Fire1}"></ComboBox>
+        <Label Grid.Row="4" Grid.Column="0" Content="Fire 1"/>
+        <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding KeyNames}" Text="{Binding Fire1}"/>
 
-        <Label Grid.Row="5" Grid.Column="0">Fire 2</Label>
-        <ComboBox Grid.Row="5" Grid.Column="1" Text="{Binding Fire2}"></ComboBox>
+        <Label Grid.Row="5" Grid.Column="0" Content="Fire 2"/>
+        <ComboBox Grid.Row="5" Grid.Column="1" ItemsSource="{Binding KeyNames}" Text="{Binding Fire2}"/>
       </Grid>
     </Grid>
   </StackPanel>

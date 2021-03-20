@@ -1,5 +1,4 @@
-﻿using System.Runtime.ExceptionServices;
-using VCCSharp.IoC;
+﻿using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using HWND = System.IntPtr;
@@ -12,7 +11,6 @@ namespace VCCSharp.Modules
         short SoundDeInit();
         void ResetAudio();
         unsafe void FlushAudioBuffer(uint* buffer, ushort length);
-        unsafe short GetSoundCardList(SoundCardList* list);
         unsafe int SoundInit(HWND hWnd, _GUID* guid, ushort rate);
         void PurgeAuxBuffer();
         int GetFreeBlockCount();
@@ -118,18 +116,6 @@ namespace VCCSharp.Modules
 
             audioState->BuffOffset = (audioState->BuffOffset + length) % audioState->SndBuffLength;	//Where to write next
 
-        }
-
-        public unsafe short GetSoundCardList(SoundCardList* list)
-        {
-            AudioState* audioState = GetAudioState();
-
-            audioState->CardCount = 0;
-            audioState->Cards = list;
-
-            _modules.DirectSound.DirectSoundEnumerateSoundCards();
-
-            return audioState->CardCount;
         }
 
         public unsafe void HandleSlowAudio(byte* buffer, ushort length)

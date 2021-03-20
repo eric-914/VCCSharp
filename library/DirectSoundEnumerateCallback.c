@@ -1,15 +1,16 @@
 #include <windows.h>
 
-#include "Audio.h"
+#include "Config.h"
 
 extern "C" {
   __declspec(dllexport) BOOL CALLBACK DirectSoundEnumerateCallback(LPGUID lpGuid, LPCSTR lpcstrDescription, LPCSTR lpcstrModule, LPVOID lpContext)
   {
-    AudioState* audioState = GetAudioState();
+    ConfigState* configState = GetConfigState();
 
-    strncpy(audioState->Cards[audioState->CardCount].CardName, lpcstrDescription, 63);
-    audioState->Cards[audioState->CardCount++].Guid = lpGuid;
+    strncpy(configState->SoundCards[configState->NumberOfSoundCards].CardName, lpcstrDescription, 63);
+    configState->SoundCards[configState->NumberOfSoundCards].Guid = lpGuid;
+    configState->NumberOfSoundCards++;
 
-    return (audioState->CardCount < MAXCARDS);
+    return (configState->NumberOfSoundCards < MAXCARDS);
   }
 }

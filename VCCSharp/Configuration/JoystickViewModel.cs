@@ -8,7 +8,23 @@ namespace VCCSharp.Configuration
 {
     public class JoystickViewModel : INotifyPropertyChanged
     {
-        public JoystickModel Model { get; set; }
+        //TODO: Remove STATIC once safe
+        private static unsafe JoystickModel* _model;
+
+        public unsafe JoystickModel* Model
+        {
+            get => _model;
+            set => _model = value;
+        }
+
+        #region Constants
+
+        //for displaying key name
+        private static readonly string[] _keyNames = { "", "ESC", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BackSp", "Tab", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "]", "Bkslash", ";", "'", "Comma", ".", "/", "CapsLk", "Shift", "Ctrl", "Alt", "Space", "Enter", "Insert", "Delete", "Home", "End", "PgUp", "PgDown", "Left", "Right", "Up", "Down", "F1", "F2" };
+
+        public string[] KeyNames => _keyNames;
+
+        #endregion
 
         #region INotifyPropertyChanged
 
@@ -26,11 +42,54 @@ namespace VCCSharp.Configuration
 
         public JoystickSides Side { get; set; }
 
-        public JoystickEmulations Emulation { get; set; }
+        public JoystickDevices? Device
+        {
+            get => (JoystickDevices)UseMouse;
+            set
+            {
+                if (value.HasValue)
+                {
+                    UseMouse = (int)value.Value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
-        public bool UseMouse { get; set; } = true;
-        public bool DiDevice { get; set; } = false;
-        public bool HiRes { get; set; } = true;
+        public int UseMouse { get; set; }
+
+        public JoystickEmulations? Emulation
+        {
+            get => (JoystickEmulations)HiRes;
+            set
+            {
+                if (value.HasValue)
+                {
+                    HiRes = (int)value.Value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public int HiRes
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model->HiRes;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    Model->HiRes = (byte)value;
+                }
+            }
+        }
+
+        // Index of which Joystick is selected
+        public int DiDevice { get; set; } = 0;
 
         public char Up { get; set; } = 'U';
         public char Down { get; set; } = 'D';

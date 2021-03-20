@@ -1,7 +1,5 @@
 #pragma once
 
-#define MAXCARDS	12
-
 #include <windows.h>
 
 #include "AudioState.h"
