@@ -37,9 +37,9 @@
   </Window.Resources>
   <DockPanel LastChildFill="true">
     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Height="40" Margin="5">
-      <Button>OK</Button>
-      <Button>Apply</Button>
-      <Button>Cancel</Button>
+      <Button Content="OK" IsDefault="True" Click="OnOkClick"/>
+      <Button Content="Apply" Click="OnApplyClick"/>
+      <Button Content="Cancel" IsCancel="True" Click="OnCancelClick"/>
     </StackPanel>
     <TabControl Name="TabControl">
       <TabControl.Resources>

@@ -29,10 +29,9 @@
 #include "resource.h"
 #include "JoystickModel.h"
 
-using namespace std;
+#include "ConfigConstants.h"
 
-const unsigned char TranslateScan2Disp[SCAN_TRANS_COUNT] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 32, 38, 20, 33, 35, 40, 36, 24, 30, 31, 42, 43, 55, 52, 16, 34, 19, 21, 22, 23, 25, 26, 27, 45, 46, 0, 51, 44, 41, 39, 18, 37, 17, 29, 28, 47, 48, 49, 51, 0, 53, 54, 50, 66, 67, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, 64, 60, 0, 62, 0, 63, 0, 59, 65, 61, 56, 57 };
-const unsigned char TranslateDisp2Scan[SCAN_TRANS_COUNT] = { 78, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 30, 48, 46, 32, 18, 33, 34, 35, 23, 36, 37, 38, 50, 49, 24, 25, 16, 19, 31, 20, 22, 47, 17, 45, 21, 44, 26, 27, 43, 39, 40, 51, 52, 53, 58, 54, 29, 56, 57, 28, 82, 83, 71, 79, 73, 81, 75, 77, 72, 80, 59, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+using namespace std;
 
 ConfigState* InitializeInstance(ConfigState*);
 
@@ -222,4 +221,128 @@ extern "C" {
 
     return(1);
   }
+}
+
+static HWND hWndTabDialog;
+
+void MainInitDialog(HWND hDlg) {
+  TCITEM tabs = TCITEM();
+
+  ConfigState* configState = GetConfigState();
+  EmuState* emuState = GetEmuState();
+
+  InitCommonControls();
+
+  //configModel = configState->Model;
+  CpuIcons[0] = LoadIcon(emuState->Resources, (LPCTSTR)IDI_MOTO);
+  CpuIcons[1] = LoadIcon(emuState->Resources, (LPCTSTR)IDI_HITACHI2);
+  MonIcons[0] = LoadIcon(emuState->Resources, (LPCTSTR)IDI_COMPOSITE);
+  MonIcons[1] = LoadIcon(emuState->Resources, (LPCTSTR)IDI_RGB);
+
+  hWndTabDialog = GetDlgItem(hDlg, IDC_CONFIGTAB); //get handle of Tabbed Dialog
+
+  //get handles to all the sub panels in the control
+  configState->hWndConfig[0] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_AUDIO), hWndTabDialog, (DLGPROC)CreateAudioConfigDialogCallback);
+  configState->hWndConfig[1] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_CPU), hWndTabDialog, (DLGPROC)CreateCpuConfigDialogCallback);
+  configState->hWndConfig[2] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_DISPLAY), hWndTabDialog, (DLGPROC)CreateDisplayConfigDialogCallback);
+  configState->hWndConfig[3] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_INPUT), hWndTabDialog, (DLGPROC)CreateInputConfigDialogCallback);
+  configState->hWndConfig[4] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_JOYSTICK), hWndTabDialog, (DLGPROC)CreateJoyStickConfigDialogCallback);
+  configState->hWndConfig[5] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_MISC), hWndTabDialog, (DLGPROC)CreateMiscConfigDialogCallback);
+  configState->hWndConfig[6] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_CASSETTE), hWndTabDialog, (DLGPROC)CreateTapeConfigDialogCallback);
+  configState->hWndConfig[7] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_BITBANGER), hWndTabDialog, (DLGPROC)CreateBitBangerConfigDialogCallback);
+
+  //Set the title text for all tabs
+  for (unsigned char tabCount = 0; tabCount < TABS; tabCount++)
+  {
+    tabs.mask = TCIF_TEXT | TCIF_IMAGE;
+    tabs.iImage = -1;
+    tabs.pszText = TabTitles[tabCount];
+
+    TabCtrl_InsertItem(hWndTabDialog, tabCount, &tabs);
+  }
+
+  TabCtrl_SetCurSel(hWndTabDialog, 0);	//Set Initial Tab to 0
+
+  for (unsigned char tabCount = 0; tabCount < TABS; tabCount++) {	//Hide All the Sub Panels
+    ShowWindow(configState->hWndConfig[tabCount], SW_HIDE);
+  }
+
+  SetWindowPos(configState->hWndConfig[0], HWND_TOP, 10, 30, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW);
+}
+
+void MainNotify(WPARAM wParam) {
+  ConfigState* configState = GetConfigState();
+
+  if ((LOWORD(wParam)) == IDC_CONFIGTAB) {
+    unsigned char selectedTab = TabCtrl_GetCurSel(hWndTabDialog);
+
+    for (unsigned char tabCount = 0; tabCount < TABS; tabCount++) {
+      ShowWindow(configState->hWndConfig[tabCount], SW_HIDE);
+    }
+
+    SetWindowPos(configState->hWndConfig[selectedTab], HWND_TOP, 10, 30, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW);
+  }
+}
+
+void CheckAudioChange(EmuState* emuState, ConfigModel* current, SoundCardList* soundCards) {
+  //unsigned char currentSoundCardIndex = GetSoundCardIndex(current->SoundCardName);
+  //unsigned char tempSoundCardIndex = GetSoundCardIndex(temp->SoundCardName);
+  unsigned char tempSoundCardIndex = GetSoundCardIndex(current->SoundCardName);
+
+  //TODO: current and temp are pointing to the same object.
+  //if ((currentSoundCardIndex != tempSoundCardIndex) || (current->AudioRate != temp->AudioRate)) {
+  //SoundInit(emuState->WindowHandle, soundCards[tempSoundCardIndex].Guid, temp->AudioRate);
+  SoundInit(emuState->WindowHandle, soundCards[tempSoundCardIndex].Guid, current->AudioRate);
+  //}
+}
+
+void MainCommandApply(ConfigModel* model) {
+  ConfigState* configState = GetConfigState();
+  EmuState* emuState = GetEmuState();
+
+  JoystickModel* left = configState->Model->Left;
+  JoystickModel* right = configState->Model->Right;
+
+  emuState->ResetPending = RESET_CLS_SYNCH;
+
+  //if ((configState->Model->RamSize != configModel->RamSize) || (configState->Model->CpuType != configModel->CpuType)) {
+  emuState->ResetPending = RESET_HARD;
+  //}
+
+  //CheckAudioChange(emuState, configState->Model, configModel, configState->SoundCards);
+  CheckAudioChange(emuState, configState->Model, configState->SoundCards);
+
+  //configState->Model = configModel;
+
+  vccKeyboardBuildRuntimeTable(configState->Model->KeyMapIndex);
+
+  SetStickNumbers(left->DiDevice, right->DiDevice);
+}
+
+void MainCommandCancel(HWND hDlg) {
+  ConfigState* configState = GetConfigState();
+  EmuState* emuState = GetEmuState();
+
+  for (unsigned char temp = 0; temp < TABS; temp++)
+  {
+    DestroyWindow(configState->hWndConfig[temp]);
+  }
+
+#ifdef CONFIG_DIALOG_MODAL
+  EndDialog(hDlg, LOWORD(wParam));
+#else
+  DestroyWindow(hDlg);
+#endif
+
+  emuState->ConfigDialog = NULL;
+}
+
+void MainCommandOk(HWND hDlg, ConfigModel* model) {
+  ConfigState* configState = GetConfigState();
+
+  configState->hDlgBar = NULL;
+  configState->hDlgTape = NULL;
+
+  MainCommandApply(model);
+  MainCommandCancel(hDlg);
 }

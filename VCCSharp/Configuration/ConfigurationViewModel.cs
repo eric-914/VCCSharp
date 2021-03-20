@@ -172,8 +172,8 @@ namespace VCCSharp.Configuration
         }
 
         //[Video]
-        public bool MonitorType { get; set; } = true;
-        public bool PaletteType { get; set; } = false;
+        public int MonitorType { get; set; } = 0;
+        public int PaletteType { get; set; } = 0;
         public bool ScanLines { get; set; } = true;
         public bool ForceAspect { get; set; } = false;
         public bool RememberSize { get; set; } = true;

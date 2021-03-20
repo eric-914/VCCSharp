@@ -26,6 +26,7 @@ namespace VCCSharp.Modules
         void LoadIniFile();
         short GetCurrentKeyboardLayout();
         void SaveConfig();
+        byte GetSoundCardIndex(string soundCardName);
     }
 
     public class Config : IConfig

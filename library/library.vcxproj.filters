@@ -346,6 +346,9 @@
     <ClInclude Include="DirectInput.h">
       <Filter>joystick</Filter>
     </ClInclude>
+    <ClInclude Include="ConfigConstants.h">
+      <Filter>config</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="audio">

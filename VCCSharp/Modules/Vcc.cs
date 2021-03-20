@@ -18,12 +18,13 @@ namespace VCCSharp.Modules
         void SetAppTitle(HINSTANCE hResources, string binFileName);
         void EmuLoop();
         string GetExecPath();
+        void ApplyConfigurationChanges();
     }
 
     public class Vcc : IVcc
     {
         private readonly IModules _modules;
-        
+
         public Vcc(IModules modules)
         {
             _modules = modules;
@@ -177,6 +178,44 @@ namespace VCCSharp.Modules
         public string GetExecPath()
         {
             return System.Reflection.Assembly.GetExecutingAssembly().Location;
+        }
+
+        public void ApplyConfigurationChanges()
+        {
+            unsafe
+            {
+                ConfigState* configState = _modules.Config.GetConfigState();
+                EmuState* emuState = _modules.Emu.GetEmuState();
+
+                JoystickModel* left = configState->Model->Left;
+                JoystickModel* right = configState->Model->Right;
+
+                emuState->ResetPending = (byte)ResetPendingStates.ClsSynch;
+
+                //if ((configState->Model->RamSize != configModel->RamSize) || (configState->Model->CpuType != configModel->CpuType)) {
+                //emuState->ResetPending = (byte)ResetPendingStates.Hard;
+                //}
+
+                //CheckAudioChange(emuState, configState->Model, configState->SoundCards);
+                string soundCardName = Converter.ToString(configState->Model->SoundCardName);
+                byte tempSoundCardIndex = _modules.Config.GetSoundCardIndex(soundCardName);
+                _modules.Audio.SoundInit(emuState->WindowHandle, Lookup(tempSoundCardIndex).Guid, configState->Model->AudioRate);
+            }
+        }
+
+        private unsafe SoundCardList Lookup(int index)
+        {
+            ConfigState* configState = _modules.Config.GetConfigState();
+
+            switch (index)
+            {
+                case 0: return configState->SoundCards._0;
+                case 1: return configState->SoundCards._1;
+                case 2: return configState->SoundCards._2;
+                    //TODO: Fill in the rest.  Or just figure out how to turn it into an array like it should be.
+            }
+
+            return default;
         }
     }
 }
