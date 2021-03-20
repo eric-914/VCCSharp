@@ -7,7 +7,6 @@
 #define IDAPPLY                         3
 #define IDR_MENU                        101
 #define IDI_COCO3                       103
-#define IDD_ABOUTBOX                    104
 #define IDD_CONFIG                      105
 #define IDD_DISKS                       106
 #define IDI_BINFILE                     110
@@ -26,7 +25,6 @@
 #define IDD_DISPLAY                     136
 #define IDD_CPU                         137
 #define IDD_AUDIO                       138
-#define IDD_INPUT                       139
 #define IDD_JOYSTICK                    141
 #define IDI_AUDIO                       146
 #define IDI_KEYBOARD                    148
@@ -36,7 +34,6 @@
 #define IDD_CASSETTE                    157
 #define IDD_NEWTAPE                     158
 #define IDD_BITBANGER                   159
-#define IDD_KEYMAPED                    164
 #define IDC_MUTE                        1003
 #define IDC_THROTTLE                    1004
 #define IDC_ARTIFACTS                   1005
@@ -123,7 +120,6 @@
 #define IDC_D                           1039
 #define IDC_COMBO1                      1039
 #define IDC_LEFT_LEFT                   1039
-#define IDC_KBCONFIG                    1039
 #define IDC_BUTTON16                    1039
 #define IDC_F                           1040
 #define IDC_LEFT_RIGHT                  1040

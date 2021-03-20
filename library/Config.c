@@ -245,11 +245,10 @@ void MainInitDialog(HWND hDlg) {
   configState->hWndConfig[0] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_AUDIO), hWndTabDialog, (DLGPROC)CreateAudioConfigDialogCallback);
   configState->hWndConfig[1] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_CPU), hWndTabDialog, (DLGPROC)CreateCpuConfigDialogCallback);
   configState->hWndConfig[2] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_DISPLAY), hWndTabDialog, (DLGPROC)CreateDisplayConfigDialogCallback);
-  configState->hWndConfig[3] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_INPUT), hWndTabDialog, (DLGPROC)CreateInputConfigDialogCallback);
-  configState->hWndConfig[4] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_JOYSTICK), hWndTabDialog, (DLGPROC)CreateJoyStickConfigDialogCallback);
-  configState->hWndConfig[5] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_MISC), hWndTabDialog, (DLGPROC)CreateMiscConfigDialogCallback);
-  configState->hWndConfig[6] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_CASSETTE), hWndTabDialog, (DLGPROC)CreateTapeConfigDialogCallback);
-  configState->hWndConfig[7] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_BITBANGER), hWndTabDialog, (DLGPROC)CreateBitBangerConfigDialogCallback);
+  configState->hWndConfig[3] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_JOYSTICK), hWndTabDialog, (DLGPROC)CreateJoyStickConfigDialogCallback);
+  configState->hWndConfig[4] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_MISC), hWndTabDialog, (DLGPROC)CreateMiscConfigDialogCallback);
+  configState->hWndConfig[5] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_CASSETTE), hWndTabDialog, (DLGPROC)CreateTapeConfigDialogCallback);
+  configState->hWndConfig[6] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_BITBANGER), hWndTabDialog, (DLGPROC)CreateBitBangerConfigDialogCallback);
 
   //Set the title text for all tabs
   for (unsigned char tabCount = 0; tabCount < TABS; tabCount++)

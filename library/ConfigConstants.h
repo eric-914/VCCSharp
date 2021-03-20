@@ -13,7 +13,7 @@ const unsigned short int Ramchoice[4] = { IDC_128K, IDC_512K, IDC_2M, IDC_8M };
 const unsigned int LeftJoystickEmulation[3] = { IDC_LEFTSTANDARD, IDC_LEFTTHIRES, IDC_LEFTCCMAX };
 const unsigned int RightJoystickEmulation[3] = { IDC_RIGHTSTANDARD, IDC_RIGHTTHRES, IDC_RIGHTCCMAX };
 
-const LPSTR TabTitles[TABS] = { "Audio", "CPU", "Display", "Keyboard", "Joysticks", "Misc", "Tape", "BitBanger" };
+const LPSTR TabTitles[TABS] = { "Audio", "CPU", "Display", "Joysticks", "Misc", "Tape", "BitBanger" };
 
 const LPSTR TapeModes[4] = { "STOP", "PLAY", "REC", "STOP" };
 

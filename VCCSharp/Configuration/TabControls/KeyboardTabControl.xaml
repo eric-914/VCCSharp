@@ -22,10 +22,11 @@
         <RowDefinition Height="35"/>
         <RowDefinition Height="30"/>
       </Grid.RowDefinitions>
-      <Label Grid.Row="0">Keyboard Mapping</Label>
+      <Label Grid.Row="0" Content="Keyboard Mapping"/>
       <ComboBox Grid.Row="1" ItemsSource="{Binding KeyboardLayouts}" SelectedIndex="{Binding KeyMapIndex}"/>
       <Label Grid.Row="3" HorizontalContentAlignment="Center">Edit Custom Keyboard</Label>
-      <Button Grid.Row="4">EDIT</Button>
+      <!-- Doesn't look like this was ever implemented -->
+      <Button Grid.Row="4" Content="EDIT" IsEnabled="False"/>
     </Grid>
     <StackPanel Grid.Column="1">
       <StackPanel.Resources>

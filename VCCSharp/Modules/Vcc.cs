@@ -200,6 +200,10 @@ namespace VCCSharp.Modules
                 string soundCardName = Converter.ToString(configState->Model->SoundCardName);
                 byte tempSoundCardIndex = _modules.Config.GetSoundCardIndex(soundCardName);
                 _modules.Audio.SoundInit(emuState->WindowHandle, Lookup(tempSoundCardIndex).Guid, configState->Model->AudioRate);
+
+                _modules.Keyboard.vccKeyboardBuildRuntimeTable(configState->Model->KeyMapIndex);
+
+                _modules.Joystick.SetStickNumbers(left->DiDevice, right->DiDevice);
             }
         }
 

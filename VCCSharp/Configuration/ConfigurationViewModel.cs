@@ -218,7 +218,24 @@ namespace VCCSharp.Configuration
         //[Misc]
         public bool AutoStart { get; set; } = true;
         public bool CartAutoStart { get; set; } = false;
-        public bool KeyMapIndex { get; set; } = true;
+
+        public int KeyMapIndex
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model->KeyMapIndex;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    Model->KeyMapIndex = (byte)value;
+                }
+            }
+        }
 
         //[Module]
         public string ModulePath { get; set; } = "Module Path";
