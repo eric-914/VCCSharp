@@ -123,7 +123,6 @@
 #define IDC_D                           1039
 #define IDC_COMBO1                      1039
 #define IDC_LEFT_LEFT                   1039
-#define IDC_SOUNDCARD                   1039
 #define IDC_KBCONFIG                    1039
 #define IDC_BUTTON16                    1039
 #define IDC_F                           1040
@@ -184,7 +183,6 @@
 #define IDC_AUTOCART                    1060
 #define IDC_BUTTON37                    1060
 #define IDC_PERIOD                      1061
-#define IDC_RATE                        1061
 #define IDC_BUTTON38                    1061
 #define IDC_FS                          1062
 #define IDC_PROGRESSLEFT                1062

@@ -89,10 +89,7 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) LRESULT CALLBACK CreateAudioConfigDialogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
   {
-    unsigned char soundCardIndex;
-
     ConfigState* configState = GetConfigState();
-    configModel = configState->Model;
 
     switch (message)
     {
@@ -109,27 +106,9 @@ extern "C" {
       SendDlgItemMessage(hDlg, IDC_PROGRESSLEFT, PBM_SETBKCOLOR, 0, 0);
       SendDlgItemMessage(hDlg, IDC_PROGRESSRIGHT, PBM_SETBKCOLOR, 0, 0);
 
-      for (unsigned char index = 0; index < configState->NumberOfSoundCards; index++) {
-        SendDlgItemMessage(hDlg, IDC_SOUNDCARD, CB_ADDSTRING, (WPARAM)0, (LPARAM)(configState->SoundCards[index].CardName));
-      }
-
-      for (unsigned char index = 0; index < 4; index++) {
-        SendDlgItemMessage(hDlg, IDC_RATE, CB_ADDSTRING, (WPARAM)0, (LPARAM)GetRateList(index));
-      }
-
-      SendDlgItemMessage(hDlg, IDC_RATE, CB_SETCURSEL, (WPARAM)(configModel->AudioRate), (LPARAM)0);
-
-      soundCardIndex = GetSoundCardIndex(configModel->SoundCardName);
-      SendDlgItemMessage(hDlg, IDC_SOUNDCARD, CB_SETCURSEL, (WPARAM)(soundCardIndex), (LPARAM)0);
-
       break;
 
     case WM_COMMAND:
-      soundCardIndex = (unsigned char)SendDlgItemMessage(hDlg, IDC_SOUNDCARD, CB_GETCURSEL, 0, 0);
-      configModel->AudioRate = (unsigned char)SendDlgItemMessage(hDlg, IDC_RATE, CB_GETCURSEL, 0, 0);
-
-      strcpy(configModel->SoundCardName, configState->SoundCards[soundCardIndex].CardName);
-
       break;
     }
 
@@ -768,6 +747,9 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) LRESULT CALLBACK CreateMainConfigDialogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
   {
+    ConfigState* configState = GetConfigState();
+    configModel = configState->Model;
+
     switch (message)
     {
     case WM_INITDIALOG:
