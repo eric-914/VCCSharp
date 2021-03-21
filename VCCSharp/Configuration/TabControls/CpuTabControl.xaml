@@ -7,12 +7,13 @@
              xmlns:enums="clr-namespace:VCCSharp.Enums"
              xmlns:converters="clr-namespace:VCCSharp.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="250" d:DesignWidth="800">
   <UserControl.DataContext>
     <configuration:ConfigurationViewModel/>
   </UserControl.DataContext>
   <UserControl.Resources>
     <converters:EnumToSelectionConverter x:Key="Selection"/>
+    <converters:EnumToVisibilityConverter x:Key="Visibility"/>
   </UserControl.Resources>
   <StackPanel Orientation="Vertical" Margin="10">
     <Label Content="Over-Clocking" />
@@ -39,11 +40,19 @@
         <RadioButton Content="2048K" IsChecked="{Binding Memory, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MemorySizes._2048K}}"/>
         <RadioButton Content="8192K" IsChecked="{Binding Memory, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MemorySizes._8192K}}"/>
       </StackPanel>
-      <StackPanel Grid.Column="2" Orientation="Vertical" >
-        <Label Content="CPU" />
-        <RadioButton Content="Motorola MC6809 CPU" IsChecked="{Binding Cpu, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:CPUTypes.MC6809}}"/>
-        <RadioButton Content="Hitachi HD6309 CPU" IsChecked="{Binding Cpu, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:CPUTypes.HD6309}}"/>
-      </StackPanel>
+      <Grid Grid.Column="2" >
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="50"/>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Image Grid.Column="0" Source="/Resources/hitachi.ico" Stretch="None" Visibility="{Binding Cpu, Converter={StaticResource Visibility}, ConverterParameter={x:Static enums:CPUTypes.HD6309}}" />
+        <Image Grid.Column="0" Source="/Resources/moto.ico" Stretch="None"  Visibility="{Binding Cpu, Converter={StaticResource Visibility}, ConverterParameter={x:Static enums:CPUTypes.MC6809}}" />
+        <StackPanel Grid.Column="1" Orientation="Vertical" >
+          <Label Content="CPU" />
+          <RadioButton Content="Motorola MC6809 CPU" IsChecked="{Binding Cpu, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:CPUTypes.MC6809}}"/>
+          <RadioButton Content="Hitachi HD6309 CPU" IsChecked="{Binding Cpu, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:CPUTypes.HD6309}}"/>
+        </StackPanel>
+      </Grid>
     </Grid>
   </StackPanel>
 </UserControl>

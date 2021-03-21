@@ -13,8 +13,11 @@
 
   <ItemGroup>
     <None Remove="Resources\3guys.bmp" />
+    <None Remove="Resources\hitachi.ico" />
+    <None Remove="Resources\moto.ico" />
     <None Remove="Resources\vcc.bmp" />
     <None Remove="Television.png" />
+    <None Remove="VCCSharp.sln.DotSettings" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +26,8 @@
 
   <ItemGroup>
     <Resource Include="Resources\3guys.bmp" />
+    <Resource Include="Resources\hitachi.ico" />
+    <Resource Include="Resources\moto.ico" />
     <Resource Include="Resources\Television.png" />
     <Resource Include="Resources\vcc.bmp" />
   </ItemGroup>

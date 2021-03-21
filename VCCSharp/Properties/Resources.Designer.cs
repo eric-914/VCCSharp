@@ -83,6 +83,26 @@ namespace VCCSharp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] hitachi {
+            get {
+                object obj = ResourceManager.GetObject("hitachi", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] moto {
+            get {
+                object obj = ResourceManager.GetObject("moto", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] Television {
             get {
                 object obj = ResourceManager.GetObject("Television", resourceCulture);

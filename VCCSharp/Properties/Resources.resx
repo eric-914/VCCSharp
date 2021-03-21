@@ -121,6 +121,12 @@
   <data name="coco" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\coco.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="hitachi" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\hitachi.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="moto" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\moto.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="Television" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Television.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
