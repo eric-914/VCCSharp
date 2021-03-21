@@ -7,7 +7,7 @@
              xmlns:converters="clr-namespace:VCCSharp.Converters"
              xmlns:enums="clr-namespace:VCCSharp.Enums"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="300">
+             d:DesignHeight="350" d:DesignWidth="300">
   <UserControl.DataContext>
     <configuration:JoystickViewModel/>
   </UserControl.DataContext>

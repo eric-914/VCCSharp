@@ -62,7 +62,23 @@ namespace VCCSharp.Configuration
             }
         }
 
-        public int UseMouse { get; set; }
+        public int UseMouse
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model == null ? 0 : Model->UseMouse;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    Model->UseMouse = (byte) value;
+                }
+            }
+        }
 
         public JoystickEmulations? Emulation
         {
@@ -117,9 +133,9 @@ namespace VCCSharp.Configuration
                     OnPropertyChanged();
                 }
             }
-        } 
+        }
 
-        public byte Down 
+        public byte Down
         {
             get
             {
@@ -138,9 +154,9 @@ namespace VCCSharp.Configuration
                     OnPropertyChanged();
                 }
             }
-        } 
+        }
 
-        public byte Left 
+        public byte Left
         {
             get
             {
@@ -159,9 +175,9 @@ namespace VCCSharp.Configuration
                     OnPropertyChanged();
                 }
             }
-        } 
+        }
 
-        public byte Right 
+        public byte Right
         {
             get
             {
@@ -180,9 +196,9 @@ namespace VCCSharp.Configuration
                     OnPropertyChanged();
                 }
             }
-        } 
+        }
 
-        public byte Fire1 
+        public byte Fire1
         {
             get
             {
@@ -201,9 +217,10 @@ namespace VCCSharp.Configuration
                     OnPropertyChanged();
                 }
             }
-        } 
+        }
 
-        public byte Fire2         {
+        public byte Fire2
+        {
             get
             {
                 unsafe
@@ -221,7 +238,7 @@ namespace VCCSharp.Configuration
                     OnPropertyChanged();
                 }
             }
-        } 
+        }
 
     }
 }
