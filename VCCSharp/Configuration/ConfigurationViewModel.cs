@@ -83,7 +83,26 @@ namespace VCCSharp.Configuration
             }
         }
 
-        public int FrameSkip { get; set; } = 0;
+        public int FrameSkip
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model->FrameSkip;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    if (Model->FrameSkip == (byte)value) return;
+
+                    Model->FrameSkip = (byte)value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public bool SpeedThrottle
         {
@@ -225,16 +244,16 @@ namespace VCCSharp.Configuration
             {
                 unsafe
                 {
-                    return (MonitorTypes) (Model->MonitorType);
+                    return (MonitorTypes)(Model->MonitorType);
                 }
             }
             set
             {
                 unsafe
                 {
-                    if (!value.HasValue || Model->MonitorType == (byte) value.Value) return;
+                    if (!value.HasValue || Model->MonitorType == (byte)value.Value) return;
 
-                    Model->MonitorType = (byte) value.Value;
+                    Model->MonitorType = (byte)value.Value;
                     OnPropertyChanged();
                 }
             }
@@ -246,20 +265,20 @@ namespace VCCSharp.Configuration
             {
                 unsafe
                 {
-                    return (PaletteTypes) (Model->PaletteType);
+                    return (PaletteTypes)(Model->PaletteType);
                 }
             }
             set
             {
                 unsafe
                 {
-                    if (!value.HasValue || Model->PaletteType == (byte) value.Value) return;
+                    if (!value.HasValue || Model->PaletteType == (byte)value.Value) return;
 
-                    Model->PaletteType = (byte) value.Value;
+                    Model->PaletteType = (byte)value.Value;
                     OnPropertyChanged();
                 }
             }
-        } 
+        }
 
         public bool ScanLines
         {
