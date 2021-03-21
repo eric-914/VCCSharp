@@ -122,24 +122,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl TranslateDisplay2Scan(LRESULT x)
-  {
-    assert(x >= 0 && x < SCAN_TRANS_COUNT);
-
-    return TranslateDisp2Scan[x];
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl TranslateScan2Display(int x)
-  {
-    assert(x >= 0 && x < SCAN_TRANS_COUNT);
-
-    return TranslateScan2Disp[x];
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl SetIniFilePath(char* path)
   {
     //  Path must be to an existing ini file
@@ -244,9 +226,8 @@ void MainInitDialog(HWND hDlg) {
 
   //get handles to all the sub panels in the control
   configState->hWndConfig[0] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_AUDIO), hWndTabDialog, (DLGPROC)CreateAudioConfigDialogCallback);
-  configState->hWndConfig[1] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_JOYSTICK), hWndTabDialog, (DLGPROC)CreateJoyStickConfigDialogCallback);
-  configState->hWndConfig[2] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_CASSETTE), hWndTabDialog, (DLGPROC)CreateTapeConfigDialogCallback);
-  configState->hWndConfig[3] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_BITBANGER), hWndTabDialog, (DLGPROC)CreateBitBangerConfigDialogCallback);
+  configState->hWndConfig[1] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_CASSETTE), hWndTabDialog, (DLGPROC)CreateTapeConfigDialogCallback);
+  configState->hWndConfig[2] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_BITBANGER), hWndTabDialog, (DLGPROC)CreateBitBangerConfigDialogCallback);
 
   //Set the title text for all tabs
   for (unsigned char tabCount = 0; tabCount < TABS; tabCount++)

@@ -18,16 +18,10 @@
 
 #include "ConfigConstants.h"
 
-
 static CHARFORMAT CounterText;
 static CHARFORMAT ModeText;
 
 static ConfigModel* configModel;
-
-char* GetKeyName(int x)
-{
-  return keyNames[x];
-}
 
 extern "C" {
   __declspec(dllexport) void SetDialogTapeCounter(HWND hDlg, unsigned int tapeCounter) {
@@ -160,97 +154,6 @@ extern "C" {
 
         MC6821_SetMonState(configState->PrintMonitorWindow);
       }
-
-      break;
-    }
-
-    return(0);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) LRESULT CALLBACK CreateJoyStickConfigDialogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-  {
-    const int LeftRadios[4] = { IDC_LEFT_KEYBOARD, IDC_LEFT_USEMOUSE, IDC_LEFTAUDIO, IDC_LEFTJOYSTICK };
-    const int RightRadios[4] = { IDC_RIGHT_KEYBOARD, IDC_RIGHT_USEMOUSE, IDC_RIGHTAUDIO, IDC_RIGHTJOYSTICK };
-
-    VccState* vccState = GetVccState();
-    EmuState* emuState = GetEmuState();
-    ConfigState* configState = GetConfigState();
-
-    JoystickModel* left = configState->Model->Left;
-    JoystickModel* right = configState->Model->Right;
-
-    unsigned char numberOfJoysticks = configState->NumberOfJoysticks;
-
-    switch (message)
-    {
-    case WM_INITDIALOG:
-      EnableWindow(GetDlgItem(hDlg, IDC_LEFTAUDIODEVICE), (left->UseMouse == 2));
-      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTAUDIODEVICE), (right->UseMouse == 2));
-      EnableWindow(GetDlgItem(hDlg, IDC_LEFTJOYSTICKDEVICE), (left->UseMouse == 3));
-      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTJOYSTICKDEVICE), (right->UseMouse == 3));
-
-      EnableWindow(GetDlgItem(hDlg, IDC_LEFTJOYSTICK), (numberOfJoysticks > 0));		//Grey the Joystick Radios if
-      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTJOYSTICK), (numberOfJoysticks > 0));	  //No Joysticks are present
-
-      //populate joystick combo boxs
-      for (unsigned char index = 0; index < numberOfJoysticks; index++)
-      {
-        SendDlgItemMessage(hDlg, IDC_RIGHTJOYSTICKDEVICE, CB_ADDSTRING, (WPARAM)0, (LPARAM)GetStickName(index));
-        SendDlgItemMessage(hDlg, IDC_LEFTJOYSTICKDEVICE, CB_ADDSTRING, (WPARAM)0, (LPARAM)GetStickName(index));
-      }
-
-      SendDlgItemMessage(hDlg, IDC_RIGHTJOYSTICKDEVICE, CB_SETCURSEL, (WPARAM)right->DiDevice, (LPARAM)0);
-      SendDlgItemMessage(hDlg, IDC_LEFTJOYSTICKDEVICE, CB_SETCURSEL, (WPARAM)left->DiDevice, (LPARAM)0);
-
-      for (unsigned char temp = 0; temp <= 3; temp++)
-      {
-        SendDlgItemMessage(hDlg, LeftRadios[temp], BM_SETCHECK, temp == left->UseMouse, 0);
-      }
-
-      for (unsigned char temp = 0; temp <= 3; temp++)
-      {
-        SendDlgItemMessage(hDlg, RightRadios[temp], BM_SETCHECK, temp == right->UseMouse, 0);
-      }
-
-      break;
-
-    case WM_COMMAND:
-      for (unsigned char temp = 0; temp <= 3; temp++)
-      {
-        if (LOWORD(wParam) == LeftRadios[temp])
-        {
-          for (unsigned char temp2 = 0; temp2 <= 3; temp2++) {
-            SendDlgItemMessage(hDlg, LeftRadios[temp2], BM_SETCHECK, 0, 0);
-          }
-
-          SendDlgItemMessage(hDlg, LeftRadios[temp], BM_SETCHECK, 1, 0);
-
-          left->UseMouse = temp;
-        }
-      }
-
-      for (unsigned char temp = 0; temp <= 3; temp++) {
-        if (LOWORD(wParam) == RightRadios[temp])
-        {
-          for (unsigned char temp2 = 0; temp2 <= 3; temp2++) {
-            SendDlgItemMessage(hDlg, RightRadios[temp2], BM_SETCHECK, 0, 0);
-          }
-
-          SendDlgItemMessage(hDlg, RightRadios[temp], BM_SETCHECK, 1, 0);
-
-          right->UseMouse = temp;
-        }
-      }
-
-      EnableWindow(GetDlgItem(hDlg, IDC_LEFTAUDIODEVICE), (left->UseMouse == 2));
-      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTAUDIODEVICE), (right->UseMouse == 2));
-      EnableWindow(GetDlgItem(hDlg, IDC_LEFTJOYSTICKDEVICE), (left->UseMouse == 3));
-      EnableWindow(GetDlgItem(hDlg, IDC_RIGHTJOYSTICKDEVICE), (right->UseMouse == 3));
-
-      right->DiDevice = (unsigned char)SendDlgItemMessage(hDlg, IDC_RIGHTJOYSTICKDEVICE, CB_GETCURSEL, 0, 0);
-      left->DiDevice = (unsigned char)SendDlgItemMessage(hDlg, IDC_LEFTJOYSTICKDEVICE, CB_GETCURSEL, 0, 0);	//Fix Me;
 
       break;
     }
