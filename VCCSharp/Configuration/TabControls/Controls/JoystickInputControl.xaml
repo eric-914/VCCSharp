@@ -14,6 +14,7 @@
   <UserControl.Resources>
     <converters:EnumToSelectionConverter x:Key="Selection"/>
     <converters:EnumIsSelectedConverter x:Key="Enabled"/>
+    <converters:ScanCodeToDisplayTextConverter x:Key="ScanCode"/>
   </UserControl.Resources>
   <StackPanel Orientation="Vertical">
     <StackPanel Orientation="Horizontal">
@@ -58,22 +59,22 @@
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0" Content="Left"/>
-        <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding KeyNames}" Text="{Binding Left}"/>
+        <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding KeyNames}" SelectedIndex="{Binding Left, Converter={StaticResource ScanCode}}"/>
 
         <Label Grid.Row="1" Grid.Column="0" Content="Right"/>
-        <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding KeyNames}" Text="{Binding Right}"/>
+        <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding KeyNames}" SelectedIndex="{Binding Right, Converter={StaticResource ScanCode}}"/>
 
         <Label Grid.Row="2" Grid.Column="0" Content="Up"/>
-        <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding KeyNames}" Text="{Binding Up}"/>
+        <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding KeyNames}" SelectedIndex="{Binding Up, Converter={StaticResource ScanCode}}"/>
 
         <Label Grid.Row="3" Grid.Column="0" Content="Down"/>
-        <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding KeyNames}" Text="{Binding Down}"/>
+        <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding KeyNames}" SelectedIndex="{Binding Down, Converter={StaticResource ScanCode}}"/>
 
         <Label Grid.Row="4" Grid.Column="0" Content="Fire 1"/>
-        <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding KeyNames}" Text="{Binding Fire1}"/>
+        <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding KeyNames}" SelectedIndex="{Binding Fire1, Converter={StaticResource ScanCode}}"/>
 
         <Label Grid.Row="5" Grid.Column="0" Content="Fire 2"/>
-        <ComboBox Grid.Row="5" Grid.Column="1" ItemsSource="{Binding KeyNames}" Text="{Binding Fire2}"/>
+        <ComboBox Grid.Row="5" Grid.Column="1" ItemsSource="{Binding KeyNames}" SelectedIndex="{Binding Fire2, Converter={StaticResource ScanCode}}"/>
       </Grid>
     </Grid>
   </StackPanel>

@@ -98,11 +98,130 @@ namespace VCCSharp.Configuration
         // Index of which Joystick is selected
         public int DiDevice { get; set; } = 0;
 
-        public char Up { get; set; } = 'U';
-        public char Down { get; set; } = 'D';
-        public char Left { get; set; } = 'L';
-        public char Right { get; set; } = 'R';
-        public char Fire1 { get; set; } = '1';
-        public char Fire2 { get; set; } = '2';
+        public byte Up
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model == null ? (byte)0 : Model->Up;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    if (Model->Up == value) return;
+
+                    Model->Up = value;
+                    OnPropertyChanged();
+                }
+            }
+        } 
+
+        public byte Down 
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model == null ? (byte)0 : Model->Down;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    if (Model->Down == value) return;
+
+                    Model->Down = value;
+                    OnPropertyChanged();
+                }
+            }
+        } 
+
+        public byte Left 
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model == null ? (byte)0 : Model->Left;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    if (Model->Left == value) return;
+
+                    Model->Left = value;
+                    OnPropertyChanged();
+                }
+            }
+        } 
+
+        public byte Right 
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model == null ? (byte)0 : Model->Right;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    if (Model->Right == value) return;
+
+                    Model->Right = value;
+                    OnPropertyChanged();
+                }
+            }
+        } 
+
+        public byte Fire1 
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model == null ? (byte)0 : Model->Fire1;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    if (Model->Fire1 == value) return;
+
+                    Model->Fire1 = value;
+                    OnPropertyChanged();
+                }
+            }
+        } 
+
+        public byte Fire2         {
+            get
+            {
+                unsafe
+                {
+                    return Model == null ? (byte)0 : Model->Fire2;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    if (Model->Fire2 == value) return;
+
+                    Model->Fire2 = value;
+                    OnPropertyChanged();
+                }
+            }
+        } 
+
     }
 }
