@@ -192,10 +192,6 @@ extern "C" {
 
       SetDialogCpuMultiplier(hDlg, configModel->CPUMultiplier);
 
-      for (unsigned char temp = 0; temp <= 3; temp++) {
-        SendDlgItemMessage(hDlg, Ramchoice[temp], BM_SETCHECK, (temp == configModel->RamSize), 0);
-      }
-
       break;
 
     case WM_HSCROLL:
@@ -204,31 +200,6 @@ extern "C" {
       sprintf(configState->OutBuffer, "%2.3f Mhz", (float)(configModel->CPUMultiplier) * .894);
 
       SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(configState->OutBuffer), (LPARAM)(LPCSTR)(configState->OutBuffer));
-
-      break;
-
-    case WM_COMMAND:
-      switch (LOWORD(wParam))
-      {
-      case IDC_128K:
-      case IDC_512K:
-      case IDC_2M:
-      case IDC_8M:
-        for (unsigned char temp = 0; temp <= 3; temp++) {
-          if (LOWORD(wParam) == Ramchoice[temp])
-          {
-            for (unsigned char temp2 = 0; temp2 <= 3; temp2++) {
-              SendDlgItemMessage(hDlg, Ramchoice[temp2], BM_SETCHECK, 0, 0);
-            }
-
-            SendDlgItemMessage(hDlg, Ramchoice[temp], BM_SETCHECK, 1, 0);
-
-            configModel->RamSize = temp;
-          }
-        }
-
-        break;
-      }
 
       break;
     }
