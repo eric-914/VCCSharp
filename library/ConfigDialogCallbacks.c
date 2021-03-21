@@ -179,11 +179,7 @@ extern "C" {
     {
     case WM_INITDIALOG:
       SendDlgItemMessage(hDlg, IDC_FRAMESKIP, TBM_SETRANGE, TRUE, MAKELONG(1, 6));
-      SendDlgItemMessage(hDlg, IDC_SCANLINES, BM_SETCHECK, configModel->ScanLines, 0);
-      SendDlgItemMessage(hDlg, IDC_THROTTLE, BM_SETCHECK, configModel->SpeedThrottle, 0);
       SendDlgItemMessage(hDlg, IDC_FRAMESKIP, TBM_SETPOS, TRUE, configModel->FrameSkip);
-      SendDlgItemMessage(hDlg, IDC_ASPECT, BM_SETCHECK, configModel->ForceAspect, 0);
-      SendDlgItemMessage(hDlg, IDC_REMEMBER_SIZE, BM_SETCHECK, configModel->RememberSize, 0);
 
       sprintf(configState->OutBuffer, "%i", configModel->FrameSkip);
 
@@ -220,19 +216,9 @@ extern "C" {
       break;
 
     case WM_COMMAND:
-      configModel->ForceAspect = (unsigned char)SendDlgItemMessage(hDlg, IDC_ASPECT, BM_GETCHECK, 0, 0);
-      configModel->ScanLines = (unsigned char)SendDlgItemMessage(hDlg, IDC_SCANLINES, BM_GETCHECK, 0, 0);
-      configModel->SpeedThrottle = (unsigned char)SendDlgItemMessage(hDlg, IDC_THROTTLE, BM_GETCHECK, 0, 0);
-      configModel->RememberSize = (unsigned char)SendDlgItemMessage(hDlg, IDC_REMEMBER_SIZE, BM_GETCHECK, 0, 0);
-
       //POINT p = { 640,480 };
       switch (LOWORD(wParam))
       {
-      case IDC_REMEMBER_SIZE:
-        SendDlgItemMessage(hDlg, IDC_RESIZE, BM_GETCHECK, 1, 0);
-
-        break;
-
       case IDC_COMPOSITE:
         isRGB = FALSE;
         for (unsigned char temp = 0; temp <= 1; temp++) { //This finds the current Monitor choice, then sets both buttons in the nested loop.
