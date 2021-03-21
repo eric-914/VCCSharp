@@ -2,6 +2,7 @@
 using VCCSharp.Configuration;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
+using VCCSharp.Models;
 
 namespace VCCSharp
 {
@@ -77,7 +78,9 @@ namespace VCCSharp
         {
             unsafe
             {
-                _configuration.ShowDialog(_modules.Config.GetConfigState(), _modules.Config.GetConfigState()->Model);
+                ConfigState* configState = _modules.Config.GetConfigState();
+
+                _configuration.ShowDialog(configState);
             }
         }
 

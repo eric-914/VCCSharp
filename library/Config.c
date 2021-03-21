@@ -33,9 +33,10 @@
 
 using namespace std;
 
-ConfigState* InitializeInstance(ConfigState*);
+ConfigState* InitializeInstance(ConfigState*, ConfigModel*, JoystickModel*, JoystickModel*);
+JoystickModel* InitializeModel(JoystickModel* p);
 
-static ConfigState* instance = InitializeInstance(new ConfigState());
+static ConfigState* instance = InitializeInstance(new ConfigState(), new ConfigModel(), InitializeModel(new JoystickModel()), InitializeModel(new JoystickModel()));
 static ConfigModel* model;
 static JoystickModel* left;
 static JoystickModel* right;
@@ -64,16 +65,20 @@ extern "C" {
   }
 }
 
-ConfigState* InitializeInstance(ConfigState* p) {
-  left = new JoystickModel();
-  right = new JoystickModel();
+JoystickModel* InitializeModel(JoystickModel* p) {
+  p->DiDevice = 0;
+  p->HiRes = 0;
+  p->UseMouse = 0;
 
-  model = new ConfigModel();
+  return p;
+}
 
-  model->Left = left;
-  model->Right = right;
+ConfigState* InitializeInstance(ConfigState* p, ConfigModel* m, JoystickModel* l, JoystickModel* r) {
+  p->Model = model = m;
+  model->Left = left = l;
+  model->Right = right = r;
 
-  p->Model = model;
+  OutputDebugString("Here!");
 
   p->NumberOfSoundCards = 0;
   p->NumberOfJoysticks = 0;
@@ -334,7 +339,7 @@ void MainCommandCancel(HWND hDlg) {
 #endif
 
   emuState->ConfigDialog = NULL;
-}
+  }
 
 void MainCommandOk(HWND hDlg, ConfigModel* model) {
   ConfigState* configState = GetConfigState();

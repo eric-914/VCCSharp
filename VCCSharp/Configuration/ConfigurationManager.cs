@@ -12,9 +12,9 @@ namespace VCCSharp.Configuration
             _modules = modules;
         }
 
-        public unsafe void ShowDialog(ConfigState* state, ConfigModel* model)
+        public unsafe void ShowDialog(ConfigState* state)
         {
-            var viewModel = new ConfigurationViewModel { State = state, Model = model };
+            var viewModel = new ConfigurationViewModel { State = state };
             var view = new ConfigurationWindow(viewModel) { Apply = ApplyChanges };
 
             view.Show();

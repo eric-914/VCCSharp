@@ -10,26 +10,24 @@ namespace VCCSharp.Configuration
     public class ConfigurationViewModel : INotifyPropertyChanged
     {
         //TODO: Remove STATIC once safe
-        private static unsafe ConfigModel* _model;
         private static unsafe ConfigState* _state;
 
-        public unsafe ConfigModel* Model
+        public ConfigurationViewModel()
         {
-            get => _model;
-            set
-            {
-                _model = value;
-
-                Left.Model = _model->Left;
-                Right.Model = _model->Right;
-            }
+            //TODO: Left/Right won't set properly.  So hack for the short term.
+            Left = new JoystickViewModel(JoystickSides.Left, this);
+            Right = new JoystickViewModel(JoystickSides.Right, this);
         }
+
+        public unsafe ConfigModel* Model => _state->Model;
 
         public unsafe ConfigState* State
         {
             get => _state;
             set
             {
+                if (_state != null) return;
+
                 _state = value;
             }
         }
@@ -117,7 +115,7 @@ namespace VCCSharp.Configuration
                             case 0: return _state->SoundCards._0;
                             case 1: return _state->SoundCards._1;
                             case 2: return _state->SoundCards._2;
-                            //TODO: Fill in the rest.  Or just figure out how to turn it into an array like it should be.
+                                //TODO: Fill in the rest.  Or just figure out how to turn it into an array like it should be.
                         }
 
                         return default;
@@ -241,10 +239,10 @@ namespace VCCSharp.Configuration
         public string ModulePath { get; set; } = "Module Path";
 
         //[LeftJoyStick]
-        public JoystickViewModel Left { get; } = new JoystickViewModel { Side = JoystickSides.Left };
+        public JoystickViewModel Left { get; }
 
         //[RightJoyStick]
-        public JoystickViewModel Right { get; } = new JoystickViewModel { Side = JoystickSides.Right };
+        public JoystickViewModel Right { get; }
 
         //[DefaultPaths]
         public string CassPath { get; set; } = "Cassette Path";

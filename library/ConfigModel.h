@@ -7,6 +7,12 @@
 #include "JoyStickModel.h"
 
 typedef struct {
+  //[LeftJoyStick]  //struct {} JoyStick
+  JoystickModel* Left;
+
+  //[RightJoyStick]
+  JoystickModel* Right;
+
   //[Version]
   char Release[MAX_LOADSTRING]; //## WRITE-ONLY ##//
 
@@ -42,12 +48,6 @@ typedef struct {
 
   //[Module]
   char ModulePath[MAX_PATH];
-
-  //[LeftJoyStick]  //struct {} JoyStick
-  JoystickModel* Left;
-
-  //[RightJoyStick]
-  JoystickModel* Right;
 
   //[DefaultPaths]
   char CassPath[MAX_PATH];

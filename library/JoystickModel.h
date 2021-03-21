@@ -13,7 +13,7 @@ typedef struct {
   // 0 -- Standard,
   // 1 -- TandyHiRes,
   // 2 -- CCMAX
-  unsigned char HiRes;
+  unsigned char HiRes;  //TODO: This doesn't seem bound to anything
 
   unsigned char Up;
   unsigned char Down;

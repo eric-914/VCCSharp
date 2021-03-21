@@ -7,7 +7,8 @@ namespace VCCSharp.Models
     {
         public byte UseMouse;
         public byte DiDevice;
-        public byte HiRes;
+
+        public byte HiRes;  //TODO: This doesn't seem bound to anything
 
         public byte Up;
         public byte Down;

@@ -8,13 +8,20 @@ namespace VCCSharp.Configuration
 {
     public class JoystickViewModel : INotifyPropertyChanged
     {
-        //TODO: Remove STATIC once safe
-        private static unsafe JoystickModel* _model;
+        private readonly ConfigurationViewModel _parent;
+
+        public JoystickViewModel() { }
+
+        //--TODO: Holding a local copy of the correct JoystickModel* ends up with bad pointers for reason unknown
+        public JoystickViewModel(JoystickSides side, ConfigurationViewModel parent) : this()
+        {
+            Side = side;
+            _parent = parent;
+        }
 
         public unsafe JoystickModel* Model
         {
-            get => _model;
-            set => _model = value;
+            get => _parent == null ? null : Side == JoystickSides.Left ? _parent.Model->Left : _parent.Model->Right;
         }
 
         #region Constants
@@ -76,7 +83,7 @@ namespace VCCSharp.Configuration
             {
                 unsafe
                 {
-                    return Model->HiRes;
+                    return Model == null ? 0 : Model->HiRes;
                 }
             }
             set

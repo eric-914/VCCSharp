@@ -448,12 +448,6 @@ extern "C" {
         EnableWindow(GetDlgItem(hDlg, RightJoyStick[temp]), (right->UseMouse == 0));
       }
 
-      for (unsigned char temp = 0; temp <= 2; temp++)
-      {
-        SendDlgItemMessage(hDlg, LeftJoystickEmulation[temp], BM_SETCHECK, (temp == left->HiRes), 0);
-        SendDlgItemMessage(hDlg, RightJoystickEmulation[temp], BM_SETCHECK, (temp == right->HiRes), 0);
-      }
-
       EnableWindow(GetDlgItem(hDlg, IDC_LEFTAUDIODEVICE), (left->UseMouse == 2));
       EnableWindow(GetDlgItem(hDlg, IDC_RIGHTAUDIODEVICE), (right->UseMouse == 2));
       EnableWindow(GetDlgItem(hDlg, IDC_LEFTJOYSTICKDEVICE), (left->UseMouse == 3));
@@ -526,34 +520,6 @@ extern "C" {
           SendDlgItemMessage(hDlg, RightRadios[temp], BM_SETCHECK, 1, 0);
 
           right->UseMouse = temp;
-        }
-      }
-
-      for (unsigned char temp = 0; temp <= 2; temp++)
-      {
-        if (LOWORD(wParam) == LeftJoystickEmulation[temp])
-        {
-          for (unsigned char temp2 = 0; temp2 <= 2; temp2++) {
-            SendDlgItemMessage(hDlg, LeftJoystickEmulation[temp2], BM_SETCHECK, 0, 0);
-          }
-
-          SendDlgItemMessage(hDlg, LeftJoystickEmulation[temp], BM_SETCHECK, 1, 0);
-
-          left->HiRes = temp;
-        }
-      }
-
-      for (unsigned char temp = 0; temp <= 2; temp++)
-      {
-        if (LOWORD(wParam) == RightJoystickEmulation[temp])
-        {
-          for (unsigned char temp2 = 0; temp2 <= 2; temp2++) {
-            SendDlgItemMessage(hDlg, RightJoystickEmulation[temp2], BM_SETCHECK, 0, 0);
-          }
-
-          SendDlgItemMessage(hDlg, RightJoystickEmulation[temp], BM_SETCHECK, 1, 0);
-
-          right->HiRes = temp;
         }
       }
 

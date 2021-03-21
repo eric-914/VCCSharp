@@ -10,8 +10,6 @@ const unsigned short int Cpuchoice[2] = { IDC_6809, IDC_6309 };
 const unsigned short int Monchoice[2] = { IDC_COMPOSITE, IDC_RGB };
 const unsigned short int PaletteChoice[2] = { IDC_ORG_PALETTE, IDC_UPD_PALETTE };
 const unsigned short int Ramchoice[4] = { IDC_128K, IDC_512K, IDC_2M, IDC_8M };
-const unsigned int LeftJoystickEmulation[3] = { IDC_LEFTSTANDARD, IDC_LEFTTHIRES, IDC_LEFTCCMAX };
-const unsigned int RightJoystickEmulation[3] = { IDC_RIGHTSTANDARD, IDC_RIGHTTHRES, IDC_RIGHTCCMAX };
 
 const LPSTR TabTitles[TABS] = { "Audio", "CPU", "Display", "Joysticks", "Misc", "Tape", "BitBanger" };
 
