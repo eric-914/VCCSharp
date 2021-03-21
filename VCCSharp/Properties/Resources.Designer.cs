@@ -73,6 +73,16 @@ namespace VCCSharp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] audio {
+            get {
+                object obj = ResourceManager.GetObject("audio", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] coco {
             get {
                 object obj = ResourceManager.GetObject("coco", resourceCulture);
@@ -103,9 +113,39 @@ namespace VCCSharp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] joystick {
+            get {
+                object obj = ResourceManager.GetObject("joystick", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Keyboard {
+            get {
+                object obj = ResourceManager.GetObject("Keyboard", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] moto {
             get {
                 object obj = ResourceManager.GetObject("moto", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] mouse {
+            get {
+                object obj = ResourceManager.GetObject("mouse", resourceCulture);
                 return ((byte[])(obj));
             }
         }

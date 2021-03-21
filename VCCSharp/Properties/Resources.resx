@@ -118,6 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="audio" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\audio.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="coco" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\coco.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -127,8 +130,17 @@
   <data name="hitachi" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\hitachi.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="joystick" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\joystick.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Keyboard" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Keyboard.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="moto" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\moto.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="mouse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\mouse.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="rgb" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\rgb.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

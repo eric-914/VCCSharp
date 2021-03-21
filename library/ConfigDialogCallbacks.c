@@ -171,8 +171,6 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) LRESULT CALLBACK CreateJoyStickConfigDialogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
   {
-    const int LeftJoyStick[6] = { IDC_LEFT_LEFT, IDC_LEFT_RIGHT, IDC_LEFT_UP, IDC_LEFT_DOWN, IDC_LEFT_FIRE1, IDC_LEFT_FIRE2 };
-    const int RightJoyStick[6] = { IDC_RIGHT_LEFT, IDC_RIGHT_RIGHT, IDC_RIGHT_UP, IDC_RIGHT_DOWN, IDC_RIGHT_FIRE1, IDC_RIGHT_FIRE2 };
     const int LeftRadios[4] = { IDC_LEFT_KEYBOARD, IDC_LEFT_USEMOUSE, IDC_LEFTAUDIO, IDC_LEFTJOYSTICK };
     const int RightRadios[4] = { IDC_RIGHT_KEYBOARD, IDC_RIGHT_USEMOUSE, IDC_RIGHTAUDIO, IDC_RIGHTJOYSTICK };
 
@@ -188,30 +186,6 @@ extern "C" {
     switch (message)
     {
     case WM_INITDIALOG:
-      JoystickIcons[0] = LoadIcon(emuState->Resources, (LPCTSTR)IDI_KEYBOARD);
-      JoystickIcons[1] = LoadIcon(emuState->Resources, (LPCTSTR)IDI_MOUSE);
-      JoystickIcons[2] = LoadIcon(emuState->Resources, (LPCTSTR)IDI_AUDIO);
-      JoystickIcons[3] = LoadIcon(emuState->Resources, (LPCTSTR)IDI_JOYSTICK);
-
-      for (unsigned char temp = 0; temp < 68; temp++)
-      {
-        for (unsigned char temp2 = 0; temp2 < 6; temp2++)
-        {
-          SendDlgItemMessage(hDlg, LeftJoyStick[temp2], CB_ADDSTRING, (WPARAM)0, (LPARAM)GetKeyName(temp));
-          SendDlgItemMessage(hDlg, RightJoyStick[temp2], CB_ADDSTRING, (WPARAM)0, (LPARAM)GetKeyName(temp));
-        }
-      }
-
-      for (unsigned char temp = 0; temp < 6; temp++)
-      {
-        EnableWindow(GetDlgItem(hDlg, LeftJoyStick[temp]), (left->UseMouse == 0));
-      }
-
-      for (unsigned char temp = 0; temp < 6; temp++)
-      {
-        EnableWindow(GetDlgItem(hDlg, RightJoyStick[temp]), (right->UseMouse == 0));
-      }
-
       EnableWindow(GetDlgItem(hDlg, IDC_LEFTAUDIODEVICE), (left->UseMouse == 2));
       EnableWindow(GetDlgItem(hDlg, IDC_RIGHTAUDIODEVICE), (right->UseMouse == 2));
       EnableWindow(GetDlgItem(hDlg, IDC_LEFTJOYSTICKDEVICE), (left->UseMouse == 3));
@@ -230,20 +204,6 @@ extern "C" {
       SendDlgItemMessage(hDlg, IDC_RIGHTJOYSTICKDEVICE, CB_SETCURSEL, (WPARAM)right->DiDevice, (LPARAM)0);
       SendDlgItemMessage(hDlg, IDC_LEFTJOYSTICKDEVICE, CB_SETCURSEL, (WPARAM)left->DiDevice, (LPARAM)0);
 
-      SendDlgItemMessage(hDlg, LeftJoyStick[0], CB_SETCURSEL, (WPARAM)TranslateScan2Display(left->Left), (LPARAM)0);
-      SendDlgItemMessage(hDlg, LeftJoyStick[1], CB_SETCURSEL, (WPARAM)TranslateScan2Display(left->Right), (LPARAM)0);
-      SendDlgItemMessage(hDlg, LeftJoyStick[2], CB_SETCURSEL, (WPARAM)TranslateScan2Display(left->Up), (LPARAM)0);
-      SendDlgItemMessage(hDlg, LeftJoyStick[3], CB_SETCURSEL, (WPARAM)TranslateScan2Display(left->Down), (LPARAM)0);
-      SendDlgItemMessage(hDlg, LeftJoyStick[4], CB_SETCURSEL, (WPARAM)TranslateScan2Display(left->Fire1), (LPARAM)0);
-      SendDlgItemMessage(hDlg, LeftJoyStick[5], CB_SETCURSEL, (WPARAM)TranslateScan2Display(left->Fire2), (LPARAM)0);
-
-      SendDlgItemMessage(hDlg, RightJoyStick[0], CB_SETCURSEL, (WPARAM)TranslateScan2Display(right->Left), (LPARAM)0);
-      SendDlgItemMessage(hDlg, RightJoyStick[1], CB_SETCURSEL, (WPARAM)TranslateScan2Display(right->Right), (LPARAM)0);
-      SendDlgItemMessage(hDlg, RightJoyStick[2], CB_SETCURSEL, (WPARAM)TranslateScan2Display(right->Up), (LPARAM)0);
-      SendDlgItemMessage(hDlg, RightJoyStick[3], CB_SETCURSEL, (WPARAM)TranslateScan2Display(right->Down), (LPARAM)0);
-      SendDlgItemMessage(hDlg, RightJoyStick[4], CB_SETCURSEL, (WPARAM)TranslateScan2Display(right->Fire1), (LPARAM)0);
-      SendDlgItemMessage(hDlg, RightJoyStick[5], CB_SETCURSEL, (WPARAM)TranslateScan2Display(right->Fire2), (LPARAM)0);
-
       for (unsigned char temp = 0; temp <= 3; temp++)
       {
         SendDlgItemMessage(hDlg, LeftRadios[temp], BM_SETCHECK, temp == left->UseMouse, 0);
@@ -253,9 +213,6 @@ extern "C" {
       {
         SendDlgItemMessage(hDlg, RightRadios[temp], BM_SETCHECK, temp == right->UseMouse, 0);
       }
-
-      SendDlgItemMessage(hDlg, IDC_LEFTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(JoystickIcons[left->UseMouse]));
-      SendDlgItemMessage(hDlg, IDC_RIGHTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(JoystickIcons[right->UseMouse]));
 
       break;
 
@@ -287,44 +244,13 @@ extern "C" {
         }
       }
 
-      for (unsigned char temp = 0; temp < 6; temp++)
-      {
-        EnableWindow(GetDlgItem(hDlg, LeftJoyStick[temp]), (left->UseMouse == 0));
-      }
-
-      for (unsigned char temp = 0; temp < 6; temp++)
-      {
-        EnableWindow(GetDlgItem(hDlg, RightJoyStick[temp]), (right->UseMouse == 0));
-      }
-
       EnableWindow(GetDlgItem(hDlg, IDC_LEFTAUDIODEVICE), (left->UseMouse == 2));
       EnableWindow(GetDlgItem(hDlg, IDC_RIGHTAUDIODEVICE), (right->UseMouse == 2));
       EnableWindow(GetDlgItem(hDlg, IDC_LEFTJOYSTICKDEVICE), (left->UseMouse == 3));
       EnableWindow(GetDlgItem(hDlg, IDC_RIGHTJOYSTICKDEVICE), (right->UseMouse == 3));
 
-      left->Left = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[0], CB_GETCURSEL, 0, 0));
-      left->Right = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[1], CB_GETCURSEL, 0, 0));
-      left->Up = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[2], CB_GETCURSEL, 0, 0));
-      left->Down = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[3], CB_GETCURSEL, 0, 0));
-      left->Fire1 = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[4], CB_GETCURSEL, 0, 0));
-      left->Fire2 = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, LeftJoyStick[5], CB_GETCURSEL, 0, 0));
-
-      //char t[10];
-      //_itoa((int)left->Fire2, t, 10);
-      //OutputDebugString(t);
-
-      right->Left = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[0], CB_GETCURSEL, 0, 0));
-      right->Right = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[1], CB_GETCURSEL, 0, 0));
-      right->Up = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[2], CB_GETCURSEL, 0, 0));
-      right->Down = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[3], CB_GETCURSEL, 0, 0));
-      right->Fire1 = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[4], CB_GETCURSEL, 0, 0));
-      right->Fire2 = TranslateDisplay2Scan(SendDlgItemMessage(hDlg, RightJoyStick[5], CB_GETCURSEL, 0, 0));
-
       right->DiDevice = (unsigned char)SendDlgItemMessage(hDlg, IDC_RIGHTJOYSTICKDEVICE, CB_GETCURSEL, 0, 0);
       left->DiDevice = (unsigned char)SendDlgItemMessage(hDlg, IDC_LEFTJOYSTICKDEVICE, CB_GETCURSEL, 0, 0);	//Fix Me;
-
-      SendDlgItemMessage(hDlg, IDC_LEFTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(JoystickIcons[left->UseMouse]));
-      SendDlgItemMessage(hDlg, IDC_RIGHTICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(JoystickIcons[right->UseMouse]));
 
       break;
     }

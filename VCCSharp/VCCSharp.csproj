@@ -13,9 +13,13 @@
 
   <ItemGroup>
     <None Remove="Resources\3guys.bmp" />
+    <None Remove="Resources\audio.ico" />
     <None Remove="Resources\composite.ico" />
     <None Remove="Resources\hitachi.ico" />
+    <None Remove="Resources\joystick.ico" />
+    <None Remove="Resources\Keyboard.ico" />
     <None Remove="Resources\moto.ico" />
+    <None Remove="Resources\mouse.ico" />
     <None Remove="Resources\rgb.ico" />
     <None Remove="Resources\vcc.bmp" />
     <None Remove="Television.png" />
@@ -28,9 +32,13 @@
 
   <ItemGroup>
     <Resource Include="Resources\3guys.bmp" />
+    <Resource Include="Resources\audio.ico" />
     <Resource Include="Resources\composite.ico" />
     <Resource Include="Resources\hitachi.ico" />
+    <Resource Include="Resources\joystick.ico" />
+    <Resource Include="Resources\Keyboard.ico" />
     <Resource Include="Resources\moto.ico" />
+    <Resource Include="Resources\mouse.ico" />
     <Resource Include="Resources\rgb.ico" />
     <Resource Include="Resources\Television.png" />
     <Resource Include="Resources\vcc.bmp" />

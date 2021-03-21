@@ -15,6 +15,7 @@
     <converters:EnumToSelectionConverter x:Key="Selection"/>
     <converters:EnumIsSelectedConverter x:Key="Enabled"/>
     <converters:ScanCodeToDisplayTextConverter x:Key="ScanCode"/>
+    <converters:EnumToVisibilityConverter x:Key="Visibility"/>
   </UserControl.Resources>
   <StackPanel Orientation="Vertical">
     <StackPanel Orientation="Horizontal">
@@ -43,7 +44,20 @@
 
       <RadioButton Grid.Row="2" Grid.Column="0" Content="Mouse" IsChecked="{Binding Device, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:JoystickDevices.Mouse}}"/>
 
-      <RadioButton Grid.Row="3" Grid.Column="0" Content="Keyboard" IsChecked="{Binding Device, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:JoystickDevices.Keyboard}}"/>
+      <Grid Grid.Row="3" Grid.Column="0" >
+        <Grid.RowDefinitions>
+          <RowDefinition Height="30"/>
+          <RowDefinition Height="20"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <RadioButton Grid.Row="0" Grid.Column="0" Content="Keyboard" IsChecked="{Binding Device, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:JoystickDevices.Keyboard}}"/>
+        <Grid Grid.Row="2" Grid.Column="0">
+          <Image Stretch="None" Source="/Resources/audio.ico" Visibility="{Binding Device, Converter={StaticResource Visibility}, ConverterParameter={x:Static enums:JoystickDevices.Audio}}"/>
+          <Image Stretch="None" Source="/Resources/joystick.ico" Visibility="{Binding Device, Converter={StaticResource Visibility}, ConverterParameter={x:Static enums:JoystickDevices.Joystick}}"/>
+          <Image Stretch="None" Source="/Resources/Keyboard.ico" Visibility="{Binding Device, Converter={StaticResource Visibility}, ConverterParameter={x:Static enums:JoystickDevices.Keyboard}}"/>
+          <Image Stretch="None" Source="/Resources/mouse.ico" Visibility="{Binding Device, Converter={StaticResource Visibility}, ConverterParameter={x:Static enums:JoystickDevices.Mouse}}"/>
+        </Grid>
+      </Grid>
       <Grid Grid.Row="3" Grid.Column="1" IsEnabled="{Binding Device, Converter={StaticResource Enabled}, ConverterParameter={x:Static enums:JoystickDevices.Keyboard}}">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*"/>

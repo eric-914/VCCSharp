@@ -20,10 +20,6 @@
 #define IDD_TCONFIG                     135
 #define IDD_AUDIO                       138
 #define IDD_JOYSTICK                    141
-#define IDI_AUDIO                       146
-#define IDI_KEYBOARD                    148
-#define IDI_JOYSTICK                    149
-#define IDI_MOUSE                       150
 #define IDD_CASSETTE                    157
 #define IDD_NEWTAPE                     158
 #define IDD_BITBANGER                   159
