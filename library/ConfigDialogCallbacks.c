@@ -68,18 +68,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void SetDialogCpuMultiplier(HWND hDlg, unsigned char cpuMultiplier) {
-    char temp[MAX_PATH];
-
-    SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETPOS, TRUE, cpuMultiplier);
-
-    sprintf(temp, "%2.3f Mhz", (float)(cpuMultiplier) * 0.894);
-
-    SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(temp), (LPARAM)(LPCSTR)(temp));
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void SetDialogAudioBars(HWND hDlg, unsigned short left, unsigned short right) {
     SendDlgItemMessage(hDlg, IDC_PROGRESSLEFT, PBM_SETPOS, left >> 5, 0);
     SendDlgItemMessage(hDlg, IDC_PROGRESSRIGHT, PBM_SETPOS, right >> 5, 0);
@@ -172,34 +160,6 @@ extern "C" {
 
         MC6821_SetMonState(configState->PrintMonitorWindow);
       }
-
-      break;
-    }
-
-    return(0);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) LRESULT CALLBACK CreateCpuConfigDialogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-  {
-    ConfigState* configState = GetConfigState();
-
-    switch (message)
-    {
-    case WM_INITDIALOG:
-      SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_SETRANGE, TRUE, MAKELONG(2, configState->Model->MaxOverclock));	//Maximum overclock
-
-      SetDialogCpuMultiplier(hDlg, configModel->CPUMultiplier);
-
-      break;
-
-    case WM_HSCROLL:
-      configModel->CPUMultiplier = (unsigned char)SendDlgItemMessage(hDlg, IDC_CLOCKSPEED, TBM_GETPOS, (WPARAM)0, (WPARAM)0);
-
-      sprintf(configState->OutBuffer, "%2.3f Mhz", (float)(configModel->CPUMultiplier) * .894);
-
-      SendDlgItemMessage(hDlg, IDC_CLOCKDISPLAY, WM_SETTEXT, strlen(configState->OutBuffer), (LPARAM)(LPCSTR)(configState->OutBuffer));
 
       break;
     }

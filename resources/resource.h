@@ -13,8 +13,6 @@
 #define IDB_BENDER                      111
 #define IDI_CART                        112
 #define IDC_NONE                        113
-#define IDI_MOTO                        114
-#define IDI_HITACHI2                    116
 #define IDI_COMPOSITE                   117
 #define IDI_RGB                         118
 #define IDC_CURSOR1                     120
@@ -23,7 +21,6 @@
 #define IDD_KEYBOARD                    134
 #define IDD_TCONFIG                     135
 #define IDD_DISPLAY                     136
-#define IDD_CPU                         137
 #define IDD_AUDIO                       138
 #define IDD_JOYSTICK                    141
 #define IDI_AUDIO                       146
@@ -40,8 +37,6 @@
 #define IDC_512K                        1007
 #define IDC_2M                          1008
 #define IDC_8M                          1009
-#define IDC_CLOCKSPEED                  1011
-#define IDC_CLOCKDISPLAY                1012
 #define IDC_RGBMON                      1013
 #define IDC_FRAMESKIP                   1014
 #define IDC_FRAMEDISPLAY                1015
