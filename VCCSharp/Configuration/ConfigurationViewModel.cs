@@ -214,8 +214,41 @@ namespace VCCSharp.Configuration
         public string ExternalBasicImage { get; set; } = "External Basic Image";
 
         //[Misc]
-        public bool AutoStart { get; set; } = true;
-        public bool CartAutoStart { get; set; } = false;
+        public bool AutoStart
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model->AutoStart != 0;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    Model->AutoStart = (byte)(value ? 1 : 0);
+                }
+            }
+        }
+
+        public bool CartAutoStart
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model->CartAutoStart != 0;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    Model->CartAutoStart = (byte)(value ? 1 : 0);
+                }
+            }
+        }
 
         public int KeyMapIndex
         {

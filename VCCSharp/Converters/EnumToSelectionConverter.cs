@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using VCCSharp.Enums;
 
 namespace VCCSharp.Converters
 {
-    [ValueConversion(typeof(JoystickEmulations), typeof(bool))]    
-    public class JoystickEmulationToSelectionConverter : IValueConverter
+    public class EnumToSelectionConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (JoystickEmulations)value == (JoystickEmulations)parameter;
+            return (int)value == (int)parameter;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

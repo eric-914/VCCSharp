@@ -12,8 +12,8 @@
     <configuration:JoystickViewModel/>
   </UserControl.DataContext>
   <UserControl.Resources>
-    <converters:JoystickDeviceToSelectionConverter x:Key="Selection"/>
-    <converters:JoystickDeviceToEnabledConverter x:Key="Enabled"/>
+    <converters:EnumToSelectionConverter x:Key="Selection"/>
+    <converters:EnumIsSelectedConverter x:Key="Enabled"/>
   </UserControl.Resources>
   <StackPanel Orientation="Vertical">
     <StackPanel Orientation="Horizontal">

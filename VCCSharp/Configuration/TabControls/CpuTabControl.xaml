@@ -12,8 +12,7 @@
     <configuration:ConfigurationViewModel/>
   </UserControl.DataContext>
   <UserControl.Resources>
-    <converters:MemorySizeToSelectionConverter x:Key="MemorySelection"/>
-    <converters:CpuTypeToSelectionConverter x:Key="CpuSelection"/>
+    <converters:EnumToSelectionConverter x:Key="Selection"/>
   </UserControl.Resources>
   <StackPanel Orientation="Vertical" Margin="10">
     <Label Content="Over-Clocking" />
@@ -35,15 +34,15 @@
       </Grid.ColumnDefinitions>
       <StackPanel Grid.Column="0" Orientation="Vertical" >
         <Label Content="Memory Size" />
-        <RadioButton Content="128K" IsChecked="{Binding Memory, Converter={StaticResource MemorySelection}, ConverterParameter={x:Static enums:MemorySizes._128K}}"/>
-        <RadioButton Content="512K" IsChecked="{Binding Memory, Converter={StaticResource MemorySelection}, ConverterParameter={x:Static enums:MemorySizes._512K}}"/>
-        <RadioButton Content="2048K" IsChecked="{Binding Memory, Converter={StaticResource MemorySelection}, ConverterParameter={x:Static enums:MemorySizes._2048K}}"/>
-        <RadioButton Content="8192K" IsChecked="{Binding Memory, Converter={StaticResource MemorySelection}, ConverterParameter={x:Static enums:MemorySizes._8192K}}"/>
+        <RadioButton Content="128K" IsChecked="{Binding Memory, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MemorySizes._128K}}"/>
+        <RadioButton Content="512K" IsChecked="{Binding Memory, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MemorySizes._512K}}"/>
+        <RadioButton Content="2048K" IsChecked="{Binding Memory, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MemorySizes._2048K}}"/>
+        <RadioButton Content="8192K" IsChecked="{Binding Memory, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MemorySizes._8192K}}"/>
       </StackPanel>
       <StackPanel Grid.Column="2" Orientation="Vertical" >
         <Label Content="CPU" />
-        <RadioButton Content="Motorola MC6809 CPU" IsChecked="{Binding Cpu, Converter={StaticResource CpuSelection}, ConverterParameter={x:Static enums:CPUTypes.MC6809}}"/>
-        <RadioButton Content="Hitachi HD6309 CPU" IsChecked="{Binding Cpu, Converter={StaticResource CpuSelection}, ConverterParameter={x:Static enums:CPUTypes.HD6309}}"/>
+        <RadioButton Content="Motorola MC6809 CPU" IsChecked="{Binding Cpu, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:CPUTypes.MC6809}}"/>
+        <RadioButton Content="Hitachi HD6309 CPU" IsChecked="{Binding Cpu, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:CPUTypes.HD6309}}"/>
       </StackPanel>
     </Grid>
   </StackPanel>
