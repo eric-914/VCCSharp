@@ -4,11 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:configuration="clr-namespace:VCCSharp.Configuration"
+             xmlns:converters="clr-namespace:VCCSharp.Converters"
+             xmlns:enums="clr-namespace:VCCSharp.Enums"
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="800">
   <UserControl.DataContext>
     <configuration:ConfigurationViewModel/>
   </UserControl.DataContext>
+  <UserControl.Resources>
+    <converters:EnumToSelectionConverter x:Key="Selection"/>
+    <converters:EnumIsSelectedConverter x:Key="Enabled"/>
+    <converters:EnumToVisibilityConverter x:Key="Visibility"/>
+  </UserControl.Resources>
   <Grid Margin="10">
     <Grid.RowDefinitions>
       <RowDefinition Height="70"/>
@@ -41,6 +48,7 @@
           <Label Content="[F6] Monitor Type" />
           <Grid>
             <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="50"/>
               <ColumnDefinition Width="20"/>
               <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
@@ -50,10 +58,14 @@
               <RowDefinition Height="30"/>
               <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
-            <RadioButton Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">RGB</RadioButton>
-            <RadioButton Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">Composite</RadioButton>
-            <RadioButton Grid.Column="1" Grid.Row="2">Updated Palette</RadioButton>
-            <RadioButton Grid.Column="1" Grid.Row="3">Original Palette</RadioButton>
+            <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
+              <Image Source="/Resources/composite.ico" Stretch="None" Visibility="{Binding MonitorType, Converter={StaticResource Visibility}, ConverterParameter={x:Static enums:MonitorTypes.Composite}}"/>
+              <Image Source="/Resources/rgb.ico" Stretch="None" Visibility="{Binding MonitorType, Converter={StaticResource Visibility}, ConverterParameter={x:Static enums:MonitorTypes.RGB}}"/>
+            </Grid>
+            <RadioButton Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Content="RGB" IsChecked="{Binding MonitorType, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MonitorTypes.RGB}}"/>
+            <RadioButton Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Content="Composite" IsChecked="{Binding MonitorType, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MonitorTypes.Composite}}"/>
+            <RadioButton Grid.Column="2" Grid.Row="2" Content="Updated Palette" IsEnabled="{Binding MonitorType, Converter={StaticResource Enabled}, ConverterParameter={x:Static enums:MonitorTypes.Composite}}" IsChecked="{Binding PaletteType, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:PaletteTypes.Updated}}"/>
+            <RadioButton Grid.Column="2" Grid.Row="3" Content="Original Palette" IsEnabled="{Binding MonitorType, Converter={StaticResource Enabled}, ConverterParameter={x:Static enums:MonitorTypes.Composite}}" IsChecked="{Binding PaletteType, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:PaletteTypes.Original}}"/>
           </Grid>
         </StackPanel>
       </StackPanel>

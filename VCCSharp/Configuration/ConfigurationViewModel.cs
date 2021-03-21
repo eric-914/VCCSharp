@@ -219,8 +219,47 @@ namespace VCCSharp.Configuration
         }
 
         //[Video]
-        public int MonitorType { get; set; } = 0;
-        public int PaletteType { get; set; } = 0;
+        public MonitorTypes? MonitorType
+        {
+            get
+            {
+                unsafe
+                {
+                    return (MonitorTypes) (Model->MonitorType);
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    if (!value.HasValue || Model->MonitorType == (byte) value.Value) return;
+
+                    Model->MonitorType = (byte) value.Value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public PaletteTypes? PaletteType
+        {
+            get
+            {
+                unsafe
+                {
+                    return (PaletteTypes) (Model->PaletteType);
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    if (!value.HasValue || Model->PaletteType == (byte) value.Value) return;
+
+                    Model->PaletteType = (byte) value.Value;
+                    OnPropertyChanged();
+                }
+            }
+        } 
 
         public bool ScanLines
         {
