@@ -62,7 +62,26 @@ namespace VCCSharp.Configuration
         public string Release { get; set; } = "Release";
 
         //[CPU]
-        public bool CPUMultiplier { get; set; } = true;
+        public int CPUMultiplier
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model->CPUMultiplier;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    if (value == Model->CPUMultiplier) return;
+
+                    Model->CPUMultiplier = (byte)value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         public bool FrameSkip { get; set; } = false;
         public bool SpeedThrottle { get; set; } = true;
 
@@ -97,7 +116,16 @@ namespace VCCSharp.Configuration
             }
         }
 
-        public int MaxOverclock { get; set; } = 55;
+        public int MaxOverclock
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model->MaxOverclock;
+                }
+            }
+        }
 
         //[Audio]
         public List<string> SoundCards
