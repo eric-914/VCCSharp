@@ -69,10 +69,6 @@ IDI_BINFILE             ICON                    "resources\\binfile.ico"
 
 IDI_CART                ICON                    "resources\\progpack.ico"
 
-IDI_RGB                 ICON                    "resources\\rgb.ico"
-
-IDI_COMPOSITE           ICON                    "resources\\composite.ico"
-
 IDI_AUDIO               ICON                    "resources\\ico00004.ico"
 
 IDI_KEYBOARD            ICON                    "resources\\Keyboard.ico"

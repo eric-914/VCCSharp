@@ -13,8 +13,6 @@
 #define IDB_BENDER                      111
 #define IDI_CART                        112
 #define IDC_NONE                        113
-#define IDI_COMPOSITE                   117
-#define IDI_RGB                         118
 #define IDC_CURSOR1                     120
 #define IDB_NOMUTE                      128
 #define IDB_MUTE                        130

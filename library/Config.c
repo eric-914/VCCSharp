@@ -239,8 +239,6 @@ void MainInitDialog(HWND hDlg) {
   InitCommonControls();
 
   //configModel = configState->Model;
-  MonIcons[0] = LoadIcon(emuState->Resources, (LPCTSTR)IDI_COMPOSITE);
-  MonIcons[1] = LoadIcon(emuState->Resources, (LPCTSTR)IDI_RGB);
 
   hWndTabDialog = GetDlgItem(hDlg, IDC_CONFIGTAB); //get handle of Tabbed Dialog
 
