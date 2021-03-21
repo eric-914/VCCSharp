@@ -30,7 +30,6 @@
 #define IDI_KEYBOARD                    148
 #define IDI_JOYSTICK                    149
 #define IDI_MOUSE                       150
-#define IDD_MISC                        154
 #define IDD_CASSETTE                    157
 #define IDD_NEWTAPE                     158
 #define IDD_BITBANGER                   159

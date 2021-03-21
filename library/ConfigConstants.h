@@ -11,7 +11,7 @@ const unsigned short int Monchoice[2] = { IDC_COMPOSITE, IDC_RGB };
 const unsigned short int PaletteChoice[2] = { IDC_ORG_PALETTE, IDC_UPD_PALETTE };
 const unsigned short int Ramchoice[4] = { IDC_128K, IDC_512K, IDC_2M, IDC_8M };
 
-const LPSTR TabTitles[TABS] = { "Audio", "CPU", "Display", "Joysticks", "Misc", "Tape", "BitBanger" };
+const LPSTR TabTitles[TABS] = { "Audio", "CPU", "Display", "Joysticks", "Tape", "BitBanger" };
 
 const LPSTR TapeModes[4] = { "STOP", "PLAY", "REC", "STOP" };
 

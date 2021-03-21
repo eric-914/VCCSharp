@@ -570,30 +570,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) LRESULT CALLBACK CreateMiscConfigDialogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-  {
-    ConfigState* configState = GetConfigState();
-
-    switch (message)
-    {
-    case WM_INITDIALOG:
-      SendDlgItemMessage(hDlg, IDC_AUTOSTART, BM_SETCHECK, configModel->AutoStart, 0);
-      SendDlgItemMessage(hDlg, IDC_AUTOCART, BM_SETCHECK, configModel->CartAutoStart, 0);
-
-      break;
-
-    case WM_COMMAND:
-      configModel->AutoStart = (unsigned char)SendDlgItemMessage(hDlg, IDC_AUTOSTART, BM_GETCHECK, 0, 0);
-      configModel->CartAutoStart = (unsigned char)SendDlgItemMessage(hDlg, IDC_AUTOCART, BM_GETCHECK, 0, 0);
-
-      break;
-    }
-
-    return(0);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) LRESULT CALLBACK CreateTapeConfigDialogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
   {
     ConfigState* configState = GetConfigState();
