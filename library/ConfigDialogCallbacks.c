@@ -196,12 +196,6 @@ extern "C" {
         SendDlgItemMessage(hDlg, Ramchoice[temp], BM_SETCHECK, (temp == configModel->RamSize), 0);
       }
 
-      for (unsigned char temp = 0; temp <= 1; temp++) {
-        SendDlgItemMessage(hDlg, Cpuchoice[temp], BM_SETCHECK, (temp == configModel->CpuType), 0);
-      }
-
-      SendDlgItemMessage(hDlg, IDC_CPUICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(CpuIcons[configModel->CpuType]));
-
       break;
 
     case WM_HSCROLL:
@@ -230,25 +224,6 @@ extern "C" {
             SendDlgItemMessage(hDlg, Ramchoice[temp], BM_SETCHECK, 1, 0);
 
             configModel->RamSize = temp;
-          }
-        }
-
-        break;
-
-      case IDC_6809:
-      case IDC_6309:
-        for (unsigned char temp = 0; temp <= 1; temp++) {
-          if (LOWORD(wParam) == Cpuchoice[temp])
-          {
-            for (unsigned char temp2 = 0; temp2 <= 1; temp2++) {
-              SendDlgItemMessage(hDlg, Cpuchoice[temp2], BM_SETCHECK, 0, 0);
-            }
-
-            SendDlgItemMessage(hDlg, Cpuchoice[temp], BM_SETCHECK, 1, 0);
-
-            configModel->CpuType = temp;
-
-            SendDlgItemMessage(hDlg, IDC_CPUICON, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(CpuIcons[configModel->CpuType]));
           }
         }
 

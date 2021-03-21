@@ -6,7 +6,6 @@
 
 #define SCAN_TRANS_COUNT	84
 
-const unsigned short int Cpuchoice[2] = { IDC_6809, IDC_6309 };
 const unsigned short int Monchoice[2] = { IDC_COMPOSITE, IDC_RGB };
 const unsigned short int PaletteChoice[2] = { IDC_ORG_PALETTE, IDC_UPD_PALETTE };
 const unsigned short int Ramchoice[4] = { IDC_128K, IDC_512K, IDC_2M, IDC_8M };
