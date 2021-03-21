@@ -89,7 +89,7 @@ namespace VCCSharp.Configuration
             {
                 unsafe
                 {
-                    return Model->FrameSkip;
+                    return (Model->FrameSkip);
                 }
             }
             set
