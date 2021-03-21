@@ -82,8 +82,29 @@ namespace VCCSharp.Configuration
                 }
             }
         }
-        public bool FrameSkip { get; set; } = false;
-        public bool SpeedThrottle { get; set; } = true;
+
+        public int FrameSkip { get; set; } = 0;
+
+        public bool SpeedThrottle
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model->SpeedThrottle != 0;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    if (value == (Model->SpeedThrottle != 0)) return;
+
+                    Model->SpeedThrottle = (byte)(value ? 1 : 0);
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public int CpuType
         {
@@ -200,9 +221,69 @@ namespace VCCSharp.Configuration
         //[Video]
         public int MonitorType { get; set; } = 0;
         public int PaletteType { get; set; } = 0;
-        public bool ScanLines { get; set; } = true;
-        public bool ForceAspect { get; set; } = false;
-        public bool RememberSize { get; set; } = true;
+
+        public bool ScanLines
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model->ScanLines != 0;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    if (value == (Model->ScanLines != 0)) return;
+
+                    Model->ScanLines = (byte)(value ? 1 : 0);
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool ForceAspect
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model->ForceAspect != 0;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    if (value == (Model->ForceAspect != 0)) return;
+
+                    Model->ForceAspect = (byte)(value ? 1 : 0);
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool RememberSize
+        {
+            get
+            {
+                unsafe
+                {
+                    return Model->RememberSize != 0;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    if (value == (Model->RememberSize != 0)) return;
+
+                    Model->RememberSize = (byte)(value ? 1 : 0);
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public int WindowSizeX { get; set; } = 1111;
         public int WindowSizeY { get; set; } = 2222;
