@@ -171,8 +171,6 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) LRESULT CALLBACK CreateDisplayConfigDialogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
   {
-    static bool isRGB;
-
     ConfigState* configState = GetConfigState();
 
     switch (message)
@@ -185,25 +183,6 @@ extern "C" {
 
       SendDlgItemMessage(hDlg, IDC_FRAMEDISPLAY, WM_SETTEXT, strlen(configState->OutBuffer), (LPARAM)(LPCSTR)(configState->OutBuffer));
 
-      for (unsigned char temp = 0; temp <= 1; temp++) {
-        SendDlgItemMessage(hDlg, Monchoice[temp], BM_SETCHECK, (temp == configModel->MonitorType), 0);
-      }
-
-      if (configModel->MonitorType == 1) { //If RGB monitor is chosen, gray out palette choice
-        isRGB = TRUE;
-
-        SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETSTATE, 1, 0);
-        SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETSTATE, 1, 0);
-        SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETDONTCLICK, 1, 0);
-        SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETDONTCLICK, 1, 0);
-      }
-
-      SendDlgItemMessage(hDlg, IDC_MONTYPE, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(MonIcons[configModel->MonitorType]));
-
-      for (unsigned char temp = 0; temp <= 1; temp++) {
-        SendDlgItemMessage(hDlg, PaletteChoice[temp], BM_SETCHECK, (temp == configModel->PaletteType), 0);
-      }
-
       break;
 
     case WM_HSCROLL:
@@ -213,82 +192,6 @@ extern "C" {
 
       SendDlgItemMessage(hDlg, IDC_FRAMEDISPLAY, WM_SETTEXT, strlen(configState->OutBuffer), (LPARAM)(LPCSTR)(configState->OutBuffer));
 
-      break;
-
-    case WM_COMMAND:
-      //POINT p = { 640,480 };
-      switch (LOWORD(wParam))
-      {
-      case IDC_COMPOSITE:
-        isRGB = FALSE;
-        for (unsigned char temp = 0; temp <= 1; temp++) { //This finds the current Monitor choice, then sets both buttons in the nested loop.
-          if (LOWORD(wParam) == Monchoice[temp])
-          {
-            for (unsigned char temp2 = 0; temp2 <= 1; temp2++) {
-              SendDlgItemMessage(hDlg, Monchoice[temp2], BM_SETCHECK, 0, 0);
-            }
-
-            SendDlgItemMessage(hDlg, Monchoice[temp], BM_SETCHECK, 1, 0);
-
-            configModel->MonitorType = temp;
-          }
-        }
-
-        SendDlgItemMessage(hDlg, IDC_MONTYPE, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(MonIcons[configModel->MonitorType]));
-        SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETSTATE, 0, 0);
-        SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETSTATE, 0, 0);
-
-        break;
-
-      case IDC_RGB:
-        isRGB = TRUE;
-
-        for (unsigned char temp = 0; temp <= 1; temp++) { //This finds the current Monitor choice, then sets both buttons in the nested loop.
-          if (LOWORD(wParam) == Monchoice[temp])
-          {
-            for (unsigned char temp2 = 0; temp2 <= 1; temp2++) {
-              SendDlgItemMessage(hDlg, Monchoice[temp2], BM_SETCHECK, 0, 0);
-            }
-
-            SendDlgItemMessage(hDlg, Monchoice[temp], BM_SETCHECK, 1, 0);
-
-            configModel->MonitorType = temp;
-          }
-        }
-
-        SendDlgItemMessage(hDlg, IDC_MONTYPE, STM_SETIMAGE, (WPARAM)IMAGE_ICON, (LPARAM)(MonIcons[configModel->MonitorType]));
-        //If RGB is chosen, disable palette buttons.
-        SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETSTATE, 1, 0);
-        SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETSTATE, 1, 0);
-        SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETDONTCLICK, 1, 0);
-        SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETDONTCLICK, 1, 0);
-
-        break;
-
-      case IDC_ORG_PALETTE:
-        if (!isRGB) {
-          //Original Composite palette
-          SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETCHECK, 1, 0);
-          SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETCHECK, 0, 0);
-          configModel->PaletteType = 0;
-        }
-        else {
-          SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETSTATE, 1, 0);
-        }
-        break;
-
-      case IDC_UPD_PALETTE:
-        if (!isRGB) {
-          //New Composite palette
-          SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETCHECK, 1, 0);
-          SendDlgItemMessage(hDlg, IDC_ORG_PALETTE, BM_SETCHECK, 0, 0);
-          configModel->PaletteType = 1;
-        }
-        else {
-          SendDlgItemMessage(hDlg, IDC_UPD_PALETTE, BM_SETSTATE, 1, 0);
-        }
-        break;
-      }
       break;
     }
 

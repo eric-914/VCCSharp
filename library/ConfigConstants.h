@@ -6,9 +6,6 @@
 
 #define SCAN_TRANS_COUNT	84
 
-const unsigned short int Monchoice[2] = { IDC_COMPOSITE, IDC_RGB };
-const unsigned short int PaletteChoice[2] = { IDC_ORG_PALETTE, IDC_UPD_PALETTE };
-
 const LPSTR TabTitles[TABS] = { "Audio", "Display", "Joysticks", "Tape", "BitBanger" };
 
 const LPSTR TapeModes[4] = { "STOP", "PLAY", "REC", "STOP" };
