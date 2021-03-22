@@ -78,7 +78,7 @@ namespace VCCSharp.Modules
             ushort leftAverage = (ushort)(buffer[0] >> 16);
             ushort rightAverage = (ushort)(buffer[0] & 0xFFFF);
 
-            _modules.Config.UpdateSoundBar(leftAverage, rightAverage);
+            _modules.Audio.UpdateSoundBar(leftAverage, rightAverage);
 
             if ((audioState->InitPassed == Define.FALSE) || (audioState->AudioPause != Define.FALSE))
             {

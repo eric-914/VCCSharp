@@ -7,7 +7,7 @@
 #include "ConfigModel.h"
 #include "SoundCardList.h"
 
-#define TABS 3
+#define TABS 2
 #define MAXCARDS 12
 
 typedef struct

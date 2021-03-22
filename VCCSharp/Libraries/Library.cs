@@ -48,15 +48,6 @@ namespace VCCSharp.Libraries
             public static extern void PurgeAuxBuffer();
         }
 
-        public static class Callbacks
-        {
-            [DllImport(LIBRARY)]
-            public static extern void SetDialogAudioBars(HWND hDlg, ushort left, ushort right);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetDialogCpuMultiplier(HWND hDlg, byte cpuMultiplier);
-        }
-
         public static class Cassette
         {
             [DllImport(LIBRARY)]

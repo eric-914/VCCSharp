@@ -20,7 +20,6 @@ namespace VCCSharp.Modules
         unsafe void SynchSystemWithConfig(EmuState* emuState);
         int GetPaletteType();
         string ExternalBasicImage();
-        void UpdateSoundBar(ushort left, ushort right);
         unsafe void DecreaseOverclockSpeed(EmuState* emuState);
         unsafe void IncreaseOverclockSpeed(EmuState* emuState);
         void LoadIniFile();
@@ -182,23 +181,6 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void UpdateSoundBar(ushort left, ushort right)
-        {
-            _modules.Audio.UpdateSoundBar(left, right);
-
-            unsafe
-            {
-                ConfigState* configState = GetConfigState();
-
-                if (configState->hDlgBar == null)
-                {
-                    return;
-                }
-
-                _modules.Callbacks.SetDialogAudioBars(configState->hDlgBar, left, right);
-            }
-        }
-
         public void ConfigureJoysticks()
         {
             int temp = 0;
@@ -357,12 +339,13 @@ namespace VCCSharp.Modules
             }
 
             // Send updates to the dialog if it's open.
-            if (emuState->ConfigDialog != Zero)
-            {
-                HWND hDlg = configState->hWndConfig[1];
+            //TODO: Apply this to new configuration dialog
+            //if (emuState->ConfigDialog != Zero)
+            //{
+            //    HWND hDlg = configState->hWndConfig[1];
 
-                _modules.Callbacks.SetDialogCpuMultiplier(hDlg, cpuMultiplier);
-            }
+            //    _modules.Callbacks.SetDialogCpuMultiplier(hDlg, cpuMultiplier);
+            //}
 
             configState->Model->CPUMultiplier = cpuMultiplier;
 

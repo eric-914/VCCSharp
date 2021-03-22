@@ -6,7 +6,7 @@ using VCCSharp.Modules;
 
 namespace VCCSharp
 {
-    public partial class App : Application
+    public partial class App
     {
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -15,7 +15,6 @@ namespace VCCSharp
             Factory.Instance
                 .SelfBind()
                 .Singleton<IAudio, Audio>()
-                .Singleton<ICallbacks, Callbacks>()
                 .Singleton<ICassette, Cassette>()
                 .Singleton<IClipboard, Modules.Clipboard>()
                 .Singleton<ICoCo, CoCo>()

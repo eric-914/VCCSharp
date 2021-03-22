@@ -18,7 +18,6 @@
 #define IDB_MUTE                        130
 #define IDD_KEYBOARD                    134
 #define IDD_TCONFIG                     135
-#define IDD_AUDIO                       138
 #define IDD_CASSETTE                    157
 #define IDD_NEWTAPE                     158
 #define IDD_BITBANGER                   159

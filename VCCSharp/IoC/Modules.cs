@@ -7,7 +7,6 @@ namespace VCCSharp.IoC
         IAudio Audio { get; }
         ICassette Cassette { get; }
         IClipboard Clipboard { get; }
-        ICallbacks Callbacks { get; }
         ICoCo CoCo { get; }
         IConfig Config { get; }
         ICPU CPU { get; }
@@ -40,7 +39,6 @@ namespace VCCSharp.IoC
         public IAudio Audio => _factory.Get<IAudio>();
         public ICassette Cassette => _factory.Get<ICassette>();
         public IClipboard Clipboard => _factory.Get<IClipboard>();
-        public ICallbacks Callbacks => _factory.Get<ICallbacks>();
         public ICoCo CoCo => _factory.Get<ICoCo>();
         public IConfig Config => _factory.Get<IConfig>();
         public ICPU CPU => _factory.Get<ICPU>();
