@@ -1,8 +1,10 @@
 ﻿using System.Windows;
+using VCCSharp.BitBanger;
 using VCCSharp.Configuration;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Modules;
+using VCCSharp.TapePlayer;
 
 namespace VCCSharp
 {
@@ -14,6 +16,8 @@ namespace VCCSharp
 
             Factory.Instance
                 .SelfBind()
+
+                //--Modules
                 .Singleton<IAudio, Audio>()
                 .Singleton<ICassette, Cassette>()
                 .Singleton<IClipboard, Modules.Clipboard>()
@@ -36,17 +40,26 @@ namespace VCCSharp
                 .Singleton<ITC1014, TC1014>()
                 .Singleton<IVcc, Vcc>()
 
+                //--Modules container/accessor
                 .Singleton<IModules, IoC.Modules>()
 
+                //--Windows Libraries
                 .Bind<IKernel, Kernel>()
                 .Bind<IUser32, User32>()
                 .Bind<IWinmm, Winmm>()
 
+                //--Main
                 .Bind<ICommandLineParser, CommandLineParser>()
                 .Bind<IVccApp, VccApp>()
                 .Bind<IVccThread, VccThread>()
 
+                //--Options
                 .Bind<IConfiguration, ConfigurationManager>()
+                .Bind<ITapePlayer, TapePlayerManager>()
+                .Bind<IBitBanger, BitBangerManager>()
+
+                //--Options container/accessor
+                .Singleton<IOptions, Options>()
                 ;
         }
     }

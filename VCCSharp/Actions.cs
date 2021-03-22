@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using VCCSharp.Configuration;
+﻿using System.Diagnostics;
+using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
@@ -9,12 +9,12 @@ namespace VCCSharp
     public class Actions
     {
         private readonly IModules _modules;
-        private readonly IConfiguration _configuration;
+        private readonly IOptions _options;
 
-        public Actions(IModules modules, IConfiguration configuration)
+        public Actions(IModules modules, IOptions options)
         {
             _modules = modules;
-            _configuration = configuration;
+            _options = options;
         }
 
         public void ApplicationExit()
@@ -74,13 +74,23 @@ namespace VCCSharp
             _modules.Graphics.FlipArtifacts();
         }
 
+        public void TapeRecorder()
+        {
+            _options.TapePlayer.ShowDialog();
+        }
+
+        public void BitBanger()
+        {
+            _options.BitBanger.ShowDialog();
+        }
+
         public void OpenConfiguration()
         {
             unsafe
             {
                 ConfigState* configState = _modules.Config.GetConfigState();
 
-                _configuration.ShowDialog(configState);
+                _options.Configuration.ShowDialog(configState);
             }
         }
 

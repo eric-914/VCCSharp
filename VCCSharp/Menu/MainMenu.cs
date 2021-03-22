@@ -43,11 +43,15 @@
 
         private static MenuItemViewModel Configuration(Actions actions) => new MenuItemViewModel
         {
-            Header = "Configuration",
+            Header = "Options",
             MenuItems = new MenuItems
             {
                 new MenuItemViewModel {Header = "Flip Artifact Colors", Action = actions.FlipArtifactColors},
+                new MenuItemViewModel {Header = "Tape Recorder", Action = actions.TapeRecorder},
+                Separator,
                 new MenuItemViewModel {Header = "Configuration", Action = actions.OpenConfiguration},
+                Separator,
+                new MenuItemViewModel {Header = "Bit Banger", Action = actions.BitBanger},
                 Separator,
                 new MenuItemViewModel {Header = "(Old) Config", Action = actions.OpenOldConfiguration}
             }

@@ -65,12 +65,6 @@
       <TabItem Header="Misc" >
         <tabControls:MiscellaneousTabControl/>
       </TabItem>
-      <TabItem Header="Tape" >
-        <tabControls:TapeTabControl/>
-      </TabItem>
-      <TabItem Header="BitBanger" >
-        <tabControls:BitBangerTabControl/>
-      </TabItem>
     </TabControl>
   </DockPanel>
 </Window>
