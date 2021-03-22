@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
 
 namespace VCCSharp.Configuration
 {
     public partial class ConfigurationWindow
     {
-        public Action Apply { get;set; }
+        public Action Apply { get; set; }
 
         public ConfigurationWindow(ConfigurationViewModel model)
         {
-            Debug.WriteLine("ConfigurationWindow()");
-            DataContext = model;
             InitializeComponent();
-            Debug.WriteLine("ConfigurationWindow(model)");
+            DataContext = model;
         }
 
         private void OnOkClick(object sender, RoutedEventArgs e)

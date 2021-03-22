@@ -11,12 +11,16 @@ namespace VCCSharp.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return TranslateScan2Disp[(byte) value];
+            int index = (byte)value;
+            index = index < 0 ? 0 : index;
+            return TranslateScan2Disp[index];
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (char) (TranslateDisp2Scan[(int) value]);
+            int index = (int) value;
+            index = index < 0 ? 0 : index;
+            return (char)TranslateDisp2Scan[index];
         }
     }
 }

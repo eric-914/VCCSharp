@@ -14,11 +14,15 @@ namespace VCCSharp.Modules
         unsafe int SoundInit(HWND hWnd, _GUID* guid, ushort rate);
         void PurgeAuxBuffer();
         int GetFreeBlockCount();
+        AudioSpectrum Spectrum { get; set; }
+        void UpdateSoundBar(ushort left, ushort right);
     }
 
     public class Audio : IAudio
     {
         private readonly IModules _modules;
+
+        public AudioSpectrum Spectrum { get; set; } 
 
         public Audio(IModules modules)
         {
@@ -81,7 +85,7 @@ namespace VCCSharp.Modules
                 return;
             }
 
-            if (GetFreeBlockCount() <= 0)	//this should only kick in when frame skipping or un-throttled
+            if (GetFreeBlockCount() <= 0)   //this should only kick in when frame skipping or un-throttled
             {
                 HandleSlowAudio(byteBuffer, length);
 
@@ -104,7 +108,7 @@ namespace VCCSharp.Modules
 
             if (audioState->SndPointer2 != null)
             { // copy last section of circular buffer if wrapped
-                //memcpy(audioState->SndPointer2, byteBuffer + audioState->SndLength1, audioState->SndLength2);
+              //memcpy(audioState->SndPointer2, byteBuffer + audioState->SndLength1, audioState->SndLength2);
                 sourceBuffer = (byte*)audioState->SndPointer2;
                 for (int index = 0; index < audioState->SndLength2; index++)
                 {
@@ -114,7 +118,7 @@ namespace VCCSharp.Modules
 
             audioState->hr = _modules.DirectSound.DirectSoundUnlock(audioState->SndPointer1, audioState->SndLength1, audioState->SndPointer2, audioState->SndLength2);// unlock the buffer
 
-            audioState->BuffOffset = (audioState->BuffOffset + length) % audioState->SndBuffLength;	//Where to write next
+            audioState->BuffOffset = (audioState->BuffOffset + length) % audioState->SndBuffLength; //Where to write next
 
         }
 
@@ -153,7 +157,7 @@ namespace VCCSharp.Modules
             rate = (ushort)(rate & 3);
 
             if (rate != 0)
-            {	//Force 44100 or Mute
+            {   //Force 44100 or Mute
                 rate = 3;
             }
 
@@ -189,7 +193,7 @@ namespace VCCSharp.Modules
 
             if (rate != 0)
             {
-                instance->hr = _modules.DirectSound.DirectSoundInitialize(guid);	// create a directsound object
+                instance->hr = _modules.DirectSound.DirectSoundInitialize(guid);    // create a directsound object
 
                 if (instance->hr != Define.DS_OK)
                 {
@@ -251,6 +255,11 @@ namespace VCCSharp.Modules
             }
 
             return result;
+        }
+
+        public void UpdateSoundBar(ushort left, ushort right)
+        {
+            Spectrum?.UpdateSoundBar(left, right);
         }
     }
 }

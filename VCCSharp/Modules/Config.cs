@@ -184,6 +184,8 @@ namespace VCCSharp.Modules
 
         public void UpdateSoundBar(ushort left, ushort right)
         {
+            _modules.Audio.UpdateSoundBar(left, right);
+
             unsafe
             {
                 ConfigState* configState = GetConfigState();

@@ -12,11 +12,15 @@ namespace VCCSharp.Configuration
         //TODO: Remove STATIC once safe
         private static unsafe ConfigState* _state;
 
+        public AudioSpectrum Spectrum { get; }
+
         public ConfigurationViewModel()
         {
             //TODO: Left/Right won't set properly.  So hack for the short term.
             Left = new JoystickViewModel(JoystickSides.Left, this);
             Right = new JoystickViewModel(JoystickSides.Right, this);
+
+            Spectrum = new AudioSpectrum();
         }
 
         public unsafe ConfigModel* Model => _state->Model;
