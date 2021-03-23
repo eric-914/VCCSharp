@@ -20,7 +20,6 @@
 #define IDD_TCONFIG                     135
 #define IDD_CASSETTE                    157
 #define IDD_NEWTAPE                     158
-#define IDD_BITBANGER                   159
 #define IDC_MUTE                        1003
 #define IDC_THROTTLE                    1004
 #define IDC_ARTIFACTS                   1005
@@ -426,7 +425,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        170
+#define _APS_NEXT_RESOURCE_VALUE        171
 #define _APS_NEXT_COMMAND_VALUE         40032
 #define _APS_NEXT_CONTROL_VALUE         1165
 #define _APS_NEXT_SYMED_VALUE           101

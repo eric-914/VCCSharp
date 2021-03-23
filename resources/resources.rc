@@ -103,17 +103,6 @@ BEGIN
     CTEXT           "",IDC_MODE,7,66,40,14,WS_BORDER
 END
 
-IDD_BITBANGER DIALOG 0, 0, 268, 110
-STYLE DS_SETFONT | WS_CHILD
-FONT 8, "MS Sans Serif"
-BEGIN
-    EDITTEXT        IDC_SERIALFILE,7,7,254,14,ES_AUTOHSCROLL | ES_READONLY
-    PUSHBUTTON      "Open",IDC_OPEN,7,26,50,14
-    PUSHBUTTON      "Close",IDC_CLOSE,61,26,50,14
-    CONTROL         "Add LF to CR",IDC_LF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,46,61,10
-    CONTROL         "Print Monitor window",IDC_PRINTMON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,58,81,10
-END
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -133,14 +122,6 @@ BEGIN
 
     IDD_CASSETTE, DIALOG
     BEGIN
-    END
-
-    IDD_BITBANGER, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 261
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 103
     END
 END
 #endif    // APSTUDIO_INVOKED

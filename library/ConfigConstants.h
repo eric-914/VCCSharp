@@ -6,6 +6,6 @@
 
 #define SCAN_TRANS_COUNT	84
 
-const LPSTR TabTitles[TABS] = { "Tape", "BitBanger" };
+const LPSTR TabTitles[TABS] = { "Tape" };
 
 const LPSTR TapeModes[4] = { "STOP", "PLAY", "REC", "STOP" };
