@@ -1,14 +1,18 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using VCCSharp.Annotations;
+using VCCSharp.Models;
 
 namespace VCCSharp.BitBanger
 {
-    public class BitBangerViewModel: INotifyPropertyChanged
+    public class BitBangerViewModel : INotifyPropertyChanged
     {
-        private string _filePath = "Sample Browse File Text";
-        private bool _addLineFeed;
-        private bool _print;
+        private const string NO_FILE = "No Capture File";
+
+        //TODO: Remove STATIC once safe
+        private static unsafe ConfigState* _state;
+
+        private string _serialCaptureFile = NO_FILE;
 
         #region INotifyPropertyChanged
 
@@ -22,37 +26,86 @@ namespace VCCSharp.BitBanger
 
         #endregion
 
-        public string FilePath
+        public unsafe ConfigState* State
         {
-            get => _filePath;
+            get => _state;
             set
             {
-                if (value == _filePath) return;
+                if (_state != null) return;
 
-                _filePath = value;
+                _state = value;
+            }
+        }
+
+        public string SerialCaptureFile
+        {
+            get
+            {
+                unsafe
+                {
+                    if (State == null) return string.Empty;
+
+                    string file = Converter.ToString(State->SerialCaptureFile, Define.MAX_PATH);
+
+                    _serialCaptureFile = string.IsNullOrEmpty(file) ? NO_FILE : file;
+
+                    return _serialCaptureFile;
+                }
+            }
+            set
+            {
+                if (value == _serialCaptureFile) return;
+
+                _serialCaptureFile = value;
+
+                unsafe
+                {
+                    Converter.ToByteArray(value, State->SerialCaptureFile);
+                }
+
                 OnPropertyChanged();
             }
         }
 
         public bool AddLineFeed
         {
-            get => _addLineFeed;
+            get
+            {
+                unsafe
+                {
+                    return State != null && State->TextMode != Define.FALSE;
+                }
+            }
             set
             {
-                if (value == _addLineFeed) return;
-                _addLineFeed = value;
-                OnPropertyChanged();
+                unsafe
+                {
+                    if (value == (State->TextMode != Define.FALSE)) return;
+
+                    State->TextMode = (value ? Define.TRUE : Define.FALSE);
+                    OnPropertyChanged();
+                }
             }
         }
 
         public bool Print
         {
-            get => _print;
+            get
+            {
+                unsafe
+                {
+                    return State != null && State->PrintMonitorWindow == Define.TRUE;
+                }
+            }
             set
             {
-                if (value == _print) return;
-                _print = value;
-                OnPropertyChanged();
+                unsafe
+                {
+                    if (value == (State->PrintMonitorWindow == Define.TRUE)) return;
+
+                    State->PrintMonitorWindow = (value ? Define.TRUE : Define.FALSE);
+                    OnPropertyChanged();
+                }
             }
         }
     }

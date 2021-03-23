@@ -81,7 +81,12 @@ namespace VCCSharp
 
         public void BitBanger()
         {
-            _options.BitBanger.ShowDialog();
+            unsafe
+            {
+                ConfigState* configState = _modules.Config.GetConfigState();
+
+                _options.BitBanger.ShowDialog(configState);
+            }
         }
 
         public void OpenConfiguration()
@@ -142,6 +147,16 @@ namespace VCCSharp
         public void ToggleFullScreen() //F11
         {
             _modules.Events.ToggleFullScreen();
+        }
+
+        public void OpenBitBanger()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void CloseBitBanger()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

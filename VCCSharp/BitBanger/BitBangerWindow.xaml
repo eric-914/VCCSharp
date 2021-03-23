@@ -31,10 +31,10 @@
       <RowDefinition Height="10"/>
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
-    <TextBox Grid.Row="0" Text="{Binding FilePath}"/>
+    <TextBox Grid.Row="0" Text="{Binding SerialCaptureFile}"/>
     <StackPanel Grid.Row="2" Orientation="Horizontal">
-      <Button Content="Open"/>
-      <Button Content="Close"/>
+      <Button Content="Open" Click="Open"/>
+      <Button Content="Close" Click="Close"/>
     </StackPanel>
     <StackPanel Grid.Row="4" Orientation="Vertical">
       <CheckBox IsChecked="{Binding AddLineFeed}" Content="Add LF to CR"/>

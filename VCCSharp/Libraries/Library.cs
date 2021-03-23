@@ -278,6 +278,18 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe MC6821State* GetMC6821State();
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6821_ClosePrintFile();
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6821_SetMonState(int state);
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6821_SetSerialParams(byte textMode);
+
+            [DllImport(LIBRARY)]
+            public static extern int MC6821_OpenPrintFile(string filename);
         } //--MC6821
 
         public static class PAKInterface

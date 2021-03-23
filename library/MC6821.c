@@ -93,7 +93,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MC6821_ClosePrintFile(void)
+  __declspec(dllexport) void __cdecl MC6821_ClosePrintFile()
   {
     CloseHandle(instance->hPrintFile);
 

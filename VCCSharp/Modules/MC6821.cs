@@ -12,6 +12,10 @@ namespace VCCSharp.Modules
         void MC6821_irq_fs(PhaseStates phase);
         void MC6821_irq_hs(PhaseStates phase);
         void MC6821_SetCartAutoStart(byte autoStart);
+        void MC6821_ClosePrintFile();
+        void MC6821_SetMonState(int state);
+        void MC6821_SetSerialParams(byte textMode);
+        int MC6821_OpenPrintFile(string filename);
     }
 
     public class MC6821 : IMC6821
@@ -160,6 +164,26 @@ namespace VCCSharp.Modules
                     _modules.CPU.CPUDeAssertInterrupt(CPUInterrupts.FIRQ); //Kludge but working
                 }
             }
+        }
+
+        public void MC6821_ClosePrintFile()
+        {
+            Library.MC6821.MC6821_ClosePrintFile();
+        }
+
+        public void MC6821_SetMonState(int state)
+        {
+            Library.MC6821.MC6821_SetMonState(state);
+        }
+
+        public void MC6821_SetSerialParams(byte textMode)
+        {
+            Library.MC6821.MC6821_SetSerialParams(textMode);
+        }
+
+        public int MC6821_OpenPrintFile(string filename)
+        {
+            return Library.MC6821.MC6821_OpenPrintFile(filename);
         }
     }
 }
