@@ -227,6 +227,30 @@ extern "C" {
 }
 
 extern "C" {
+  __declspec(dllexport) void __cdecl SetAudioEventAudioOut()
+  {
+    AudioEvent = AudioOut;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl SetAudioEventCassOut()
+  {
+    AudioEvent = CassOut;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl SetAudioEventCassIn()
+  {
+    AudioEvent = CassIn;
+  }
+}
+
+/************************************************************************************
+* TODO: Ported, but used a bunch in Cassette.c
+************************************************************************************/
+extern "C" {
   __declspec(dllexport) unsigned char __cdecl SetSndOutMode(unsigned char mode)  //0 = Speaker 1= Cassette Out 2=Cassette In
   {
     static unsigned char lastMode = 0;
@@ -239,14 +263,14 @@ extern "C" {
         FlushCassetteBuffer(instance->CassBuffer, instance->AudioIndex); /* Cassette.cpp */
       }
 
-      AudioEvent = AudioOut;
+      SetAudioEventAudioOut();
 
       SetAudioRate(primarySoundRate);
 
       break;
 
     case 1:
-      AudioEvent = CassOut;
+      SetAudioEventCassOut();
 
       primarySoundRate = instance->SoundRate;
 
@@ -255,7 +279,7 @@ extern "C" {
       break;
 
     case 2:
-      AudioEvent = CassIn;
+      SetAudioEventCassIn();
 
       primarySoundRate = instance->SoundRate;
 

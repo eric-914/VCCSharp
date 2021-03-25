@@ -60,7 +60,12 @@ extern "C" {
     {
       instance->Quiet--;
 
-      memset(buffer, 0, bytesToConvert);
+      try {
+        memset(buffer, 0, bytesToConvert);
+      }
+      catch (...) {
+        throw;
+      }
 
       return;
     }
@@ -422,31 +427,43 @@ extern "C" {
 }
 
 extern "C" {
+  __declspec(dllexport) void __cdecl LoadCassetteBufferWAV(unsigned char* cassBuffer, unsigned long* bytesMoved)
+  {
+    SetFilePointer(instance->TapeHandle, instance->TapeOffset + 44, 0, FILE_BEGIN);
+    ReadFile(instance->TapeHandle, cassBuffer, TAPEAUDIORATE / 60, bytesMoved, NULL);
+
+    instance->TapeOffset += *bytesMoved;
+
+    if (instance->TapeOffset > instance->TotalSize) {
+      instance->TapeOffset = instance->TotalSize;
+    }
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl LoadCassetteBufferCAS(unsigned char* cassBuffer, unsigned long* bytesMoved)
+  {
+    CastoWav(cassBuffer, TAPEAUDIORATE / 60, bytesMoved);
+  }
+}
+
+extern "C" {
   __declspec(dllexport) void __cdecl LoadCassetteBuffer(unsigned char* cassBuffer)
   {
     unsigned long bytesMoved = 0;
 
-    if (instance->TapeMode != PLAY) {
-      return;
-    }
+    //if (instance->TapeMode != PLAY) {
+    //  return;
+    //}
 
     switch (instance->FileType)
     {
     case WAV:
-      SetFilePointer(instance->TapeHandle, instance->TapeOffset + 44, 0, FILE_BEGIN);
-      ReadFile(instance->TapeHandle, cassBuffer, TAPEAUDIORATE / 60, &bytesMoved, NULL);
-
-      instance->TapeOffset += bytesMoved;
-
-      if (instance->TapeOffset > instance->TotalSize) {
-        instance->TapeOffset = instance->TotalSize;
-      }
-
+      LoadCassetteBufferWAV(cassBuffer, &bytesMoved);
       break;
 
     case CAS:
-      CastoWav(cassBuffer, TAPEAUDIORATE / 60, &bytesMoved);
-
+      LoadCassetteBufferCAS(cassBuffer, &bytesMoved);
       break;
     }
 
@@ -536,7 +553,7 @@ extern "C" {
           instance->TapeMode = STOP;
         }
         else {
-          instance->TapeMode = mode;
+          instance->TapeMode = PLAY;
         }
       }
 
@@ -552,7 +569,7 @@ extern "C" {
           instance->TapeMode = STOP;
         }
         else {
-          instance->TapeMode = mode;
+          instance->TapeMode = REC;
         }
       }
       break;

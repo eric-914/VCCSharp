@@ -26,6 +26,7 @@ namespace VCCSharp.Modules
         short GetCurrentKeyboardLayout();
         void SaveConfig();
         byte GetSoundCardIndex(string soundCardName);
+        void UpdateTapeDialog(ushort counter, byte tapeMode);
     }
 
     public class Config : IConfig
@@ -624,6 +625,11 @@ namespace VCCSharp.Modules
         public byte GetSoundCardIndex(string soundCardName)
         {
             return Library.Config.GetSoundCardIndex(soundCardName);
+        }
+
+        public void UpdateTapeDialog(ushort counter, byte tapeMode)
+        {
+            Library.Config.UpdateTapeDialog(counter, tapeMode);
         }
     }
 }

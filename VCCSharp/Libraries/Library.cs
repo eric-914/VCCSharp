@@ -51,10 +51,19 @@ namespace VCCSharp.Libraries
         public static class Cassette
         {
             [DllImport(LIBRARY)]
+            public static extern unsafe CassetteState* GetCassetteState();
+
+            [DllImport(LIBRARY)]
             public static extern unsafe void FlushCassetteBuffer(byte* buffer, uint length);
 
             [DllImport(LIBRARY)]
             public static extern unsafe void LoadCassetteBuffer(byte* cassBuffer);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void LoadCassetteBufferWAV(byte* cassBuffer, uint* bytesMoved);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void LoadCassetteBufferCAS(byte* cassBuffer, uint* bytesMoved);
         }
 
         public static class Clipboard
@@ -82,6 +91,15 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern ushort SetAudioRate(ushort rate);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetAudioEventAudioOut();
+
+            [DllImport(LIBRARY)]
+            public static extern void SetAudioEventCassOut();
+
+            [DllImport(LIBRARY)]
+            public static extern void SetAudioEventCassIn();
         }
 
         public static class Config
@@ -103,6 +121,9 @@ namespace VCCSharp.Libraries
     
             [DllImport(LIBRARY)]
             public static extern byte GetSoundCardIndex(string soundCardName);
+    
+            [DllImport(LIBRARY)]
+            public static extern void UpdateTapeDialog(ushort counter, byte tapeMode);
         }
 
         public static class CPU

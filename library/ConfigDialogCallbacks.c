@@ -101,37 +101,27 @@ extern "C" {
       {
       case IDC_PLAY:
         configState->TapeMode = PLAY;
-
-        SetTapeMode(configState->TapeMode);
-
+        SetTapeMode(PLAY);
         break;
 
       case IDC_REC:
         configState->TapeMode = REC;
-
-        SetTapeMode(configState->TapeMode);
-
+        SetTapeMode(REC);
         break;
 
       case IDC_STOP:
         configState->TapeMode = STOP;
-
-        SetTapeMode(configState->TapeMode);
-
+        SetTapeMode(STOP);
         break;
 
       case IDC_EJECT:
         configState->TapeMode = EJECT;
-
-        SetTapeMode(configState->TapeMode);
-
+        SetTapeMode(EJECT);
         break;
 
       case IDC_RESET:
         configState->TapeCounter = 0;
-
         SetTapeCounter(configState->TapeCounter);
-
         break;
 
       case IDC_TBROWSE:

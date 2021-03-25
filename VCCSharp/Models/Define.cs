@@ -25,5 +25,7 @@
         public const int TARGETFRAMERATE = 60;
 
         public const int AUDIOBUFFERS = 12;
+
+        public const int TAPEAUDIORATE = 44100;
     }
 }

@@ -14,11 +14,14 @@ namespace VCCSharp.Modules
         unsafe float RenderFrame(EmuState* emuState);
         void CocoReset();
         ushort SetAudioRate(ushort rate);
+        byte SetSndOutMode(byte mode);
     }
 
     public class CoCo : ICoCo
     {
         private readonly IModules _modules;
+
+        private static byte lastMode = 0;
 
         public CoCo(IModules modules)
         {
@@ -538,6 +541,84 @@ namespace VCCSharp.Modules
             }
         }
 
+        public ushort SetAudioRate(ushort rate)
+        {
+            return Library.CoCo.SetAudioRate(rate);
+        }
+
+        //0 = Speaker 1= Cassette Out 2=Cassette In
+        public byte SetSndOutMode(byte mode)
+        {
+            unsafe
+            {
+                CoCoState* instance = GetCoCoState();
+
+                //--TODO: Is there a purpose to this variable?
+                ushort primarySoundRate = instance->SoundRate;
+
+                switch (mode)
+                {
+                    case 0:
+                        if (lastMode == 1)
+                        {
+                            //Send the last bits to be encoded
+                            _modules.Cassette.FlushCassetteBuffer(instance->CassBuffer, instance->AudioIndex); /* Cassette.cpp */
+                        }
+
+                        SetAudioEventAudioOut();
+                        SetAudioRate(primarySoundRate);
+
+                        break;
+
+                    case 1:
+                        SetAudioEventCassOut();
+
+                        primarySoundRate = instance->SoundRate;
+
+                        SetAudioRate(Define.TAPEAUDIORATE);
+
+                        break;
+
+                    case 2:
+                        SetAudioEventCassIn();
+
+                        primarySoundRate = instance->SoundRate;
+
+                        SetAudioRate(Define.TAPEAUDIORATE);
+
+                        break;
+
+                    default: //QUERY
+                        return instance->SoundOutputMode;
+                }
+
+                if (mode != lastMode)
+                {
+                    instance->AudioIndex = 0;	//Reset Buffer on true mode switch
+                    lastMode = mode;
+                }
+
+                instance->SoundOutputMode = mode;
+
+                return instance->SoundOutputMode;
+            }
+        }
+
+        public void SetAudioEventAudioOut()
+        {
+            Library.CoCo.SetAudioEventAudioOut();
+        }
+
+        public void SetAudioEventCassOut()
+        {
+            Library.CoCo.SetAudioEventCassOut();
+        }
+
+        public void SetAudioEventCassIn()
+        {
+            Library.CoCo.SetAudioEventCassIn();
+        }
+
         private void ExecuteAudioEvent()
         {
             Library.CoCo.ExecuteAudioEvent();
@@ -558,9 +639,5 @@ namespace VCCSharp.Modules
             Library.CoCo.CoCoDrawBottomBorder(emuState);
         }
 
-        public ushort SetAudioRate(ushort rate)
-        {
-            return Library.CoCo.SetAudioRate(rate);
-        }
     }
 }
