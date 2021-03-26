@@ -15,10 +15,12 @@ namespace VCCSharp.Modules
     public class Cassette : ICassette
     {
         private readonly IModules _modules;
+        private readonly IKernel _kernel;
 
-        public Cassette(IModules modules)
+        public Cassette(IModules modules, IKernel kernel)
         {
             _modules = modules;
+            _kernel = kernel;
         }
 
         public unsafe CassetteState* GetCassetteState()
@@ -33,16 +35,16 @@ namespace VCCSharp.Modules
 
         public unsafe void LoadCassetteBuffer(byte* cassBuffer)
         {
-            CassetteState* instance = GetCassetteState();
+            CassetteState* cassetteState = GetCassetteState();
 
             uint bytesMoved = 0;
 
-            if (instance->TapeMode != (byte)TapeModes.PLAY)
+            if (cassetteState->TapeMode != (byte)TapeModes.PLAY)
             {
                 return;
             }
 
-            switch ((TapeFileType)(instance->FileType))
+            switch ((TapeFileType)(cassetteState->FileType))
             {
                 case TapeFileType.WAV:
                     LoadCassetteBufferWAV(cassBuffer, &bytesMoved);
@@ -53,19 +55,24 @@ namespace VCCSharp.Modules
                     break;
             }
 
-            _modules.Config.UpdateTapeDialog((ushort)instance->TapeOffset, instance->TapeMode);
-
-            //Library.Cassette.LoadCassetteBuffer(cassBuffer);
+            _modules.Config.UpdateTapeDialog((ushort)cassetteState->TapeOffset, cassetteState->TapeMode);
         }
 
         public unsafe void LoadCassetteBufferWAV(byte* cassBuffer, uint* bytesMoved)
         {
+            CassetteState* instance = GetCassetteState();
+
             Library.Cassette.LoadCassetteBufferWAV(cassBuffer, bytesMoved);
         }
 
         public unsafe void LoadCassetteBufferCAS(byte* cassBuffer, uint* bytesMoved)
         {
-            Library.Cassette.LoadCassetteBufferCAS(cassBuffer, bytesMoved);
+            CasToWav(cassBuffer, Define.TAPEAUDIORATE / 60, bytesMoved);
+        }
+
+        public unsafe void CasToWav(byte* buffer, ushort bytesToConvert, uint* bytesConverted)
+        {
+            Library.Cassette.CasToWav(buffer, bytesToConvert, bytesConverted);
         }
     }
 }

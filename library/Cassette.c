@@ -51,7 +51,7 @@ CassetteState* InitializeInstance(CassetteState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl CastoWav(unsigned char* buffer, unsigned int bytesToConvert, unsigned long* bytesConverted)
+  __declspec(dllexport) void __cdecl CasToWav(unsigned char* buffer, unsigned int bytesToConvert, unsigned long* bytesConverted)
   {
     unsigned char byte = 0;
     char mask = 0;
@@ -432,13 +432,6 @@ extern "C" {
     if (instance->TapeOffset > instance->TotalSize) {
       instance->TapeOffset = instance->TotalSize;
     }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl LoadCassetteBufferCAS(unsigned char* cassBuffer, unsigned long* bytesMoved)
-  {
-    CastoWav(cassBuffer, TAPEAUDIORATE / 60, bytesMoved);
   }
 }
 

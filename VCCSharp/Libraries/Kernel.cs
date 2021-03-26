@@ -1,5 +1,6 @@
 ﻿using VCCSharp.Models;
 using HMODULE = System.IntPtr;
+using HANDLE = System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
@@ -12,6 +13,8 @@ namespace VCCSharp.Libraries
         int WritePrivateProfileStringA(string lpAppName, string lpKeyName, string lpString, string lpFileName);
         unsafe int QueryPerformanceCounter(LARGE_INTEGER* lpPerformanceCount);
         unsafe int QueryPerformanceFrequency(LARGE_INTEGER* lpFrequency);
+        unsafe int ReadFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToRead, uint* lpNumberOfBytesRead, void* lpOverlapped);
+        unsafe uint SetFilePointer(HANDLE hFile, uint lDistanceToMove, uint* lpDistanceToMoveHigh, uint dwMoveMethod);
     }
 
     public class Kernel : IKernel
@@ -36,5 +39,11 @@ namespace VCCSharp.Libraries
 
         public unsafe int QueryPerformanceFrequency(LARGE_INTEGER* lpFrequency)
             => KernelDll.QueryPerformanceFrequency(lpFrequency);
+
+        public unsafe int ReadFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToRead, uint* lpNumberOfBytesRead, void* lpOverlapped)
+            => KernelDll.ReadFile(hFile, lpBuffer, nNumberOfBytesToRead, lpNumberOfBytesRead, lpOverlapped);
+
+        public unsafe uint SetFilePointer(HANDLE hFile, uint lDistanceToMove, uint* lpDistanceToMoveHigh, uint dwMoveMethod)
+            => KernelDll.SetFilePointer(hFile, lDistanceToMove, lpDistanceToMoveHigh, dwMoveMethod);
     }
 }
