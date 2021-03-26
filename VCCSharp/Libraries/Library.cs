@@ -57,9 +57,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe void FlushCassetteBuffer(byte* buffer, uint length);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void LoadCassetteBuffer(byte* cassBuffer);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe void LoadCassetteBufferWAV(byte* cassBuffer, uint* bytesMoved);
 
             [DllImport(LIBRARY)]

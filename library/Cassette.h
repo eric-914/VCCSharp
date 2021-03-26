@@ -23,7 +23,6 @@ extern "C" __declspec(dllexport) void __cdecl CastoWav(unsigned char*, unsigned 
 extern "C" __declspec(dllexport) void __cdecl CloseTapeFile();
 extern "C" __declspec(dllexport) void __cdecl FlushCassetteBuffer(unsigned char*, unsigned int);
 extern "C" __declspec(dllexport) void __cdecl GetTapeName(char*);
-extern "C" __declspec(dllexport) void __cdecl LoadCassetteBuffer(unsigned char*);
 extern "C" __declspec(dllexport) void __cdecl Motor(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetTapeCounter(unsigned int);
 extern "C" __declspec(dllexport) void __cdecl SetTapeMode(unsigned char);

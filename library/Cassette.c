@@ -60,12 +60,7 @@ extern "C" {
     {
       instance->Quiet--;
 
-      try {
-        memset(buffer, 0, bytesToConvert);
-      }
-      catch (...) {
-        throw;
-      }
+      memset(buffer, 0, bytesToConvert);
 
       return;
     }
@@ -444,30 +439,6 @@ extern "C" {
   __declspec(dllexport) void __cdecl LoadCassetteBufferCAS(unsigned char* cassBuffer, unsigned long* bytesMoved)
   {
     CastoWav(cassBuffer, TAPEAUDIORATE / 60, bytesMoved);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl LoadCassetteBuffer(unsigned char* cassBuffer)
-  {
-    unsigned long bytesMoved = 0;
-
-    //if (instance->TapeMode != PLAY) {
-    //  return;
-    //}
-
-    switch (instance->FileType)
-    {
-    case WAV:
-      LoadCassetteBufferWAV(cassBuffer, &bytesMoved);
-      break;
-
-    case CAS:
-      LoadCassetteBufferCAS(cassBuffer, &bytesMoved);
-      break;
-    }
-
-    UpdateTapeDialog(instance->TapeOffset, instance->TapeMode);
   }
 }
 

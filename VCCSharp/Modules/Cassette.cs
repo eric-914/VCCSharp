@@ -33,29 +33,29 @@ namespace VCCSharp.Modules
 
         public unsafe void LoadCassetteBuffer(byte* cassBuffer)
         {
-            //CassetteState* instance = GetCassetteState();
+            CassetteState* instance = GetCassetteState();
 
-            //uint bytesMoved = 0;
+            uint bytesMoved = 0;
 
-            //if (instance->TapeMode != (byte)TapeModes.PLAY)
-            //{
-            //    return;
-            //}
+            if (instance->TapeMode != (byte)TapeModes.PLAY)
+            {
+                return;
+            }
 
-            //switch ((TapeFileType)(instance->FileType))
-            //{
-            //    case TapeFileType.WAV:
-            //        LoadCassetteBufferWAV(cassBuffer, &bytesMoved);
-            //        break;
+            switch ((TapeFileType)(instance->FileType))
+            {
+                case TapeFileType.WAV:
+                    LoadCassetteBufferWAV(cassBuffer, &bytesMoved);
+                    break;
 
-            //    case TapeFileType.CAS:
-            //        LoadCassetteBufferCAS(cassBuffer, &bytesMoved);
-            //        break;
-            //}
+                case TapeFileType.CAS:
+                    LoadCassetteBufferCAS(cassBuffer, &bytesMoved);
+                    break;
+            }
 
-            //_modules.Config.UpdateTapeDialog((ushort)instance->TapeOffset, instance->TapeMode);
+            _modules.Config.UpdateTapeDialog((ushort)instance->TapeOffset, instance->TapeMode);
 
-            Library.Cassette.LoadCassetteBuffer(cassBuffer);
+            //Library.Cassette.LoadCassetteBuffer(cassBuffer);
         }
 
         public unsafe void LoadCassetteBufferWAV(byte* cassBuffer, uint* bytesMoved)
