@@ -51,68 +51,6 @@ CassetteState* InitializeInstance(CassetteState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl CasToWav(unsigned char* buffer, unsigned int bytesToConvert, unsigned long* bytesConverted)
-  {
-    unsigned char byte = 0;
-    char mask = 0;
-
-    if (instance->Quiet > 0)
-    {
-      instance->Quiet--;
-
-      memset(buffer, 0, bytesToConvert);
-
-      return;
-    }
-
-    if ((instance->TapeOffset > instance->TotalSize) || (instance->TotalSize == 0))	//End of tape return nothing
-    {
-      memset(buffer, 0, bytesToConvert);
-
-      instance->TapeMode = STOP;	//Stop at end of tape
-
-      return;
-    }
-
-    while ((instance->TempIndex < bytesToConvert) && (instance->TapeOffset <= instance->TotalSize))
-    {
-      byte = instance->CasBuffer[(instance->TapeOffset++) % instance->TotalSize];
-
-      for (mask = 0; mask <= 7; mask++)
-      {
-        if ((byte & (1 << mask)) == 0)
-        {
-          memcpy(&(instance->TempBuffer[instance->TempIndex]), instance->Zero, 40);
-
-          instance->TempIndex += 40;
-        }
-        else
-        {
-          memcpy(&(instance->TempBuffer[instance->TempIndex]), instance->One, 21);
-
-          instance->TempIndex += 21;
-        }
-      }
-    }
-
-    if (instance->TempIndex >= bytesToConvert)
-    {
-      memcpy(buffer, instance->TempBuffer, bytesToConvert); //Fill the return Buffer
-      memcpy(instance->TempBuffer, &(instance->TempBuffer[bytesToConvert]), instance->TempIndex - bytesToConvert);	//Slide the overage to the front
-
-      instance->TempIndex -= bytesToConvert; //Point to the Next free byte in the tempbuffer
-    }
-    else	//We ran out of source bytes
-    {
-      memcpy(buffer, instance->TempBuffer, instance->TempIndex);						//Partial Fill of return buffer;
-      memset(&buffer[instance->TempIndex], 0, bytesToConvert - instance->TempIndex);		//and silence for the rest
-
-      instance->TempIndex = 0;
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) unsigned int __cdecl GetTapeCounter(void)
   {
     return(instance->TapeOffset);
@@ -330,7 +268,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl WavtoCas(unsigned char* waveBuffer, unsigned int length)
+  __declspec(dllexport) void __cdecl WavToCas(unsigned char* waveBuffer, unsigned int length)
   {
     unsigned char bit = 0, sample = 0;
     unsigned int index = 0, width = 0;
@@ -412,7 +350,7 @@ extern "C" {
       break;
 
     case CAS:
-      WavtoCas(buffer, length);
+      WavToCas(buffer, length);
 
       break;
     }

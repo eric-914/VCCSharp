@@ -19,7 +19,6 @@ extern "C" __declspec(dllexport) int __cdecl MountTape(char*);
 extern "C" __declspec(dllexport) unsigned int __cdecl GetTapeCounter();
 extern "C" __declspec(dllexport) unsigned int __cdecl LoadTape();
 
-extern "C" __declspec(dllexport) void __cdecl CasToWav(unsigned char*, unsigned int, unsigned long*);
 extern "C" __declspec(dllexport) void __cdecl CloseTapeFile();
 extern "C" __declspec(dllexport) void __cdecl FlushCassetteBuffer(unsigned char*, unsigned int);
 extern "C" __declspec(dllexport) void __cdecl GetTapeName(char*);
@@ -27,4 +26,4 @@ extern "C" __declspec(dllexport) void __cdecl Motor(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetTapeCounter(unsigned int);
 extern "C" __declspec(dllexport) void __cdecl SetTapeMode(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SyncFileBuffer();
-extern "C" __declspec(dllexport) void __cdecl WavtoCas(unsigned char*, unsigned int);
+extern "C" __declspec(dllexport) void __cdecl WavToCas(unsigned char*, unsigned int);

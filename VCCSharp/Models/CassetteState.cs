@@ -18,10 +18,10 @@ namespace VCCSharp.Models
         public uint TapeOffset;
         public uint TotalSize;
 
-        public short LastTrans;
-        public ushort TempIndex;
-
         public HANDLE TapeHandle;
+
+        public int LastTrans;
+        public uint TempIndex;
 
         public unsafe fixed byte CassPath[Define.MAX_PATH];
         public unsafe fixed byte TapeFileName[Define.MAX_PATH];

@@ -58,9 +58,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void LoadCassetteBufferWAV(byte* cassBuffer, uint* bytesMoved);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void CasToWav(byte* buffer, ushort bytesToConvert, uint* bytesConverted);
         }
 
         public static class Clipboard

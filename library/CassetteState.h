@@ -18,10 +18,10 @@ typedef struct
   unsigned long TapeOffset;
   unsigned long TotalSize;
 
+  HANDLE TapeHandle;
+
   int LastTrans;
   unsigned int TempIndex;
-
-  HANDLE TapeHandle;
 
   char CassPath[MAX_PATH];
   char TapeFileName[MAX_PATH];
