@@ -360,20 +360,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl LoadCassetteBufferWAV(unsigned char* cassBuffer, unsigned long* bytesMoved)
-  {
-    SetFilePointer(instance->TapeHandle, instance->TapeOffset + 44, 0, FILE_BEGIN);
-    ReadFile(instance->TapeHandle, cassBuffer, TAPEAUDIORATE / 60, bytesMoved, NULL);
-
-    instance->TapeOffset += *bytesMoved;
-
-    if (instance->TapeOffset > instance->TotalSize) {
-      instance->TapeOffset = instance->TotalSize;
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl SetTapeCounter(unsigned int count)
   {
     instance->TapeOffset = count;

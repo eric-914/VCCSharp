@@ -27,5 +27,7 @@
         public const int AUDIOBUFFERS = 12;
 
         public const int TAPEAUDIORATE = 44100;
+
+        public const uint FILE_BEGIN = 0;
     }
 }

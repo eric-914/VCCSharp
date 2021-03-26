@@ -1,4 +1,5 @@
-﻿using VCCSharp.Enums;
+﻿using System;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -28,11 +29,6 @@ namespace VCCSharp.Modules
             return Library.Cassette.GetCassetteState();
         }
 
-        public unsafe void FlushCassetteBuffer(byte* buffer, uint length)
-        {
-            Library.Cassette.FlushCassetteBuffer(buffer, length);
-        }
-
         public unsafe void LoadCassetteBuffer(byte* cassBuffer)
         {
             CassetteState* cassetteState = GetCassetteState();
@@ -57,14 +53,7 @@ namespace VCCSharp.Modules
 
             _modules.Config.UpdateTapeDialog((ushort)cassetteState->TapeOffset, cassetteState->TapeMode);
         }
-
-        public unsafe void LoadCassetteBufferWAV(byte* cassBuffer, uint* bytesMoved)
-        {
-            CassetteState* instance = GetCassetteState();
-
-            Library.Cassette.LoadCassetteBufferWAV(cassBuffer, bytesMoved);
-        }
-
+        
         public unsafe void LoadCassetteBufferCAS(byte* cassBuffer, uint* bytesMoved)
         {
             CasToWav(cassBuffer, Define.TAPEAUDIORATE / 60, bytesMoved);
@@ -164,6 +153,27 @@ namespace VCCSharp.Modules
 
                 instance->TempIndex = 0;
             }
+        }
+
+        //--TODO: Seems this doesn't work
+        public unsafe void LoadCassetteBufferWAV(byte* cassBuffer, uint* bytesMoved)
+        {
+            CassetteState* instance = GetCassetteState();
+
+            _kernel.SetFilePointer(instance->TapeHandle, instance->TapeOffset + 44, null, Define.FILE_BEGIN);
+            _kernel.ReadFile(instance->TapeHandle, cassBuffer, Define.TAPEAUDIORATE / 60, bytesMoved, null);
+
+            instance->TapeOffset += *bytesMoved;
+
+            if (instance->TapeOffset > instance->TotalSize)
+            {
+                instance->TapeOffset = instance->TotalSize;
+            }
+        }
+
+        public unsafe void FlushCassetteBuffer(byte* buffer, uint length)
+        {
+            Library.Cassette.FlushCassetteBuffer(buffer, length);
         }
     }
 }
