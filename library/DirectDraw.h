@@ -14,8 +14,6 @@ extern "C" __declspec(dllexport) BOOL __cdecl InitDirectDraw(HINSTANCE, HINSTANC
 
 extern "C" __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindow(EmuState*);
 
-extern "C" __declspec(dllexport) void __cdecl Static(EmuState*);
-
 extern "C" __declspec(dllexport) unsigned char __cdecl LockScreen(EmuState*);
 
 extern "C" __declspec(dllexport) void __cdecl CheckSurfaces();

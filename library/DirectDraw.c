@@ -611,100 +611,21 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl Static(EmuState* emuState)
+  __declspec(dllexport) void __cdecl ShowStaticMessage(unsigned short x, unsigned short y, COLORREF color)
   {
-    unsigned short x = 0;
-    static unsigned short y = 0;
-    unsigned char temp = 0;
-    static unsigned short textX = 0, textY = 0;
-    static unsigned char counter = 0, counter1 = 32;
-    static char phase = 1;
-    static char message[] = " Signal Missing! Press F9";
-    static unsigned char greyScales[4] = { 128, 135, 184, 191 };
+    const char message[] = " Signal Missing! Press F9";
     HDC hdc;
 
-    GraphicsSurfaces* graphicsSurfaces = GetGraphicsSurfaces();
     DirectDrawInternalState* ddState = GetDirectDrawInternalState();
-
-    LockScreen(emuState);
-
-    if (graphicsSurfaces->pSurface32 == NULL) {
-      return;
-    }
-
-    switch (emuState->BitDepth)
-    {
-    case BIT_8:
-      for (y = 0; y < 480; y += 2) {
-        for (x = 0; x < 160; x++) {
-          temp = rand() & 3;
-
-          graphicsSurfaces->pSurface32[x + (y * emuState->SurfacePitch >> 2)] = greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24);
-          graphicsSurfaces->pSurface32[x + ((y + 1) * emuState->SurfacePitch >> 2)] = greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24);
-        }
-      }
-      break;
-
-    case BIT_16:
-      for (y = 0; y < 480; y += 2) {
-        for (x = 0; x < 320; x++) {
-          temp = rand() & 31;
-
-          graphicsSurfaces->pSurface32[x + (y * emuState->SurfacePitch >> 1)] = temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27);
-          graphicsSurfaces->pSurface32[x + ((y + 1) * emuState->SurfacePitch >> 1)] = temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27);
-        }
-      }
-      break;
-
-    case BIT_24:
-      for (y = 0; y < 480; y++) {
-        for (x = 0; x < 640; x++) {
-          graphicsSurfaces->pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = temp;
-          graphicsSurfaces->pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = temp << 8;
-          graphicsSurfaces->pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = temp << 16;
-        }
-      }
-      break;
-
-    case BIT_32:
-      for (y = 0; y < 480; y++) {
-        for (x = 0; x < 640; x++) {
-          temp = rand() & 255;
-
-          graphicsSurfaces->pSurface32[x + (y * emuState->SurfacePitch)] = temp | (temp << 8) | (temp << 16);
-        }
-      }
-      break;
-
-    default:
-      return;
-    }
 
     ddState->DDBackSurface->GetDC(&hdc);
 
     SetBkColor(hdc, 0);
-    SetTextColor(hdc, RGB(counter1 << 2, counter1 << 2, counter1 << 2));
+    SetTextColor(hdc, color);
 
-    TextOut(hdc, textX, textY, message, (int)strlen(message));
-
-    counter++;
-    counter1 += phase;
-
-    if ((counter1 == 60) || (counter1 == 20)) {
-      phase = -phase;
-    }
-
-    counter %= 60; //about 1 seconds
-
-    if (!counter)
-    {
-      textX = rand() % 580;
-      textY = rand() % 470;
-    }
+    TextOut(hdc, x, y, message, (int)strlen(message));
 
     ddState->DDBackSurface->ReleaseDC(hdc);
-
-    UnlockScreen(emuState);
   }
 }
 
