@@ -159,7 +159,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe int CreateDirectDrawWindow(EmuState* emuState);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void SetStatusBarText(string textBuffer, EmuState* emuState);
+            public static extern void SetStatusBarText(string textBuffer);
 
             [DllImport(LIBRARY)]
             public static extern unsafe byte LockScreen(EmuState* emuState);
@@ -247,6 +247,9 @@ namespace VCCSharp.Libraries
             
             [DllImport(LIBRARY)]
             public static extern unsafe void GDISetTextColor(void* hdc, uint color);
+            
+            [DllImport(LIBRARY)]
+            public static extern unsafe void GDITextOut(void* hdc, int x, int y, string text, int textLength);
         }
 
         public static class Graphics

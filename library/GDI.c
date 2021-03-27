@@ -23,3 +23,10 @@ extern "C" {
     SetTextColor(hdc, color);
   }
 }
+
+extern "C" {
+  __declspec(dllexport) void __cdecl GDITextOut(HDC hdc, int x, int y, char* text, int textLength)
+  {
+    TextOut(hdc, x, y, text, textLength);
+  }
+}

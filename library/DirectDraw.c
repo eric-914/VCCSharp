@@ -377,16 +377,10 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetStatusBarText(char* textBuffer, EmuState* emuState)
+  __declspec(dllexport) void __cdecl SetStatusBarText(char* textBuffer)
   {
-    if (!emuState->FullScreen)
-    {
-      SendMessage(instance->hWndStatusBar, WM_SETTEXT, strlen(textBuffer), (LPARAM)(LPCSTR)textBuffer);
-      SendMessage(instance->hWndStatusBar, WM_SIZE, 0, 0);
-    }
-    else {
-      strcpy(instance->StatusText, textBuffer);
-    }
+    SendMessage(instance->hWndStatusBar, WM_SETTEXT, strlen(textBuffer), (LPARAM)(LPCSTR)textBuffer);
+    SendMessage(instance->hWndStatusBar, WM_SIZE, 0, 0);
   }
 }
 
@@ -578,12 +572,6 @@ extern "C" {
   {
     static HDC hdc;
 
-    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
-
-    ddState->DDBackSurface->GetDC(&hdc);
-    SetBkColor(hdc, RGB(0, 0, 0));
-    SetTextColor(hdc, RGB(255, 255, 255));
-
     int len = (int)strlen(statusText);
     for (int index = len; index < 132; index++) {
       statusText[index] = 32;
@@ -591,9 +579,13 @@ extern "C" {
 
     statusText[len + 1] = 0;
 
-    TextOut(hdc, 0, 0, statusText, 132);
+    GetSurfaceDC(&hdc);
 
-    ddState->DDBackSurface->ReleaseDC(hdc);
+    GDISetBkColor(hdc, RGB(0, 0, 0));
+    GDISetTextColor(hdc, RGB(255, 255, 255));
+    GDITextOut(hdc, 0, 0, statusText, 132);
+
+    ReleaseSurfaceDC(hdc);
   }
 }
 
