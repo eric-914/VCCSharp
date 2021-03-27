@@ -165,10 +165,16 @@ namespace VCCSharp.Libraries
             public static extern unsafe byte LockScreen(EmuState* emuState);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void UnlockScreen(EmuState* emuState);
+            public static extern void ShowStaticMessage(ushort x, ushort y, uint color);
 
             [DllImport(LIBRARY)]
-            public static extern void ShowStaticMessage(ushort x, ushort y, uint color);
+            public static extern unsafe void DisplayFlip(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern void WriteStatusText(string statusText);
+
+            [DllImport(LIBRARY)]
+            public static extern int UnlockSurface();
         }
 
         public static class DirectSound

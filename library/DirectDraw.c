@@ -571,35 +571,28 @@ extern "C" {
   }
 }
 
+//Put StatusText for full screen here
 extern "C" {
-  __declspec(dllexport) void __cdecl UnlockScreen(EmuState* emuState)
+  __declspec(dllexport) void __cdecl WriteStatusText(char* statusText)
   {
-    static HRESULT hr;
-    static size_t index = 0;
     static HDC hdc;
 
     DirectDrawInternalState* ddState = GetDirectDrawInternalState();
 
-    if (emuState->FullScreen & instance->InfoBand) //Put StatusText for full screen here
-    {
-      ddState->DDBackSurface->GetDC(&hdc);
-      SetBkColor(hdc, RGB(0, 0, 0));
-      SetTextColor(hdc, RGB(255, 255, 255));
+    ddState->DDBackSurface->GetDC(&hdc);
+    SetBkColor(hdc, RGB(0, 0, 0));
+    SetTextColor(hdc, RGB(255, 255, 255));
 
-      for (index = strlen(instance->StatusText); index < 132; index++) {
-        instance->StatusText[index] = 32;
-      }
-
-      instance->StatusText[index] = 0;
-
-      TextOut(hdc, 0, 0, instance->StatusText, 132);
-
-      ddState->DDBackSurface->ReleaseDC(hdc);
+    int len = (int)strlen(statusText);
+    for (int index = len; index < 132; index++) {
+      statusText[index] = 32;
     }
 
-    hr = ddState->DDBackSurface->Unlock(NULL);
+    statusText[len + 1] = 0;
 
-    DisplayFlip(emuState);
+    TextOut(hdc, 0, 0, statusText, 132);
+
+    ddState->DDBackSurface->ReleaseDC(hdc);
   }
 }
 

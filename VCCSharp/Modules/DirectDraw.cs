@@ -22,6 +22,7 @@ namespace VCCSharp.Modules
         unsafe byte LockScreen(EmuState* emuState);
         unsafe void UnlockScreen(EmuState* emuState);
         void SetAspect(byte forceAspect);
+        unsafe void DisplayFlip(EmuState* emuState);
     }
 
     public class DirectDraw : IDirectDraw
@@ -134,6 +135,14 @@ namespace VCCSharp.Modules
             UnlockScreen(emuState);
         }
 
+        public void ClearScreen()
+        {
+            unsafe
+            {
+                GetDirectDrawState()->Color = 0;
+            }
+        }
+
         public unsafe float Static(EmuState* emuState)
         {
             Static(emuState, _modules.Graphics.GetGraphicsSurfaces());
@@ -230,6 +239,20 @@ namespace VCCSharp.Modules
             UnlockScreen(emuState);
         }
 
+        public unsafe void UnlockScreen(EmuState* emuState)
+        {
+            DirectDrawState* instance = GetDirectDrawState();
+
+            if (emuState->FullScreen == Define.TRUE && instance->InfoBand == Define.TRUE) 
+            {
+                WriteStatusText(Converter.ToString(instance->StatusText));
+            }
+
+            UnlockSurface();
+
+            DisplayFlip(emuState);
+        }
+
         public void ShowStaticMessage(ushort x, ushort y, uint color)
         {
             Library.DirectDraw.ShowStaticMessage(x, y, color);
@@ -238,14 +261,6 @@ namespace VCCSharp.Modules
         public bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources)
         {
             return Library.DirectDraw.InitDirectDraw(hInstance, resources);
-        }
-
-        public void ClearScreen()
-        {
-            unsafe
-            {
-                GetDirectDrawState()->Color = 0;
-            }
         }
 
         public unsafe bool CreateDirectDrawWindow(EmuState* emuState)
@@ -263,9 +278,19 @@ namespace VCCSharp.Modules
             return Library.DirectDraw.LockScreen(emuState);
         }
 
-        public unsafe void UnlockScreen(EmuState* emuState)
+        public unsafe void DisplayFlip(EmuState* emuState)
         {
-            Library.DirectDraw.UnlockScreen(emuState);
+            Library.DirectDraw.DisplayFlip(emuState);
+        }
+
+        public void WriteStatusText(string statusText)
+        {
+            Library.DirectDraw.WriteStatusText(statusText);
+        }
+
+        public int UnlockSurface()
+        {
+            return Library.DirectDraw.UnlockSurface();
         }
     }
 }

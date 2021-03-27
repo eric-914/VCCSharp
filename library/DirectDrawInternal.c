@@ -2,11 +2,11 @@
 
 DirectDrawInternalState* InitializeInternal(DirectDrawInternalState*);
 
-static DirectDrawInternalState* internal = InitializeInternal(new DirectDrawInternalState());
+static DirectDrawInternalState* instance = InitializeInternal(new DirectDrawInternalState());
 
 extern "C" {
   __declspec(dllexport) DirectDrawInternalState* __cdecl GetDirectDrawInternalState() {
-    return internal;
+    return instance;
   }
 }
 
@@ -17,4 +17,10 @@ DirectDrawInternalState* InitializeInternal(DirectDrawInternalState* p) {
   p->DDBackSurface = NULL;
 
   return p;
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl UnlockSurface() {
+    return instance->DDBackSurface->Unlock(NULL);
+  }
 }
