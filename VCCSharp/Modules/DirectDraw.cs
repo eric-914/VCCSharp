@@ -242,7 +242,10 @@ namespace VCCSharp.Modules
 
         public void ClearScreen()
         {
-            Library.DirectDraw.ClearScreen();
+            unsafe
+            {
+                GetDirectDrawState()->Color = 0;
+            }
         }
 
         public unsafe bool CreateDirectDrawWindow(EmuState* emuState)

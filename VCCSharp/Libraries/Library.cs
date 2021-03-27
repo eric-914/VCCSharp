@@ -156,9 +156,6 @@ namespace VCCSharp.Libraries
             public static extern bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources);
 
             [DllImport(LIBRARY)]
-            public static extern void ClearScreen();
-
-            [DllImport(LIBRARY)]
             public static extern unsafe int CreateDirectDrawWindow(EmuState* emuState);
 
             [DllImport(LIBRARY)]

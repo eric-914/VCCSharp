@@ -390,13 +390,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl ClearScreen()
-  {
-    instance->Color = 0;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) unsigned char __cdecl LockScreen(EmuState* emuState)
   {
     HRESULT	hr;
