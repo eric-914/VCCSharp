@@ -786,26 +786,3 @@ extern "C" {
     return TRUE;
   }
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl FullScreenToggle()
-  {
-    EmuState* emuState = GetEmuState();
-
-    PauseAudio(true);
-
-    if (!CreateDirectDrawWindow(emuState))
-    {
-      MessageBox(0, "Can't rebuild primary Window", "Error", 0);
-
-      exit(0);
-    }
-
-    InvalidateBorder();
-    RefreshDynamicMenu(emuState);
-
-    emuState->ConfigDialog = NULL;
-
-    PauseAudio(false);
-  }
-}

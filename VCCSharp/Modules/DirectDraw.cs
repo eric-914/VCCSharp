@@ -107,8 +107,6 @@ namespace VCCSharp.Modules
 
                 _modules.Audio.PauseAudio(Define.FALSE);
             }
-
-            //Library.DirectDraw.FullScreenToggle();
         }
     }
 }
