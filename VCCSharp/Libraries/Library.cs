@@ -165,9 +165,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe byte LockScreen(EmuState* emuState);
 
             [DllImport(LIBRARY)]
-            public static extern void ShowStaticMessage(ushort x, ushort y, uint color);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe void DisplayFlip(EmuState* emuState);
 
             [DllImport(LIBRARY)]
@@ -175,6 +172,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern int UnlockSurface();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void GetSurfaceDC(void** pHdc);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void ReleaseSurfaceDC(void* hdc);
         }
 
         public static class DirectSound
@@ -232,6 +235,18 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern HWND CreateConfigurationDialog(HINSTANCE resources, HWND windowHandle);
+        }
+
+        public static class GDI
+        {
+            [DllImport(LIBRARY)]
+            public static extern unsafe void GDIWriteTextOut(void* hdc, ushort x, ushort y, string message);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void GDISetBkColor(void* hdc, uint color);
+            
+            [DllImport(LIBRARY)]
+            public static extern unsafe void GDISetTextColor(void* hdc, uint color);
         }
 
         public static class Graphics

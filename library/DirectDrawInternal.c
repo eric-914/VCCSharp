@@ -24,3 +24,15 @@ extern "C" {
     return instance->DDBackSurface->Unlock(NULL);
   }
 }
+
+extern "C" {
+  __declspec(dllexport) void __cdecl GetSurfaceDC(HDC* hdc) {
+    instance->DDBackSurface->GetDC(hdc);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl ReleaseSurfaceDC(HDC hdc) {
+    instance->DDBackSurface->ReleaseDC(hdc);
+  }
+}

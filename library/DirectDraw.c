@@ -15,6 +15,7 @@
 #include "Emu.h"
 
 #include "DirectDrawInternal.h"
+#include "GDI.h"
 
 #include "ProcessMessage.h"
 
@@ -596,24 +597,6 @@ extern "C" {
   }
 }
 
-extern "C" {
-  __declspec(dllexport) void __cdecl ShowStaticMessage(unsigned short x, unsigned short y, COLORREF color)
-  {
-    const char message[] = " Signal Missing! Press F9";
-    HDC hdc;
-
-    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
-
-    ddState->DDBackSurface->GetDC(&hdc);
-
-    SetBkColor(hdc, 0);
-    SetTextColor(hdc, color);
-
-    TextOut(hdc, x, y, message, (int)strlen(message));
-
-    ddState->DDBackSurface->ReleaseDC(hdc);
-  }
-}
 
 extern "C" {
   __declspec(dllexport) BOOL __cdecl InitDirectDraw(HINSTANCE hInstance, HINSTANCE hResources)

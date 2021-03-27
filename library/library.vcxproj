@@ -178,6 +178,7 @@
     <ClCompile Include="DirectSoundEnumerateCallback.c" />
     <ClCompile Include="Emu.c" />
     <ClCompile Include="fileoperations.c" />
+    <ClCompile Include="GDI.c" />
     <ClCompile Include="Graphics.c" />
     <ClCompile Include="HD6309.c" />
     <ClCompile Include="HD6309OpCodes.c" />
@@ -232,6 +233,7 @@
     <ClInclude Include="DirectSoundState.h" />
     <ClInclude Include="Dmenu.h" />
     <ClInclude Include="Emu.h" />
+    <ClInclude Include="GDI.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsColors.h" />
     <ClInclude Include="GraphicsState.h" />

@@ -255,7 +255,19 @@ namespace VCCSharp.Modules
 
         public void ShowStaticMessage(ushort x, ushort y, uint color)
         {
-            Library.DirectDraw.ShowStaticMessage(x, y, color);
+            unsafe
+            {
+                const string message = " Signal Missing! Press F9";
+                void* hdc;
+
+                GetSurfaceDC(&hdc);
+
+                _modules.GDI.GDISetBkColor(hdc, 0);
+                _modules.GDI.GDISetTextColor(hdc, color);
+                _modules.GDI.GDIWriteTextOut(hdc, x, y, message);
+
+                ReleaseSurfaceDC(hdc);
+            }
         }
 
         public bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources)
@@ -291,6 +303,18 @@ namespace VCCSharp.Modules
         public int UnlockSurface()
         {
             return Library.DirectDraw.UnlockSurface();
+        }
+
+        //--TODO: I don't know what HDC is.
+        public unsafe void GetSurfaceDC(void** pHdc)
+        {
+            Library.DirectDraw.GetSurfaceDC(pHdc);
+        }
+
+        //--TODO: I don't know what HDC is.
+        public unsafe void ReleaseSurfaceDC(void* hdc)
+        {
+            Library.DirectDraw.ReleaseSurfaceDC(hdc);
         }
     }
 }
