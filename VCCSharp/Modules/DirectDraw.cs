@@ -20,7 +20,7 @@ namespace VCCSharp.Modules
         unsafe void DoCls(EmuState* emuState);
         unsafe byte LockScreen(EmuState* emuState);
         unsafe void UnlockScreen(EmuState* emuState);
-        byte SetAspect(byte forceAspect);
+        void SetAspect(byte forceAspect);
     }
 
     public class DirectDraw : IDirectDraw
@@ -35,6 +35,31 @@ namespace VCCSharp.Modules
         public unsafe DirectDrawState* GetDirectDrawState()
         {
             return Library.DirectDraw.GetDirectDrawState();
+        }
+
+        public void FullScreenToggle()
+        {
+            unsafe
+            {
+                EmuState* emuState = _modules.Emu.GetEmuState();
+
+                _modules.Audio.PauseAudio(Define.TRUE);
+
+                if (!CreateDirectDrawWindow(emuState))
+                {
+                    MessageBox.Show("Can't rebuild primary Window", "Error");
+
+                    Environment.Exit(0);
+                }
+
+                _modules.Graphics.InvalidateBorder();
+                _modules.Callbacks.RefreshDynamicMenu(emuState);
+
+                //TODO: Guess it wants to close other windows/dialogs
+                emuState->ConfigDialog = Zero;
+
+                _modules.Audio.PauseAudio(Define.FALSE);
+            }
         }
 
         public bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources)
@@ -79,33 +104,13 @@ namespace VCCSharp.Modules
             Library.DirectDraw.UnlockScreen(emuState);
         }
 
-        public byte SetAspect(byte forceAspect)
-        {
-            return Library.DirectDraw.SetAspect(forceAspect);
-        }
-
-        public void FullScreenToggle()
+        public void SetAspect(byte forceAspect)
         {
             unsafe
             {
-                EmuState* emuState = _modules.Emu.GetEmuState();
+                DirectDrawState* instance = GetDirectDrawState();
 
-                _modules.Audio.PauseAudio(Define.TRUE);
-
-                if (!CreateDirectDrawWindow(emuState))
-                {
-                    MessageBox.Show("Can't rebuild primary Window", "Error");
-
-                    Environment.Exit(0);
-                }
-
-                _modules.Graphics.InvalidateBorder();
-                _modules.Callbacks.RefreshDynamicMenu(emuState);
-
-                //TODO: Guess it wants to close other windows/dialogs
-                emuState->ConfigDialog = Zero;
-
-                _modules.Audio.PauseAudio(Define.FALSE);
+                instance->ForceAspect = forceAspect;
             }
         }
     }

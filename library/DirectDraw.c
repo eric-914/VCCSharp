@@ -397,17 +397,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl SetAspect(unsigned char forceAspect)
-  {
-    if (forceAspect != QUERY) {
-      instance->ForceAspect = forceAspect;
-    }
-
-    return(instance->ForceAspect);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) unsigned char __cdecl LockScreen(EmuState* emuState)
   {
     HRESULT	hr;

@@ -175,9 +175,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void UnlockScreen(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
-            public static extern byte SetAspect(byte forceAspect);
         }
 
         public static class DirectSound
