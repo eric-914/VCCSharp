@@ -19,6 +19,7 @@ namespace VCCSharp
 
                 //--Modules
                 .Singleton<IAudio, Audio>()
+                .Singleton<ICallbacks, Callbacks>()
                 .Singleton<ICassette, Cassette>()
                 .Singleton<IClipboard, Modules.Clipboard>()
                 .Singleton<ICoCo, CoCo>()

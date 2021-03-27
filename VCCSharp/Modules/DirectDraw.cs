@@ -1,6 +1,9 @@
-﻿using VCCSharp.IoC;
+﻿using System;
+using System.Windows;
+using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using static System.IntPtr;
 using HINSTANCE = System.IntPtr;
 
 namespace VCCSharp.Modules
@@ -44,11 +47,6 @@ namespace VCCSharp.Modules
             Library.DirectDraw.ClearScreen();
         }
 
-        public void FullScreenToggle()
-        {
-            Library.DirectDraw.FullScreenToggle();
-        }
-
         public unsafe bool CreateDirectDrawWindow(EmuState* emuState)
         {
             return Library.DirectDraw.CreateDirectDrawWindow(emuState) == Define.TRUE;
@@ -84,6 +82,33 @@ namespace VCCSharp.Modules
         public byte SetAspect(byte forceAspect)
         {
             return Library.DirectDraw.SetAspect(forceAspect);
+        }
+
+        public void FullScreenToggle()
+        {
+            unsafe
+            {
+                EmuState* emuState = _modules.Emu.GetEmuState();
+
+                _modules.Audio.PauseAudio(Define.TRUE);
+
+                if (!CreateDirectDrawWindow(emuState))
+                {
+                    MessageBox.Show("Can't rebuild primary Window", "Error");
+
+                    Environment.Exit(0);
+                }
+
+                _modules.Graphics.InvalidateBorder();
+                _modules.Callbacks.RefreshDynamicMenu(emuState);
+
+                //TODO: Guess it wants to close other windows/dialogs
+                emuState->ConfigDialog = Zero;
+
+                _modules.Audio.PauseAudio(Define.FALSE);
+            }
+
+            //Library.DirectDraw.FullScreenToggle();
         }
     }
 }

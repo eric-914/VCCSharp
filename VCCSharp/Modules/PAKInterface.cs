@@ -73,11 +73,6 @@ namespace VCCSharp.Modules
             //_modules.MenuCallbacks.DynamicMenuCallback(emuState, null, MenuActions.Refresh, Define.IGNORE);
         }
 
-        public unsafe void GetModuleStatus(EmuState* emuState)
-        {
-            Library.PAKInterface.GetModuleStatus(emuState);
-        }
-
         public void ResetBus()
         {
             unsafe
@@ -145,6 +140,11 @@ namespace VCCSharp.Modules
         public void InvokeModuleReset()
         {
             Library.PAKInterface.InvokeModuleReset();
+        }
+
+        public unsafe void GetModuleStatus(EmuState* emuState)
+        {
+            Library.PAKInterface.GetModuleStatus(emuState);
         }
     }
 }

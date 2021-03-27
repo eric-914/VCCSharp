@@ -46,6 +46,15 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void PurgeAuxBuffer();
+
+            [DllImport(LIBRARY)]
+            public static extern byte PauseAudio(byte pause);
+        }
+
+        public static class Callbacks
+        {
+            [DllImport(LIBRARY)]
+            public static extern unsafe void RefreshDynamicMenu(EmuState* emuState);
         }
 
         public static class Cassette

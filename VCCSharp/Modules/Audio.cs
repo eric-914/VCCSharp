@@ -16,6 +16,7 @@ namespace VCCSharp.Modules
         int GetFreeBlockCount();
         AudioSpectrum Spectrum { get; set; }
         void UpdateSoundBar(ushort left, ushort right);
+        byte PauseAudio(byte pause);
     }
 
     public class Audio : IAudio
@@ -260,6 +261,11 @@ namespace VCCSharp.Modules
         public void UpdateSoundBar(ushort left, ushort right)
         {
             Spectrum?.UpdateSoundBar(left, right);
+        }
+
+        public byte PauseAudio(byte pause)
+        {
+            return Library.Audio.PauseAudio(pause);
         }
     }
 }
