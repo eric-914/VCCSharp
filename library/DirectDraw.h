@@ -21,6 +21,5 @@ extern "C" __declspec(dllexport) unsigned char __cdecl LockScreen(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl CheckSurfaces();
 extern "C" __declspec(dllexport) void __cdecl ClearScreen();
 extern "C" __declspec(dllexport) void __cdecl DisplayFlip(EmuState*);
-extern "C" __declspec(dllexport) void __cdecl DoCls(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl SetStatusBarText(char*, EmuState*);
 extern "C" __declspec(dllexport) void __cdecl UnlockScreen(EmuState*);

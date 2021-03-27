@@ -611,62 +611,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DoCls(EmuState* emuState)
-  {
-    unsigned short x = 0, y = 0;
-
-    GraphicsSurfaces* graphicsSurfaces = GetGraphicsSurfaces();
-
-    if (LockScreen(emuState)) {
-      return;
-    }
-
-    switch (emuState->BitDepth)
-    {
-    case BIT_8:
-      for (y = 0; y < 480; y++) {
-        for (x = 0; x < 640; x++) {
-          graphicsSurfaces->pSurface8[x + (y * emuState->SurfacePitch)] = instance->Color | 128;
-        }
-      }
-      break;
-
-    case BIT_16:
-      for (y = 0; y < 480; y++) {
-        for (x = 0; x < 640; x++) {
-          graphicsSurfaces->pSurface16[x + (y * emuState->SurfacePitch)] = instance->Color;
-        }
-      }
-      break;
-
-    case BIT_24:
-      for (y = 0; y < 480; y++) {
-        for (x = 0; x < 640; x++)
-        {
-          graphicsSurfaces->pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = (instance->Color & 0xFF0000) >> 16;
-          graphicsSurfaces->pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = (instance->Color & 0x00FF00) >> 8;
-          graphicsSurfaces->pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = (instance->Color & 0xFF);
-        }
-      }
-      break;
-
-    case BIT_32:
-      for (y = 0; y < 480; y++) {
-        for (x = 0; x < 640; x++) {
-          graphicsSurfaces->pSurface32[x + (y * emuState->SurfacePitch)] = instance->Color;
-        }
-      }
-      break;
-
-    default:
-      return;
-    }
-
-    UnlockScreen(emuState);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl Static(EmuState* emuState)
   {
     unsigned short x = 0;

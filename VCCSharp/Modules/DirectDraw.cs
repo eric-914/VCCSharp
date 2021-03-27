@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -62,6 +63,16 @@ namespace VCCSharp.Modules
             }
         }
 
+        public void SetAspect(byte forceAspect)
+        {
+            unsafe
+            {
+                DirectDrawState* instance = GetDirectDrawState();
+
+                instance->ForceAspect = forceAspect;
+            }
+        }
+
         public bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources)
         {
             return Library.DirectDraw.InitDirectDraw(hInstance, resources);
@@ -89,11 +100,6 @@ namespace VCCSharp.Modules
             return _modules.Throttle.CalculateFPS();
         }
 
-        public unsafe void DoCls(EmuState* emuState)
-        {
-            Library.DirectDraw.DoCls(emuState);
-        }
-
         public unsafe byte LockScreen(EmuState* emuState)
         {
             return Library.DirectDraw.LockScreen(emuState);
@@ -104,14 +110,55 @@ namespace VCCSharp.Modules
             Library.DirectDraw.UnlockScreen(emuState);
         }
 
-        public void SetAspect(byte forceAspect)
+        public unsafe void DoCls(EmuState* emuState)
         {
-            unsafe
-            {
-                DirectDrawState* instance = GetDirectDrawState();
+            DirectDrawState* instance = GetDirectDrawState();
+            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
 
-                instance->ForceAspect = forceAspect;
+            if (LockScreen(emuState) == Define.TRUE) {
+                return;
             }
+
+            switch ((BitDepthStates)(emuState->BitDepth))
+            {
+                case BitDepthStates.BIT_8:
+                    for (int y = 0; y < 480; y++) {
+                        for (int x = 0; x < 640; x++) {
+                            graphicsSurfaces->pSurface8[x + (y * emuState->SurfacePitch)] = (byte)(instance->Color | 128);
+                        }
+                    }
+                    break;
+
+                case BitDepthStates.BIT_16:
+                    for (int y = 0; y < 480; y++) {
+                        for (int x = 0; x < 640; x++) {
+                            graphicsSurfaces->pSurface16[x + (y * emuState->SurfacePitch)] = instance->Color;
+                        }
+                    }
+                    break;
+
+                case BitDepthStates.BIT_24:
+                    for (int y = 0; y < 480; y++) {
+                        for (int x = 0; x < 640; x++)
+                        {
+                            graphicsSurfaces->pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = (byte)((instance->Color & 0xFF0000) >> 16);
+                            graphicsSurfaces->pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = (byte)((instance->Color & 0x00FF00) >> 8);
+                            graphicsSurfaces->pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = (byte)(instance->Color & 0xFF);
+                        }
+                    }
+                    break;
+
+                case BitDepthStates.BIT_32:
+                    for (int y = 0; y < 480; y++) {
+                        for (int x = 0; x < 640; x++) {
+                            graphicsSurfaces->pSurface32[x + (y * emuState->SurfacePitch)] = instance->Color;
+                        }
+                    }
+                    break;
+            }
+
+            UnlockScreen(emuState);
         }
+
     }
 }

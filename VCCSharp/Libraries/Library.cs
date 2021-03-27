@@ -168,9 +168,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe void Static(EmuState* emuState);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void DoCls(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe byte LockScreen(EmuState* emuState);
 
             [DllImport(LIBRARY)]
@@ -238,6 +235,9 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe GraphicsState* GetGraphicsState();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe GraphicsSurfaces* GetGraphicsSurfaces();
 
             [DllImport(LIBRARY)]
             public static extern void MakeRGBPalette(byte index);
