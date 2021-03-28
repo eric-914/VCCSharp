@@ -160,9 +160,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe DirectDrawState* GetDirectDrawState();
 
             [DllImport(LIBRARY)]
-            public static extern bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe int CreateDirectDrawWindow(HINSTANCE resources, byte fullscreen);
 
             [DllImport(LIBRARY)]

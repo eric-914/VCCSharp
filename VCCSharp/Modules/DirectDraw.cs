@@ -602,9 +602,19 @@ namespace VCCSharp.Modules
             Library.DirectDraw.SetSurfaces(ddsd);
         }
 
-        public bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources)
+        public bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE hResources)
         {
-            return Library.DirectDraw.InitDirectDraw(hInstance, resources);
+            unsafe
+            {
+                DirectDrawState* instance = GetDirectDrawState();
+
+                instance->hInstance = hInstance;
+
+                Converter.ToByteArray(_modules.Resource.ResourceAppTitle(hResources), instance->TitleBarText);
+                Converter.ToByteArray(_modules.Resource.ResourceAppTitle(hResources), instance->AppNameText);
+
+                return true;
+            }
         }
 
         private bool CreateDirectDrawWindow(HINSTANCE resources, byte fullscreen)

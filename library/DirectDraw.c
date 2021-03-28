@@ -359,15 +359,3 @@ extern "C" {
     ReleaseSurfaceDC(hdc);
   }
 }
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl InitDirectDraw(HINSTANCE hInstance, HINSTANCE hResources)
-  {
-    instance->hInstance = hInstance;
-
-    ResourceAppTitle(hResources, instance->TitleBarText);
-    ResourceAppTitle(hResources, instance->AppNameText);
-
-    return TRUE;
-  }
-}
