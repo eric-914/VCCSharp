@@ -37,3 +37,10 @@ extern "C" {
     return ddsd->lpSurface != NULL;
   }
 }
+
+extern "C" {
+  __declspec(dllexport) void* __cdecl DDSDGetSurface(DDSURFACEDESC* ddsd)
+  {
+    return ddsd->lpSurface;
+  }
+}

@@ -199,13 +199,13 @@ namespace VCCSharp.Libraries
             public static extern unsafe int DDSDHasSurface(DDSURFACEDESC* ddsd);
 
             [DllImport(LIBRARY)]
+            public static extern unsafe void* DDSDGetSurface(DDSURFACEDESC* ddsd);
+
+            [DllImport(LIBRARY)]
             public static extern void CheckSurfaces();
 
             [DllImport(LIBRARY)]
             public static extern unsafe int LockSurface(DDSURFACEDESC* ddsd);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void SetSurfaces(DDSURFACEDESC* ddsd);
 
             [DllImport(LIBRARY)]
             public static extern void DDRelease();

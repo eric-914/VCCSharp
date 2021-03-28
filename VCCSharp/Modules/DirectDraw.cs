@@ -599,7 +599,13 @@ namespace VCCSharp.Modules
 
         public unsafe void SetSurfaces(DDSURFACEDESC* ddsd)
         {
-            Library.DirectDraw.SetSurfaces(ddsd);
+            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+
+            void* surface = DDSDGetSurface(ddsd);
+
+            graphicsSurfaces->pSurface8 = (byte*)surface;
+            graphicsSurfaces->pSurface16 = (ushort*)surface;
+            graphicsSurfaces->pSurface32 = (uint*)surface;
         }
 
         public bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE hResources)
@@ -640,6 +646,11 @@ namespace VCCSharp.Modules
         public unsafe bool CreateDirectDrawWindowFullScreen(EmuState* emuState)
         {
             return Library.DirectDraw.CreateDirectDrawWindowFullScreen(emuState) == Define.TRUE;
+        }
+
+        public unsafe void* DDSDGetSurface(DDSURFACEDESC* ddsd)
+        {
+            return Library.DirectDraw.DDSDGetSurface(ddsd);
         }
     }
 }

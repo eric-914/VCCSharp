@@ -325,37 +325,3 @@ extern "C" {
     SendMessage(instance->hWndStatusBar, WM_SIZE, 0, 0);
   }
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetSurfaces(DDSURFACEDESC* ddsd)
-  {
-    GraphicsSurfaces* graphicsSurfaces = GetGraphicsSurfaces();
-
-    graphicsSurfaces->pSurface8 = (unsigned char*)ddsd->lpSurface;
-    graphicsSurfaces->pSurface16 = (unsigned short*)ddsd->lpSurface;
-    graphicsSurfaces->pSurface32 = (unsigned int*)ddsd->lpSurface;
-  }
-}
-
-//Put StatusText for full screen here
-extern "C" {
-  __declspec(dllexport) void __cdecl WriteStatusText(char* statusText)
-  {
-    static HDC hdc;
-
-    int len = (int)strlen(statusText);
-    for (int index = len; index < 132; index++) {
-      statusText[index] = 32;
-    }
-
-    statusText[len + 1] = 0;
-
-    GetSurfaceDC(&hdc);
-
-    GDISetBkColor(hdc, RGB(0, 0, 0));
-    GDISetTextColor(hdc, RGB(255, 255, 255));
-    GDITextOut(hdc, 0, 0, statusText, 132);
-
-    ReleaseSurfaceDC(hdc);
-  }
-}
