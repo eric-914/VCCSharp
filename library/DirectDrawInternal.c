@@ -20,6 +20,12 @@ DirectDrawInternalState* InitializeInternal(DirectDrawInternalState* p) {
 }
 
 extern "C" {
+  __declspec(dllexport) HRESULT __cdecl LockSurface(DDSURFACEDESC* ddsd) {
+    return instance->DDBackSurface->Lock(NULL, ddsd, DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR, NULL);
+  }
+}
+
+extern "C" {
   __declspec(dllexport) HRESULT __cdecl UnlockSurface() {
     return instance->DDBackSurface->Unlock(NULL);
   }

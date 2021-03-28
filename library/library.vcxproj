@@ -173,6 +173,7 @@
     <ClCompile Include="cpudef.c" />
     <ClCompile Include="DirectDraw.c" />
     <ClCompile Include="DirectDrawInternal.c" />
+    <ClCompile Include="DirectDrawSurfaceDesc.c" />
     <ClCompile Include="DirectInput.c" />
     <ClCompile Include="DirectSound.c" />
     <ClCompile Include="DirectSoundEnumerateCallback.c" />
@@ -227,6 +228,7 @@
     <ClInclude Include="DirectDrawInternal.h" />
     <ClInclude Include="DirectDrawInternalState.h" />
     <ClInclude Include="DirectDrawState.h" />
+    <ClInclude Include="DirectDrawSurfaceDesc.h" />
     <ClInclude Include="DirectInput.h" />
     <ClInclude Include="DirectSound.h" />
     <ClInclude Include="DirectSoundEnumerateCallback.h" />

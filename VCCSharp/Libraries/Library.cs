@@ -162,9 +162,6 @@ namespace VCCSharp.Libraries
             public static extern void SetStatusBarText(string textBuffer);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe byte LockScreen(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
             public static extern int UnlockSurface();
 
             [DllImport(LIBRARY)]
@@ -184,6 +181,28 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern int HasBackSurface();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe DDSURFACEDESC* DDSDCreate();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe uint DDSDRGBBitCount(DDSURFACEDESC* ddsd);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe uint DDSDPitch(DDSURFACEDESC* ddsd);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int DDSDHasSurface(DDSURFACEDESC* ddsd);
+
+            [DllImport(LIBRARY)]
+            public static extern void CheckSurfaces();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int LockSurface(DDSURFACEDESC* ddsd);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void SetSurfaces(DDSURFACEDESC* ddsd);
+
         }
 
         public static class DirectSound

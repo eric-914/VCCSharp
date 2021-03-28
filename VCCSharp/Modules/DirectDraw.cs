@@ -312,21 +312,6 @@ namespace VCCSharp.Modules
             Library.DirectDraw.SetStatusBarText(text);
         }
 
-        public bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources)
-        {
-            return Library.DirectDraw.InitDirectDraw(hInstance, resources);
-        }
-
-        public unsafe bool CreateDirectDrawWindow(EmuState* emuState)
-        {
-            return Library.DirectDraw.CreateDirectDrawWindow(emuState) == Define.TRUE;
-        }
-
-        public unsafe byte LockScreen(EmuState* emuState)
-        {
-            return Library.DirectDraw.LockScreen(emuState);
-        }
-
         public unsafe void DisplayFlip(EmuState* emuState)
         {
             DirectDrawState* instance = GetDirectDrawState();
@@ -340,7 +325,6 @@ namespace VCCSharp.Modules
                 var p = new Point(0, 0);
                 RECT rcSrc;  // source blit rectangle
                 RECT rcDest; // destination blit rectangle
-                RECT rect;
 
                 // The ClientToScreen function converts the client-area coordinates of a specified point to screen coordinates.
                 // in other word the client rectangle of the main windows 0, 0 (upper-left corner) 
@@ -408,8 +392,6 @@ namespace VCCSharp.Modules
                     _user32.SetRect(&rcDest, (short)pDstLeftTop.X, (short)pDstLeftTop.Y, (short)pDstRightBottom.X, (short)pDstRightBottom.Y);
                 }
 
-                //Library.DirectDraw.DisplayFlip(emuState, &rcSrc, &rcDest);
-
                 //}
                 //else
                 //{
@@ -438,7 +420,64 @@ namespace VCCSharp.Modules
 
             emuState->WindowSize.X = windowSize.right;
             emuState->WindowSize.Y = windowSize.bottom - instance->StatusBarHeight;
+        }
 
+        public unsafe byte LockScreen(EmuState* emuState)
+        {
+            DDSURFACEDESC* ddsd = DDSDCreate();  // A structure to describe the surfaces we want
+
+            CheckSurfaces();
+
+            // Lock entire surface, wait if it is busy, return surface memory pointer
+            int hr = LockSurface(ddsd);
+
+            if (hr < 0)
+            {
+                return(1);
+            }
+
+            uint rgbBitCount = DDSDRGBBitCount(ddsd);
+            uint pitch = DDSDPitch(ddsd);
+
+            switch (rgbBitCount)
+            {
+                case 8:
+                    emuState->SurfacePitch = pitch;
+                    emuState->BitDepth = (byte)BitDepthStates.BIT_8;
+                    break;
+
+                case 15:
+                case 16:
+                    emuState->SurfacePitch = pitch / 2;
+                    emuState->BitDepth = (byte)BitDepthStates.BIT_16;
+                    break;
+
+                case 24:
+                    MessageBox.Show("24 Bit color is currently unsupported", "Ok");
+
+                    Environment.Exit(0);
+
+                    //emuState->SurfacePitch = pitch;
+                    //emuState->BitDepth = (byte)BitDepthStates.BIT_24;
+                    break;
+
+                case 32:
+                    emuState->SurfacePitch = pitch / 4;
+                    emuState->BitDepth = (byte)BitDepthStates.BIT_32;
+                    break;
+
+                default:
+                    MessageBox.Show("Unsupported Color Depth!", "Error");
+                    return 1;
+            }
+
+            if (!DDSDHasSurface(ddsd)) {
+                MessageBox.Show("Returning NULL!!", "ok");
+            }
+
+            SetSurfaces(ddsd);
+
+            return 0;
         }
 
         public int UnlockSurface()
@@ -476,6 +515,51 @@ namespace VCCSharp.Modules
         public bool HasBackSurface()
         {
             return Library.DirectDraw.HasBackSurface() != Define.FALSE;
+        }
+
+        public unsafe DDSURFACEDESC* DDSDCreate()
+        {
+            return Library.DirectDraw.DDSDCreate();
+        }
+
+        public unsafe uint DDSDRGBBitCount(DDSURFACEDESC* ddsd)
+        {
+            return Library.DirectDraw.DDSDRGBBitCount(ddsd);
+        }
+
+        public unsafe uint DDSDPitch(DDSURFACEDESC* ddsd)
+        {
+            return Library.DirectDraw.DDSDPitch(ddsd);
+        }
+
+        public unsafe bool DDSDHasSurface(DDSURFACEDESC* ddsd)
+        {
+            return Library.DirectDraw.DDSDHasSurface(ddsd) == Define.TRUE;
+        }
+
+        public void CheckSurfaces()
+        {
+            Library.DirectDraw.CheckSurfaces();;
+        }
+
+        public unsafe int LockSurface(DDSURFACEDESC* ddsd)
+        {
+            return Library.DirectDraw.LockSurface(ddsd);
+        }
+
+        public unsafe void SetSurfaces(DDSURFACEDESC* ddsd)
+        {
+            Library.DirectDraw.SetSurfaces(ddsd);
+        }
+
+        public bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources)
+        {
+            return Library.DirectDraw.InitDirectDraw(hInstance, resources);
+        }
+
+        public unsafe bool CreateDirectDrawWindow(EmuState* emuState)
+        {
+            return Library.DirectDraw.CreateDirectDrawWindow(emuState) == Define.TRUE;
         }
     }
 }

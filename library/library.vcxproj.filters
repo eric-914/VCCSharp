@@ -131,6 +131,9 @@
     <ClCompile Include="GDI.c">
       <Filter>gdi</Filter>
     </ClCompile>
+    <ClCompile Include="DirectDrawSurfaceDesc.c">
+      <Filter>directdraw</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h" />
@@ -354,6 +357,9 @@
     </ClInclude>
     <ClInclude Include="GDI.h">
       <Filter>gdi</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectDrawSurfaceDesc.h">
+      <Filter>directdraw</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

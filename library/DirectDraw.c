@@ -15,6 +15,7 @@
 #include "Emu.h"
 
 #include "DirectDrawInternal.h"
+#include "DirectDrawSurfaceDesc.h"
 #include "GDI.h"
 
 #include "ProcessMessage.h"
@@ -383,68 +384,13 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl LockScreen(EmuState* emuState)
+  __declspec(dllexport) void __cdecl SetSurfaces(DDSURFACEDESC* ddsd)
   {
-    HRESULT	hr;
-    DDSURFACEDESC ddsd;				      // A structure to describe the surfaces we want
-
     GraphicsSurfaces* graphicsSurfaces = GetGraphicsSurfaces();
-    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
 
-    memset(&ddsd, 0, sizeof(ddsd));	// Clear all members of the structure to 0
-    ddsd.dwSize = sizeof(ddsd);		  // The first parameter of the structure must contain the size of the structure
-
-    CheckSurfaces();
-
-    // Lock entire surface, wait if it is busy, return surface memory pointer
-    hr = ddState->DDBackSurface->Lock(NULL, &ddsd, DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR, NULL);
-
-    if (FAILED(hr))
-    {
-      return(1);
-    }
-
-    switch (ddsd.ddpfPixelFormat.dwRGBBitCount)
-    {
-    case 8:
-      emuState->SurfacePitch = ddsd.lPitch;
-      emuState->BitDepth = BIT_8;
-      break;
-
-    case 15:
-    case 16:
-      emuState->SurfacePitch = ddsd.lPitch / 2;
-      emuState->BitDepth = BIT_16;
-      break;
-
-    case 24:
-      MessageBox(0, "24 Bit color is currnetly unsupported", "Ok", 0);
-
-      exit(0);
-
-      emuState->SurfacePitch = ddsd.lPitch;
-      emuState->BitDepth = BIT_24;
-      break;
-
-    case 32:
-      emuState->SurfacePitch = ddsd.lPitch / 4;
-      emuState->BitDepth = BIT_32;
-      break;
-
-    default:
-      MessageBox(0, "Unsupported Color Depth!", "Error", 0);
-      return 1;
-    }
-
-    if (ddsd.lpSurface == NULL) {
-      MessageBox(0, "Returning NULL!!", "ok", 0);
-    }
-
-    graphicsSurfaces->pSurface8 = (unsigned char*)ddsd.lpSurface;
-    graphicsSurfaces->pSurface16 = (unsigned short*)ddsd.lpSurface;
-    graphicsSurfaces->pSurface32 = (unsigned int*)ddsd.lpSurface;
-
-    return(0);
+    graphicsSurfaces->pSurface8 = (unsigned char*)ddsd->lpSurface;
+    graphicsSurfaces->pSurface16 = (unsigned short*)ddsd->lpSurface;
+    graphicsSurfaces->pSurface32 = (unsigned int*)ddsd->lpSurface;
   }
 }
 
@@ -470,7 +416,6 @@ extern "C" {
     ReleaseSurfaceDC(hdc);
   }
 }
-
 
 extern "C" {
   __declspec(dllexport) BOOL __cdecl InitDirectDraw(HINSTANCE hInstance, HINSTANCE hResources)
