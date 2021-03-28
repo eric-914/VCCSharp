@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Drawing;
+using System.Runtime.InteropServices;
 using VCCSharp.Enums;
 using VCCSharp.Models;
 using HINSTANCE = System.IntPtr;
@@ -124,6 +125,12 @@ namespace VCCSharp.Libraries
     
             [DllImport(LIBRARY)]
             public static extern void UpdateTapeDialog(ushort counter, byte tapeMode);
+    
+            [DllImport(LIBRARY)]
+            public static extern int GetRememberSize();
+
+            [DllImport(LIBRARY)]
+            public static extern Point GetIniWindowSize();
         }
 
         public static class CPU
@@ -156,7 +163,7 @@ namespace VCCSharp.Libraries
             public static extern bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int CreateDirectDrawWindow(EmuState* emuState);
+            public static extern unsafe int CreateDirectDrawWindow(HINSTANCE resources, byte fullscreen);
 
             [DllImport(LIBRARY)]
             public static extern void SetStatusBarText(string textBuffer);
@@ -203,6 +210,17 @@ namespace VCCSharp.Libraries
             [DllImport(LIBRARY)]
             public static extern unsafe void SetSurfaces(DDSURFACEDESC* ddsd);
 
+            [DllImport(LIBRARY)]
+            public static extern void DDRelease();
+
+            [DllImport(LIBRARY)]
+            public static extern void DDUnregisterClass();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int CreateDirectDrawWindowedMode(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int CreateDirectDrawWindowFullScreen(EmuState* emuState);
         }
 
         public static class DirectSound

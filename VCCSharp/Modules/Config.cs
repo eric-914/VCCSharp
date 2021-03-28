@@ -9,6 +9,7 @@ using VCCSharp.Libraries;
 using VCCSharp.Models;
 using static System.IntPtr;
 using HWND = System.IntPtr;
+using Point = System.Drawing.Point;
 
 namespace VCCSharp.Modules
 {
@@ -27,6 +28,8 @@ namespace VCCSharp.Modules
         void SaveConfig();
         byte GetSoundCardIndex(string soundCardName);
         void UpdateTapeDialog(ushort counter, byte tapeMode);
+        bool GetRememberSize();
+        Point GetIniWindowSize();
     }
 
     public class Config : IConfig
@@ -630,6 +633,16 @@ namespace VCCSharp.Modules
         public void UpdateTapeDialog(ushort counter, byte tapeMode)
         {
             Library.Config.UpdateTapeDialog(counter, tapeMode);
+        }
+
+        public bool GetRememberSize()
+        {
+            return Library.Config.GetRememberSize() == Define.TRUE;
+        }
+
+        public Point GetIniWindowSize()
+        {
+            return Library.Config.GetIniWindowSize();
         }
     }
 }

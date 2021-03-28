@@ -12,3 +12,5 @@ extern "C" __declspec(dllexport) HRESULT __cdecl SurfaceFlip();
 extern "C" __declspec(dllexport) RECT __cdecl GetWindowDefaultSize();
 extern "C" __declspec(dllexport) BOOL __cdecl HasBackSurface();
 extern "C" __declspec(dllexport) HRESULT __cdecl SurfaceBlt(RECT* rcDest, RECT* rcSrc);
+extern "C" __declspec(dllexport) void __cdecl DDRelease();
+extern "C" __declspec(dllexport) void __cdecl DDUnregisterClass();

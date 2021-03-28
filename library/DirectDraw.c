@@ -270,44 +270,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindow(EmuState* emuState)
+  __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindow(HINSTANCE resources, unsigned char fullscreen)
   {
-    DDSURFACEDESC ddsd;				// A structure to describe the surfaces we want
-    RECT rStatBar = RECT();
-    RECT rc = RECT();
-
     DirectDrawInternalState* ddState = GetDirectDrawInternalState();
-
-    if (GetRememberSize()) {
-      POINT pp = GetIniWindowSize();
-
-      instance->WindowSize.x = pp.x;
-      instance->WindowSize.y = pp.y;
-    }
-    else {
-      instance->WindowSize.x = 640;
-      instance->WindowSize.y = 480;
-    }
-
-    memset(&ddsd, 0, sizeof(ddsd));	// Clear all members of the structure to 0
-
-    ddsd.dwSize = sizeof(ddsd);		  // The first parameter of the structure must contain the size of the structure
-    rc.top = 0;
-    rc.left = 0;
-
-    rc.right = instance->WindowSize.x;
-    rc.bottom = instance->WindowSize.y;
-
-    if (emuState->WindowHandle != NULL) //If its go a value it must be a mode switch
-    {
-      if (ddState->DD != NULL) {
-        ddState->DD->Release();	//Destroy the current Window
-      }
-
-      DestroyWindow(emuState->WindowHandle);
-
-      UnregisterClass(ddState->Wcex.lpszClassName, ddState->Wcex.hInstance);
-    }
 
     ddState->Wcex.cbSize = sizeof(WNDCLASSEX);	//And Rebuilt it from scratch
     ddState->Wcex.style = CS_HREDRAW | CS_VREDRAW;
@@ -315,13 +280,13 @@ extern "C" {
     ddState->Wcex.cbClsExtra = 0;
     ddState->Wcex.cbWndExtra = 0;
     ddState->Wcex.hInstance = instance->hInstance;
-    ddState->Wcex.hIcon = LoadIcon(emuState->Resources, (LPCTSTR)IDI_COCO3);
-    ddState->Wcex.hIconSm = LoadIcon(emuState->Resources, (LPCTSTR)IDI_COCO3);
+    ddState->Wcex.hIcon = LoadIcon(resources, (LPCTSTR)IDI_COCO3);
+    ddState->Wcex.hIconSm = LoadIcon(resources, (LPCTSTR)IDI_COCO3);
     ddState->Wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     ddState->Wcex.lpszClassName = instance->AppNameText;
     ddState->Wcex.lpszMenuName = NULL;	//Menu is set on WM_CREATE
 
-    if (!emuState->FullScreen)
+    if (!fullscreen)
     {
       ddState->Wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
     }
@@ -329,29 +294,7 @@ extern "C" {
       ddState->Wcex.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(IDC_NONE));
     }
 
-    if (!RegisterClassEx(&(ddState->Wcex))) {
-      return FALSE;
-    }
-
-    switch (emuState->FullScreen)
-    {
-    case 0: //Windowed Mode
-      if (!CreateDirectDrawWindowedMode(emuState)) {
-        return FALSE;
-      }
-      break;
-
-    case 1:	//Full Screen Mode
-      if (!CreateDirectDrawWindowFullScreen(emuState)) {
-        return FALSE;
-      }
-      break;
-    }
-
-    emuState->WindowSize.x = instance->WindowSize.x;
-    emuState->WindowSize.y = instance->WindowSize.y;
-
-    return TRUE;
+    return RegisterClassEx(&(ddState->Wcex));
   }
 }
 

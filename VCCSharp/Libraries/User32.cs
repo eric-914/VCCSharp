@@ -20,6 +20,7 @@ namespace VCCSharp.Libraries
         unsafe int SetRect(RECT* lprc, short xLeft, short yTop, short xRight, short yBottom);
         unsafe int GetWindowRect(HWND hWnd, RECT* lpRect);
         int MoveWindow(HWND hWnd, int X, int Y, int nWidth, int nHeight, int bRepaint);
+        int DestroyWindow(HWND hWnd);
     }
 
     public class User32 : IUser32
@@ -59,5 +60,8 @@ namespace VCCSharp.Libraries
 
         public int MoveWindow(HWND hWnd, int X, int Y, int nWidth, int nHeight, int bRepaint)
             => User32Dll.MoveWindow(hWnd, X, Y, nWidth, nHeight, bRepaint);
+
+        public int DestroyWindow(HWND hWnd)
+            => User32Dll.DestroyWindow(hWnd);
     }
 }

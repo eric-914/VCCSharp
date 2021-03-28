@@ -70,3 +70,20 @@ extern "C" {
     return instance->DDSurface->Blt(rcDest, instance->DDBackSurface, rcSrc, DDBLT_WAIT, NULL); // DDBLT_WAIT
   }
 }
+
+extern "C" {
+  __declspec(dllexport) void __cdecl DDRelease()
+  {
+    if (instance->DD != NULL) {
+      instance->DD->Release();	//Destroy the current Window
+    }
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl DDUnregisterClass()
+  {
+    UnregisterClass(instance->Wcex.lpszClassName, instance->Wcex.hInstance);
+  }
+}
+

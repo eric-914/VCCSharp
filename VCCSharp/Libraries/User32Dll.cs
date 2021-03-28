@@ -46,5 +46,8 @@ namespace VCCSharp.Libraries
 
         [DllImport(DLL)]
         public static extern int MoveWindow(HWND hWnd, int  X, int  Y, int  nWidth, int  nHeight, int bRepaint);
+
+        [DllImport(DLL)]
+        public static extern int DestroyWindow(HWND hWnd);
     }
 }

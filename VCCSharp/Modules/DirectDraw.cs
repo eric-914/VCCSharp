@@ -480,6 +480,56 @@ namespace VCCSharp.Modules
             return 0;
         }
 
+        public unsafe bool CreateDirectDrawWindow(EmuState* emuState)
+        {
+            DirectDrawState* instance = GetDirectDrawState();
+
+            if (_modules.Config.GetRememberSize()) {
+                Point pp = _modules.Config.GetIniWindowSize();
+
+                instance->WindowSize.X = pp.X;
+                instance->WindowSize.Y = pp.Y;
+            }
+            else {
+                instance->WindowSize.X = 640;
+                instance->WindowSize.Y = 480;
+            }
+
+            if (emuState->WindowHandle != null) //If its go a value it must be a mode switch
+            {
+                DDRelease();
+
+                _user32.DestroyWindow(emuState->WindowHandle);
+
+                DDUnregisterClass();
+            }
+
+            if (!CreateDirectDrawWindow(emuState->Resources, emuState->FullScreen))
+            {
+                return false;
+            }
+
+            switch (emuState->FullScreen)
+            {
+                case 0: //Windowed Mode
+                    if (!CreateDirectDrawWindowedMode(emuState)) {
+                        return false;
+                    }
+                    break;
+
+                case 1:	//Full Screen Mode
+                    if (!CreateDirectDrawWindowFullScreen(emuState)) {
+                        return false;
+                    }
+                    break;
+            }
+
+            emuState->WindowSize.X = instance->WindowSize.X;
+            emuState->WindowSize.Y = instance->WindowSize.Y;
+
+            return true;
+        }
+
         public int UnlockSurface()
         {
             return Library.DirectDraw.UnlockSurface();
@@ -557,9 +607,29 @@ namespace VCCSharp.Modules
             return Library.DirectDraw.InitDirectDraw(hInstance, resources);
         }
 
-        public unsafe bool CreateDirectDrawWindow(EmuState* emuState)
+        private bool CreateDirectDrawWindow(HINSTANCE resources, byte fullscreen)
         {
-            return Library.DirectDraw.CreateDirectDrawWindow(emuState) == Define.TRUE;
+            return Library.DirectDraw.CreateDirectDrawWindow(resources, fullscreen) != Define.FALSE;
+        }
+
+        public void DDRelease()
+        {
+            Library.DirectDraw.DDRelease();
+        }
+
+        public void DDUnregisterClass()
+        {
+            Library.DirectDraw.DDUnregisterClass();
+        }
+
+        public unsafe bool CreateDirectDrawWindowedMode(EmuState* emuState)
+        {
+            return Library.DirectDraw.CreateDirectDrawWindowedMode(emuState) == Define.TRUE;
+        }
+
+        public unsafe bool CreateDirectDrawWindowFullScreen(EmuState* emuState)
+        {
+            return Library.DirectDraw.CreateDirectDrawWindowFullScreen(emuState) == Define.TRUE;
         }
     }
 }
