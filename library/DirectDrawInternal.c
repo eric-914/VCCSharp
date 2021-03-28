@@ -36,3 +36,31 @@ extern "C" {
     instance->DDBackSurface->ReleaseDC(hdc);
   }
 }
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl SurfaceFlip()
+  {
+    return instance->DDSurface->Flip(NULL, DDFLIP_NOVSYNC | DDFLIP_DONOTWAIT); //DDFLIP_WAIT
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) RECT __cdecl GetWindowDefaultSize()
+  {
+    return instance->WindowDefaultSize;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl HasBackSurface()
+  {
+    return instance->DDBackSurface != NULL;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl SurfaceBlt(RECT* rcDest, RECT* rcSrc)
+  {
+    return instance->DDSurface->Blt(rcDest, instance->DDBackSurface, rcSrc, DDBLT_WAIT, NULL); // DDBLT_WAIT
+  }
+}

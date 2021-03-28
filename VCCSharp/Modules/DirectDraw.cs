@@ -7,6 +7,7 @@ using VCCSharp.Libraries;
 using VCCSharp.Models;
 using static System.IntPtr;
 using HINSTANCE = System.IntPtr;
+using Point = System.Drawing.Point;
 
 namespace VCCSharp.Modules
 {
@@ -29,13 +30,15 @@ namespace VCCSharp.Modules
     public class DirectDraw : IDirectDraw
     {
         private readonly IModules _modules;
+        private readonly IUser32 _user32;
 
         private static int _textX = 0, _textY = 0;
         private static byte _counter = 0, _counter1 = 32, _phase = 1;
 
-        public DirectDraw(IModules modules)
+        public DirectDraw(IModules modules, IUser32 user32)
         {
             _modules = modules;
+            _user32 = user32;
         }
 
         public unsafe DirectDrawState* GetDirectDrawState()
@@ -225,7 +228,8 @@ namespace VCCSharp.Modules
             _counter++;
             _counter1 += _phase;
 
-            if ((_counter1 == 60) || (_counter1 == 20)) {
+            if ((_counter1 == 60) || (_counter1 == 20))
+            {
                 _phase = (byte)(-_phase);
             }
 
@@ -244,7 +248,7 @@ namespace VCCSharp.Modules
         {
             DirectDrawState* instance = GetDirectDrawState();
 
-            if (emuState->FullScreen == Define.TRUE && instance->InfoBand == Define.TRUE) 
+            if (emuState->FullScreen == Define.TRUE && instance->InfoBand == Define.TRUE)
             {
                 WriteStatusText(Converter.ToString(instance->StatusText));
             }
@@ -277,7 +281,7 @@ namespace VCCSharp.Modules
             {
                 void* hdc;
 
-                var sb = new StringBuilder(statusText.PadRight(134-statusText.Length));
+                var sb = new StringBuilder(statusText.PadRight(134 - statusText.Length));
 
                 GetSurfaceDC(&hdc);
 
@@ -317,7 +321,7 @@ namespace VCCSharp.Modules
         {
             return Library.DirectDraw.CreateDirectDrawWindow(emuState) == Define.TRUE;
         }
-        
+
         public unsafe byte LockScreen(EmuState* emuState)
         {
             return Library.DirectDraw.LockScreen(emuState);
@@ -325,7 +329,116 @@ namespace VCCSharp.Modules
 
         public unsafe void DisplayFlip(EmuState* emuState)
         {
-            Library.DirectDraw.DisplayFlip(emuState);
+            DirectDrawState* instance = GetDirectDrawState();
+
+            if (emuState->FullScreen == Define.TRUE)
+            {	// if we're windowed do the blit, else just Flip
+                SurfaceFlip();
+            }
+            else
+            {
+                var p = new Point(0, 0);
+                RECT rcSrc;  // source blit rectangle
+                RECT rcDest; // destination blit rectangle
+                RECT rect;
+
+                // The ClientToScreen function converts the client-area coordinates of a specified point to screen coordinates.
+                // in other word the client rectangle of the main windows 0, 0 (upper-left corner) 
+                // in a screen x,y coords which is put back into p  
+                _user32.ClientToScreen(emuState->WindowHandle, &p);  // find out where on the primary surface our window lives
+
+                // get the actual client rectangle, which is always 0,0 - w,h
+                _user32.GetClientRect(emuState->WindowHandle, &rcDest);
+
+                // The OffsetRect function moves the specified rectangle by the specified offsets
+                // add the delta screen point we got above, which gives us the client rect in screen coordinates.
+                _user32.OffsetRect(&rcDest, (int)p.X, (int)p.Y);
+
+                // our destination rectangle is going to be 
+                _user32.SetRect(&rcSrc, 0, 0, (short)instance->WindowSize.X, (short)instance->WindowSize.Y);
+
+                //if (instance->Resizeable)
+                //if (true) //--Currently, this is fixed at always resizable
+                //{
+
+                rcDest.bottom -= instance->StatusBarHeight;
+
+                if (instance->ForceAspect == Define.TRUE) // Adjust the Aspect Ratio if window is resized
+                {
+                    float srcWidth = (float)instance->WindowSize.X;
+                    float srcHeight = (float)instance->WindowSize.Y;
+                    float srcRatio = srcWidth / srcHeight;
+
+                    // change this to use the existing rcDest and the calc, w = right-left & h = bottom-top, 
+                    //                         because rcDest has already been converted to screen cords, right?   
+                    RECT rcClient;
+
+                    _user32.GetClientRect(emuState->WindowHandle, &rcClient);  // x,y is always 0,0 so right, bottom is w,h
+
+                    rcClient.bottom -= instance->StatusBarHeight;
+
+                    float clientWidth = (float)rcClient.right;
+                    float clientHeight = (float)rcClient.bottom;
+                    float clientRatio = clientWidth / clientHeight;
+
+                    float dstWidth = 0, dstHeight = 0;
+
+                    if (clientRatio > srcRatio)
+                    {
+                        dstWidth = srcWidth * clientHeight / srcHeight;
+                        dstHeight = clientHeight;
+                    }
+                    else
+                    {
+                        dstWidth = clientWidth;
+                        dstHeight = srcHeight * clientWidth / srcWidth;
+                    }
+                    
+                    float dstX = (clientWidth - dstWidth) / 2;
+                    float dstY = (clientHeight - dstHeight) / 2;
+
+                    Point pDstLeftTop = new Point { X = (int)dstX, Y = (int)dstY };
+
+                    _user32.ClientToScreen(emuState->WindowHandle, &pDstLeftTop);
+
+                    Point pDstRightBottom = new Point { X = (int)(dstX + dstWidth), Y = (int)(dstY + dstHeight) };
+
+                    _user32.ClientToScreen(emuState->WindowHandle, &pDstRightBottom);
+
+                    _user32.SetRect(&rcDest, (short)pDstLeftTop.X, (short)pDstLeftTop.Y, (short)pDstRightBottom.X, (short)pDstRightBottom.Y);
+                }
+
+                //Library.DirectDraw.DisplayFlip(emuState, &rcSrc, &rcDest);
+
+                //}
+                //else
+                //{
+                //    // this does not seem ideal, it lets you begin to resize and immediately resizes it back ... causing a lot of flicker.
+                //    rcDest.right = rcDest.left + (int)instance->WindowSize.X;
+                //    rcDest.bottom = rcDest.top + (int)instance->WindowSize.Y;
+
+                //    RECT defaultRect = GetWindowDefaultSize();
+
+                //    _user32.GetWindowRect(emuState->WindowHandle, &rect);
+                //    _user32.MoveWindow(emuState->WindowHandle, rect.left, rect.top, defaultRect.right - defaultRect.left, defaultRect.bottom - defaultRect.top, 1);
+                //}
+
+                if (!HasBackSurface())
+                {
+                    MessageBox.Show("Odd", "Error"); // yes, odd error indeed!! (??) especially since we go ahead and use it below!
+                }
+
+                SurfaceBlt(&rcDest, &rcSrc);
+            }
+
+            //--Store the updated WindowSizeX/Y for configuration, later.
+            RECT windowSize;
+
+            _user32.GetClientRect(emuState->WindowHandle, &windowSize);
+
+            emuState->WindowSize.X = windowSize.right;
+            emuState->WindowSize.Y = windowSize.bottom - instance->StatusBarHeight;
+
         }
 
         public int UnlockSurface()
@@ -343,6 +456,26 @@ namespace VCCSharp.Modules
         public unsafe void ReleaseSurfaceDC(void* hdc)
         {
             Library.DirectDraw.ReleaseSurfaceDC(hdc);
+        }
+
+        public int SurfaceFlip()
+        {
+            return Library.DirectDraw.SurfaceFlip();
+        }
+
+        public RECT GetWindowDefaultSize()
+        {
+            return Library.DirectDraw.GetWindowDefaultSize();
+        }
+
+        public unsafe int SurfaceBlt(RECT* rcDest, RECT* rcSrc)
+        {
+            return Library.DirectDraw.SurfaceBlt(rcDest, rcSrc);
+        }
+
+        public bool HasBackSurface()
+        {
+            return Library.DirectDraw.HasBackSurface() != Define.FALSE;
         }
     }
 }

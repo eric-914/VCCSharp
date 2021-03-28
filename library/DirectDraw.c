@@ -19,8 +19,6 @@
 
 #include "ProcessMessage.h"
 
-static POINT WindowSize;
-
 DirectDrawState* InitializeInstance(DirectDrawState*);
 
 static DirectDrawState* instance = InitializeInstance(new DirectDrawState());
@@ -68,8 +66,8 @@ extern "C" {
 
     rc.top = 0;
     rc.left = 0;
-    rc.right = WindowSize.x;
-    rc.bottom = WindowSize.y;
+    rc.right = instance->WindowSize.x;
+    rc.bottom = instance->WindowSize.y;
 
     // Calculates the required size of the window rectangle, based on the desired client-rectangle size
       // The window rectangle can then be passed to the CreateWindow function to create a window whose client area is the desired size.
@@ -134,8 +132,8 @@ extern "C" {
     }
 
     ddsd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
-    ddsd.dwWidth = WindowSize.x;								// Make our off-screen surface 
-    ddsd.dwHeight = WindowSize.y;
+    ddsd.dwWidth = instance->WindowSize.x;								// Make our off-screen surface 
+    ddsd.dwHeight = instance->WindowSize.y;
     ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY;				// Try to create back buffer in video RAM
     hr = ddState->DD->CreateSurface(&ddsd, &(ddState->DDBackSurface), NULL);
 
@@ -207,7 +205,7 @@ extern "C" {
     ddsd.lPitch = 0;
     ddsd.ddpfPixelFormat.dwRGBBitCount = 0;
 
-    emuState->WindowHandle = CreateWindow(instance->AppNameText, NULL, WS_POPUP | WS_VISIBLE, 0, 0, WindowSize.x, WindowSize.y, NULL, NULL, instance->hInstance, NULL);
+    emuState->WindowHandle = CreateWindow(instance->AppNameText, NULL, WS_POPUP | WS_VISIBLE, 0, 0, instance->WindowSize.x, instance->WindowSize.y, NULL, NULL, instance->hInstance, NULL);
 
     if (!emuState->WindowHandle) {
       return FALSE;
@@ -229,7 +227,7 @@ extern "C" {
       return FALSE;
     }
 
-    hr = ddState->DD->SetDisplayMode(WindowSize.x, WindowSize.y, 32);	// Set 640x480x32 Bit full-screen mode
+    hr = ddState->DD->SetDisplayMode(instance->WindowSize.x, instance->WindowSize.y, 32);	// Set 640x480x32 Bit full-screen mode
 
     if (FAILED(hr)) {
       return FALSE;
@@ -282,12 +280,12 @@ extern "C" {
     if (GetRememberSize()) {
       POINT pp = GetIniWindowSize();
 
-      WindowSize.x = pp.x;
-      WindowSize.y = pp.y;
+      instance->WindowSize.x = pp.x;
+      instance->WindowSize.y = pp.y;
     }
     else {
-      WindowSize.x = 640;
-      WindowSize.y = 480;
+      instance->WindowSize.x = 640;
+      instance->WindowSize.y = 480;
     }
 
     memset(&ddsd, 0, sizeof(ddsd));	// Clear all members of the structure to 0
@@ -296,8 +294,8 @@ extern "C" {
     rc.top = 0;
     rc.left = 0;
 
-    rc.right = WindowSize.x;
-    rc.bottom = WindowSize.y;
+    rc.right = instance->WindowSize.x;
+    rc.bottom = instance->WindowSize.y;
 
     if (emuState->WindowHandle != NULL) //If its go a value it must be a mode switch
     {
@@ -349,8 +347,8 @@ extern "C" {
       break;
     }
 
-    emuState->WindowSize.x = WindowSize.x;
-    emuState->WindowSize.y = WindowSize.y;
+    emuState->WindowSize.x = instance->WindowSize.x;
+    emuState->WindowSize.y = instance->WindowSize.y;
 
     return TRUE;
   }
@@ -447,122 +445,6 @@ extern "C" {
     graphicsSurfaces->pSurface32 = (unsigned int*)ddsd.lpSurface;
 
     return(0);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DisplayFlip(EmuState* emuState)	// Double buffering flip
-  {
-    using namespace std;
-
-    static HRESULT hr;
-    static RECT    rcSrc;  // source blit rectangle
-    static RECT    rcDest; // destination blit rectangle
-    static RECT	   rect;
-    static POINT   p = POINT();
-
-    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
-
-    if (emuState->FullScreen) {	// if we're windowed do the blit, else just Flip
-      hr = ddState->DDSurface->Flip(NULL, DDFLIP_NOVSYNC | DDFLIP_DONOTWAIT); //DDFLIP_WAIT
-    }
-    else
-    {
-      p.x = 0; p.y = 0;
-
-      // The ClientToScreen function converts the client-area coordinates of a specified point to screen coordinates.
-      // in other word the client rectangle of the main windows 0, 0 (upper-left corner) 
-      // in a screen x,y coords which is put back into p  
-      ClientToScreen(emuState->WindowHandle, &p);  // find out where on the primary surface our window lives
-
-      // get the actual client rectangle, which is always 0,0 - w,h
-      GetClientRect(emuState->WindowHandle, &rcDest);
-
-      // The OffsetRect function moves the specified rectangle by the specified offsets
-      // add the delta screen point we got above, which gives us the client rect in screen coordinates.
-      OffsetRect(&rcDest, p.x, p.y);
-
-      // our destination rectangle is going to be 
-      SetRect(&rcSrc, 0, 0, WindowSize.x, WindowSize.y);
-
-      //if (instance->Resizeable)
-      if (1) //--Currently, this is fixed at always resizable
-      {
-        rcDest.bottom -= instance->StatusBarHeight;
-
-        if (instance->ForceAspect) // Adjust the Aspect Ratio if window is resized
-        {
-          float srcWidth = (float)WindowSize.x;
-          float srcHeight = (float)WindowSize.y;
-          float srcRatio = srcWidth / srcHeight;
-
-          // change this to use the existing rcDest and the calc, w = right-left & h = bottom-top, 
-          //                         because rcDest has already been converted to screen cords, right?   
-          static RECT rcClient;
-
-          GetClientRect(emuState->WindowHandle, &rcClient);  // x,y is always 0,0 so right, bottom is w,h
-
-          rcClient.bottom -= instance->StatusBarHeight;
-
-          float clientWidth = (float)rcClient.right;
-          float clientHeight = (float)rcClient.bottom;
-          float clientRatio = clientWidth / clientHeight;
-
-          float dstWidth = 0, dstHeight = 0;
-
-          if (clientRatio > srcRatio)
-          {
-            dstWidth = srcWidth * clientHeight / srcHeight;
-            dstHeight = clientHeight;
-          }
-          else
-          {
-            dstWidth = clientWidth;
-            dstHeight = srcHeight * clientWidth / srcWidth;
-          }
-
-          float dstX = (clientWidth - dstWidth) / 2;
-          float dstY = (clientHeight - dstHeight) / 2;
-
-          static POINT pDstLeftTop = POINT();
-
-          pDstLeftTop.x = (long)dstX; pDstLeftTop.y = (long)dstY;
-
-          ClientToScreen(emuState->WindowHandle, &pDstLeftTop);
-
-          static POINT pDstRightBottom = POINT();
-
-          pDstRightBottom.x = (long)(dstX + dstWidth); pDstRightBottom.y = (long)(dstY + dstHeight);
-
-          ClientToScreen(emuState->WindowHandle, &pDstRightBottom);
-
-          SetRect(&rcDest, pDstLeftTop.x, pDstLeftTop.y, pDstRightBottom.x, pDstRightBottom.y);
-        }
-      }
-      else
-      {
-        // this does not seem ideal, it lets you begin to resize and immediately resizes it back ... causing a lot of flicker.
-        rcDest.right = rcDest.left + WindowSize.x;
-        rcDest.bottom = rcDest.top + WindowSize.y;
-
-        GetWindowRect(emuState->WindowHandle, &rect);
-        MoveWindow(emuState->WindowHandle, rect.left, rect.top, ddState->WindowDefaultSize.right - ddState->WindowDefaultSize.left, ddState->WindowDefaultSize.bottom - ddState->WindowDefaultSize.top, 1);
-      }
-
-      if (ddState->DDBackSurface == NULL) {
-        MessageBox(0, "Odd", "Error", 0); // yes, odd error indeed!! (??) especially since we go ahead and use it below!
-      }
-
-      hr = ddState->DDSurface->Blt(&rcDest, ddState->DDBackSurface, &rcSrc, DDBLT_WAIT, NULL); // DDBLT_WAIT
-    }
-
-    //--Store the updated WindowSizeX/Y for configuration, later.
-    static RECT windowSize;
-
-    GetClientRect(emuState->WindowHandle, &windowSize);
-
-    emuState->WindowSize.x = (int)windowSize.right;
-    emuState->WindowSize.y = (int)windowSize.bottom - instance->StatusBarHeight;
   }
 }
 

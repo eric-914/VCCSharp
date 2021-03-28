@@ -5,6 +5,8 @@
 #include "defines.h"
 
 typedef struct {
+  POINT WindowSize;
+
   unsigned char InfoBand;
   unsigned char ForceAspect;
 

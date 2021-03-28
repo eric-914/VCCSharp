@@ -1,10 +1,13 @@
-﻿using HWND = System.IntPtr;
+﻿using System.Drawing;
+using HWND = System.IntPtr;
 using HINSTANCE = System.IntPtr;
 
 namespace VCCSharp.Models
 {
     public struct DirectDrawState
     {
+        public Point WindowSize;
+
         public byte InfoBand;
         public byte ForceAspect;
 

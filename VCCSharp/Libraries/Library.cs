@@ -165,12 +165,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe byte LockScreen(EmuState* emuState);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void DisplayFlip(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
-            public static extern void WriteStatusText(string statusText);
-
-            [DllImport(LIBRARY)]
             public static extern int UnlockSurface();
 
             [DllImport(LIBRARY)]
@@ -178,6 +172,18 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void ReleaseSurfaceDC(void* hdc);
+
+            [DllImport(LIBRARY)]
+            public static extern int SurfaceFlip();
+
+            [DllImport(LIBRARY)]
+            public static extern RECT GetWindowDefaultSize();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int SurfaceBlt(RECT* rcDest, RECT* rcSrc);
+
+            [DllImport(LIBRARY)]
+            public static extern int HasBackSurface();
         }
 
         public static class DirectSound
