@@ -53,35 +53,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindowedMode(EmuState* emuState)
+  __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindowedMode(EmuState* emuState, DDSURFACEDESC* ddsd, long width, long height)
   {
-    DDSURFACEDESC ddsd;				// A structure to describe the surfaces we want
     HRESULT hr;
-    RECT rc = RECT();
     RECT rStatBar = RECT();
-
-    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
-
-    memset(&ddsd, 0, sizeof(ddsd));	// Clear all members of the structure to 0
-    ddsd.dwSize = sizeof(ddsd);		  // The first parameter of the structure must contain the size of the structure
-
-    rc.top = 0;
-    rc.left = 0;
-    rc.right = instance->WindowSize.x;
-    rc.bottom = instance->WindowSize.y;
-
-    // Calculates the required size of the window rectangle, based on the desired client-rectangle size
-      // The window rectangle can then be passed to the CreateWindow function to create a window whose client area is the desired size.
-    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, TRUE);
-
-    // We create the Main window 
-    emuState->WindowHandle = CreateWindow(instance->AppNameText, instance->TitleBarText, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0,
-      rc.right - rc.left, rc.bottom - rc.top,
-      NULL, NULL, instance->hInstance, NULL);
-
-    if (!emuState->WindowHandle) {	// Can't create window
-      return FALSE;
-    }
 
     // Create the Status Bar Window at the bottom
     instance->hWndStatusBar = CreateStatusWindow(WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | CCS_BOTTOM, "Ready", emuState->WindowHandle, 2);
@@ -105,7 +80,10 @@ extern "C" {
 
     SendMessage(instance->hWndStatusBar, WM_SIZE, 0, 0); // Redraw Status bar in new position
 
+    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
+
     GetWindowRect(emuState->WindowHandle, &(ddState->WindowDefaultSize));	// And save the Final size of the Window 
+
     ShowWindow(emuState->WindowHandle, SW_SHOWDEFAULT);
     UpdateWindow(emuState->WindowHandle);
 
@@ -122,25 +100,25 @@ extern "C" {
       return FALSE;
     }
 
-    ddsd.dwFlags = DDSD_CAPS;
-    ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
+    ddsd->dwFlags = DDSD_CAPS;
+    ddsd->ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
 
     // Create our Primary Surface
-    hr = ddState->DD->CreateSurface(&ddsd, &(ddState->DDSurface), NULL);
+    hr = ddState->DD->CreateSurface(ddsd, &(ddState->DDSurface), NULL);
 
     if (FAILED(hr)) {
       return FALSE;
     }
 
-    ddsd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
-    ddsd.dwWidth = instance->WindowSize.x;								// Make our off-screen surface 
-    ddsd.dwHeight = instance->WindowSize.y;
-    ddsd.ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY;				// Try to create back buffer in video RAM
-    hr = ddState->DD->CreateSurface(&ddsd, &(ddState->DDBackSurface), NULL);
+    ddsd->dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
+    ddsd->dwWidth = instance->WindowSize.x;								// Make our off-screen surface 
+    ddsd->dwHeight = instance->WindowSize.y;
+    ddsd->ddsCaps.dwCaps = DDSCAPS_VIDEOMEMORY;				// Try to create back buffer in video RAM
+    hr = ddState->DD->CreateSurface(ddsd, &(ddState->DDBackSurface), NULL);
 
     if (FAILED(hr)) {													// If not enough Video Ram 			
-      ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY;			// Try to create back buffer in System RAM
-      hr = ddState->DD->CreateSurface(&ddsd, &(ddState->DDBackSurface), NULL);
+      ddsd->ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY;			// Try to create back buffer in System RAM
+      hr = ddState->DD->CreateSurface(ddsd, &(ddState->DDBackSurface), NULL);
 
       if (FAILED(hr)) {
         return FALSE;								//Giving Up
@@ -149,7 +127,7 @@ extern "C" {
       MessageBox(0, "Creating Back Buffer in System Ram!\nThis will be slower", "Performance Warning", 0);
     }
 
-    hr = ddState->DD->GetDisplayMode(&ddsd);
+    hr = ddState->DD->GetDisplayMode(ddsd);
 
     if (FAILED(hr)) {
       return FALSE;
@@ -173,7 +151,7 @@ extern "C" {
       return FALSE;
     }
 
-    hr = ddState->DDBackSurface->Lock(NULL, &ddsd, DDLOCK_WAIT, NULL);
+    hr = ddState->DDBackSurface->Lock(NULL, ddsd, DDLOCK_WAIT, NULL);
 
     if (FAILED(hr)) {
       return FALSE;
@@ -190,21 +168,18 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindowFullScreen(EmuState* emuState)
+  __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindowFullScreen(EmuState* emuState, DDSURFACEDESC* ddsd)
   {
     const unsigned char ColorValues[4] = { 0, 85, 170, 255 };
 
-    DDSURFACEDESC ddsd;				// A structure to describe the surfaces we want
     HRESULT hr;
     PALETTEENTRY pal[256];
     IDirectDrawPalette* ddPalette;		  //Needed for 8bit Palette mode
 
     DirectDrawInternalState* ddState = GetDirectDrawInternalState();
 
-    memset(&ddsd, 0, sizeof(ddsd));	// Clear all members of the structure to 0
-    ddsd.dwSize = sizeof(ddsd);		  // The first parameter of the structure must contain the size of the structure
-    ddsd.lPitch = 0;
-    ddsd.ddpfPixelFormat.dwRGBBitCount = 0;
+    DDSDSetPitch(ddsd, 0);
+    DDSDSetRGBBitCount(ddsd, 0);
 
     emuState->WindowHandle = CreateWindow(instance->AppNameText, NULL, WS_POPUP | WS_VISIBLE, 0, 0, instance->WindowSize.x, instance->WindowSize.y, NULL, NULL, instance->hInstance, NULL);
 
@@ -234,21 +209,21 @@ extern "C" {
       return FALSE;
     }
 
-    ddsd.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
-    ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_COMPLEX | DDSCAPS_FLIP;
-    ddsd.dwBackBufferCount = 1;
+    ddsd->dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
+    ddsd->ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_COMPLEX | DDSCAPS_FLIP;
+    ddsd->dwBackBufferCount = 1;
 
-    hr = ddState->DD->CreateSurface(&ddsd, &(ddState->DDSurface), NULL);
+    hr = ddState->DD->CreateSurface(ddsd, &(ddState->DDSurface), NULL);
 
     if (FAILED(hr)) {
       return FALSE;
     }
 
-    ddsd.ddsCaps.dwCaps = DDSCAPS_BACKBUFFER;
+    ddsd->ddsCaps.dwCaps = DDSCAPS_BACKBUFFER;
 
-    ddState->DDSurface->GetAttachedSurface(&ddsd.ddsCaps, &(ddState->DDBackSurface));
+    ddState->DDSurface->GetAttachedSurface(&(ddsd->ddsCaps), &(ddState->DDBackSurface));
 
-    hr = ddState->DD->GetDisplayMode(&ddsd);
+    hr = ddState->DD->GetDisplayMode(ddsd);
 
     if (FAILED(hr)) {
       return FALSE;

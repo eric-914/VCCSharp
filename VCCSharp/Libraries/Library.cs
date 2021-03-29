@@ -160,7 +160,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe DirectDrawState* GetDirectDrawState();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int CreateDirectDrawWindow(HINSTANCE resources, byte fullscreen);
+            public static extern int CreateDirectDrawWindow(HINSTANCE resources, byte fullscreen);
 
             [DllImport(LIBRARY)]
             public static extern void SetStatusBarText(string textBuffer);
@@ -190,10 +190,16 @@ namespace VCCSharp.Libraries
             public static extern unsafe DDSURFACEDESC* DDSDCreate();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe uint DDSDRGBBitCount(DDSURFACEDESC* ddsd);
+            public static extern unsafe uint DDSDGetRGBBitCount(DDSURFACEDESC* ddsd);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe uint DDSDPitch(DDSURFACEDESC* ddsd);
+            public static extern unsafe void DDSDSetRGBBitCount(DDSURFACEDESC * ddsd, uint value);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe uint DDSDGetPitch(DDSURFACEDESC* ddsd);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DDSDSetPitch(DDSURFACEDESC* ddsd, uint value);
 
             [DllImport(LIBRARY)]
             public static extern unsafe int DDSDHasSurface(DDSURFACEDESC* ddsd);
@@ -214,10 +220,10 @@ namespace VCCSharp.Libraries
             public static extern void DDUnregisterClass();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int CreateDirectDrawWindowedMode(EmuState* emuState);
+            public static extern unsafe int CreateDirectDrawWindowedMode(EmuState* emuState, DDSURFACEDESC* ddsd, int width, int height);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int CreateDirectDrawWindowFullScreen(EmuState* emuState);
+            public static extern unsafe int CreateDirectDrawWindowFullScreen(EmuState* emuState, DDSURFACEDESC* ddsd);
         }
 
         public static class DirectSound

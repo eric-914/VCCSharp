@@ -18,16 +18,30 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned long __cdecl DDSDRGBBitCount(DDSURFACEDESC* ddsd)
+  __declspec(dllexport) unsigned long __cdecl DDSDGetRGBBitCount(DDSURFACEDESC* ddsd)
   {
     return ddsd->ddpfPixelFormat.dwRGBBitCount;
   }
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned long __cdecl DDSDPitch(DDSURFACEDESC* ddsd)
+  __declspec(dllexport) void __cdecl DDSDSetRGBBitCount(DDSURFACEDESC* ddsd, unsigned long value)
+  {
+    ddsd->ddpfPixelFormat.dwRGBBitCount = value;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) unsigned long __cdecl DDSDGetPitch(DDSURFACEDESC* ddsd)
   {
     return ddsd->lPitch;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl DDSDSetPitch(DDSURFACEDESC* ddsd, unsigned long value)
+  {
+    ddsd->lPitch = value;
   }
 }
 

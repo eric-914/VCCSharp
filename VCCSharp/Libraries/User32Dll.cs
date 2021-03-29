@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using VCCSharp.Models;
+using HINSTANCE = System.IntPtr;
 using HWND = System.IntPtr;
 using LRESULT = System.IntPtr;
 
@@ -45,9 +46,17 @@ namespace VCCSharp.Libraries
         public static extern unsafe int GetWindowRect(HWND hWnd, RECT* lpRect);
 
         [DllImport(DLL)]
-        public static extern int MoveWindow(HWND hWnd, int  X, int  Y, int  nWidth, int  nHeight, int bRepaint);
+        public static extern int MoveWindow(HWND hWnd, int X, int Y, int nWidth, int nHeight, int bRepaint);
 
         [DllImport(DLL)]
         public static extern int DestroyWindow(HWND hWnd);
+
+        [DllImport(DLL)]
+        public static extern unsafe int AdjustWindowRect(RECT* lpRect, uint dwStyle, int bMenu);
+
+        [DllImport(DLL)]
+        public static extern unsafe HWND CreateWindowExA(uint dwExStyle, byte* lpClassName, byte* lpWindowName,
+            uint dwStyle, int X, int Y, int nWidth, int nHeight,
+            HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
     }
 }
