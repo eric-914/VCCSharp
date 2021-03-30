@@ -150,3 +150,17 @@ extern "C" {
   }
 }
 
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DDSetDisplayMode(DWORD x, DWORD y, DWORD depth)
+  {
+    return instance->DD->SetDisplayMode(x, y, depth);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl DDSurfaceGetAttachedSurface(DDSCAPS* ddsCaps)
+  {
+    instance->DDSurface->GetAttachedSurface(ddsCaps, &(instance->DDBackSurface));
+  }
+}
+

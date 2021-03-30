@@ -15,3 +15,5 @@ extern "C" __declspec(dllexport) void __cdecl DDSDSetdwCaps(DDSURFACEDESC * ddsd
 extern "C" __declspec(dllexport) void __cdecl DDSDSetdwWidth(DDSURFACEDESC* ddsd, DWORD value);
 extern "C" __declspec(dllexport) void __cdecl DDSDSetdwHeight(DDSURFACEDESC* ddsd, DWORD value);
 extern "C" __declspec(dllexport) void __cdecl DDSDSetdwFlags(DDSURFACEDESC* ddsd, DWORD value);
+extern "C" __declspec(dllexport) void __cdecl DDSDSetdwBackBufferCount(DDSURFACEDESC* ddsd, DWORD value);
+extern "C" __declspec(dllexport) DDSCAPS __cdecl DDSDGetddsCaps(DDSURFACEDESC* ddsd);

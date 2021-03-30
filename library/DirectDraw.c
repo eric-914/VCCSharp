@@ -53,66 +53,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindowFullScreen(EmuState* emuState, DDSURFACEDESC* ddsd)
+  __declspec(dllexport) void __cdecl CreateFullScreenPalette()
   {
     const unsigned char ColorValues[4] = { 0, 85, 170, 255 };
 
-    HRESULT hr;
     PALETTEENTRY pal[256];
     IDirectDrawPalette* ddPalette;		  //Needed for 8bit Palette mode
-
-    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
-
-    DDSDSetPitch(ddsd, 0);
-    DDSDSetRGBBitCount(ddsd, 0);
-
-    emuState->WindowHandle = CreateWindow(instance->AppNameText, NULL, WS_POPUP | WS_VISIBLE, 0, 0, instance->WindowSize.x, instance->WindowSize.y, NULL, NULL, instance->hInstance, NULL);
-
-    if (!emuState->WindowHandle) {
-      return FALSE;
-    }
-
-    GetWindowRect(emuState->WindowHandle, &(ddState->WindowDefaultSize));
-    ShowWindow(emuState->WindowHandle, SW_SHOWMAXIMIZED);
-    UpdateWindow(emuState->WindowHandle);
-
-    hr = DirectDrawCreate(NULL, &(ddState->DD), NULL);		// Initialize DirectDraw
-
-    if (FAILED(hr)) {
-      return FALSE;
-    }
-
-    hr = ddState->DD->SetCooperativeLevel(emuState->WindowHandle, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN | DDSCL_NOWINDOWCHANGES);
-
-    if (FAILED(hr)) {
-      return FALSE;
-    }
-
-    hr = ddState->DD->SetDisplayMode(instance->WindowSize.x, instance->WindowSize.y, 32);	// Set 640x480x32 Bit full-screen mode
-
-    if (FAILED(hr)) {
-      return FALSE;
-    }
-
-    ddsd->dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
-    ddsd->ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_COMPLEX | DDSCAPS_FLIP;
-    ddsd->dwBackBufferCount = 1;
-
-    hr = ddState->DD->CreateSurface(ddsd, &(ddState->DDSurface), NULL);
-
-    if (FAILED(hr)) {
-      return FALSE;
-    }
-
-    ddsd->ddsCaps.dwCaps = DDSCAPS_BACKBUFFER;
-
-    ddState->DDSurface->GetAttachedSurface(&(ddsd->ddsCaps), &(ddState->DDBackSurface));
-
-    hr = ddState->DD->GetDisplayMode(ddsd);
-
-    if (FAILED(hr)) {
-      return FALSE;
-    }
 
     for (unsigned short i = 0; i <= 63; i++)
     {
@@ -122,10 +68,10 @@ extern "C" {
       pal[i + 128].peFlags = PC_RESERVED | PC_NOCOLLAPSE;
     }
 
+    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
+
     ddState->DD->CreatePalette(DDPCAPS_8BIT | DDPCAPS_ALLOW256, pal, &ddPalette, NULL);
     ddState->DDSurface->SetPalette(ddPalette); // Set pallete for Primary surface
-
-    return true;
   }
 }
 

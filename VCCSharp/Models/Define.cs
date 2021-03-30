@@ -43,6 +43,7 @@
         public const uint WS_MAXIMIZEBOX = 0x00010000;
         public const uint WS_CHILD = 0x40000000;
         public const uint WS_VISIBLE = 0x10000000;
+        public const uint WS_POPUP = 0x80000000;
 
         public const uint WS_OVERLAPPEDWINDOW = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 
@@ -57,7 +58,16 @@
         public const uint DDSD_CAPS = 0x00000001;
         public const uint DDSD_HEIGHT = 0x00000002;
         public const uint DDSD_WIDTH = 0x00000004;
+        public const uint DDSD_BACKBUFFERCOUNT = 0x00000020;
+        public const uint DDSCAPS_COMPLEX = 0x00000008;
+        public const uint DDSCAPS_FLIP = 0x00000010;
+        public const uint DDSCAPS_BACKBUFFER = 0x00000004;
 
+        public const uint DDSCL_EXCLUSIVE = 0x00000010;
+        public const uint DDSCL_FULLSCREEN = 0x00000001;
+        public const uint DDSCL_NOWINDOWCHANGES = 0x00000004;
+
+        public const int SW_SHOWMAXIMIZED = 3;
         public const int SW_SHOWDEFAULT = 10;
 
         public const uint WM_SIZE = 0x0005;

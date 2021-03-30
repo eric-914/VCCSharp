@@ -538,83 +538,6 @@ namespace VCCSharp.Modules
             return true;
         }
 
-        public int UnlockDDBackSurface()
-        {
-            return Library.DirectDraw.UnlockDDBackSurface();
-        }
-
-        //--TODO: I don't know what HDC is.
-        public unsafe void GetDDBackSurfaceDC(void** pHdc)
-        {
-            Library.DirectDraw.GetDDBackSurfaceDC(pHdc);
-        }
-
-        //--TODO: I don't know what HDC is.
-        public unsafe void ReleaseDDBackSurfaceDC(void* hdc)
-        {
-            Library.DirectDraw.ReleaseDDBackSurfaceDC(hdc);
-        }
-
-        public int DDSurfaceFlip()
-        {
-            return Library.DirectDraw.DDSurfaceFlip();
-        }
-
-        public RECT GetWindowDefaultSize()
-        {
-            return Library.DirectDraw.GetWindowDefaultSize();
-        }
-
-        public unsafe int DDSurfaceBlt(RECT* rcDest, RECT* rcSrc)
-        {
-            return Library.DirectDraw.DDSurfaceBlt(rcDest, rcSrc);
-        }
-
-        public bool HasDDBackSurface()
-        {
-            return Library.DirectDraw.HasDDBackSurface() != Define.FALSE;
-        }
-
-        public unsafe DDSURFACEDESC* DDSDCreate()
-        {
-            return Library.DirectDraw.DDSDCreate();
-        }
-
-        public unsafe uint DDSDGetRGBBitCount(DDSURFACEDESC* ddsd)
-        {
-            return Library.DirectDraw.DDSDGetRGBBitCount(ddsd);
-        }
-
-        public unsafe void DDSDSetRGBBitCount(DDSURFACEDESC* ddsd, uint value)
-        {
-            Library.DirectDraw.DDSDSetRGBBitCount(ddsd, value);
-        }
-
-        public unsafe uint DDSDGetPitch(DDSURFACEDESC* ddsd)
-        {
-            return Library.DirectDraw.DDSDGetPitch(ddsd);
-        }
-
-        public unsafe void DDSDSetPitch(DDSURFACEDESC* ddsd, uint value)
-        {
-            Library.DirectDraw.DDSDSetPitch(ddsd, value);
-        }
-
-        public unsafe bool DDSDHasSurface(DDSURFACEDESC* ddsd)
-        {
-            return Library.DirectDraw.DDSDHasSurface(ddsd) == Define.TRUE;
-        }
-
-        public void CheckSurfaces()
-        {
-            Library.DirectDraw.CheckSurfaces(); ;
-        }
-
-        public unsafe int LockSurface(DDSURFACEDESC* ddsd)
-        {
-            return Library.DirectDraw.LockDDBackSurface(ddsd);
-        }
-
         public unsafe void SetSurfaces(DDSURFACEDESC* ddsd)
         {
             GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
@@ -639,21 +562,6 @@ namespace VCCSharp.Modules
 
                 return true;
             }
-        }
-
-        private bool CreateDirectDrawWindow(HINSTANCE resources, byte fullscreen)
-        {
-            return Library.DirectDraw.CreateDirectDrawWindow(resources, fullscreen) != Define.FALSE;
-        }
-
-        public void DDRelease()
-        {
-            Library.DirectDraw.DDRelease();
-        }
-
-        public void DDUnregisterClass()
-        {
-            Library.DirectDraw.DDUnregisterClass();
         }
 
         public unsafe bool CreateDirectDrawWindowedMode(EmuState* emuState, DDSURFACEDESC* ddsd)
@@ -781,7 +689,72 @@ namespace VCCSharp.Modules
 
         public unsafe bool CreateDirectDrawWindowFullScreen(EmuState* emuState, DDSURFACEDESC* ddsd)
         {
-            return Library.DirectDraw.CreateDirectDrawWindowFullScreen(emuState, ddsd) == Define.TRUE;
+            byte[] ColorValues = { 0, 85, 170, 255 };
+
+            DirectDrawState* instance = GetDirectDrawState();
+
+            DDSDSetPitch(ddsd, 0);
+            DDSDSetRGBBitCount(ddsd, 0);
+
+            emuState->WindowHandle = _user32.CreateWindowExA(0, instance->AppNameText, null, Define.WS_POPUP | Define.WS_VISIBLE, 
+                0, 0, instance->WindowSize.X, instance->WindowSize.Y, Zero, null, instance->hInstance, null);
+
+            if (emuState->WindowHandle == null) return false;
+
+            RECT size = DDGetWindowDefaultSize();
+
+            _user32.GetWindowRect(emuState->WindowHandle, &size);
+            _user32.ShowWindow(emuState->WindowHandle, Define.SW_SHOWMAXIMIZED);
+            _user32.UpdateWindow(emuState->WindowHandle);
+
+            long hr = DDCreate();		// Initialize DirectDraw
+
+            if (hr < 0) return false;
+
+            hr = DDSetCooperativeLevel(emuState->WindowHandle, Define.DDSCL_EXCLUSIVE | Define.DDSCL_FULLSCREEN | Define.DDSCL_NOWINDOWCHANGES);
+
+            if (hr < 0) return false;
+
+            hr = DDSetDisplayMode((uint)instance->WindowSize.X, (uint)instance->WindowSize.Y, 32);	// Set 640x480x32 Bit full-screen mode
+
+            if (hr < 0) return false;
+
+            DDSDSetdwFlags(ddsd, Define.DDSD_CAPS | Define.DDSD_BACKBUFFERCOUNT);
+            DDSDSetdwCaps(ddsd, Define.DDSCAPS_PRIMARYSURFACE | Define.DDSCAPS_COMPLEX | Define.DDSCAPS_FLIP);
+            DDSDSetdwBackBufferCount(ddsd, 1);
+
+            hr = DDCreateSurface(ddsd);
+
+            if (hr < 0) return false;
+
+            DDSDSetdwCaps(ddsd, Define.DDSCAPS_BACKBUFFER);
+
+            DDSCAPS ddsCaps = DDSDGetddsCaps(ddsd);
+
+            DDSurfaceGetAttachedSurface(&ddsCaps);
+
+            hr = DDGetDisplayMode(ddsd);
+
+            if (hr < 0) return false;
+
+            CreateFullScreenPalette();
+            
+            return true;
+        }
+
+        private bool CreateDirectDrawWindow(HINSTANCE resources, byte fullscreen)
+        {
+            return Library.DirectDraw.CreateDirectDrawWindow(resources, fullscreen) != Define.FALSE;
+        }
+
+        public void DDRelease()
+        {
+            Library.DirectDraw.DDRelease();
+        }
+
+        public void DDUnregisterClass()
+        {
+            Library.DirectDraw.DDUnregisterClass();
         }
 
         public unsafe void* DDSDGetSurface(DDSURFACEDESC* ddsd)
@@ -852,6 +825,108 @@ namespace VCCSharp.Modules
         public RECT DDGetWindowDefaultSize()
         {
             return Library.DirectDraw.DDGetWindowDefaultSize();
+        }
+
+        public int UnlockDDBackSurface()
+        {
+            return Library.DirectDraw.UnlockDDBackSurface();
+        }
+
+        //--TODO: I don't know what HDC is.
+        public unsafe void GetDDBackSurfaceDC(void** pHdc)
+        {
+            Library.DirectDraw.GetDDBackSurfaceDC(pHdc);
+        }
+
+        //--TODO: I don't know what HDC is.
+        public unsafe void ReleaseDDBackSurfaceDC(void* hdc)
+        {
+            Library.DirectDraw.ReleaseDDBackSurfaceDC(hdc);
+        }
+
+        public int DDSurfaceFlip()
+        {
+            return Library.DirectDraw.DDSurfaceFlip();
+        }
+
+        public RECT GetWindowDefaultSize()
+        {
+            return Library.DirectDraw.GetWindowDefaultSize();
+        }
+
+        public unsafe int DDSurfaceBlt(RECT* rcDest, RECT* rcSrc)
+        {
+            return Library.DirectDraw.DDSurfaceBlt(rcDest, rcSrc);
+        }
+
+        public bool HasDDBackSurface()
+        {
+            return Library.DirectDraw.HasDDBackSurface() != Define.FALSE;
+        }
+
+        public unsafe DDSURFACEDESC* DDSDCreate()
+        {
+            return Library.DirectDraw.DDSDCreate();
+        }
+
+        public unsafe uint DDSDGetRGBBitCount(DDSURFACEDESC* ddsd)
+        {
+            return Library.DirectDraw.DDSDGetRGBBitCount(ddsd);
+        }
+
+        public unsafe void DDSDSetRGBBitCount(DDSURFACEDESC* ddsd, uint value)
+        {
+            Library.DirectDraw.DDSDSetRGBBitCount(ddsd, value);
+        }
+
+        public unsafe uint DDSDGetPitch(DDSURFACEDESC* ddsd)
+        {
+            return Library.DirectDraw.DDSDGetPitch(ddsd);
+        }
+
+        public unsafe void DDSDSetPitch(DDSURFACEDESC* ddsd, uint value)
+        {
+            Library.DirectDraw.DDSDSetPitch(ddsd, value);
+        }
+
+        public unsafe bool DDSDHasSurface(DDSURFACEDESC* ddsd)
+        {
+            return Library.DirectDraw.DDSDHasSurface(ddsd) == Define.TRUE;
+        }
+
+        public void CheckSurfaces()
+        {
+            Library.DirectDraw.CheckSurfaces(); ;
+        }
+
+        public unsafe int LockSurface(DDSURFACEDESC* ddsd)
+        {
+            return Library.DirectDraw.LockDDBackSurface(ddsd);
+        }
+
+        public int DDSetDisplayMode(uint x, uint y, uint depth)
+        {
+            return Library.DirectDraw.DDSetDisplayMode(x, y, depth);
+        }
+
+        public unsafe void DDSDSetdwBackBufferCount(DDSURFACEDESC* ddsd, uint value)
+        {
+            Library.DirectDraw.DDSDSetdwBackBufferCount(ddsd, value);
+        }
+
+        public unsafe DDSCAPS DDSDGetddsCaps(DDSURFACEDESC* ddsd)
+        {
+            return Library.DirectDraw.DDSDGetddsCaps(ddsd);
+        }
+
+        public unsafe void DDSurfaceGetAttachedSurface(DDSCAPS* ddsCaps)
+        {
+            Library.DirectDraw.DDSurfaceGetAttachedSurface(ddsCaps);
+        }
+
+        public void CreateFullScreenPalette()
+        {
+            Library.DirectDraw.CreateFullScreenPalette();
         }
     }
 }

@@ -260,6 +260,21 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern RECT DDGetWindowDefaultSize();
+
+            [DllImport(LIBRARY)]
+            public static extern int DDSetDisplayMode(uint x, uint y, uint depth);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DDSDSetdwBackBufferCount(DDSURFACEDESC* ddsd, uint value);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe DDSCAPS DDSDGetddsCaps(DDSURFACEDESC* ddsd);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DDSurfaceGetAttachedSurface(DDSCAPS* ddsCaps);
+
+            [DllImport(LIBRARY)]
+            public static extern void CreateFullScreenPalette();
         }
 
         public static class DirectSound

@@ -67,6 +67,13 @@ extern "C" {
 }
 
 extern "C" {
+  __declspec(dllexport) void __cdecl DDSDSetdwBackBufferCount(DDSURFACEDESC* ddsd, DWORD value)
+  {
+    ddsd->dwBackBufferCount = value;
+  }
+}
+
+extern "C" {
   __declspec(dllexport) void __cdecl DDSDSetdwWidth(DDSURFACEDESC* ddsd, DWORD value)
   {
     ddsd->dwWidth = value;
@@ -84,5 +91,12 @@ extern "C" {
   __declspec(dllexport) void __cdecl DDSDSetdwFlags(DDSURFACEDESC* ddsd, DWORD value)
   {
     ddsd->dwFlags = value;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) DDSCAPS __cdecl DDSDGetddsCaps(DDSURFACEDESC* ddsd)
+  {
+    return ddsd->ddsCaps;
   }
 }
