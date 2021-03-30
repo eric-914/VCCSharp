@@ -58,7 +58,7 @@ namespace VCCSharp.Libraries
         public static extern int UpdateWindow(HWND hWnd);
 
         [DllImport(DLL)]
-        public static extern unsafe LRESULT SendMessageA(HWND hWnd, uint Msg, uint* wParam, ulong* lParam);
+        public static extern LRESULT SendMessageA(HWND hWnd, uint Msg, ulong wParam, long lParam);
 
         [DllImport(DLL)]
         public static extern unsafe HWND CreateWindowExA(uint dwExStyle, byte* lpClassName, byte* lpWindowName,

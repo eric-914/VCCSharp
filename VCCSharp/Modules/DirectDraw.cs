@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using VCCSharp.Enums;
@@ -310,7 +311,19 @@ namespace VCCSharp.Modules
 
         private void SetStatusBarText(string text)
         {
-            Library.DirectDraw.SetStatusBarText(text);
+            unsafe
+            {
+                DirectDrawState* instance = GetDirectDrawState();
+
+                byte[] buffer = Converter.ToByteArray(text);
+
+                fixed (byte* p = buffer)
+                {
+                    _user32.SendMessageA(instance->hWndStatusBar, Define.WM_SETTEXT, (ulong)text.Length, (long)p);
+                };
+
+                _user32.SendMessageA(instance->hWndStatusBar, Define.WM_SIZE, 0, 0);
+            }
         }
 
         public unsafe void DisplayFlip(EmuState* emuState)
@@ -616,7 +629,7 @@ namespace VCCSharp.Modules
 
             RECT size = DDGetWindowDefaultSize();
 
-            _user32.SendMessageA(instance->hWndStatusBar, Define.WM_SIZE, null, null); // Redraw Status bar in new position
+            _user32.SendMessageA(instance->hWndStatusBar, Define.WM_SIZE, 0, 0); // Redraw Status bar in new position
 
             _user32.GetWindowRect(emuState->WindowHandle, &size);	// And save the Final size of the Window 
 

@@ -123,11 +123,3 @@ extern "C" {
     }
   }
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetStatusBarText(char* textBuffer)
-  {
-    SendMessage(instance->hWndStatusBar, WM_SETTEXT, strlen(textBuffer), (LPARAM)(LPCSTR)textBuffer);
-    SendMessage(instance->hWndStatusBar, WM_SIZE, 0, 0);
-  }
-}

@@ -163,9 +163,6 @@ namespace VCCSharp.Libraries
             public static extern int CreateDirectDrawWindow(HINSTANCE resources, byte fullscreen);
 
             [DllImport(LIBRARY)]
-            public static extern void SetStatusBarText(string textBuffer);
-
-            [DllImport(LIBRARY)]
             public static extern int UnlockDDBackSurface();
 
             [DllImport(LIBRARY)]
@@ -218,9 +215,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void DDUnregisterClass();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int CreateDirectDrawWindowFullScreen(EmuState* emuState, DDSURFACEDESC* ddsd);
 
             [DllImport(LIBRARY)]
             public static extern int DDSurfaceSetClipper();

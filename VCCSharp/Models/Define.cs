@@ -71,6 +71,7 @@
         public const int SW_SHOWDEFAULT = 10;
 
         public const uint WM_SIZE = 0x0005;
+        public const uint WM_SETTEXT = 0x000C;
 
         public const string STATUSCLASSNAME = "msctls_statusbar32";
     }
