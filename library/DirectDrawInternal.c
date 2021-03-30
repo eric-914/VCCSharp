@@ -199,3 +199,40 @@ extern "C" {
   }
 }
 
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl RegisterWcex(HINSTANCE hInstance, WNDPROC lpfnWndProc, LPCSTR lpszClassName, LPCSTR lpszMenuName, UINT style, HICON hIcon, HCURSOR hCursor, HBRUSH hbrBackground)
+  {
+    instance->Wcex.cbSize = sizeof(WNDCLASSEX);	//And Rebuilt it from scratch
+    instance->Wcex.hInstance = hInstance;
+    instance->Wcex.lpfnWndProc = lpfnWndProc;
+    instance->Wcex.style = style;
+    instance->Wcex.hIcon = hIcon;
+    instance->Wcex.hIconSm = hIcon;
+    instance->Wcex.hbrBackground = hbrBackground;
+    instance->Wcex.lpszClassName = lpszClassName;
+    instance->Wcex.lpszMenuName = lpszMenuName;
+    instance->Wcex.hCursor = hCursor;
+    instance->Wcex.cbClsExtra = 0;
+    instance->Wcex.cbWndExtra = 0;
+
+    return RegisterClassEx(&(instance->Wcex));
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) IDirectDrawPalette* __cdecl DDCreatePalette(DWORD caps, PALETTEENTRY* pal)
+  {
+    IDirectDrawPalette* ddPalette;		  //Needed for 8bit Palette mode
+
+    instance->DD->CreatePalette(caps, pal, &ddPalette, NULL);
+
+    return ddPalette;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl DDSurfaceSetPalette(IDirectDrawPalette* ddPalette)
+  {
+    instance->DDSurface->SetPalette(ddPalette);
+  }
+}

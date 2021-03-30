@@ -55,51 +55,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 extern "C" {
   __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindow(HINSTANCE resources, unsigned char fullscreen)
   {
-    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
+    UINT style = CS_HREDRAW | CS_VREDRAW;
+    WNDPROC lpfnWndProc = (WNDPROC)WndProc;
+    HINSTANCE hInstance = instance->hInstance;
+    HICON hIcon = LoadIcon(resources, (LPCTSTR)IDI_COCO3);
+    HBRUSH hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+    LPCSTR lpszClassName = instance->AppNameText;
+    LPCSTR lpszMenuName = NULL; //Menu is set on WM_CREATE
+    HCURSOR hCursor = fullscreen ? LoadCursor(NULL, MAKEINTRESOURCE(IDC_NONE)) : LoadCursor(NULL, IDC_ARROW);
 
-    ddState->Wcex.cbSize = sizeof(WNDCLASSEX);	//And Rebuilt it from scratch
-    ddState->Wcex.style = CS_HREDRAW | CS_VREDRAW;
-    ddState->Wcex.lpfnWndProc = (WNDPROC)WndProc;
-    ddState->Wcex.cbClsExtra = 0;
-    ddState->Wcex.cbWndExtra = 0;
-    ddState->Wcex.hInstance = instance->hInstance;
-    ddState->Wcex.hIcon = LoadIcon(resources, (LPCTSTR)IDI_COCO3);
-    ddState->Wcex.hIconSm = LoadIcon(resources, (LPCTSTR)IDI_COCO3);
-    ddState->Wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-    ddState->Wcex.lpszClassName = instance->AppNameText;
-    ddState->Wcex.lpszMenuName = NULL;	//Menu is set on WM_CREATE
-
-    if (!fullscreen)
-    {
-      ddState->Wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-    }
-    else {
-      ddState->Wcex.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(IDC_NONE));
-    }
-
-    return RegisterClassEx(&(ddState->Wcex));
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl CreateFullScreenPalette()
-  {
-    const unsigned char ColorValues[4] = { 0, 85, 170, 255 };
-
-    PALETTEENTRY pal[256];
-    IDirectDrawPalette* ddPalette;		  //Needed for 8bit Palette mode
-
-    for (unsigned short i = 0; i <= 63; i++)
-    {
-      pal[i + 128].peBlue = ColorValues[(i & 8) >> 2 | (i & 1)];
-      pal[i + 128].peGreen = ColorValues[(i & 16) >> 3 | (i & 2) >> 1];
-      pal[i + 128].peRed = ColorValues[(i & 32) >> 4 | (i & 4) >> 2];
-      pal[i + 128].peFlags = PC_RESERVED | PC_NOCOLLAPSE;
-    }
-
-    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
-
-    ddState->DD->CreatePalette(DDPCAPS_8BIT | DDPCAPS_ALLOW256, pal, &ddPalette, NULL);
-    ddState->DDSurface->SetPalette(ddPalette); // Set pallete for Primary surface
+    //And Rebuilt it from scratch
+    return RegisterWcex(hInstance, lpfnWndProc, lpszClassName, lpszMenuName, style, hIcon, hCursor, hbrBackground);
   }
 }

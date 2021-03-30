@@ -265,9 +265,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe void DDSurfaceGetAttachedSurface(DDSCAPS* ddsCaps);
 
             [DllImport(LIBRARY)]
-            public static extern void CreateFullScreenPalette();
-
-            [DllImport(LIBRARY)]
             public static extern int HasDDSurface();
 
             [DllImport(LIBRARY)]
@@ -281,6 +278,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void DDBackSurfaceRestore();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe IDirectDrawPalette* DDCreatePalette(uint caps, PALETTEENTRY* pal);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DDSurfaceSetPalette(IDirectDrawPalette* ddPalette);
 
         }
 

@@ -54,6 +54,8 @@
         public const uint DDSCAPS_PRIMARYSURFACE = 0x00000200;
         public const uint DDSCAPS_VIDEOMEMORY = 0x00004000;
         public const uint DDSCAPS_SYSTEMMEMORY = 0x00000800;
+        public const uint DDPCAPS_8BIT = 0x00000004;
+        public const uint DDPCAPS_ALLOW256 = 0x00000040;
 
         public const uint DDSD_CAPS = 0x00000001;
         public const uint DDSD_HEIGHT = 0x00000002;
@@ -72,6 +74,9 @@
 
         public const uint WM_SIZE = 0x0005;
         public const uint WM_SETTEXT = 0x000C;
+
+        public const byte PC_RESERVED = 0x01;
+        public const byte PC_NOCOLLAPSE = 0x04;
 
         public const string STATUSCLASSNAME = "msctls_statusbar32";
     }

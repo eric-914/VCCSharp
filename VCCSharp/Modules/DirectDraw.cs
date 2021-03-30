@@ -952,7 +952,29 @@ namespace VCCSharp.Modules
 
         public void CreateFullScreenPalette()
         {
-            Library.DirectDraw.CreateFullScreenPalette();
+            byte[] ColorValues = { 0, 85, 170, 255 };
+
+            PALETTEENTRY[] pal = new PALETTEENTRY[256];
+
+            for (int i = 0; i <= 63; i++)
+            {
+                pal[i + 128].peBlue = ColorValues[(i & 8) >> 2 | (i & 1)];
+                pal[i + 128].peGreen = ColorValues[(i & 16) >> 3 | (i & 2) >> 1];
+                pal[i + 128].peRed = ColorValues[(i & 32) >> 4 | (i & 4) >> 2];
+                pal[i + 128].peFlags = Define.PC_RESERVED | Define.PC_NOCOLLAPSE;
+            }
+            
+            uint caps = Define.DDPCAPS_8BIT | Define.DDPCAPS_ALLOW256;
+
+            unsafe
+            {
+                fixed (PALETTEENTRY* p = pal)
+                {
+                    IDirectDrawPalette* ddPalette = DDCreatePalette(caps, p);
+                    
+                    DDSurfaceSetPalette(ddPalette); // Set palette for Primary surface
+                }
+            }
         }
 
         public bool HasDDSurface()
@@ -980,5 +1002,14 @@ namespace VCCSharp.Modules
             Library.DirectDraw.DDBackSurfaceRestore();
         }
 
+        public unsafe IDirectDrawPalette* DDCreatePalette(uint caps, PALETTEENTRY* pal)
+        {
+            return Library.DirectDraw.DDCreatePalette(caps, pal);
+        }
+
+        public unsafe void DDSurfaceSetPalette(IDirectDrawPalette* ddPalette)
+        {
+            Library.DirectDraw.DDSurfaceSetPalette(ddPalette);
+        }
     }
 }
