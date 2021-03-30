@@ -652,7 +652,7 @@ namespace VCCSharp.Modules
             hr = DDCreateSurface(ddsd);
 
             if (hr < 0) return false;
-            
+
             DDSDSetdwFlags(ddsd, Define.DDSD_WIDTH | Define.DDSD_HEIGHT | Define.DDSD_CAPS);
 
             // Make our off-screen surface 
@@ -702,14 +702,12 @@ namespace VCCSharp.Modules
 
         public unsafe bool CreateDirectDrawWindowFullScreen(EmuState* emuState, DDSURFACEDESC* ddsd)
         {
-            byte[] ColorValues = { 0, 85, 170, 255 };
-
             DirectDrawState* instance = GetDirectDrawState();
 
             DDSDSetPitch(ddsd, 0);
             DDSDSetRGBBitCount(ddsd, 0);
 
-            emuState->WindowHandle = _user32.CreateWindowExA(0, instance->AppNameText, null, Define.WS_POPUP | Define.WS_VISIBLE, 
+            emuState->WindowHandle = _user32.CreateWindowExA(0, instance->AppNameText, null, Define.WS_POPUP | Define.WS_VISIBLE,
                 0, 0, instance->WindowSize.X, instance->WindowSize.Y, Zero, null, instance->hInstance, null);
 
             if (emuState->WindowHandle == null) return false;
@@ -751,7 +749,7 @@ namespace VCCSharp.Modules
             if (hr < 0) return false;
 
             CreateFullScreenPalette();
-            
+
             return true;
         }
 
@@ -907,9 +905,24 @@ namespace VCCSharp.Modules
             return Library.DirectDraw.DDSDHasSurface(ddsd) == Define.TRUE;
         }
 
+        // Checks if the memory associated with surfaces is lost and restores if necessary.
         public void CheckSurfaces()
         {
-            Library.DirectDraw.CheckSurfaces(); ;
+            if (HasDDSurface())
+            {	// Check the primary surface
+                if (DDSurfaceIsLost())
+                {
+                    DDSurfaceRestore();
+                }
+            }
+
+            if (HasDDBackSurface())
+            {	// Check the back buffer
+                if (DDBackSurfaceIsLost())
+                {
+                    DDBackSurfaceRestore();
+                }
+            }
         }
 
         public unsafe int LockSurface(DDSURFACEDESC* ddsd)
@@ -941,5 +954,31 @@ namespace VCCSharp.Modules
         {
             Library.DirectDraw.CreateFullScreenPalette();
         }
+
+        public bool HasDDSurface()
+        {
+            return Library.DirectDraw.HasDDSurface() == Define.TRUE;
+        }
+
+        public bool DDSurfaceIsLost()
+        {
+            return Library.DirectDraw.DDSurfaceIsLost() == Define.TRUE;
+        }
+
+        public bool DDBackSurfaceIsLost()
+        {
+            return Library.DirectDraw.DDBackSurfaceIsLost() == Define.TRUE;
+        }
+
+        public void DDSurfaceRestore()
+        {
+            Library.DirectDraw.DDSurfaceRestore();
+        }
+
+        public void DDBackSurfaceRestore()
+        {
+            Library.DirectDraw.DDBackSurfaceRestore();
+        }
+
     }
 }

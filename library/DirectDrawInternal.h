@@ -26,3 +26,8 @@ extern "C" __declspec(dllexport) void __cdecl ReleaseDDBackSurfaceDC(HDC hdc);
 
 extern "C" __declspec(dllexport) HRESULT __cdecl DDSetDisplayMode(DWORD x, DWORD y, DWORD depth);
 extern "C" __declspec(dllexport) void __cdecl DDSurfaceGetAttachedSurface(DDSCAPS* ddsCaps);
+extern "C" __declspec(dllexport) BOOL __cdecl HasDDSurface();
+extern "C" __declspec(dllexport) BOOL __cdecl DDSurfaceIsLost();
+extern "C" __declspec(dllexport) BOOL __cdecl DDBackSurfaceIsLost();
+extern "C" __declspec(dllexport) void __cdecl DDSurfaceRestore();
+extern "C" __declspec(dllexport) void __cdecl DDBackSurfaceRestore();

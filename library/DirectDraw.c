@@ -53,29 +53,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl CreateFullScreenPalette()
-  {
-    const unsigned char ColorValues[4] = { 0, 85, 170, 255 };
-
-    PALETTEENTRY pal[256];
-    IDirectDrawPalette* ddPalette;		  //Needed for 8bit Palette mode
-
-    for (unsigned short i = 0; i <= 63; i++)
-    {
-      pal[i + 128].peBlue = ColorValues[(i & 8) >> 2 | (i & 1)];
-      pal[i + 128].peGreen = ColorValues[(i & 16) >> 3 | (i & 2) >> 1];
-      pal[i + 128].peRed = ColorValues[(i & 32) >> 4 | (i & 4) >> 2];
-      pal[i + 128].peFlags = PC_RESERVED | PC_NOCOLLAPSE;
-    }
-
-    DirectDrawInternalState* ddState = GetDirectDrawInternalState();
-
-    ddState->DD->CreatePalette(DDPCAPS_8BIT | DDPCAPS_ALLOW256, pal, &ddPalette, NULL);
-    ddState->DDSurface->SetPalette(ddPalette); // Set pallete for Primary surface
-  }
-}
-
-extern "C" {
   __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindow(HINSTANCE resources, unsigned char fullscreen)
   {
     DirectDrawInternalState* ddState = GetDirectDrawInternalState();
@@ -104,22 +81,25 @@ extern "C" {
   }
 }
 
-// Checks if the memory associated with surfaces is lost and restores if necessary.
 extern "C" {
-  __declspec(dllexport) void __cdecl CheckSurfaces()
+  __declspec(dllexport) void __cdecl CreateFullScreenPalette()
   {
+    const unsigned char ColorValues[4] = { 0, 85, 170, 255 };
+
+    PALETTEENTRY pal[256];
+    IDirectDrawPalette* ddPalette;		  //Needed for 8bit Palette mode
+
+    for (unsigned short i = 0; i <= 63; i++)
+    {
+      pal[i + 128].peBlue = ColorValues[(i & 8) >> 2 | (i & 1)];
+      pal[i + 128].peGreen = ColorValues[(i & 16) >> 3 | (i & 2) >> 1];
+      pal[i + 128].peRed = ColorValues[(i & 32) >> 4 | (i & 4) >> 2];
+      pal[i + 128].peFlags = PC_RESERVED | PC_NOCOLLAPSE;
+    }
+
     DirectDrawInternalState* ddState = GetDirectDrawInternalState();
 
-    if (ddState->DDSurface) {	// Check the primary surface
-      if (ddState->DDSurface->IsLost() == DDERR_SURFACELOST) {
-        ddState->DDSurface->Restore();
-      }
-    }
-
-    if (ddState->DDBackSurface) {	// Check the back buffer
-      if (ddState->DDBackSurface->IsLost() == DDERR_SURFACELOST) {
-        ddState->DDBackSurface->Restore();
-      }
-    }
+    ddState->DD->CreatePalette(DDPCAPS_8BIT | DDPCAPS_ALLOW256, pal, &ddPalette, NULL);
+    ddState->DDSurface->SetPalette(ddPalette); // Set pallete for Primary surface
   }
 }

@@ -205,9 +205,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe void* DDSDGetSurface(DDSURFACEDESC* ddsd);
 
             [DllImport(LIBRARY)]
-            public static extern void CheckSurfaces();
-
-            [DllImport(LIBRARY)]
             public static extern unsafe int LockDDBackSurface(DDSURFACEDESC* ddsd);
 
             [DllImport(LIBRARY)]
@@ -269,6 +266,22 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void CreateFullScreenPalette();
+
+            [DllImport(LIBRARY)]
+            public static extern int HasDDSurface();
+
+            [DllImport(LIBRARY)]
+            public static extern int DDSurfaceIsLost();
+
+            [DllImport(LIBRARY)]
+            public static extern int DDBackSurfaceIsLost();
+
+            [DllImport(LIBRARY)]
+            public static extern void DDSurfaceRestore();
+
+            [DllImport(LIBRARY)]
+            public static extern void DDBackSurfaceRestore();
+
         }
 
         public static class DirectSound

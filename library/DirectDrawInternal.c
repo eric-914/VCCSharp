@@ -65,6 +65,13 @@ extern "C" {
 }
 
 extern "C" {
+  __declspec(dllexport) BOOL __cdecl HasDDSurface()
+  {
+    return instance->DDSurface != NULL;
+  }
+}
+
+extern "C" {
   __declspec(dllexport) HRESULT __cdecl DDSurfaceBlt(RECT* rcDest, RECT* rcSrc)
   {
     return instance->DDSurface->Blt(rcDest, instance->DDBackSurface, rcSrc, DDBLT_WAIT, NULL); // DDBLT_WAIT
@@ -161,6 +168,34 @@ extern "C" {
   __declspec(dllexport) void __cdecl DDSurfaceGetAttachedSurface(DDSCAPS* ddsCaps)
   {
     instance->DDSurface->GetAttachedSurface(ddsCaps, &(instance->DDBackSurface));
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl DDSurfaceIsLost()
+  {
+    return instance->DDSurface->IsLost() == DDERR_SURFACELOST;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl DDBackSurfaceIsLost()
+  {
+    return instance->DDBackSurface->IsLost() == DDERR_SURFACELOST;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl DDSurfaceRestore()
+  {
+    instance->DDSurface->Restore();
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl DDBackSurfaceRestore()
+  {
+    instance->DDBackSurface->Restore();
   }
 }
 
