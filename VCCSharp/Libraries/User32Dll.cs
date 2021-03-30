@@ -55,7 +55,18 @@ namespace VCCSharp.Libraries
         public static extern unsafe int AdjustWindowRect(RECT* lpRect, uint dwStyle, int bMenu);
 
         [DllImport(DLL)]
+        public static extern int UpdateWindow(HWND hWnd);
+
+        [DllImport(DLL)]
+        public static extern unsafe LRESULT SendMessageA(HWND hWnd, uint Msg, uint* wParam, ulong* lParam);
+
+        [DllImport(DLL)]
         public static extern unsafe HWND CreateWindowExA(uint dwExStyle, byte* lpClassName, byte* lpWindowName,
+            uint dwStyle, int X, int Y, int nWidth, int nHeight,
+            HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
+
+        [DllImport(DLL)]
+        public static extern unsafe HWND CreateWindowExA(uint dwExStyle, string lpClassName, string lpWindowName,
             uint dwStyle, int X, int Y, int nWidth, int nHeight,
             HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
     }

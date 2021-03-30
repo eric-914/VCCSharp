@@ -166,25 +166,25 @@ namespace VCCSharp.Libraries
             public static extern void SetStatusBarText(string textBuffer);
 
             [DllImport(LIBRARY)]
-            public static extern int UnlockSurface();
+            public static extern int UnlockDDBackSurface();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void GetSurfaceDC(void** pHdc);
+            public static extern unsafe void GetDDBackSurfaceDC(void** pHdc);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void ReleaseSurfaceDC(void* hdc);
+            public static extern unsafe void ReleaseDDBackSurfaceDC(void* hdc);
 
             [DllImport(LIBRARY)]
-            public static extern int SurfaceFlip();
+            public static extern int DDSurfaceFlip();
 
             [DllImport(LIBRARY)]
             public static extern RECT GetWindowDefaultSize();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int SurfaceBlt(RECT* rcDest, RECT* rcSrc);
+            public static extern unsafe int DDSurfaceBlt(RECT* rcDest, RECT* rcSrc);
 
             [DllImport(LIBRARY)]
-            public static extern int HasBackSurface();
+            public static extern int HasDDBackSurface();
 
             [DllImport(LIBRARY)]
             public static extern unsafe DDSURFACEDESC* DDSDCreate();
@@ -211,7 +211,7 @@ namespace VCCSharp.Libraries
             public static extern void CheckSurfaces();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int LockSurface(DDSURFACEDESC* ddsd);
+            public static extern unsafe int LockDDBackSurface(DDSURFACEDESC* ddsd);
 
             [DllImport(LIBRARY)]
             public static extern void DDRelease();
@@ -220,10 +220,46 @@ namespace VCCSharp.Libraries
             public static extern void DDUnregisterClass();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int CreateDirectDrawWindowedMode(EmuState* emuState, DDSURFACEDESC* ddsd, int width, int height);
+            public static extern unsafe int CreateDirectDrawWindowFullScreen(EmuState* emuState, DDSURFACEDESC* ddsd);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int CreateDirectDrawWindowFullScreen(EmuState* emuState, DDSURFACEDESC* ddsd);
+            public static extern int DDSurfaceSetClipper();
+
+            [DllImport(LIBRARY)]
+            public static extern int DDClipperSetHWnd(HWND hWnd);
+
+            [DllImport(LIBRARY)]
+            public static extern int DDCreateClipper();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int DDGetDisplayMode(DDSURFACEDESC* ddsd);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int DDCreateBackSurface(DDSURFACEDESC* ddsd);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int DDCreateSurface(DDSURFACEDESC* ddsd);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DDSDSetdwCaps(DDSURFACEDESC* ddsd, uint value);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DDSDSetdwWidth(DDSURFACEDESC* ddsd, uint value);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DDSDSetdwHeight(DDSURFACEDESC* ddsd, uint value);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DDSDSetdwFlags(DDSURFACEDESC* ddsd, uint value);
+
+            [DllImport(LIBRARY)]
+            public static extern int DDSetCooperativeLevel(HWND hWnd, uint value);
+
+            [DllImport(LIBRARY)]
+            public static extern int DDCreate();
+
+            [DllImport(LIBRARY)]
+            public static extern RECT DDGetWindowDefaultSize();
         }
 
         public static class DirectSound

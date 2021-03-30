@@ -254,7 +254,7 @@ namespace VCCSharp.Modules
                 WriteStatusText(Converter.ToString(instance->StatusText));
             }
 
-            UnlockSurface();
+            UnlockDDBackSurface();
 
             DisplayFlip(emuState);
         }
@@ -266,13 +266,13 @@ namespace VCCSharp.Modules
                 const string message = " Signal Missing! Press F9";
                 void* hdc;
 
-                GetSurfaceDC(&hdc);
+                GetDDBackSurfaceDC(&hdc);
 
                 _modules.GDI.GDISetBkColor(hdc, 0);
                 _modules.GDI.GDISetTextColor(hdc, color);
                 _modules.GDI.GDIWriteTextOut(hdc, x, y, message);
 
-                ReleaseSurfaceDC(hdc);
+                ReleaseDDBackSurfaceDC(hdc);
             }
         }
 
@@ -284,13 +284,13 @@ namespace VCCSharp.Modules
 
                 var sb = new StringBuilder(statusText.PadRight(134 - statusText.Length));
 
-                GetSurfaceDC(&hdc);
+                GetDDBackSurfaceDC(&hdc);
 
                 _modules.GDI.GDISetBkColor(hdc, 0); //RGB(0, 0, 0)
                 _modules.GDI.GDISetTextColor(hdc, 0xFFFFFF); //RGB(255, 255, 255)
                 _modules.GDI.GDITextOut(hdc, 0, 0, sb.ToString(), 132);
 
-                ReleaseSurfaceDC(hdc);
+                ReleaseDDBackSurfaceDC(hdc);
             }
         }
 
@@ -319,7 +319,7 @@ namespace VCCSharp.Modules
 
             if (emuState->FullScreen == Define.TRUE)
             {	// if we're windowed do the blit, else just Flip
-                SurfaceFlip();
+                DDSurfaceFlip();
             }
             else
             {
@@ -406,12 +406,12 @@ namespace VCCSharp.Modules
                 //    _user32.MoveWindow(emuState->WindowHandle, rect.left, rect.top, defaultRect.right - defaultRect.left, defaultRect.bottom - defaultRect.top, 1);
                 //}
 
-                if (!HasBackSurface())
+                if (!HasDDBackSurface())
                 {
                     MessageBox.Show("Odd", "Error"); // yes, odd error indeed!! (??) especially since we go ahead and use it below!
                 }
 
-                SurfaceBlt(&rcDest, &rcSrc);
+                DDSurfaceBlt(&rcDest, &rcSrc);
             }
 
             //--Store the updated WindowSizeX/Y for configuration, later.
@@ -538,26 +538,26 @@ namespace VCCSharp.Modules
             return true;
         }
 
-        public int UnlockSurface()
+        public int UnlockDDBackSurface()
         {
-            return Library.DirectDraw.UnlockSurface();
+            return Library.DirectDraw.UnlockDDBackSurface();
         }
 
         //--TODO: I don't know what HDC is.
-        public unsafe void GetSurfaceDC(void** pHdc)
+        public unsafe void GetDDBackSurfaceDC(void** pHdc)
         {
-            Library.DirectDraw.GetSurfaceDC(pHdc);
+            Library.DirectDraw.GetDDBackSurfaceDC(pHdc);
         }
 
         //--TODO: I don't know what HDC is.
-        public unsafe void ReleaseSurfaceDC(void* hdc)
+        public unsafe void ReleaseDDBackSurfaceDC(void* hdc)
         {
-            Library.DirectDraw.ReleaseSurfaceDC(hdc);
+            Library.DirectDraw.ReleaseDDBackSurfaceDC(hdc);
         }
 
-        public int SurfaceFlip()
+        public int DDSurfaceFlip()
         {
-            return Library.DirectDraw.SurfaceFlip();
+            return Library.DirectDraw.DDSurfaceFlip();
         }
 
         public RECT GetWindowDefaultSize()
@@ -565,14 +565,14 @@ namespace VCCSharp.Modules
             return Library.DirectDraw.GetWindowDefaultSize();
         }
 
-        public unsafe int SurfaceBlt(RECT* rcDest, RECT* rcSrc)
+        public unsafe int DDSurfaceBlt(RECT* rcDest, RECT* rcSrc)
         {
-            return Library.DirectDraw.SurfaceBlt(rcDest, rcSrc);
+            return Library.DirectDraw.DDSurfaceBlt(rcDest, rcSrc);
         }
 
-        public bool HasBackSurface()
+        public bool HasDDBackSurface()
         {
-            return Library.DirectDraw.HasBackSurface() != Define.FALSE;
+            return Library.DirectDraw.HasDDBackSurface() != Define.FALSE;
         }
 
         public unsafe DDSURFACEDESC* DDSDCreate()
@@ -612,7 +612,7 @@ namespace VCCSharp.Modules
 
         public unsafe int LockSurface(DDSURFACEDESC* ddsd)
         {
-            return Library.DirectDraw.LockSurface(ddsd);
+            return Library.DirectDraw.LockDDBackSurface(ddsd);
         }
 
         public unsafe void SetSurfaces(DDSURFACEDESC* ddsd)
@@ -658,32 +658,125 @@ namespace VCCSharp.Modules
 
         public unsafe bool CreateDirectDrawWindowedMode(EmuState* emuState, DDSURFACEDESC* ddsd)
         {
-            //WS_OVERLAPPEDWINDOW (WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_THICKFRAME|WS_MINIMIZEBOX|WS_MAXIMIZEBOX)
-            const uint WS_OVERLAPPEDWINDOW = 0x00000000 | 0x00C00000 | 0x00080000 | 0x00040000 | 0x00020000 | 0x00010000;
-            //--This seems to be use the default window tiling of new windows feature.
-            const int CW_USEDEFAULT = -1 ^ 0x7FFFFFFF; //0x80000000
-
             DirectDrawState* instance = GetDirectDrawState();
+
+            long hr;
 
             RECT rc = new RECT { top = 0, left = 0, right = instance->WindowSize.X, bottom = instance->WindowSize.Y };
 
             // Calculates the required size of the window rectangle, based on the desired client-rectangle size
             // The window rectangle can then be passed to the CreateWindow function to create a window whose client area is the desired size.
-            _user32.AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, Define.TRUE);
+            _user32.AdjustWindowRect(&rc, Define.WS_OVERLAPPEDWINDOW, Define.TRUE);
 
             int width = rc.right - rc.left;
             int height = rc.bottom - rc.top;
 
             // We create the Main window 
             emuState->WindowHandle = _user32.CreateWindowExA(0, instance->AppNameText, instance->TitleBarText,
-                WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, width, height,
+                Define.WS_OVERLAPPEDWINDOW, Define.CW_USEDEFAULT, 0, width, height,
                 Zero, null, instance->hInstance, null);
 
-            if (emuState->WindowHandle == null) {	// Can't create window
+            if (emuState->WindowHandle == null)
+            {	// Can't create window
                 return false;
             }
 
-            return Library.DirectDraw.CreateDirectDrawWindowedMode(emuState, ddsd, width, height) == Define.TRUE;
+            instance->hWndStatusBar = _user32.CreateWindowExA(0, Define.STATUSCLASSNAME, "Ready",
+                Define.SBARS_SIZEGRIP | Define.WS_CHILD | Define.WS_VISIBLE, 0, 0, 0, 0,
+                emuState->WindowHandle, null, instance->hInstance, null);
+
+            if (instance->hWndStatusBar == null)
+            {	// Can't create Status bar
+                return false;
+            }
+
+            var rStatBar = new RECT();
+
+            // Retrieves the dimensions of the bounding rectangle of the specified window
+            // The dimensions are given in screen coordinates that are relative to the upper-left corner of the screen.
+            _user32.GetWindowRect(instance->hWndStatusBar, &rStatBar); // Get the size of the Status bar
+
+            instance->StatusBarHeight = (uint)(rStatBar.bottom - rStatBar.top); // Calculate its height
+
+            _user32.GetWindowRect(emuState->WindowHandle, &rStatBar);
+
+            width = rStatBar.right - rStatBar.left;
+            height = rStatBar.bottom + (int)(instance->StatusBarHeight) - rStatBar.top;
+
+            // using MoveWindow to resize 
+            _user32.MoveWindow(emuState->WindowHandle, rStatBar.left, rStatBar.top, width, height, 1);
+
+            RECT size = DDGetWindowDefaultSize();
+
+            _user32.SendMessageA(instance->hWndStatusBar, Define.WM_SIZE, null, null); // Redraw Status bar in new position
+
+            _user32.GetWindowRect(emuState->WindowHandle, &size);	// And save the Final size of the Window 
+
+            _user32.ShowWindow(emuState->WindowHandle, Define.SW_SHOWDEFAULT);
+            _user32.UpdateWindow(emuState->WindowHandle);
+
+            hr = DDCreate();
+
+            if (hr < 0) return false;
+
+            // Initialize the DirectDraw object
+            hr = DDSetCooperativeLevel(emuState->WindowHandle, Define.DDSCL_NORMAL); // Set DDSCL_NORMAL to use windowed mode
+
+            if (hr < 0) return false;
+
+            DDSDSetdwFlags(ddsd, Define.DDSD_CAPS);
+            DDSDSetdwCaps(ddsd, Define.DDSCAPS_PRIMARYSURFACE);
+
+            // Create our Primary Surface
+            hr = DDCreateSurface(ddsd);
+
+            if (hr < 0) return false;
+            
+            DDSDSetdwFlags(ddsd, Define.DDSD_WIDTH | Define.DDSD_HEIGHT | Define.DDSD_CAPS);
+
+            // Make our off-screen surface 
+            DDSDSetdwWidth(ddsd, (uint)instance->WindowSize.X);
+            DDSDSetdwHeight(ddsd, (uint)instance->WindowSize.Y);
+
+            DDSDSetdwCaps(ddsd, Define.DDSCAPS_VIDEOMEMORY); // Try to create back buffer in video RAM
+            hr = DDCreateBackSurface(ddsd);
+
+            if (hr < 0)
+            { // If not enough Video Ram 			
+                DDSDSetdwCaps(ddsd, Define.DDSCAPS_SYSTEMMEMORY);			// Try to create back buffer in System RAM
+                hr = DDCreateBackSurface(ddsd);
+
+                if (hr < 0)
+                {
+                    return false; //Giving Up
+                }
+
+                MessageBox.Show("Creating Back Buffer in System Ram!\nThis will be slower", "Performance Warning");
+            }
+
+            hr = DDGetDisplayMode(ddsd);
+
+            if (hr < 0) return false;
+
+            hr = DDCreateClipper(); // Create the clipper using the DirectDraw object
+
+            if (hr < 0) return false;
+
+            hr = DDClipperSetHWnd(emuState->WindowHandle);	// Assign your window's HWND to the clipper
+
+            if (hr < 0) return false;
+
+            hr = DDSurfaceSetClipper(); // Attach the clipper to the primary surface
+
+            if (hr < 0) return false;
+
+            hr = LockSurface(ddsd);
+
+            if (hr < 0) return false;
+
+            hr = UnlockDDBackSurface();
+
+            return hr >= 0;
         }
 
         public unsafe bool CreateDirectDrawWindowFullScreen(EmuState* emuState, DDSURFACEDESC* ddsd)
@@ -694,6 +787,71 @@ namespace VCCSharp.Modules
         public unsafe void* DDSDGetSurface(DDSURFACEDESC* ddsd)
         {
             return Library.DirectDraw.DDSDGetSurface(ddsd);
+        }
+
+        public int DDSurfaceSetClipper()
+        {
+            return Library.DirectDraw.DDSurfaceSetClipper();
+        }
+
+        public int DDClipperSetHWnd(HWND hWnd)
+        {
+            return Library.DirectDraw.DDClipperSetHWnd(hWnd);
+        }
+
+        public int DDCreateClipper()
+        {
+            return Library.DirectDraw.DDCreateClipper();
+        }
+
+        public unsafe int DDGetDisplayMode(DDSURFACEDESC* ddsd)
+        {
+            return Library.DirectDraw.DDGetDisplayMode(ddsd);
+        }
+
+        public unsafe int DDCreateBackSurface(DDSURFACEDESC* ddsd)
+        {
+            return Library.DirectDraw.DDCreateBackSurface(ddsd);
+        }
+
+        public unsafe void DDSDSetdwCaps(DDSURFACEDESC* ddsd, uint value)
+        {
+            Library.DirectDraw.DDSDSetdwCaps(ddsd, value);
+        }
+
+        public unsafe void DDSDSetdwWidth(DDSURFACEDESC* ddsd, uint value)
+        {
+            Library.DirectDraw.DDSDSetdwWidth(ddsd, value);
+        }
+
+        public unsafe void DDSDSetdwHeight(DDSURFACEDESC* ddsd, uint value)
+        {
+            Library.DirectDraw.DDSDSetdwHeight(ddsd, value);
+        }
+
+        public unsafe void DDSDSetdwFlags(DDSURFACEDESC* ddsd, uint value)
+        {
+            Library.DirectDraw.DDSDSetdwFlags(ddsd, value);
+        }
+
+        public unsafe int DDCreateSurface(DDSURFACEDESC* ddsd)
+        {
+            return Library.DirectDraw.DDCreateSurface(ddsd);
+        }
+
+        public int DDSetCooperativeLevel(HWND hWnd, uint value)
+        {
+            return Library.DirectDraw.DDSetCooperativeLevel(hWnd, value);
+        }
+
+        public int DDCreate()
+        {
+            return Library.DirectDraw.DDCreate();
+        }
+
+        public RECT DDGetWindowDefaultSize()
+        {
+            return Library.DirectDraw.DDGetWindowDefaultSize();
         }
     }
 }

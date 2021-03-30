@@ -1,5 +1,7 @@
 ﻿namespace VCCSharp.Models
 {
+    // ReSharper disable InconsistentNaming
+    // ReSharper disable IdentifierTypo
     public static class Define
     {
         public const byte TRUE = 1;     //--Need to be careful, as TRUE doesn't necessarily mean NOT FALSE
@@ -29,5 +31,37 @@
         public const int TAPEAUDIORATE = 44100;
 
         public const uint FILE_BEGIN = 0;
+
+        //--This seems to be use the default window tiling of new windows feature.
+        public const int CW_USEDEFAULT = -1 ^ 0x7FFFFFFF; //0x80000000
+
+        public const uint WS_OVERLAPPED = 0x00000000;
+        public const uint WS_CAPTION = 0x00C00000;
+        public const uint WS_SYSMENU = 0x00080000;
+        public const uint WS_THICKFRAME = 0x00040000;
+        public const uint WS_MINIMIZEBOX = 0x00020000;
+        public const uint WS_MAXIMIZEBOX = 0x00010000;
+        public const uint WS_CHILD = 0x40000000;
+        public const uint WS_VISIBLE = 0x10000000;
+
+        public const uint WS_OVERLAPPEDWINDOW = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
+
+        public const uint SBARS_SIZEGRIP = 0x0100;
+
+        public const uint DDSCL_NORMAL = 0x00000008;
+
+        public const uint DDSCAPS_PRIMARYSURFACE = 0x00000200;
+        public const uint DDSCAPS_VIDEOMEMORY = 0x00004000;
+        public const uint DDSCAPS_SYSTEMMEMORY = 0x00000800;
+
+        public const uint DDSD_CAPS = 0x00000001;
+        public const uint DDSD_HEIGHT = 0x00000002;
+        public const uint DDSD_WIDTH = 0x00000004;
+
+        public const int SW_SHOWDEFAULT = 10;
+
+        public const uint WM_SIZE = 0x0005;
+
+        public const string STATUSCLASSNAME = "msctls_statusbar32";
     }
 }

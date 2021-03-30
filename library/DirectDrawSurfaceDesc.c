@@ -58,3 +58,31 @@ extern "C" {
     return ddsd->lpSurface;
   }
 }
+
+extern "C" {
+  __declspec(dllexport) void __cdecl DDSDSetdwCaps(DDSURFACEDESC* ddsd, DWORD value)
+  {
+    ddsd->ddsCaps.dwCaps = value;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl DDSDSetdwWidth(DDSURFACEDESC* ddsd, DWORD value)
+  {
+    ddsd->dwWidth = value;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl DDSDSetdwHeight(DDSURFACEDESC* ddsd, DWORD value)
+  {
+    ddsd->dwHeight = value;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl DDSDSetdwFlags(DDSURFACEDESC* ddsd, DWORD value)
+  {
+    ddsd->dwFlags = value;
+  }
+}

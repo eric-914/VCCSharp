@@ -20,31 +20,31 @@ DirectDrawInternalState* InitializeInternal(DirectDrawInternalState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl LockSurface(DDSURFACEDESC* ddsd) {
+  __declspec(dllexport) HRESULT __cdecl LockDDBackSurface(DDSURFACEDESC* ddsd) {
     return instance->DDBackSurface->Lock(NULL, ddsd, DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR, NULL);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl UnlockSurface() {
+  __declspec(dllexport) HRESULT __cdecl UnlockDDBackSurface() {
     return instance->DDBackSurface->Unlock(NULL);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl GetSurfaceDC(HDC* hdc) {
+  __declspec(dllexport) void __cdecl GetDDBackSurfaceDC(HDC* hdc) {
     instance->DDBackSurface->GetDC(hdc);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl ReleaseSurfaceDC(HDC hdc) {
+  __declspec(dllexport) void __cdecl ReleaseDDBackSurfaceDC(HDC hdc) {
     instance->DDBackSurface->ReleaseDC(hdc);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl SurfaceFlip()
+  __declspec(dllexport) HRESULT __cdecl DDSurfaceFlip()
   {
     return instance->DDSurface->Flip(NULL, DDFLIP_NOVSYNC | DDFLIP_DONOTWAIT); //DDFLIP_WAIT
   }
@@ -58,14 +58,14 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasBackSurface()
+  __declspec(dllexport) BOOL __cdecl HasDDBackSurface()
   {
     return instance->DDBackSurface != NULL;
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl SurfaceBlt(RECT* rcDest, RECT* rcSrc)
+  __declspec(dllexport) HRESULT __cdecl DDSurfaceBlt(RECT* rcDest, RECT* rcSrc)
   {
     return instance->DDSurface->Blt(rcDest, instance->DDBackSurface, rcSrc, DDBLT_WAIT, NULL); // DDBLT_WAIT
   }
@@ -84,6 +84,69 @@ extern "C" {
   __declspec(dllexport) void __cdecl DDUnregisterClass()
   {
     UnregisterClass(instance->Wcex.lpszClassName, instance->Wcex.hInstance);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DDSurfaceSetClipper()
+  {
+    return instance->DDSurface->SetClipper(instance->DDClipper);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DDClipperSetHWnd(HWND hWnd)
+  {
+    return instance->DDClipper->SetHWnd(0, hWnd);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DDCreateClipper()
+  {
+    return instance->DD->CreateClipper(0, &(instance->DDClipper), NULL);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DDGetDisplayMode(DDSURFACEDESC* ddsd)
+  {
+    return instance->DD->GetDisplayMode(ddsd);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DDCreateBackSurface(DDSURFACEDESC* ddsd)
+  {
+    return instance->DD->CreateSurface(ddsd, &(instance->DDBackSurface), NULL);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DDCreateSurface(DDSURFACEDESC* ddsd)
+  {
+    return instance->DD->CreateSurface(ddsd, &(instance->DDSurface), NULL);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DDSetCooperativeLevel(HWND hWnd, DWORD value)
+  {
+    return instance->DD->SetCooperativeLevel(hWnd, value);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DDCreate()
+  {
+    return DirectDrawCreate(NULL, &(instance->DD), NULL);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) RECT __cdecl DDGetWindowDefaultSize()
+  {
+    return instance->WindowDefaultSize;
   }
 }
 

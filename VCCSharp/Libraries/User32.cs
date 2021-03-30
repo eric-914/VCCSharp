@@ -24,6 +24,9 @@ namespace VCCSharp.Libraries
         int DestroyWindow(HWND hWnd);
         unsafe int AdjustWindowRect(RECT* lpRect, uint dwStyle, int bMenu);
         unsafe HWND CreateWindowExA(uint dwExStyle, byte* lpClassName, byte* lpWindowName, uint dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
+        unsafe HWND CreateWindowExA(uint dwExStyle, string lpClassName, string lpWindowName, uint dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
+        int UpdateWindow(HWND hWnd);
+        unsafe LRESULT SendMessageA(HWND hWnd, uint Msg, uint* wParam, ulong* lParam);
     }
 
     public class User32 : IUser32
@@ -72,5 +75,14 @@ namespace VCCSharp.Libraries
 
         public unsafe HWND CreateWindowExA(uint dwExStyle, byte* lpClassName, byte* lpWindowName, uint dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam)
             => User32Dll.CreateWindowExA(dwExStyle, lpClassName, lpWindowName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
+
+        public unsafe HWND CreateWindowExA(uint dwExStyle, string lpClassName, string lpWindowName, uint dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam)
+            => User32Dll.CreateWindowExA(dwExStyle, lpClassName, lpWindowName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
+
+        public int UpdateWindow(HWND hWnd)
+            => User32Dll.UpdateWindow(hWnd);
+
+        public unsafe LRESULT SendMessageA(HWND hWnd, uint Msg, uint* wParam, ulong* lParam)
+            => User32Dll.SendMessageA(hWnd, Msg, wParam, lParam);
     }
 }
