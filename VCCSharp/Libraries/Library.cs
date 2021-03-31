@@ -424,9 +424,6 @@ namespace VCCSharp.Libraries
             public static extern void MC6821_ClosePrintFile();
 
             [DllImport(LIBRARY)]
-            public static extern void MC6821_SetMonState(int state);
-
-            [DllImport(LIBRARY)]
             public static extern void MC6821_SetSerialParams(byte textMode);
 
             [DllImport(LIBRARY)]
@@ -503,9 +500,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void GimeAssertTimerInterrupt();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void FreeMemory(byte* target);
 
             [DllImport(LIBRARY)]
             public static extern byte MemRead8(ushort address);

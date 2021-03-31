@@ -158,20 +158,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MC6821_SetMonState(BOOL state)
-  {
-    if (instance->MonState & !state)
-    {
-      FreeConsole();
-
-      instance->hOut = NULL;
-    }
-
-    instance->MonState = state;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl MC6821_SetSerialParams(unsigned char textMode)
   {
     instance->AddLF = textMode;

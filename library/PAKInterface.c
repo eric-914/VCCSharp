@@ -160,6 +160,14 @@ extern "C" {
   }
 }
 
+extern "C" {
+  __declspec(dllexport) void __cdecl FreeMemory(unsigned char* target) {
+    if (target != NULL) {
+      free(target);
+    }
+  }
+}
+
 /**
 Load a ROM pack
 return total bytes loaded, or 0 on failure

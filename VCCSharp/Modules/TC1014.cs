@@ -256,7 +256,10 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void FreeMemory(byte* target)
         {
-            Library.TC1014.FreeMemory(target);
+            if (target != null)
+            {
+                Marshal.FreeHGlobal((IntPtr)target);
+            }
         }
 
         public unsafe byte* AllocateMemory(uint size)

@@ -225,14 +225,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl FreeMemory(unsigned char* target) {
-    if (target != NULL) {
-      free(target);
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) unsigned char __cdecl MemRead8(unsigned short address)
   {
     if (address < 0xFE00)

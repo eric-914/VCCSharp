@@ -15,6 +15,7 @@ namespace VCCSharp.Libraries
         unsafe int QueryPerformanceFrequency(LARGE_INTEGER* lpFrequency);
         unsafe int ReadFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToRead, uint* lpNumberOfBytesRead, void* lpOverlapped);
         unsafe uint SetFilePointer(HANDLE hFile, uint lDistanceToMove, uint* lpDistanceToMoveHigh, uint dwMoveMethod);
+        int FreeConsole();
     }
 
     public class Kernel : IKernel
@@ -45,5 +46,8 @@ namespace VCCSharp.Libraries
 
         public unsafe uint SetFilePointer(HANDLE hFile, uint lDistanceToMove, uint* lpDistanceToMoveHigh, uint dwMoveMethod)
             => KernelDll.SetFilePointer(hFile, lDistanceToMove, lpDistanceToMoveHigh, dwMoveMethod);
+
+        public int FreeConsole()
+            => KernelDll.FreeConsole();
     }
 }

@@ -1,4 +1,5 @@
-﻿using VCCSharp.Enums;
+﻿using System;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -21,10 +22,12 @@ namespace VCCSharp.Modules
     public class MC6821 : IMC6821
     {
         private readonly IModules _modules;
+        private readonly IKernel _kernel;
 
-        public MC6821(IModules modules)
+        public MC6821(IModules modules, IKernel kernel)
         {
             _modules = modules;
+            _kernel = kernel;
         }
 
         public unsafe MC6821State* GetMC6821State()
@@ -173,7 +176,19 @@ namespace VCCSharp.Modules
 
         public void MC6821_SetMonState(int state)
         {
-            Library.MC6821.MC6821_SetMonState(state);
+            unsafe
+            {
+                MC6821State* instance = GetMC6821State();
+
+                if (instance->MonState == Define.TRUE && state == Define.FALSE)
+                {
+                    _kernel.FreeConsole();
+
+                    instance->hOut = IntPtr.Zero;
+                }
+
+                instance->MonState = state;
+            }
         }
 
         public void MC6821_SetSerialParams(byte textMode)

@@ -35,5 +35,8 @@ namespace VCCSharp.Libraries
 
         [DllImport(DLL)]
         public static extern unsafe uint SetFilePointer(HANDLE hFile, uint lDistanceToMove, uint* lpDistanceToMoveHigh, uint dwMoveMethod);
+
+        [DllImport(DLL)]
+        public static extern int FreeConsole();
     }
 }
