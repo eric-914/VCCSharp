@@ -17,9 +17,6 @@
     <ClCompile Include="tcc1014graphics-16.c">
       <Filter>tc1014\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="tcc1014graphics-24.c">
-      <Filter>tc1014\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="tcc1014graphics-32.c">
       <Filter>tc1014\graphics</Filter>
     </ClCompile>
@@ -158,18 +155,6 @@
     </ClInclude>
     <ClInclude Include="keyboardlayout.h">
       <Filter>keyboard</Filter>
-    </ClInclude>
-    <ClInclude Include="tcc1014graphics-8.h">
-      <Filter>tc1014\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="tcc1014graphics-16.h">
-      <Filter>tc1014\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="tcc1014graphics-24.h">
-      <Filter>tc1014\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="tcc1014graphics-32.h">
-      <Filter>tc1014\graphics</Filter>
     </ClInclude>
     <ClInclude Include="xDebug.h">
       <Filter>debug</Filter>

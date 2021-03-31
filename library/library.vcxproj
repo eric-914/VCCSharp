@@ -203,7 +203,6 @@
     <ClCompile Include="ProcessMessage.c" />
     <ClCompile Include="TC1014Registers.c" />
     <ClCompile Include="tcc1014graphics-16.c" />
-    <ClCompile Include="tcc1014graphics-24.c" />
     <ClCompile Include="tcc1014graphics-32.c" />
     <ClCompile Include="tcc1014graphics-8.c" />
     <ClCompile Include="VccState.c" />
@@ -281,10 +280,6 @@
     <ClInclude Include="logger.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="EmuState.h" />
-    <ClInclude Include="tcc1014graphics-16.h" />
-    <ClInclude Include="tcc1014graphics-24.h" />
-    <ClInclude Include="tcc1014graphics-32.h" />
-    <ClInclude Include="tcc1014graphics-8.h" />
     <ClInclude Include="VccState.h" />
     <ClInclude Include="xDebug.h" />
   </ItemGroup>

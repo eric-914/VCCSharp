@@ -307,42 +307,137 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void DrawTopBorder8(EmuState* emuState)
         {
-            Library.TC1014.DrawTopBorder8(emuState);
+            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
+            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+
+            if (gs->BorderChange == 0)
+            {
+                return;
+            }
+
+            for (ushort x = 0; x < emuState->WindowSize.X; x++)
+            {
+                graphicsSurfaces->pSurface8[x + ((emuState->LineCounter * 2) * emuState->SurfacePitch)] = (byte)(gs->BorderColor8 | 128);
+
+                if (emuState->ScanLines == Define.FALSE)
+                {
+                    graphicsSurfaces->pSurface8[x + ((emuState->LineCounter * 2 + 1) * emuState->SurfacePitch)] = (byte)(gs->BorderColor8 | 128);
+                }
+            }
         }
 
         public unsafe void DrawTopBorder16(EmuState* emuState)
         {
-            Library.TC1014.DrawTopBorder16(emuState);
+            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
+            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+
+            if (gs->BorderChange == 0)
+            {
+                return;
+            }
+
+            for (ushort x = 0; x < emuState->WindowSize.X; x++)
+            {
+                graphicsSurfaces->pSurface16[x + ((emuState->LineCounter * 2) * emuState->SurfacePitch)] = gs->BorderColor16;
+
+                if (emuState->ScanLines == Define.FALSE)
+                {
+                    graphicsSurfaces->pSurface16[x + ((emuState->LineCounter * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor16;
+                }
+            }
         }
 
         public unsafe void DrawTopBorder24(EmuState* emuState)
         {
-            Library.TC1014.DrawTopBorder24(emuState);
+            //--Not implemented
         }
 
         public unsafe void DrawTopBorder32(EmuState* emuState)
         {
-            Library.TC1014.DrawTopBorder32(emuState);
+            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
+            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+
+            if (gs->BorderChange == 0)
+            {
+                return;
+            }
+
+            for (ushort x = 0; x < emuState->WindowSize.X; x++)
+            {
+                graphicsSurfaces->pSurface32[x + ((emuState->LineCounter * 2) * emuState->SurfacePitch)] = gs->BorderColor32;
+
+                if (emuState->ScanLines == Define.FALSE)
+                {
+                    graphicsSurfaces->pSurface32[x + ((emuState->LineCounter * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor32;
+                }
+            }
         }
 
         public unsafe void DrawBottomBorder8(EmuState* emuState)
         {
-            Library.TC1014.DrawBottomBorder8(emuState);
+            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
+            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+
+            if (gs->BorderChange == 0)
+            {
+                return;
+            }
+
+            for (ushort x = 0; x < emuState->WindowSize.X; x++)
+            {
+                graphicsSurfaces->pSurface8[x + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = (byte)(gs->BorderColor8 | 128);
+
+                if (emuState->ScanLines == Define.FALSE)
+                {
+                    graphicsSurfaces->pSurface8[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = (byte)(gs->BorderColor8 | 128);
+                }
+            }
         }
 
         public unsafe void DrawBottomBorder16(EmuState* emuState)
         {
-            Library.TC1014.DrawBottomBorder16(emuState);
+            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
+            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+
+            if (gs->BorderChange == 0) {
+                return;
+            }
+
+            for (ushort x = 0; x < emuState->WindowSize.X; x++)
+            {
+                graphicsSurfaces->pSurface16[x + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor16;
+
+                if (emuState->ScanLines == Define.FALSE)
+                {
+                    graphicsSurfaces->pSurface16[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor16;
+                }
+            }
         }
 
         public unsafe void DrawBottomBorder24(EmuState* emuState)
         {
-            Library.TC1014.DrawBottomBorder24(emuState);
+            //--Not implemented
         }
 
         public unsafe void DrawBottomBorder32(EmuState* emuState)
         {
-            Library.TC1014.DrawBottomBorder32(emuState);
+            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
+            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+
+            if (gs->BorderChange == 0)
+            {
+                return;
+            }
+
+            for (ushort x = 0; x < emuState->WindowSize.X; x++)
+            {
+                graphicsSurfaces->pSurface32[x + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor32;
+
+                if (emuState->ScanLines == Define.FALSE)
+                {
+                    graphicsSurfaces->pSurface32[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor32;
+                }
+            }
         }
 
         public unsafe void UpdateScreen8(EmuState* emuState)
@@ -357,7 +452,7 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void UpdateScreen24(EmuState* emuState)
         {
-            Library.TC1014.UpdateScreen24(emuState);
+            //--Not implemented
         }
 
         public unsafe void UpdateScreen32(EmuState* emuState)
