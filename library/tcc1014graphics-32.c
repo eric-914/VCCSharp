@@ -25,10 +25,8 @@ This file is part of VCC (Virtual Color Computer).
 #include "TC1014Mmu.h"
 
 extern "C" {
-  __declspec(dllexport)
-    void __cdecl UpdateScreen32(EmuState* emuState)
+  __declspec(dllexport) void __cdecl SwitchMasterMode32(EmuState* emuState, unsigned char masterMode, unsigned int start, unsigned int yStride)
   {
-    register unsigned int yStride = 0;
     unsigned char pixel = 0;
     unsigned char character = 0, attributes = 0;
     unsigned int textPalette[2] = { 0,0 };
@@ -47,38 +45,8 @@ extern "C" {
 
     unsigned int* szSurface32 = graphicsSurfaces->pSurface32;
 
-    unsigned short y = emuState->LineCounter;
     long Xpitch = emuState->SurfacePitch;
-
-    if ((gs->HorzCenter != 0) && (gs->BorderChange > 0)) {
-      for (unsigned short x = 0; x < gs->HorzCenter; x++)
-      {
-        szSurface32[x + (((y + gs->VertCenter) * 2) * Xpitch)] = gs->BorderColor32;
-
-        if (!emuState->ScanLines) {
-          szSurface32[x + (((y + gs->VertCenter) * 2 + 1) * Xpitch)] = gs->BorderColor32;
-        }
-
-        szSurface32[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((y + gs->VertCenter) * 2) * Xpitch)] = gs->BorderColor32;
-
-        if (!emuState->ScanLines) {
-          szSurface32[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((y + gs->VertCenter) * 2 + 1) * Xpitch)] = gs->BorderColor32;
-        }
-      }
-    }
-
-    if (gs->LinesperRow < 13) {
-      gs->TagY++;
-    }
-
-    if (!y)
-    {
-      gs->StartofVidram = gs->NewStartofVidram;
-      gs->TagY = y;
-    }
-
-    unsigned int start = gs->StartofVidram + (gs->TagY / gs->LinesperRow) * (gs->VPitch * gs->ExtendedText);
-    yStride = (((y + gs->VertCenter) * 2) * Xpitch) + (gs->HorzCenter * 1) - 1;
+    unsigned short y = emuState->LineCounter;
 
     switch (gs->MasterMode) // (GraphicsMode <<7) | (CompatMode<<6)  | ((Bpp & 3)<<4) | (Stretch & 15);
     {

@@ -499,13 +499,13 @@ namespace VCCSharp.Libraries
             public static extern void SetRomMap(byte data);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void UpdateScreen8(EmuState* emuState);
+            public static extern unsafe void SwitchMasterMode8(EmuState* emuState, byte masterMode, uint start, uint yStride);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void UpdateScreen16(EmuState* emuState);
+            public static extern unsafe void SwitchMasterMode16(EmuState* emuState, byte masterMode, uint start, uint yStride);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void UpdateScreen32(EmuState* emuState);
+            public static extern unsafe void SwitchMasterMode32(EmuState* emuState, byte masterMode, uint start, uint yStride);
         }
 
         public static class Vcc

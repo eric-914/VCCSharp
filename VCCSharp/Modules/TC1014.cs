@@ -442,12 +442,80 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void UpdateScreen8(EmuState* emuState)
         {
-            Library.TC1014.UpdateScreen8(emuState);
+            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
+            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+
+            if ((gs->HorzCenter != 0) && (gs->BorderChange > 0)) {
+                for (ushort x = 0; x < gs->HorzCenter; x++)
+                {
+                    graphicsSurfaces->pSurface8[x + (((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch)] = gs->BorderColor8;
+
+                    if (emuState->ScanLines == Define.FALSE) {
+                        graphicsSurfaces->pSurface8[x + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor8;
+                    }
+
+                    graphicsSurfaces->pSurface8[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch)] = gs->BorderColor8;
+
+                    if (emuState->ScanLines == Define.FALSE) {
+                        graphicsSurfaces->pSurface8[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor8;
+                    }
+                }
+            }
+
+            if (gs->LinesperRow < 13) {
+                gs->TagY++;
+            }
+
+            if (emuState->LineCounter == Define.FALSE)
+            {
+                gs->StartofVidram = gs->NewStartofVidram;
+                gs->TagY = (ushort)(emuState->LineCounter);
+            }
+
+            uint start = (uint)(gs->StartofVidram + (gs->TagY / gs->LinesperRow) * (gs->VPitch * gs->ExtendedText));
+            uint yStride = (uint)((((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch) + (gs->HorzCenter) - 1);
+
+            SwitchMasterMode8(emuState, gs->MasterMode, start, yStride);
         }
 
         public unsafe void UpdateScreen16(EmuState* emuState)
         {
-            Library.TC1014.UpdateScreen16(emuState);
+            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
+            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+
+            if ((gs->HorzCenter != 0) && (gs->BorderChange > 0))
+            {
+                for (ushort x = 0; x < gs->HorzCenter; x++)
+                {
+                    graphicsSurfaces->pSurface16[x + (((emuState->LineCounter + gs->VertCenter) * 2) * (emuState->SurfacePitch))] = gs->BorderColor16;
+
+                    if (emuState->ScanLines == Define.FALSE)
+                    {
+                        graphicsSurfaces->pSurface16[x + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * (emuState->SurfacePitch))] = gs->BorderColor16;
+                    }
+
+                    graphicsSurfaces->pSurface16[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2) * (emuState->SurfacePitch))] = gs->BorderColor16;
+
+                    if (emuState->ScanLines == Define.FALSE) {
+                        graphicsSurfaces->pSurface16[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * (emuState->SurfacePitch))] = gs->BorderColor16;
+                    }
+                }
+            }
+
+            if (gs->LinesperRow < 13) {
+                gs->TagY++;
+            }
+
+            if (emuState->LineCounter == Define.FALSE)
+            {
+                gs->StartofVidram = gs->NewStartofVidram;
+                gs->TagY = (ushort)(emuState->LineCounter);
+            }
+
+            uint start = (uint)(gs->StartofVidram + (gs->TagY / gs->LinesperRow) * (gs->VPitch * gs->ExtendedText));
+            uint yStride = (uint)((((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch) + (gs->HorzCenter * 1) - 1);
+
+            SwitchMasterMode16(emuState, gs->MasterMode, start, yStride);
         }
 
         public unsafe void UpdateScreen24(EmuState* emuState)
@@ -457,7 +525,60 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void UpdateScreen32(EmuState* emuState)
         {
-            Library.TC1014.UpdateScreen32(emuState);
+            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
+            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+
+            uint* szSurface32 = graphicsSurfaces->pSurface32;
+
+            ushort y = (ushort)emuState->LineCounter;
+            long Xpitch = emuState->SurfacePitch;
+
+            if ((gs->HorzCenter != 0) && (gs->BorderChange > 0)) {
+                for (ushort x = 0; x < gs->HorzCenter; x++)
+                {
+                    szSurface32[x + (((y + gs->VertCenter) * 2) * Xpitch)] = gs->BorderColor32;
+
+                    if (emuState->ScanLines == Define.FALSE) {
+                        szSurface32[x + (((y + gs->VertCenter) * 2 + 1) * Xpitch)] = gs->BorderColor32;
+                    }
+
+                    szSurface32[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((y + gs->VertCenter) * 2) * Xpitch)] = gs->BorderColor32;
+
+                    if (emuState->ScanLines == Define.FALSE) {
+                        szSurface32[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((y + gs->VertCenter) * 2 + 1) * Xpitch)] = gs->BorderColor32;
+                    }
+                }
+            }
+
+            if (gs->LinesperRow < 13) {
+                gs->TagY++;
+            }
+
+            if (y == Define.FALSE)
+            {
+                gs->StartofVidram = gs->NewStartofVidram;
+                gs->TagY = y;
+            }
+
+            uint start = (uint)(gs->StartofVidram + (gs->TagY / gs->LinesperRow) * (gs->VPitch * gs->ExtendedText));
+            uint yStride = (uint)((((y + gs->VertCenter) * 2) * Xpitch) + (gs->HorzCenter * 1) - 1);
+
+            SwitchMasterMode32(emuState, gs->MasterMode, start, yStride);
+        }
+
+        public unsafe void SwitchMasterMode8(EmuState* emuState, byte masterMode, uint start, uint yStride)
+        {
+            Library.TC1014.SwitchMasterMode8(emuState, masterMode, start, yStride);
+        }
+
+        public unsafe void SwitchMasterMode16(EmuState* emuState, byte masterMode, uint start, uint yStride)
+        {
+            Library.TC1014.SwitchMasterMode16(emuState, masterMode, start, yStride);
+        }
+
+        public unsafe void SwitchMasterMode32(EmuState* emuState, byte masterMode, uint start, uint yStride)
+        {
+            Library.TC1014.SwitchMasterMode32(emuState, masterMode, start, yStride);
         }
     }
 }

@@ -27,10 +27,8 @@ This file is part of VCC (Virtual Color Computer).
 #include "TC1014Mmu.h"
 
 extern "C" {
-  __declspec(dllexport)
-    void __cdecl UpdateScreen16(EmuState* emuState)
+  __declspec(dllexport) void __cdecl SwitchMasterMode16(EmuState* emuState, unsigned char masterMode, unsigned int start, unsigned int yStride)
   {
-    register unsigned int yStride = 0;
     unsigned char pixel = 0;
     unsigned char character = 0, attributes = 0;
     unsigned short textPalette[2] = { 0,0 };
@@ -47,34 +45,7 @@ extern "C" {
     unsigned char* ramBuffer = mmu->Memory;
     unsigned short* wRamBuffer = (unsigned short*)ramBuffer;
 
-    if ((gs->HorzCenter != 0) && (gs->BorderChange > 0))
-      for (unsigned short x = 0; x < gs->HorzCenter; x++)
-      {
-        graphicsSurfaces->pSurface16[x + (((emuState->LineCounter + gs->VertCenter) * 2) * (emuState->SurfacePitch))] = gs->BorderColor16;
-
-        if (!emuState->ScanLines)
-          graphicsSurfaces->pSurface16[x + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * (emuState->SurfacePitch))] = gs->BorderColor16;
-
-        graphicsSurfaces->pSurface16[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2) * (emuState->SurfacePitch))] = gs->BorderColor16;
-
-        if (!emuState->ScanLines)
-          graphicsSurfaces->pSurface16[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * (emuState->SurfacePitch))] = gs->BorderColor16;
-      }
-
-    if (gs->LinesperRow < 13) {
-      gs->TagY++;
-    }
-
-    if (!emuState->LineCounter)
-    {
-      gs->StartofVidram = gs->NewStartofVidram;
-      gs->TagY = emuState->LineCounter;
-    }
-
-    unsigned int start = gs->StartofVidram + (gs->TagY / gs->LinesperRow) * (gs->VPitch * gs->ExtendedText);
-    yStride = (((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch) + (gs->HorzCenter * 1) - 1;
-
-    switch (gs->MasterMode) // (GraphicsMode <<7) | (CompatMode<<6)  | ((Bpp & 3)<<4) | (Stretch & 15);
+    switch (masterMode) // (GraphicsMode <<7) | (CompatMode<<6)  | ((Bpp & 3)<<4) | (Stretch & 15);
     {
     case 0: //Width 80
       attributes = 0;
@@ -127,7 +98,6 @@ extern "C" {
     case 1:
     case 2: //Width 40
       attributes = 0;
-
       for (unsigned short beam = 0; beam < gs->BytesperRow * gs->ExtendedText; beam += gs->ExtendedText)
       {
         character = ramBuffer[gs->VidMask & (start + (unsigned char)(beam + gs->Hoffset))];
@@ -354,7 +324,6 @@ extern "C" {
     case 125:
     case 126:
     case 127:
-
       for (unsigned short beam = 0; beam < gs->BytesperRow; beam++)
       {
         character = ramBuffer[gs->VidMask & (start + (unsigned char)(beam + gs->Hoffset))];
@@ -429,7 +398,6 @@ extern "C" {
           yStride -= emuState->SurfacePitch;
         }
       }
-
       break;
 
     case 128 + 0: //Bpp=0 Sr=0 1BPP Stretch=1
@@ -3192,7 +3160,5 @@ extern "C" {
       break;
 
     }
-
-    return;
   }
 }
