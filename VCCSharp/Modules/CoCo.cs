@@ -626,18 +626,41 @@ namespace VCCSharp.Modules
 
         private unsafe void CoCoDrawTopBorder(EmuState* emuState)
         {
-            Library.CoCo.CoCoDrawTopBorder(emuState);
+            var mapping = new Dictionary<BitDepthStates, Action>
+            {
+                {BitDepthStates.BIT_8, () => _modules.TC1014.DrawTopBorder8(emuState)},
+                {BitDepthStates.BIT_16, () => _modules.TC1014.DrawTopBorder16(emuState)},
+                {BitDepthStates.BIT_24, () => _modules.TC1014.DrawTopBorder24(emuState)},
+                {BitDepthStates.BIT_32, () => _modules.TC1014.DrawTopBorder32(emuState)}
+            };
+
+            mapping[(BitDepthStates) emuState->BitDepth]();
         }
 
         private unsafe void CoCoUpdateScreen(EmuState* emuState)
         {
-            Library.CoCo.CoCoUpdateScreen(emuState);
+            var mapping = new Dictionary<BitDepthStates, Action>
+            {
+                {BitDepthStates.BIT_8, () => _modules.TC1014.UpdateScreen8(emuState)},
+                {BitDepthStates.BIT_16, () => _modules.TC1014.UpdateScreen16(emuState)},
+                {BitDepthStates.BIT_24, () => _modules.TC1014.UpdateScreen24(emuState)},
+                {BitDepthStates.BIT_32, () => _modules.TC1014.UpdateScreen32(emuState)}
+            };
+
+            mapping[(BitDepthStates) emuState->BitDepth]();
         }
 
         private unsafe void CoCoDrawBottomBorder(EmuState* emuState)
         {
-            Library.CoCo.CoCoDrawBottomBorder(emuState);
-        }
+            var mapping = new Dictionary<BitDepthStates, Action>
+            {
+                {BitDepthStates.BIT_8, () => _modules.TC1014.DrawBottomBorder8(emuState)},
+                {BitDepthStates.BIT_16, () => _modules.TC1014.DrawBottomBorder16(emuState)},
+                {BitDepthStates.BIT_24, () => _modules.TC1014.DrawBottomBorder24(emuState)},
+                {BitDepthStates.BIT_32, () => _modules.TC1014.DrawBottomBorder32(emuState)}
+            };
 
+            mapping[(BitDepthStates) emuState->BitDepth]();
+        }
     }
 }

@@ -24,6 +24,18 @@ namespace VCCSharp.Modules
         ushort GetMem(int address);
         void SetMapType(byte type);
         void SetRomMap(byte data);
+        unsafe void DrawBottomBorder16(EmuState* emuState);
+        unsafe void DrawBottomBorder24(EmuState* emuState);
+        unsafe void DrawBottomBorder32(EmuState* emuState);
+        unsafe void DrawBottomBorder8(EmuState* emuState);
+        unsafe void DrawTopBorder16(EmuState* emuState);
+        unsafe void DrawTopBorder24(EmuState* emuState);
+        unsafe void DrawTopBorder32(EmuState* emuState);
+        unsafe void DrawTopBorder8(EmuState* emuState);
+        unsafe void UpdateScreen16(EmuState* emuState);
+        unsafe void UpdateScreen24(EmuState* emuState);
+        unsafe void UpdateScreen32(EmuState* emuState);
+        unsafe void UpdateScreen8(EmuState* emuState);
     }
 
     public class TC1014 : ITC1014
@@ -291,6 +303,66 @@ Could not locate {ROM} in any of these locations:
         public void SetRomMap(byte data)
         {
             Library.TC1014.SetRomMap(data);
+        }
+
+        public unsafe void DrawTopBorder8(EmuState* emuState)
+        {
+            Library.TC1014.DrawTopBorder8(emuState);
+        }
+
+        public unsafe void DrawTopBorder16(EmuState* emuState)
+        {
+            Library.TC1014.DrawTopBorder16(emuState);
+        }
+
+        public unsafe void DrawTopBorder24(EmuState* emuState)
+        {
+            Library.TC1014.DrawTopBorder24(emuState);
+        }
+
+        public unsafe void DrawTopBorder32(EmuState* emuState)
+        {
+            Library.TC1014.DrawTopBorder32(emuState);
+        }
+
+        public unsafe void DrawBottomBorder8(EmuState* emuState)
+        {
+            Library.TC1014.DrawBottomBorder8(emuState);
+        }
+
+        public unsafe void DrawBottomBorder16(EmuState* emuState)
+        {
+            Library.TC1014.DrawBottomBorder16(emuState);
+        }
+
+        public unsafe void DrawBottomBorder24(EmuState* emuState)
+        {
+            Library.TC1014.DrawBottomBorder24(emuState);
+        }
+
+        public unsafe void DrawBottomBorder32(EmuState* emuState)
+        {
+            Library.TC1014.DrawBottomBorder32(emuState);
+        }
+
+        public unsafe void UpdateScreen8(EmuState* emuState)
+        {
+            Library.TC1014.UpdateScreen8(emuState);
+        }
+
+        public unsafe void UpdateScreen16(EmuState* emuState)
+        {
+            Library.TC1014.UpdateScreen16(emuState);
+        }
+
+        public unsafe void UpdateScreen24(EmuState* emuState)
+        {
+            Library.TC1014.UpdateScreen24(emuState);
+        }
+
+        public unsafe void UpdateScreen32(EmuState* emuState)
+        {
+            Library.TC1014.UpdateScreen32(emuState);
         }
     }
 }

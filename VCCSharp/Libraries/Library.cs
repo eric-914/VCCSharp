@@ -74,15 +74,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe CoCoState* GetCoCoState();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void CoCoDrawTopBorder(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void CoCoUpdateScreen(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void CoCoDrawBottomBorder(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
             public static extern void ExecuteAudioEvent();
 
             [DllImport(LIBRARY)]
@@ -506,6 +497,42 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetRomMap(byte data);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DrawBottomBorder8(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DrawBottomBorder16(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DrawBottomBorder24(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DrawBottomBorder32(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DrawTopBorder8(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DrawTopBorder16(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DrawTopBorder24(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DrawTopBorder32(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void UpdateScreen8(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void UpdateScreen16(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void UpdateScreen24(EmuState* emuState);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void UpdateScreen32(EmuState* emuState);
         }
 
         public static class Vcc

@@ -3,29 +3,11 @@
 #include "defines.h"
 
 #include "Graphics.h"
-#include "tcc1014graphics-8.h"
-#include "tcc1014graphics-16.h"
-#include "tcc1014graphics-24.h"
-#include "tcc1014graphics-32.h"
-
 #include "MC6821.h"
 #include "Cassette.h"
-#include "Keyboard.h"
-#include "Clipboard.h"
-#include "DirectDraw.h"
 #include "Audio.h"
 
-#include "cpudef.h"
-
-#include "PAKInterface.h"
-#include "TC1014Registers.h"
-
-#include "VccState.h"
-
 static void (*AudioEvent)(void) = AudioOut;
-static void (*DrawTopBorder[4]) (EmuState*) = { DrawTopBorder8, DrawTopBorder16, DrawTopBorder24, DrawTopBorder32 };
-static void (*DrawBottomBorder[4]) (EmuState*) = { DrawBottomBorder8, DrawBottomBorder16, DrawBottomBorder24, DrawBottomBorder32 };
-static void (*UpdateScreen[4]) (EmuState*) = { UpdateScreen8, UpdateScreen16, UpdateScreen24, UpdateScreen32 };
 
 CoCoState* InitializeInstance(CoCoState*);
 
@@ -78,24 +60,6 @@ CoCoState* InitializeInstance(CoCoState* p) {
 extern "C" {
   __declspec(dllexport) void __cdecl ExecuteAudioEvent() {
     AudioEvent();
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl CoCoDrawTopBorder(EmuState* emuState) {
-    DrawTopBorder[emuState->BitDepth](emuState);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl CoCoUpdateScreen(EmuState* emuState) {
-    UpdateScreen[emuState->BitDepth](emuState);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl CoCoDrawBottomBorder(EmuState* emuState) {
-    DrawBottomBorder[emuState->BitDepth](emuState);
   }
 }
 
