@@ -52,15 +52,9 @@ TC1014MmuState* InitializeInstance(TC1014MmuState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned short __cdecl GetMem(long address) {
-    return(instance->Memory[address]);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) unsigned char* __cdecl GetInternalRomPointer(void)
   {
-    return(instance->InternalRomBuffer);
+    return instance->InternalRomBuffer;
   }
 }
 
@@ -203,36 +197,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MmuReset()
-  {
-    unsigned int index1 = 0, index2 = 0;
-
-    instance->MmuTask = 0;
-    instance->MmuEnabled = 0;
-    instance->RamVectors = 0;
-    instance->MmuState = 0;
-    instance->RomMap = 0;
-    instance->MapType = 0;
-    instance->MmuPrefix = 0;
-
-    for (index1 = 0;index1 < 8;index1++) {
-      for (index2 = 0;index2 < 4;index2++) {
-        instance->MmuRegisters[index2][index1] = index1 + instance->StateSwitch[instance->CurrentRamConfig];
-      }
-    }
-
-    for (index1 = 0;index1 < 1024;index1++)
-    {
-      instance->MemPages[index1] = instance->Memory + ((index1 & instance->RamMask[instance->CurrentRamConfig]) * 0x2000);
-      instance->MemPageOffsets[index1] = 1;
-    }
-
-    SetRomMap(0);
-    SetMapType(0);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl SetDistoRamBank(unsigned char data)
   {
     switch (instance->CurrentRamConfig)
@@ -265,12 +229,6 @@ extern "C" {
     if (target != NULL) {
       free(target);
     }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned char* __cdecl AllocateMemory(unsigned int size) {
-    return (unsigned char*)malloc(size);
   }
 }
 

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using VCCSharp.Models;
@@ -12,8 +13,10 @@ namespace VCCSharp.Libraries
     {
         public const string DLL = "User32.dll";
 
+        public delegate HINSTANCE WndProc(IntPtr hWnd, uint msg, ulong wParam, long lParam);
+
         [DllImport(DLL)]
-        public static extern unsafe int GetMessageA(MSG* lpMsg, HWND hWnd, ushort wMsgFilterMin, ushort wMsgFilterMax);
+        public static extern unsafe int GetMessageA(MSG* lpMsg, HWND hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
 
         [DllImport(DLL)]
         public static extern unsafe int TranslateMessage(MSG* lpMsg);
@@ -69,5 +72,11 @@ namespace VCCSharp.Libraries
         public static extern unsafe HWND CreateWindowExA(uint dwExStyle, string lpClassName, string lpWindowName,
             uint dwStyle, int X, int Y, int nWidth, int nHeight,
             HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
+
+        [DllImport(DLL)]
+        public static extern LRESULT DefWindowProcA(HWND hWnd, uint Msg, ulong wParam, long lParam);
+
+        [DllImport(DLL)]
+        public static extern LRESULT DefWindowProc(HWND hWnd, uint Msg, ulong wParam, long lParam);
     }
 }

@@ -55,8 +55,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 extern "C" {
   __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindow(HINSTANCE resources, unsigned char fullscreen)
   {
+    WNDPROC proc;
+    proc = WndProc;
+    //proc = DefWindowProcA;
+
     UINT style = CS_HREDRAW | CS_VREDRAW;
-    WNDPROC lpfnWndProc = (WNDPROC)WndProc;
+    WNDPROC lpfnWndProc = proc; 
     HINSTANCE hInstance = instance->hInstance;
     HICON hIcon = LoadIcon(resources, (LPCTSTR)IDI_COCO3);
     HBRUSH hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);

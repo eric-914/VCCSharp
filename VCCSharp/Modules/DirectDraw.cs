@@ -413,7 +413,7 @@ namespace VCCSharp.Modules
                 //    rcDest.right = rcDest.left + (int)instance->WindowSize.X;
                 //    rcDest.bottom = rcDest.top + (int)instance->WindowSize.Y;
 
-                //    RECT defaultRect = GetWindowDefaultSize();
+                    //RECT defaultRect = _defaultSize;
 
                 //    _user32.GetWindowRect(emuState->WindowHandle, &rect);
                 //    _user32.MoveWindow(emuState->WindowHandle, rect.left, rect.top, defaultRect.right - defaultRect.left, defaultRect.bottom - defaultRect.top, 1);
@@ -627,7 +627,7 @@ namespace VCCSharp.Modules
             // using MoveWindow to resize 
             _user32.MoveWindow(emuState->WindowHandle, rStatBar.left, rStatBar.top, width, height, 1);
 
-            RECT size = DDGetWindowDefaultSize();
+            RECT size;
 
             _user32.SendMessageA(instance->hWndStatusBar, Define.WM_SIZE, 0, 0); // Redraw Status bar in new position
 
@@ -712,9 +712,10 @@ namespace VCCSharp.Modules
 
             if (emuState->WindowHandle == null) return false;
 
-            RECT size = DDGetWindowDefaultSize();
+            RECT size;
 
             _user32.GetWindowRect(emuState->WindowHandle, &size);
+
             _user32.ShowWindow(emuState->WindowHandle, Define.SW_SHOWMAXIMIZED);
             _user32.UpdateWindow(emuState->WindowHandle);
 
@@ -753,8 +754,18 @@ namespace VCCSharp.Modules
             return true;
         }
 
+        
+
         private bool CreateDirectDrawWindow(HINSTANCE resources, byte fullscreen)
         {
+            //IntPtr WndProcCallback(HWND hWnd, uint msg, ulong wParam, long lParam)
+            //{
+            //    _modules.Events.ProcessMessage(hWnd, msg, wParam, lParam);
+
+            //    return _user32.DefWindowProcA(hWnd, msg, wParam, lParam);
+            //}
+
+            //return Library.DirectDraw.CreateDirectDrawWindow(resources, fullscreen, WndProcCallback) != Define.FALSE;
             return Library.DirectDraw.CreateDirectDrawWindow(resources, fullscreen) != Define.FALSE;
         }
 
@@ -833,11 +844,6 @@ namespace VCCSharp.Modules
             return Library.DirectDraw.DDCreate();
         }
 
-        public RECT DDGetWindowDefaultSize()
-        {
-            return Library.DirectDraw.DDGetWindowDefaultSize();
-        }
-
         public int UnlockDDBackSurface()
         {
             return Library.DirectDraw.UnlockDDBackSurface();
@@ -858,11 +864,6 @@ namespace VCCSharp.Modules
         public int DDSurfaceFlip()
         {
             return Library.DirectDraw.DDSurfaceFlip();
-        }
-
-        public RECT GetWindowDefaultSize()
-        {
-            return Library.DirectDraw.GetWindowDefaultSize();
         }
 
         public unsafe int DDSurfaceBlt(RECT* rcDest, RECT* rcSrc)

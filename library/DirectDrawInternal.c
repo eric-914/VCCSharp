@@ -4,6 +4,8 @@ DirectDrawInternalState* InitializeInternal(DirectDrawInternalState*);
 
 static DirectDrawInternalState* instance = InitializeInternal(new DirectDrawInternalState());
 
+static WNDCLASSEX _wcex;
+
 extern "C" {
   __declspec(dllexport) DirectDrawInternalState* __cdecl GetDirectDrawInternalState() {
     return instance;
@@ -51,13 +53,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) RECT __cdecl GetWindowDefaultSize()
-  {
-    return instance->WindowDefaultSize;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) BOOL __cdecl HasDDBackSurface()
   {
     return instance->DDBackSurface != NULL;
@@ -90,7 +85,7 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl DDUnregisterClass()
   {
-    UnregisterClass(instance->Wcex.lpszClassName, instance->Wcex.hInstance);
+    UnregisterClass(_wcex.lpszClassName, _wcex.hInstance);
   }
 }
 
@@ -151,13 +146,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) RECT __cdecl DDGetWindowDefaultSize()
-  {
-    return instance->WindowDefaultSize;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) HRESULT __cdecl DDSetDisplayMode(DWORD x, DWORD y, DWORD depth)
   {
     return instance->DD->SetDisplayMode(x, y, depth);
@@ -202,20 +190,20 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) BOOL __cdecl RegisterWcex(HINSTANCE hInstance, WNDPROC lpfnWndProc, LPCSTR lpszClassName, LPCSTR lpszMenuName, UINT style, HICON hIcon, HCURSOR hCursor, HBRUSH hbrBackground)
   {
-    instance->Wcex.cbSize = sizeof(WNDCLASSEX);	//And Rebuilt it from scratch
-    instance->Wcex.hInstance = hInstance;
-    instance->Wcex.lpfnWndProc = lpfnWndProc;
-    instance->Wcex.style = style;
-    instance->Wcex.hIcon = hIcon;
-    instance->Wcex.hIconSm = hIcon;
-    instance->Wcex.hbrBackground = hbrBackground;
-    instance->Wcex.lpszClassName = lpszClassName;
-    instance->Wcex.lpszMenuName = lpszMenuName;
-    instance->Wcex.hCursor = hCursor;
-    instance->Wcex.cbClsExtra = 0;
-    instance->Wcex.cbWndExtra = 0;
+    _wcex.cbSize = sizeof(WNDCLASSEX);	//And Rebuilt it from scratch
+    _wcex.hInstance = hInstance;
+    _wcex.lpfnWndProc = lpfnWndProc;
+    _wcex.style = style;
+    _wcex.hIcon = hIcon;
+    _wcex.hIconSm = hIcon;
+    _wcex.hbrBackground = hbrBackground;
+    _wcex.lpszClassName = lpszClassName;
+    _wcex.lpszMenuName = lpszMenuName;
+    _wcex.hCursor = hCursor;
+    _wcex.cbClsExtra = 0;
+    _wcex.cbWndExtra = 0;
 
-    return RegisterClassEx(&(instance->Wcex));
+    return RegisterClassEx(&_wcex);
   }
 }
 

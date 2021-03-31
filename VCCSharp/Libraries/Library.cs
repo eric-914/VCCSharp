@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using VCCSharp.Enums;
 using VCCSharp.Models;
@@ -175,9 +176,6 @@ namespace VCCSharp.Libraries
             public static extern int DDSurfaceFlip();
 
             [DllImport(LIBRARY)]
-            public static extern RECT GetWindowDefaultSize();
-
-            [DllImport(LIBRARY)]
             public static extern unsafe int DDSurfaceBlt(RECT* rcDest, RECT* rcSrc);
 
             [DllImport(LIBRARY)]
@@ -248,9 +246,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern int DDCreate();
-
-            [DllImport(LIBRARY)]
-            public static extern RECT DDGetWindowDefaultSize();
 
             [DllImport(LIBRARY)]
             public static extern int DDSetDisplayMode(uint x, uint y, uint depth);
@@ -342,6 +337,9 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern HWND CreateConfigurationDialog(HINSTANCE resources, HWND windowHandle);
+
+            [DllImport(LIBRARY)]
+            public static extern void ProcessMessage(HWND hWnd, uint message, IntPtr wParam, IntPtr lParam);
         }
 
         public static class GDI
@@ -498,9 +496,6 @@ namespace VCCSharp.Libraries
             public static extern void MC6883Reset();
 
             [DllImport(LIBRARY)]
-            public static extern void MmuReset();
-
-            [DllImport(LIBRARY)]
             public static extern void MemWrite8(byte data, ushort address);
 
             [DllImport(LIBRARY)]
@@ -513,13 +508,13 @@ namespace VCCSharp.Libraries
             public static extern unsafe void FreeMemory(byte* target);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe byte* AllocateMemory(uint size);
-
-            [DllImport(LIBRARY)]
             public static extern byte MemRead8(ushort address);
 
             [DllImport(LIBRARY)]
-            public static extern ushort GetMem(int address);
+            public static extern void SetMapType(byte type);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetRomMap(byte data);
         }
 
         public static class Vcc
@@ -528,13 +523,4 @@ namespace VCCSharp.Libraries
             public static extern unsafe VccState* GetVccState();
         }
     }
-
-    //void* __cdecl memcpy(
-    //_Out_writes_bytes_all_(_Size) void* _Dst,
-    //_In_reads_bytes_(_Size)       void const* _Src,
-    //_In_                          size_t      _Size
-    //);
-
-    //[System.CLSCompliant(false)]
-    //public static void MemoryCopy (void* source, void* destination, long destinationSizeInBytes, long sourceBytesToCopy);
 }

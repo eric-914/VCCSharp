@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Interop;
 using VCCSharp.Models;
 using HWND = System.IntPtr;
@@ -9,7 +10,7 @@ namespace VCCSharp.Libraries
 {
     public interface IUser32
     {
-        unsafe int GetMessageA(MSG* lpMsg, HWND hWnd, ushort wMsgFilterMin, ushort wMsgFilterMax);
+        unsafe int GetMessageA(MSG* lpMsg, HWND hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
         unsafe int TranslateMessage(MSG* lpMsg);
         unsafe LRESULT DispatchMessageA(MSG* lpMsg);
         int ShowWindow(HWND hWnd, int nCmdShow);
@@ -26,12 +27,13 @@ namespace VCCSharp.Libraries
         unsafe HWND CreateWindowExA(uint dwExStyle, byte* lpClassName, byte* lpWindowName, uint dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
         unsafe HWND CreateWindowExA(uint dwExStyle, string lpClassName, string lpWindowName, uint dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
         int UpdateWindow(HWND hWnd);
-        unsafe LRESULT SendMessageA(HWND hWnd, uint Msg, ulong wParam, long lParam);
+        LRESULT SendMessageA(HWND hWnd, uint Msg, ulong wParam, long lParam);
+        LRESULT DefWindowProcA(HWND hWnd, uint Msg, ulong wParam, long lParam);
     }
 
     public class User32 : IUser32
     {
-        public unsafe int GetMessageA(MSG* lpMsg, HWND hWnd, ushort wMsgFilterMin, ushort wMsgFilterMax)
+        public unsafe int GetMessageA(MSG* lpMsg, HWND hWnd, uint wMsgFilterMin, uint wMsgFilterMax)
             => User32Dll.GetMessageA(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax);
 
         public unsafe int TranslateMessage(MSG* lpMsg)
@@ -84,5 +86,8 @@ namespace VCCSharp.Libraries
 
         public LRESULT SendMessageA(HWND hWnd, uint Msg, ulong wParam, long lParam)
             => User32Dll.SendMessageA(hWnd, Msg, wParam, lParam);
+
+        public LRESULT DefWindowProcA(HWND hWnd, uint Msg, ulong wParam, long lParam)
+            => User32Dll.DefWindowProcA(hWnd, Msg, wParam, lParam);
     }
 }

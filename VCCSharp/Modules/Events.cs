@@ -1,4 +1,5 @@
-﻿using VCCSharp.Enums;
+﻿using System;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -21,6 +22,8 @@ namespace VCCSharp.Modules
         void ToggleThrottle();
         void ToggleFullScreen();
         void ToggleInfoBand();
+
+        void ProcessMessage(HWND hWnd, uint message, IntPtr wParam, IntPtr lParam);
     }
 
     public class Events : IEvents
@@ -170,6 +173,11 @@ namespace VCCSharp.Modules
         public HWND CreateConfigurationDialog(HINSTANCE resources, HWND windowHandle)
         {
             return Library.Events.CreateConfigurationDialog(resources, windowHandle);
+        }
+
+        public void ProcessMessage(HWND hWnd, uint message, IntPtr wParam, IntPtr lParam)
+        {
+            Library.Events.ProcessMessage(hWnd, message, wParam, lParam);
         }
     }
 }

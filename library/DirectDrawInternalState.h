@@ -9,6 +9,4 @@ typedef struct {
   LPDIRECTDRAWCLIPPER DDClipper;      // Clipper for primary surface
   LPDIRECTDRAWSURFACE DDSurface;      // Primary surface
   LPDIRECTDRAWSURFACE DDBackSurface;  // Back surface
-  RECT WindowDefaultSize;
-  WNDCLASSEX Wcex;
 } DirectDrawInternalState;

@@ -402,6 +402,7 @@ extern "C" {
   }
 }
 
+//--Called from _beginthreadex(...)
 extern "C" {
   __declspec(dllexport) int __cdecl InsertModule(EmuState* emuState, char* modulePath)
   {

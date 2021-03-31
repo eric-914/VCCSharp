@@ -25,9 +25,10 @@
         public unsafe fixed uint VidMask[4];
 
         //--TODO: This is really byte* MemPages[1024]
-        public unsafe byte** MemPages; //[1024];
+        //public unsafe byte** MemPages; //[1024];
+        public unsafe fixed long MemPages[1024];
 
         //--TODO: This is really ushort MmuRegisters[4][8]
-        public unsafe ushort** MmuRegisters;	//[4][8] // $FFA0 - FFAF
+        public unsafe fixed ushort MmuRegisters[32];	//[4][8] // $FFA0 - FFAF
     }
 }

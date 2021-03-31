@@ -21,8 +21,7 @@ extern "C" __declspec(dllexport) HRESULT __cdecl DDSurfaceFlip();
 extern "C" __declspec(dllexport) HRESULT __cdecl DDSurfaceSetClipper();
 extern "C" __declspec(dllexport) HRESULT __cdecl LockDDBackSurface(DDSURFACEDESC* ddsd);
 extern "C" __declspec(dllexport) HRESULT __cdecl UnlockDDBackSurface();
-extern "C" __declspec(dllexport) RECT __cdecl DDGetWindowDefaultSize();
-extern "C" __declspec(dllexport) RECT __cdecl GetWindowDefaultSize();
+
 extern "C" __declspec(dllexport) void __cdecl DDBackSurfaceRestore();
 extern "C" __declspec(dllexport) void __cdecl DDRelease();
 extern "C" __declspec(dllexport) void __cdecl DDSurfaceGetAttachedSurface(DDSCAPS* ddsCaps);

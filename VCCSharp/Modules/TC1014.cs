@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
@@ -21,6 +22,8 @@ namespace VCCSharp.Modules
         void GimeAssertTimerInterrupt();
         byte MemRead8(ushort address);
         ushort GetMem(int address);
+        void SetMapType(byte type);
+        void SetRomMap(byte data);
     }
 
     public class TC1014 : ITC1014
@@ -102,7 +105,43 @@ Could not locate {ROM} in any of these locations:
 
         public void MmuReset()
         {
-            Library.TC1014.MmuReset();
+            unsafe
+            {
+                TC1014MmuState* instance = GetTC1014MmuState();
+
+                instance->MmuTask = 0;
+                instance->MmuEnabled = 0;
+                instance->RamVectors = 0;
+                instance->MmuState = 0;
+                instance->RomMap = 0;
+                instance->MapType = 0;
+                instance->MmuPrefix = 0;
+
+                ushort[,] MmuRegisters = new ushort[4, 8];
+
+                for (ushort index1 = 0; index1 < 8; index1++)
+                {
+                    for (ushort index2 = 0; index2 < 4; index2++)
+                    {
+                        MmuRegisters[index2, index1] = (ushort)(index1 + instance->StateSwitch[instance->CurrentRamConfig]);
+                    }
+                }
+
+                for (int index = 0; index < 32; index++)
+                {
+                    instance->MmuRegisters[index] = MmuRegisters[index >> 3, index & 7];
+                }
+
+                for (int index = 0; index < 1024; index++)
+                {
+                    byte* offset = instance->Memory + (index & instance->RamMask[instance->CurrentRamConfig]) * 0x2000;
+                    instance->MemPages[index] = (long)offset;
+                    instance->MemPageOffsets[index] = 1;
+                }
+
+                SetRomMap(0);
+                SetMapType(0);
+            }
         }
 
         /*****************************************************************************************
@@ -193,7 +232,7 @@ Could not locate {ROM} in any of these locations:
 
             return (ushort)bytes.Length;
         }
-        
+
         public void GimeAssertVertInterrupt()
         {
             unsafe
@@ -222,7 +261,7 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe byte* AllocateMemory(uint size)
         {
-            return Library.TC1014.AllocateMemory(size);
+            return (byte*)Marshal.AllocHGlobal((int)size); //malloc(size);
         }
 
         public byte MemRead8(ushort address)
@@ -230,9 +269,25 @@ Could not locate {ROM} in any of these locations:
             return Library.TC1014.MemRead8(address);
         }
 
+        //--I think this is just a hack to access memory directly for the 40/80 char-wide screen-scrapes
         public ushort GetMem(int address)
         {
-            return Library.TC1014.GetMem(address);
+            unsafe
+            {
+                TC1014MmuState* instance = GetTC1014MmuState();
+
+                return instance->Memory[address];
+            }
+        }
+
+        public void SetMapType(byte type)
+        {
+            Library.TC1014.SetMapType(type);
+        }
+
+        public void SetRomMap(byte data)
+        {
+            Library.TC1014.SetRomMap(data);
         }
     }
 }
