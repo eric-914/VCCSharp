@@ -38,9 +38,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe AudioState* GetAudioState();
 
             [DllImport(LIBRARY)]
-            public static extern int GetFreeBlockCount();
-
-            [DllImport(LIBRARY)]
             public static extern unsafe void HandleSlowAudio(byte* buffer, ushort length);
 
             [DllImport(LIBRARY)]
@@ -48,9 +45,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void PurgeAuxBuffer();
-
-            [DllImport(LIBRARY)]
-            public static extern byte PauseAudio(byte pause);
         }
 
         public static class Callbacks
@@ -324,13 +318,16 @@ namespace VCCSharp.Libraries
             public static extern void DirectSoundSetupSecondaryBuffer(uint sndBuffLength);
 
             [DllImport(LIBRARY)]
-            public static extern void DirectSoundStop();
-
-            [DllImport(LIBRARY)]
             public static extern void DirectSoundStopAndRelease();
 
             [DllImport(LIBRARY)]
             public static extern int DirectSoundPlay();
+
+            [DllImport(LIBRARY)]
+            public static extern int DirectSoundStop();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe long DirectSoundGetCurrentPosition(ulong* playCursor, ulong* writeCursor);
         }
 
         public static class Events

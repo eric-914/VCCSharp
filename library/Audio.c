@@ -26,15 +26,13 @@ AudioState* InitializeInstance(AudioState* p) {
   p->BitRate = 0;
   p->BlockSize = 0;
   p->BuffOffset = 0;
-  //p->CardCount = 0;
   p->CurrentRate = 0;
   p->InitPassed = 0;
   p->SndBuffLength = 0;
   p->SndLength1 = 0;
   p->SndLength2 = 0;
   p->WritePointer = 0;
-    
-  //p->Cards = NULL;
+
   p->SndPointer1 = NULL;
   p->SndPointer2 = NULL;
 
@@ -42,114 +40,6 @@ AudioState* InitializeInstance(AudioState* p) {
   ARRAYCOPY(iRateList);
 
   return p;
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned short __cdecl GetSoundStatus(void)
-  {
-    return(instance->CurrentRate);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl PauseAudio(unsigned char pause)
-  {
-    DirectSoundState* directSoundState = GetDirectSoundState();
-
-    instance->AudioPause = pause;
-
-    if (instance->InitPassed)
-    {
-      if (instance->AudioPause == 1) {
-        instance->hr = directSoundState->lpdsbuffer1->Stop();
-      }
-      else {
-        instance->hr = directSoundState->lpdsbuffer1->Play(0, 0, DSBPLAY_LOOPING);
-      }
-    }
-
-    return(instance->AudioPause);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) const char* __cdecl GetRateList(unsigned char index) {
-    return instance->RateList[index];
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) int __cdecl GetFreeBlockCount() //return 0 on full buffer
-  {
-    unsigned long writeCursor = 0, playCursor = 0;
-    long retVal = 0, maxSize = 0;
-
-    DirectSoundState* directSoundState = GetDirectSoundState();
-
-    if ((!instance->InitPassed) || (instance->AudioPause)) {
-      return(AUDIOBUFFERS);
-    }
-
-    retVal = directSoundState->lpdsbuffer1->GetCurrentPosition(&playCursor, &writeCursor);
-
-    if (instance->BuffOffset <= playCursor) {
-      maxSize = playCursor - instance->BuffOffset;
-    }
-    else {
-      maxSize = instance->SndBuffLength - instance->BuffOffset + playCursor;
-    }
-
-    return(maxSize / instance->BlockSize);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl HandleSlowAudio(unsigned char* Abuffer2, unsigned short length) {
-    memcpy(instance->AuxBuffer[instance->AuxBufferPointer], Abuffer2, length);	//Saving buffer to aux stack
-
-    instance->AuxBufferPointer++;		  //and chase your own tail
-    instance->AuxBufferPointer %= 5;	//At this point we are so far behind we may as well drop the buffer
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl PurgeAuxBuffer()
-  {
-    DirectSoundState* directSoundState = GetDirectSoundState();
-
-    if ((!instance->InitPassed) || (instance->AudioPause)) {
-      return;
-    }
-
-    return; //TODO: Why?
-
-    instance->AuxBufferPointer--;			//Normally points to next free block Point to last used block
-
-    if (instance->AuxBufferPointer >= 0)	//zero is a valid data block
-    {
-      while ((GetFreeBlockCount() <= 0)) {};
-
-      instance->hr = directSoundState->lpdsbuffer1->Lock(instance->BuffOffset, instance->BlockSize, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2), 0);
-
-      if (instance->hr != DS_OK) {
-        return;
-      }
-
-      memcpy(instance->SndPointer1, instance->AuxBuffer[instance->AuxBufferPointer], instance->SndLength1);
-
-      if (instance->SndPointer2 != NULL) {
-        memcpy(instance->SndPointer2, (instance->AuxBuffer[instance->AuxBufferPointer] + (instance->SndLength1 >> 2)), instance->SndLength2);
-      }
-
-      instance->BuffOffset = (instance->BuffOffset + instance->BlockSize) % instance->SndBuffLength;
-
-      instance->hr = directSoundState->lpdsbuffer1->Unlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);
-
-      instance->AuxBufferPointer--;
-    }
-
-    instance->AuxBufferPointer = 0;
-  }
 }
 
 /*****************************************************************
@@ -242,5 +132,22 @@ extern "C" {
     SetAudioRate(instance->iRateList[rate]);
 
     return(0);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl HandleSlowAudio(unsigned char* buffer, unsigned short length) {
+    memcpy(instance->AuxBuffer[instance->AuxBufferPointer], buffer, length);	//Saving buffer to aux stack
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl PurgeAuxBuffer()
+  {
+    memcpy(instance->SndPointer1, instance->AuxBuffer[instance->AuxBufferPointer], instance->SndLength1);
+
+    if (instance->SndPointer2 != NULL) {
+      memcpy(instance->SndPointer2, (instance->AuxBuffer[instance->AuxBufferPointer] + (instance->SndLength1 >> 2)), instance->SndLength2);
+    }
   }
 }

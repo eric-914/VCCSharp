@@ -26,5 +26,5 @@ extern "C" __declspec(dllexport) void __cdecl SetGimeVmode(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetGimeVres(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetVerticalOffsetRegister(unsigned short);
 extern "C" __declspec(dllexport) void __cdecl SetVideoBank(unsigned char);
-extern "C" __declspec(dllexport) void __cdecl SetupDisplay(void);
+extern "C" __declspec(dllexport) void __cdecl SetupDisplay();
 extern "C" __declspec(dllexport) void __cdecl SetMonitorTypePalettes(unsigned char monType, unsigned char palIndex);

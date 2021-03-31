@@ -58,7 +58,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl LoadPack(void)
+  __declspec(dllexport) void __cdecl LoadPack()
   {
     unsigned threadID;
 

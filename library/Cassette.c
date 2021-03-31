@@ -51,7 +51,7 @@ CassetteState* InitializeInstance(CassetteState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned int __cdecl GetTapeCounter(void)
+  __declspec(dllexport) unsigned int __cdecl GetTapeCounter()
   {
     return(instance->TapeOffset);
   }
@@ -65,7 +65,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SyncFileBuffer(void)
+  __declspec(dllexport) void __cdecl SyncFileBuffer()
   {
     char buffer[64] = "";
     unsigned long bytesMoved = 0;
@@ -132,7 +132,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl CloseTapeFile(void)
+  __declspec(dllexport) void __cdecl CloseTapeFile()
   {
     if (instance->TapeHandle == NULL) {
       return;
@@ -214,7 +214,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned int __cdecl LoadTape(void)
+  __declspec(dllexport) unsigned int __cdecl LoadTape()
   {
     static unsigned char dialogOpen = 0;
     unsigned int retVal = 0;

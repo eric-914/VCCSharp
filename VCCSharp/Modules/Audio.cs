@@ -23,7 +23,7 @@ namespace VCCSharp.Modules
     {
         private readonly IModules _modules;
 
-        public AudioSpectrum Spectrum { get; set; } 
+        public AudioSpectrum Spectrum { get; set; }
 
         public Audio(IModules modules)
         {
@@ -125,29 +125,88 @@ namespace VCCSharp.Modules
 
         public unsafe void HandleSlowAudio(byte* buffer, ushort length)
         {
+            AudioState* instance = GetAudioState();
+
             //memcpy(void* _Dst, void const* _Src, size_t _Size);
             //memcpy(audioState->AuxBuffer[audioState->AuxBufferPointer], buffer, length);	
 
-            ////Saving buffer to aux stack
+            //Saving buffer to aux stack
             //for (ushort index = 0; index < length; index++)
             //{
-            //    audioState->AuxBuffer[audioState->AuxBufferPointer][index] = buffer[index];
+            //    instance->AuxBuffer[instance->AuxBufferPointer][index] = buffer[index];
             //}
 
-            //audioState->AuxBufferPointer++;		//and chase your own tail
-            //audioState->AuxBufferPointer %= 5;	//At this point we are so far behind we may as well drop the buffer
-
             Library.Audio.HandleSlowAudio(buffer, length);
+
+            instance->AuxBufferPointer++;		//and chase your own tail
+            instance->AuxBufferPointer %= 5;	//At this point we are so far behind we may as well drop the buffer
         }
 
         public int GetFreeBlockCount()
         {
-            return Library.Audio.GetFreeBlockCount();
+            unsafe
+            {
+                ulong playCursor = 0, writeCursor = 0;
+                long maxSize;
+
+                AudioState* instance = GetAudioState();
+
+                if (instance->InitPassed == Define.FALSE || instance->AudioPause == Define.TRUE)
+                {
+                    return Define.AUDIOBUFFERS;
+                }
+
+                _modules.DirectSound.DirectSoundGetCurrentPosition(&playCursor, &writeCursor);
+
+                if (instance->BuffOffset <= playCursor)
+                {
+                    maxSize = (long)(playCursor - instance->BuffOffset);
+                }
+                else
+                {
+                    maxSize = (long)(instance->SndBuffLength - instance->BuffOffset + playCursor);
+                }
+
+                return (int)(maxSize / instance->BlockSize);
+            }
         }
 
         public void PurgeAuxBuffer()
         {
-            Library.Audio.PurgeAuxBuffer();
+            unsafe
+            {
+                AudioState* instance = GetAudioState();
+
+                if (instance->InitPassed == Define.FALSE || instance->AudioPause == Define.TRUE)
+                {
+                    return;
+                }
+
+                return; //TODO: Why?
+
+                //instance->AuxBufferPointer--;			//Normally points to next free block Point to last used block
+
+                //if (instance->AuxBufferPointer >= 0) //zero is a valid data block
+                //{
+                //    while (GetFreeBlockCount() <= 0) { }
+
+                //    instance->hr = _modules.DirectSound.DirectSoundLock(instance->BuffOffset, instance->BlockSize, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2));
+
+                //    if (instance->hr != Define.DS_OK) {
+                //        return;
+                //    }
+
+                //    Library.Audio.PurgeAuxBuffer();
+
+                //    instance->BuffOffset = (instance->BuffOffset + instance->BlockSize) % instance->SndBuffLength;
+
+                //    instance->hr = _modules.DirectSound.DirectSoundUnlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);
+
+                //    instance->AuxBufferPointer--;
+                //}
+
+                //instance->AuxBufferPointer = 0;
+            }
         }
 
         /*****************************************************************
@@ -265,7 +324,26 @@ namespace VCCSharp.Modules
 
         public byte PauseAudio(byte pause)
         {
-            return Library.Audio.PauseAudio(pause);
+            unsafe
+            {
+                AudioState* instance = GetAudioState();
+
+                instance->AudioPause = pause;
+
+                if (instance->InitPassed == Define.TRUE)
+                {
+                    if (instance->AudioPause == Define.TRUE)
+                    {
+                        instance->hr = _modules.DirectSound.DirectSoundStop();
+                    }
+                    else
+                    {
+                        instance->hr = _modules.DirectSound.DirectSoundPlay();
+                    }
+                }
+
+                return instance->AudioPause;
+            }
         }
     }
 }

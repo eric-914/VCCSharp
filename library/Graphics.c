@@ -204,7 +204,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetupDisplay(void)
+  __declspec(dllexport) void __cdecl SetupDisplay()
   {
     static unsigned char CC2Bpp[8] = { 1,0,1,0,1,0,1,0 };
     static unsigned char CC2LinesperRow[8] = { 12,3,3,2,2,1,1,1 };

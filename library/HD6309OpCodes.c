@@ -20,7 +20,7 @@ static signed short* spostword = (signed short*)&postword;
 static unsigned char Source = 0;
 static unsigned char Dest = 0;
 
-void ErrorVector(void)
+void ErrorVector()
 {
   CC_E = 1;
 
@@ -51,7 +51,7 @@ void ErrorVector(void)
   instance->CycleCounter += (12 + instance->NatEmuCycles54);	//One for each byte +overhead? Guessing from PSHS
 }
 
-void InvalidInsHandler(void)
+void InvalidInsHandler()
 {
   MD_ILLEGAL = 1;
   instance->mdbits = HD6309_getmd();
@@ -59,7 +59,7 @@ void InvalidInsHandler(void)
   ErrorVector();
 }
 
-void DivbyZero(void)
+void DivbyZero()
 {
   MD_ZERODIV = 1;
 
@@ -68,10 +68,10 @@ void DivbyZero(void)
   ErrorVector();
 }
 
-void Page_2(void);
-void Page_3(void);
+void Page_2();
+void Page_3();
 
-void Neg_D(void)
+void Neg_D()
 { //0
   temp16 = DPADDRESS(PC_REG++);
   postbyte = MemRead8(temp16);
@@ -87,7 +87,7 @@ void Neg_D(void)
   instance->CycleCounter += instance->NatEmuCycles65;
 }
 
-void Oim_D(void)
+void Oim_D()
 {//1 6309
   postbyte = MemRead8(PC_REG++);
   temp16 = DPADDRESS(PC_REG++);
@@ -102,7 +102,7 @@ void Oim_D(void)
   instance->CycleCounter += 6;
 }
 
-void Aim_D(void)
+void Aim_D()
 {//2 Phase 2 6309
   postbyte = MemRead8(PC_REG++);
   temp16 = DPADDRESS(PC_REG++);
@@ -117,7 +117,7 @@ void Aim_D(void)
   instance->CycleCounter += 6;
 }
 
-void Com_D(void)
+void Com_D()
 { //03
   temp16 = DPADDRESS(PC_REG++);
   temp8 = MemRead8(temp16);
@@ -133,7 +133,7 @@ void Com_D(void)
   instance->CycleCounter += instance->NatEmuCycles65;
 }
 
-void Lsr_D(void)
+void Lsr_D()
 { //04 S2
   temp16 = DPADDRESS(PC_REG++);
   temp8 = MemRead8(temp16);
@@ -145,7 +145,7 @@ void Lsr_D(void)
   instance->CycleCounter += instance->NatEmuCycles65;
 }
 
-void Eim_D(void)
+void Eim_D()
 { //05 6309 Untested
   postbyte = MemRead8(PC_REG++);
   temp16 = DPADDRESS(PC_REG++);
@@ -157,7 +157,7 @@ void Eim_D(void)
   instance->CycleCounter += 6;
 }
 
-void Ror_D(void)
+void Ror_D()
 { //06 S2
   temp16 = DPADDRESS(PC_REG++);
   temp8 = MemRead8(temp16);
@@ -170,7 +170,7 @@ void Ror_D(void)
   instance->CycleCounter += instance->NatEmuCycles65;
 }
 
-void Asr_D(void)
+void Asr_D()
 { //7
   temp16 = DPADDRESS(PC_REG++);
   temp8 = MemRead8(temp16);
@@ -182,7 +182,7 @@ void Asr_D(void)
   instance->CycleCounter += instance->NatEmuCycles65;
 }
 
-void Asl_D(void)
+void Asl_D()
 { //8 
   temp16 = DPADDRESS(PC_REG++);
   temp8 = MemRead8(temp16);
@@ -195,7 +195,7 @@ void Asl_D(void)
   instance->CycleCounter += instance->NatEmuCycles65;
 }
 
-void Rol_D(void)
+void Rol_D()
 {	//9
   temp16 = DPADDRESS(PC_REG++);
   temp8 = MemRead8(temp16);
@@ -209,7 +209,7 @@ void Rol_D(void)
   instance->CycleCounter += instance->NatEmuCycles65;
 }
 
-void Dec_D(void)
+void Dec_D()
 { //A
   temp16 = DPADDRESS(PC_REG++);
   temp8 = MemRead8(temp16) - 1;
@@ -220,7 +220,7 @@ void Dec_D(void)
   instance->CycleCounter += instance->NatEmuCycles65;
 }
 
-void Tim_D(void)
+void Tim_D()
 {	//B 6309 Untested wcreate
   postbyte = MemRead8(PC_REG++);
   temp8 = MemRead8(DPADDRESS(PC_REG++));
@@ -231,7 +231,7 @@ void Tim_D(void)
   instance->CycleCounter += 6;
 }
 
-void Inc_D(void)
+void Inc_D()
 { //C
   temp16 = (DPADDRESS(PC_REG++));
   temp8 = MemRead8(temp16) + 1;
@@ -242,7 +242,7 @@ void Inc_D(void)
   instance->CycleCounter += instance->NatEmuCycles65;
 }
 
-void Tst_D(void)
+void Tst_D()
 { //D
   temp8 = MemRead8(DPADDRESS(PC_REG++));
   CC_Z = ZTEST(temp8);
@@ -251,13 +251,13 @@ void Tst_D(void)
   instance->CycleCounter += instance->NatEmuCycles64;
 }
 
-void Jmp_D(void)
+void Jmp_D()
 {	//E
   PC_REG = ((DP_REG | MemRead8(PC_REG)));
   instance->CycleCounter += instance->NatEmuCycles32;
 }
 
-void Clr_D(void)
+void Clr_D()
 {	//F
   MemWrite8(0, DPADDRESS(PC_REG++));
   CC_Z = 1;
@@ -267,7 +267,7 @@ void Clr_D(void)
   instance->CycleCounter += instance->NatEmuCycles65;
 }
 
-void LBeq_R(void)
+void LBeq_R()
 { //1027
   if (CC_Z) {
     *spostword = IMMADDRESS(PC_REG);
@@ -278,13 +278,13 @@ void LBeq_R(void)
   instance->CycleCounter += 5;
 }
 
-void LBrn_R(void)
+void LBrn_R()
 { //1021
   PC_REG += 2;
   instance->CycleCounter += 5;
 }
 
-void LBhi_R(void)
+void LBhi_R()
 { //1022
   if (!(CC_C | CC_Z)) {
     *spostword = IMMADDRESS(PC_REG);
@@ -296,7 +296,7 @@ void LBhi_R(void)
   instance->CycleCounter += 5;
 }
 
-void LBls_R(void)
+void LBls_R()
 { //1023
   if (CC_C | CC_Z) {
     *spostword = IMMADDRESS(PC_REG);

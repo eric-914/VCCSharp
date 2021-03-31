@@ -49,7 +49,7 @@ MC6821State* InitializeInstance(MC6821State* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned int __cdecl MC6821_GetDACSample(void)
+  __declspec(dllexport) unsigned int __cdecl MC6821_GetDACSample()
   {
     static unsigned int retVal = 0;
     static unsigned short sampleLeft = 0, sampleRight = 0, pakSample = 0;
@@ -106,21 +106,21 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl MC6821_DACState(void)
+  __declspec(dllexport) unsigned char __cdecl MC6821_DACState()
   {
     return (instance->regb[0] >> 2);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl MC6821_GetCasSample(void)
+  __declspec(dllexport) unsigned char __cdecl MC6821_GetCasSample()
   {
     return(instance->Csample);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl MC6821_GetMuxState(void)
+  __declspec(dllexport) unsigned char __cdecl MC6821_GetMuxState()
   {
     return (((instance->rega[1] & 8) >> 3) + ((instance->rega[3] & 8) >> 2));
   }
@@ -161,13 +161,6 @@ extern "C" {
   __declspec(dllexport) void __cdecl MC6821_SetSerialParams(unsigned char textMode)
   {
     instance->AddLF = textMode;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl MC6821_VDG_Mode(void)
-  {
-    return((instance->regb[2] & 248) >> 3);
   }
 }
 

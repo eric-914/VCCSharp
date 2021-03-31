@@ -19,7 +19,8 @@ extern "C" __declspec(dllexport) void __cdecl DirectSoundEnumerateSoundCards();
 extern "C" __declspec(dllexport) void __cdecl DirectSoundSetCurrentPosition(DWORD position);
 extern "C" __declspec(dllexport) void __cdecl DirectSoundSetupFormatDataStructure(unsigned short bitRate);
 extern "C" __declspec(dllexport) void __cdecl DirectSoundSetupSecondaryBuffer(DWORD sndBuffLength);
-extern "C" __declspec(dllexport) void __cdecl DirectSoundStop();
 extern "C" __declspec(dllexport) void __cdecl DirectSoundStopAndRelease();
 
 extern "C" __declspec(dllexport) HRESULT __cdecl DirectSoundPlay();
+extern "C" __declspec(dllexport) HRESULT __cdecl DirectSoundStop();
+extern "C" __declspec(dllexport) long __cdecl DirectSoundGetCurrentPosition(unsigned long* playCursor, unsigned long* writeCursor);

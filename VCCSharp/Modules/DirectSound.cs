@@ -21,10 +21,12 @@ namespace VCCSharp.Modules
         void DirectSoundSetCurrentPosition(ulong position);
         void DirectSoundSetupFormatDataStructure(ushort bitRate);
         void DirectSoundSetupSecondaryBuffer(uint sndBuffLength);
-        void DirectSoundStop();
         void DirectSoundStopAndRelease();
 
         int DirectSoundPlay();
+        int DirectSoundStop();
+
+        unsafe long DirectSoundGetCurrentPosition(ulong* playCursor, ulong* writeCursor);
     }
 
     public class DirectSound : IDirectSound
@@ -94,9 +96,9 @@ namespace VCCSharp.Modules
             Library.DirectSound.DirectSoundSetupSecondaryBuffer(sndBuffLength);
         }
 
-        public void DirectSoundStop()
+        public int DirectSoundStop()
         {
-            Library.DirectSound.DirectSoundStop();
+            return Library.DirectSound.DirectSoundStop();
         }
 
         public void DirectSoundStopAndRelease()
@@ -107,6 +109,11 @@ namespace VCCSharp.Modules
         public int DirectSoundPlay()
         {
             return Library.DirectSound.DirectSoundPlay();
+        }
+
+        public unsafe long DirectSoundGetCurrentPosition(ulong* playCursor, ulong* writeCursor)
+        {
+            return Library.DirectSound.DirectSoundGetCurrentPosition(playCursor, writeCursor);
         }
     }
 }

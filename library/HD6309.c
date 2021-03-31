@@ -103,7 +103,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl HD6309_getcc(void)
+  __declspec(dllexport) unsigned char __cdecl HD6309_getcc()
   {
     unsigned char bincc = 0;
 
@@ -142,7 +142,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl HD6309_getmd(void)
+  __declspec(dllexport) unsigned char __cdecl HD6309_getmd()
   {
     unsigned char binmd = 0;
 
@@ -162,7 +162,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl HD6309_cpu_firq(void)
+  __declspec(dllexport) void __cdecl HD6309_cpu_firq()
   {
     if (!CC_F)
     {
@@ -219,7 +219,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl HD6309_cpu_irq(void)
+  __declspec(dllexport) void __cdecl HD6309_cpu_irq()
   {
     if (instance->InInterrupt == 1) { //If FIRQ is running postpone the IRQ
       return;
@@ -257,7 +257,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl HD6309_cpu_nmi(void)
+  __declspec(dllexport) void __cdecl HD6309_cpu_nmi()
   {
     HD6309State* instance = GetInstance();
 
@@ -636,7 +636,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl HD6309Init(void)
+  __declspec(dllexport) void __cdecl HD6309Init()
   {	//Call this first or RESET will core!
     // reg pointers for TFR and EXG and LEA ops
     instance->xfreg16[0] = &D_REG;
@@ -735,7 +735,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl HD6309Reset(void)
+  __declspec(dllexport) void __cdecl HD6309Reset()
   {
     for (char index = 0; index <= 6; index++) {		//Set all register to 0 except V
       PXF(index) = 0;

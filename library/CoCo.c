@@ -100,7 +100,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl AudioOut(void)
+  __declspec(dllexport) void __cdecl AudioOut()
   {
     instance->AudioBuffer[instance->AudioIndex++] = MC6821_GetDACSample();
   }
@@ -148,7 +148,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetMasterTickCounter(void)
+  __declspec(dllexport) void __cdecl SetMasterTickCounter()
   {
     double Rate[2] = { PICOSECOND / (TARGETFRAMERATE * LINESPERFIELD), PICOSECOND / COLORBURST };
 
@@ -211,7 +211,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl CassIn(void)
+  __declspec(dllexport) void __cdecl CassIn()
   {
     instance->AudioBuffer[instance->AudioIndex] = MC6821_GetDACSample();
 
@@ -220,7 +220,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl CassOut(void)
+  __declspec(dllexport) void __cdecl CassOut()
   {
     instance->CassBuffer[instance->AudioIndex++] = MC6821_GetCasSample();
   }

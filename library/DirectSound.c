@@ -53,8 +53,8 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DirectSoundStop() {
-    instance->lpdsbuffer1->Stop();
+  __declspec(dllexport) HRESULT __cdecl DirectSoundStop() {
+    return instance->lpdsbuffer1->Stop();
   }
 }
 
@@ -130,5 +130,12 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) HRESULT __cdecl DirectSoundPlay() {
     return instance->lpdsbuffer1->Play(0, 0, DSBPLAY_LOOPING);	// play the sound in looping mode
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) long __cdecl DirectSoundGetCurrentPosition(unsigned long* playCursor, unsigned long* writeCursor)
+  {
+    return instance->lpdsbuffer1->GetCurrentPosition(playCursor, writeCursor);
   }
 }
