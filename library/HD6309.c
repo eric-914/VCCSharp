@@ -685,24 +685,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl HD6309DeAssertInterrupt(unsigned char interrupt) // 4 nmi 2 firq 1 irq
-  {
-    instance->PendingInterrupts &= ~(1 << (interrupt - 1));
-    instance->InInterrupt = 0;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl HD6309ForcePC(unsigned short address)
-  {
-    PC_REG = address;
-
-    instance->PendingInterrupts = 0;
-    instance->SyncWaiting = 0;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) int __cdecl HD6309Exec(int cycleFor)
   {
     instance->CycleCounter = 0;

@@ -123,9 +123,17 @@ namespace VCCSharp.Modules
             return Library.HD6309.HD6309Exec(cycleFor);
         }
 
-        public void ForcePC(ushort xferAddress)
+        public void ForcePC(ushort address)
         {
-            Library.HD6309.HD6309ForcePC(xferAddress);
+            unsafe
+            {
+                HD6309State* instance = GetHD6309State();
+
+                instance->pc.Reg = address;
+
+                instance->PendingInterrupts = 0;
+                instance->SyncWaiting = 0;
+            }
         }
 
         public void Reset()
@@ -140,7 +148,13 @@ namespace VCCSharp.Modules
 
         public void DeAssertInterrupt(byte irq)
         {
-            Library.HD6309.HD6309DeAssertInterrupt(irq);
+            unsafe
+            {
+                HD6309State* instance = GetHD6309State();
+
+                instance->PendingInterrupts &= (byte)~(1 << (irq - 1));
+                instance->InInterrupt = 0;
+            }
         }
     }
 }

@@ -46,9 +46,17 @@ namespace VCCSharp.Modules
             return Library.MC6809.MC6809Exec(cycleFor);
         }
 
-        public void ForcePC(ushort xferAddress)
+        public void ForcePC(ushort address)
         {
-            Library.MC6809.MC6809ForcePC(xferAddress);
+            unsafe
+            {
+                MC6809State* instance = GetMC6809State();
+
+                instance->pc.Reg = address;
+
+                instance->PendingInterrupts = 0;
+                instance->SyncWaiting = 0;
+            }
         }
 
         public void Reset()
@@ -63,7 +71,13 @@ namespace VCCSharp.Modules
 
         public void DeAssertInterrupt(byte irq)
         {
-            Library.MC6809.MC6809DeAssertInterrupt(irq);
+            unsafe
+            {
+                MC6809State* instance = GetMC6809State();
+
+                instance->PendingInterrupts &= (byte)~(1 << (irq - 1));
+                instance->InInterrupt = 0;
+            }
         }
     }
 }

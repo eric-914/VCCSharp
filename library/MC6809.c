@@ -421,24 +421,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MC6809DeAssertInterrupt(unsigned char interrupt) // 4 nmi 2 firq 1 irq
-  {
-    instance->PendingInterrupts &= ~(1 << (interrupt - 1));
-    instance->InInterrupt = 0;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl MC6809ForcePC(unsigned short newPC)
-  {
-    PC_REG = newPC;
-
-    instance->PendingInterrupts = 0;
-    instance->SyncWaiting = 0;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) int __cdecl MC6809Exec(int cycleFor)
   {
     instance->CycleCounter = 0;

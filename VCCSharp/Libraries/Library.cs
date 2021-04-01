@@ -359,16 +359,10 @@ namespace VCCSharp.Libraries
             public static extern int HD6309Exec(int cycleFor);
 
             [DllImport(LIBRARY)]
-            public static extern void HD6309ForcePC(ushort address);
-
-            [DllImport(LIBRARY)]
             public static extern void HD6309Reset();
 
             [DllImport(LIBRARY)]
             public static extern void HD6309AssertInterrupt(byte interrupt, byte waiter);
-
-            [DllImport(LIBRARY)]
-            public static extern void HD6309DeAssertInterrupt(byte interrupt);
         }
 
         public static class Joystick
@@ -414,16 +408,10 @@ namespace VCCSharp.Libraries
             public static extern int MC6809Exec(int cycleFor);
 
             [DllImport(LIBRARY)]
-            public static extern void MC6809ForcePC(ushort address);
-
-            [DllImport(LIBRARY)]
             public static extern void MC6809Reset();
 
             [DllImport(LIBRARY)]
             public static extern void MC6809AssertInterrupt(byte interrupt, byte waiter);
-
-            [DllImport(LIBRARY)]
-            public static extern void MC6809DeAssertInterrupt(byte interrupt);
         }
 
         public static class MC6821
