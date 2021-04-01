@@ -1,4 +1,5 @@
-﻿using VCCSharp.IoC;
+﻿using VCCSharp.Enums;
+using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 
@@ -185,13 +186,13 @@ namespace VCCSharp.Modules
                         if ((instance->PendingInterrupts & 1) != 0)
                         {
                             if (instance->IRQWaiter == 0)
-                            { 
+                            {
                                 // This is needed to fix a subtle timing problem
                                 // It allows the CPU to see $FF03 bit 7 high before...
-                                HD6309_cpu_irq();		
+                                HD6309_cpu_irq();
                             }
                             else
-                            {				
+                            {
                                 // ...The IRQ is asserted.
                                 instance->IRQWaiter -= 1;
                             }
@@ -199,7 +200,7 @@ namespace VCCSharp.Modules
                     }
 
                     if (instance->SyncWaiting == 1)
-                    { 
+                    {
                         //Abort the run nothing happens asynchronously from the CPU
                         break; // WDZ - Experimental SyncWaiting should still return used cycles (and not zero) by breaking from loop
                     }
@@ -218,17 +219,155 @@ namespace VCCSharp.Modules
 
         public void HD6309_cpu_nmi()
         {
-            Library.HD6309.HD6309_cpu_nmi();
+            unsafe
+            {
+                HD6309State* instance = GetHD6309State();
+
+                instance->cc[(int)CCFlagMasks.E] = 1;
+
+                _modules.TC1014.MemWrite8(instance->pc.lsb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->pc.msb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->u.lsb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->u.msb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->y.lsb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->y.msb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->x.lsb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->x.msb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->dp.msb, --instance->s.Reg);
+
+                if (instance->md[(int)MDFlagMasks.NATIVE6309] != 0)
+                {
+                    _modules.TC1014.MemWrite8(instance->q.mswlsb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->q.mswmsb, --instance->s.Reg);
+                }
+
+                _modules.TC1014.MemWrite8(instance->q.lswlsb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->q.lswmsb, --instance->s.Reg);
+
+                _modules.TC1014.MemWrite8(HD6309_getcc(), --instance->s.Reg);
+
+                instance->cc[(int)CCFlagMasks.I] = 1;
+                instance->cc[(int)CCFlagMasks.F] = 1;
+
+                instance->pc.Reg = _modules.TC1014.MemRead16(Define.VNMI);
+
+                instance->PendingInterrupts &= 251;
+            }
         }
 
         public void HD6309_cpu_firq()
         {
-            Library.HD6309.HD6309_cpu_firq();
+            unsafe
+            {
+                HD6309State* instance = GetHD6309State();
+
+                if (instance->cc[(int)CCFlagMasks.F] == 0)
+                {
+                    instance->InInterrupt = 1; //Flag to indicate FIRQ has been asserted
+
+                    switch (instance->md[(int)MDFlagMasks.FIRQMODE])
+                    {
+                        case 0:
+                            instance->cc[(int)CCFlagMasks.E] = 0; // Turn E flag off
+
+                            _modules.TC1014.MemWrite8(instance->pc.lsb, --instance->s.Reg);
+                            _modules.TC1014.MemWrite8(instance->pc.msb, --instance->s.Reg);
+
+                            _modules.TC1014.MemWrite8(HD6309_getcc(), --instance->s.Reg);
+
+                            instance->cc[(int)CCFlagMasks.I] = 1;
+                            instance->cc[(int)CCFlagMasks.F] = 1;
+
+                            instance->pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
+
+                            break;
+
+                        case 1:		//6309
+                            instance->cc[(int)CCFlagMasks.E] = 1;
+
+                            _modules.TC1014.MemWrite8(instance->pc.lsb, --instance->s.Reg);
+                            _modules.TC1014.MemWrite8(instance->pc.msb, --instance->s.Reg);
+                            _modules.TC1014.MemWrite8(instance->u.lsb, --instance->s.Reg);
+                            _modules.TC1014.MemWrite8(instance->u.msb, --instance->s.Reg);
+                            _modules.TC1014.MemWrite8(instance->y.lsb, --instance->s.Reg);
+                            _modules.TC1014.MemWrite8(instance->y.msb, --instance->s.Reg);
+                            _modules.TC1014.MemWrite8(instance->x.lsb, --instance->s.Reg);
+                            _modules.TC1014.MemWrite8(instance->x.msb, --instance->s.Reg);
+                            _modules.TC1014.MemWrite8(instance->dp.msb, --instance->s.Reg);
+
+                            if (instance->md[(int)MDFlagMasks.NATIVE6309] != 0)
+                            {
+                                _modules.TC1014.MemWrite8(instance->q.mswlsb, --instance->s.Reg);
+                                _modules.TC1014.MemWrite8(instance->q.mswmsb, --instance->s.Reg);
+                            }
+
+                            _modules.TC1014.MemWrite8(instance->q.lswlsb, --instance->s.Reg);
+                            _modules.TC1014.MemWrite8(instance->q.lswmsb, --instance->s.Reg);
+
+                            _modules.TC1014.MemWrite8(HD6309_getcc(), --instance->s.Reg);
+
+                            instance->cc[(int)CCFlagMasks.I] = 1;
+                            instance->cc[(int)CCFlagMasks.F] = 1;
+
+                            instance->pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
+
+                            break;
+                    }
+                }
+
+                instance->PendingInterrupts &= 253;
+            }
         }
 
         public void HD6309_cpu_irq()
         {
-            Library.HD6309.HD6309_cpu_irq();
+            unsafe
+            {
+                HD6309State* instance = GetHD6309State();
+
+                if (instance->InInterrupt == 1)
+                { 
+                    //If FIRQ is running postpone the IRQ
+                    return;
+                }
+
+                if (instance->cc[(int)CCFlagMasks.I] == 0)
+                {
+                    instance->cc[(int)CCFlagMasks.E] = 1;
+
+                    _modules.TC1014.MemWrite8(instance->pc.lsb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->pc.msb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->u.lsb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->u.msb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->y.lsb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->y.msb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->x.lsb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->x.msb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->dp.msb, --instance->s.Reg);
+
+                    if (instance->md[(int)MDFlagMasks.NATIVE6309] != 0)
+                    {
+                        _modules.TC1014.MemWrite8(instance->q.mswlsb, --instance->s.Reg);
+                        _modules.TC1014.MemWrite8(instance->q.mswmsb, --instance->s.Reg);
+                    }
+
+                    _modules.TC1014.MemWrite8(instance->q.lswlsb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->q.lswmsb, --instance->s.Reg);
+
+                    _modules.TC1014.MemWrite8(HD6309_getcc(), --instance->s.Reg);
+
+                    instance->cc[(int)CCFlagMasks.I] = 1;
+
+                    instance->pc.Reg = _modules.TC1014.MemRead16(Define.VIRQ);
+                }
+
+                instance->PendingInterrupts &= 254;
+            }
+        }
+
+        public byte HD6309_getcc()
+        {
+            return Library.HD6309.HD6309_getcc();
         }
     }
 }

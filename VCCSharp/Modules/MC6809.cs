@@ -1,4 +1,5 @@
-﻿using VCCSharp.IoC;
+﻿using VCCSharp.Enums;
+using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 
@@ -139,17 +140,102 @@ namespace VCCSharp.Modules
 
         public void MC6809_cpu_nmi()
         {
-            Library.MC6809.MC6809_cpu_nmi();
+            unsafe
+            {
+                MC6809State* instance = GetMC6809State();
+
+                instance->cc[(int)CCFlagMasks.E] = 1;
+
+                _modules.TC1014.MemWrite8(instance->pc.lsb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->pc.msb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->u.lsb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->u.msb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->y.lsb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->y.msb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->x.lsb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->x.msb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->dp.msb, --instance->s.Reg);
+
+                _modules.TC1014.MemWrite8(instance->d.lsb, --instance->s.Reg);
+                _modules.TC1014.MemWrite8(instance->d.msb, --instance->s.Reg);
+
+                _modules.TC1014.MemWrite8(MC6809_getcc(), --instance->s.Reg);
+
+                instance->cc[(int)CCFlagMasks.I] = 1;
+                instance->cc[(int)CCFlagMasks.F] = 1;
+
+                instance->pc.Reg = _modules.TC1014.MemRead16(Define.VNMI);
+
+                instance->PendingInterrupts &= 251;
+            }
         }
 
         public void MC6809_cpu_irq()
         {
-            Library.MC6809.MC6809_cpu_irq();
+            unsafe
+            {
+                MC6809State* instance = GetMC6809State();
+
+                if (instance->InInterrupt == 1)
+                { //If FIRQ is running postpone the IRQ
+                    return;
+                }
+
+                if (instance->cc[(int)CCFlagMasks.I] == 0)
+                {
+                    instance->cc[(int)CCFlagMasks.E] = 1;
+
+                    _modules.TC1014.MemWrite8(instance->pc.lsb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->pc.msb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->u.lsb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->u.msb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->y.lsb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->y.msb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->x.lsb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->x.msb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->dp.msb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->d.lsb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->d.msb, --instance->s.Reg);
+
+                    _modules.TC1014.MemWrite8(MC6809_getcc(), --instance->s.Reg);
+
+                    instance->pc.Reg = _modules.TC1014.MemRead16(Define.VIRQ);
+                    instance->cc[(int)CCFlagMasks.I] = 1;
+                }
+
+                instance->PendingInterrupts &= 254;
+            }
         }
 
         public void MC6809_cpu_firq()
         {
-            Library.MC6809.MC6809_cpu_firq();
+            unsafe
+            {
+                MC6809State* instance = GetMC6809State();
+
+                if (instance->cc[(int)CCFlagMasks.F] == 0)
+                {
+                    instance->InInterrupt = 1; //Flag to indicate FIRQ has been asserted
+                    instance->cc[(int)CCFlagMasks.E] = 0; // Turn E flag off
+
+                    _modules.TC1014.MemWrite8(instance->pc.lsb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(instance->pc.msb, --instance->s.Reg);
+
+                    _modules.TC1014.MemWrite8(MC6809_getcc(), --instance->s.Reg);
+
+                    instance->cc[(int)CCFlagMasks.I] = 1;
+                    instance->cc[(int)CCFlagMasks.F] = 1;
+
+                    instance->pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
+                }
+
+                instance->PendingInterrupts &= 253;
+            }
+        }
+
+        public byte MC6809_getcc()
+        {
+            return Library.MC6809.MC6809_getcc();
         }
     }
 }

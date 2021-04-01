@@ -367,13 +367,7 @@ namespace VCCSharp.Libraries
             public static extern void HD6309ExecOpCode(int cycleFor, byte opcode);
 
             [DllImport(LIBRARY)]
-            public static extern void HD6309_cpu_nmi();
-
-            [DllImport(LIBRARY)]
-            public static extern void HD6309_cpu_firq();
-
-            [DllImport(LIBRARY)]
-            public static extern void HD6309_cpu_irq();
+            public static extern byte HD6309_getcc();
         }
 
         public static class Joystick
@@ -425,13 +419,7 @@ namespace VCCSharp.Libraries
             public static extern void MC6809ExecOpCode(int cycleFor, byte opCode);
 
             [DllImport(LIBRARY)]
-            public static extern void MC6809_cpu_nmi();
-
-            [DllImport(LIBRARY)]
-            public static extern void MC6809_cpu_irq();
-
-            [DllImport(LIBRARY)]
-            public static extern void MC6809_cpu_firq();
+            public static extern byte MC6809_getcc();
         }
 
         public static class MC6821
@@ -522,6 +510,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern byte MemRead8(ushort address);
+
+            [DllImport(LIBRARY)]
+            public static extern ushort MemRead16(ushort addr);
 
             [DllImport(LIBRARY)]
             public static extern void SetMapType(byte type);

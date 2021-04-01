@@ -47,7 +47,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl MC6809_getcc(void)
+  __declspec(dllexport) unsigned char __cdecl MC6809_getcc()
   {
     unsigned char bincc = 0;
 
@@ -63,82 +63,6 @@ extern "C" {
     TST(CC_C, C);
 
     return(bincc);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl MC6809_cpu_firq()
-  {
-    if (!CC_F)
-    {
-      instance->InInterrupt = 1; //Flag to indicate FIRQ has been asserted
-      CC_E = 0; // Turn E flag off
-
-      MemWrite8(PC_L, --S_REG);
-      MemWrite8(PC_H, --S_REG);
-      MemWrite8(MC6809_getcc(), --S_REG);
-
-      CC_I = 1;
-      CC_F = 1;
-      PC_REG = MemRead16(VFIRQ);
-    }
-
-    instance->PendingInterrupts &= 253;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl MC6809_cpu_irq()
-  {
-    if (instance->InInterrupt == 1) { //If FIRQ is running postpone the IRQ
-      return;
-    }
-
-    if (!CC_I) {
-      CC_E = 1;
-      MemWrite8(PC_L, --S_REG);
-      MemWrite8(PC_H, --S_REG);
-      MemWrite8(U_L, --S_REG);
-      MemWrite8(U_H, --S_REG);
-      MemWrite8(Y_L, --S_REG);
-      MemWrite8(Y_H, --S_REG);
-      MemWrite8(X_L, --S_REG);
-      MemWrite8(X_H, --S_REG);
-      MemWrite8(DPA, --S_REG);
-      MemWrite8(B_REG, --S_REG);
-      MemWrite8(A_REG, --S_REG);
-      MemWrite8(MC6809_getcc(), --S_REG);
-      PC_REG = MemRead16(VIRQ);
-      CC_I = 1;
-    }
-
-    instance->PendingInterrupts &= 254;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl MC6809_cpu_nmi()
-  {
-    CC_E = 1;
-
-    MemWrite8(PC_L, --S_REG);
-    MemWrite8(PC_H, --S_REG);
-    MemWrite8(U_L, --S_REG);
-    MemWrite8(U_H, --S_REG);
-    MemWrite8(Y_L, --S_REG);
-    MemWrite8(Y_H, --S_REG);
-    MemWrite8(X_L, --S_REG);
-    MemWrite8(X_H, --S_REG);
-    MemWrite8(DPA, --S_REG);
-    MemWrite8(B_REG, --S_REG);
-    MemWrite8(A_REG, --S_REG);
-    MemWrite8(MC6809_getcc(), --S_REG);
-
-    CC_I = 1;
-    CC_F = 1;
-    PC_REG = MemRead16(VNMI);
-
-    instance->PendingInterrupts &= 251;
   }
 }
 
