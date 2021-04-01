@@ -14,9 +14,6 @@
     <ClCompile Include="xDebug.c">
       <Filter>debug</Filter>
     </ClCompile>
-    <ClCompile Include="logger.c">
-      <Filter>logging</Filter>
-    </ClCompile>
     <ClCompile Include="Audio.c">
       <Filter>audio</Filter>
     </ClCompile>
@@ -143,9 +140,6 @@
     </ClInclude>
     <ClInclude Include="xDebug.h">
       <Filter>debug</Filter>
-    </ClInclude>
-    <ClInclude Include="logger.h">
-      <Filter>logging</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>resources</Filter>
@@ -362,9 +356,6 @@
     </Filter>
     <Filter Include="debug">
       <UniqueIdentifier>{67f7f1e9-6d8a-48db-9f9f-c4c936b752a2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="logging">
-      <UniqueIdentifier>{21e949b4-3172-4865-b847-7bd0a2309d82}</UniqueIdentifier>
     </Filter>
     <Filter Include="config">
       <UniqueIdentifier>{f0e5d00c-8e47-4546-a76f-152ddb13e354}</UniqueIdentifier>
