@@ -347,15 +347,10 @@ typedef struct {
 
 extern "C" __declspec(dllexport) MC6809State * __cdecl GetMC6809State();
 
-extern "C" __declspec(dllexport) int __cdecl MC6809Exec(int);
-
 extern "C" __declspec(dllexport) unsigned char __cdecl MC6809_getcc();
 extern "C" __declspec(dllexport) unsigned short __cdecl MC6809_CalculateEA(unsigned char);
 
 extern "C" __declspec(dllexport) void __cdecl MC6809AssertInterrupt(unsigned char, unsigned char);
-extern "C" __declspec(dllexport) void __cdecl MC6809DeAssertInterrupt(unsigned char);
-extern "C" __declspec(dllexport) void __cdecl MC6809ForcePC(unsigned short);
-extern "C" __declspec(dllexport) void __cdecl MC6809Init();
 extern "C" __declspec(dllexport) void __cdecl MC6809Reset();
 extern "C" __declspec(dllexport) void __cdecl MC6809_cpu_firq();
 extern "C" __declspec(dllexport) void __cdecl MC6809_cpu_irq();

@@ -380,28 +380,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MC6809Init(void)
-  {	//Call this first or RESET will core!
-    // reg pointers for TFR and EXG and LEA ops
-    instance->xfreg16[0] = &D_REG;
-    instance->xfreg16[1] = &X_REG;
-    instance->xfreg16[2] = &Y_REG;
-    instance->xfreg16[3] = &U_REG;
-    instance->xfreg16[4] = &S_REG;
-    instance->xfreg16[5] = &PC_REG;
-
-    instance->ureg8[0] = (unsigned char*)(&A_REG);
-    instance->ureg8[1] = (unsigned char*)(&B_REG);
-    instance->ureg8[2] = (unsigned char*)(&(instance->ccbits));
-    instance->ureg8[3] = (unsigned char*)(&DPA);
-    instance->ureg8[4] = (unsigned char*)(&DPA);
-    instance->ureg8[5] = (unsigned char*)(&DPA);
-    instance->ureg8[6] = (unsigned char*)(&DPA);
-    instance->ureg8[7] = (unsigned char*)(&DPA);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl MC6809Reset(void)
   {
     char index;

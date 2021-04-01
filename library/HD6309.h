@@ -605,17 +605,13 @@ typedef struct {
 
 extern "C" __declspec(dllexport) HD6309State * __cdecl GetHD6309State();
 
-extern "C" __declspec(dllexport) int __cdecl HD6309Exec(int);
-
 extern "C" __declspec(dllexport) unsigned char __cdecl HD6309_getcc();
 extern "C" __declspec(dllexport) unsigned char __cdecl HD6309_getmd();
 extern "C" __declspec(dllexport) unsigned short __cdecl HD6309_CalculateEA(unsigned char);
 
 extern "C" __declspec(dllexport) void __cdecl HD6309AssertInterrupt(unsigned char, unsigned char);
-extern "C" __declspec(dllexport) void __cdecl HD6309DeAssertInterrupt(unsigned char);
-extern "C" __declspec(dllexport) void __cdecl HD6309ForcePC(unsigned short);
-extern "C" __declspec(dllexport) void __cdecl HD6309Init();
 extern "C" __declspec(dllexport) void __cdecl HD6309Reset();
+
 extern "C" __declspec(dllexport) void __cdecl HD6309_cpu_firq();
 extern "C" __declspec(dllexport) void __cdecl HD6309_cpu_irq();
 extern "C" __declspec(dllexport) void __cdecl HD6309_cpu_nmi();

@@ -79,5 +79,31 @@
         public const byte PC_NOCOLLAPSE = 0x04;
 
         public const string STATUSCLASSNAME = "msctls_statusbar32";
+
+        public const int M65 = 0;
+        public const int M64 = 1;
+        public const int M32 = 2;
+        public const int M21 = 3;
+        public const int M54 = 4;
+        public const int M97 = 5;
+        public const int M85 = 6;
+        public const int M51 = 7;
+        public const int M31 = 8;
+        public const int M1110 = 9;
+        public const int M76 = 10;
+        public const int M75 = 11;
+        public const int M43 = 12;
+        public const int M87 = 13;
+        public const int M86 = 14;
+        public const int M98 = 15;
+        public const int M2726 = 16;
+        public const int M3635 = 17;
+        public const int M3029 = 18;
+        public const int M2827 = 19;
+        public const int M3726 = 20;
+        public const int M3130 = 21;
+        public const int M42 = 22;
+        public const int M53 = 23;
+
     }
 }

@@ -353,10 +353,10 @@ namespace VCCSharp.Libraries
         public static class HD6309
         {
             [DllImport(LIBRARY)]
-            public static extern int HD6309Exec(int cycleFor);
+            public static extern unsafe HD6309State* GetHD6309State();
 
             [DllImport(LIBRARY)]
-            public static extern void HD6309Init();
+            public static extern int HD6309Exec(int cycleFor);
 
             [DllImport(LIBRARY)]
             public static extern void HD6309ForcePC(ushort address);
@@ -408,10 +408,10 @@ namespace VCCSharp.Libraries
         public static class MC6809
         {
             [DllImport(LIBRARY)]
-            public static extern int MC6809Exec(int cycleFor);
+            public static extern unsafe MC6809State * GetMC6809State();
 
             [DllImport(LIBRARY)]
-            public static extern void MC6809Init();
+            public static extern int MC6809Exec(int cycleFor);
 
             [DllImport(LIBRARY)]
             public static extern void MC6809ForcePC(ushort address);
