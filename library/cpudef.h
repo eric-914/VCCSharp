@@ -21,13 +21,9 @@ This file is part of VCC (Virtual Color Computer).
 typedef struct
 {
   void (*CPUAssertInterrupt)(unsigned char, unsigned char);
-  void (*CPUDeAssertInterrupt)(unsigned char);
 } CPU;
 
-extern "C" __declspec(dllexport) CPU* __cdecl GetCPU();
-
 extern "C" __declspec(dllexport) void __cdecl CPUAssertInterrupt(unsigned char irq, unsigned char flag);
-extern "C" __declspec(dllexport) void __cdecl CPUDeAssertInterrupt(unsigned char irq);
 
 extern "C" __declspec(dllexport) void __cdecl SetCPUToHD6309();
 extern "C" __declspec(dllexport) void __cdecl SetCPUToMC6809();

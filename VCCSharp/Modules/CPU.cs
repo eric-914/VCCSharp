@@ -55,7 +55,7 @@ namespace VCCSharp.Modules
 
         public void CPUDeAssertInterrupt(CPUInterrupts irq)
         {
-            Library.CPU.CPUDeAssertInterrupt((byte)irq);
+            _processor.DeAssertInterrupt((byte)irq);
         }
 
         public void SetCPUToHD6309()

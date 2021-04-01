@@ -29,5 +29,15 @@ namespace VCCSharp.Modules
         {
             Library.MC6809.MC6809Reset();
         }
+
+        public void AssertInterrupt(byte irq, byte flag)
+        {
+            Library.MC6809.MC6809AssertInterrupt(irq, flag);
+        }
+
+        public void DeAssertInterrupt(byte irq)
+        {
+            Library.MC6809.MC6809DeAssertInterrupt(irq);
+        }
     }
 }

@@ -29,5 +29,15 @@ namespace VCCSharp.Modules
         {
             Library.HD6309.HD6309Reset();
         }
+
+        public void AssertInterrupt(byte irq, byte flag)
+        {
+            Library.HD6309.HD6309AssertInterrupt(irq, flag);
+        }
+
+        public void DeAssertInterrupt(byte irq)
+        {
+            Library.HD6309.HD6309DeAssertInterrupt(irq);
+        }
     }
 }

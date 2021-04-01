@@ -119,9 +119,6 @@ namespace VCCSharp.Libraries
             public static extern void CPUAssertInterrupt(byte irq, byte flag);
 
             [DllImport(LIBRARY)]
-            public static extern void CPUDeAssertInterrupt(byte irq);
-
-            [DllImport(LIBRARY)]
             public static extern void SetCPUToHD6309();
 
             [DllImport(LIBRARY)]
@@ -366,6 +363,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void HD6309Reset();
+
+            [DllImport(LIBRARY)]
+            public static extern void HD6309AssertInterrupt(byte interrupt, byte waiter);
+
+            [DllImport(LIBRARY)]
+            public static extern void HD6309DeAssertInterrupt(byte interrupt);
         }
 
         public static class Joystick
@@ -415,6 +418,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void MC6809Reset();
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6809AssertInterrupt(byte interrupt, byte waiter);
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6809DeAssertInterrupt(byte interrupt);
         }
 
         public static class MC6821
