@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Security;
 using VCCSharp.Enums;
 using VCCSharp.Models;
 using HINSTANCE = System.IntPtr;
@@ -9,6 +10,7 @@ using HWND = System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
+    [SuppressUnmanagedCodeSecurity]
     public static class Library
     {
         // ReSharper disable once InconsistentNaming
@@ -356,13 +358,22 @@ namespace VCCSharp.Libraries
             public static extern unsafe HD6309State* GetHD6309State();
 
             [DllImport(LIBRARY)]
-            public static extern int HD6309Exec(int cycleFor);
-
-            [DllImport(LIBRARY)]
             public static extern void HD6309Reset();
 
             [DllImport(LIBRARY)]
             public static extern void HD6309AssertInterrupt(byte interrupt, byte waiter);
+
+            [DllImport(LIBRARY)]
+            public static extern void HD6309ExecOpCode(int cycleFor, byte opcode);
+
+            [DllImport(LIBRARY)]
+            public static extern void HD6309_cpu_nmi();
+
+            [DllImport(LIBRARY)]
+            public static extern void HD6309_cpu_firq();
+
+            [DllImport(LIBRARY)]
+            public static extern void HD6309_cpu_irq();
         }
 
         public static class Joystick
@@ -405,13 +416,22 @@ namespace VCCSharp.Libraries
             public static extern unsafe MC6809State * GetMC6809State();
 
             [DllImport(LIBRARY)]
-            public static extern int MC6809Exec(int cycleFor);
-
-            [DllImport(LIBRARY)]
             public static extern void MC6809Reset();
 
             [DllImport(LIBRARY)]
             public static extern void MC6809AssertInterrupt(byte interrupt, byte waiter);
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6809ExecOpCode(int cycleFor, byte opCode);
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6809_cpu_nmi();
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6809_cpu_irq();
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6809_cpu_firq();
         }
 
         public static class MC6821

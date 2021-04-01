@@ -67,7 +67,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MC6809_cpu_firq(void)
+  __declspec(dllexport) void __cdecl MC6809_cpu_firq()
   {
     if (!CC_F)
     {
@@ -88,7 +88,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MC6809_cpu_irq(void)
+  __declspec(dllexport) void __cdecl MC6809_cpu_irq()
   {
     if (instance->InInterrupt == 1) { //If FIRQ is running postpone the IRQ
       return;
@@ -117,7 +117,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MC6809_cpu_nmi(void)
+  __declspec(dllexport) void __cdecl MC6809_cpu_nmi()
   {
     CC_E = 1;
 
@@ -417,46 +417,5 @@ extern "C" {
     instance->SyncWaiting = 0;
     instance->PendingInterrupts |= (1 << (interrupt - 1));
     instance->IRQWaiter = waiter;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) int __cdecl MC6809Exec(int cycleFor)
-  {
-    instance->CycleCounter = 0;
-
-    while (instance->CycleCounter < cycleFor) {
-
-      if (instance->PendingInterrupts)
-      {
-        if (instance->PendingInterrupts & 4) {
-          MC6809_cpu_nmi();
-        }
-
-        if (instance->PendingInterrupts & 2) {
-          MC6809_cpu_firq();
-        }
-
-        if (instance->PendingInterrupts & 1)
-        {
-          if (instance->IRQWaiter == 0) { // This is needed to fix a subtle timming problem
-            MC6809_cpu_irq();		// It allows the CPU to see $FF03 bit 7 high before
-          }
-          else {				// The IRQ is asserted.
-            instance->IRQWaiter -= 1;
-          }
-        }
-      }
-
-      if (instance->SyncWaiting == 1) {
-        return(0);
-      }
-
-      unsigned char opCode = MemRead8(PC_REG++);
-
-      MC6809ExecOpCode(cycleFor, opCode);
-    }
-
-    return(cycleFor - instance->CycleCounter);
   }
 }

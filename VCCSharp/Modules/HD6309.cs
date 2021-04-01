@@ -1,4 +1,5 @@
-﻿using VCCSharp.Libraries;
+﻿using VCCSharp.IoC;
+using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
@@ -10,6 +11,13 @@ namespace VCCSharp.Modules
 
     public class HD6309 : IHD6309
     {
+        private readonly IModules _modules;
+
+        public HD6309(IModules modules)
+        {
+            _modules = modules;
+        }
+
         public unsafe HD6309State* GetHD6309State()
         {
             return Library.HD6309.GetHD6309State();
@@ -118,11 +126,6 @@ namespace VCCSharp.Modules
             }
         }
 
-        public int Exec(int cycleFor)
-        {
-            return Library.HD6309.HD6309Exec(cycleFor);
-        }
-
         public void ForcePC(ushort address)
         {
             unsafe
@@ -136,16 +139,6 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void Reset()
-        {
-            Library.HD6309.HD6309Reset();
-        }
-
-        public void AssertInterrupt(byte irq, byte flag)
-        {
-            Library.HD6309.HD6309AssertInterrupt(irq, flag);
-        }
-
         public void DeAssertInterrupt(byte irq)
         {
             unsafe
@@ -155,6 +148,87 @@ namespace VCCSharp.Modules
                 instance->PendingInterrupts &= (byte)~(1 << (irq - 1));
                 instance->InInterrupt = 0;
             }
+        }
+
+        public void AssertInterrupt(byte irq, byte flag)
+        {
+            Library.HD6309.HD6309AssertInterrupt(irq, flag);
+        }
+
+        public void Reset()
+        {
+            Library.HD6309.HD6309Reset();
+        }
+
+        public int Exec(int cycleFor)
+        {
+            unsafe
+            {
+                HD6309State* instance = GetHD6309State();
+
+                instance->CycleCounter = 0;
+
+                while (instance->CycleCounter < cycleFor)
+                {
+                    if (instance->PendingInterrupts != 0)
+                    {
+                        if ((instance->PendingInterrupts & 4) != 0)
+                        {
+                            HD6309_cpu_nmi();
+                        }
+
+                        if ((instance->PendingInterrupts & 2) != 0)
+                        {
+                            HD6309_cpu_firq();
+                        }
+
+                        if ((instance->PendingInterrupts & 1) != 0)
+                        {
+                            if (instance->IRQWaiter == 0)
+                            { 
+                                // This is needed to fix a subtle timing problem
+                                // It allows the CPU to see $FF03 bit 7 high before...
+                                HD6309_cpu_irq();		
+                            }
+                            else
+                            {				
+                                // ...The IRQ is asserted.
+                                instance->IRQWaiter -= 1;
+                            }
+                        }
+                    }
+
+                    if (instance->SyncWaiting == 1)
+                    { 
+                        //Abort the run nothing happens asynchronously from the CPU
+                        break; // WDZ - Experimental SyncWaiting should still return used cycles (and not zero) by breaking from loop
+                    }
+
+                    HD6309ExecOpCode(cycleFor, _modules.TC1014.MemRead8(instance->pc.Reg++)); //PC_REG
+                }
+
+                return cycleFor - instance->CycleCounter;
+            }
+        }
+
+        public void HD6309ExecOpCode(int cycleFor, byte opcode)
+        {
+            Library.HD6309.HD6309ExecOpCode(cycleFor, opcode);
+        }
+
+        public void HD6309_cpu_nmi()
+        {
+            Library.HD6309.HD6309_cpu_nmi();
+        }
+
+        public void HD6309_cpu_firq()
+        {
+            Library.HD6309.HD6309_cpu_firq();
+        }
+
+        public void HD6309_cpu_irq()
+        {
+            Library.HD6309.HD6309_cpu_irq();
         }
     }
 }
