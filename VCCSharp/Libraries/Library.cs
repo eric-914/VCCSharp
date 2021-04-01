@@ -116,12 +116,6 @@ namespace VCCSharp.Libraries
         public static class CPU
         {
             [DllImport(LIBRARY)]
-            public static extern void CPUReset();
-
-            [DllImport(LIBRARY)]
-            public static extern void CPUForcePC(ushort xferAddress);
-
-            [DllImport(LIBRARY)]
             public static extern void CPUAssertInterrupt(byte irq, byte flag);
 
             [DllImport(LIBRARY)]
@@ -366,6 +360,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void HD6309Init();
+
+            [DllImport(LIBRARY)]
+            public static extern void HD6309ForcePC(ushort address);
+
+            [DllImport(LIBRARY)]
+            public static extern void HD6309Reset();
         }
 
         public static class Joystick
@@ -409,6 +409,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void MC6809Init();
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6809ForcePC(ushort address);
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6809Reset();
         }
 
         public static class MC6821

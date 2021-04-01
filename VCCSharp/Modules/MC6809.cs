@@ -19,5 +19,15 @@ namespace VCCSharp.Modules
         {
             return Library.MC6809.MC6809Exec(cycleFor);
         }
+
+        public void ForcePC(ushort xferAddress)
+        {
+            Library.MC6809.MC6809ForcePC(xferAddress);
+        }
+
+        public void Reset()
+        {
+            Library.MC6809.MC6809Reset();
+        }
     }
 }

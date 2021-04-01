@@ -19,5 +19,15 @@ namespace VCCSharp.Modules
         {
             return Library.HD6309.HD6309Exec(cycleFor);
         }
+
+        public void ForcePC(ushort xferAddress)
+        {
+            Library.HD6309.HD6309ForcePC(xferAddress);
+        }
+
+        public void Reset()
+        {
+            Library.HD6309.HD6309Reset();
+        }
     }
 }

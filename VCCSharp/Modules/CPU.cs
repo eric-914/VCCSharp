@@ -30,7 +30,7 @@ namespace VCCSharp.Modules
 
         public void CPUReset()
         {
-            Library.CPU.CPUReset();
+            _processor.Reset();
         }
 
         public void CPUInit()
@@ -40,7 +40,7 @@ namespace VCCSharp.Modules
 
         public void CPUForcePC(ushort xferAddress)
         {
-            Library.CPU.CPUForcePC(xferAddress);
+            _processor.ForcePC(xferAddress);
         }
 
         public int CPUExec(int cycle)
