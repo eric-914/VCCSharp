@@ -1,5 +1,7 @@
 ﻿using VCCSharp.Enums;
+using VCCSharp.IoC;
 using VCCSharp.Libraries;
+using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
@@ -11,10 +13,21 @@ namespace VCCSharp.Modules
         int CPUExec(int cycle);
         void CPUAssertInterrupt(CPUInterrupts irq, byte flag);
         void CPUDeAssertInterrupt(CPUInterrupts irq);
+        void SetCPUToHD6309();
+        void SetCPUToMC6809();
     }
 
     public class CPU : ICPU
     {
+        private readonly IModules _modules;
+
+        private IProcessor _processor;
+
+        public CPU(IModules modules)
+        {
+            _modules = modules;
+        }
+
         public void CPUReset()
         {
             Library.CPU.CPUReset();
@@ -22,7 +35,7 @@ namespace VCCSharp.Modules
 
         public void CPUInit()
         {
-            Library.CPU.CPUInit();
+            _processor.Init();
         }
 
         public void CPUForcePC(ushort xferAddress)
@@ -32,7 +45,7 @@ namespace VCCSharp.Modules
 
         public int CPUExec(int cycle)
         {
-            return Library.CPU.CPUExec(cycle);
+            return _processor.Exec(cycle);
         }
 
         public void CPUAssertInterrupt(CPUInterrupts irq, byte flag)
@@ -44,5 +57,20 @@ namespace VCCSharp.Modules
         {
             Library.CPU.CPUDeAssertInterrupt((byte)irq);
         }
+
+        public void SetCPUToHD6309()
+        {
+            _processor = _modules.HD6309;
+
+            Library.CPU.SetCPUToHD6309();
+        }
+
+        public void SetCPUToMC6809()
+        {
+            _processor = _modules.MC6809;
+
+            Library.CPU.SetCPUToMC6809();
+        }
+
     }
 }

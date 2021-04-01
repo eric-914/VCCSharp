@@ -42,6 +42,9 @@ namespace VCCSharp
                 .Singleton<ITC1014, TC1014>()
                 .Singleton<IVcc, Vcc>()
 
+                .Singleton<IHD6309, HD6309>()
+                .Singleton<IMC6809, MC6809>()
+
                 //--Modules container/accessor
                 .Singleton<IModules, IoC.Modules>()
 

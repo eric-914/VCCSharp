@@ -18,9 +18,7 @@ extern "C" {
 CPU* InitializeInstance(CPU* p) {
   p->CPUAssertInterrupt = NULL;
   p->CPUDeAssertInterrupt = NULL;
-  p->CPUExec = NULL;
   p->CPUForcePC = NULL;
-  p->CPUInit = NULL;
   p->CPUReset = NULL;
 
   return p;
@@ -28,8 +26,6 @@ CPU* InitializeInstance(CPU* p) {
 
 extern "C" {
   __declspec(dllexport) void __cdecl SetCPUToHD6309() {
-    instance->CPUInit = HD6309Init;
-    instance->CPUExec = HD6309Exec;
     instance->CPUReset = HD6309Reset;
     instance->CPUAssertInterrupt = HD6309AssertInterrupt;
     instance->CPUDeAssertInterrupt = HD6309DeAssertInterrupt;
@@ -39,8 +35,6 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl SetCPUToMC6809() {
-    instance->CPUInit = MC6809Init;
-    instance->CPUExec = MC6809Exec;
     instance->CPUReset = MC6809Reset;
     instance->CPUAssertInterrupt = MC6809AssertInterrupt;
     instance->CPUDeAssertInterrupt = MC6809DeAssertInterrupt;
@@ -63,23 +57,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl CPUExec(int cycle)
-  {
-    return instance->CPUExec(cycle);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl CPUForcePC(unsigned short xferAddress)
   {
     instance->CPUForcePC(xferAddress);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl CPUInit()
-  {
-    instance->CPUInit();
   }
 }
 

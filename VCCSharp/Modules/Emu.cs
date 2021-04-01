@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -64,13 +65,13 @@ namespace VCCSharp.Modules
                 Environment.Exit(0);
             }
 
-            if (emuState->CpuType == 1)
+            if (emuState->CpuType == (byte)CPUTypes.HD6309)
             {
-                SetCPUToHD6309();
+                _modules.CPU.SetCPUToHD6309();
             }
             else
             {
-                SetCPUToMC6809();
+                _modules.CPU.SetCPUToMC6809();
             }
 
             _modules.TC1014.MC6883Reset();  //Captures internal rom pointer for CPU Interrupt Vectors
@@ -110,16 +111,6 @@ namespace VCCSharp.Modules
             {
                 GetEmuState()->EmulationRunning = flag ? Define.TRUE : Define.FALSE;
             }
-        }
-
-        private void SetCPUToHD6309()
-        {
-            Library.Emu.SetCPUToHD6309();
-        }
-
-        private void SetCPUToMC6809()
-        {
-            Library.Emu.SetCPUToMC6809();
         }
 
         public void SetCPUMultiplier(byte multiplier)

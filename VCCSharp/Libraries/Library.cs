@@ -23,12 +23,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe void SetEmuState(EmuState* emuState);
 
             [DllImport(LIBRARY)]
-            public static extern void SetCPUToHD6309();
-
-            [DllImport(LIBRARY)]
-            public static extern void SetCPUToMC6809();
-
-            [DllImport(LIBRARY)]
             public static extern void SetCPUMultiplierFlag(byte double_speed);
         }
 
@@ -105,13 +99,13 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe byte* ExternalBasicImage();
-    
+
             [DllImport(LIBRARY)]
             public static extern byte GetSoundCardIndex(string soundCardName);
-    
+
             [DllImport(LIBRARY)]
             public static extern void UpdateTapeDialog(ushort counter, byte tapeMode);
-    
+
             [DllImport(LIBRARY)]
             public static extern int GetRememberSize();
 
@@ -125,19 +119,19 @@ namespace VCCSharp.Libraries
             public static extern void CPUReset();
 
             [DllImport(LIBRARY)]
-            public static extern void CPUInit();
-
-            [DllImport(LIBRARY)]
             public static extern void CPUForcePC(ushort xferAddress);
-
-            [DllImport(LIBRARY)]
-            public static extern int CPUExec(int cycle);
 
             [DllImport(LIBRARY)]
             public static extern void CPUAssertInterrupt(byte irq, byte flag);
 
             [DllImport(LIBRARY)]
             public static extern void CPUDeAssertInterrupt(byte irq);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetCPUToHD6309();
+
+            [DllImport(LIBRARY)]
+            public static extern void SetCPUToMC6809();
         }
 
         public static class DirectDraw
@@ -173,7 +167,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe uint DDSDGetRGBBitCount(DDSURFACEDESC* ddsd);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void DDSDSetRGBBitCount(DDSURFACEDESC * ddsd, uint value);
+            public static extern unsafe void DDSDSetRGBBitCount(DDSURFACEDESC* ddsd, uint value);
 
             [DllImport(LIBRARY)]
             public static extern unsafe uint DDSDGetPitch(DDSURFACEDESC* ddsd);
@@ -288,10 +282,12 @@ namespace VCCSharp.Libraries
             public static extern int DirectSoundInterfaceRelease();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundLock(ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
+            public static extern unsafe int DirectSoundLock(ulong buffOffset, ushort length, void** sndPointer1,
+                uint* sndLength1, void** sndPointer2, uint* sndLength2);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundUnlock(void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
+            public static extern unsafe int DirectSoundUnlock(void* sndPointer1, uint sndLength1, void* sndPointer2,
+                uint sndLength2);
 
             [DllImport(LIBRARY)]
             public static extern int DirectSoundSetCooperativeLevel(HWND hWnd);
@@ -337,10 +333,10 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void GDISetBkColor(void* hdc, uint color);
-            
+
             [DllImport(LIBRARY)]
             public static extern unsafe void GDISetTextColor(void* hdc, uint color);
-            
+
             [DllImport(LIBRARY)]
             public static extern unsafe void GDITextOut(void* hdc, int x, int y, string text, int textLength);
         }
@@ -361,6 +357,15 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetMonitorTypePalettes(byte monType, byte palIndex);
+        }
+
+        public static class HD6309
+        {
+            [DllImport(LIBRARY)]
+            public static extern int HD6309Exec(int cycleFor);
+
+            [DllImport(LIBRARY)]
+            public static extern void HD6309Init();
         }
 
         public static class Joystick
@@ -395,6 +400,15 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe void DynamicMenuCallback(EmuState* emuState, string menuName, int menuId, int type);
+        }
+
+        public static class MC6809
+        {
+            [DllImport(LIBRARY)]
+            public static extern int MC6809Exec(int cycleFor);
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6809Init();
         }
 
         public static class MC6821

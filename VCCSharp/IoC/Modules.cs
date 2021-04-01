@@ -27,6 +27,9 @@ namespace VCCSharp.IoC
         IThrottle Throttle { get; }
         ITC1014 TC1014 { get; }
         IVcc Vcc { get; }
+
+        IHD6309 HD6309 { get; }
+        IMC6809 MC6809 { get; }
     }
 
     public class Modules : IModules
@@ -61,5 +64,8 @@ namespace VCCSharp.IoC
         public IThrottle Throttle => _factory.Get<IThrottle>();
         public ITC1014 TC1014 => _factory.Get<ITC1014>();
         public IVcc Vcc => _factory.Get<IVcc>();
+
+        public IHD6309 HD6309 => _factory.Get<IHD6309>();
+        public IMC6809 MC6809 => _factory.Get<IMC6809>();
     }
 }
