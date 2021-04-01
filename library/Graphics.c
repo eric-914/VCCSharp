@@ -138,53 +138,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl CheckState(unsigned char attributes) {
-    return (!instance->BlinkState) & !!(attributes & 128);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl MakeRGBPalette(unsigned char index)
-  {
-    unsigned char r, g, b;
-
-    colors->PaletteLookup8[1][index] = index | 128;
-
-    r = colors->ColorTable16Bit[(index & 32) >> 4 | (index & 4) >> 2];
-    g = colors->ColorTable16Bit[(index & 16) >> 3 | (index & 2) >> 1];
-    b = colors->ColorTable16Bit[(index & 8) >> 2 | (index & 1)];
-    colors->PaletteLookup16[1][index] = (r << 11) | (g << 6) | b;
-
-    //32BIT
-    r = colors->ColorTable32Bit[(index & 32) >> 4 | (index & 4) >> 2];
-    g = colors->ColorTable32Bit[(index & 16) >> 3 | (index & 2) >> 1];
-    b = colors->ColorTable32Bit[(index & 8) >> 2 | (index & 1)];
-    colors->PaletteLookup32[1][index] = (r * 65536) + (g * 256) + b;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetPaletteLookup(unsigned char index, unsigned char r, unsigned char g, unsigned char b) {
-    unsigned char rr, gg, bb;
-
-    rr = r;
-    gg = g;
-    bb = b;
-    colors->PaletteLookup32[0][index] = (rr << 16) | (gg << 8) | bb;
-
-    rr = rr >> 3;
-    gg = gg >> 3;
-    bb = bb >> 3;
-    colors->PaletteLookup16[0][index] = (rr << 11) | (gg << 6) | bb;
-
-    rr = rr >> 3;
-    gg = gg >> 3;
-    bb = bb >> 3;
-    colors->PaletteLookup8[0][index] = 0x80 | ((rr & 2) << 4) | ((gg & 2) << 3) | ((bb & 2) << 2) | ((rr & 1) << 2) | ((gg & 1) << 1) | (bb & 1);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl SetGimePalette(unsigned char pallete, unsigned char color)
   {
     // Convert the 6bit rgbrgb value to rrrrrggggggbbbbb for the Real video hardware.
@@ -193,13 +146,6 @@ extern "C" {
     colors->Palette8Bit[pallete] = colors->PaletteLookup8[instance->MonType][color & 63];
     colors->Palette16Bit[pallete] = colors->PaletteLookup16[instance->MonType][color & 63];
     colors->Palette32Bit[pallete] = colors->PaletteLookup32[instance->MonType][color & 63];
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl InvalidateBorder()
-  {
-    instance->BorderChange = 5;
   }
 }
 

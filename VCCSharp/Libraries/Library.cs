@@ -357,22 +357,10 @@ namespace VCCSharp.Libraries
             public static extern unsafe GraphicsColors* GetGraphicsColors();
 
             [DllImport(LIBRARY)]
-            public static extern void MakeRGBPalette(byte index);
-
-            [DllImport(LIBRARY)]
-            public static extern void InvalidateBorder();
-
-            [DllImport(LIBRARY)]
             public static extern void SetGimeBorderColor(byte data);
 
             [DllImport(LIBRARY)]
-            public static extern void SetPaletteLookup(byte index, byte r, byte g, byte b);
-
-            [DllImport(LIBRARY)]
             public static extern void SetMonitorTypePalettes(byte monType, byte palIndex);
-
-            [DllImport(LIBRARY)]
-            public static extern byte CheckState(byte attributes);
         }
 
         public static class Joystick

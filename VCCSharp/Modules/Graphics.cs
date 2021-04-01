@@ -54,7 +54,7 @@ namespace VCCSharp.Modules
         };
 
         private readonly IModules _modules;
-        
+
         public Graphics(IModules modules)
         {
             _modules = modules;
@@ -279,14 +279,37 @@ namespace VCCSharp.Modules
 
         public void InvalidateBorder()
         {
-            Library.Graphics.InvalidateBorder();
+            unsafe
+            {
+                GraphicsState* instance = GetGraphicsState();
+
+                instance->BorderChange = 5;
+            }
         }
 
         public void MakeRGBPalette()
         {
-            for (byte index = 0; index < 64; index++)
+            unsafe
             {
-                Library.Graphics.MakeRGBPalette(index);
+                GraphicsColors* colors = GetGraphicsColors();
+
+                for (byte index = 0; index < 64; index++)
+                {
+                    byte r, g, b;
+
+                    //colors->PaletteLookup8[1][index] = index | 128;
+
+                    //r = colors->ColorTable16Bit[(index & 32) >> 4 | (index & 4) >> 2];
+                    //g = colors->ColorTable16Bit[(index & 16) >> 3 | (index & 2) >> 1];
+                    //b = colors->ColorTable16Bit[(index & 8) >> 2 | (index & 1)];
+                    //colors->PaletteLookup16[1][index] = (r << 11) | (g << 6) | b;
+
+                    //32BIT
+                    r = colors->ColorTable32Bit[(index & 32) >> 4 | (index & 4) >> 2];
+                    g = colors->ColorTable32Bit[(index & 16) >> 3 | (index & 2) >> 1];
+                    b = colors->ColorTable32Bit[(index & 8) >> 2 | (index & 1)];
+                    colors->PaletteLookup32[1 * 64 + index] = (uint)(r << 16 | g << 8 | b);
+                }
             }
         }
 
@@ -302,12 +325,39 @@ namespace VCCSharp.Modules
 
         public void SetPaletteLookup(byte index, byte r, byte g, byte b)
         {
-            Library.Graphics.SetPaletteLookup(index, r, g, b);
+            unsafe
+            {
+                byte rr, gg, bb;
+
+                GraphicsColors* colors = GetGraphicsColors();
+
+                rr = r;
+                gg = g;
+                bb = b;
+                colors->PaletteLookup32[0 * 64 + index] = (uint)((rr << 16) | (gg << 8) | bb);
+
+                //rr >>= 3;
+                //gg >>= 3;
+                //bb >>= 3;
+                //colors->PaletteLookup16[0][index] = (rr << 11) | (gg << 6) | bb;
+
+                //rr >>= 3;
+                //gg >>= 3;
+                //bb >>= 3;
+                //colors->PaletteLookup8[0][index] = 0x80 | ((rr & 2) << 4) | ((gg & 2) << 3) | ((bb & 2) << 2) | ((rr & 1) << 2) | ((gg & 1) << 1) | (bb & 1);
+
+            }
         }
 
         public bool CheckState(byte attributes)
         {
-            return Library.Graphics.CheckState(attributes) != Define.FALSE;
+            unsafe
+            {
+                GraphicsState* instance = GetGraphicsState();
+
+                //return (!instance->BlinkState) & !!(attributes & 128);
+                return (instance->BlinkState == 0) && ((attributes & 128) != 0);
+            }
         }
     }
 }
