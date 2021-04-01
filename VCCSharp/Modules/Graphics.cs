@@ -11,6 +11,8 @@ namespace VCCSharp.Modules
     {
         unsafe GraphicsState* GetGraphicsState();
         unsafe GraphicsSurfaces* GetGraphicsSurfaces();
+        unsafe GraphicsColors* GetGraphicsColors();
+
         void ResetGraphicsState();
         void MakeRGBPalette();
         void MakeCMPPalette(int paletteType);
@@ -22,6 +24,7 @@ namespace VCCSharp.Modules
         void SetMonitorType(byte type);
         void FlipArtifacts();
         void InvalidateBorder();
+        bool CheckState(byte attributes);
     }
 
     public class Graphics : IGraphics
@@ -51,8 +54,7 @@ namespace VCCSharp.Modules
         };
 
         private readonly IModules _modules;
-
-
+        
         public Graphics(IModules modules)
         {
             _modules = modules;
@@ -66,6 +68,11 @@ namespace VCCSharp.Modules
         public unsafe GraphicsSurfaces* GetGraphicsSurfaces()
         {
             return Library.Graphics.GetGraphicsSurfaces();
+        }
+
+        public unsafe GraphicsColors* GetGraphicsColors()
+        {
+            return Library.Graphics.GetGraphicsColors();
         }
 
         public void ResetGraphicsState()
@@ -296,6 +303,11 @@ namespace VCCSharp.Modules
         public void SetPaletteLookup(byte index, byte r, byte g, byte b)
         {
             Library.Graphics.SetPaletteLookup(index, r, g, b);
+        }
+
+        public bool CheckState(byte attributes)
+        {
+            return Library.Graphics.CheckState(attributes) != Define.FALSE;
         }
     }
 }

@@ -11,15 +11,6 @@
     <ClCompile Include="keyboardlayout.c">
       <Filter>keyboard</Filter>
     </ClCompile>
-    <ClCompile Include="tcc1014graphics-8.c">
-      <Filter>tc1014\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="tcc1014graphics-16.c">
-      <Filter>tc1014\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="tcc1014graphics-32.c">
-      <Filter>tc1014\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="xDebug.c">
       <Filter>debug</Filter>
     </ClCompile>
@@ -135,12 +126,6 @@
   <ItemGroup>
     <ClInclude Include="defines.h" />
     <ClInclude Include="library.h" />
-    <ClInclude Include="cc3font.h">
-      <Filter>ccfont</Filter>
-    </ClInclude>
-    <ClInclude Include="cc2font.h">
-      <Filter>ccfont</Filter>
-    </ClInclude>
     <ClInclude Include="cpudef.h">
       <Filter>cpu</Filter>
     </ClInclude>
@@ -354,9 +339,6 @@
     <Filter Include="cassette">
       <UniqueIdentifier>{b15549f3-bd40-41f7-924d-8588cdc3aff9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ccfont">
-      <UniqueIdentifier>{3348c768-b227-4765-ad7c-6909139425fb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="cpu">
       <UniqueIdentifier>{95cddd9b-7966-459b-b71a-4df974a5336a}</UniqueIdentifier>
     </Filter>
@@ -377,9 +359,6 @@
     </Filter>
     <Filter Include="tc1014">
       <UniqueIdentifier>{49389fe2-6b27-43b4-be8e-da55b700686d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="tc1014\graphics">
-      <UniqueIdentifier>{720d3419-e0d4-407a-8b4d-6e75a0461778}</UniqueIdentifier>
     </Filter>
     <Filter Include="debug">
       <UniqueIdentifier>{67f7f1e9-6d8a-48db-9f9f-c4c936b752a2}</UniqueIdentifier>
