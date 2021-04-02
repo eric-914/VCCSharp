@@ -27,201 +27,201 @@ void ErrorVector();
 void InvalidInsHandler();
 void DivbyZero();
 
-void Neg_D()
-{ //0
-  temp16 = DPADDRESS(PC_REG++);
-  postbyte = MemRead8(temp16);
-  temp8 = 0 - postbyte;
-
-  CC_C = temp8 > 0;
-  CC_V = (postbyte == 0x80);
-  CC_N = NTEST8(temp8);
-  CC_Z = ZTEST(temp8);
-
-  MemWrite8(temp8, temp16);
-
-  instance->CycleCounter += instance->NatEmuCycles65;
-}
-
-void Oim_D()
-{//1 6309
-  postbyte = MemRead8(PC_REG++);
-  temp16 = DPADDRESS(PC_REG++);
-  postbyte |= MemRead8(temp16);
-
-  MemWrite8(postbyte, temp16);
-
-  CC_N = NTEST8(postbyte);
-  CC_Z = ZTEST(postbyte);
-  CC_V = 0;
-
-  instance->CycleCounter += 6;
-}
-
-void Aim_D()
-{//2 Phase 2 6309
-  postbyte = MemRead8(PC_REG++);
-  temp16 = DPADDRESS(PC_REG++);
-  postbyte &= MemRead8(temp16);
-
-  MemWrite8(postbyte, temp16);
-
-  CC_N = NTEST8(postbyte);
-  CC_Z = ZTEST(postbyte);
-  CC_V = 0;
-
-  instance->CycleCounter += 6;
-}
-
-void Com_D()
-{ //03
-  temp16 = DPADDRESS(PC_REG++);
-  temp8 = MemRead8(temp16);
-  temp8 = 0xFF - temp8;
-
-  CC_Z = ZTEST(temp8);
-  CC_N = NTEST8(temp8);
-  CC_C = 1;
-  CC_V = 0;
-
-  MemWrite8(temp8, temp16);
-
-  instance->CycleCounter += instance->NatEmuCycles65;
-}
-
-void Lsr_D()
-{ //04 S2
-  temp16 = DPADDRESS(PC_REG++);
-  temp8 = MemRead8(temp16);
-  CC_C = temp8 & 1;
-  temp8 = temp8 >> 1;
-  CC_Z = ZTEST(temp8);
-  CC_N = 0;
-  MemWrite8(temp8, temp16);
-  instance->CycleCounter += instance->NatEmuCycles65;
-}
-
-void Eim_D()
-{ //05 6309 Untested
-  postbyte = MemRead8(PC_REG++);
-  temp16 = DPADDRESS(PC_REG++);
-  postbyte ^= MemRead8(temp16);
-  MemWrite8(postbyte, temp16);
-  CC_N = NTEST8(postbyte);
-  CC_Z = ZTEST(postbyte);
-  CC_V = 0;
-  instance->CycleCounter += 6;
-}
-
-void Ror_D()
-{ //06 S2
-  temp16 = DPADDRESS(PC_REG++);
-  temp8 = MemRead8(temp16);
-  postbyte = CC_C << 7;
-  CC_C = temp8 & 1;
-  temp8 = (temp8 >> 1) | postbyte;
-  CC_Z = ZTEST(temp8);
-  CC_N = NTEST8(temp8);
-  MemWrite8(temp8, temp16);
-  instance->CycleCounter += instance->NatEmuCycles65;
-}
-
-void Asr_D()
-{ //7
-  temp16 = DPADDRESS(PC_REG++);
-  temp8 = MemRead8(temp16);
-  CC_C = temp8 & 1;
-  temp8 = (temp8 & 0x80) | (temp8 >> 1);
-  CC_Z = ZTEST(temp8);
-  CC_N = NTEST8(temp8);
-  MemWrite8(temp8, temp16);
-  instance->CycleCounter += instance->NatEmuCycles65;
-}
-
-void Asl_D()
-{ //8 
-  temp16 = DPADDRESS(PC_REG++);
-  temp8 = MemRead8(temp16);
-  CC_C = (temp8 & 0x80) >> 7;
-  CC_V = CC_C ^ ((temp8 & 0x40) >> 6);
-  temp8 = temp8 << 1;
-  CC_N = NTEST8(temp8);
-  CC_Z = ZTEST(temp8);
-  MemWrite8(temp8, temp16);
-  instance->CycleCounter += instance->NatEmuCycles65;
-}
-
-void Rol_D()
-{	//9
-  temp16 = DPADDRESS(PC_REG++);
-  temp8 = MemRead8(temp16);
-  postbyte = CC_C;
-  CC_C = (temp8 & 0x80) >> 7;
-  CC_V = CC_C ^ ((temp8 & 0x40) >> 6);
-  temp8 = (temp8 << 1) | postbyte;
-  CC_Z = ZTEST(temp8);
-  CC_N = NTEST8(temp8);
-  MemWrite8(temp8, temp16);
-  instance->CycleCounter += instance->NatEmuCycles65;
-}
-
-void Dec_D()
-{ //A
-  temp16 = DPADDRESS(PC_REG++);
-  temp8 = MemRead8(temp16) - 1;
-  CC_Z = ZTEST(temp8);
-  CC_N = NTEST8(temp8);
-  CC_V = temp8 == 0x7F;
-  MemWrite8(temp8, temp16);
-  instance->CycleCounter += instance->NatEmuCycles65;
-}
-
-void Tim_D()
-{	//B 6309 Untested wcreate
-  postbyte = MemRead8(PC_REG++);
-  temp8 = MemRead8(DPADDRESS(PC_REG++));
-  postbyte &= temp8;
-  CC_N = NTEST8(postbyte);
-  CC_Z = ZTEST(postbyte);
-  CC_V = 0;
-  instance->CycleCounter += 6;
-}
-
-void Inc_D()
-{ //C
-  temp16 = (DPADDRESS(PC_REG++));
-  temp8 = MemRead8(temp16) + 1;
-  CC_Z = ZTEST(temp8);
-  CC_V = temp8 == 0x80;
-  CC_N = NTEST8(temp8);
-  MemWrite8(temp8, temp16);
-  instance->CycleCounter += instance->NatEmuCycles65;
-}
-
-void Tst_D()
-{ //D
-  temp8 = MemRead8(DPADDRESS(PC_REG++));
-  CC_Z = ZTEST(temp8);
-  CC_N = NTEST8(temp8);
-  CC_V = 0;
-  instance->CycleCounter += instance->NatEmuCycles64;
-}
-
-void Jmp_D()
-{	//E
-  PC_REG = ((DP_REG | MemRead8(PC_REG)));
-  instance->CycleCounter += instance->NatEmuCycles32;
-}
-
-void Clr_D()
-{	//F
-  MemWrite8(0, DPADDRESS(PC_REG++));
-  CC_Z = 1;
-  CC_N = 0;
-  CC_V = 0;
-  CC_C = 0;
-  instance->CycleCounter += instance->NatEmuCycles65;
-}
+//void Neg_D()
+//{ //0
+//  temp16 = DPADDRESS(PC_REG++);
+//  postbyte = MemRead8(temp16);
+//  temp8 = 0 - postbyte;
+//
+//  CC_C = temp8 > 0;
+//  CC_V = (postbyte == 0x80);
+//  CC_N = NTEST8(temp8);
+//  CC_Z = ZTEST(temp8);
+//
+//  MemWrite8(temp8, temp16);
+//
+//  instance->CycleCounter += instance->NatEmuCycles65;
+//}
+//
+//void Oim_D()
+//{//1 6309
+//  postbyte = MemRead8(PC_REG++);
+//  temp16 = DPADDRESS(PC_REG++);
+//  postbyte |= MemRead8(temp16);
+//
+//  MemWrite8(postbyte, temp16);
+//
+//  CC_N = NTEST8(postbyte);
+//  CC_Z = ZTEST(postbyte);
+//  CC_V = 0;
+//
+//  instance->CycleCounter += 6;
+//}
+//
+//void Aim_D()
+//{//2 Phase 2 6309
+//  postbyte = MemRead8(PC_REG++);
+//  temp16 = DPADDRESS(PC_REG++);
+//  postbyte &= MemRead8(temp16);
+//
+//  MemWrite8(postbyte, temp16);
+//
+//  CC_N = NTEST8(postbyte);
+//  CC_Z = ZTEST(postbyte);
+//  CC_V = 0;
+//
+//  instance->CycleCounter += 6;
+//}
+//
+//void Com_D()
+//{ //03
+//  temp16 = DPADDRESS(PC_REG++);
+//  temp8 = MemRead8(temp16);
+//  temp8 = 0xFF - temp8;
+//
+//  CC_Z = ZTEST(temp8);
+//  CC_N = NTEST8(temp8);
+//  CC_C = 1;
+//  CC_V = 0;
+//
+//  MemWrite8(temp8, temp16);
+//
+//  instance->CycleCounter += instance->NatEmuCycles65;
+//}
+//
+//void Lsr_D()
+//{ //04 S2
+//  temp16 = DPADDRESS(PC_REG++);
+//  temp8 = MemRead8(temp16);
+//  CC_C = temp8 & 1;
+//  temp8 = temp8 >> 1;
+//  CC_Z = ZTEST(temp8);
+//  CC_N = 0;
+//  MemWrite8(temp8, temp16);
+//  instance->CycleCounter += instance->NatEmuCycles65;
+//}
+//
+//void Eim_D()
+//{ //05 6309 Untested
+//  postbyte = MemRead8(PC_REG++);
+//  temp16 = DPADDRESS(PC_REG++);
+//  postbyte ^= MemRead8(temp16);
+//  MemWrite8(postbyte, temp16);
+//  CC_N = NTEST8(postbyte);
+//  CC_Z = ZTEST(postbyte);
+//  CC_V = 0;
+//  instance->CycleCounter += 6;
+//}
+//
+//void Ror_D()
+//{ //06 S2
+//  temp16 = DPADDRESS(PC_REG++);
+//  temp8 = MemRead8(temp16);
+//  postbyte = CC_C << 7;
+//  CC_C = temp8 & 1;
+//  temp8 = (temp8 >> 1) | postbyte;
+//  CC_Z = ZTEST(temp8);
+//  CC_N = NTEST8(temp8);
+//  MemWrite8(temp8, temp16);
+//  instance->CycleCounter += instance->NatEmuCycles65;
+//}
+//
+//void Asr_D()
+//{ //7
+//  temp16 = DPADDRESS(PC_REG++);
+//  temp8 = MemRead8(temp16);
+//  CC_C = temp8 & 1;
+//  temp8 = (temp8 & 0x80) | (temp8 >> 1);
+//  CC_Z = ZTEST(temp8);
+//  CC_N = NTEST8(temp8);
+//  MemWrite8(temp8, temp16);
+//  instance->CycleCounter += instance->NatEmuCycles65;
+//}
+//
+//void Asl_D()
+//{ //8 
+//  temp16 = DPADDRESS(PC_REG++);
+//  temp8 = MemRead8(temp16);
+//  CC_C = (temp8 & 0x80) >> 7;
+//  CC_V = CC_C ^ ((temp8 & 0x40) >> 6);
+//  temp8 = temp8 << 1;
+//  CC_N = NTEST8(temp8);
+//  CC_Z = ZTEST(temp8);
+//  MemWrite8(temp8, temp16);
+//  instance->CycleCounter += instance->NatEmuCycles65;
+//}
+//
+//void Rol_D()
+//{	//9
+//  temp16 = DPADDRESS(PC_REG++);
+//  temp8 = MemRead8(temp16);
+//  postbyte = CC_C;
+//  CC_C = (temp8 & 0x80) >> 7;
+//  CC_V = CC_C ^ ((temp8 & 0x40) >> 6);
+//  temp8 = (temp8 << 1) | postbyte;
+//  CC_Z = ZTEST(temp8);
+//  CC_N = NTEST8(temp8);
+//  MemWrite8(temp8, temp16);
+//  instance->CycleCounter += instance->NatEmuCycles65;
+//}
+//
+//void Dec_D()
+//{ //A
+//  temp16 = DPADDRESS(PC_REG++);
+//  temp8 = MemRead8(temp16) - 1;
+//  CC_Z = ZTEST(temp8);
+//  CC_N = NTEST8(temp8);
+//  CC_V = temp8 == 0x7F;
+//  MemWrite8(temp8, temp16);
+//  instance->CycleCounter += instance->NatEmuCycles65;
+//}
+//
+//void Tim_D()
+//{	//B 6309 Untested wcreate
+//  postbyte = MemRead8(PC_REG++);
+//  temp8 = MemRead8(DPADDRESS(PC_REG++));
+//  postbyte &= temp8;
+//  CC_N = NTEST8(postbyte);
+//  CC_Z = ZTEST(postbyte);
+//  CC_V = 0;
+//  instance->CycleCounter += 6;
+//}
+//
+//void Inc_D()
+//{ //C
+//  temp16 = (DPADDRESS(PC_REG++));
+//  temp8 = MemRead8(temp16) + 1;
+//  CC_Z = ZTEST(temp8);
+//  CC_V = temp8 == 0x80;
+//  CC_N = NTEST8(temp8);
+//  MemWrite8(temp8, temp16);
+//  instance->CycleCounter += instance->NatEmuCycles65;
+//}
+//
+//void Tst_D()
+//{ //D
+//  temp8 = MemRead8(DPADDRESS(PC_REG++));
+//  CC_Z = ZTEST(temp8);
+//  CC_N = NTEST8(temp8);
+//  CC_V = 0;
+//  instance->CycleCounter += instance->NatEmuCycles64;
+//}
+//
+//void Jmp_D()
+//{	//E
+//  PC_REG = ((DP_REG | MemRead8(PC_REG)));
+//  instance->CycleCounter += instance->NatEmuCycles32;
+//}
+//
+//void Clr_D()
+//{	//F
+//  MemWrite8(0, DPADDRESS(PC_REG++));
+//  CC_Z = 1;
+//  CC_N = 0;
+//  CC_V = 0;
+//  CC_C = 0;
+//  instance->CycleCounter += instance->NatEmuCycles65;
+//}
 
 void LBeq_R()
 { //1027
@@ -6297,22 +6297,22 @@ extern "C" __declspec(dllexport) void __cdecl Page_2(unsigned char opcode);
 extern "C" __declspec(dllexport) void __cdecl Page_3(unsigned char opcode);
 
 void(*JmpVec1[256])(void) = {
-  Neg_D,		// 00
-  Oim_D,		// 01
-  Aim_D,		// 02
-  Com_D,		// 03
-  Lsr_D,		// 04
-  Eim_D,		// 05
-  Ror_D,		// 06
-  Asr_D,		// 07
-  Asl_D,		// 08
-  Rol_D,		// 09
-  Dec_D,		// 0A
-  Tim_D,		// 0B
-  Inc_D,		// 0C
-  Tst_D,		// 0D
-  Jmp_D,		// 0E
-  Clr_D,		// 0F
+  ___,		// 00
+  ___,		// 01
+  ___,		// 02
+  ___,		// 03
+  ___,		// 04
+  ___,		// 05
+  ___,		// 06
+  ___,		// 07
+  ___,		// 08
+  ___,		// 09
+  ___,		// 0A
+  ___,		// 0B
+  ___,		// 0C
+  ___,		// 0D
+  ___,		// 0E
+  ___,		// 0F
   ___,		// 10
   ___,		// 11
   Nop_I,		// 12

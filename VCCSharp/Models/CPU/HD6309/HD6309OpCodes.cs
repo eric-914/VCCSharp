@@ -1,4 +1,5 @@
 ﻿using System;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 
@@ -17,7 +18,11 @@ namespace VCCSharp.Models.CPU.HD6309
         private static readonly Action<byte> _page2 = Library.HD6309.Page_2;
         private static readonly Action<byte> _page3 = Library.HD6309.Page_3;
 
-        private unsafe HD6309State* _instance => _modules.HD6309.GetHD6309State();
+        private unsafe HD6309State* instance => _modules.HD6309.GetHD6309State();
+
+        private byte temp8;
+        private ushort temp16;
+        private byte postbyte = 0;
 
         #region Jump Vectors
 
@@ -304,84 +309,206 @@ namespace VCCSharp.Models.CPU.HD6309
 
         #region 0x00 - 0x0F
 
-        public void Neg_D()// 00
+        public unsafe void Neg_D()// 00
         {
+            temp16 = DPADDRESS(PC_REG++);
+            postbyte = MemRead8(temp16);
+            temp8 = (byte)(0 - postbyte);
+
+            CC_C = temp8 > 0;
+            CC_V = postbyte == 0x80;
+            CC_N = NTEST8(temp8);
+            CC_Z = ZTEST(temp8);
+
+            MemWrite8(temp8, temp16);
+
+            instance->CycleCounter += instance->NatEmuCycles65;
+
             _page1(0x00);
         }
 
-        public void Oim_D()// 01
+        //1 6309
+        public unsafe void Oim_D()// 01
         {
-            _page1(0x01);
+            postbyte = MemRead8(PC_REG++);
+            temp16 = DPADDRESS(PC_REG++);
+            postbyte |= MemRead8(temp16);
+
+            MemWrite8(postbyte, temp16);
+
+            CC_N = NTEST8(postbyte);
+            CC_Z = ZTEST(postbyte);
+            CC_V = false; //0
+
+            instance->CycleCounter += 6;
         }
 
-        public void Aim_D()// 02
+        //2 Phase 2 6309
+        public unsafe void Aim_D()// 02
         {
-            _page1(0x02);
+            postbyte = MemRead8(PC_REG++);
+            temp16 = DPADDRESS(PC_REG++);
+            postbyte &= MemRead8(temp16);
+
+            MemWrite8(postbyte, temp16);
+
+            CC_N = NTEST8(postbyte);
+            CC_Z = ZTEST(postbyte);
+            CC_V = false; //0;
+
+            instance->CycleCounter += 6;
         }
 
-        public void Com_D()// 03
+        public unsafe void Com_D()// 03
         {
-            _page1(0x03);
+            temp16 = DPADDRESS(PC_REG++);
+            temp8 = MemRead8(temp16);
+            temp8 = (byte)(0xFF - temp8);
+
+            CC_Z = ZTEST(temp8);
+            CC_N = NTEST8(temp8);
+            CC_C = true; //1;
+            CC_V = false; //0;
+
+            MemWrite8(temp8, temp16);
+
+            instance->CycleCounter += instance->NatEmuCycles65;
         }
 
-        public void Lsr_D()// 04
+        public unsafe void Lsr_D()// 04
         {
-            _page1(0x04);
+            temp16 = DPADDRESS(PC_REG++);
+            temp8 = MemRead8(temp16);
+            CC_C = (temp8 & 1) != 0;
+            temp8 = (byte)(temp8 >> 1);
+            CC_Z = ZTEST(temp8);
+            CC_N = false; //0;
+            MemWrite8(temp8, temp16);
+            instance->CycleCounter += instance->NatEmuCycles65;
         }
 
-        public void Eim_D()// 05
+        //6309 Untested
+        public unsafe void Eim_D()// 05
         {
-            _page1(0x05);
+            postbyte = MemRead8(PC_REG++);
+            temp16 = DPADDRESS(PC_REG++);
+            postbyte ^= MemRead8(temp16);
+            MemWrite8(postbyte, temp16);
+            CC_N = NTEST8(postbyte);
+            CC_Z = ZTEST(postbyte);
+            CC_V = false; //0;
+            instance->CycleCounter += 6;
         }
 
-        public void Ror_D()// 06
+        public unsafe void Ror_D()// 06
         {
-            _page1(0x06);
+            temp16 = DPADDRESS(PC_REG++);
+            temp8 = MemRead8(temp16);
+            postbyte = (byte)((CC_C ? 1 : 0) << 7);
+            CC_C = (temp8 & 1) != 0;
+            temp8 = (byte)((temp8 >> 1) | postbyte);
+            CC_Z = ZTEST(temp8);
+            CC_N = NTEST8(temp8);
+            MemWrite8(temp8, temp16);
+            instance->CycleCounter += instance->NatEmuCycles65;
         }
 
-        public void Asr_D()// 07
+        public unsafe void Asr_D()// 07
         {
-            _page1(0x07);
+            temp16 = DPADDRESS(PC_REG++);
+            temp8 = MemRead8(temp16);
+            CC_C = (temp8 & 1) != 0;
+            temp8 = (byte)((temp8 & 0x80) | (temp8 >> 1));
+            CC_Z = ZTEST(temp8);
+            CC_N = NTEST8(temp8);
+            MemWrite8(temp8, temp16);
+            instance->CycleCounter += instance->NatEmuCycles65;
         }
 
-        public void Asl_D()// 08
+        public unsafe void Asl_D()// 08
         {
-            _page1(0x08);
+            temp16 = DPADDRESS(PC_REG++);
+            temp8 = MemRead8(temp16);
+            CC_C = ((temp8 & 0x80) >> 7) != 0;
+            CC_V = ((CC_C ? 1 : 0) ^ ((temp8 & 0x40) >> 6)) != 0;
+            temp8 = (byte)(temp8 << 1);
+            CC_N = NTEST8(temp8);
+            CC_Z = ZTEST(temp8);
+            MemWrite8(temp8, temp16);
+            instance->CycleCounter += instance->NatEmuCycles65;
         }
 
-        public void Rol_D()// 09
+        public unsafe void Rol_D()// 09
         {
-            _page1(0x09);
+            temp16 = DPADDRESS(PC_REG++);
+            temp8 = MemRead8(temp16);
+            postbyte = (byte)(CC_C ? 1 : 0);
+            CC_C = ((temp8 & 0x80) >> 7) != 0;
+            CC_V = ((CC_C ? 1 : 0) ^ ((temp8 & 0x40) >> 6)) != 0;
+            temp8 = (byte)((temp8 << 1) | postbyte);
+            CC_Z = ZTEST(temp8);
+            CC_N = NTEST8(temp8);
+            MemWrite8(temp8, temp16);
+            instance->CycleCounter += instance->NatEmuCycles65;
         }
 
-        public void Dec_D()// 0A
+        public unsafe void Dec_D()// 0A
         {
-            _page1(0x0A);
+            temp16 = DPADDRESS(PC_REG++);
+            temp8 = (byte)(MemRead8(temp16) - 1);
+            CC_Z = ZTEST(temp8);
+            CC_N = NTEST8(temp8);
+            CC_V = temp8 == 0x7F;
+            MemWrite8(temp8, temp16);
+            instance->CycleCounter += instance->NatEmuCycles65;
         }
 
-        public void Tim_D()// 0B
+        //6309 Untested wcreate
+        public unsafe void Tim_D()// 0B
         {
-            _page1(0x0B);
+            postbyte = MemRead8(PC_REG++);
+            temp8 = MemRead8(DPADDRESS(PC_REG++));
+            postbyte &= temp8;
+            CC_N = NTEST8(postbyte);
+            CC_Z = ZTEST(postbyte);
+            CC_V = false; //0;
+            instance->CycleCounter += 6;
         }
 
-        public void Inc_D()// 0C
+        public unsafe void Inc_D()// 0C
         {
-            _page1(0x0C);
+            temp16 = (DPADDRESS(PC_REG++));
+            temp8 = (byte)(MemRead8(temp16) + 1);
+            CC_Z = ZTEST(temp8);
+            CC_V = temp8 == 0x80;
+            CC_N = NTEST8(temp8);
+            MemWrite8(temp8, temp16);
+            instance->CycleCounter += instance->NatEmuCycles65;
         }
 
-        public void Tst_D()// 0D
+        public unsafe void Tst_D()// 0D
         {
-            _page1(0x0D);
+            temp8 = MemRead8(DPADDRESS(PC_REG++));
+            CC_Z = ZTEST(temp8);
+            CC_N = NTEST8(temp8);
+            CC_V = false; //0;
+            instance->CycleCounter += instance->NatEmuCycles64;
         }
 
-        public void Jmp_D()// 0E
+        public unsafe void Jmp_D()// 0E
         {
-            _page1(0x0E);
+            PC_REG = (ushort)(DP_REG | MemRead8(PC_REG));
+            instance->CycleCounter += instance->NatEmuCycles32;
         }
 
-        public void Clr_D()// 0F
+        public unsafe void Clr_D()// 0F
         {
-            _page1(0x0F);
+            MemWrite8(0, DPADDRESS(PC_REG++));
+            CC_Z = true; //1;
+            CC_N = false; //0;
+            CC_V = false; //0;
+            CC_C = false; //0;
+            instance->CycleCounter += instance->NatEmuCycles65;
         }
 
         #endregion
@@ -392,7 +519,7 @@ namespace VCCSharp.Models.CPU.HD6309
         {
             unsafe
             {
-                byte opCode = _modules.TC1014.MemRead8(_instance->pc.Reg++);
+                byte opCode = MemRead8(PC_REG++);
 
                 _page2(opCode);
             }
@@ -402,7 +529,7 @@ namespace VCCSharp.Models.CPU.HD6309
         {
             unsafe
             {
-                byte opCode = _modules.TC1014.MemRead8(_instance->pc.Reg++);
+                byte opCode = MemRead8(PC_REG++);
 
                 _page3(opCode);
             }
@@ -1608,5 +1735,198 @@ namespace VCCSharp.Models.CPU.HD6309
         {
             _page1(0);
         }
+
+        #region Macros
+
+        public ushort PC_REG
+        {
+            get
+            {
+                unsafe
+                {
+                    return instance->pc.Reg;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    instance->pc.Reg = value;
+                }
+            }
+        }
+
+        public ushort DP_REG
+        {
+            get
+            {
+                unsafe
+                {
+                    return instance->dp.Reg;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    instance->dp.Reg = value;
+                }
+            }
+        }
+
+        public unsafe ushort DPADDRESS(ushort r) => (ushort)(instance->dp.Reg | MemRead8(r));
+
+        public byte MemRead8(ushort address) => _modules.TC1014.MemRead8(address);
+        public void MemWrite8(byte data, ushort address) => _modules.TC1014.MemWrite8(data, address);
+
+        public bool CC_E
+        {
+            get
+            {
+                unsafe
+                {
+                    return instance->cc[(int)CCFlagMasks.E] == Define.TRUE;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    instance->cc[(int)CCFlagMasks.E] = value ? Define.TRUE : Define.FALSE;
+                }
+            }
+        }
+
+        public bool CC_F
+        {
+            get
+            {
+                unsafe
+                {
+                    return instance->cc[(int)CCFlagMasks.F] == Define.TRUE;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    instance->cc[(int)CCFlagMasks.F] = value ? Define.TRUE : Define.FALSE;
+                }
+            }
+        }
+
+        public bool CC_H
+        {
+            get
+            {
+                unsafe
+                {
+                    return instance->cc[(int)CCFlagMasks.H] == Define.TRUE;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    instance->cc[(int)CCFlagMasks.H] = value ? Define.TRUE : Define.FALSE;
+                }
+            }
+        }
+
+        public bool CC_I
+        {
+            get
+            {
+                unsafe
+                {
+                    return instance->cc[(int)CCFlagMasks.I] == Define.TRUE;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    instance->cc[(int)CCFlagMasks.I] = value ? Define.TRUE : Define.FALSE;
+                }
+            }
+        }
+
+        public bool CC_N
+        {
+            get
+            {
+                unsafe
+                {
+                    return instance->cc[(int)CCFlagMasks.N] == Define.TRUE;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    instance->cc[(int)CCFlagMasks.N] = value ? Define.TRUE : Define.FALSE;
+                }
+            }
+        }
+
+        public bool CC_Z
+        {
+            get
+            {
+                unsafe
+                {
+                    return instance->cc[(int)CCFlagMasks.Z] == Define.TRUE;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    instance->cc[(int)CCFlagMasks.Z] = value ? Define.TRUE : Define.FALSE;
+                }
+            }
+        }
+
+        public bool CC_V
+        {
+            get
+            {
+                unsafe
+                {
+                    return instance->cc[(int)CCFlagMasks.V] == Define.TRUE;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    instance->cc[(int)CCFlagMasks.V] = value ? Define.TRUE : Define.FALSE;
+                }
+            }
+        }
+
+        public bool CC_C
+        {
+            get
+            {
+                unsafe
+                {
+                    return instance->cc[(int)CCFlagMasks.C] == Define.TRUE;
+                }
+            }
+            set
+            {
+                unsafe
+                {
+                    instance->cc[(int)CCFlagMasks.C] = value ? Define.TRUE : Define.FALSE;
+                }
+            }
+        }
+
+        public bool NTEST8(byte value) => value > 0x7F;
+
+        public bool ZTEST(byte value) => value == 0;
+
+        #endregion
     }
 }
