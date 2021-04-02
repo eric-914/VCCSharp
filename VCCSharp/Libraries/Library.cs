@@ -364,10 +364,16 @@ namespace VCCSharp.Libraries
             public static extern void HD6309AssertInterrupt(byte interrupt, byte waiter);
 
             [DllImport(LIBRARY)]
-            public static extern void HD6309ExecOpCode(int cycleFor, byte opcode);
+            public static extern byte HD6309_getcc();
 
             [DllImport(LIBRARY)]
-            public static extern byte HD6309_getcc();
+            public static extern void Page_1(byte opCode);
+
+            [DllImport(LIBRARY)]
+            public static extern void Page_2(byte opCode);
+
+            [DllImport(LIBRARY)]
+            public static extern void Page_3(byte opCode);
         }
 
         public static class Joystick

@@ -237,7 +237,6 @@
     <ClInclude Include="GraphicsSurfaces.h" />
     <ClInclude Include="HD6309.h" />
     <ClInclude Include="HD6309Macros.h" />
-    <ClInclude Include="HD6309OpCodes.h" />
     <ClInclude Include="IOBus.h" />
     <ClInclude Include="Joystick.h" />
     <ClInclude Include="JoystickModel.h" />

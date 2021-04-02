@@ -202,9 +202,6 @@
     <ClInclude Include="MC6809OpCodes.h">
       <Filter>mc6809</Filter>
     </ClInclude>
-    <ClInclude Include="HD6309OpCodes.h">
-      <Filter>hd6309</Filter>
-    </ClInclude>
     <ClInclude Include="MessageHandlers.h">
       <Filter>events</Filter>
     </ClInclude>

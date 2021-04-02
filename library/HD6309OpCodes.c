@@ -1,3 +1,5 @@
+#include <windows.h>
+
 #include "HD6309.h"
 #include "TC1014MMU.h"
 
@@ -20,70 +22,24 @@ static signed short* spostword = (signed short*)&postword;
 static unsigned char Source = 0;
 static unsigned char Dest = 0;
 
-void ErrorVector()
-{
-  CC_E = 1;
-
-  MemWrite8(PC_L, --S_REG);
-  MemWrite8(PC_H, --S_REG);
-  MemWrite8(U_L, --S_REG);
-  MemWrite8(U_H, --S_REG);
-  MemWrite8(Y_L, --S_REG);
-  MemWrite8(Y_H, --S_REG);
-  MemWrite8(X_L, --S_REG);
-  MemWrite8(X_H, --S_REG);
-  MemWrite8(DPA, --S_REG);
-
-  if (MD_NATIVE6309)
-  {
-    MemWrite8((F_REG), --S_REG);
-    MemWrite8((E_REG), --S_REG);
-
-    instance->CycleCounter += 2;
-  }
-
-  MemWrite8(B_REG, --S_REG);
-  MemWrite8(A_REG, --S_REG);
-  MemWrite8(HD6309_getcc(), --S_REG);
-
-  PC_REG = MemRead16(VTRAP);
-
-  instance->CycleCounter += (12 + instance->NatEmuCycles54);	//One for each byte +overhead? Guessing from PSHS
-}
-
-void InvalidInsHandler()
-{
-  MD_ILLEGAL = 1;
-  instance->mdbits = HD6309_getmd();
-
-  ErrorVector();
-}
-
-void DivbyZero()
-{
-  MD_ZERODIV = 1;
-
-  instance->mdbits = HD6309_getmd();
-
-  ErrorVector();
-}
-
-void Page_2();
-void Page_3();
+void ___();
+void ErrorVector();
+void InvalidInsHandler();
+void DivbyZero();
 
 void Neg_D()
 { //0
   temp16 = DPADDRESS(PC_REG++);
   postbyte = MemRead8(temp16);
   temp8 = 0 - postbyte;
-  
+
   CC_C = temp8 > 0;
   CC_V = (postbyte == 0x80);
   CC_N = NTEST8(temp8);
   CC_Z = ZTEST(temp8);
-  
+
   MemWrite8(temp8, temp16);
-  
+
   instance->CycleCounter += instance->NatEmuCycles65;
 }
 
@@ -92,13 +48,13 @@ void Oim_D()
   postbyte = MemRead8(PC_REG++);
   temp16 = DPADDRESS(PC_REG++);
   postbyte |= MemRead8(temp16);
-  
+
   MemWrite8(postbyte, temp16);
-  
+
   CC_N = NTEST8(postbyte);
   CC_Z = ZTEST(postbyte);
   CC_V = 0;
-  
+
   instance->CycleCounter += 6;
 }
 
@@ -107,13 +63,13 @@ void Aim_D()
   postbyte = MemRead8(PC_REG++);
   temp16 = DPADDRESS(PC_REG++);
   postbyte &= MemRead8(temp16);
-  
+
   MemWrite8(postbyte, temp16);
-  
+
   CC_N = NTEST8(postbyte);
   CC_Z = ZTEST(postbyte);
   CC_V = 0;
-  
+
   instance->CycleCounter += 6;
 }
 
@@ -122,7 +78,7 @@ void Com_D()
   temp16 = DPADDRESS(PC_REG++);
   temp8 = MemRead8(temp16);
   temp8 = 0xFF - temp8;
-  
+
   CC_Z = ZTEST(temp8);
   CC_N = NTEST8(temp8);
   CC_C = 1;
@@ -6288,9 +6244,57 @@ void Stu_E(void)
   instance->CycleCounter += instance->NatEmuCycles65;
 }
 
-void Page_1(void);
-void Page_2(void);
-void Page_3(void);
+void ErrorVector()
+{
+  CC_E = 1;
+
+  MemWrite8(PC_L, --S_REG);
+  MemWrite8(PC_H, --S_REG);
+  MemWrite8(U_L, --S_REG);
+  MemWrite8(U_H, --S_REG);
+  MemWrite8(Y_L, --S_REG);
+  MemWrite8(Y_H, --S_REG);
+  MemWrite8(X_L, --S_REG);
+  MemWrite8(X_H, --S_REG);
+  MemWrite8(DPA, --S_REG);
+
+  if (MD_NATIVE6309)
+  {
+    MemWrite8((F_REG), --S_REG);
+    MemWrite8((E_REG), --S_REG);
+
+    instance->CycleCounter += 2;
+  }
+
+  MemWrite8(B_REG, --S_REG);
+  MemWrite8(A_REG, --S_REG);
+  MemWrite8(HD6309_getcc(), --S_REG);
+
+  PC_REG = MemRead16(VTRAP);
+
+  instance->CycleCounter += (12 + instance->NatEmuCycles54);	//One for each byte +overhead? Guessing from PSHS
+}
+
+void InvalidInsHandler()
+{
+  MD_ILLEGAL = 1;
+  instance->mdbits = HD6309_getmd();
+
+  ErrorVector();
+}
+
+void DivbyZero()
+{
+  MD_ZERODIV = 1;
+
+  instance->mdbits = HD6309_getmd();
+
+  ErrorVector();
+}
+
+extern "C" __declspec(dllexport) void __cdecl Page_1(unsigned char opcode);
+extern "C" __declspec(dllexport) void __cdecl Page_2(unsigned char opcode);
+extern "C" __declspec(dllexport) void __cdecl Page_3(unsigned char opcode);
 
 void(*JmpVec1[256])(void) = {
   Neg_D,		// 00
@@ -6309,8 +6313,8 @@ void(*JmpVec1[256])(void) = {
   Tst_D,		// 0D
   Jmp_D,		// 0E
   Clr_D,		// 0F
-  Page_2,		// 10
-  Page_3,		// 11
+  ___,		// 10
+  ___,		// 11
   Nop_I,		// 12
   Sync_I,		// 13
   Sexw_I,		// 14
@@ -7069,27 +7073,26 @@ void(*JmpVec3[256])(void) = {
   InvalidInsHandler,		// FF
 };
 
-//--Essentially Page_1()
 extern "C" {
-  __declspec(dllexport) void __cdecl HD6309ExecOpCode(int cycleFor, unsigned char opcode) {
-    HD6309State* hd63096State = GetHD6309State();
-
-    instance->gCycleFor = cycleFor;
-
-    JmpVec1[opcode](); // Execute instruction pointed to by PC_REG
+  __declspec(dllexport) void __cdecl Page_1(unsigned char opcode) {
+    JmpVec1[opcode]();
   }
 }
 
-void Page_2(void) //10
-{
-  HD6309State* hd63096State = GetHD6309State();
-
-  JmpVec2[MemRead8(PC_REG++)](); // Execute instruction pointed to by PC_REG
+extern "C" {
+  __declspec(dllexport) void __cdecl Page_2(unsigned char opCode) //10
+  {
+    JmpVec2[opCode]();
+  }
 }
 
-void Page_3(void) //11
-{
-  HD6309State* hd63096State = GetHD6309State();
+extern "C" {
+  __declspec(dllexport) void __cdecl Page_3(unsigned char opCode) //11
+  {
+    JmpVec3[opCode]();
+  }
+}
 
-  JmpVec3[MemRead8(PC_REG++)](); // Execute instruction pointed to by PC_REG
+void ___() {
+  MessageBox(0, "Halt", "Halt", 0);
 }

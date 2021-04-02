@@ -2,6 +2,7 @@
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using VCCSharp.Models.CPU.HD6309;
 
 namespace VCCSharp.Modules
 {
@@ -13,10 +14,12 @@ namespace VCCSharp.Modules
     public class HD6309 : IHD6309
     {
         private readonly IModules _modules;
+        private readonly IHD6309OpCodes _opCodes;
 
-        public HD6309(IModules modules)
+        public HD6309(IModules modules, IHD6309OpCodes opCodes)
         {
             _modules = modules;
+            _opCodes = opCodes;
         }
 
         public unsafe HD6309State* GetHD6309State()
@@ -205,16 +208,15 @@ namespace VCCSharp.Modules
                         break; // WDZ - Experimental SyncWaiting should still return used cycles (and not zero) by breaking from loop
                     }
 
-                    HD6309ExecOpCode(cycleFor, _modules.TC1014.MemRead8(instance->pc.Reg++)); //PC_REG
+                    instance->gCycleFor = cycleFor;
+
+                    byte opCode = _modules.TC1014.MemRead8(instance->pc.Reg++); //PC_REG
+
+                    _opCodes.Exec(opCode);
                 }
 
                 return cycleFor - instance->CycleCounter;
             }
-        }
-
-        public void HD6309ExecOpCode(int cycleFor, byte opcode)
-        {
-            Library.HD6309.HD6309ExecOpCode(cycleFor, opcode);
         }
 
         public void HD6309_cpu_nmi()

@@ -3,6 +3,7 @@ using VCCSharp.BitBanger;
 using VCCSharp.Configuration;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
+using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Modules;
 using VCCSharp.TapePlayer;
 
@@ -16,6 +17,8 @@ namespace VCCSharp
 
             Factory.Instance
                 .SelfBind()
+
+                .Bind<IHD6309OpCodes, HD6309OpCodes>()
 
                 //--Modules
                 .Singleton<IAudio, Audio>()
