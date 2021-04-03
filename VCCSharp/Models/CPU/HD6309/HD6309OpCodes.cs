@@ -23,6 +23,10 @@ namespace VCCSharp.Models.CPU.HD6309
         private byte temp8;
         private ushort temp16;
         private byte postbyte = 0;
+        private ushort postword = 0;
+
+        private byte Source = 0;
+        private byte Dest = 0;
 
         #region Jump Vectors
 
@@ -323,8 +327,6 @@ namespace VCCSharp.Models.CPU.HD6309
             MemWrite8(temp8, temp16);
 
             instance->CycleCounter += instance->NatEmuCycles65;
-
-            _page1(0x00);
         }
 
         //1 6309
@@ -535,65 +537,236 @@ namespace VCCSharp.Models.CPU.HD6309
             }
         }
 
-        public void Nop_I()// 12
+        public unsafe void Nop_I()// 12
         {
-            _page1(0x12);
+            instance->CycleCounter += instance->NatEmuCycles21;
         }
 
-        public void Sync_I()// 13
+        public unsafe void Sync_I()// 13
         {
-            _page1(0x13);
+            instance->CycleCounter = instance->gCycleFor;
+            instance->SyncWaiting = 1;
         }
 
-        public void Sexw_I()// 14
+        //6309 CHECK
+        public unsafe void Sexw_I()// 14
         {
-            _page1(0x14);
+            D_REG = (W_REG & 32768) != 0 ? (ushort)0xFFFF : (ushort)0;
+
+            CC_Z = ZTEST(Q_REG);
+            CC_N = NTEST16(D_REG);
+            instance->CycleCounter += 4;
         }
 
         // 15		//InvalidInsHandler
 
-        public void Lbra_R()// 16
+        public unsafe void Lbra_R()// 16
         {
-            _page1(0x16);
+            fixed (ushort* spostword = &postword)
+            {
+                *spostword = IMMADDRESS(PC_REG);
+                PC_REG += 2;
+                PC_REG += *spostword;
+            };
+
+            instance->CycleCounter += instance->NatEmuCycles54;
         }
 
-        public void Lbsr_R()// 17
+        public unsafe void Lbsr_R()// 17
         {
-            _page1(0x17);
+            fixed (ushort* spostword = &postword)
+            {
+                *spostword = IMMADDRESS(PC_REG);
+                PC_REG += 2;
+                S_REG--;
+                MemWrite8(PC_L, S_REG--);
+                MemWrite8(PC_H, S_REG);
+                PC_REG += *spostword;
+            }
+
+            instance->CycleCounter += instance->NatEmuCycles97;
         }
 
         // 18		//InvalidInsHandler
 
-        public void Daa_I()// 19
+        public unsafe void Daa_I()// 19
         {
-            _page1(0x19);
+            byte msn, lsn;
+
+            msn = (byte)(A_REG & 0xF0);
+            lsn = (byte)(A_REG & 0xF);
+            temp8 = 0;
+
+            if (CC_H || (lsn > 9))
+            {
+                temp8 |= 0x06;
+            }
+
+            if ((msn > 0x80) && (lsn > 9))
+            {
+                temp8 |= 0x60;
+            }
+
+            if ((msn > 0x90) || CC_C)
+            {
+                temp8 |= 0x60;
+            }
+
+            temp16 = (ushort)(A_REG + temp8);
+            CC_C |= (((temp16 & 0x100) >> 8) != 0);
+            A_REG = (byte)temp16;
+            CC_N = NTEST8(A_REG);
+            CC_Z = ZTEST(A_REG);
+            instance->CycleCounter += instance->NatEmuCycles21;
         }
 
-        public void Orcc_M()// 1A
+        public unsafe void Orcc_M()// 1A
         {
-            _page1(0x1A);
+            postbyte = MemRead8(PC_REG++);
+            temp8 = HD6309_getcc();
+            temp8 = (byte)(temp8 | postbyte);
+            HD6309_setcc(temp8);
+            instance->CycleCounter += instance->NatEmuCycles32;
         }
 
         // 1B		//InvalidInsHandler
 
-        public void Andcc_M()// 1C
+        public unsafe void Andcc_M()// 1C
         {
-            _page1(0x1C);
+            postbyte = MemRead8(PC_REG++);
+            temp8 = HD6309_getcc();
+            temp8 = (byte)(temp8 & postbyte);
+            HD6309_setcc(temp8);
+            instance->CycleCounter += 3;
         }
 
-        public void Sex_I()// 1D
+        public unsafe void Sex_I()// 1D
         {
-            _page1(0x1D);
+            A_REG = (byte)(0 - (B_REG >> 7));
+            CC_Z = ZTEST(D_REG);
+            CC_N = (D_REG >> 15) != 0;
+            instance->CycleCounter += instance->NatEmuCycles21;
         }
 
-        public void Exg_M()// 1E
+        public unsafe void Exg_M()// 1E
         {
-            _page1(0x1E);
+            byte tmp;
+
+            postbyte = MemRead8(PC_REG++);
+            Source = (byte)(postbyte >> 4);
+            Dest = (byte)(postbyte & 15);
+
+            instance->ccbits = HD6309_getcc();
+
+            if ((Source & 0x08) == (Dest & 0x08)) //Verify like size registers
+            {
+                if ((Dest & 0x08) != 0) //8 bit EXG
+                {
+                    Source &= 0x07;
+                    Dest &= 0x07;
+                    temp8 = (PUR(Source));
+                    PUR(Source, (PUR(Dest)));
+                    PUR(Dest, temp8);
+                    O_REG = 0;
+                }
+                else // 16 bit EXG
+                {
+                    Source &= 0x07;
+                    Dest &= 0x07;
+                    temp16 = (PXF(Source));
+                    PXF(Source, Dest);
+                    PXF(Dest, temp16);
+                }
+            }
+            else
+            {
+                if ((Dest & 0x08) != 0) // Swap 16 to 8 bit exchange to be 8 to 16 bit exchange (for convenience)
+                {
+                    temp8 = Dest; Dest = Source; Source = temp8;
+                }
+
+                Source &= 0x07;
+                Dest &= 0x07;
+
+                switch (Source)
+                {
+                    case 0x04: // Z
+                    case 0x05: // Z
+                        PXF(Dest, 0); // Source is Zero reg. Just zero the Destination.
+                        break;
+
+                    case 0x00: // A
+                    case 0x03: // DP
+                    case 0x06: // E
+                        temp8 = PUR(Source);
+                        temp16 = (ushort)((temp8 << 8) | temp8);
+                        tmp = (byte)(PXF(Dest) >> 8);
+                        PUR(Source, tmp); // A, DP, E get high byte of 16 bit Dest
+                        PXF(Dest, temp16); // Place 8 bit source in both halves of 16 bit Dest
+                        break;
+
+                    case 0x01: // B
+                    case 0x02: // CC
+                    case 0x07: // F
+                        temp8 = PUR(Source);
+                        temp16 = (ushort)((temp8 << 8) | temp8);
+                        tmp = (byte)(PXF(Dest) & 0xFF);
+                        PUR(Source, tmp); // B, CC, F get low byte of 16 bit Dest
+                        PXF(Dest, temp16); // Place 8 bit source in both halves of 16 bit Dest
+                        break;
+                }
+            }
+
+            HD6309_setcc(instance->ccbits);
+            instance->CycleCounter += instance->NatEmuCycles85;
         }
 
-        public void Tfr_M()// 1F
+        public unsafe void Tfr_M()// 1F
         {
-            _page1(0x1F);
+            postbyte = MemRead8(PC_REG++);
+            Source = (byte)(postbyte >> 4);
+            Dest = (byte)(postbyte & 15);
+
+            if (Dest < 8)
+            {
+                if (Source < 8)
+                {
+                    PXF(Dest, PXF(Source));
+                }
+                else
+                {
+                    PXF(Dest, (ushort)((PUR(Source & 7) << 8) | PUR(Source & 7)));
+                }
+            }
+            else
+            {
+                instance->ccbits = HD6309_getcc();
+                Dest &= 7;
+
+                if (Source < 8)
+                    switch (Dest)
+                    {
+                        case 0:  // A
+                        case 3: // DP
+                        case 6: // E
+                            PUR(Dest, (byte)(PXF(Source) >> 8));
+                            break;
+                        case 1:  // B
+                        case 2: // CC
+                        case 7: // F
+                            PUR(Dest, (byte)(PXF(Source) & 0xFF));
+                            break;
+                    }
+                else
+                {
+                    PUR(Dest, PUR(Source & 7));
+                }
+
+                O_REG = 0;
+                HD6309_setcc(instance->ccbits);
+            }
+
+            instance->CycleCounter += instance->NatEmuCycles64;
         }
 
         #endregion
@@ -1731,201 +1904,260 @@ namespace VCCSharp.Models.CPU.HD6309
 
         #endregion
 
-        public void InvalidInsHandler()
+        public unsafe void InvalidInsHandler()
         {
-            _page1(0);
+            MD_ILLEGAL = true;
+            instance->mdbits = HD6309_getmd();
+
+            ErrorVector();
         }
+
+        public unsafe void ErrorVector()
+        {
+            CC_E = true; //1;
+
+            MemWrite8(PC_L, --S_REG);
+            MemWrite8(PC_H, --S_REG);
+            MemWrite8(U_L, --S_REG);
+            MemWrite8(U_H, --S_REG);
+            MemWrite8(Y_L, --S_REG);
+            MemWrite8(Y_H, --S_REG);
+            MemWrite8(X_L, --S_REG);
+            MemWrite8(X_H, --S_REG);
+            MemWrite8(DPA, --S_REG);
+
+            if (MD_NATIVE6309)
+            {
+                MemWrite8(F_REG, --S_REG);
+                MemWrite8(E_REG, --S_REG);
+
+                instance->CycleCounter += 2;
+            }
+
+            MemWrite8(B_REG, --S_REG);
+            MemWrite8(A_REG, --S_REG);
+            MemWrite8(HD6309_getcc(), --S_REG);
+
+            PC_REG = MemRead16(Define.VTRAP);
+
+            instance->CycleCounter += (12 + instance->NatEmuCycles54);	//One for each byte +overhead? Guessing from PSHS
+        }
+
+        #region CC Masks Macros
+
+        public unsafe bool CC_E
+        {
+            get => instance->cc[(int)CCFlagMasks.E] == Define.TRUE;
+            set => instance->cc[(int)CCFlagMasks.E] = value ? Define.TRUE : Define.FALSE;
+        }
+
+        public unsafe bool CC_F
+        {
+            get => instance->cc[(int)CCFlagMasks.F] == Define.TRUE;
+            set => instance->cc[(int)CCFlagMasks.F] = value ? Define.TRUE : Define.FALSE;
+        }
+
+        public unsafe bool CC_H
+        {
+            get => instance->cc[(int)CCFlagMasks.H] == Define.TRUE;
+            set => instance->cc[(int)CCFlagMasks.H] = value ? Define.TRUE : Define.FALSE;
+        }
+
+        public unsafe bool CC_I
+        {
+            get => instance->cc[(int)CCFlagMasks.I] == Define.TRUE;
+            set => instance->cc[(int)CCFlagMasks.I] = value ? Define.TRUE : Define.FALSE;
+        }
+
+        public unsafe bool CC_N
+        {
+            get => instance->cc[(int)CCFlagMasks.N] == Define.TRUE;
+            set => instance->cc[(int)CCFlagMasks.N] = value ? Define.TRUE : Define.FALSE;
+        }
+
+        public unsafe bool CC_Z
+        {
+            get => instance->cc[(int)CCFlagMasks.Z] == Define.TRUE;
+            set => instance->cc[(int)CCFlagMasks.Z] = value ? Define.TRUE : Define.FALSE;
+        }
+
+        public unsafe bool CC_V
+        {
+            get => instance->cc[(int)CCFlagMasks.V] == Define.TRUE;
+            set => instance->cc[(int)CCFlagMasks.V] = value ? Define.TRUE : Define.FALSE;
+        }
+
+        public unsafe bool CC_C
+        {
+            get => instance->cc[(int)CCFlagMasks.C] == Define.TRUE;
+            set => instance->cc[(int)CCFlagMasks.C] = value ? Define.TRUE : Define.FALSE;
+        }
+
+        #endregion
+
+        #region Register Macros
+
+        public unsafe ushort PC_REG
+        {
+            get => instance->pc.Reg;
+            set => instance->pc.Reg = value;
+        }
+
+        public unsafe ushort DP_REG
+        {
+            get => instance->dp.Reg;
+            set => instance->dp.Reg = value;
+        }
+
+        public unsafe ushort W_REG
+        {
+            get => instance->q.msw;
+            set => instance->q.msw = value;
+        }
+
+        public unsafe ushort D_REG
+        {
+            get => instance->q.lsw;
+            set => instance->q.lsw = value;
+        }
+
+        public unsafe uint Q_REG
+        {
+            get => instance->q.Reg;
+            set => instance->q.Reg = value;
+        }
+
+        public unsafe ushort S_REG
+        {
+            get => instance->s.Reg;
+            set => instance->s.Reg = value;
+        }
+
+        public unsafe byte PC_L
+        {
+            get => instance->pc.lsb;
+            set => instance->pc.lsb = value;
+        }
+
+        public unsafe byte PC_H
+        {
+            get => instance->pc.msb;
+            set => instance->pc.msb = value;
+        }
+
+        public unsafe byte X_L
+        {
+            get => instance->x.lsb;
+            set => instance->x.lsb = value;
+        }
+
+        public unsafe byte X_H
+        {
+            get => instance->x.msb;
+            set => instance->x.msb = value;
+        }
+
+        public unsafe byte Y_L
+        {
+            get => instance->y.lsb;
+            set => instance->y.lsb = value;
+        }
+
+        public unsafe byte Y_H
+        {
+            get => instance->y.msb;
+            set => instance->y.msb = value;
+        }
+
+        public unsafe byte U_L
+        {
+            get => instance->u.lsb;
+            set => instance->u.lsb = value;
+        }
+
+        public unsafe byte U_H
+        {
+            get => instance->u.msb;
+            set => instance->u.msb = value;
+        }
+
+        public unsafe byte A_REG
+        {
+            get => instance->q.lswmsb;
+            set => instance->q.lswmsb = value;
+        }
+
+        public unsafe byte B_REG
+        {
+            get => instance->q.lswlsb;
+            set => instance->q.lswlsb = value;
+        }
+
+        public unsafe ushort O_REG
+        {
+            get => instance->z.Reg;
+            set => instance->z.Reg = value;
+        }
+
+        public unsafe byte F_REG
+        {
+            get => instance->q.mswlsb;
+            set => instance->q.mswlsb = value;
+        }
+
+        public unsafe byte E_REG
+        {
+            get => instance->q.mswmsb;
+            set => instance->q.mswmsb = value;
+        }
+
+        public unsafe byte DPA
+        {
+            get => instance->dp.msb;
+            set => instance->dp.msb = value;
+        }
+
+        #endregion
 
         #region Macros
 
-        public ushort PC_REG
-        {
-            get
-            {
-                unsafe
-                {
-                    return instance->pc.Reg;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    instance->pc.Reg = value;
-                }
-            }
-        }
+        public byte HD6309_getcc() => _modules.HD6309.HD6309_getcc();
+        public void HD6309_setcc(byte bincc) => _modules.HD6309.HD6309_setcc(bincc);
+        public byte HD6309_getmd() => _modules.HD6309.HD6309_getmd();
 
-        public ushort DP_REG
-        {
-            get
-            {
-                unsafe
-                {
-                    return instance->dp.Reg;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    instance->dp.Reg = value;
-                }
-            }
-        }
+        public unsafe byte PUR(int i) => *(byte*)(instance->ureg8[i]);
+        public unsafe void PUR(int i, byte value) => *(byte*)(instance->ureg8[i]) = value;
+
+        public unsafe ushort PXF(int i) => *(ushort*)(instance->xfreg16[i]);
+        public unsafe void PXF(int i, ushort value) => *(ushort*)(instance->xfreg16[i]) = value;
 
         public unsafe ushort DPADDRESS(ushort r) => (ushort)(instance->dp.Reg | MemRead8(r));
 
         public byte MemRead8(ushort address) => _modules.TC1014.MemRead8(address);
         public void MemWrite8(byte data, ushort address) => _modules.TC1014.MemWrite8(data, address);
+        public ushort MemRead16(ushort address) => _modules.TC1014.MemRead16(address);
 
-        public bool CC_E
-        {
-            get
-            {
-                unsafe
-                {
-                    return instance->cc[(int)CCFlagMasks.E] == Define.TRUE;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    instance->cc[(int)CCFlagMasks.E] = value ? Define.TRUE : Define.FALSE;
-                }
-            }
-        }
-
-        public bool CC_F
-        {
-            get
-            {
-                unsafe
-                {
-                    return instance->cc[(int)CCFlagMasks.F] == Define.TRUE;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    instance->cc[(int)CCFlagMasks.F] = value ? Define.TRUE : Define.FALSE;
-                }
-            }
-        }
-
-        public bool CC_H
-        {
-            get
-            {
-                unsafe
-                {
-                    return instance->cc[(int)CCFlagMasks.H] == Define.TRUE;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    instance->cc[(int)CCFlagMasks.H] = value ? Define.TRUE : Define.FALSE;
-                }
-            }
-        }
-
-        public bool CC_I
-        {
-            get
-            {
-                unsafe
-                {
-                    return instance->cc[(int)CCFlagMasks.I] == Define.TRUE;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    instance->cc[(int)CCFlagMasks.I] = value ? Define.TRUE : Define.FALSE;
-                }
-            }
-        }
-
-        public bool CC_N
-        {
-            get
-            {
-                unsafe
-                {
-                    return instance->cc[(int)CCFlagMasks.N] == Define.TRUE;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    instance->cc[(int)CCFlagMasks.N] = value ? Define.TRUE : Define.FALSE;
-                }
-            }
-        }
-
-        public bool CC_Z
-        {
-            get
-            {
-                unsafe
-                {
-                    return instance->cc[(int)CCFlagMasks.Z] == Define.TRUE;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    instance->cc[(int)CCFlagMasks.Z] = value ? Define.TRUE : Define.FALSE;
-                }
-            }
-        }
-
-        public bool CC_V
-        {
-            get
-            {
-                unsafe
-                {
-                    return instance->cc[(int)CCFlagMasks.V] == Define.TRUE;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    instance->cc[(int)CCFlagMasks.V] = value ? Define.TRUE : Define.FALSE;
-                }
-            }
-        }
-
-        public bool CC_C
-        {
-            get
-            {
-                unsafe
-                {
-                    return instance->cc[(int)CCFlagMasks.C] == Define.TRUE;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    instance->cc[(int)CCFlagMasks.C] = value ? Define.TRUE : Define.FALSE;
-                }
-            }
-        }
+        public ushort IMMADDRESS(ushort address) => _modules.TC1014.MemRead16(address);
 
         public bool NTEST8(byte value) => value > 0x7F;
 
         public bool ZTEST(byte value) => value == 0;
+        public bool ZTEST(ushort value) => value == 0;
+        public bool ZTEST(uint value) => value == 0;
+
+        public bool NTEST16(ushort value) => value > 0x7FFF;
+
+        public unsafe bool MD_ILLEGAL
+        {
+            get => instance->md[(int)MDFlagMasks.ILLEGAL] == Define.TRUE;
+            set => instance->md[(int)MDFlagMasks.ILLEGAL] = value ? Define.TRUE : Define.FALSE;
+        }
+
+        public unsafe bool MD_NATIVE6309
+        {
+            get => instance->md[(int)MDFlagMasks.NATIVE6309] == Define.TRUE;
+            set => instance->md[(int)MDFlagMasks.NATIVE6309] = value ? Define.TRUE : Define.FALSE;
+        }
 
         #endregion
     }

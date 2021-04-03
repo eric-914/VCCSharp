@@ -106,6 +106,7 @@
         public const int M53 = 23;
 
         // MC6809 Vector table
+        public const ushort VTRAP = 0xFFF0;
         public const ushort VSWI3 = 0xFFF2;
         public const ushort VSWI2 = 0xFFF4;
         public const ushort VFIRQ = 0xFFF6;

@@ -367,6 +367,12 @@ namespace VCCSharp.Libraries
             public static extern byte HD6309_getcc();
 
             [DllImport(LIBRARY)]
+            public static extern void HD6309_setcc(byte bincc);
+
+            [DllImport(LIBRARY)]
+            public static extern byte HD6309_getmd();
+
+            [DllImport(LIBRARY)]
             public static extern void Page_1(byte opCode);
 
             [DllImport(LIBRARY)]

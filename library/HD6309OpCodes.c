@@ -3620,213 +3620,6 @@ void Addf_E(void)
   instance->CycleCounter += instance->NatEmuCycles65;
 }
 
-void Nop_I(void)
-{	//12
-  instance->CycleCounter += instance->NatEmuCycles21;
-}
-
-void Sync_I(void)
-{ //13
-  instance->CycleCounter = instance->gCycleFor;
-  instance->SyncWaiting = 1;
-}
-
-void Sexw_I(void)
-{ //14 6309 CHECK
-  if (W_REG & 32768)
-    D_REG = 0xFFFF;
-  else
-    D_REG = 0;
-
-  CC_Z = ZTEST(Q_REG);
-  CC_N = NTEST16(D_REG);
-  instance->CycleCounter += 4;
-}
-
-void Lbra_R(void)
-{ //16
-  *spostword = IMMADDRESS(PC_REG);
-  PC_REG += 2;
-  PC_REG += *spostword;
-  instance->CycleCounter += instance->NatEmuCycles54;
-}
-
-void Lbsr_R(void)
-{ //17
-  *spostword = IMMADDRESS(PC_REG);
-  PC_REG += 2;
-  S_REG--;
-  MemWrite8(PC_L, S_REG--);
-  MemWrite8(PC_H, S_REG);
-  PC_REG += *spostword;
-  instance->CycleCounter += instance->NatEmuCycles97;
-}
-
-void Daa_I(void)
-{ //19
-  static unsigned char msn, lsn;
-
-  msn = (A_REG & 0xF0);
-  lsn = (A_REG & 0xF);
-  temp8 = 0;
-
-  if (CC_H || (lsn > 9))
-    temp8 |= 0x06;
-
-  if ((msn > 0x80) && (lsn > 9))
-    temp8 |= 0x60;
-
-  if ((msn > 0x90) || CC_C)
-    temp8 |= 0x60;
-
-  temp16 = A_REG + temp8;
-  CC_C |= ((temp16 & 0x100) >> 8);
-  A_REG = (unsigned char)temp16;
-  CC_N = NTEST8(A_REG);
-  CC_Z = ZTEST(A_REG);
-  instance->CycleCounter += instance->NatEmuCycles21;
-}
-
-void Orcc_M(void)
-{ //1A
-  postbyte = MemRead8(PC_REG++);
-  temp8 = HD6309_getcc();
-  temp8 = (temp8 | postbyte);
-  HD6309_setcc(temp8);
-  instance->CycleCounter += instance->NatEmuCycles32;
-}
-
-void Andcc_M(void)
-{ //1C
-  postbyte = MemRead8(PC_REG++);
-  temp8 = HD6309_getcc();
-  temp8 = (temp8 & postbyte);
-  HD6309_setcc(temp8);
-  instance->CycleCounter += 3;
-}
-
-void Sex_I(void)
-{ //1D
-  A_REG = 0 - (B_REG >> 7);
-  CC_Z = ZTEST(D_REG);
-  CC_N = D_REG >> 15;
-  instance->CycleCounter += instance->NatEmuCycles21;
-}
-
-void Exg_M(void)
-{ //1E
-  postbyte = MemRead8(PC_REG++);
-  Source = postbyte >> 4;
-  Dest = postbyte & 15;
-
-  instance->ccbits = HD6309_getcc();
-
-  if ((Source & 0x08) == (Dest & 0x08)) //Verify like size registers
-  {
-    if (Dest & 0x08) //8 bit EXG
-    {
-      Source &= 0x07;
-      Dest &= 0x07;
-      temp8 = (PUR(Source));
-      PUR(Source) = (PUR(Dest));
-      PUR(Dest) = temp8;
-      O_REG = 0;
-    }
-    else // 16 bit EXG
-    {
-      Source &= 0x07;
-      Dest &= 0x07;
-      temp16 = (PXF(Source));
-      (PXF(Source)) = (PXF(Dest));
-      (PXF(Dest)) = temp16;
-    }
-  }
-  else
-  {
-    if (Dest & 0x08) // Swap 16 to 8 bit exchange to be 8 to 16 bit exchange (for convenience)
-    {
-      temp8 = Dest; Dest = Source; Source = temp8;
-    }
-
-    Source &= 0x07;
-    Dest &= 0x07;
-
-    switch (Source)
-    {
-    case 0x04: // Z
-    case 0x05: // Z
-      (PXF(Dest)) = 0; // Source is Zero reg. Just zero the Destination.
-      break;
-
-    case 0x00: // A
-    case 0x03: // DP
-    case 0x06: // E
-      temp8 = PUR(Source);
-      temp16 = (temp8 << 8) | temp8;
-      (PUR(Source)) = (PXF(Dest)) >> 8; // A, DP, E get high byte of 16 bit Dest
-      (PXF(Dest)) = temp16; // Place 8 bit source in both halves of 16 bit Dest
-      break;
-
-    case 0x01: // B
-    case 0x02: // CC
-    case 0x07: // F
-      temp8 = PUR(Source);
-      temp16 = (temp8 << 8) | temp8;
-      (PUR(Source)) = (PXF(Dest)) & 0xFF; // B, CC, F get low byte of 16 bit Dest
-      (PXF(Dest)) = temp16; // Place 8 bit source in both halves of 16 bit Dest
-      break;
-    }
-  }
-
-  HD6309_setcc(instance->ccbits);
-  instance->CycleCounter += instance->NatEmuCycles85;
-}
-
-void Tfr_M(void)
-{ //1F
-  postbyte = MemRead8(PC_REG++);
-  Source = postbyte >> 4;
-  Dest = postbyte & 15;
-
-  if (Dest < 8)
-  {
-    if (Source < 8) {
-      PXF(Dest) = PXF(Source);
-    }
-    else {
-      PXF(Dest) = (PUR(Source & 7) << 8) | PUR(Source & 7);
-    }
-  }
-  else
-  {
-    instance->ccbits = HD6309_getcc();
-    Dest &= 7;
-
-    if (Source < 8)
-      switch (Dest)
-      {
-      case 0:  // A
-      case 3: // DP
-      case 6: // E
-        PUR(Dest) = PXF(Source) >> 8;
-        break;
-      case 1:  // B
-      case 2: // CC
-      case 7: // F
-        PUR(Dest) = PXF(Source) & 0xFF;
-        break;
-      }
-    else {
-      PUR(Dest) = PUR(Source & 7);
-    }
-
-    O_REG = 0;
-    HD6309_setcc(instance->ccbits);
-  }
-
-  instance->CycleCounter += instance->NatEmuCycles64;
-}
-
 void Bra_R(void)
 { //20
   *spostbyte = MemRead8(PC_REG++);
@@ -6244,6 +6037,7 @@ void Stu_E(void)
   instance->CycleCounter += instance->NatEmuCycles65;
 }
 
+//NOTE: Ported
 void ErrorVector()
 {
   CC_E = 1;
@@ -6275,6 +6069,7 @@ void ErrorVector()
   instance->CycleCounter += (12 + instance->NatEmuCycles54);	//One for each byte +overhead? Guessing from PSHS
 }
 
+//NOTE: Ported, but used inside some OpCodes
 void InvalidInsHandler()
 {
   MD_ILLEGAL = 1;
@@ -6315,20 +6110,20 @@ void(*JmpVec1[256])(void) = {
   ___,		// 0F
   ___,		// 10
   ___,		// 11
-  Nop_I,		// 12
-  Sync_I,		// 13
-  Sexw_I,		// 14
-  InvalidInsHandler,	// 15
-  Lbra_R,		// 16
-  Lbsr_R,		// 17
-  InvalidInsHandler,	// 18
-  Daa_I,		// 19
-  Orcc_M,		// 1A
-  InvalidInsHandler,	// 1B
-  Andcc_M,	// 1C
-  Sex_I,		// 1D
-  Exg_M,		// 1E
-  Tfr_M,		// 1F
+  ___,		// 12
+  ___,		// 13
+  ___,		// 14
+  ___,	// 15
+  ___,		// 16
+  ___,		// 17
+  ___,	// 18
+  ___,		// 19
+  ___,		// 1A
+  ___,	// 1B
+  ___,	// 1C
+  ___,		// 1D
+  ___,		// 1E
+  ___,		// 1F
   Bra_R,		// 20
   Brn_R,		// 21
   Bhi_R,		// 22
@@ -6353,7 +6148,7 @@ void(*JmpVec1[256])(void) = {
   Puls_M,		// 35
   Pshu_M,		// 36
   Pulu_M,		// 37
-  InvalidInsHandler,	// 38
+  ___,	// 38
   Rts_I,		// 39
   Abx_I,		// 3A
   Rti_I,		// 3B
@@ -6362,36 +6157,36 @@ void(*JmpVec1[256])(void) = {
   Reset,		// 3E
   Swi1_I,		// 3F
   Nega_I,		// 40
-  InvalidInsHandler,	// 41
-  InvalidInsHandler,	// 42
+  ___,	// 41
+  ___,	// 42
   Coma_I,		// 43
   Lsra_I,		// 44
-  InvalidInsHandler,	// 45
+  ___,	// 45
   Rora_I,		// 46
   Asra_I,		// 47
   Asla_I,		// 48
   Rola_I,		// 49
   Deca_I,		// 4A
-  InvalidInsHandler,	// 4B
+  ___,	// 4B
   Inca_I,		// 4C
   Tsta_I,		// 4D
-  InvalidInsHandler,	// 4E
+  ___,	// 4E
   Clra_I,		// 4F
   Negb_I,		// 50
-  InvalidInsHandler,	// 51
-  InvalidInsHandler,	// 52
+  ___,	// 51
+  ___,	// 52
   Comb_I,		// 53
   Lsrb_I,		// 54
-  InvalidInsHandler,	// 55
+  ___,	// 55
   Rorb_I,		// 56
   Asrb_I,		// 57
   Aslb_I,		// 58
   Rolb_I,		// 59
   Decb_I,		// 5A
-  InvalidInsHandler,	// 5B
+  ___,	// 5B
   Incb_I,		// 5C
   Tstb_I,		// 5D
-  InvalidInsHandler,	// 5E
+  ___,	// 5E
   Clrb_I,		// 5F
   Neg_X,		// 60
   Oim_X,		// 61
@@ -6432,7 +6227,7 @@ void(*JmpVec1[256])(void) = {
   Anda_M,		// 84
   Bita_M,		// 85
   Lda_M,		// 86
-  InvalidInsHandler,	// 87
+  ___,	// 87
   Eora_M,		// 88
   Adca_M,		// 89
   Ora_M,		// 8A
@@ -6440,7 +6235,7 @@ void(*JmpVec1[256])(void) = {
   Cmpx_M,		// 8C
   Bsr_R,		// 8D
   Ldx_M,		// 8E
-  InvalidInsHandler,	// 8F
+  ___,	// 8F
   Suba_D,		// 90
   Cmpa_D,		// 91
   Scba_D,		// 92
@@ -6496,7 +6291,7 @@ void(*JmpVec1[256])(void) = {
   Andb_M,		// C4
   Bitb_M,		// C5
   Ldb_M,		// C6
-  InvalidInsHandler,		// C7
+  ___,		// C7
   Eorb_M,		// C8
   Adcb_M,		// C9
   Orb_M,		// CA
@@ -6504,7 +6299,7 @@ void(*JmpVec1[256])(void) = {
   Ldd_M,		// CC
   Ldq_M,		// CD
   Ldu_M,		// CE
-  InvalidInsHandler,		// CF
+  ___,		// CF
   Subb_D,		// D0
   Cmpb_D,		// D1
   Sbcb_D,		// D2
@@ -6556,39 +6351,39 @@ void(*JmpVec1[256])(void) = {
 };
 
 void(*JmpVec2[256])(void) = {
-  InvalidInsHandler,		// 00
-  InvalidInsHandler,		// 01
-  InvalidInsHandler,		// 02
-  InvalidInsHandler,		// 03
-  InvalidInsHandler,		// 04
-  InvalidInsHandler,		// 05
-  InvalidInsHandler,		// 06
-  InvalidInsHandler,		// 07
-  InvalidInsHandler,		// 08
-  InvalidInsHandler,		// 09
-  InvalidInsHandler,		// 0A
-  InvalidInsHandler,		// 0B
-  InvalidInsHandler,		// 0C
-  InvalidInsHandler,		// 0D
-  InvalidInsHandler,		// 0E
-  InvalidInsHandler,		// 0F
-  InvalidInsHandler,		// 10
-  InvalidInsHandler,		// 11
-  InvalidInsHandler,		// 12
-  InvalidInsHandler,		// 13
-  InvalidInsHandler,		// 14
-  InvalidInsHandler,		// 15
-  InvalidInsHandler,		// 16
-  InvalidInsHandler,		// 17
-  InvalidInsHandler,		// 18
-  InvalidInsHandler,		// 19
-  InvalidInsHandler,		// 1A
-  InvalidInsHandler,		// 1B
-  InvalidInsHandler,		// 1C
-  InvalidInsHandler,		// 1D
-  InvalidInsHandler,		// 1E
-  InvalidInsHandler,		// 1F
-  InvalidInsHandler,		// 20
+  ___,		// 00
+  ___,		// 01
+  ___,		// 02
+  ___,		// 03
+  ___,		// 04
+  ___,		// 05
+  ___,		// 06
+  ___,		// 07
+  ___,		// 08
+  ___,		// 09
+  ___,		// 0A
+  ___,		// 0B
+  ___,		// 0C
+  ___,		// 0D
+  ___,		// 0E
+  ___,		// 0F
+  ___,		// 10
+  ___,		// 11
+  ___,		// 12
+  ___,		// 13
+  ___,		// 14
+  ___,		// 15
+  ___,		// 16
+  ___,		// 17
+  ___,		// 18
+  ___,		// 19
+  ___,		// 1A
+  ___,		// 1B
+  ___,		// 1C
+  ___,		// 1D
+  ___,		// 1E
+  ___,		// 1F
+  ___,		// 20
   LBrn_R,		// 21
   LBhi_R,		// 22
   LBls_R,		// 23
@@ -6616,74 +6411,74 @@ void(*JmpVec2[256])(void) = {
   Pulsw,		// 39
   Pshuw,		// 3A
   Puluw,		// 3B
-  InvalidInsHandler,		// 3C
-  InvalidInsHandler,		// 3D
-  InvalidInsHandler,		// 3E
+  ___,		// 3C
+  ___,		// 3D
+  ___,		// 3E
   Swi2_I,		// 3F
   Negd_I,		// 40
-  InvalidInsHandler,		// 41
-  InvalidInsHandler,		// 42
+  ___,		// 41
+  ___,		// 42
   Comd_I,		// 43
   Lsrd_I,		// 44
-  InvalidInsHandler,		// 45
+  ___,		// 45
   Rord_I,		// 46
   Asrd_I,		// 47
   Asld_I,		// 48
   Rold_I,		// 49
   Decd_I,		// 4A
-  InvalidInsHandler,		// 4B
+  ___,		// 4B
   Incd_I,		// 4C
   Tstd_I,		// 4D
-  InvalidInsHandler,		// 4E
+  ___,		// 4E
   Clrd_I,		// 4F
-  InvalidInsHandler,		// 50
-  InvalidInsHandler,		// 51
-  InvalidInsHandler,		// 52
+  ___,		// 50
+  ___,		// 51
+  ___,		// 52
   Comw_I,		// 53
   Lsrw_I,		// 54
-  InvalidInsHandler,		// 55
+  ___,		// 55
   Rorw_I,		// 56
-  InvalidInsHandler,		// 57
-  InvalidInsHandler,		// 58
+  ___,		// 57
+  ___,		// 58
   Rolw_I,		// 59
   Decw_I,		// 5A
-  InvalidInsHandler,		// 5B
+  ___,		// 5B
   Incw_I,		// 5C
   Tstw_I,		// 5D
-  InvalidInsHandler,		// 5E
+  ___,		// 5E
   Clrw_I,		// 5F
-  InvalidInsHandler,		// 60
-  InvalidInsHandler,		// 61
-  InvalidInsHandler,		// 62
-  InvalidInsHandler,		// 63
-  InvalidInsHandler,		// 64
-  InvalidInsHandler,		// 65
-  InvalidInsHandler,		// 66
-  InvalidInsHandler,		// 67
-  InvalidInsHandler,		// 68
-  InvalidInsHandler,		// 69
-  InvalidInsHandler,		// 6A
-  InvalidInsHandler,		// 6B
-  InvalidInsHandler,		// 6C
-  InvalidInsHandler,		// 6D
-  InvalidInsHandler,		// 6E
-  InvalidInsHandler,		// 6F
-  InvalidInsHandler,		// 70
-  InvalidInsHandler,		// 71
-  InvalidInsHandler,		// 72
-  InvalidInsHandler,		// 73
-  InvalidInsHandler,		// 74
-  InvalidInsHandler,		// 75
-  InvalidInsHandler,		// 76
-  InvalidInsHandler,		// 77
-  InvalidInsHandler,		// 78
-  InvalidInsHandler,		// 79
-  InvalidInsHandler,		// 7A
-  InvalidInsHandler,		// 7B
-  InvalidInsHandler,		// 7C
-  InvalidInsHandler,		// 7D
-  InvalidInsHandler,		// 7E
-  InvalidInsHandler,		// 7F
+  ___,		// 60
+  ___,		// 61
+  ___,		// 62
+  ___,		// 63
+  ___,		// 64
+  ___,		// 65
+  ___,		// 66
+  ___,		// 67
+  ___,		// 68
+  ___,		// 69
+  ___,		// 6A
+  ___,		// 6B
+  ___,		// 6C
+  ___,		// 6D
+  ___,		// 6E
+  ___,		// 6F
+  ___,		// 70
+  ___,		// 71
+  ___,		// 72
+  ___,		// 73
+  ___,		// 74
+  ___,		// 75
+  ___,		// 76
+  ___,		// 77
+  ___,		// 78
+  ___,		// 79
+  ___,		// 7A
+  ___,		// 7B
+  ___,		// 7C
+  ___,		// 7D
+  ___,		// 7E
+  ___,		// 7F
   Subw_M,		// 80
   Cmpw_M,		// 81
   Sbcd_M,		// 82
@@ -6691,15 +6486,15 @@ void(*JmpVec2[256])(void) = {
   Andd_M,		// 84
   Bitd_M,		// 85
   Ldw_M,		// 86
-  InvalidInsHandler,		// 87
+  ___,		// 87
   Eord_M,		// 88
   Adcd_M,		// 89
   Ord_M,		// 8A
   Addw_M,		// 8B
   Cmpy_M,		// 8C
-  InvalidInsHandler,		// 8D
+  ___,		// 8D
   Ldy_M,		// 8E
-  InvalidInsHandler,		// 8F
+  ___,		// 8F
   Subw_D,		// 90
   Cmpw_D,		// 91
   Sbcd_D,		// 92
@@ -6713,7 +6508,7 @@ void(*JmpVec2[256])(void) = {
   Ord_D,		// 9A
   Addw_D,		// 9B
   Cmpy_D,		// 9C
-  InvalidInsHandler,		// 9D
+  ___,		// 9D
   Ldy_D,		// 9E
   Sty_D,		// 9F
   Subw_X,		// A0
@@ -6729,7 +6524,7 @@ void(*JmpVec2[256])(void) = {
   Ord_X,		// AA
   Addw_X,		// AB
   Cmpy_X,		// AC
-  InvalidInsHandler,		// AD
+  ___,		// AD
   Ldy_X,		// AE
   Sty_X,		// AF
   Subw_E,		// B0
@@ -6745,69 +6540,69 @@ void(*JmpVec2[256])(void) = {
   Ord_E,		// BA
   Addw_E,		// BB
   Cmpy_E,		// BC
-  InvalidInsHandler,		// BD
+  ___,		// BD
   Ldy_E,		// BE
   Sty_E,		// BF
-  InvalidInsHandler,		// C0
-  InvalidInsHandler,		// C1
-  InvalidInsHandler,		// C2
-  InvalidInsHandler,		// C3
-  InvalidInsHandler,		// C4
-  InvalidInsHandler,		// C5
-  InvalidInsHandler,		// C6
-  InvalidInsHandler,		// C7
-  InvalidInsHandler,		// C8
-  InvalidInsHandler,		// C9
-  InvalidInsHandler,		// CA
-  InvalidInsHandler,		// CB
-  InvalidInsHandler,		// CC
-  InvalidInsHandler,		// CD
+  ___,		// C0
+  ___,		// C1
+  ___,		// C2
+  ___,		// C3
+  ___,		// C4
+  ___,		// C5
+  ___,		// C6
+  ___,		// C7
+  ___,		// C8
+  ___,		// C9
+  ___,		// CA
+  ___,		// CB
+  ___,		// CC
+  ___,		// CD
   Lds_I,		// CE
-  InvalidInsHandler,		// CF
-  InvalidInsHandler,		// D0
-  InvalidInsHandler,		// D1
-  InvalidInsHandler,		// D2
-  InvalidInsHandler,		// D3
-  InvalidInsHandler,		// D4
-  InvalidInsHandler,		// D5
-  InvalidInsHandler,		// D6
-  InvalidInsHandler,		// D7
-  InvalidInsHandler,		// D8
-  InvalidInsHandler,		// D9
-  InvalidInsHandler,		// DA
-  InvalidInsHandler,		// DB
+  ___,		// CF
+  ___,		// D0
+  ___,		// D1
+  ___,		// D2
+  ___,		// D3
+  ___,		// D4
+  ___,		// D5
+  ___,		// D6
+  ___,		// D7
+  ___,		// D8
+  ___,		// D9
+  ___,		// DA
+  ___,		// DB
   Ldq_D,		// DC
   Stq_D,		// DD
   Lds_D,		// DE
   Sts_D,		// DF
-  InvalidInsHandler,		// E0
-  InvalidInsHandler,		// E1
-  InvalidInsHandler,		// E2
-  InvalidInsHandler,		// E3
-  InvalidInsHandler,		// E4
-  InvalidInsHandler,		// E5
-  InvalidInsHandler,		// E6
-  InvalidInsHandler,		// E7
-  InvalidInsHandler,		// E8
-  InvalidInsHandler,		// E9
-  InvalidInsHandler,		// EA
-  InvalidInsHandler,		// EB
+  ___,		// E0
+  ___,		// E1
+  ___,		// E2
+  ___,		// E3
+  ___,		// E4
+  ___,		// E5
+  ___,		// E6
+  ___,		// E7
+  ___,		// E8
+  ___,		// E9
+  ___,		// EA
+  ___,		// EB
   Ldq_X,		// EC
   Stq_X,		// ED
   Lds_X,		// EE
   Sts_X,		// EF
-  InvalidInsHandler,		// F0
-  InvalidInsHandler,		// F1
-  InvalidInsHandler,		// F2
-  InvalidInsHandler,		// F3
-  InvalidInsHandler,		// F4
-  InvalidInsHandler,		// F5
-  InvalidInsHandler,		// F6
-  InvalidInsHandler,		// F7
-  InvalidInsHandler,		// F8
-  InvalidInsHandler,		// F9
-  InvalidInsHandler,		// FA
-  InvalidInsHandler,		// FB
+  ___,		// F0
+  ___,		// F1
+  ___,		// F2
+  ___,		// F3
+  ___,		// F4
+  ___,		// F5
+  ___,		// F6
+  ___,		// F7
+  ___,		// F8
+  ___,		// F9
+  ___,		// FA
+  ___,		// FB
   Ldq_E,		// FC
   Stq_E,		// FD
   Lds_E,		// FE
@@ -6815,54 +6610,54 @@ void(*JmpVec2[256])(void) = {
 };
 
 void(*JmpVec3[256])(void) = {
-  InvalidInsHandler,		// 00
-  InvalidInsHandler,		// 01
-  InvalidInsHandler,		// 02
-  InvalidInsHandler,		// 03
-  InvalidInsHandler,		// 04
-  InvalidInsHandler,		// 05
-  InvalidInsHandler,		// 06
-  InvalidInsHandler,		// 07
-  InvalidInsHandler,		// 08
-  InvalidInsHandler,		// 09
-  InvalidInsHandler,		// 0A
-  InvalidInsHandler,		// 0B
-  InvalidInsHandler,		// 0C
-  InvalidInsHandler,		// 0D
-  InvalidInsHandler,		// 0E
-  InvalidInsHandler,		// 0F
-  InvalidInsHandler,		// 10
-  InvalidInsHandler,		// 11
-  InvalidInsHandler,		// 12
-  InvalidInsHandler,		// 13
-  InvalidInsHandler,		// 14
-  InvalidInsHandler,		// 15
-  InvalidInsHandler,		// 16
-  InvalidInsHandler,		// 17
-  InvalidInsHandler,		// 18
-  InvalidInsHandler,		// 19
-  InvalidInsHandler,		// 1A
-  InvalidInsHandler,		// 1B
-  InvalidInsHandler,		// 1C
-  InvalidInsHandler,		// 1D
-  InvalidInsHandler,		// 1E
-  InvalidInsHandler,		// 1F
-  InvalidInsHandler,		// 20
-  InvalidInsHandler,		// 21
-  InvalidInsHandler,		// 22
-  InvalidInsHandler,		// 23
-  InvalidInsHandler,		// 24
-  InvalidInsHandler,		// 25
-  InvalidInsHandler,		// 26
-  InvalidInsHandler,		// 27
-  InvalidInsHandler,		// 28
-  InvalidInsHandler,		// 29
-  InvalidInsHandler,		// 2A
-  InvalidInsHandler,		// 2B
-  InvalidInsHandler,		// 2C
-  InvalidInsHandler,		// 2D
-  InvalidInsHandler,		// 2E
-  InvalidInsHandler,		// 2F
+  ___,		// 00
+  ___,		// 01
+  ___,		// 02
+  ___,		// 03
+  ___,		// 04
+  ___,		// 05
+  ___,		// 06
+  ___,		// 07
+  ___,		// 08
+  ___,		// 09
+  ___,		// 0A
+  ___,		// 0B
+  ___,		// 0C
+  ___,		// 0D
+  ___,		// 0E
+  ___,		// 0F
+  ___,		// 10
+  ___,		// 11
+  ___,		// 12
+  ___,		// 13
+  ___,		// 14
+  ___,		// 15
+  ___,		// 16
+  ___,		// 17
+  ___,		// 18
+  ___,		// 19
+  ___,		// 1A
+  ___,		// 1B
+  ___,		// 1C
+  ___,		// 1D
+  ___,		// 1E
+  ___,		// 1F
+  ___,		// 20
+  ___,		// 21
+  ___,		// 22
+  ___,		// 23
+  ___,		// 24
+  ___,		// 25
+  ___,		// 26
+  ___,		// 27
+  ___,		// 28
+  ___,		// 29
+  ___,		// 2A
+  ___,		// 2B
+  ___,		// 2C
+  ___,		// 2D
+  ___,		// 2E
+  ___,		// 2F
   Band,		// 30
   Biand,		// 31
   Bor,		// 32
@@ -6877,83 +6672,83 @@ void(*JmpVec3[256])(void) = {
   Tfm4,		// 3B
   Bitmd_M,	// 3C
   Ldmd_M,		// 3D
-  InvalidInsHandler,		// 3E
+  ___,		// 3E
   Swi3_I,		// 3F
-  InvalidInsHandler,		// 40
-  InvalidInsHandler,		// 41
-  InvalidInsHandler,		// 42
+  ___,		// 40
+  ___,		// 41
+  ___,		// 42
   Come_I,		// 43
-  InvalidInsHandler,		// 44
-  InvalidInsHandler,		// 45
-  InvalidInsHandler,		// 46
-  InvalidInsHandler,		// 47
-  InvalidInsHandler,		// 48
-  InvalidInsHandler,		// 49
+  ___,		// 44
+  ___,		// 45
+  ___,		// 46
+  ___,		// 47
+  ___,		// 48
+  ___,		// 49
   Dece_I,		// 4A
-  InvalidInsHandler,		// 4B
+  ___,		// 4B
   Ince_I,		// 4C
   Tste_I,		// 4D
-  InvalidInsHandler,		// 4E
+  ___,		// 4E
   Clre_I,		// 4F
-  InvalidInsHandler,		// 50
-  InvalidInsHandler,		// 51
-  InvalidInsHandler,		// 52
+  ___,		// 50
+  ___,		// 51
+  ___,		// 52
   Comf_I,		// 53
-  InvalidInsHandler,		// 54
-  InvalidInsHandler,		// 55
-  InvalidInsHandler,		// 56
-  InvalidInsHandler,		// 57
-  InvalidInsHandler,		// 58
-  InvalidInsHandler,		// 59
+  ___,		// 54
+  ___,		// 55
+  ___,		// 56
+  ___,		// 57
+  ___,		// 58
+  ___,		// 59
   Decf_I,		// 5A
-  InvalidInsHandler,		// 5B
+  ___,		// 5B
   Incf_I,		// 5C
   Tstf_I,		// 5D
-  InvalidInsHandler,		// 5E
+  ___,		// 5E
   Clrf_I,		// 5F
-  InvalidInsHandler,		// 60
-  InvalidInsHandler,		// 61
-  InvalidInsHandler,		// 62
-  InvalidInsHandler,		// 63
-  InvalidInsHandler,		// 64
-  InvalidInsHandler,		// 65
-  InvalidInsHandler,		// 66
-  InvalidInsHandler,		// 67
-  InvalidInsHandler,		// 68
-  InvalidInsHandler,		// 69
-  InvalidInsHandler,		// 6A
-  InvalidInsHandler,		// 6B
-  InvalidInsHandler,		// 6C
-  InvalidInsHandler,		// 6D
-  InvalidInsHandler,		// 6E
-  InvalidInsHandler,		// 6F
-  InvalidInsHandler,		// 70
-  InvalidInsHandler,		// 71
-  InvalidInsHandler,		// 72
-  InvalidInsHandler,		// 73
-  InvalidInsHandler,		// 74
-  InvalidInsHandler,		// 75
-  InvalidInsHandler,		// 76
-  InvalidInsHandler,		// 77
-  InvalidInsHandler,		// 78
-  InvalidInsHandler,		// 79
-  InvalidInsHandler,		// 7A
-  InvalidInsHandler,		// 7B
-  InvalidInsHandler,		// 7C
-  InvalidInsHandler,		// 7D
-  InvalidInsHandler,		// 7E
-  InvalidInsHandler,		// 7F
+  ___,		// 60
+  ___,		// 61
+  ___,		// 62
+  ___,		// 63
+  ___,		// 64
+  ___,		// 65
+  ___,		// 66
+  ___,		// 67
+  ___,		// 68
+  ___,		// 69
+  ___,		// 6A
+  ___,		// 6B
+  ___,		// 6C
+  ___,		// 6D
+  ___,		// 6E
+  ___,		// 6F
+  ___,		// 70
+  ___,		// 71
+  ___,		// 72
+  ___,		// 73
+  ___,		// 74
+  ___,		// 75
+  ___,		// 76
+  ___,		// 77
+  ___,		// 78
+  ___,		// 79
+  ___,		// 7A
+  ___,		// 7B
+  ___,		// 7C
+  ___,		// 7D
+  ___,		// 7E
+  ___,		// 7F
   Sube_M,		// 80
   Cmpe_M,		// 81
-  InvalidInsHandler,		// 82
+  ___,		// 82
   Cmpu_M,		// 83
-  InvalidInsHandler,		// 84
-  InvalidInsHandler,		// 85
+  ___,		// 84
+  ___,		// 85
   Lde_M,		// 86
-  InvalidInsHandler,		// 87
-  InvalidInsHandler,		// 88
-  InvalidInsHandler,		// 89
-  InvalidInsHandler,		// 8A
+  ___,		// 87
+  ___,		// 88
+  ___,		// 89
+  ___,		// 8A
   Adde_M,		// 8B
   Cmps_M,		// 8C
   Divd_M,		// 8D
@@ -6961,15 +6756,15 @@ void(*JmpVec3[256])(void) = {
   Muld_M,		// 8F
   Sube_D,		// 90
   Cmpe_D,		// 91
-  InvalidInsHandler,		// 92
+  ___,		// 92
   Cmpu_D,		// 93
-  InvalidInsHandler,		// 94
-  InvalidInsHandler,		// 95
+  ___,		// 94
+  ___,		// 95
   Lde_D,		// 96
   Ste_D,		// 97
-  InvalidInsHandler,		// 98
-  InvalidInsHandler,		// 99
-  InvalidInsHandler,		// 9A
+  ___,		// 98
+  ___,		// 99
+  ___,		// 9A
   Adde_D,		// 9B
   Cmps_D,		// 9C
   Divd_D,		// 9D
@@ -6977,15 +6772,15 @@ void(*JmpVec3[256])(void) = {
   Muld_D,		// 9F
   Sube_X,		// A0
   Cmpe_X,		// A1
-  InvalidInsHandler,		// A2
+  ___,		// A2
   Cmpu_X,		// A3
-  InvalidInsHandler,		// A4
-  InvalidInsHandler,		// A5
+  ___,		// A4
+  ___,		// A5
   Lde_X,		// A6
   Ste_X,		// A7
-  InvalidInsHandler,		// A8
-  InvalidInsHandler,		// A9
-  InvalidInsHandler,		// AA
+  ___,		// A8
+  ___,		// A9
+  ___,		// AA
   Adde_X,		// AB
   Cmps_X,		// AC
   Divd_X,		// AD
@@ -6993,15 +6788,15 @@ void(*JmpVec3[256])(void) = {
   Muld_X,		// AF
   Sube_E,		// B0
   Cmpe_E,		// B1
-  InvalidInsHandler,		// B2
+  ___,		// B2
   Cmpu_E,		// B3
-  InvalidInsHandler,		// B4
-  InvalidInsHandler,		// B5
+  ___,		// B4
+  ___,		// B5
   Lde_E,		// B6
   Ste_E,		// B7
-  InvalidInsHandler,		// B8
-  InvalidInsHandler,		// B9
-  InvalidInsHandler,		// BA
+  ___,		// B8
+  ___,		// B9
+  ___,		// BA
   Adde_E,		// BB
   Cmps_E,		// BC
   Divd_E,		// BD
@@ -7009,68 +6804,68 @@ void(*JmpVec3[256])(void) = {
   Muld_E,		// BF
   Subf_M,		// C0
   Cmpf_M,		// C1
-  InvalidInsHandler,		// C2
-  InvalidInsHandler,		// C3
-  InvalidInsHandler,		// C4
-  InvalidInsHandler,		// C5
+  ___,		// C2
+  ___,		// C3
+  ___,		// C4
+  ___,		// C5
   Ldf_M,		// C6
-  InvalidInsHandler,		// C7
-  InvalidInsHandler,		// C8
-  InvalidInsHandler,		// C9
-  InvalidInsHandler,		// CA
+  ___,		// C7
+  ___,		// C8
+  ___,		// C9
+  ___,		// CA
   Addf_M,		// CB
-  InvalidInsHandler,		// CC
-  InvalidInsHandler,		// CD
-  InvalidInsHandler,		// CE
-  InvalidInsHandler,		// CF
+  ___,		// CC
+  ___,		// CD
+  ___,		// CE
+  ___,		// CF
   Subf_D,		// D0
   Cmpf_D,		// D1
-  InvalidInsHandler,		// D2
-  InvalidInsHandler,		// D3
-  InvalidInsHandler,		// D4
-  InvalidInsHandler,		// D5
+  ___,		// D2
+  ___,		// D3
+  ___,		// D4
+  ___,		// D5
   Ldf_D,		// D6
   Stf_D,		// D7
-  InvalidInsHandler,		// D8
-  InvalidInsHandler,		// D9
-  InvalidInsHandler,		// DA
+  ___,		// D8
+  ___,		// D9
+  ___,		// DA
   Addf_D,		// DB
-  InvalidInsHandler,		// DC
-  InvalidInsHandler,		// DD
-  InvalidInsHandler,		// DE
-  InvalidInsHandler,		// DF
+  ___,		// DC
+  ___,		// DD
+  ___,		// DE
+  ___,		// DF
   Subf_X,		// E0
   Cmpf_X,		// E1
-  InvalidInsHandler,		// E2
-  InvalidInsHandler,		// E3
-  InvalidInsHandler,		// E4
-  InvalidInsHandler,		// E5
+  ___,		// E2
+  ___,		// E3
+  ___,		// E4
+  ___,		// E5
   Ldf_X,		// E6
   Stf_X,		// E7
-  InvalidInsHandler,		// E8
-  InvalidInsHandler,		// E9
-  InvalidInsHandler,		// EA
+  ___,		// E8
+  ___,		// E9
+  ___,		// EA
   Addf_X,		// EB
-  InvalidInsHandler,		// EC
-  InvalidInsHandler,		// ED
-  InvalidInsHandler,		// EE
-  InvalidInsHandler,		// EF
+  ___,		// EC
+  ___,		// ED
+  ___,		// EE
+  ___,		// EF
   Subf_E,		// F0
   Cmpf_E,		// F1
-  InvalidInsHandler,		// F2
-  InvalidInsHandler,		// F3
-  InvalidInsHandler,		// F4
-  InvalidInsHandler,		// F5
+  ___,		// F2
+  ___,		// F3
+  ___,		// F4
+  ___,		// F5
   Ldf_E,		// F6
   Stf_E,		// F7
-  InvalidInsHandler,		// F8
-  InvalidInsHandler,		// F9
-  InvalidInsHandler,		// FA
+  ___,		// F8
+  ___,		// F9
+  ___,		// FA
   Addf_E,		// FB
-  InvalidInsHandler,		// FC
-  InvalidInsHandler,		// FD
-  InvalidInsHandler,		// FE
-  InvalidInsHandler,		// FF
+  ___,		// FC
+  ___,		// FD
+  ___,		// FE
+  ___,		// FF
 };
 
 extern "C" {

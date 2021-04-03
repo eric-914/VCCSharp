@@ -9,6 +9,9 @@ namespace VCCSharp.Modules
     public interface IHD6309 : IProcessor
     {
         unsafe HD6309State* GetHD6309State();
+        byte HD6309_getcc();
+        void HD6309_setcc(byte bincc);
+        byte HD6309_getmd();
     }
 
     public class HD6309 : IHD6309
@@ -370,6 +373,16 @@ namespace VCCSharp.Modules
         public byte HD6309_getcc()
         {
             return Library.HD6309.HD6309_getcc();
+        }
+
+        public void HD6309_setcc(byte bincc)
+        {
+            Library.HD6309.HD6309_setcc(bincc);
+        }
+
+        public byte HD6309_getmd()
+        {
+            return Library.HD6309.HD6309_getmd();
         }
     }
 }
