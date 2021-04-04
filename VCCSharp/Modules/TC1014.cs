@@ -22,6 +22,7 @@ namespace VCCSharp.Modules
         void GimeAssertTimerInterrupt();
         byte MemRead8(ushort address);
         ushort MemRead16(ushort addr);
+        void MemWrite16(ushort data, ushort addr);
         ushort GetMem(int address);
         void SetMapType(byte type);
         void SetRomMap(byte data);
@@ -605,11 +606,6 @@ Could not locate {ROM} in any of these locations:
             }
         }
 
-        public void MemWrite8(byte data, ushort address)
-        {
-            Library.TC1014.MemWrite8(data, address);
-        }
-
         public void GimeAssertHorzInterrupt()
         {
             Library.TC1014.GimeAssertHorzInterrupt();
@@ -680,9 +676,19 @@ Could not locate {ROM} in any of these locations:
             return Library.TC1014.MemRead8(address);
         }
 
+        public void MemWrite8(byte data, ushort address)
+        {
+            Library.TC1014.MemWrite8(data, address);
+        }
+
         public ushort MemRead16(ushort addr)
         {
             return Library.TC1014.MemRead16(addr);
+        }
+
+        public void MemWrite16(ushort data, ushort addr)
+        {
+            Library.TC1014.MemWrite16(data, addr);
         }
 
         //--I think this is just a hack to access memory directly for the 40/80 char-wide screen-scrapes

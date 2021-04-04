@@ -12,6 +12,7 @@ namespace VCCSharp.Modules
         byte HD6309_getcc();
         void HD6309_setcc(byte bincc);
         byte HD6309_getmd();
+        ushort HD6309_CalculateEA(byte postbyte);
     }
 
     public class HD6309 : IHD6309
@@ -383,6 +384,11 @@ namespace VCCSharp.Modules
         public byte HD6309_getmd()
         {
             return Library.HD6309.HD6309_getmd();
+        }
+
+        public ushort HD6309_CalculateEA(byte postbyte)
+        {
+            return Library.HD6309.HD6309_CalculateEA(postbyte);
         }
     }
 }

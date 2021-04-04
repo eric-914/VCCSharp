@@ -373,6 +373,9 @@ namespace VCCSharp.Libraries
             public static extern byte HD6309_getmd();
 
             [DllImport(LIBRARY)]
+            public static extern ushort HD6309_CalculateEA(byte postbyte);
+
+            [DllImport(LIBRARY)]
             public static extern void Page_1(byte opCode);
 
             [DllImport(LIBRARY)]
@@ -512,6 +515,9 @@ namespace VCCSharp.Libraries
             public static extern void MC6883Reset();
 
             [DllImport(LIBRARY)]
+            public static extern byte MemRead8(ushort address);
+
+            [DllImport(LIBRARY)]
             public static extern void MemWrite8(byte data, ushort address);
 
             [DllImport(LIBRARY)]
@@ -521,10 +527,10 @@ namespace VCCSharp.Libraries
             public static extern void GimeAssertTimerInterrupt();
 
             [DllImport(LIBRARY)]
-            public static extern byte MemRead8(ushort address);
+            public static extern ushort MemRead16(ushort addr);
 
             [DllImport(LIBRARY)]
-            public static extern ushort MemRead16(ushort addr);
+            public static extern void MemWrite16(ushort data, ushort addr);
 
             [DllImport(LIBRARY)]
             public static extern void SetMapType(byte type);
