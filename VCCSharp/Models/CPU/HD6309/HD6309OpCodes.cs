@@ -2638,74 +2638,153 @@ namespace VCCSharp.Models.CPU.HD6309
 
         public unsafe void Subb_M()// C0
         {
-            _page1(0xC0);
+            postbyte = MemRead8(PC_REG++);
+            temp16 = (ushort)(B_REG - postbyte);
+            CC_C = (temp16 & 0x100) >> 8 != 0;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp16, B_REG);
+            B_REG = (byte)temp16;
+            CC_Z = ZTEST(B_REG);
+            CC_N = NTEST8(B_REG);
+            instance->CycleCounter += 2;
         }
 
         public unsafe void Cmpb_M()// C1
         {
-            _page1(0xC1);
+            postbyte = MemRead8(PC_REG++);
+            temp8 = (byte)(B_REG - postbyte);
+            CC_C = temp8 > B_REG;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp8, B_REG);
+            CC_N = NTEST8(temp8);
+            CC_Z = ZTEST(temp8);
+            instance->CycleCounter += 2;
         }
 
         public unsafe void Sbcb_M()// C2
         {
-            _page1(0xC2);
+            postbyte = MemRead8(PC_REG++);
+            temp16 = (ushort)(B_REG - postbyte - (CC_C ? 1 : 0));
+            CC_C = (temp16 & 0x100) >> 8 != 0;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp16, B_REG);
+            B_REG = (byte)temp16;
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            instance->CycleCounter += 2;
         }
 
         public unsafe void Addd_M()// C3
         {
-            _page1(0xC3);
+            temp16 = IMMADDRESS(PC_REG);
+            temp32 = (uint)(D_REG + temp16);
+            CC_C = (temp32 & 0x10000) >> 16 != 0;
+            CC_V = OVERFLOW16(CC_C, temp32, temp16, D_REG);
+            D_REG = (ushort)temp32;
+            CC_Z = ZTEST(D_REG);
+            CC_N = NTEST16(D_REG);
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles43;
         }
 
         public unsafe void Andb_M()// C4
         {
-            _page1(0xC4);
+            B_REG &= MemRead8(PC_REG++);
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            CC_V = false; //0;
+            instance->CycleCounter += 2;
         }
 
         public unsafe void Bitb_M()// C5
         {
-            _page1(0xC5);
+            temp8 = (byte)(B_REG & MemRead8(PC_REG++));
+            CC_N = NTEST8(temp8);
+            CC_Z = ZTEST(temp8);
+            CC_V = false; //0;
+            instance->CycleCounter += 2;
         }
 
         public unsafe void Ldb_M()// C6
         {
-            _page1(0xC6);
+            B_REG = MemRead8(PC_REG++);
+            CC_Z = ZTEST(B_REG);
+            CC_N = NTEST8(B_REG);
+            CC_V = false; //0;
+            instance->CycleCounter += 2;
         }
 
         // C7	//InvalidInsHandler
 
         public unsafe void Eorb_M()// C8
         {
-            _page1(0xC8);
+            B_REG ^= MemRead8(PC_REG++);
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            CC_V = false; //0;
+            instance->CycleCounter += 2;
         }
 
         public unsafe void Adcb_M()// C9
         {
-            _page1(0xC9);
+            postbyte = MemRead8(PC_REG++);
+            temp16 = (ushort)(B_REG + postbyte + (CC_C ? 1 : 0));
+            CC_C = (temp16 & 0x100) >> 8 != 0;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp16, B_REG);
+            CC_H = ((B_REG ^ temp16 ^ postbyte) & 0x10) >> 4 != 0;
+            B_REG = (byte)temp16;
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            instance->CycleCounter += 2;
         }
 
         public unsafe void Orb_M()// CA
         {
-            _page1(0xCA);
+            B_REG |= MemRead8(PC_REG++);
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            CC_V = false; //0;
+            instance->CycleCounter += 2;
         }
 
         public unsafe void Addb_M()// CB
         {
-            _page1(0xCB);
+            postbyte = MemRead8(PC_REG++);
+            temp16 = (ushort)(B_REG + postbyte);
+            CC_C = (temp16 & 0x100) >> 8 != 0;
+            CC_H = ((B_REG ^ postbyte ^ temp16) & 0x10) >> 4 != 0;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp16, B_REG);
+            B_REG = (byte)temp16;
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            instance->CycleCounter += 2;
         }
 
         public unsafe void Ldd_M()// CC
         {
-            _page1(0xCC);
+            D_REG = IMMADDRESS(PC_REG);
+            CC_Z = ZTEST(D_REG);
+            CC_N = NTEST16(D_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+            instance->CycleCounter += 3;
         }
 
         public unsafe void Ldq_M()// CD
         {
-            _page1(0xCD);
+            Q_REG = MemRead32(PC_REG);
+            PC_REG += 4;
+            CC_Z = ZTEST(Q_REG);
+            CC_N = NTEST32(Q_REG);
+            CC_V = false; //0;
+            instance->CycleCounter += 5;
         }
 
         public unsafe void Ldu_M()// CE
         {
-            _page1(0xCE);
+            U_REG = IMMADDRESS(PC_REG);
+            CC_Z = ZTEST(U_REG);
+            CC_N = NTEST16(U_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+            instance->CycleCounter += 3;
         }
 
         // CF	//InvalidInsHandler
@@ -2716,82 +2795,165 @@ namespace VCCSharp.Models.CPU.HD6309
 
         public unsafe void Subb_D()// D0
         {
-            _page1(0xD0);
+            postbyte = MemRead8(DPADDRESS(PC_REG++));
+            temp16 = (ushort)(B_REG - postbyte);
+            CC_C = (temp16 & 0x100) >> 8 != 0;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp16, B_REG);
+            B_REG = (byte)temp16;
+            CC_Z = ZTEST(B_REG);
+            CC_N = NTEST8(B_REG);
+            instance->CycleCounter += instance->NatEmuCycles43;
         }
 
         public unsafe void Cmpb_D()// D1
         {
-            _page1(0xD1);
+            postbyte = MemRead8(DPADDRESS(PC_REG++));
+            temp8 = (byte)(B_REG - postbyte);
+            CC_C = temp8 > B_REG;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp8, B_REG);
+            CC_N = NTEST8(temp8);
+            CC_Z = ZTEST(temp8);
+            instance->CycleCounter += instance->NatEmuCycles43;
         }
 
         public unsafe void Sbcb_D()// D2
         {
-            _page1(0xD2);
+            postbyte = MemRead8(DPADDRESS(PC_REG++));
+            temp16 = (ushort)(B_REG - postbyte - (CC_C ? 1 : 0));
+            CC_C = (temp16 & 0x100) >> 8 != 0;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp16, B_REG);
+            B_REG = (byte)temp16;
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            instance->CycleCounter += instance->NatEmuCycles43;
         }
 
         public unsafe void Addd_D()// D3
         {
-            _page1(0xD3);
+            temp16 = MemRead16(DPADDRESS(PC_REG++));
+            temp32 = (uint)(D_REG + temp16);
+            CC_C = (temp32 & 0x10000) >> 16 != 0;
+            CC_V = OVERFLOW16(CC_C, temp32, temp16, D_REG);
+            D_REG = (ushort)temp32;
+            CC_Z = ZTEST(D_REG);
+            CC_N = NTEST16(D_REG);
+            instance->CycleCounter += instance->NatEmuCycles64;
         }
 
         public unsafe void Andb_D()// D4
         {
-            _page1(0xD4);
+            B_REG &= MemRead8(DPADDRESS(PC_REG++));
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            CC_V = false; //0;
+            instance->CycleCounter += instance->NatEmuCycles43;
         }
 
         public unsafe void Bitb_D()// D5
         {
-            _page1(0xD5);
+            temp8 = (byte)(B_REG & MemRead8(DPADDRESS(PC_REG++)));
+            CC_N = NTEST8(temp8);
+            CC_Z = ZTEST(temp8);
+            CC_V = false; //0;
+            instance->CycleCounter += instance->NatEmuCycles43;
         }
 
         public unsafe void Ldb_D()// D6
         {
-            _page1(0xD6);
+            B_REG = MemRead8(DPADDRESS(PC_REG++));
+            CC_Z = ZTEST(B_REG);
+            CC_N = NTEST8(B_REG);
+            CC_V = false; //0;
+            instance->CycleCounter += instance->NatEmuCycles43;
         }
 
         public unsafe void Stb_D()// D7
         {
-            _page1(0xD7);
+            MemWrite8(B_REG, DPADDRESS(PC_REG++));
+            CC_Z = ZTEST(B_REG);
+            CC_N = NTEST8(B_REG);
+            CC_V = false; //0;
+            instance->CycleCounter += instance->NatEmuCycles43;
         }
 
         public unsafe void Eorb_D()// D8
         {
-            _page1(0xD8);
+            B_REG ^= MemRead8(DPADDRESS(PC_REG++));
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            CC_V = false; //0;
+            instance->CycleCounter += instance->NatEmuCycles43;
         }
 
         public unsafe void Adcb_D()// D9
         {
-            _page1(0xD9);
+            postbyte = MemRead8(DPADDRESS(PC_REG++));
+            temp16 = (ushort)(B_REG + postbyte + (CC_C ? 1 : 0));
+            CC_C = (temp16 & 0x100) >> 8 != 0;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp16, B_REG);
+            CC_H = ((B_REG ^ temp16 ^ postbyte) & 0x10) >> 4 != 0;
+            B_REG = (byte)temp16;
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            instance->CycleCounter += instance->NatEmuCycles43;
         }
 
         public unsafe void Orb_D()// DA
         {
-            _page1(0xDA);
+            B_REG |= MemRead8(DPADDRESS(PC_REG++));
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            CC_V = false; //0;
+            instance->CycleCounter += instance->NatEmuCycles43;
         }
 
         public unsafe void Addb_D()// DB
         {
-            _page1(0xDB);
+            postbyte = MemRead8(DPADDRESS(PC_REG++));
+            temp16 = (ushort)(B_REG + postbyte);
+            CC_C = (temp16 & 0x100) >> 8 != 0;
+            CC_H = ((B_REG ^ postbyte ^ temp16) & 0x10) >> 4 != 0;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp16, B_REG);
+            B_REG = (byte)temp16;
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            instance->CycleCounter += instance->NatEmuCycles43;
         }
 
         public unsafe void Ldd_D()// DC
         {
-            _page1(0xDC);
+            D_REG = MemRead16(DPADDRESS(PC_REG++));
+            CC_Z = ZTEST(D_REG);
+            CC_N = NTEST16(D_REG);
+            CC_V = false; //0;
+            instance->CycleCounter += instance->NatEmuCycles54;
         }
 
         public unsafe void Std_D()// DD
         {
-            _page1(0xDD);
+            MemWrite16(D_REG, DPADDRESS(PC_REG++));
+            CC_Z = ZTEST(D_REG);
+            CC_N = NTEST16(D_REG);
+            CC_V = false; //0;
+            instance->CycleCounter += instance->NatEmuCycles54;
         }
 
         public unsafe void Ldu_D()// DE
         {
-            _page1(0xDE);
+            U_REG = MemRead16(DPADDRESS(PC_REG++));
+            CC_Z = ZTEST(U_REG);
+            CC_N = NTEST16(U_REG);
+            CC_V = false; //0;
+            instance->CycleCounter += instance->NatEmuCycles54;
         }
 
         public unsafe void Stu_D()// DF
         {
-            _page1(0xDF);
+            MemWrite16(U_REG, DPADDRESS(PC_REG++));
+            CC_Z = ZTEST(U_REG);
+            CC_N = NTEST16(U_REG);
+            CC_V = false; //0;
+            instance->CycleCounter += instance->NatEmuCycles54;
         }
 
         #endregion
@@ -2800,82 +2962,165 @@ namespace VCCSharp.Models.CPU.HD6309
 
         public unsafe void Subb_X()// E0
         {
-            _page1(0xE0);
+            postbyte = MemRead8(INDADDRESS(PC_REG++));
+            temp16 = (ushort)(B_REG - postbyte);
+            CC_C = (temp16 & 0x100) >> 8 != 0;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp16, B_REG);
+            B_REG = (byte)temp16;
+            CC_Z = ZTEST(B_REG);
+            CC_N = NTEST8(B_REG);
+            instance->CycleCounter += 4;
         }
 
         public unsafe void Cmpb_X()// E1
         {
-            _page1(0xE1);
+            postbyte = MemRead8(INDADDRESS(PC_REG++));
+            temp8 = (byte)(B_REG - postbyte);
+            CC_C = temp8 > B_REG;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp8, B_REG);
+            CC_N = NTEST8(temp8);
+            CC_Z = ZTEST(temp8);
+            instance->CycleCounter += 4;
         }
 
         public unsafe void Sbcb_X()// E2
         {
-            _page1(0xE2);
+            postbyte = MemRead8(INDADDRESS(PC_REG++));
+            temp16 = (ushort)(B_REG - postbyte - (CC_C ? 1 : 0));
+            CC_C = (temp16 & 0x100) >> 8 != 0;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp16, B_REG);
+            B_REG = (byte)temp16;
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            instance->CycleCounter += 4;
         }
 
         public unsafe void Addd_X()// E3
         {
-            _page1(0xE3);
+            temp16 = MemRead16(INDADDRESS(PC_REG++));
+            temp32 = (uint)(D_REG + temp16);
+            CC_C = (temp32 & 0x10000) >> 16 != 0;
+            CC_V = OVERFLOW16(CC_C, temp32, temp16, D_REG);
+            D_REG = (ushort)temp32;
+            CC_Z = ZTEST(D_REG);
+            CC_N = NTEST16(D_REG);
+            instance->CycleCounter += instance->NatEmuCycles65;
         }
 
         public unsafe void Andb_X()// E4
         {
-            _page1(0xE4);
+            B_REG &= MemRead8(INDADDRESS(PC_REG++));
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            CC_V = false;//0;
+            instance->CycleCounter += 4;
         }
 
         public unsafe void Bitb_X()// E5
         {
-            _page1(0xE5);
+            temp8 = (byte)(B_REG & MemRead8(INDADDRESS(PC_REG++)));
+            CC_N = NTEST8(temp8);
+            CC_Z = ZTEST(temp8);
+            CC_V = false;//0;
+            instance->CycleCounter += 4;
         }
 
         public unsafe void Ldb_X()// E6
         {
-            _page1(0xE6);
+            B_REG = MemRead8(INDADDRESS(PC_REG++));
+            CC_Z = ZTEST(B_REG);
+            CC_N = NTEST8(B_REG);
+            CC_V = false;//0;
+            instance->CycleCounter += 4;
         }
 
         public unsafe void Stb_X()// E7
         {
-            _page1(0xE7);
+            MemWrite8(B_REG, HD6309_CalculateEA(MemRead8(PC_REG++)));
+            CC_Z = ZTEST(B_REG);
+            CC_N = NTEST8(B_REG);
+            CC_V = false;//0;
+            instance->CycleCounter += 4;
         }
 
         public unsafe void Eorb_X()// E8
         {
-            _page1(0xE8);
+            B_REG ^= MemRead8(INDADDRESS(PC_REG++));
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            CC_V = false;//0;
+            instance->CycleCounter += 4;
         }
 
         public unsafe void Adcb_X()// E9
         {
-            _page1(0xE9);
+            postbyte = MemRead8(INDADDRESS(PC_REG++));
+            temp16 = (ushort)(B_REG + postbyte + (CC_C ? 1 : 0));
+            CC_C = (temp16 & 0x100) >> 8 != 0;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp16, B_REG);
+            CC_H = ((B_REG ^ temp16 ^ postbyte) & 0x10) >> 4 != 0;
+            B_REG = (byte)temp16;
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            instance->CycleCounter += 4;
         }
 
         public unsafe void Orb_X()// EA
         {
-            _page1(0xEA);
+            B_REG |= MemRead8(INDADDRESS(PC_REG++));
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            CC_V = false;//0;
+            instance->CycleCounter += 4;
         }
 
         public unsafe void Addb_X()// EB
         {
-            _page1(0xEB);
+            postbyte = MemRead8(INDADDRESS(PC_REG++));
+            temp16 = (ushort)(B_REG + postbyte);
+            CC_C = (temp16 & 0x100) >> 8 != 0;
+            CC_H = ((B_REG ^ postbyte ^ temp16) & 0x10) >> 4 != 0;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp16, B_REG);
+            B_REG = (byte)temp16;
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            instance->CycleCounter += 4;
         }
 
         public unsafe void Ldd_X()// EC
         {
-            _page1(0xEC);
+            D_REG = MemRead16(INDADDRESS(PC_REG++));
+            CC_Z = ZTEST(D_REG);
+            CC_N = NTEST16(D_REG);
+            CC_V = false;//0;
+            instance->CycleCounter += 5;
         }
 
         public unsafe void Std_X()// ED
         {
-            _page1(0xED);
+            MemWrite16(D_REG, INDADDRESS(PC_REG++));
+            CC_Z = ZTEST(D_REG);
+            CC_N = NTEST16(D_REG);
+            CC_V = false;//0;
+            instance->CycleCounter += 5;
         }
 
         public unsafe void Ldu_X()// EE
         {
-            _page1(0xEE);
+            U_REG = MemRead16(INDADDRESS(PC_REG++));
+            CC_Z = ZTEST(U_REG);
+            CC_N = NTEST16(U_REG);
+            CC_V = false;//0;
+            instance->CycleCounter += 5;
         }
 
         public unsafe void Stu_X()// EF
         {
-            _page1(0xEF);
+            MemWrite16(U_REG, INDADDRESS(PC_REG++));
+            CC_Z = ZTEST(U_REG);
+            CC_N = NTEST16(U_REG);
+            CC_V = false;//0;
+            instance->CycleCounter += 5;
         }
 
         #endregion
@@ -2884,82 +3129,181 @@ namespace VCCSharp.Models.CPU.HD6309
 
         public unsafe void Subb_E()// F0
         {
-            _page1(0xF0);
+            postbyte = MemRead8(IMMADDRESS(PC_REG));
+            temp16 = (ushort)(B_REG - postbyte);
+            CC_C = (temp16 & 0x100) >> 8 != 0;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp16, B_REG);
+            B_REG = (byte)temp16;
+            CC_Z = ZTEST(B_REG);
+            CC_N = NTEST8(B_REG);
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles54;
         }
 
         public unsafe void Cmpb_E()// F1
         {
-            _page1(0xF1);
+            postbyte = MemRead8(IMMADDRESS(PC_REG));
+            temp8 = (byte)(B_REG - postbyte);
+            CC_C = temp8 > B_REG;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp8, B_REG);
+            CC_N = NTEST8(temp8);
+            CC_Z = ZTEST(temp8);
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles54;
         }
 
         public unsafe void Sbcb_E()// F2
         {
-            _page1(0xF2);
+            postbyte = MemRead8(IMMADDRESS(PC_REG));
+            temp16 = (ushort)(B_REG - postbyte - (CC_C ? 1 : 0));
+            CC_C = (temp16 & 0x100) >> 8 != 0;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp16, B_REG);
+            B_REG = (byte)temp16;
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles54;
         }
 
         public unsafe void Addd_E()// F3
         {
-            _page1(0xF3);
+            temp16 = MemRead16(IMMADDRESS(PC_REG));
+            temp32 = (uint)(D_REG + temp16);
+            CC_C = (temp32 & 0x10000) >> 16 != 0;
+            CC_V = OVERFLOW16(CC_C, temp32, temp16, D_REG);
+            D_REG = (ushort)temp32;
+            CC_Z = ZTEST(D_REG);
+            CC_N = NTEST16(D_REG);
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles76;
         }
 
         public unsafe void Andb_E()// F4
         {
-            _page1(0xF4);
+            B_REG &= MemRead8(IMMADDRESS(PC_REG));
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles54;
         }
 
         public unsafe void Bitb_E()// F5
         {
-            _page1(0xF5);
+            temp8 = (byte)(B_REG & MemRead8(IMMADDRESS(PC_REG)));
+            CC_N = NTEST8(temp8);
+            CC_Z = ZTEST(temp8);
+            CC_V = false; //0;
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles54;
         }
 
         public unsafe void Ldb_E()// F6
         {
-            _page1(0xF6);
+            B_REG = MemRead8(IMMADDRESS(PC_REG));
+            CC_Z = ZTEST(B_REG);
+            CC_N = NTEST8(B_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles54;
         }
 
         public unsafe void Stb_E()// F7
         {
-            _page1(0xF7);
+            MemWrite8(B_REG, IMMADDRESS(PC_REG));
+            CC_Z = ZTEST(B_REG);
+            CC_N = NTEST8(B_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles54;
         }
 
         public unsafe void Eorb_E()// F8
         {
-            _page1(0xF8);
+            B_REG ^= MemRead8(IMMADDRESS(PC_REG));
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles54;
         }
 
         public unsafe void Adcb_E()// F9
         {
-            _page1(0xF9);
+            postbyte = MemRead8(IMMADDRESS(PC_REG));
+            temp16 = (ushort)(B_REG + postbyte + (CC_C ? 1 : 0));
+            CC_C = (temp16 & 0x100) >> 8 != 0;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp16, B_REG);
+            CC_H = ((B_REG ^ temp16 ^ postbyte) & 0x10) >> 4 != 0;;
+            B_REG = (byte)temp16;
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles54;
         }
 
         public unsafe void Orb_E()// FA
         {
-            _page1(0xFA);
+            B_REG |= MemRead8(IMMADDRESS(PC_REG));
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles54;
         }
 
         public unsafe void Addb_E()// FB
         {
-            _page1(0xFB);
+            postbyte = MemRead8(IMMADDRESS(PC_REG));
+            temp16 = (ushort)(B_REG + postbyte);
+            CC_C = (temp16 & 0x100) >> 8 != 0;
+            CC_H = ((B_REG ^ postbyte ^ temp16) & 0x10) >> 4 != 0;
+            CC_V = OVERFLOW8(CC_C, postbyte, temp16, B_REG);
+            B_REG = (byte)temp16;
+            CC_N = NTEST8(B_REG);
+            CC_Z = ZTEST(B_REG);
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles54;
         }
 
         public unsafe void Ldd_E()// FC
         {
-            _page1(0xFC);
+            D_REG = MemRead16(IMMADDRESS(PC_REG));
+            CC_Z = ZTEST(D_REG);
+            CC_N = NTEST16(D_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles65;
         }
 
         public unsafe void Std_E()// FD
         {
-            _page1(0xFD);
+            MemWrite16(D_REG, IMMADDRESS(PC_REG));
+            CC_Z = ZTEST(D_REG);
+            CC_N = NTEST16(D_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles65;
         }
 
         public unsafe void Ldu_E()// FE
         {
-            _page1(0xFE);
+            U_REG = MemRead16(IMMADDRESS(PC_REG));
+            CC_Z = ZTEST(U_REG);
+            CC_N = NTEST16(U_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles65;
         }
 
         public unsafe void Stu_E()// FF
         {
-            _page1(0xFF);
+            MemWrite16(U_REG, IMMADDRESS(PC_REG));
+            CC_Z = ZTEST(U_REG);
+            CC_N = NTEST16(U_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+            instance->CycleCounter += instance->NatEmuCycles65;
         }
 
         #endregion
@@ -3230,17 +3574,18 @@ namespace VCCSharp.Models.CPU.HD6309
         public void MemWrite8(byte data, ushort address) => _modules.TC1014.MemWrite8(data, address);
         public ushort MemRead16(ushort address) => _modules.TC1014.MemRead16(address);
         public void MemWrite16(ushort data, ushort address) => _modules.TC1014.MemWrite16(data, address);
+        public uint MemRead32(ushort address) => _modules.TC1014.MemRead32(address);
 
         public ushort IMMADDRESS(ushort address) => MemRead16(address);
         public ushort INDADDRESS(ushort address) => HD6309_CalculateEA(MemRead8(address));
 
         public bool NTEST8(byte value) => value > 0x7F;
+        public bool NTEST16(ushort value) => value > 0x7FFF;
+        public bool NTEST32(uint value) => value > 0x7FFFFFFF;
 
         public bool ZTEST(byte value) => value == 0;
         public bool ZTEST(ushort value) => value == 0;
         public bool ZTEST(uint value) => value == 0;
-
-        public bool NTEST16(ushort value) => value > 0x7FFF;
 
         public bool OVERFLOW8(bool c, byte a, ushort b, byte r) => ((c ? (byte)1 : (byte)0) ^ (((a ^ b ^ r) >> 7) & 1)) != 0;
         public bool OVERFLOW16(bool c, uint a, ushort b, ushort r) => ((c ? (byte)1 : (byte)0) ^ (((a ^ b ^ r) >> 15) & 1)) != 0;

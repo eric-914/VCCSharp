@@ -23,6 +23,7 @@ namespace VCCSharp.Modules
         byte MemRead8(ushort address);
         ushort MemRead16(ushort addr);
         void MemWrite16(ushort data, ushort addr);
+        uint MemRead32(ushort addr);
         ushort GetMem(int address);
         void SetMapType(byte type);
         void SetRomMap(byte data);
@@ -689,6 +690,11 @@ Could not locate {ROM} in any of these locations:
         public void MemWrite16(ushort data, ushort addr)
         {
             Library.TC1014.MemWrite16(data, addr);
+        }
+
+        public uint MemRead32(ushort addr)
+        {
+            return Library.TC1014.MemRead32(addr);
         }
 
         //--I think this is just a hack to access memory directly for the 40/80 char-wide screen-scrapes

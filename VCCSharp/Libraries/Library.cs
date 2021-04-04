@@ -513,6 +513,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void MC6883Reset();
+            
+            [DllImport(LIBRARY)]
+            public static extern void GimeAssertHorzInterrupt();
+
+            [DllImport(LIBRARY)]
+            public static extern void GimeAssertTimerInterrupt();
 
             [DllImport(LIBRARY)]
             public static extern byte MemRead8(ushort address);
@@ -521,16 +527,16 @@ namespace VCCSharp.Libraries
             public static extern void MemWrite8(byte data, ushort address);
 
             [DllImport(LIBRARY)]
-            public static extern void GimeAssertHorzInterrupt();
-
-            [DllImport(LIBRARY)]
-            public static extern void GimeAssertTimerInterrupt();
-
-            [DllImport(LIBRARY)]
             public static extern ushort MemRead16(ushort addr);
 
             [DllImport(LIBRARY)]
             public static extern void MemWrite16(ushort data, ushort addr);
+
+            [DllImport(LIBRARY)]
+            public static extern uint MemRead32(ushort addr);
+
+            [DllImport(LIBRARY)]
+            public static extern void MemWrite32(uint data, ushort addr);
 
             [DllImport(LIBRARY)]
             public static extern void SetMapType(byte type);
