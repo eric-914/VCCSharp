@@ -14,7 +14,6 @@ namespace VCCSharp.Models.CPU.HD6309
     {
         private readonly IModules _modules;
 
-        private static readonly Action<byte> _page2 = Library.HD6309.Page_2;
         private static readonly Action<byte> _page3 = Library.HD6309.Page_3;
 
         private unsafe HD6309State* instance => _modules.HD6309.GetHD6309State();
@@ -33,6 +32,7 @@ namespace VCCSharp.Models.CPU.HD6309
 
         private static Action[] JmpVec1 = new Action[256];
         private static Action[] JmpVec2 = new Action[256];
+        private static Action[] JmpVec3 = new Action[256];
 
         private void InitializeJmpVec1()
         {
@@ -554,6 +554,266 @@ namespace VCCSharp.Models.CPU.HD6309
                 Stq_E, // FD
                 Lds_E, // FE
                 Sts_E, // FF
+            };
+
+            JmpVec3 = new Action[]
+            {
+                InvalidInsHandler, // 00
+                InvalidInsHandler, // 01
+                InvalidInsHandler, // 02
+                InvalidInsHandler, // 03
+                InvalidInsHandler, // 04
+                InvalidInsHandler, // 05
+                InvalidInsHandler, // 06
+                InvalidInsHandler, // 07
+                InvalidInsHandler, // 08
+                InvalidInsHandler, // 09
+                InvalidInsHandler, // 0A
+                InvalidInsHandler, // 0B
+                InvalidInsHandler, // 0C
+                InvalidInsHandler, // 0D
+                InvalidInsHandler, // 0E
+                InvalidInsHandler, // 0F
+                InvalidInsHandler, // 10
+                InvalidInsHandler, // 11
+                InvalidInsHandler, // 12
+                InvalidInsHandler, // 13
+                InvalidInsHandler, // 14
+                InvalidInsHandler, // 15
+                InvalidInsHandler, // 16
+                InvalidInsHandler, // 17
+                InvalidInsHandler, // 18
+                InvalidInsHandler, // 19
+                InvalidInsHandler, // 1A
+                InvalidInsHandler, // 1B
+                InvalidInsHandler, // 1C
+                InvalidInsHandler, // 1D
+                InvalidInsHandler, // 1E
+                InvalidInsHandler, // 1F
+                InvalidInsHandler, // 20
+                InvalidInsHandler, // 21
+                InvalidInsHandler, // 22
+                InvalidInsHandler, // 23
+                InvalidInsHandler, // 24
+                InvalidInsHandler, // 25
+                InvalidInsHandler, // 26
+                InvalidInsHandler, // 27
+                InvalidInsHandler, // 28
+                InvalidInsHandler, // 29
+                InvalidInsHandler, // 2A
+                InvalidInsHandler, // 2B
+                InvalidInsHandler, // 2C
+                InvalidInsHandler, // 2D
+                InvalidInsHandler, // 2E
+                InvalidInsHandler, // 2F
+                Band, // 30
+                Biand, // 31
+                Bor, // 32
+                Bior, // 33
+                Beor, // 34
+                Bieor, // 35
+                Ldbt, // 36
+                Stbt, // 37
+                Tfm1, // 38
+                Tfm2, // 39
+                Tfm3, // 3A
+                Tfm4, // 3B
+                Bitmd_M, // 3C
+                Ldmd_M, // 3D
+                InvalidInsHandler, // 3E
+                Swi3_I, // 3F
+                InvalidInsHandler, // 40
+                InvalidInsHandler, // 41
+                InvalidInsHandler, // 42
+                Come_I, // 43
+                InvalidInsHandler, // 44
+                InvalidInsHandler, // 45
+                InvalidInsHandler, // 46
+                InvalidInsHandler, // 47
+                InvalidInsHandler, // 48
+                InvalidInsHandler, // 49
+                Dece_I, // 4A
+                InvalidInsHandler, // 4B
+                Ince_I, // 4C
+                Tste_I, // 4D
+                InvalidInsHandler, // 4E
+                Clre_I, // 4F
+                InvalidInsHandler, // 50
+                InvalidInsHandler, // 51
+                InvalidInsHandler, // 52
+                Comf_I, // 53
+                InvalidInsHandler, // 54
+                InvalidInsHandler, // 55
+                InvalidInsHandler, // 56
+                InvalidInsHandler, // 57
+                InvalidInsHandler, // 58
+                InvalidInsHandler, // 59
+                Decf_I, // 5A
+                InvalidInsHandler, // 5B
+                Incf_I, // 5C
+                Tstf_I, // 5D
+                InvalidInsHandler, // 5E
+                Clrf_I, // 5F
+                InvalidInsHandler, // 60
+                InvalidInsHandler, // 61
+                InvalidInsHandler, // 62
+                InvalidInsHandler, // 63
+                InvalidInsHandler, // 64
+                InvalidInsHandler, // 65
+                InvalidInsHandler, // 66
+                InvalidInsHandler, // 67
+                InvalidInsHandler, // 68
+                InvalidInsHandler, // 69
+                InvalidInsHandler, // 6A
+                InvalidInsHandler, // 6B
+                InvalidInsHandler, // 6C
+                InvalidInsHandler, // 6D
+                InvalidInsHandler, // 6E
+                InvalidInsHandler, // 6F
+                InvalidInsHandler, // 70
+                InvalidInsHandler, // 71
+                InvalidInsHandler, // 72
+                InvalidInsHandler, // 73
+                InvalidInsHandler, // 74
+                InvalidInsHandler, // 75
+                InvalidInsHandler, // 76
+                InvalidInsHandler, // 77
+                InvalidInsHandler, // 78
+                InvalidInsHandler, // 79
+                InvalidInsHandler, // 7A
+                InvalidInsHandler, // 7B
+                InvalidInsHandler, // 7C
+                InvalidInsHandler, // 7D
+                InvalidInsHandler, // 7E
+                InvalidInsHandler, // 7F
+                Sube_M, // 80
+                Cmpe_M, // 81
+                InvalidInsHandler, // 82
+                Cmpu_M, // 83
+                InvalidInsHandler, // 84
+                InvalidInsHandler, // 85
+                Lde_M, // 86
+                InvalidInsHandler, // 87
+                InvalidInsHandler, // 88
+                InvalidInsHandler, // 89
+                InvalidInsHandler, // 8A
+                Adde_M, // 8B
+                Cmps_M, // 8C
+                Divd_M, // 8D
+                Divq_M, // 8E
+                Muld_M, // 8F
+                Sube_D, // 90
+                Cmpe_D, // 91
+                InvalidInsHandler, // 92
+                Cmpu_D, // 93
+                InvalidInsHandler, // 94
+                InvalidInsHandler, // 95
+                Lde_D, // 96
+                Ste_D, // 97
+                InvalidInsHandler, // 98
+                InvalidInsHandler, // 99
+                InvalidInsHandler, // 9A
+                Adde_D, // 9B
+                Cmps_D, // 9C
+                Divd_D, // 9D
+                Divq_D, // 9E
+                Muld_D, // 9F
+                Sube_X, // A0
+                Cmpe_X, // A1
+                InvalidInsHandler, // A2
+                Cmpu_X, // A3
+                InvalidInsHandler, // A4
+                InvalidInsHandler, // A5
+                Lde_X, // A6
+                Ste_X, // A7
+                InvalidInsHandler, // A8
+                InvalidInsHandler, // A9
+                InvalidInsHandler, // AA
+                Adde_X, // AB
+                Cmps_X, // AC
+                Divd_X, // AD
+                Divq_X, // AE
+                Muld_X, // AF
+                Sube_E, // B0
+                Cmpe_E, // B1
+                InvalidInsHandler, // B2
+                Cmpu_E, // B3
+                InvalidInsHandler, // B4
+                InvalidInsHandler, // B5
+                Lde_E, // B6
+                Ste_E, // B7
+                InvalidInsHandler, // B8
+                InvalidInsHandler, // B9
+                InvalidInsHandler, // BA
+                Adde_E, // BB
+                Cmps_E, // BC
+                Divd_E, // BD
+                Divq_E, // BE
+                Muld_E, // BF
+                Subf_M, // C0
+                Cmpf_M, // C1
+                InvalidInsHandler, // C2
+                InvalidInsHandler, // C3
+                InvalidInsHandler, // C4
+                InvalidInsHandler, // C5
+                Ldf_M, // C6
+                InvalidInsHandler, // C7
+                InvalidInsHandler, // C8
+                InvalidInsHandler, // C9
+                InvalidInsHandler, // CA
+                Addf_M, // CB
+                InvalidInsHandler, // CC
+                InvalidInsHandler, // CD
+                InvalidInsHandler, // CE
+                InvalidInsHandler, // CF
+                Subf_D, // D0
+                Cmpf_D, // D1
+                InvalidInsHandler, // D2
+                InvalidInsHandler, // D3
+                InvalidInsHandler, // D4
+                InvalidInsHandler, // D5
+                Ldf_D, // D6
+                Stf_D, // D7
+                InvalidInsHandler, // D8
+                InvalidInsHandler, // D9
+                InvalidInsHandler, // DA
+                Addf_D, // DB
+                InvalidInsHandler, // DC
+                InvalidInsHandler, // DD
+                InvalidInsHandler, // DE
+                InvalidInsHandler, // DF
+                Subf_X, // E0
+                Cmpf_X, // E1
+                InvalidInsHandler, // E2
+                InvalidInsHandler, // E3
+                InvalidInsHandler, // E4
+                InvalidInsHandler, // E5
+                Ldf_X, // E6
+                Stf_X, // E7
+                InvalidInsHandler, // E8
+                InvalidInsHandler, // E9
+                InvalidInsHandler, // EA
+                Addf_X, // EB
+                InvalidInsHandler, // EC
+                InvalidInsHandler, // ED
+                InvalidInsHandler, // EE
+                InvalidInsHandler, // EF
+                Subf_E, // F0
+                Cmpf_E, // F1
+                InvalidInsHandler, // F2
+                InvalidInsHandler, // F3
+                InvalidInsHandler, // F4
+                InvalidInsHandler, // F5
+                Ldf_E, // F6
+                Stf_E, // F7
+                InvalidInsHandler, // F8
+                InvalidInsHandler, // F9
+                InvalidInsHandler, // FA
+                Addf_E, // FB
+                InvalidInsHandler, // FC
+                InvalidInsHandler, // FD
+                InvalidInsHandler, // FE
+                InvalidInsHandler // FF
             };
         }
 
@@ -5632,6 +5892,476 @@ namespace VCCSharp.Models.CPU.HD6309
 
         #endregion
 
+        #region Page3 OpCodes
+
+        //0x00 - 0x0F
+        //0x10 - 0x1F
+        //0x20 - 0x2F
+
+        #region 0x30 - 0x3F
+
+        public unsafe void Band() // 30 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Biand() // 31 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Bor() // 32 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Bior() // 33 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Beor() // 34 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Bieor() // 35 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Ldbt() // 36 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Stbt() // 37 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Tfm1() // 38 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Tfm2() // 39 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Tfm3() // 3A 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Tfm4() // 3B 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Bitmd_M() // 3C 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Ldmd_M() // 3D 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Swi3_I() // 3F 
+        {
+            _page3(0x00);
+        }
+
+        #endregion
+
+        #region 0x40 - 0x4F
+
+        public unsafe void Come_I() // 43 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Dece_I() // 4A 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Ince_I() // 4C 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Tste_I() // 4D 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Clre_I() // 4F 
+        {
+            _page3(0x00);
+        }
+
+        #endregion
+
+        #region 0x50 - 0x5F
+
+        public unsafe void Comf_I() // 53 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Decf_I() // 5A 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Incf_I() // 5C 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Tstf_I() // 5D 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Clrf_I() // 5F 
+        {
+            _page3(0x00);
+        }
+
+        #endregion
+
+        //0x60 - 0x6F
+        //0x70 - 0x7F
+
+        #region 0x80 - 0x8F
+
+        public unsafe void Sube_M() // 80 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Cmpe_M() // 81 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Cmpu_M() // 83 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Lde_M() // 86 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Adde_M() // 8B 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Cmps_M() // 8C 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Divd_M() // 8D 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Divq_M() // 8E 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Muld_M() // 8F 
+        {
+            _page3(0x00);
+        }
+
+        #endregion
+
+        #region 0x90 - 0x9F
+
+        public unsafe void Sube_D() // 90 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Cmpe_D() // 91 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Cmpu_D() // 93 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Lde_D() // 96 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Ste_D() // 97 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Adde_D() // 9B 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Cmps_D() // 9C 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Divd_D() // 9D 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Divq_D() // 9E 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Muld_D() // 9F 
+        {
+            _page3(0x00);
+        }
+
+        #endregion
+
+        #region 0xA0 - 0xAF
+
+        public unsafe void Sube_X() // A0 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Cmpe_X() // A1 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Cmpu_X() // A3 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Lde_X() // A6 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Ste_X() // A7 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Adde_X() // AB 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Cmps_X() // AC 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Divd_X() // AD 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Divq_X() // AE 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Muld_X() // AF 
+        {
+            _page3(0x00);
+        }
+
+        #endregion
+
+        #region 0xB0 - 0xBF
+
+        public unsafe void Sube_E() // B0 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Cmpe_E() // B1 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Cmpu_E() // B3 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Lde_E() // B6 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Ste_E() // B7 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Adde_E() // BB 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Cmps_E() // BC 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Divd_E() // BD 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Divq_E() // BE 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Muld_E() // BF 
+        {
+            _page3(0x00);
+        }
+
+        #endregion
+
+        #region 0xC0 - 0xCF
+
+        public unsafe void Subf_M() // C0 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Cmpf_M() // C1 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Ldf_M() // C6 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Addf_M() // CB 
+        {
+            _page3(0x00);
+        }
+
+        #endregion
+
+        #region 0xD0 - 0xDF
+
+        public unsafe void Subf_D() // D0 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Cmpf_D() // D1 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Ldf_D() // D6 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Stf_D() // D7 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Addf_D() // DB 
+        {
+            _page3(0x00);
+        }
+
+        #endregion
+
+        #region 0xE0 - 0xEF
+
+        public unsafe void Subf_X() // E0 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Cmpf_X() // E1 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Ldf_X() // E6 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Stf_X() // E7 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Addf_X() // EB 
+        {
+            _page3(0x00);
+        }
+
+        #endregion
+
+        #region 0xF0 - 0xFF
+
+        public unsafe void Subf_E() // F0 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Cmpf_E() // F1 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Ldf_E() // F6 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Stf_E() // F7 
+        {
+            _page3(0x00);
+        }
+
+        public unsafe void Addf_E() // FB 
+        {
+            _page3(0x00);
+        }
+
+        #endregion
+
+        #endregion
+        
         public unsafe void InvalidInsHandler()
         {
             MD_ILLEGAL = true;

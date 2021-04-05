@@ -376,12 +376,6 @@ namespace VCCSharp.Libraries
             public static extern ushort HD6309_CalculateEA(byte postbyte);
 
             [DllImport(LIBRARY)]
-            public static extern void Page_1(byte opCode);
-
-            [DllImport(LIBRARY)]
-            public static extern void Page_2(byte opCode);
-
-            [DllImport(LIBRARY)]
             public static extern void Page_3(byte opCode);
         }
 
