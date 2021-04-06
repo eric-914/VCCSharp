@@ -62,9 +62,6 @@
     <ClCompile Include="MC6809OpCodes.c">
       <Filter>mc6809</Filter>
     </ClCompile>
-    <ClCompile Include="HD6309OpCodes.c">
-      <Filter>hd6309</Filter>
-    </ClCompile>
     <ClCompile Include="MessageHandlers.c">
       <Filter>events</Filter>
     </ClCompile>
@@ -189,9 +186,6 @@
     </ClInclude>
     <ClInclude Include="MC6809.h">
       <Filter>mc6809</Filter>
-    </ClInclude>
-    <ClInclude Include="HD6309.h">
-      <Filter>hd6309</Filter>
     </ClInclude>
     <ClInclude Include="HD6309Macros.h">
       <Filter>hd6309</Filter>

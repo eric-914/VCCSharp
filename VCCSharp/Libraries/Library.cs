@@ -118,12 +118,6 @@ namespace VCCSharp.Libraries
         public static class CPU
         {
             [DllImport(LIBRARY)]
-            public static extern void CPUAssertInterrupt(byte irq, byte flag);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetCPUToHD6309();
-
-            [DllImport(LIBRARY)]
             public static extern void SetCPUToMC6809();
         }
 
@@ -356,27 +350,6 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe HD6309State* GetHD6309State();
-
-            [DllImport(LIBRARY)]
-            public static extern void HD6309Reset();
-
-            [DllImport(LIBRARY)]
-            public static extern void HD6309AssertInterrupt(byte interrupt, byte waiter);
-
-            [DllImport(LIBRARY)]
-            public static extern byte HD6309_getcc();
-
-            [DllImport(LIBRARY)]
-            public static extern void HD6309_setcc(byte bincc);
-
-            [DllImport(LIBRARY)]
-            public static extern byte HD6309_getmd();
-
-            [DllImport(LIBRARY)]
-            public static extern ushort HD6309_CalculateEA(byte postbyte);
-
-            [DllImport(LIBRARY)]
-            public static extern void Page_3(byte opCode);
         }
 
         public static class Joystick

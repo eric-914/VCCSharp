@@ -2,7 +2,6 @@
 
 #include "cpudef.h"
 
-#include "HD6309.h"
 #include "MC6809.h"
 
 CPU* InitializeInstance(CPU*);
@@ -13,12 +12,6 @@ CPU* InitializeInstance(CPU* p) {
   p->CPUAssertInterrupt = NULL;
 
   return p;
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetCPUToHD6309() {
-    instance->CPUAssertInterrupt = HD6309AssertInterrupt;
-  }
 }
 
 extern "C" {

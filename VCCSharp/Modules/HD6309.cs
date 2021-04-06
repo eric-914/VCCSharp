@@ -12,6 +12,7 @@ namespace VCCSharp.Modules
         byte HD6309_getcc();
         void HD6309_setcc(byte bincc);
         byte HD6309_getmd();
+        void HD6309_setmd(byte binmd);
         ushort HD6309_CalculateEA(byte postbyte);
     }
 
@@ -160,12 +161,59 @@ namespace VCCSharp.Modules
 
         public void AssertInterrupt(byte irq, byte flag)
         {
-            Library.HD6309.HD6309AssertInterrupt(irq, flag);
+            unsafe
+            {
+                HD6309State* instance = GetHD6309State();
+
+                instance->SyncWaiting = 0;
+                instance->PendingInterrupts |= (byte)(1 << (irq - 1));
+                instance->IRQWaiter = flag;
+            }
         }
 
         public void Reset()
         {
-            Library.HD6309.HD6309Reset();
+            unsafe
+            {
+                HD6309State* instance = GetHD6309State();
+
+                for (byte index = 0; index <= 6; index++)
+                {		//Set all register to 0 except V
+                    _opCodes.PXF(index, 0);
+                }
+
+                for (byte index = 0; index <= 7; index++)
+                {
+                    _opCodes.PUR(index, 0);
+                }
+
+                _opCodes.CC_E = false; //0;
+                _opCodes.CC_F = true; //1;
+                _opCodes.CC_H = false; //0;
+                _opCodes.CC_I = true; //1;
+                _opCodes.CC_N = false; //0;
+                _opCodes.CC_Z = false; //0;
+                _opCodes.CC_V = false; //0;
+                _opCodes.CC_C = false; //0;
+
+                _opCodes.MD_NATIVE6309 = false; //0;
+                _opCodes.MD_FIRQMODE = false; //0;
+                _opCodes.MD_UNDEFINED2 = false; //0;  //UNDEFINED
+                _opCodes.MD_UNDEFINED3 = false; //0;  //UNDEFINED
+                _opCodes.MD_UNDEFINED4 = false; //0;  //UNDEFINED
+                _opCodes.MD_UNDEFINED5 = false; //0;  //UNDEFINED
+                _opCodes.MD_ILLEGAL = false; //0;
+                _opCodes.MD_ZERODIV = false; //0;
+
+                instance->mdbits = HD6309_getmd();
+
+                instance->SyncWaiting = 0;
+
+                _opCodes.DP_REG = 0;
+                _opCodes.PC_REG = _opCodes.MemRead16(Define.VRESET);	//PC gets its reset vector
+
+                _modules.TC1014.SetMapType(0);	//shouldn't be here
+            }
         }
 
         public int Exec(int cycleFor)
@@ -332,7 +380,7 @@ namespace VCCSharp.Modules
                 HD6309State* instance = GetHD6309State();
 
                 if (instance->InInterrupt == 1)
-                { 
+                {
                     //If FIRQ is running postpone the IRQ
                     return;
                 }
@@ -373,22 +421,447 @@ namespace VCCSharp.Modules
 
         public byte HD6309_getcc()
         {
-            return Library.HD6309.HD6309_getcc();
+            int bincc = 0;
+
+            void TST(bool _CC, CCFlagMasks _F)
+            {
+                if (_CC) { bincc |= (1 << (int)_F); }
+            }
+
+            TST(_opCodes.CC_E, CCFlagMasks.E);
+            TST(_opCodes.CC_F, CCFlagMasks.F);
+            TST(_opCodes.CC_H, CCFlagMasks.H);
+            TST(_opCodes.CC_I, CCFlagMasks.I);
+            TST(_opCodes.CC_N, CCFlagMasks.N);
+            TST(_opCodes.CC_Z, CCFlagMasks.Z);
+            TST(_opCodes.CC_V, CCFlagMasks.V);
+            TST(_opCodes.CC_C, CCFlagMasks.C);
+
+            return (byte)bincc;
         }
 
         public void HD6309_setcc(byte bincc)
         {
-            Library.HD6309.HD6309_setcc(bincc);
+            unsafe
+            {
+                HD6309State* instance = GetHD6309State();
+
+                instance->ccbits = bincc;
+            }
+
+            bool TST(CCFlagMasks _F)
+            {
+                return (bincc & (1 << (int)_F)) != 0;
+            }
+
+            _opCodes.CC_E = TST(CCFlagMasks.E);
+            _opCodes.CC_F = TST(CCFlagMasks.F);
+            _opCodes.CC_H = TST(CCFlagMasks.H);
+            _opCodes.CC_I = TST(CCFlagMasks.I);
+            _opCodes.CC_N = TST(CCFlagMasks.N);
+            _opCodes.CC_Z = TST(CCFlagMasks.Z);
+            _opCodes.CC_V = TST(CCFlagMasks.V);
+            _opCodes.CC_C = TST(CCFlagMasks.C);
         }
 
         public byte HD6309_getmd()
         {
-            return Library.HD6309.HD6309_getmd();
+            int binmd = 0;
+
+            void TST(bool _CC, MDFlagMasks _F)
+            {
+                if (_CC) { binmd |= (1 << (int)_F); }
+            }
+
+            TST(_opCodes.MD_NATIVE6309, MDFlagMasks.NATIVE6309);
+            TST(_opCodes.MD_FIRQMODE, MDFlagMasks.FIRQMODE);
+            TST(_opCodes.MD_UNDEFINED2, MDFlagMasks.MD_UNDEF2);
+            TST(_opCodes.MD_UNDEFINED3, MDFlagMasks.MD_UNDEF3);
+            TST(_opCodes.MD_UNDEFINED4, MDFlagMasks.MD_UNDEF4);
+            TST(_opCodes.MD_UNDEFINED5, MDFlagMasks.MD_UNDEF5);
+            TST(_opCodes.MD_ILLEGAL, MDFlagMasks.ILLEGAL);
+            TST(_opCodes.MD_ZERODIV, MDFlagMasks.ZERODIV);
+
+            return (byte)binmd;
+        }
+
+        public void HD6309_setmd(byte binmd)
+        {
+            bool TST(MDFlagMasks _F)
+            {
+                return (binmd & (1 << (int)_F)) != 0;
+            }
+
+            _opCodes.MD_NATIVE6309 = TST(MDFlagMasks.NATIVE6309);
+            _opCodes.MD_FIRQMODE = TST(MDFlagMasks.FIRQMODE);
+            _opCodes.MD_UNDEFINED2 = TST(MDFlagMasks.MD_UNDEF2);
+            _opCodes.MD_UNDEFINED3 = TST(MDFlagMasks.MD_UNDEF3);
+            _opCodes.MD_UNDEFINED4 = TST(MDFlagMasks.MD_UNDEF4);
+            _opCodes.MD_UNDEFINED5 = TST(MDFlagMasks.MD_UNDEF5);
+            _opCodes.MD_ILLEGAL = TST(MDFlagMasks.ILLEGAL);
+            _opCodes.MD_ZERODIV = TST(MDFlagMasks.ZERODIV);
+
+            unsafe
+            {
+                HD6309State* instance = GetHD6309State();
+                for (int i = 0; i < 24; i++)
+                {
+                    //*NatEmuCycles[i] = instance->InsCycles[MD_NATIVE6309][i];
+                    uint insCyclesIndex = instance->md[(int)MDFlagMasks.NATIVE6309];
+                    byte value = instance->InsCycles[insCyclesIndex * 25 + i];
+
+                    byte* cycle = (byte*)(instance->NatEmuCycles[i]);
+
+                    *cycle = value;
+                }
+            }
         }
 
         public ushort HD6309_CalculateEA(byte postbyte)
         {
-            return Library.HD6309.HD6309_CalculateEA(postbyte);
+            unsafe
+            {
+                ushort ea = 0;
+                sbyte sbite = 0;
+
+                HD6309State* instance = GetHD6309State();
+
+                byte reg = (byte)(((postbyte >> 5) & 3) + 1);
+
+                if ((postbyte & 0x80) != 0)
+                {
+                    switch (postbyte & 0x1F)
+                    {
+                        case 0: // Post inc by 1
+                            ea = _opCodes.PXF(reg);
+
+                            _opCodes.PXF(reg, (ushort)(_opCodes.PXF(reg) + 1));
+
+                            instance->CycleCounter += instance->NatEmuCycles21;
+
+                            break;
+
+                        case 1: // post in by 2
+                            ea = _opCodes.PXF(reg);
+
+                            _opCodes.PXF(reg, (ushort)(_opCodes.PXF(reg) + 2));
+
+                            instance->CycleCounter += instance->NatEmuCycles32;
+
+                            break;
+
+                        case 2: // pre dec by 1
+                            _opCodes.PXF(reg, (ushort)(_opCodes.PXF(reg) - 1));
+
+                            ea = _opCodes.PXF(reg);
+
+                            instance->CycleCounter += instance->NatEmuCycles21;
+
+                            break;
+
+                        case 3: // pre dec by 2
+                            _opCodes.PXF(reg, (ushort)(_opCodes.PXF(reg) - 2));
+
+                            ea = _opCodes.PXF(reg);
+
+                            instance->CycleCounter += instance->NatEmuCycles32;
+
+                            break;
+
+                        case 4: // no offset
+                            ea = _opCodes.PXF(reg);
+
+                            break;
+
+                        case 5: // B reg offset
+                            ea = (ushort)(_opCodes.PXF(reg) + ((sbyte)_opCodes.B_REG));
+
+                            instance->CycleCounter += 1;
+
+                            break;
+
+                        case 6: // A reg offset
+                            ea = (ushort)(_opCodes.PXF(reg) + ((sbyte)_opCodes.A_REG));
+
+                            instance->CycleCounter += 1;
+
+                            break;
+
+                        case 7: // E reg offset 
+                            ea = (ushort)(_opCodes.PXF(reg) + ((sbyte)_opCodes.E_REG));
+
+                            instance->CycleCounter += 1;
+
+                            break;
+
+                        case 8: // 8 bit offset
+                            ea = (ushort)(_opCodes.PXF(reg) + (sbyte)_opCodes.MemRead8(_opCodes.PC_REG++));
+
+                            instance->CycleCounter += 1;
+
+                            break;
+
+                        case 9: // 16 bit offset
+                            ea = (ushort)(_opCodes.PXF(reg) + _opCodes.MemRead16(_opCodes.PC_REG));
+
+                            instance->CycleCounter += instance->NatEmuCycles43;
+
+                            _opCodes.PC_REG += 2;
+
+                            break;
+
+                        case 10: // F reg offset
+                            ea = (ushort)(_opCodes.PXF(reg) + ((sbyte)_opCodes.F_REG));
+
+                            instance->CycleCounter += 1;
+
+                            break;
+
+                        case 11: // D reg offset 
+                            ea = (ushort)(_opCodes.PXF(reg) + _opCodes.D_REG);
+
+                            instance->CycleCounter += instance->NatEmuCycles42;
+
+                            break;
+
+                        case 12: // 8 bit PC relative
+                            ea = (ushort)((short)_opCodes.PC_REG + (sbyte)_opCodes.MemRead8(_opCodes.PC_REG) + 1);
+
+                            instance->CycleCounter += 1;
+
+                            _opCodes.PC_REG++;
+
+                            break;
+
+                        case 13: // 16 bit PC relative
+                            ea = (ushort)(_opCodes.PC_REG + _opCodes.MemRead16(_opCodes.PC_REG) + 2);
+
+                            instance->CycleCounter += instance->NatEmuCycles53;
+
+                            _opCodes.PC_REG += 2;
+
+                            break;
+
+                        case 14: // W reg offset
+                            ea = (ushort)(_opCodes.PXF(reg) + _opCodes.W_REG);
+
+                            instance->CycleCounter += 4;
+
+                            break;
+
+                        case 15: // W reg
+                            sbite = (sbyte)((postbyte >> 5) & 3);
+
+                            switch (sbite)
+                            {
+                                case 0: // No offset from W reg
+                                    ea = _opCodes.W_REG;
+
+                                    break;
+
+                                case 1: // 16 bit offset from W reg
+                                    ea = (ushort)(_opCodes.W_REG + _opCodes.MemRead16(_opCodes.PC_REG));
+
+                                    _opCodes.PC_REG += 2;
+
+                                    instance->CycleCounter += 2;
+
+                                    break;
+
+                                case 2: // Post inc by 2 from W reg
+                                    ea = _opCodes.W_REG;
+
+                                    _opCodes.W_REG += 2;
+
+                                    instance->CycleCounter += 1;
+
+                                    break;
+
+                                case 3: // Pre dec by 2 from W reg
+                                    _opCodes.W_REG -= 2;
+
+                                    ea = _opCodes.W_REG;
+
+                                    instance->CycleCounter += 1;
+
+                                    break;
+                            }
+
+                            break;
+
+                        case 16: // W reg
+                            sbite = (sbyte)((postbyte >> 5) & 3);
+
+                            switch (sbite)
+                            {
+                                case 0: // Indirect no offset from W reg
+                                    ea = _opCodes.MemRead16(_opCodes.W_REG);
+
+                                    instance->CycleCounter += 3;
+
+                                    break;
+
+                                case 1: // Indirect 16 bit offset from W reg
+                                    ea = _opCodes.MemRead16((ushort)(_opCodes.W_REG + _opCodes.MemRead16(_opCodes.PC_REG)));
+
+                                    _opCodes.PC_REG += 2;
+
+                                    instance->CycleCounter += 5;
+
+                                    break;
+
+                                case 2: // Indirect post inc by 2 from W reg
+                                    ea = _opCodes.MemRead16(_opCodes.W_REG);
+
+                                    _opCodes.W_REG += 2;
+
+                                    instance->CycleCounter += 4;
+
+                                    break;
+
+                                case 3: // Indirect pre dec by 2 from W reg
+                                    _opCodes.W_REG -= 2;
+
+                                    ea = _opCodes.MemRead16(_opCodes.W_REG);
+
+                                    instance->CycleCounter += 4;
+
+                                    break;
+                            }
+
+                            break;
+
+                        case 17: // Indirect post inc by 2 
+                            ea = _opCodes.PXF(reg);
+
+                            _opCodes.PXF(reg, (ushort)(_opCodes.PXF(reg) + 2));
+
+                            ea = _opCodes.MemRead16(ea);
+
+                            instance->CycleCounter += 6;
+
+                            break;
+
+                        case 18: // possibly illegal instruction
+                            instance->CycleCounter += 6;
+
+                            break;
+
+                        case 19: // Indirect pre dec by 2
+                            _opCodes.PXF(reg, (ushort)(_opCodes.PXF(reg) - 2));
+
+                            ea = _opCodes.MemRead16(_opCodes.PXF(reg));
+
+                            instance->CycleCounter += 6;
+
+                            break;
+
+                        case 20: // Indirect no offset 
+                            ea = _opCodes.MemRead16(_opCodes.PXF(reg));
+
+                            instance->CycleCounter += 3;
+
+                            break;
+
+                        case 21: // Indirect B reg offset
+                            ea = _opCodes.MemRead16((ushort)(_opCodes.PXF(reg) + ((sbyte)_opCodes.B_REG)));
+
+                            instance->CycleCounter += 4;
+
+                            break;
+
+                        case 22: // indirect A reg offset
+                            ea = _opCodes.MemRead16((ushort)(_opCodes.PXF(reg) + ((sbyte)_opCodes.A_REG)));
+
+                            instance->CycleCounter += 4;
+
+                            break;
+
+                        case 23: // indirect E reg offset
+                            ea = _opCodes.MemRead16((ushort)(_opCodes.PXF(reg) + ((sbyte)_opCodes.E_REG)));
+
+                            instance->CycleCounter += 4;
+
+                            break;
+
+                        case 24: // indirect 8 bit offset
+                            ea = _opCodes.MemRead16((ushort)(_opCodes.PXF(reg) + (sbyte)_opCodes.MemRead8(_opCodes.PC_REG++)));
+
+                            instance->CycleCounter += 4;
+
+                            break;
+
+                        case 25: // indirect 16 bit offset
+                            ea = _opCodes.MemRead16((ushort)(_opCodes.PXF(reg) + _opCodes.MemRead16(_opCodes.PC_REG)));
+
+                            instance->CycleCounter += 7;
+
+                            _opCodes.PC_REG += 2;
+
+                            break;
+
+                        case 26: // indirect F reg offset
+                            ea = _opCodes.MemRead16((ushort)(_opCodes.PXF(reg) + ((sbyte)_opCodes.F_REG)));
+
+                            instance->CycleCounter += 4;
+
+                            break;
+
+                        case 27: // indirect D reg offset
+                            ea = _opCodes.MemRead16((ushort)(_opCodes.PXF(reg) + _opCodes.D_REG));
+
+                            instance->CycleCounter += 7;
+
+                            break;
+
+                        case 28: // indirect 8 bit PC relative
+                            ea = _opCodes.MemRead16((ushort)((short)_opCodes.PC_REG + (sbyte)_opCodes.MemRead8(_opCodes.PC_REG) + 1));
+
+                            instance->CycleCounter += 4;
+
+                            _opCodes.PC_REG++;
+
+                            break;
+
+                        case 29: //indirect 16 bit PC relative
+                            ea = _opCodes.MemRead16((ushort)(_opCodes.PC_REG + _opCodes.MemRead16(_opCodes.PC_REG) + 2));
+
+                            instance->CycleCounter += 8;
+
+                            _opCodes.PC_REG += 2;
+
+                            break;
+
+                        case 30: // indirect W reg offset
+                            ea = _opCodes.MemRead16((ushort)(_opCodes.PXF(reg) + _opCodes.W_REG));
+
+                            instance->CycleCounter += 7;
+
+                            break;
+
+                        case 31: // extended indirect
+                            ea = _opCodes.MemRead16(_opCodes.MemRead16(_opCodes.PC_REG));
+
+                            instance->CycleCounter += 8;
+
+                            _opCodes.PC_REG += 2;
+
+                            break;
+                    }
+                }
+                else // 5 bit offset
+                {
+                    sbite = (sbyte)(postbyte & 0x1F);
+                    sbite <<= 3; //--Push the "sign" to the left-most bit.
+                    sbite /= 8;
+
+                    ea = (ushort)(_opCodes.PXF(reg) + sbite); //Was signed
+
+                    instance->CycleCounter += 1;
+                }
+
+                return ea;
+            }
         }
     }
 }

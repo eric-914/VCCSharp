@@ -25,5 +25,4 @@ typedef struct
 
 extern "C" __declspec(dllexport) void __cdecl CPUAssertInterrupt(unsigned char irq, unsigned char flag);
 
-extern "C" __declspec(dllexport) void __cdecl SetCPUToHD6309();
 extern "C" __declspec(dllexport) void __cdecl SetCPUToMC6809();

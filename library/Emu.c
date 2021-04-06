@@ -9,7 +9,6 @@
 #include "Audio.h"
 
 #include "MC6821.h"
-#include "HD6309.h"
 #include "MC6809.h"
 
 #include "cpudef.h"
