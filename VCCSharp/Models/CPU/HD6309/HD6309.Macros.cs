@@ -8,50 +8,50 @@ namespace VCCSharp.Models.CPU.HD6309
 
         public unsafe bool CC_E
         {
-            get => _instance->cc[(int)CCFlagMasks.E] == Define.TRUE;
-            set => _instance->cc[(int)CCFlagMasks.E] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu->cc[(int)CCFlagMasks.E] == Define.TRUE;
+            set => _cpu->cc[(int)CCFlagMasks.E] = value ? Define.TRUE : Define.FALSE;
         }
 
         public unsafe bool CC_F
         {
-            get => _instance->cc[(int)CCFlagMasks.F] == Define.TRUE;
-            set => _instance->cc[(int)CCFlagMasks.F] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu->cc[(int)CCFlagMasks.F] == Define.TRUE;
+            set => _cpu->cc[(int)CCFlagMasks.F] = value ? Define.TRUE : Define.FALSE;
         }
 
         public unsafe bool CC_H
         {
-            get => _instance->cc[(int)CCFlagMasks.H] == Define.TRUE;
-            set => _instance->cc[(int)CCFlagMasks.H] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu->cc[(int)CCFlagMasks.H] == Define.TRUE;
+            set => _cpu->cc[(int)CCFlagMasks.H] = value ? Define.TRUE : Define.FALSE;
         }
 
         public unsafe bool CC_I
         {
-            get => _instance->cc[(int)CCFlagMasks.I] == Define.TRUE;
-            set => _instance->cc[(int)CCFlagMasks.I] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu->cc[(int)CCFlagMasks.I] == Define.TRUE;
+            set => _cpu->cc[(int)CCFlagMasks.I] = value ? Define.TRUE : Define.FALSE;
         }
 
         public unsafe bool CC_N
         {
-            get => _instance->cc[(int)CCFlagMasks.N] == Define.TRUE;
-            set => _instance->cc[(int)CCFlagMasks.N] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu->cc[(int)CCFlagMasks.N] == Define.TRUE;
+            set => _cpu->cc[(int)CCFlagMasks.N] = value ? Define.TRUE : Define.FALSE;
         }
 
         public unsafe bool CC_Z
         {
-            get => _instance->cc[(int)CCFlagMasks.Z] == Define.TRUE;
-            set => _instance->cc[(int)CCFlagMasks.Z] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu->cc[(int)CCFlagMasks.Z] == Define.TRUE;
+            set => _cpu->cc[(int)CCFlagMasks.Z] = value ? Define.TRUE : Define.FALSE;
         }
 
         public unsafe bool CC_V
         {
-            get => _instance->cc[(int)CCFlagMasks.V] == Define.TRUE;
-            set => _instance->cc[(int)CCFlagMasks.V] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu->cc[(int)CCFlagMasks.V] == Define.TRUE;
+            set => _cpu->cc[(int)CCFlagMasks.V] = value ? Define.TRUE : Define.FALSE;
         }
 
         public unsafe bool CC_C
         {
-            get => _instance->cc[(int)CCFlagMasks.C] == Define.TRUE;
-            set => _instance->cc[(int)CCFlagMasks.C] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu->cc[(int)CCFlagMasks.C] == Define.TRUE;
+            set => _cpu->cc[(int)CCFlagMasks.C] = value ? Define.TRUE : Define.FALSE;
         }
 
         #endregion
@@ -212,11 +212,11 @@ namespace VCCSharp.Models.CPU.HD6309
 
         #region Macros
 
-        public unsafe byte PUR(int i) => *(byte*)(_instance->ureg8[i]);
-        public unsafe void PUR(int i, byte value) => *(byte*)(_instance->ureg8[i]) = value;
+        public unsafe byte PUR(int i) => *(byte*)_cpu->ureg8[i];
+        public unsafe void PUR(int i, byte value) => *(byte*)_cpu->ureg8[i] = value;
 
-        public unsafe ushort PXF(int i) => *(ushort*)(_instance->xfreg16[i]);
-        public unsafe void PXF(int i, ushort value) => *(ushort*)(_instance->xfreg16[i]) = value;
+        public unsafe ushort PXF(int i) => *(ushort*)_cpu->xfreg16[i];
+        public unsafe void PXF(int i, ushort value) => *(ushort*)_cpu->xfreg16[i] = value;
 
         public unsafe ushort DPADDRESS(ushort r) => (ushort)(_instance->r.dp.Reg | MemRead8(r));
 
@@ -243,43 +243,43 @@ namespace VCCSharp.Models.CPU.HD6309
 
         public unsafe bool MD_NATIVE6309
         {
-            get => _instance->md[(int)MDFlagMasks.NATIVE6309] == Define.TRUE;
-            set => _instance->md[(int)MDFlagMasks.NATIVE6309] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu->md[(int)MDFlagMasks.NATIVE6309] == Define.TRUE;
+            set => _cpu->md[(int)MDFlagMasks.NATIVE6309] = value ? Define.TRUE : Define.FALSE;
         }
         public unsafe bool MD_FIRQMODE
         {
-            get => _instance->md[(int)MDFlagMasks.FIRQMODE] == Define.TRUE;
-            set => _instance->md[(int)MDFlagMasks.FIRQMODE] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu->md[(int)MDFlagMasks.FIRQMODE] == Define.TRUE;
+            set => _cpu->md[(int)MDFlagMasks.FIRQMODE] = value ? Define.TRUE : Define.FALSE;
         }
         public unsafe bool MD_UNDEFINED2
         {
-            get => _instance->md[(int)MDFlagMasks.MD_UNDEF2] == Define.TRUE;
-            set => _instance->md[(int)MDFlagMasks.MD_UNDEF2] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu->md[(int)MDFlagMasks.MD_UNDEF2] == Define.TRUE;
+            set => _cpu->md[(int)MDFlagMasks.MD_UNDEF2] = value ? Define.TRUE : Define.FALSE;
         }
         public unsafe bool MD_UNDEFINED3
         {
-            get => _instance->md[(int)MDFlagMasks.MD_UNDEF3] == Define.TRUE;
-            set => _instance->md[(int)MDFlagMasks.MD_UNDEF3] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu->md[(int)MDFlagMasks.MD_UNDEF3] == Define.TRUE;
+            set => _cpu->md[(int)MDFlagMasks.MD_UNDEF3] = value ? Define.TRUE : Define.FALSE;
         }
         public unsafe bool MD_UNDEFINED4
         {
-            get => _instance->md[(int)MDFlagMasks.MD_UNDEF4] == Define.TRUE;
-            set => _instance->md[(int)MDFlagMasks.MD_UNDEF4] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu->md[(int)MDFlagMasks.MD_UNDEF4] == Define.TRUE;
+            set => _cpu->md[(int)MDFlagMasks.MD_UNDEF4] = value ? Define.TRUE : Define.FALSE;
         }
         public unsafe bool MD_UNDEFINED5
         {
-            get => _instance->md[(int)MDFlagMasks.MD_UNDEF5] == Define.TRUE;
-            set => _instance->md[(int)MDFlagMasks.MD_UNDEF5] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu->md[(int)MDFlagMasks.MD_UNDEF5] == Define.TRUE;
+            set => _cpu->md[(int)MDFlagMasks.MD_UNDEF5] = value ? Define.TRUE : Define.FALSE;
         }
         public unsafe bool MD_ILLEGAL
         {
-            get => _instance->md[(int)MDFlagMasks.ILLEGAL] == Define.TRUE;
-            set => _instance->md[(int)MDFlagMasks.ILLEGAL] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu->md[(int)MDFlagMasks.ILLEGAL] == Define.TRUE;
+            set => _cpu->md[(int)MDFlagMasks.ILLEGAL] = value ? Define.TRUE : Define.FALSE;
         }
         public unsafe bool MD_ZERODIV
         {
-            get => _instance->md[(int)MDFlagMasks.ZERODIV] == Define.TRUE;
-            set => _instance->md[(int)MDFlagMasks.ZERODIV] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu->md[(int)MDFlagMasks.ZERODIV] == Define.TRUE;
+            set => _cpu->md[(int)MDFlagMasks.ZERODIV] = value ? Define.TRUE : Define.FALSE;
         }
 
         #endregion

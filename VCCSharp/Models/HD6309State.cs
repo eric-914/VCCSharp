@@ -4,16 +4,6 @@ namespace VCCSharp.Models
 {
     public struct HD6309State
     {
-        public HD6309CpuRegisters r;
-
-        public unsafe fixed byte cc[8];
-        public unsafe fixed uint md[8];
-        public byte ccbits;
-        public byte mdbits;
-
-        public unsafe fixed long /* byte* */ ureg8[8];
-        public unsafe fixed long /* ushort* */ xfreg16[8];
-
         public byte NatEmuCycles65;
         public byte NatEmuCycles64;
         public byte NatEmuCycles32;
@@ -42,5 +32,7 @@ namespace VCCSharp.Models
         public unsafe fixed byte InsCycles[2 * 25]; //[2][25];
 
         public unsafe fixed long /* byte* */ NatEmuCycles[24];
+
+        public HD6309CpuRegisters r;
     }
 }

@@ -339,7 +339,7 @@
             _source = (byte)(_postByte >> 4);
             _dest = (byte)(_postByte & 15);
 
-            _instance->ccbits = getcc();
+            _cpu->ccbits = getcc();
 
             if ((_source & 0x08) == (_dest & 0x08)) //Verify like size registers
             {
@@ -402,7 +402,7 @@
                 }
             }
 
-            setcc(_instance->ccbits);
+            setcc(_cpu->ccbits);
             _cycleCounter += _instance->NatEmuCycles85;
         }
 
@@ -425,7 +425,7 @@
             }
             else
             {
-                _instance->ccbits = getcc();
+                _cpu->ccbits = getcc();
                 _dest &= 7;
 
                 if (_source < 8)
@@ -448,7 +448,7 @@
                 }
 
                 O_REG = 0;
-                setcc(_instance->ccbits);
+                setcc(_cpu->ccbits);
             }
 
             _cycleCounter += _instance->NatEmuCycles64;
@@ -941,9 +941,9 @@
         public unsafe void Cwai_I()// 3C
         {
             _postByte = MemRead8(PC_REG++);
-            _instance->ccbits = getcc();
-            _instance->ccbits = (byte)(_instance->ccbits & _postByte);
-            setcc(_instance->ccbits);
+            _cpu->ccbits = getcc();
+            _cpu->ccbits = (byte)(_cpu->ccbits & _postByte);
+            setcc(_cpu->ccbits);
             _cycleCounter = _gCycleFor;
             _syncWaiting = 1;
         }

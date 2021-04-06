@@ -29,7 +29,7 @@
                 {
                     case 0: // A Reg
                     case 1: // B Reg
-                        *(byte*)_instance->ureg8[_postByte] &= (byte)~(1 << _dest);
+                        *(byte*)_cpu->ureg8[_postByte] &= (byte)~(1 << _dest);
                         break;
 
                     case 2: // CC Reg
@@ -62,7 +62,7 @@
                 {
                     case 0: // A Reg
                     case 1: // B Reg
-                        *(byte*)_instance->ureg8[_postByte] &= (byte)~(1 << _dest);
+                        *(byte*)_cpu->ureg8[_postByte] &= (byte)~(1 << _dest);
                         break;
 
                     case 2: // CC Reg
@@ -95,7 +95,7 @@
                 {
                     case 0: // A Reg
                     case 1: // B Reg
-                        *(byte*)_instance->ureg8[_postByte] |= (byte)~(1 << _dest);
+                        *(byte*)_cpu->ureg8[_postByte] |= (byte)~(1 << _dest);
                         break;
 
                     case 2: // CC Reg
@@ -128,7 +128,7 @@
                 {
                     case 0: // A Reg
                     case 1: // B Reg
-                        *(byte*)_instance->ureg8[_postByte] |= (byte)~(1 << _dest);
+                        *(byte*)_cpu->ureg8[_postByte] |= (byte)~(1 << _dest);
                         break;
 
                     case 2: // CC Reg
@@ -161,7 +161,7 @@
                 {
                     case 0: // A Reg
                     case 1: // B Reg
-                        *(byte*)_instance->ureg8[_postByte] ^= (byte)~(1 << _dest);
+                        *(byte*)_cpu->ureg8[_postByte] ^= (byte)~(1 << _dest);
                         break;
 
                     case 2: // CC Reg
@@ -193,7 +193,7 @@
                 {
                     case 0: // A Reg
                     case 1: // B Reg
-                        *(byte*)_instance->ureg8[_postByte] ^= (byte)~(1 << _dest);
+                        *(byte*)_cpu->ureg8[_postByte] ^= (byte)~(1 << _dest);
                         break;
 
                     case 2: // CC Reg
@@ -226,7 +226,7 @@
                 {
                     case 0: // A Reg
                     case 1: // B Reg
-                        *(byte*)_instance->ureg8[_postByte] |= (byte)~(1 << _dest);
+                        *(byte*)_cpu->ureg8[_postByte] |= (byte)~(1 << _dest);
                         break;
 
                     case 2: // CC Reg
@@ -240,7 +240,7 @@
                 {
                     case 0: // A Reg
                     case 1: // B Reg
-                        *(byte*)_instance->ureg8[_postByte] &= (byte)~(1 << _dest);
+                        *(byte*)_cpu->ureg8[_postByte] &= (byte)~(1 << _dest);
                         break;
 
                     case 2: // CC Reg
@@ -416,8 +416,8 @@
 
         public unsafe void Ldmd_M() // 3D 
         {
-            _instance->mdbits = (byte)(MemRead8(PC_REG++) & 0x03);
-            setmd(_instance->mdbits);
+            _cpu->mdbits = (byte)(MemRead8(PC_REG++) & 0x03);
+            setmd(_cpu->mdbits);
             _cycleCounter += 5;
         }
 
@@ -436,8 +436,8 @@
 
             if (MD_NATIVE6309)
             {
-                MemWrite8((F_REG), --S_REG);
-                MemWrite8((E_REG), --S_REG);
+                MemWrite8(F_REG, --S_REG);
+                MemWrite8(E_REG, --S_REG);
                 _cycleCounter += 2;
             }
 

@@ -820,7 +820,7 @@ namespace VCCSharp.Models.CPU.HD6309
         public unsafe void InvalidInsHandler()
         {
             MD_ILLEGAL = true;
-            _instance->mdbits = getmd();
+            _cpu->mdbits = getmd();
 
             ErrorVector();
         }
@@ -860,7 +860,7 @@ namespace VCCSharp.Models.CPU.HD6309
         {
             MD_ZERODIV = true; //1;
 
-            _instance->mdbits = getmd();
+            _cpu->mdbits = getmd();
 
             ErrorVector();
         }
