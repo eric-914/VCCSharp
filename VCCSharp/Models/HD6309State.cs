@@ -1,22 +1,18 @@
-﻿namespace VCCSharp.Models
+﻿using VCCSharp.Models.CPU.HD6309;
+
+namespace VCCSharp.Models
 {
     public struct HD6309State
     {
-        public HD6309CpuRegister pc, x, y, u, s, dp, v, z;
-        public HD6309WideRegister q;
+        public HD6309CpuRegisters r;
 
         public unsafe fixed byte cc[8];
-        public byte ccbits;
         public unsafe fixed uint md[8];
+        public byte ccbits;
         public byte mdbits;
 
         public unsafe fixed long /* byte* */ ureg8[8];
         public unsafe fixed long /* ushort* */ xfreg16[8];
-
-        public byte InInterrupt;
-        public int CycleCounter;
-        public uint SyncWaiting;
-        public int gCycleFor;
 
         public byte NatEmuCycles65;
         public byte NatEmuCycles64;
@@ -43,9 +39,6 @@
         public byte NatEmuCycles42;
         public byte NatEmuCycles53;
 
-        //--Interrupt states
-        public byte IRQWaiter;
-        public byte PendingInterrupts;
         public unsafe fixed byte InsCycles[2 * 25]; //[2][25];
 
         public unsafe fixed long /* byte* */ NatEmuCycles[24];
