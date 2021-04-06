@@ -1,4 +1,5 @@
-﻿using VCCSharp.Modules;
+﻿using VCCSharp.Models.CPU.HD6309;
+using VCCSharp.Modules;
 
 namespace VCCSharp.IoC
 {

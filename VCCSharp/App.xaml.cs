@@ -18,8 +18,6 @@ namespace VCCSharp
             Factory.Instance
                 .SelfBind()
 
-                .Bind<IHD6309OpCodes, HD6309OpCodes>()
-
                 //--Modules
                 .Singleton<IAudio, Audio>()
                 .Singleton<ICallbacks, Callbacks>()
