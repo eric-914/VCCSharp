@@ -1,6 +1,4 @@
-﻿using VCCSharp.Models.CPU.HD6309;
-
-namespace VCCSharp.Models
+﻿namespace VCCSharp.Models
 {
     public struct HD6309State
     {
@@ -32,7 +30,5 @@ namespace VCCSharp.Models
         public unsafe fixed byte InsCycles[2 * 25]; //[2][25];
 
         public unsafe fixed long /* byte* */ NatEmuCycles[24];
-
-        public HD6309CpuRegisters r;
     }
 }

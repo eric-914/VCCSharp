@@ -13,7 +13,7 @@ namespace VCCSharp.Models.CPU.HD6309
         private readonly IModules _modules;
 
         private readonly unsafe HD6309State* _instance;
-        private readonly unsafe HD6309CpuRegisters* _cpu;
+        private readonly HD6309CpuRegisters _cpu = new HD6309CpuRegisters();
 
         private byte _inInterrupt;
         private int _cycleCounter;
@@ -33,8 +33,6 @@ namespace VCCSharp.Models.CPU.HD6309
             unsafe
             {
                 _instance = Library.HD6309.GetHD6309State();
-
-                _cpu = &_instance->r; //--Oh, can I get any more dangerous?
             }
         }
 
@@ -44,23 +42,23 @@ namespace VCCSharp.Models.CPU.HD6309
             {
                 //Call this first or RESET will core!
                 // reg pointers for TFR and EXG and LEA ops
-                _cpu->xfreg16[0] = (long)&(_cpu->q.lsw); //&D_REG;
-                _cpu->xfreg16[1] = (long)&(_cpu->x.Reg); //&X_REG;
-                _cpu->xfreg16[2] = (long)&(_cpu->y.Reg); //&Y_REG;
-                _cpu->xfreg16[3] = (long)&(_cpu->u.Reg); //&U_REG;
-                _cpu->xfreg16[4] = (long)&(_cpu->s.Reg); //&S_REG;
-                _cpu->xfreg16[5] = (long)&(_cpu->pc.Reg); //&PC_REG;
-                _cpu->xfreg16[6] = (long)&(_cpu->q.msw); //&W_REG;
-                _cpu->xfreg16[7] = (long)&(_cpu->v.Reg); //&V_REG;
+                //_cpu.xfreg16[0] = (long)&(_cpu.q.lsw); //&D_REG;
+                //_cpu.xfreg16[1] = (long)&(_cpu.x.Reg); //&X_REG;
+                //_cpu.xfreg16[2] = (long)&(_cpu.y.Reg); //&Y_REG;
+                //_cpu.xfreg16[3] = (long)&(_cpu.u.Reg); //&U_REG;
+                //_cpu.xfreg16[4] = (long)&(_cpu.s.Reg); //&S_REG;
+                //_cpu.xfreg16[5] = (long)&(_cpu.pc.Reg); //&PC_REG;
+                //_cpu.xfreg16[6] = (long)&(_cpu.q.msw); //&W_REG;
+                //_cpu.xfreg16[7] = (long)&(_cpu->v.Reg); //&V_REG;
 
-                _cpu->ureg8[0] = (long)&(_cpu->q.lswmsb); //(byte*)&A_REG;
-                _cpu->ureg8[1] = (long)&(_cpu->q.lswlsb); //(byte*)&B_REG;
-                _cpu->ureg8[2] = (long)&(_cpu->ccbits);//(byte*)&(instance->ccbits);
-                _cpu->ureg8[3] = (long)&(_cpu->dp.msb);//(byte*)&DPA;
-                _cpu->ureg8[4] = (long)&(_cpu->z.msb);//(byte*)&Z_H;
-                _cpu->ureg8[5] = (long)&(_cpu->z.lsb);//(byte*)&Z_L;
-                _cpu->ureg8[6] = (long)&(_cpu->q.mswmsb);//(byte*)&E_REG;
-                _cpu->ureg8[7] = (long)&(_cpu->q.mswlsb);//(byte*)&F_REG;
+                //_cpu.ureg8[0] = (long)&(_cpu.q.lswmsb); //(byte*)&A_REG;
+                //_cpu.ureg8[1] = (long)&(_cpu.q.lswlsb); //(byte*)&B_REG;
+                //_cpu.ureg8[2] = (long)&(_cpu.ccbits);//(byte*)&(instance->ccbits);
+                //_cpu.ureg8[3] = (long)&(_cpu.dp.msb);//(byte*)&DPA;
+                //_cpu.ureg8[4] = (long)&(_cpu->z.msb);//(byte*)&Z_H;
+                //_cpu.ureg8[5] = (long)&(_cpu->z.lsb);//(byte*)&Z_L;
+                //_cpu.ureg8[6] = (long)&(_cpu.q.mswmsb);//(byte*)&E_REG;
+                //_cpu.ureg8[7] = (long)&(_cpu.q.mswlsb);//(byte*)&F_REG;
 
                 _instance->NatEmuCycles[0] = (long)&(_instance->NatEmuCycles65);
                 _instance->NatEmuCycles[1] = (long)&(_instance->NatEmuCycles64);
@@ -141,13 +139,10 @@ namespace VCCSharp.Models.CPU.HD6309
 
         public void ForcePC(ushort address)
         {
-            unsafe
-            {
-                _cpu->pc.Reg = address;
+            _cpu.pc.Reg = address;
 
-                _pendingInterrupts = 0;
-                _syncWaiting = 0;
-            }
+            _pendingInterrupts = 0;
+            _syncWaiting = 0;
         }
 
         public void DeAssertInterrupt(byte irq)
@@ -165,240 +160,225 @@ namespace VCCSharp.Models.CPU.HD6309
 
         public void Reset()
         {
-            unsafe
-            {
-                for (byte index = 0; index <= 6; index++)
-                {		//Set all register to 0 except V
-                    PXF(index, 0);
-                }
-
-                for (byte index = 0; index <= 7; index++)
-                {
-                    PUR(index, 0);
-                }
-
-                CC_E = false;
-                CC_F = true;
-                CC_H = false;
-                CC_I = true;
-                CC_N = false;
-                CC_Z = false;
-                CC_V = false;
-                CC_C = false;
-
-                MD_NATIVE6309 = false;
-                MD_FIRQMODE = false;
-                MD_UNDEFINED2 = false;  //UNDEFINED
-                MD_UNDEFINED3 = false;  //UNDEFINED
-                MD_UNDEFINED4 = false;  //UNDEFINED
-                MD_UNDEFINED5 = false;  //UNDEFINED
-                MD_ILLEGAL = false;
-                MD_ZERODIV = false;
-
-                _cpu->mdbits = getmd();
-
-                _syncWaiting = 0;
-
-                DP_REG = 0;
-                PC_REG = MemRead16(Define.VRESET);	//PC gets its reset vector
-
-                _modules.TC1014.SetMapType(0);	//shouldn't be here
+            for (byte index = 0; index <= 6; index++)
+            {		//Set all register to 0 except V
+                PXF(index, 0);
             }
+
+            for (byte index = 0; index <= 7; index++)
+            {
+                PUR(index, 0);
+            }
+
+            CC_E = false;
+            CC_F = true;
+            CC_H = false;
+            CC_I = true;
+            CC_N = false;
+            CC_Z = false;
+            CC_V = false;
+            CC_C = false;
+
+            MD_NATIVE6309 = false;
+            MD_FIRQMODE = false;
+            MD_UNDEFINED2 = false;  //UNDEFINED
+            MD_UNDEFINED3 = false;  //UNDEFINED
+            MD_UNDEFINED4 = false;  //UNDEFINED
+            MD_UNDEFINED5 = false;  //UNDEFINED
+            MD_ILLEGAL = false;
+            MD_ZERODIV = false;
+
+            _cpu.mdbits = getmd();
+
+            _syncWaiting = 0;
+
+            DP_REG = 0;
+            PC_REG = MemRead16(Define.VRESET);	//PC gets its reset vector
+
+            _modules.TC1014.SetMapType(0);	//shouldn't be here
         }
 
         public int Exec(int cycleFor)
         {
-            unsafe
+            _cycleCounter = 0;
+
+            while (_cycleCounter < cycleFor)
             {
-                _cycleCounter = 0;
-
-                while (_cycleCounter < cycleFor)
+                if (_pendingInterrupts != 0)
                 {
-                    if (_pendingInterrupts != 0)
+                    if ((_pendingInterrupts & 4) != 0)
                     {
-                        if ((_pendingInterrupts & 4) != 0)
-                        {
-                            cpu_nmi();
-                        }
-
-                        if ((_pendingInterrupts & 2) != 0)
-                        {
-                            cpu_firq();
-                        }
-
-                        if ((_pendingInterrupts & 1) != 0)
-                        {
-                            if (_irqWaiter == 0)
-                            {
-                                // This is needed to fix a subtle timing problem
-                                // It allows the CPU to see $FF03 bit 7 high before...
-                                cpu_irq();
-                            }
-                            else
-                            {
-                                // ...The IRQ is asserted.
-                                _irqWaiter -= 1;
-                            }
-                        }
+                        cpu_nmi();
                     }
 
-                    if (_syncWaiting == 1)
+                    if ((_pendingInterrupts & 2) != 0)
                     {
-                        //Abort the run nothing happens asynchronously from the CPU
-                        break; // WDZ - Experimental SyncWaiting should still return used cycles (and not zero) by breaking from loop
+                        cpu_firq();
                     }
 
-                    _gCycleFor = cycleFor;
-
-                    byte opCode = _modules.TC1014.MemRead8(_cpu->pc.Reg++); //PC_REG
-
-                    Exec(opCode);
+                    if ((_pendingInterrupts & 1) != 0)
+                    {
+                        if (_irqWaiter == 0)
+                        {
+                            // This is needed to fix a subtle timing problem
+                            // It allows the CPU to see $FF03 bit 7 high before...
+                            cpu_irq();
+                        }
+                        else
+                        {
+                            // ...The IRQ is asserted.
+                            _irqWaiter -= 1;
+                        }
+                    }
                 }
 
-                return cycleFor - _cycleCounter;
+                if (_syncWaiting == 1)
+                {
+                    //Abort the run nothing happens asynchronously from the CPU
+                    break; // WDZ - Experimental SyncWaiting should still return used cycles (and not zero) by breaking from loop
+                }
+
+                _gCycleFor = cycleFor;
+
+                byte opCode = _modules.TC1014.MemRead8(_cpu.pc.Reg++); //PC_REG
+
+                Exec(opCode);
             }
+
+            return cycleFor - _cycleCounter;
         }
 
         public void cpu_nmi()
         {
-            unsafe
+            _cpu.cc[(int)CCFlagMasks.E] = 1;
+
+            _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
+
+            if (_cpu.md[(int)MDFlagMasks.NATIVE6309] != 0)
             {
-                _cpu->cc[(int)CCFlagMasks.E] = 1;
-
-                _modules.TC1014.MemWrite8(_cpu->pc.lsb, --_cpu->s.Reg);
-                _modules.TC1014.MemWrite8(_cpu->pc.msb, --_cpu->s.Reg);
-                _modules.TC1014.MemWrite8(_cpu->u.lsb, --_cpu->s.Reg);
-                _modules.TC1014.MemWrite8(_cpu->u.msb, --_cpu->s.Reg);
-                _modules.TC1014.MemWrite8(_cpu->y.lsb, --_cpu->s.Reg);
-                _modules.TC1014.MemWrite8(_cpu->y.msb, --_cpu->s.Reg);
-                _modules.TC1014.MemWrite8(_cpu->x.lsb, --_cpu->s.Reg);
-                _modules.TC1014.MemWrite8(_cpu->x.msb, --_cpu->s.Reg);
-                _modules.TC1014.MemWrite8(_cpu->dp.msb, --_cpu->s.Reg);
-
-                if (_cpu->md[(int)MDFlagMasks.NATIVE6309] != 0)
-                {
-                    _modules.TC1014.MemWrite8(_cpu->q.mswlsb, --_cpu->s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu->q.mswmsb, --_cpu->s.Reg);
-                }
-
-                _modules.TC1014.MemWrite8(_cpu->q.lswlsb, --_cpu->s.Reg);
-                _modules.TC1014.MemWrite8(_cpu->q.lswmsb, --_cpu->s.Reg);
-
-                _modules.TC1014.MemWrite8(getcc(), --_cpu->s.Reg);
-
-                _cpu->cc[(int)CCFlagMasks.I] = 1;
-                _cpu->cc[(int)CCFlagMasks.F] = 1;
-
-                _cpu->pc.Reg = _modules.TC1014.MemRead16(Define.VNMI);
-
-                _pendingInterrupts &= 251;
+                _modules.TC1014.MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
             }
+
+            _modules.TC1014.MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg);
+
+            _modules.TC1014.MemWrite8(getcc(), --_cpu.s.Reg);
+
+            _cpu.cc[(int)CCFlagMasks.I] = 1;
+            _cpu.cc[(int)CCFlagMasks.F] = 1;
+
+            _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VNMI);
+
+            _pendingInterrupts &= 251;
         }
 
         public void cpu_firq()
         {
-            unsafe
+            if (_cpu.cc[(int)CCFlagMasks.F] == 0)
             {
-                if (_cpu->cc[(int)CCFlagMasks.F] == 0)
+                _inInterrupt = 1; //Flag to indicate FIRQ has been asserted
+
+                switch (_cpu.md[(int)MDFlagMasks.FIRQMODE])
                 {
-                    _inInterrupt = 1; //Flag to indicate FIRQ has been asserted
+                    case 0:
+                        _cpu.cc[(int)CCFlagMasks.E] = 0; // Turn E flag off
 
-                    switch (_cpu->md[(int)MDFlagMasks.FIRQMODE])
-                    {
-                        case 0:
-                            _cpu->cc[(int)CCFlagMasks.E] = 0; // Turn E flag off
+                        _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
+                        _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
 
-                            _modules.TC1014.MemWrite8(_cpu->pc.lsb, --_cpu->s.Reg);
-                            _modules.TC1014.MemWrite8(_cpu->pc.msb, --_cpu->s.Reg);
+                        _modules.TC1014.MemWrite8(getcc(), --_cpu.s.Reg);
 
-                            _modules.TC1014.MemWrite8(getcc(), --_cpu->s.Reg);
+                        _cpu.cc[(int)CCFlagMasks.I] = 1;
+                        _cpu.cc[(int)CCFlagMasks.F] = 1;
 
-                            _cpu->cc[(int)CCFlagMasks.I] = 1;
-                            _cpu->cc[(int)CCFlagMasks.F] = 1;
+                        _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
 
-                            _cpu->pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
+                        break;
 
-                            break;
+                    case 1:		//6309
+                        _cpu.cc[(int)CCFlagMasks.E] = 1;
 
-                        case 1:		//6309
-                            _cpu->cc[(int)CCFlagMasks.E] = 1;
+                        _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
+                        _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
+                        _modules.TC1014.MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
+                        _modules.TC1014.MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
+                        _modules.TC1014.MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
+                        _modules.TC1014.MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
+                        _modules.TC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
+                        _modules.TC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
+                        _modules.TC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
 
-                            _modules.TC1014.MemWrite8(_cpu->pc.lsb, --_cpu->s.Reg);
-                            _modules.TC1014.MemWrite8(_cpu->pc.msb, --_cpu->s.Reg);
-                            _modules.TC1014.MemWrite8(_cpu->u.lsb, --_cpu->s.Reg);
-                            _modules.TC1014.MemWrite8(_cpu->u.msb, --_cpu->s.Reg);
-                            _modules.TC1014.MemWrite8(_cpu->y.lsb, --_cpu->s.Reg);
-                            _modules.TC1014.MemWrite8(_cpu->y.msb, --_cpu->s.Reg);
-                            _modules.TC1014.MemWrite8(_cpu->x.lsb, --_cpu->s.Reg);
-                            _modules.TC1014.MemWrite8(_cpu->x.msb, --_cpu->s.Reg);
-                            _modules.TC1014.MemWrite8(_cpu->dp.msb, --_cpu->s.Reg);
+                        if (_cpu.md[(int)MDFlagMasks.NATIVE6309] != 0)
+                        {
+                            _modules.TC1014.MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
+                            _modules.TC1014.MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
+                        }
 
-                            if (_cpu->md[(int)MDFlagMasks.NATIVE6309] != 0)
-                            {
-                                _modules.TC1014.MemWrite8(_cpu->q.mswlsb, --_cpu->s.Reg);
-                                _modules.TC1014.MemWrite8(_cpu->q.mswmsb, --_cpu->s.Reg);
-                            }
+                        _modules.TC1014.MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg);
+                        _modules.TC1014.MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg);
 
-                            _modules.TC1014.MemWrite8(_cpu->q.lswlsb, --_cpu->s.Reg);
-                            _modules.TC1014.MemWrite8(_cpu->q.lswmsb, --_cpu->s.Reg);
+                        _modules.TC1014.MemWrite8(getcc(), --_cpu.s.Reg);
 
-                            _modules.TC1014.MemWrite8(getcc(), --_cpu->s.Reg);
+                        _cpu.cc[(int)CCFlagMasks.I] = 1;
+                        _cpu.cc[(int)CCFlagMasks.F] = 1;
 
-                            _cpu->cc[(int)CCFlagMasks.I] = 1;
-                            _cpu->cc[(int)CCFlagMasks.F] = 1;
+                        _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
 
-                            _cpu->pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
-
-                            break;
-                    }
+                        break;
                 }
-
-                _pendingInterrupts &= 253;
             }
+
+            _pendingInterrupts &= 253;
         }
 
         public void cpu_irq()
         {
-            unsafe
+            if (_inInterrupt == 1)
             {
-                if (_inInterrupt == 1)
-                {
-                    //If FIRQ is running postpone the IRQ
-                    return;
-                }
-
-                if (_cpu->cc[(int)CCFlagMasks.I] == 0)
-                {
-                    _cpu->cc[(int)CCFlagMasks.E] = 1;
-
-                    _modules.TC1014.MemWrite8(_cpu->pc.lsb, --_cpu->s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu->pc.msb, --_cpu->s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu->u.lsb, --_cpu->s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu->u.msb, --_cpu->s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu->y.lsb, --_cpu->s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu->y.msb, --_cpu->s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu->x.lsb, --_cpu->s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu->x.msb, --_cpu->s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu->dp.msb, --_cpu->s.Reg);
-
-                    if (_cpu->md[(int)MDFlagMasks.NATIVE6309] != 0)
-                    {
-                        _modules.TC1014.MemWrite8(_cpu->q.mswlsb, --_cpu->s.Reg);
-                        _modules.TC1014.MemWrite8(_cpu->q.mswmsb, --_cpu->s.Reg);
-                    }
-
-                    _modules.TC1014.MemWrite8(_cpu->q.lswlsb, --_cpu->s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu->q.lswmsb, --_cpu->s.Reg);
-
-                    _modules.TC1014.MemWrite8(getcc(), --_cpu->s.Reg);
-
-                    _cpu->cc[(int)CCFlagMasks.I] = 1;
-
-                    _cpu->pc.Reg = _modules.TC1014.MemRead16(Define.VIRQ);
-                }
-
-                _pendingInterrupts &= 254;
+                //If FIRQ is running postpone the IRQ
+                return;
             }
+
+            if (_cpu.cc[(int)CCFlagMasks.I] == 0)
+            {
+                _cpu.cc[(int)CCFlagMasks.E] = 1;
+
+                _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
+
+                if (_cpu.md[(int)MDFlagMasks.NATIVE6309] != 0)
+                {
+                    _modules.TC1014.MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
+                    _modules.TC1014.MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
+                }
+
+                _modules.TC1014.MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg);
+
+                _modules.TC1014.MemWrite8(getcc(), --_cpu.s.Reg);
+
+                _cpu.cc[(int)CCFlagMasks.I] = 1;
+
+                _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VIRQ);
+            }
+
+            _pendingInterrupts &= 254;
         }
 
         public byte getcc()
@@ -424,10 +404,7 @@ namespace VCCSharp.Models.CPU.HD6309
 
         public void setcc(byte cc)
         {
-            unsafe
-            {
-                _cpu->ccbits = cc;
-            }
+            _cpu.ccbits = cc;
 
             bool Test(CCFlagMasks mask)
             {
@@ -485,7 +462,7 @@ namespace VCCSharp.Models.CPU.HD6309
             {
                 for (int i = 0; i < 24; i++)
                 {
-                    uint insCyclesIndex = _cpu->md[(int)MDFlagMasks.NATIVE6309];
+                    uint insCyclesIndex = _cpu.md[(int)MDFlagMasks.NATIVE6309];
                     byte value = _instance->InsCycles[insCyclesIndex * 25 + i];
 
                     byte* cycle = (byte*)(_instance->NatEmuCycles[i]);

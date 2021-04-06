@@ -817,10 +817,10 @@ namespace VCCSharp.Models.CPU.HD6309
         //OpCode Definitions
         //Last Char (D) Direct (I) Inherent (R) Relative (M) Immediate (X) Indexed (E) Extended
 
-        public unsafe void InvalidInsHandler()
+        public void InvalidInsHandler()
         {
             MD_ILLEGAL = true;
-            _cpu->mdbits = getmd();
+            _cpu.mdbits = getmd();
 
             ErrorVector();
         }
@@ -856,11 +856,11 @@ namespace VCCSharp.Models.CPU.HD6309
             _cycleCounter += (12 + _instance->NatEmuCycles54);	//One for each byte +overhead? Guessing from PSHS
         }
 
-        public unsafe void DivByZero()
+        public void DivByZero()
         {
             MD_ZERODIV = true; //1;
 
-            _cpu->mdbits = getmd();
+            _cpu.mdbits = getmd();
 
             ErrorVector();
         }

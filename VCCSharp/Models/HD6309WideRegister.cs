@@ -3,10 +3,12 @@
 namespace VCCSharp.Models
 {
     [StructLayout(LayoutKind.Explicit)]
-    public struct HD6309WideRegister
+    public class HD6309WideRegister
     {
         [FieldOffset(0)]
         public uint Reg;
+
+        //--------------------------------------
 
         [FieldOffset(0)]
         public ushort msw;
@@ -14,10 +16,7 @@ namespace VCCSharp.Models
         [FieldOffset(2)]
         public ushort lsw;
 
-        //struct
-        //{
-        //    unsigned short msw, lsw;
-        //} Word;
+        //--------------------------------------
 
         [FieldOffset(0)]
         public byte mswlsb;
@@ -30,10 +29,5 @@ namespace VCCSharp.Models
 
         [FieldOffset(3)]
         public byte lswmsb;	//Might be backwards
-
-        //struct
-        //{
-        //    unsigned char mswlsb, mswmsb, lswlsb, lswmsb;	//Might be backwards
-        //} Byte;
     }
 }

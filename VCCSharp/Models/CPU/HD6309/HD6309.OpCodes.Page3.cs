@@ -29,7 +29,7 @@
                 {
                     case 0: // A Reg
                     case 1: // B Reg
-                        *(byte*)_cpu->ureg8[_postByte] &= (byte)~(1 << _dest);
+                        _cpu.ureg8[_postByte] &= (byte)~(1 << _dest);
                         break;
 
                     case 2: // CC Reg
@@ -62,7 +62,7 @@
                 {
                     case 0: // A Reg
                     case 1: // B Reg
-                        *(byte*)_cpu->ureg8[_postByte] &= (byte)~(1 << _dest);
+                        _cpu.ureg8[_postByte] &= (byte)~(1 << _dest);
                         break;
 
                     case 2: // CC Reg
@@ -95,7 +95,7 @@
                 {
                     case 0: // A Reg
                     case 1: // B Reg
-                        *(byte*)_cpu->ureg8[_postByte] |= (byte)~(1 << _dest);
+                        _cpu.ureg8[_postByte] |= (byte)~(1 << _dest);
                         break;
 
                     case 2: // CC Reg
@@ -128,7 +128,7 @@
                 {
                     case 0: // A Reg
                     case 1: // B Reg
-                        *(byte*)_cpu->ureg8[_postByte] |= (byte)~(1 << _dest);
+                        _cpu.ureg8[_postByte] |= (byte)~(1 << _dest);
                         break;
 
                     case 2: // CC Reg
@@ -161,7 +161,7 @@
                 {
                     case 0: // A Reg
                     case 1: // B Reg
-                        *(byte*)_cpu->ureg8[_postByte] ^= (byte)~(1 << _dest);
+                        _cpu.ureg8[_postByte] ^= (byte)~(1 << _dest);
                         break;
 
                     case 2: // CC Reg
@@ -193,7 +193,7 @@
                 {
                     case 0: // A Reg
                     case 1: // B Reg
-                        *(byte*)_cpu->ureg8[_postByte] ^= (byte)~(1 << _dest);
+                        _cpu.ureg8[_postByte] ^= (byte)~(1 << _dest);
                         break;
 
                     case 2: // CC Reg
@@ -226,7 +226,7 @@
                 {
                     case 0: // A Reg
                     case 1: // B Reg
-                        *(byte*)_cpu->ureg8[_postByte] |= (byte)~(1 << _dest);
+                        _cpu.ureg8[_postByte] |= (byte)~(1 << _dest);
                         break;
 
                     case 2: // CC Reg
@@ -240,7 +240,7 @@
                 {
                     case 0: // A Reg
                     case 1: // B Reg
-                        *(byte*)_cpu->ureg8[_postByte] &= (byte)~(1 << _dest);
+                        _cpu.ureg8[_postByte] &= (byte)~(1 << _dest);
                         break;
 
                     case 2: // CC Reg
@@ -408,16 +408,16 @@
             _temp8 = (byte)(getmd() & _postByte);
             CC_Z = ZTEST(_temp8);
 
-            if ((_temp8 & 0x80) != 0) MD_ZERODIV = false; //0;
-            if ((_temp8 & 0x40) != 0) MD_ILLEGAL = false; //0;
+            if ((_temp8 & 0x80) != 0) MD_ZERODIV = false;
+            if ((_temp8 & 0x40) != 0) MD_ILLEGAL = false;
 
             _cycleCounter += 4;
         }
 
-        public unsafe void Ldmd_M() // 3D 
+        public void Ldmd_M() // 3D 
         {
-            _cpu->mdbits = (byte)(MemRead8(PC_REG++) & 0x03);
-            setmd(_cpu->mdbits);
+            _cpu.mdbits = (byte)(MemRead8(PC_REG++) & 0x03);
+            setmd(_cpu.mdbits);
             _cycleCounter += 5;
         }
 
@@ -458,7 +458,7 @@
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
             CC_C = true; //1;
-            CC_V = false; //0;
+            CC_V = false;
             _cycleCounter += _instance->NatEmuCycles32;
         }
 
@@ -484,16 +484,16 @@
         {
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
-            CC_V = false; //0;
+            CC_V = false;
             _cycleCounter += _instance->NatEmuCycles32;
         }
 
         public unsafe void Clre_I() // 4F 
         {
             E_REG = 0;
-            CC_C = false; //0;
-            CC_V = false; //0;
-            CC_N = false; //0;
+            CC_C = false;
+            CC_V = false;
+            CC_N = false;
             CC_Z = true; //1;
             _cycleCounter += _instance->NatEmuCycles32;
         }
@@ -508,7 +508,7 @@
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
             CC_C = true; //1;
-            CC_V = false; //0;
+            CC_V = false;
             _cycleCounter += _instance->NatEmuCycles32;
         }
 
@@ -534,16 +534,16 @@
         {
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
-            CC_V = false; //0;
+            CC_V = false;
             _cycleCounter += _instance->NatEmuCycles32;
         }
 
         public unsafe void Clrf_I() // 5F 
         {
             F_REG = 0;
-            CC_C = false; //0;
-            CC_V = false; //0;
-            CC_N = false; //0;
+            CC_C = false;
+            CC_V = false;
+            CC_N = false;
             CC_Z = true; //1;
             _cycleCounter += _instance->NatEmuCycles32;
         }
@@ -595,7 +595,7 @@
             E_REG = MemRead8(PC_REG++);
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
-            CC_V = false; //0;
+            CC_V = false;
             _cycleCounter += 3;
         }
 
@@ -641,9 +641,9 @@
             if (_signedShort > 255 || _signedShort < -256) //Abort
             {
                 CC_V = true; //1;
-                CC_N = false; //0;
-                CC_Z = false; //0;
-                CC_C = false; //0;
+                CC_N = false;
+                CC_Z = false;
+                CC_C = false;
                 _cycleCounter += 17;
                 return;
             }
@@ -660,7 +660,7 @@
             {
                 CC_Z = ZTEST(B_REG);
                 CC_N = NTEST8(B_REG);
-                CC_V = false; //0;
+                CC_V = false;
             }
 
             CC_C = (B_REG & 1) != 0;
@@ -685,9 +685,9 @@
             if (_signedInt > 65535 || _signedInt < -65536) //Abort
             {
                 CC_V = true; //1;
-                CC_N = false; //0;
-                CC_Z = false; //0;
-                CC_C = false; //0;
+                CC_N = false;
+                CC_Z = false;
+                CC_C = false;
                 _cycleCounter += 34 - 21;
                 return;
             }
@@ -704,7 +704,7 @@
             {
                 CC_Z = ZTEST(W_REG);
                 CC_N = NTEST16(W_REG);
-                CC_V = false; //0;
+                CC_V = false;
             }
 
             CC_C = (B_REG & 1) != 0;
@@ -714,9 +714,9 @@
         public void Muld_M() // 8F 
         {
             Q_REG = (uint)((short)D_REG * (short)IMMADDRESS(PC_REG));
-            CC_C = false; //0;
+            CC_C = false;
             CC_Z = ZTEST(Q_REG);
-            CC_V = false; //0;
+            CC_V = false;
             CC_N = NTEST32(Q_REG);
             PC_REG += 2;
             _cycleCounter += 28;
@@ -765,7 +765,7 @@
             E_REG = MemRead8(DPADDRESS(PC_REG++));
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
-            CC_V = false; //0;
+            CC_V = false;
             _cycleCounter += _instance->NatEmuCycles54;
         }
 
@@ -774,7 +774,7 @@
             MemWrite8(E_REG, DPADDRESS(PC_REG++));
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
-            CC_V = false; //0;
+            CC_V = false;
             _cycleCounter += _instance->NatEmuCycles54;
         }
 
@@ -819,9 +819,9 @@
             if (_signedShort > 255 || _signedShort < -256) //Abort
             {
                 CC_V = true; //1;
-                CC_N = false; //0;
-                CC_Z = false; //0;
-                CC_C = false; //0;
+                CC_N = false;
+                CC_Z = false;
+                CC_C = false;
                 _cycleCounter += 19;
                 return;
             }
@@ -838,7 +838,7 @@
             {
                 CC_Z = ZTEST(B_REG);
                 CC_N = NTEST8(B_REG);
-                CC_V = false; //0;
+                CC_V = false;
             }
 
             CC_C = (B_REG & 1) != 0;
@@ -862,9 +862,9 @@
             if (_signedInt > 65535 || _signedInt < -65536) //Abort
             {
                 CC_V = true; //1;
-                CC_N = false; //0;
-                CC_Z = false; //0;
-                CC_C = false; //0;
+                CC_N = false;
+                CC_Z = false;
+                CC_C = false;
                 _cycleCounter += _instance->NatEmuCycles3635 - 21;
                 return;
             }
@@ -881,7 +881,7 @@
             {
                 CC_Z = ZTEST(W_REG);
                 CC_N = NTEST16(W_REG);
-                CC_V = false; //0;
+                CC_V = false;
             }
 
             CC_C = (B_REG & 1) != 0;
@@ -891,9 +891,9 @@
         public unsafe void Muld_D() // 9F 
         {
             Q_REG = (uint)((short)D_REG * (short)MemRead16(DPADDRESS(PC_REG++)));
-            CC_C = false; //0;
+            CC_C = false;
             CC_Z = ZTEST(Q_REG);
-            CC_V = false; //0;
+            CC_V = false;
             CC_N = NTEST32(Q_REG);
             _cycleCounter += _instance->NatEmuCycles3029;
         }
@@ -941,7 +941,7 @@
             E_REG = MemRead8(INDADDRESS(PC_REG++));
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
-            CC_V = false; //0;
+            CC_V = false;
             _cycleCounter += 5;
         }
 
@@ -950,7 +950,7 @@
             MemWrite8(E_REG, INDADDRESS(PC_REG++));
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
-            CC_V = false; //0;
+            CC_V = false;
             _cycleCounter += 5;
         }
 
@@ -995,9 +995,9 @@
             if (_signedShort > 255 || _signedShort < -256) //Abort
             {
                 CC_V = true; //1;
-                CC_N = false; //0;
-                CC_Z = false; //0;
-                CC_C = false; //0;
+                CC_N = false;
+                CC_Z = false;
+                CC_C = false;
                 _cycleCounter += 19;
                 return;
             }
@@ -1014,7 +1014,7 @@
             {
                 CC_Z = ZTEST(B_REG);
                 CC_N = NTEST8(B_REG);
-                CC_V = false; //0;
+                CC_V = false;
             }
 
             CC_C = (B_REG & 1) != 0;
@@ -1038,9 +1038,9 @@
             if (_signedInt > 65535 || _signedInt < -65536) //Abort
             {
                 CC_V = true; //1;
-                CC_N = false; //0;
-                CC_Z = false; //0;
-                CC_C = false; //0;
+                CC_N = false;
+                CC_Z = false;
+                CC_C = false;
                 _cycleCounter += _instance->NatEmuCycles3635 - 21;
                 return;
             }
@@ -1057,7 +1057,7 @@
             {
                 CC_Z = ZTEST(W_REG);
                 CC_N = NTEST16(W_REG);
-                CC_V = false; //0;
+                CC_V = false;
             }
 
             CC_C = (B_REG & 1) != 0;
@@ -1067,9 +1067,9 @@
         public void Muld_X() // AF 
         {
             Q_REG = (ushort)((short)D_REG * (short)MemRead16(INDADDRESS(PC_REG++)));
-            CC_C = false; //0;
+            CC_C = false;
             CC_Z = ZTEST(Q_REG);
-            CC_V = false; //0;
+            CC_V = false;
             CC_N = NTEST32(Q_REG);
             _cycleCounter += 30;
         }
@@ -1120,7 +1120,7 @@
             E_REG = MemRead8(IMMADDRESS(PC_REG));
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
-            CC_V = false; //0;
+            CC_V = false;
             PC_REG += 2;
             _cycleCounter += _instance->NatEmuCycles65;
         }
@@ -1130,7 +1130,7 @@
             MemWrite8(E_REG, IMMADDRESS(PC_REG));
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
-            CC_V = false; //0;
+            CC_V = false;
             PC_REG += 2;
             _cycleCounter += _instance->NatEmuCycles65;
         }
@@ -1179,9 +1179,9 @@
             if (_signedShort > 255 || _signedShort < -256) //Abort
             {
                 CC_V = true; //1;
-                CC_N = false; //0;
-                CC_Z = false; //0;
-                CC_C = false; //0;
+                CC_N = false;
+                CC_Z = false;
+                CC_C = false;
                 _cycleCounter += 17;
                 return;
             }
@@ -1198,7 +1198,7 @@
             {
                 CC_Z = ZTEST(B_REG);
                 CC_N = NTEST8(B_REG);
-                CC_V = false; //0;
+                CC_V = false;
             }
             CC_C = (B_REG & 1) != 0;
             _cycleCounter += 25;
@@ -1222,9 +1222,9 @@
             if (_signedInt > 65535 || _signedInt < -65536) //Abort
             {
                 CC_V = true; //1;
-                CC_N = false; //0;
-                CC_Z = false; //0;
-                CC_C = false; //0;
+                CC_N = false;
+                CC_Z = false;
+                CC_C = false;
                 _cycleCounter += _instance->NatEmuCycles3635 - 21;
                 return;
             }
@@ -1241,7 +1241,7 @@
             {
                 CC_Z = ZTEST(W_REG);
                 CC_N = NTEST16(W_REG);
-                CC_V = false; //0;
+                CC_V = false;
             }
             CC_C = (B_REG & 1) != 0;
             _cycleCounter += _instance->NatEmuCycles3635;
@@ -1251,9 +1251,9 @@
         {
             Q_REG = (ushort)((short)D_REG * (short)MemRead16(IMMADDRESS(PC_REG)));
             PC_REG += 2;
-            CC_C = false; //0;
+            CC_C = false;
             CC_Z = ZTEST(Q_REG);
-            CC_V = false; //0;
+            CC_V = false;
             CC_N = NTEST32(Q_REG);
             _cycleCounter += _instance->NatEmuCycles3130;
         }
@@ -1290,7 +1290,7 @@
             F_REG = MemRead8(PC_REG++);
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
-            CC_V = false; //0;
+            CC_V = false;
             _cycleCounter += 3;
         }
 
@@ -1339,7 +1339,7 @@
             F_REG = MemRead8(DPADDRESS(PC_REG++));
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
-            CC_V = false; //0;
+            CC_V = false;
             _cycleCounter += _instance->NatEmuCycles54;
         }
 
@@ -1348,7 +1348,7 @@
             MemWrite8(F_REG, DPADDRESS(PC_REG++));
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
-            CC_V = false; //0;
+            CC_V = false;
             _cycleCounter += _instance->NatEmuCycles54;
         }
 
@@ -1397,7 +1397,7 @@
             F_REG = MemRead8(INDADDRESS(PC_REG++));
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
-            CC_V = false; //0;
+            CC_V = false;
             _cycleCounter += 5;
         }
 
@@ -1406,7 +1406,7 @@
             MemWrite8(F_REG, INDADDRESS(PC_REG++));
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
-            CC_V = false; //0;
+            CC_V = false;
             _cycleCounter += 5;
         }
 
@@ -1457,7 +1457,7 @@
             F_REG = MemRead8(IMMADDRESS(PC_REG));
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
-            CC_V = false; //0;
+            CC_V = false;
             PC_REG += 2;
             _cycleCounter += _instance->NatEmuCycles65;
         }
@@ -1467,7 +1467,7 @@
             MemWrite8(F_REG, IMMADDRESS(PC_REG));
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
-            CC_V = false; //0;
+            CC_V = false;
             PC_REG += 2;
             _cycleCounter += _instance->NatEmuCycles65;
         }

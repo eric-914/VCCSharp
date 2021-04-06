@@ -2,28 +2,6 @@
 
 #include "HD6309Macros.h"
 
-typedef union
-{
-  unsigned short Reg;
-  struct
-  {
-    unsigned char lsb, msb;
-  } B;
-} HD6309CpuRegister;
-
-typedef union
-{
-  unsigned int Reg;
-  struct
-  {
-    unsigned short msw, lsw;
-  } Word;
-  struct
-  {
-    unsigned char mswlsb, mswmsb, lswlsb, lswmsb;	//Might be backwards
-  } Byte;
-} HD6309WideRegister;
-
 typedef struct {
   unsigned char NatEmuCycles65;
   unsigned char NatEmuCycles64;
@@ -54,19 +32,6 @@ typedef struct {
   unsigned char InsCycles[2][25];
 
   unsigned char* NatEmuCycles[24];
-
-  HD6309CpuRegister pc, x, y, u, s, dp, v, z;
-  HD6309WideRegister q;
-
-  unsigned char ccbits;
-  unsigned char mdbits;
-
-  unsigned char cc[8];
-  unsigned int md[8];
-
-  unsigned char* ureg8[8];
-  unsigned short* xfreg16[8];
-
 } HD6309State;
 
 HD6309State* InitializeInstance(HD6309State*);

@@ -6,219 +6,219 @@ namespace VCCSharp.Models.CPU.HD6309
     {
         #region CC Masks Macros
 
-        public unsafe bool CC_E
+        public bool CC_E
         {
-            get => _cpu->cc[(int)CCFlagMasks.E] == Define.TRUE;
-            set => _cpu->cc[(int)CCFlagMasks.E] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.E] == Define.TRUE;
+            set => _cpu.cc[(int)CCFlagMasks.E] = value ? Define.TRUE : Define.FALSE;
         }
 
-        public unsafe bool CC_F
+        public bool CC_F
         {
-            get => _cpu->cc[(int)CCFlagMasks.F] == Define.TRUE;
-            set => _cpu->cc[(int)CCFlagMasks.F] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.F] == Define.TRUE;
+            set => _cpu.cc[(int)CCFlagMasks.F] = value ? Define.TRUE : Define.FALSE;
         }
 
-        public unsafe bool CC_H
+        public bool CC_H
         {
-            get => _cpu->cc[(int)CCFlagMasks.H] == Define.TRUE;
-            set => _cpu->cc[(int)CCFlagMasks.H] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.H] == Define.TRUE;
+            set => _cpu.cc[(int)CCFlagMasks.H] = value ? Define.TRUE : Define.FALSE;
         }
 
-        public unsafe bool CC_I
+        public bool CC_I
         {
-            get => _cpu->cc[(int)CCFlagMasks.I] == Define.TRUE;
-            set => _cpu->cc[(int)CCFlagMasks.I] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.I] == Define.TRUE;
+            set => _cpu.cc[(int)CCFlagMasks.I] = value ? Define.TRUE : Define.FALSE;
         }
 
-        public unsafe bool CC_N
+        public bool CC_N
         {
-            get => _cpu->cc[(int)CCFlagMasks.N] == Define.TRUE;
-            set => _cpu->cc[(int)CCFlagMasks.N] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.N] == Define.TRUE;
+            set => _cpu.cc[(int)CCFlagMasks.N] = value ? Define.TRUE : Define.FALSE;
         }
 
-        public unsafe bool CC_Z
+        public bool CC_Z
         {
-            get => _cpu->cc[(int)CCFlagMasks.Z] == Define.TRUE;
-            set => _cpu->cc[(int)CCFlagMasks.Z] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.Z] == Define.TRUE;
+            set => _cpu.cc[(int)CCFlagMasks.Z] = value ? Define.TRUE : Define.FALSE;
         }
 
-        public unsafe bool CC_V
+        public bool CC_V
         {
-            get => _cpu->cc[(int)CCFlagMasks.V] == Define.TRUE;
-            set => _cpu->cc[(int)CCFlagMasks.V] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.V] == Define.TRUE;
+            set => _cpu.cc[(int)CCFlagMasks.V] = value ? Define.TRUE : Define.FALSE;
         }
 
-        public unsafe bool CC_C
+        public bool CC_C
         {
-            get => _cpu->cc[(int)CCFlagMasks.C] == Define.TRUE;
-            set => _cpu->cc[(int)CCFlagMasks.C] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.C] == Define.TRUE;
+            set => _cpu.cc[(int)CCFlagMasks.C] = value ? Define.TRUE : Define.FALSE;
         }
 
         #endregion
 
         #region Register Macros
 
-        public unsafe ushort PC_REG
+        public ushort PC_REG
         {
-            get => _instance->r.pc.Reg;
-            set => _instance->r.pc.Reg = value;
+            get => _cpu.pc.Reg;
+            set => _cpu.pc.Reg = value;
         }
 
-        public unsafe ushort DP_REG
+        public ushort DP_REG
         {
-            get => _instance->r.dp.Reg;
-            set => _instance->r.dp.Reg = value;
+            get => _cpu.dp.Reg;
+            set => _cpu.dp.Reg = value;
         }
 
-        public unsafe ushort W_REG
+        public ushort W_REG
         {
-            get => _instance->r.q.msw;
-            set => _instance->r.q.msw = value;
+            get => _cpu.q.msw;
+            set => _cpu.q.msw = value;
         }
 
-        public unsafe ushort D_REG
+        public ushort D_REG
         {
-            get => _instance->r.q.lsw;
-            set => _instance->r.q.lsw = value;
+            get => _cpu.q.lsw;
+            set => _cpu.q.lsw = value;
         }
 
-        public unsafe uint Q_REG
+        public uint Q_REG
         {
-            get => _instance->r.q.Reg;
-            set => _instance->r.q.Reg = value;
+            get => _cpu.q.Reg;
+            set => _cpu.q.Reg = value;
         }
 
-        public unsafe ushort S_REG
+        public ushort S_REG
         {
-            get => _instance->r.s.Reg;
-            set => _instance->r.s.Reg = value;
+            get => _cpu.s.Reg;
+            set => _cpu.s.Reg = value;
         }
 
-        public unsafe byte S_L
+        public byte S_L
         {
-            get => _instance->r.s.lsb;
-            set => _instance->r.s.lsb = value;
+            get => _cpu.s.lsb;
+            set => _cpu.s.lsb = value;
         }
 
-        public unsafe byte S_H
+        public byte S_H
         {
-            get => _instance->r.s.msb;
-            set => _instance->r.s.msb = value;
+            get => _cpu.s.msb;
+            set => _cpu.s.msb = value;
         }
 
-        public unsafe ushort U_REG
+        public ushort U_REG
         {
-            get => _instance->r.u.Reg;
-            set => _instance->r.u.Reg = value;
+            get => _cpu.u.Reg;
+            set => _cpu.u.Reg = value;
         }
 
-        public unsafe byte PC_L
+        public byte PC_L
         {
-            get => _instance->r.pc.lsb;
-            set => _instance->r.pc.lsb = value;
+            get => _cpu.pc.lsb;
+            set => _cpu.pc.lsb = value;
         }
 
-        public unsafe byte PC_H
+        public byte PC_H
         {
-            get => _instance->r.pc.msb;
-            set => _instance->r.pc.msb = value;
+            get => _cpu.pc.msb;
+            set => _cpu.pc.msb = value;
         }
 
-        public unsafe ushort X_REG
+        public ushort X_REG
         {
-            get => _instance->r.x.Reg;
-            set => _instance->r.x.Reg = value;
+            get => _cpu.x.Reg;
+            set => _cpu.x.Reg = value;
         }
 
-        public unsafe byte X_L
+        public byte X_L
         {
-            get => _instance->r.x.lsb;
-            set => _instance->r.x.lsb = value;
+            get => _cpu.x.lsb;
+            set => _cpu.x.lsb = value;
         }
 
-        public unsafe byte X_H
+        public byte X_H
         {
-            get => _instance->r.x.msb;
-            set => _instance->r.x.msb = value;
+            get => _cpu.x.msb;
+            set => _cpu.x.msb = value;
         }
 
-        public unsafe ushort Y_REG
+        public ushort Y_REG
         {
-            get => _instance->r.y.Reg;
-            set => _instance->r.y.Reg = value;
+            get => _cpu.y.Reg;
+            set => _cpu.y.Reg = value;
         }
 
-        public unsafe byte Y_L
+        public byte Y_L
         {
-            get => _instance->r.y.lsb;
-            set => _instance->r.y.lsb = value;
+            get => _cpu.y.lsb;
+            set => _cpu.y.lsb = value;
         }
 
-        public unsafe byte Y_H
+        public byte Y_H
         {
-            get => _instance->r.y.msb;
-            set => _instance->r.y.msb = value;
+            get => _cpu.y.msb;
+            set => _cpu.y.msb = value;
         }
 
-        public unsafe byte U_L
+        public byte U_L
         {
-            get => _instance->r.u.lsb;
-            set => _instance->r.u.lsb = value;
+            get => _cpu.u.lsb;
+            set => _cpu.u.lsb = value;
         }
 
-        public unsafe byte U_H
+        public byte U_H
         {
-            get => _instance->r.u.msb;
-            set => _instance->r.u.msb = value;
+            get => _cpu.u.msb;
+            set => _cpu.u.msb = value;
         }
 
-        public unsafe byte A_REG
+        public byte A_REG
         {
-            get => _instance->r.q.lswmsb;
-            set => _instance->r.q.lswmsb = value;
+            get => _cpu.q.lswmsb;
+            set => _cpu.q.lswmsb = value;
         }
 
-        public unsafe byte B_REG
+        public byte B_REG
         {
-            get => _instance->r.q.lswlsb;
-            set => _instance->r.q.lswlsb = value;
+            get => _cpu.q.lswlsb;
+            set => _cpu.q.lswlsb = value;
         }
 
-        public unsafe ushort O_REG
+        public ushort O_REG
         {
-            get => _instance->r.z.Reg;
-            set => _instance->r.z.Reg = value;
+            get => _cpu.z.Reg;
+            set => _cpu.z.Reg = value;
         }
 
-        public unsafe byte F_REG
+        public byte F_REG
         {
-            get => _instance->r.q.mswlsb;
-            set => _instance->r.q.mswlsb = value;
+            get => _cpu.q.mswlsb;
+            set => _cpu.q.mswlsb = value;
         }
 
-        public unsafe byte E_REG
+        public byte E_REG
         {
-            get => _instance->r.q.mswmsb;
-            set => _instance->r.q.mswmsb = value;
+            get => _cpu.q.mswmsb;
+            set => _cpu.q.mswmsb = value;
         }
 
-        public unsafe byte DPA
+        public byte DPA
         {
-            get => _instance->r.dp.msb;
-            set => _instance->r.dp.msb = value;
+            get => _cpu.dp.msb;
+            set => _cpu.dp.msb = value;
         }
 
         #endregion
 
         #region Macros
 
-        public unsafe byte PUR(int i) => *(byte*)_cpu->ureg8[i];
-        public unsafe void PUR(int i, byte value) => *(byte*)_cpu->ureg8[i] = value;
+        public byte PUR(int i) => _cpu.ureg8[i];
+        public void PUR(int i, byte value) => _cpu.ureg8[i] = value;
 
-        public unsafe ushort PXF(int i) => *(ushort*)_cpu->xfreg16[i];
-        public unsafe void PXF(int i, ushort value) => *(ushort*)_cpu->xfreg16[i] = value;
+        public ushort PXF(int i) => _cpu.xfreg16[i];
+        public void PXF(int i, ushort value) => _cpu.xfreg16[i] = value;
 
-        public unsafe ushort DPADDRESS(ushort r) => (ushort)(_instance->r.dp.Reg | MemRead8(r));
+        public ushort DPADDRESS(ushort r) => (ushort)(_cpu.dp.Reg | MemRead8(r));
 
         public byte MemRead8(ushort address) => _modules.TC1014.MemRead8(address);
         public void MemWrite8(byte data, ushort address) => _modules.TC1014.MemWrite8(data, address);
@@ -241,45 +241,45 @@ namespace VCCSharp.Models.CPU.HD6309
         public bool OVERFLOW8(bool c, byte a, ushort b, byte r) => ((c ? (byte)1 : (byte)0) ^ (((a ^ b ^ r) >> 7) & 1)) != 0;
         public bool OVERFLOW16(bool c, uint a, ushort b, ushort r) => ((c ? (byte)1 : (byte)0) ^ (((a ^ b ^ r) >> 15) & 1)) != 0;
 
-        public unsafe bool MD_NATIVE6309
+        public bool MD_NATIVE6309
         {
-            get => _cpu->md[(int)MDFlagMasks.NATIVE6309] == Define.TRUE;
-            set => _cpu->md[(int)MDFlagMasks.NATIVE6309] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.md[(int)MDFlagMasks.NATIVE6309] == Define.TRUE;
+            set => _cpu.md[(int)MDFlagMasks.NATIVE6309] = value ? Define.TRUE : Define.FALSE;
         }
-        public unsafe bool MD_FIRQMODE
+        public bool MD_FIRQMODE
         {
-            get => _cpu->md[(int)MDFlagMasks.FIRQMODE] == Define.TRUE;
-            set => _cpu->md[(int)MDFlagMasks.FIRQMODE] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.md[(int)MDFlagMasks.FIRQMODE] == Define.TRUE;
+            set => _cpu.md[(int)MDFlagMasks.FIRQMODE] = value ? Define.TRUE : Define.FALSE;
         }
-        public unsafe bool MD_UNDEFINED2
+        public bool MD_UNDEFINED2
         {
-            get => _cpu->md[(int)MDFlagMasks.MD_UNDEF2] == Define.TRUE;
-            set => _cpu->md[(int)MDFlagMasks.MD_UNDEF2] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.md[(int)MDFlagMasks.MD_UNDEF2] == Define.TRUE;
+            set => _cpu.md[(int)MDFlagMasks.MD_UNDEF2] = value ? Define.TRUE : Define.FALSE;
         }
-        public unsafe bool MD_UNDEFINED3
+        public bool MD_UNDEFINED3
         {
-            get => _cpu->md[(int)MDFlagMasks.MD_UNDEF3] == Define.TRUE;
-            set => _cpu->md[(int)MDFlagMasks.MD_UNDEF3] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.md[(int)MDFlagMasks.MD_UNDEF3] == Define.TRUE;
+            set => _cpu.md[(int)MDFlagMasks.MD_UNDEF3] = value ? Define.TRUE : Define.FALSE;
         }
-        public unsafe bool MD_UNDEFINED4
+        public bool MD_UNDEFINED4
         {
-            get => _cpu->md[(int)MDFlagMasks.MD_UNDEF4] == Define.TRUE;
-            set => _cpu->md[(int)MDFlagMasks.MD_UNDEF4] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.md[(int)MDFlagMasks.MD_UNDEF4] == Define.TRUE;
+            set => _cpu.md[(int)MDFlagMasks.MD_UNDEF4] = value ? Define.TRUE : Define.FALSE;
         }
-        public unsafe bool MD_UNDEFINED5
+        public bool MD_UNDEFINED5
         {
-            get => _cpu->md[(int)MDFlagMasks.MD_UNDEF5] == Define.TRUE;
-            set => _cpu->md[(int)MDFlagMasks.MD_UNDEF5] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.md[(int)MDFlagMasks.MD_UNDEF5] == Define.TRUE;
+            set => _cpu.md[(int)MDFlagMasks.MD_UNDEF5] = value ? Define.TRUE : Define.FALSE;
         }
-        public unsafe bool MD_ILLEGAL
+        public bool MD_ILLEGAL
         {
-            get => _cpu->md[(int)MDFlagMasks.ILLEGAL] == Define.TRUE;
-            set => _cpu->md[(int)MDFlagMasks.ILLEGAL] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.md[(int)MDFlagMasks.ILLEGAL] == Define.TRUE;
+            set => _cpu.md[(int)MDFlagMasks.ILLEGAL] = value ? Define.TRUE : Define.FALSE;
         }
-        public unsafe bool MD_ZERODIV
+        public bool MD_ZERODIV
         {
-            get => _cpu->md[(int)MDFlagMasks.ZERODIV] == Define.TRUE;
-            set => _cpu->md[(int)MDFlagMasks.ZERODIV] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.md[(int)MDFlagMasks.ZERODIV] == Define.TRUE;
+            set => _cpu.md[(int)MDFlagMasks.ZERODIV] = value ? Define.TRUE : Define.FALSE;
         }
 
         #endregion
