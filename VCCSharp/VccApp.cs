@@ -57,7 +57,7 @@ namespace VCCSharp
                 {
                     if (_modules.QuickLoad.QuickStart(emuState, cmdLineArgs.QLoadFile) == (int)QuickStartStatuses.Ok)
                     {
-                        _modules.Vcc.SetAppTitle(_hResources, cmdLineArgs.QLoadFile); //TODO: No app title if no quick load
+                        _modules.Vcc.SetAppTitle(cmdLineArgs.QLoadFile); //TODO: No app title if no quick load
                     }
 
                     emuState->EmulationRunning = Define.TRUE;

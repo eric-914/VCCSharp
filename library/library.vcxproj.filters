@@ -89,9 +89,6 @@
     <ClCompile Include="MenuCallbacks.c">
       <Filter>callbacks</Filter>
     </ClCompile>
-    <ClCompile Include="resource.c">
-      <Filter>resources</Filter>
-    </ClCompile>
     <ClCompile Include="Cartridge.c">
       <Filter>cartridge</Filter>
     </ClCompile>

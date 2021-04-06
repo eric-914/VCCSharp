@@ -71,6 +71,15 @@ namespace VCCSharp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to VCC 2.1.0c Tandy Color Computer 3 Emulator.
+        /// </summary>
+        internal static string AppTitle {
+            get {
+                return ResourceManager.GetString("AppTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] audio {

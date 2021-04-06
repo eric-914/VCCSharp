@@ -38,7 +38,6 @@ namespace VCCSharp
                 .Singleton<IMC6821, MC6821>()
                 .Singleton<IQuickLoad, QuickLoad>()
                 .Singleton<IPAKInterface, PAKInterface>()
-                .Singleton<IResource, Resource>()
                 .Singleton<IThrottle, Throttle>()
                 .Singleton<ITC1014, TC1014>()
                 .Singleton<IVcc, Vcc>()

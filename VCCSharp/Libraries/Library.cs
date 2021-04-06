@@ -463,12 +463,6 @@ namespace VCCSharp.Libraries
             public static extern void InvokeModuleReset();
         } //--PAKInterface
 
-        public static class Resource
-        {
-            [DllImport(LIBRARY)]
-            public static extern void ResourceAppTitle(HINSTANCE hResources, byte[] buffer);
-        }
-
         public static class TC1014
         {
             [DllImport(LIBRARY)]

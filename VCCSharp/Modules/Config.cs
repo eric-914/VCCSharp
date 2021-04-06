@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Resources;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using VCCSharp.Properties;
 using static System.IntPtr;
 using HWND = System.IntPtr;
 using Point = System.Drawing.Point;
@@ -30,6 +32,7 @@ namespace VCCSharp.Modules
         void UpdateTapeDialog(ushort counter, byte tapeMode);
         bool GetRememberSize();
         Point GetIniWindowSize();
+        string AppTitle { get; } 
     }
 
     public class Config : IConfig
@@ -37,6 +40,8 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
         private readonly IUser32 _user32;
         private readonly IKernel _kernel;
+
+        public string AppTitle { get; } = Resources.ResourceManager.GetString("AppTitle");
 
         public Config(IModules modules, IUser32 user32, IKernel kernel)
         {
@@ -69,10 +74,9 @@ namespace VCCSharp.Modules
         {
             ConfigState* configState = GetConfigState();
 
-            string appTitle = _modules.Resource.ResourceAppTitle(emuState->Resources);
             string iniFile = GetIniFilePath(cmdLineArgs.IniFile);
 
-            Converter.ToByteArray(appTitle, configState->Model->Release);   //--A kind of "versioning" I guess
+            Converter.ToByteArray(AppTitle, configState->Model->Release);   //--A kind of "versioning" I guess
             Converter.ToByteArray(iniFile, configState->IniFilePath);
 
             //--TODO: Silly way to get C# to look at the SoundCardList array correctly

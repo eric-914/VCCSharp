@@ -6,7 +6,6 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
-using HINSTANCE = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -15,7 +14,7 @@ namespace VCCSharp.Modules
         unsafe VccState* GetVccState();
         void CheckScreenModeChange();
         void CreatePrimaryWindow();
-        void SetAppTitle(HINSTANCE hResources, string binFileName);
+        void SetAppTitle(string binFileName);
         void EmuLoop();
         string GetExecPath();
         void ApplyConfigurationChanges();
@@ -67,9 +66,9 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void SetAppTitle(HINSTANCE hResources, string binFileName)
+        public void SetAppTitle(string binFileName)
         {
-            string appTitle = _modules.Resource.ResourceAppTitle(hResources);
+            string appTitle = _modules.Config.AppTitle;
 
             if (!string.IsNullOrEmpty(binFileName))
             {

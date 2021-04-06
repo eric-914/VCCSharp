@@ -570,8 +570,8 @@ namespace VCCSharp.Modules
 
                 instance->hInstance = hInstance;
 
-                Converter.ToByteArray(_modules.Resource.ResourceAppTitle(hResources), instance->TitleBarText);
-                Converter.ToByteArray(_modules.Resource.ResourceAppTitle(hResources), instance->AppNameText);
+                Converter.ToByteArray(_modules.Config.AppTitle, instance->TitleBarText);
+                Converter.ToByteArray(_modules.Config.AppTitle, instance->AppNameText);
 
                 return true;
             }
@@ -753,9 +753,7 @@ namespace VCCSharp.Modules
 
             return true;
         }
-
         
-
         private bool CreateDirectDrawWindow(HINSTANCE resources, byte fullscreen)
         {
             //IntPtr WndProcCallback(HWND hWnd, uint msg, ulong wParam, long lParam)

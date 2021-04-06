@@ -192,7 +192,6 @@
     <ClCompile Include="MenuCallbacks.c" />
     <ClCompile Include="MessageHandlers.c" />
     <ClCompile Include="PakInterfaceModule.c" />
-    <ClCompile Include="resource.c" />
     <ClCompile Include="TC1014MMU.c" />
     <ClCompile Include="PAKInterface.c" />
     <ClCompile Include="ProcessCommandMessage.c" />
