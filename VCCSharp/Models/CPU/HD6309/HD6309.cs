@@ -1,6 +1,5 @@
 ﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Libraries;
 
 namespace VCCSharp.Models.CPU.HD6309
 {
@@ -12,8 +11,8 @@ namespace VCCSharp.Models.CPU.HD6309
     {
         private readonly IModules _modules;
 
-        private readonly unsafe HD6309State* _instance;
         private readonly HD6309CpuRegisters _cpu = new HD6309CpuRegisters();
+        private readonly HD6309NatEmuCycles _instance = new HD6309NatEmuCycles();
 
         private byte _inInterrupt;
         private int _cycleCounter;
@@ -29,112 +28,11 @@ namespace VCCSharp.Models.CPU.HD6309
             _modules = modules;
 
             InitializeJmpVectors();
-
-            unsafe
-            {
-                _instance = Library.HD6309.GetHD6309State();
-            }
         }
 
         public void Init()
         {
-            unsafe
-            {
-                //Call this first or RESET will core!
-                // reg pointers for TFR and EXG and LEA ops
-                //_cpu.xfreg16[0] = (long)&(_cpu.q.lsw); //&D_REG;
-                //_cpu.xfreg16[1] = (long)&(_cpu.x.Reg); //&X_REG;
-                //_cpu.xfreg16[2] = (long)&(_cpu.y.Reg); //&Y_REG;
-                //_cpu.xfreg16[3] = (long)&(_cpu.u.Reg); //&U_REG;
-                //_cpu.xfreg16[4] = (long)&(_cpu.s.Reg); //&S_REG;
-                //_cpu.xfreg16[5] = (long)&(_cpu.pc.Reg); //&PC_REG;
-                //_cpu.xfreg16[6] = (long)&(_cpu.q.msw); //&W_REG;
-                //_cpu.xfreg16[7] = (long)&(_cpu->v.Reg); //&V_REG;
-
-                //_cpu.ureg8[0] = (long)&(_cpu.q.lswmsb); //(byte*)&A_REG;
-                //_cpu.ureg8[1] = (long)&(_cpu.q.lswlsb); //(byte*)&B_REG;
-                //_cpu.ureg8[2] = (long)&(_cpu.ccbits);//(byte*)&(instance->ccbits);
-                //_cpu.ureg8[3] = (long)&(_cpu.dp.msb);//(byte*)&DPA;
-                //_cpu.ureg8[4] = (long)&(_cpu->z.msb);//(byte*)&Z_H;
-                //_cpu.ureg8[5] = (long)&(_cpu->z.lsb);//(byte*)&Z_L;
-                //_cpu.ureg8[6] = (long)&(_cpu.q.mswmsb);//(byte*)&E_REG;
-                //_cpu.ureg8[7] = (long)&(_cpu.q.mswlsb);//(byte*)&F_REG;
-
-                _instance->NatEmuCycles[0] = (long)&(_instance->NatEmuCycles65);
-                _instance->NatEmuCycles[1] = (long)&(_instance->NatEmuCycles64);
-                _instance->NatEmuCycles[2] = (long)&(_instance->NatEmuCycles32);
-                _instance->NatEmuCycles[3] = (long)&(_instance->NatEmuCycles21);
-                _instance->NatEmuCycles[4] = (long)&(_instance->NatEmuCycles54);
-                _instance->NatEmuCycles[5] = (long)&(_instance->NatEmuCycles97);
-                _instance->NatEmuCycles[6] = (long)&(_instance->NatEmuCycles85);
-                _instance->NatEmuCycles[7] = (long)&(_instance->NatEmuCycles51);
-                _instance->NatEmuCycles[8] = (long)&(_instance->NatEmuCycles31);
-                _instance->NatEmuCycles[9] = (long)&(_instance->NatEmuCycles1110);
-                _instance->NatEmuCycles[10] = (long)&(_instance->NatEmuCycles76);
-                _instance->NatEmuCycles[11] = (long)&(_instance->NatEmuCycles75);
-                _instance->NatEmuCycles[12] = (long)&(_instance->NatEmuCycles43);
-                _instance->NatEmuCycles[13] = (long)&(_instance->NatEmuCycles87);
-                _instance->NatEmuCycles[14] = (long)&(_instance->NatEmuCycles86);
-                _instance->NatEmuCycles[15] = (long)&(_instance->NatEmuCycles98);
-                _instance->NatEmuCycles[16] = (long)&(_instance->NatEmuCycles2726);
-                _instance->NatEmuCycles[17] = (long)&(_instance->NatEmuCycles3635);
-                _instance->NatEmuCycles[18] = (long)&(_instance->NatEmuCycles3029);
-                _instance->NatEmuCycles[19] = (long)&(_instance->NatEmuCycles2827);
-                _instance->NatEmuCycles[20] = (long)&(_instance->NatEmuCycles3726);
-                _instance->NatEmuCycles[21] = (long)&(_instance->NatEmuCycles3130);
-                _instance->NatEmuCycles[22] = (long)&(_instance->NatEmuCycles42);
-                _instance->NatEmuCycles[23] = (long)&(_instance->NatEmuCycles53);
-
-                //This handles the disparity between 6309 and 6809 Instruction timing
-                _instance->InsCycles[0 * 25 + Define.M65] = 6;    //6-5
-                _instance->InsCycles[1 * 25 + Define.M65] = 5;
-                _instance->InsCycles[0 * 25 + Define.M64] = 6;    //6-4
-                _instance->InsCycles[1 * 25 + Define.M64] = 4;
-                _instance->InsCycles[0 * 25 + Define.M32] = 3;    //3-2
-                _instance->InsCycles[1 * 25 + Define.M32] = 2;
-                _instance->InsCycles[0 * 25 + Define.M21] = 2;    //2-1
-                _instance->InsCycles[1 * 25 + Define.M21] = 1;
-                _instance->InsCycles[0 * 25 + Define.M54] = 5;    //5-4
-                _instance->InsCycles[1 * 25 + Define.M54] = 4;
-                _instance->InsCycles[0 * 25 + Define.M97] = 9;    //9-7
-                _instance->InsCycles[1 * 25 + Define.M97] = 7;
-                _instance->InsCycles[0 * 25 + Define.M85] = 8;    //8-5
-                _instance->InsCycles[1 * 25 + Define.M85] = 5;
-                _instance->InsCycles[0 * 25 + Define.M51] = 5;    //5-1
-                _instance->InsCycles[1 * 25 + Define.M51] = 1;
-                _instance->InsCycles[0 * 25 + Define.M31] = 3;    //3-1
-                _instance->InsCycles[1 * 25 + Define.M31] = 1;
-                _instance->InsCycles[0 * 25 + Define.M1110] = 11; //11-10
-                _instance->InsCycles[1 * 25 + Define.M1110] = 10;
-                _instance->InsCycles[0 * 25 + Define.M76] = 7;    //7-6
-                _instance->InsCycles[1 * 25 + Define.M76] = 6;
-                _instance->InsCycles[0 * 25 + Define.M75] = 7;    //7-5
-                _instance->InsCycles[1 * 25 + Define.M75] = 5;
-                _instance->InsCycles[0 * 25 + Define.M43] = 4;    //4-3
-                _instance->InsCycles[1 * 25 + Define.M43] = 3;
-                _instance->InsCycles[0 * 25 + Define.M87] = 8;    //8-7
-                _instance->InsCycles[1 * 25 + Define.M87] = 7;
-                _instance->InsCycles[0 * 25 + Define.M86] = 8;    //8-6
-                _instance->InsCycles[1 * 25 + Define.M86] = 6;
-                _instance->InsCycles[0 * 25 + Define.M98] = 9;    //9-8
-                _instance->InsCycles[1 * 25 + Define.M98] = 8;
-                _instance->InsCycles[0 * 25 + Define.M2726] = 27; //27-26
-                _instance->InsCycles[1 * 25 + Define.M2726] = 26;
-                _instance->InsCycles[0 * 25 + Define.M3635] = 36; //36-25
-                _instance->InsCycles[1 * 25 + Define.M3635] = 35;
-                _instance->InsCycles[0 * 25 + Define.M3029] = 30; //30-29
-                _instance->InsCycles[1 * 25 + Define.M3029] = 29;
-                _instance->InsCycles[0 * 25 + Define.M2827] = 28; //28-27
-                _instance->InsCycles[1 * 25 + Define.M2827] = 27;
-                _instance->InsCycles[0 * 25 + Define.M3726] = 37; //37-26
-                _instance->InsCycles[1 * 25 + Define.M3726] = 26;
-                _instance->InsCycles[0 * 25 + Define.M3130] = 31; //31-30
-                _instance->InsCycles[1 * 25 + Define.M3130] = 30;
-                _instance->InsCycles[0 * 25 + Define.M42] = 4;    //4-2
-                _instance->InsCycles[1 * 25 + Define.M42] = 2;
-                _instance->InsCycles[0 * 25 + Define.M53] = 5;    //5-3
-                _instance->InsCycles[1 * 25 + Define.M53] = 3;
-            }
+            //--The classes initialize themselves now.
         }
 
         public void ForcePC(ushort address)
@@ -161,7 +59,8 @@ namespace VCCSharp.Models.CPU.HD6309
         public void Reset()
         {
             for (byte index = 0; index <= 6; index++)
-            {		//Set all register to 0 except V
+            {
+                //Set all register to 0 except V
                 PXF(index, 0);
             }
 
@@ -252,26 +151,26 @@ namespace VCCSharp.Models.CPU.HD6309
         {
             _cpu.cc[(int)CCFlagMasks.E] = 1;
 
-            _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
+            MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
+            MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
+            MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
+            MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
+            MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
+            MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
+            MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
+            MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
+            MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
 
             if (_cpu.md[(int)MDFlagMasks.NATIVE6309] != 0)
             {
-                _modules.TC1014.MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
-                _modules.TC1014.MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
+                MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
+                MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
             }
 
-            _modules.TC1014.MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg);
+            MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg);
+            MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg);
 
-            _modules.TC1014.MemWrite8(getcc(), --_cpu.s.Reg);
+            MemWrite8(getcc(), --_cpu.s.Reg);
 
             _cpu.cc[(int)CCFlagMasks.I] = 1;
             _cpu.cc[(int)CCFlagMasks.F] = 1;
@@ -292,10 +191,10 @@ namespace VCCSharp.Models.CPU.HD6309
                     case 0:
                         _cpu.cc[(int)CCFlagMasks.E] = 0; // Turn E flag off
 
-                        _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
-                        _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
+                        MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
+                        MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
 
-                        _modules.TC1014.MemWrite8(getcc(), --_cpu.s.Reg);
+                        MemWrite8(getcc(), --_cpu.s.Reg);
 
                         _cpu.cc[(int)CCFlagMasks.I] = 1;
                         _cpu.cc[(int)CCFlagMasks.F] = 1;
@@ -307,26 +206,26 @@ namespace VCCSharp.Models.CPU.HD6309
                     case 1:		//6309
                         _cpu.cc[(int)CCFlagMasks.E] = 1;
 
-                        _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
-                        _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
-                        _modules.TC1014.MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
-                        _modules.TC1014.MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
-                        _modules.TC1014.MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
-                        _modules.TC1014.MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
-                        _modules.TC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
-                        _modules.TC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
-                        _modules.TC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
+                        MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
+                        MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
+                        MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
+                        MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
+                        MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
+                        MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
+                        MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
+                        MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
+                        MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
 
                         if (_cpu.md[(int)MDFlagMasks.NATIVE6309] != 0)
                         {
-                            _modules.TC1014.MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
-                            _modules.TC1014.MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
+                            MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
+                            MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
                         }
 
-                        _modules.TC1014.MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg);
-                        _modules.TC1014.MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg);
+                        MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg);
+                        MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg);
 
-                        _modules.TC1014.MemWrite8(getcc(), --_cpu.s.Reg);
+                        MemWrite8(getcc(), --_cpu.s.Reg);
 
                         _cpu.cc[(int)CCFlagMasks.I] = 1;
                         _cpu.cc[(int)CCFlagMasks.F] = 1;
@@ -352,26 +251,26 @@ namespace VCCSharp.Models.CPU.HD6309
             {
                 _cpu.cc[(int)CCFlagMasks.E] = 1;
 
-                _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
-                _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
-                _modules.TC1014.MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
-                _modules.TC1014.MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
-                _modules.TC1014.MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
-                _modules.TC1014.MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
-                _modules.TC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
-                _modules.TC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
-                _modules.TC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
+                MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
+                MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
+                MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
+                MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
+                MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
+                MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
+                MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
+                MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
+                MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
 
                 if (_cpu.md[(int)MDFlagMasks.NATIVE6309] != 0)
                 {
-                    _modules.TC1014.MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
+                    MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
+                    MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
                 }
 
-                _modules.TC1014.MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg);
-                _modules.TC1014.MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg);
+                MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg);
+                MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg);
 
-                _modules.TC1014.MemWrite8(getcc(), --_cpu.s.Reg);
+                MemWrite8(getcc(), --_cpu.s.Reg);
 
                 _cpu.cc[(int)CCFlagMasks.I] = 1;
 
@@ -458,17 +357,10 @@ namespace VCCSharp.Models.CPU.HD6309
             MD_ILLEGAL = Test(MDFlagMasks.ILLEGAL);
             MD_ZERODIV = Test(MDFlagMasks.ZERODIV);
 
-            unsafe
+            for (int i = 0; i < 24; i++)
             {
-                for (int i = 0; i < 24; i++)
-                {
-                    uint insCyclesIndex = _cpu.md[(int)MDFlagMasks.NATIVE6309];
-                    byte value = _instance->InsCycles[insCyclesIndex * 25 + i];
-
-                    byte* cycle = (byte*)(_instance->NatEmuCycles[i]);
-
-                    *cycle = value;
-                }
+                uint insCyclesIndex = _cpu.md[(int)MDFlagMasks.NATIVE6309];
+                _instance[i] = _instance.InsCycles[insCyclesIndex, i];
             }
         }
 
@@ -489,7 +381,7 @@ namespace VCCSharp.Models.CPU.HD6309
 
                             PXF(reg, (ushort)(PXF(reg) + 1));
 
-                            _cycleCounter += _instance->NatEmuCycles21;
+                            _cycleCounter += _instance._21;
 
                             break;
 
@@ -498,7 +390,7 @@ namespace VCCSharp.Models.CPU.HD6309
 
                             PXF(reg, (ushort)(PXF(reg) + 2));
 
-                            _cycleCounter += _instance->NatEmuCycles32;
+                            _cycleCounter += _instance._32;
 
                             break;
 
@@ -507,7 +399,7 @@ namespace VCCSharp.Models.CPU.HD6309
 
                             ea = PXF(reg);
 
-                            _cycleCounter += _instance->NatEmuCycles21;
+                            _cycleCounter += _instance._21;
 
                             break;
 
@@ -516,7 +408,7 @@ namespace VCCSharp.Models.CPU.HD6309
 
                             ea = PXF(reg);
 
-                            _cycleCounter += _instance->NatEmuCycles32;
+                            _cycleCounter += _instance._32;
 
                             break;
 
@@ -556,7 +448,7 @@ namespace VCCSharp.Models.CPU.HD6309
                         case 9: // 16 bit offset
                             ea = (ushort)(PXF(reg) + MemRead16(PC_REG));
 
-                            _cycleCounter += _instance->NatEmuCycles43;
+                            _cycleCounter += _instance._43;
 
                             PC_REG += 2;
 
@@ -572,7 +464,7 @@ namespace VCCSharp.Models.CPU.HD6309
                         case 11: // D reg offset 
                             ea = (ushort)(PXF(reg) + D_REG);
 
-                            _cycleCounter += _instance->NatEmuCycles42;
+                            _cycleCounter += _instance._42;
 
                             break;
 
@@ -588,7 +480,7 @@ namespace VCCSharp.Models.CPU.HD6309
                         case 13: // 16 bit PC relative
                             ea = (ushort)(PC_REG + MemRead16(PC_REG) + 2);
 
-                            _cycleCounter += _instance->NatEmuCycles53;
+                            _cycleCounter += _instance._53;
 
                             PC_REG += 2;
 

@@ -2,6 +2,7 @@
 
 namespace VCCSharp.Models.CPU.HD6309
 {
+    // ReSharper disable once InconsistentNaming
     partial class HD6309
     {
         #region CC Masks Macros
@@ -227,7 +228,6 @@ namespace VCCSharp.Models.CPU.HD6309
         public uint MemRead32(ushort address) => _modules.TC1014.MemRead32(address);
         public void MemWrite32(uint data, ushort address) => _modules.TC1014.MemWrite32(data, address);
 
-        public ushort IMMADDRESS(ushort address) => MemRead16(address);
         public ushort INDADDRESS(ushort address) => CalculateEA(MemRead8(address));
 
         public bool NTEST8(byte value) => value > 0x7F;
@@ -246,36 +246,43 @@ namespace VCCSharp.Models.CPU.HD6309
             get => _cpu.md[(int)MDFlagMasks.NATIVE6309] == Define.TRUE;
             set => _cpu.md[(int)MDFlagMasks.NATIVE6309] = value ? Define.TRUE : Define.FALSE;
         }
+        
         public bool MD_FIRQMODE
         {
             get => _cpu.md[(int)MDFlagMasks.FIRQMODE] == Define.TRUE;
             set => _cpu.md[(int)MDFlagMasks.FIRQMODE] = value ? Define.TRUE : Define.FALSE;
         }
+        
         public bool MD_UNDEFINED2
         {
             get => _cpu.md[(int)MDFlagMasks.MD_UNDEF2] == Define.TRUE;
             set => _cpu.md[(int)MDFlagMasks.MD_UNDEF2] = value ? Define.TRUE : Define.FALSE;
         }
+        
         public bool MD_UNDEFINED3
         {
             get => _cpu.md[(int)MDFlagMasks.MD_UNDEF3] == Define.TRUE;
             set => _cpu.md[(int)MDFlagMasks.MD_UNDEF3] = value ? Define.TRUE : Define.FALSE;
         }
+        
         public bool MD_UNDEFINED4
         {
             get => _cpu.md[(int)MDFlagMasks.MD_UNDEF4] == Define.TRUE;
             set => _cpu.md[(int)MDFlagMasks.MD_UNDEF4] = value ? Define.TRUE : Define.FALSE;
         }
+        
         public bool MD_UNDEFINED5
         {
             get => _cpu.md[(int)MDFlagMasks.MD_UNDEF5] == Define.TRUE;
             set => _cpu.md[(int)MDFlagMasks.MD_UNDEF5] = value ? Define.TRUE : Define.FALSE;
         }
+        
         public bool MD_ILLEGAL
         {
             get => _cpu.md[(int)MDFlagMasks.ILLEGAL] == Define.TRUE;
             set => _cpu.md[(int)MDFlagMasks.ILLEGAL] = value ? Define.TRUE : Define.FALSE;
         }
+
         public bool MD_ZERODIV
         {
             get => _cpu.md[(int)MDFlagMasks.ZERODIV] == Define.TRUE;

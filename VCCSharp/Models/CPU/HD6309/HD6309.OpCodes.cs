@@ -825,7 +825,7 @@ namespace VCCSharp.Models.CPU.HD6309
             ErrorVector();
         }
 
-        public unsafe void ErrorVector()
+        public void ErrorVector()
         {
             CC_E = true; //1;
 
@@ -853,7 +853,7 @@ namespace VCCSharp.Models.CPU.HD6309
 
             PC_REG = MemRead16(Define.VTRAP);
 
-            _cycleCounter += (12 + _instance->NatEmuCycles54);	//One for each byte +overhead? Guessing from PSHS
+            _cycleCounter += (12 + _instance._54);	//One for each byte +overhead? Guessing from PSHS
         }
 
         public void DivByZero()

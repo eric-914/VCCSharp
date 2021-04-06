@@ -181,7 +181,6 @@
     <ClCompile Include="fileoperations.c" />
     <ClCompile Include="GDI.c" />
     <ClCompile Include="Graphics.c" />
-    <ClCompile Include="HD6309.c" />
     <ClCompile Include="IOBus.c" />
     <ClCompile Include="Joystick.c" />
     <ClCompile Include="Keyboard.c" />
@@ -234,7 +233,6 @@
     <ClInclude Include="GraphicsColors.h" />
     <ClInclude Include="GraphicsState.h" />
     <ClInclude Include="GraphicsSurfaces.h" />
-    <ClInclude Include="HD6309Macros.h" />
     <ClInclude Include="IOBus.h" />
     <ClInclude Include="Joystick.h" />
     <ClInclude Include="JoystickModel.h" />

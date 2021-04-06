@@ -9,7 +9,7 @@
 
         #region 0x30 - 0x3F
 
-        public unsafe void Band() // 30 
+        public void Band() // 30 
         {
             _postByte = MemRead8(PC_REG++);
             _temp8 = MemRead8(DPADDRESS(PC_REG++));
@@ -39,10 +39,10 @@
             }
 
             // Else nothing changes
-            _cycleCounter += _instance->NatEmuCycles76;
+            _cycleCounter += _instance._76;
         }
 
-        public unsafe void Biand() // 31 
+        public void Biand() // 31 
         {
             _postByte = MemRead8(PC_REG++);
             _temp8 = MemRead8(DPADDRESS(PC_REG++));
@@ -72,10 +72,10 @@
             }
 
             // Else do nothing
-            _cycleCounter += _instance->NatEmuCycles76;
+            _cycleCounter += _instance._76;
         }
 
-        public unsafe void Bor() // 32 
+        public void Bor() // 32 
         {
             _postByte = MemRead8(PC_REG++);
             _temp8 = MemRead8(DPADDRESS(PC_REG++));
@@ -105,10 +105,10 @@
             }
 
             // Else do nothing
-            _cycleCounter += _instance->NatEmuCycles76;
+            _cycleCounter += _instance._76;
         }
 
-        public unsafe void Bior() // 33 
+        public void Bior() // 33 
         {
             _postByte = MemRead8(PC_REG++);
             _temp8 = MemRead8(DPADDRESS(PC_REG++));
@@ -138,10 +138,10 @@
             }
 
             // Else do nothing
-            _cycleCounter += _instance->NatEmuCycles76;
+            _cycleCounter += _instance._76;
         }
 
-        public unsafe void Beor() // 34 
+        public void Beor() // 34 
         {
             _postByte = MemRead8(PC_REG++);
             _temp8 = MemRead8(DPADDRESS(PC_REG++));
@@ -170,10 +170,10 @@
                 }
             }
 
-            _cycleCounter += _instance->NatEmuCycles76;
+            _cycleCounter += _instance._76;
         }
 
-        public unsafe void Bieor() // 35 
+        public void Bieor() // 35 
         {
             _postByte = MemRead8(PC_REG++);
             _temp8 = MemRead8(DPADDRESS(PC_REG++));
@@ -202,11 +202,11 @@
                 }
             }
 
-            _cycleCounter += _instance->NatEmuCycles76;
+            _cycleCounter += _instance._76;
 
         }
 
-        public unsafe void Ldbt() // 36 
+        public void Ldbt() // 36 
         {
             _postByte = MemRead8(PC_REG++);
             _temp8 = MemRead8(DPADDRESS(PC_REG++));
@@ -249,10 +249,10 @@
                 }
             }
 
-            _cycleCounter += _instance->NatEmuCycles76;
+            _cycleCounter += _instance._76;
         }
 
-        public unsafe void Stbt() // 37 
+        public void Stbt() // 37 
         {
             _postByte = MemRead8(PC_REG++);
             _temp16 = DPADDRESS(PC_REG++);
@@ -289,7 +289,7 @@
             }
 
             MemWrite8(_temp8, _temp16);
-            _cycleCounter += _instance->NatEmuCycles87;
+            _cycleCounter += _instance._87;
         }
 
         public void Tfm1() // 38 
@@ -452,100 +452,100 @@
 
         #region 0x40 - 0x4F
 
-        public unsafe void Come_I() // 43 
+        public void Come_I() // 43 
         {
             E_REG = (byte)(0xFF - E_REG);
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
             CC_C = true; //1;
             CC_V = false;
-            _cycleCounter += _instance->NatEmuCycles32;
+            _cycleCounter += _instance._32;
         }
 
-        public unsafe void Dece_I() // 4A 
+        public void Dece_I() // 4A 
         {
             E_REG--;
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
             CC_V = E_REG == 0x7F;
-            _cycleCounter += _instance->NatEmuCycles32;
+            _cycleCounter += _instance._32;
         }
 
-        public unsafe void Ince_I() // 4C 
+        public void Ince_I() // 4C 
         {
             E_REG++;
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
             CC_V = E_REG == 0x80;
-            _cycleCounter += _instance->NatEmuCycles32;
+            _cycleCounter += _instance._32;
         }
 
-        public unsafe void Tste_I() // 4D 
+        public void Tste_I() // 4D 
         {
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
             CC_V = false;
-            _cycleCounter += _instance->NatEmuCycles32;
+            _cycleCounter += _instance._32;
         }
 
-        public unsafe void Clre_I() // 4F 
+        public void Clre_I() // 4F 
         {
             E_REG = 0;
             CC_C = false;
             CC_V = false;
             CC_N = false;
             CC_Z = true; //1;
-            _cycleCounter += _instance->NatEmuCycles32;
+            _cycleCounter += _instance._32;
         }
 
         #endregion
 
         #region 0x50 - 0x5F
 
-        public unsafe void Comf_I() // 53 
+        public void Comf_I() // 53 
         {
             F_REG = (byte)(0xFF - F_REG);
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
             CC_C = true; //1;
             CC_V = false;
-            _cycleCounter += _instance->NatEmuCycles32;
+            _cycleCounter += _instance._32;
         }
 
-        public unsafe void Decf_I() // 5A 
+        public void Decf_I() // 5A 
         {
             F_REG--;
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
             CC_V = F_REG == 0x7F;
-            _cycleCounter += _instance->NatEmuCycles21;
+            _cycleCounter += _instance._21;
         }
 
-        public unsafe void Incf_I() // 5C 
+        public void Incf_I() // 5C 
         {
             F_REG++;
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
             CC_V = F_REG == 0x80;
-            _cycleCounter += _instance->NatEmuCycles32;
+            _cycleCounter += _instance._32;
         }
 
-        public unsafe void Tstf_I() // 5D 
+        public void Tstf_I() // 5D 
         {
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
             CC_V = false;
-            _cycleCounter += _instance->NatEmuCycles32;
+            _cycleCounter += _instance._32;
         }
 
-        public unsafe void Clrf_I() // 5F 
+        public void Clrf_I() // 5F 
         {
             F_REG = 0;
             CC_C = false;
             CC_V = false;
             CC_N = false;
             CC_Z = true; //1;
-            _cycleCounter += _instance->NatEmuCycles32;
+            _cycleCounter += _instance._32;
         }
 
         #endregion
@@ -578,16 +578,16 @@
             _cycleCounter += 3;
         }
 
-        public unsafe void Cmpu_M() // 83 
+        public void Cmpu_M() // 83 
         {
-            _postWord = IMMADDRESS(PC_REG);
+            _postWord = MemRead16(PC_REG);
             _temp16 = (ushort)(U_REG - _postWord);
             CC_C = _temp16 > U_REG;
             CC_V = OVERFLOW16(CC_C, _postWord, _temp16, U_REG);
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
             PC_REG += 2;
-            _cycleCounter += _instance->NatEmuCycles54;
+            _cycleCounter += _instance._54;
         }
 
         public void Lde_M() // 86 
@@ -612,16 +612,16 @@
             _cycleCounter += 3;
         }
 
-        public unsafe void Cmps_M() // 8C 
+        public void Cmps_M() // 8C 
         {
-            _postWord = IMMADDRESS(PC_REG);
+            _postWord = MemRead16(PC_REG);
             _temp16 = (ushort)(S_REG - _postWord);
             CC_C = _temp16 > S_REG;
             CC_V = OVERFLOW16(CC_C, _postWord, _temp16, S_REG);
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
             PC_REG += 2;
-            _cycleCounter += _instance->NatEmuCycles54;
+            _cycleCounter += _instance._54;
         }
 
         public void Divd_M() // 8D 
@@ -713,7 +713,7 @@
 
         public void Muld_M() // 8F 
         {
-            Q_REG = (uint)((short)D_REG * (short)IMMADDRESS(PC_REG));
+            Q_REG = (uint)((short)D_REG * (short)MemRead16(PC_REG));
             CC_C = false;
             CC_Z = ZTEST(Q_REG);
             CC_V = false;
@@ -726,7 +726,7 @@
 
         #region 0x90 - 0x9F
 
-        public unsafe void Sube_D() // 90 
+        public void Sube_D() // 90 
         {
             _postByte = MemRead8(DPADDRESS(PC_REG++));
             _temp16 = (ushort)(E_REG - _postByte);
@@ -735,10 +735,10 @@
             E_REG = (byte)_temp16;
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
-            _cycleCounter += _instance->NatEmuCycles54;
+            _cycleCounter += _instance._54;
         }
 
-        public unsafe void Cmpe_D() // 91 
+        public void Cmpe_D() // 91 
         {
             _postByte = MemRead8(DPADDRESS(PC_REG++));
             _temp8 = (byte)(E_REG - _postByte);
@@ -746,10 +746,10 @@
             CC_V = OVERFLOW8(CC_C, _postByte, _temp8, E_REG);
             CC_N = NTEST8(_temp8);
             CC_Z = ZTEST(_temp8);
-            _cycleCounter += _instance->NatEmuCycles54;
+            _cycleCounter += _instance._54;
         }
 
-        public unsafe void Cmpu_D() // 93 
+        public void Cmpu_D() // 93 
         {
             _postWord = MemRead16(DPADDRESS(PC_REG++));
             _temp16 = (ushort)(U_REG - _postWord);
@@ -757,28 +757,28 @@
             CC_V = OVERFLOW16(CC_C, _postWord, _temp16, U_REG);
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
-            _cycleCounter += _instance->NatEmuCycles75;
+            _cycleCounter += _instance._75;
         }
 
-        public unsafe void Lde_D() // 96 
+        public void Lde_D() // 96 
         {
             E_REG = MemRead8(DPADDRESS(PC_REG++));
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
             CC_V = false;
-            _cycleCounter += _instance->NatEmuCycles54;
+            _cycleCounter += _instance._54;
         }
 
-        public unsafe void Ste_D() // 97 
+        public void Ste_D() // 97 
         {
             MemWrite8(E_REG, DPADDRESS(PC_REG++));
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
             CC_V = false;
-            _cycleCounter += _instance->NatEmuCycles54;
+            _cycleCounter += _instance._54;
         }
 
-        public unsafe void Adde_D() // 9B 
+        public void Adde_D() // 9B 
         {
             _postByte = MemRead8(DPADDRESS(PC_REG++));
             _temp16 = (ushort)(E_REG + _postByte);
@@ -788,10 +788,10 @@
             E_REG = (byte)_temp16;
             CC_N = NTEST8(E_REG);
             CC_Z = ZTEST(E_REG);
-            _cycleCounter += _instance->NatEmuCycles54;
+            _cycleCounter += _instance._54;
         }
 
-        public unsafe void Cmps_D() // 9C 
+        public void Cmps_D() // 9C 
         {
             _postWord = MemRead16(DPADDRESS(PC_REG++));
             _temp16 = (ushort)(S_REG - _postWord);
@@ -799,7 +799,7 @@
             CC_V = OVERFLOW16(CC_C, _postWord, _temp16, S_REG);
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
-            _cycleCounter += _instance->NatEmuCycles75;
+            _cycleCounter += _instance._75;
         }
 
         public void Divd_D() // 9D 
@@ -845,7 +845,7 @@
             _cycleCounter += 27;
         }
 
-        public unsafe void Divq_D() // 9E 
+        public void Divq_D() // 9E 
         {
             _postWord = MemRead16(DPADDRESS(PC_REG++));
 
@@ -865,7 +865,7 @@
                 CC_N = false;
                 CC_Z = false;
                 CC_C = false;
-                _cycleCounter += _instance->NatEmuCycles3635 - 21;
+                _cycleCounter += _instance._3635 - 21;
                 return;
             }
 
@@ -885,17 +885,17 @@
             }
 
             CC_C = (B_REG & 1) != 0;
-            _cycleCounter += _instance->NatEmuCycles3635;
+            _cycleCounter += _instance._3635;
         }
 
-        public unsafe void Muld_D() // 9F 
+        public void Muld_D() // 9F 
         {
             Q_REG = (uint)((short)D_REG * (short)MemRead16(DPADDRESS(PC_REG++)));
             CC_C = false;
             CC_Z = ZTEST(Q_REG);
             CC_V = false;
             CC_N = NTEST32(Q_REG);
-            _cycleCounter += _instance->NatEmuCycles3029;
+            _cycleCounter += _instance._3029;
         }
 
         #endregion
@@ -925,7 +925,7 @@
             _cycleCounter += 5;
         }
 
-        public unsafe void Cmpu_X() // A3 
+        public void Cmpu_X() // A3 
         {
             _postWord = MemRead16(INDADDRESS(PC_REG++));
             _temp16 = (ushort)(U_REG - _postWord);
@@ -933,7 +933,7 @@
             CC_V = OVERFLOW16(CC_C, _postWord, _temp16, U_REG);
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
-            _cycleCounter += _instance->NatEmuCycles76;
+            _cycleCounter += _instance._76;
         }
 
         public void Lde_X() // A6 
@@ -967,7 +967,7 @@
             _cycleCounter += 5;
         }
 
-        public unsafe void Cmps_X() // AC 
+        public void Cmps_X() // AC 
         {
             _postWord = MemRead16(INDADDRESS(PC_REG++));
             _temp16 = (ushort)(S_REG - _postWord);
@@ -975,7 +975,7 @@
             CC_V = OVERFLOW16(CC_C, _postWord, _temp16, S_REG);
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
-            _cycleCounter += _instance->NatEmuCycles76;
+            _cycleCounter += _instance._76;
         }
 
         public void Divd_X() // AD 
@@ -1021,7 +1021,7 @@
             _cycleCounter += 27;
         }
 
-        public unsafe void Divq_X() // AE 
+        public void Divq_X() // AE 
         {
             _postWord = MemRead16(INDADDRESS(PC_REG++));
 
@@ -1041,7 +1041,7 @@
                 CC_N = false;
                 CC_Z = false;
                 CC_C = false;
-                _cycleCounter += _instance->NatEmuCycles3635 - 21;
+                _cycleCounter += _instance._3635 - 21;
                 return;
             }
 
@@ -1061,7 +1061,7 @@
             }
 
             CC_C = (B_REG & 1) != 0;
-            _cycleCounter += _instance->NatEmuCycles3635;
+            _cycleCounter += _instance._3635;
         }
 
         public void Muld_X() // AF 
@@ -1078,9 +1078,9 @@
 
         #region 0xB0 - 0xBF
 
-        public unsafe void Sube_E() // B0 
+        public void Sube_E() // B0 
         {
-            _postByte = MemRead8(IMMADDRESS(PC_REG));
+            _postByte = MemRead8(MemRead16(PC_REG));
             _temp16 = (ushort)(E_REG - _postByte);
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, E_REG);
@@ -1088,56 +1088,56 @@
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
             PC_REG += 2;
-            _cycleCounter += _instance->NatEmuCycles65;
+            _cycleCounter += _instance._65;
         }
 
-        public unsafe void Cmpe_E() // B1 
+        public void Cmpe_E() // B1 
         {
-            _postByte = MemRead8(IMMADDRESS(PC_REG));
+            _postByte = MemRead8(MemRead16(PC_REG));
             _temp8 = (byte)(E_REG - _postByte);
             CC_C = _temp8 > E_REG;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp8, E_REG);
             CC_N = NTEST8(_temp8);
             CC_Z = ZTEST(_temp8);
             PC_REG += 2;
-            _cycleCounter += _instance->NatEmuCycles65;
+            _cycleCounter += _instance._65;
         }
 
-        public unsafe void Cmpu_E() // B3 
+        public void Cmpu_E() // B3 
         {
-            _postWord = MemRead16(IMMADDRESS(PC_REG));
+            _postWord = MemRead16(MemRead16(PC_REG));
             _temp16 = (ushort)(U_REG - _postWord);
             CC_C = _temp16 > U_REG;
             CC_V = OVERFLOW16(CC_C, _postWord, _temp16, U_REG);
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
             PC_REG += 2;
-            _cycleCounter += _instance->NatEmuCycles86;
+            _cycleCounter += _instance._86;
         }
 
-        public unsafe void Lde_E() // B6 
+        public void Lde_E() // B6 
         {
-            E_REG = MemRead8(IMMADDRESS(PC_REG));
+            E_REG = MemRead8(MemRead16(PC_REG));
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
             CC_V = false;
             PC_REG += 2;
-            _cycleCounter += _instance->NatEmuCycles65;
+            _cycleCounter += _instance._65;
         }
 
-        public unsafe void Ste_E() // B7 
+        public void Ste_E() // B7 
         {
-            MemWrite8(E_REG, IMMADDRESS(PC_REG));
+            MemWrite8(E_REG, MemRead16(PC_REG));
             CC_Z = ZTEST(E_REG);
             CC_N = NTEST8(E_REG);
             CC_V = false;
             PC_REG += 2;
-            _cycleCounter += _instance->NatEmuCycles65;
+            _cycleCounter += _instance._65;
         }
 
-        public unsafe void Adde_E() // BB 
+        public void Adde_E() // BB 
         {
-            _postByte = MemRead8(IMMADDRESS(PC_REG));
+            _postByte = MemRead8(MemRead16(PC_REG));
             _temp16 = (ushort)(E_REG + _postByte);
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_H = ((E_REG ^ _postByte ^ _temp16) & 0x10) >> 4 != 0;
@@ -1146,24 +1146,24 @@
             CC_N = NTEST8(E_REG);
             CC_Z = ZTEST(E_REG);
             PC_REG += 2;
-            _cycleCounter += _instance->NatEmuCycles65;
+            _cycleCounter += _instance._65;
         }
 
-        public unsafe void Cmps_E() // BC 
+        public void Cmps_E() // BC 
         {
-            _postWord = MemRead16(IMMADDRESS(PC_REG));
+            _postWord = MemRead16(MemRead16(PC_REG));
             _temp16 = (ushort)(S_REG - _postWord);
             CC_C = _temp16 > S_REG;
             CC_V = OVERFLOW16(CC_C, _postWord, _temp16, S_REG);
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
             PC_REG += 2;
-            _cycleCounter += _instance->NatEmuCycles86;
+            _cycleCounter += _instance._86;
         }
 
         public void Divd_E() // BD 
         {
-            _postByte = MemRead8(IMMADDRESS(PC_REG));
+            _postByte = MemRead8(MemRead16(PC_REG));
             PC_REG += 2;
 
             if (_postByte == 0)
@@ -1204,9 +1204,9 @@
             _cycleCounter += 25;
         }
 
-        public unsafe void Divq_E() // BE 
+        public void Divq_E() // BE 
         {
-            _postWord = MemRead16(IMMADDRESS(PC_REG));
+            _postWord = MemRead16(MemRead16(PC_REG));
             PC_REG += 2;
 
             if (_postWord == 0)
@@ -1225,7 +1225,7 @@
                 CC_N = false;
                 CC_Z = false;
                 CC_C = false;
-                _cycleCounter += _instance->NatEmuCycles3635 - 21;
+                _cycleCounter += _instance._3635 - 21;
                 return;
             }
 
@@ -1244,18 +1244,18 @@
                 CC_V = false;
             }
             CC_C = (B_REG & 1) != 0;
-            _cycleCounter += _instance->NatEmuCycles3635;
+            _cycleCounter += _instance._3635;
         }
 
-        public unsafe void Muld_E() // BF 
+        public void Muld_E() // BF 
         {
-            Q_REG = (ushort)((short)D_REG * (short)MemRead16(IMMADDRESS(PC_REG)));
+            Q_REG = (ushort)((short)D_REG * (short)MemRead16(MemRead16(PC_REG)));
             PC_REG += 2;
             CC_C = false;
             CC_Z = ZTEST(Q_REG);
             CC_V = false;
             CC_N = NTEST32(Q_REG);
-            _cycleCounter += _instance->NatEmuCycles3130;
+            _cycleCounter += _instance._3130;
         }
 
         #endregion
@@ -1311,7 +1311,7 @@
 
         #region 0xD0 - 0xDF
 
-        public unsafe void Subf_D() // D0 
+        public void Subf_D() // D0 
         {
             _postByte = MemRead8(DPADDRESS(PC_REG++));
             _temp16 = (ushort)(F_REG - _postByte);
@@ -1320,10 +1320,10 @@
             F_REG = (byte)_temp16;
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
-            _cycleCounter += _instance->NatEmuCycles54;
+            _cycleCounter += _instance._54;
         }
 
-        public unsafe void Cmpf_D() // D1 
+        public void Cmpf_D() // D1 
         {
             _postByte = MemRead8(DPADDRESS(PC_REG++));
             _temp8 = (byte)(F_REG - _postByte);
@@ -1331,28 +1331,28 @@
             CC_V = OVERFLOW8(CC_C, _postByte, _temp8, F_REG);
             CC_N = NTEST8(_temp8);
             CC_Z = ZTEST(_temp8);
-            _cycleCounter += _instance->NatEmuCycles54;
+            _cycleCounter += _instance._54;
         }
 
-        public unsafe void Ldf_D() // D6 
+        public void Ldf_D() // D6 
         {
             F_REG = MemRead8(DPADDRESS(PC_REG++));
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
             CC_V = false;
-            _cycleCounter += _instance->NatEmuCycles54;
+            _cycleCounter += _instance._54;
         }
 
-        public unsafe void Stf_D() // D7 
+        public void Stf_D() // D7 
         {
             MemWrite8(F_REG, DPADDRESS(PC_REG++));
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
             CC_V = false;
-            _cycleCounter += _instance->NatEmuCycles54;
+            _cycleCounter += _instance._54;
         }
 
-        public unsafe void Addf_D() // DB 
+        public void Addf_D() // DB 
         {
             _postByte = MemRead8(DPADDRESS(PC_REG++));
             _temp16 = (ushort)(F_REG + _postByte);
@@ -1362,7 +1362,7 @@
             F_REG = (byte)_temp16;
             CC_N = NTEST8(F_REG);
             CC_Z = ZTEST(F_REG);
-            _cycleCounter += _instance->NatEmuCycles54;
+            _cycleCounter += _instance._54;
         }
 
         #endregion
@@ -1427,9 +1427,9 @@
 
         #region 0xF0 - 0xFF
 
-        public unsafe void Subf_E() // F0 
+        public void Subf_E() // F0 
         {
-            _postByte = MemRead8(IMMADDRESS(PC_REG));
+            _postByte = MemRead8(MemRead16(PC_REG));
             _temp16 = (ushort)(F_REG - _postByte);
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, F_REG);
@@ -1437,44 +1437,44 @@
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
             PC_REG += 2;
-            _cycleCounter += _instance->NatEmuCycles65;
+            _cycleCounter += _instance._65;
         }
 
-        public unsafe void Cmpf_E() // F1 
+        public void Cmpf_E() // F1 
         {
-            _postByte = MemRead8(IMMADDRESS(PC_REG));
+            _postByte = MemRead8(MemRead16(PC_REG));
             _temp8 = (byte)(F_REG - _postByte);
             CC_C = _temp8 > F_REG;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp8, F_REG);
             CC_N = NTEST8(_temp8);
             CC_Z = ZTEST(_temp8);
             PC_REG += 2;
-            _cycleCounter += _instance->NatEmuCycles65;
+            _cycleCounter += _instance._65;
         }
 
-        public unsafe void Ldf_E() // F6 
+        public void Ldf_E() // F6 
         {
-            F_REG = MemRead8(IMMADDRESS(PC_REG));
+            F_REG = MemRead8(MemRead16(PC_REG));
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
             CC_V = false;
             PC_REG += 2;
-            _cycleCounter += _instance->NatEmuCycles65;
+            _cycleCounter += _instance._65;
         }
 
-        public unsafe void Stf_E() // F7 
+        public void Stf_E() // F7 
         {
-            MemWrite8(F_REG, IMMADDRESS(PC_REG));
+            MemWrite8(F_REG, MemRead16(PC_REG));
             CC_Z = ZTEST(F_REG);
             CC_N = NTEST8(F_REG);
             CC_V = false;
             PC_REG += 2;
-            _cycleCounter += _instance->NatEmuCycles65;
+            _cycleCounter += _instance._65;
         }
 
-        public unsafe void Addf_E() // FB 
+        public void Addf_E() // FB 
         {
-            _postByte = MemRead8(IMMADDRESS(PC_REG));
+            _postByte = MemRead8(MemRead16(PC_REG));
             _temp16 = (ushort)(F_REG + _postByte);
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_H = ((F_REG ^ _postByte ^ _temp16) & 0x10) >> 4 != 0;
@@ -1483,7 +1483,7 @@
             CC_N = NTEST8(F_REG);
             CC_Z = ZTEST(F_REG);
             PC_REG += 2;
-            _cycleCounter += _instance->NatEmuCycles65;
+            _cycleCounter += _instance._65;
         }
 
         #endregion

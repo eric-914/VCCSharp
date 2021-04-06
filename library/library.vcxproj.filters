@@ -56,9 +56,6 @@
     <ClCompile Include="MC6809.c">
       <Filter>mc6809</Filter>
     </ClCompile>
-    <ClCompile Include="HD6309.c">
-      <Filter>hd6309</Filter>
-    </ClCompile>
     <ClCompile Include="MC6809OpCodes.c">
       <Filter>mc6809</Filter>
     </ClCompile>
@@ -186,9 +183,6 @@
     </ClInclude>
     <ClInclude Include="MC6809.h">
       <Filter>mc6809</Filter>
-    </ClInclude>
-    <ClInclude Include="HD6309Macros.h">
-      <Filter>hd6309</Filter>
     </ClInclude>
     <ClInclude Include="MC6809Macros.h">
       <Filter>mc6809</Filter>
@@ -362,9 +356,6 @@
     </Filter>
     <Filter Include="directdraw">
       <UniqueIdentifier>{fcd2e4e7-3346-4625-b980-414909633751}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="hd6309">
-      <UniqueIdentifier>{acdd0b6d-1ae3-41a6-877e-5e5366395d82}</UniqueIdentifier>
     </Filter>
     <Filter Include="iobus">
       <UniqueIdentifier>{76dcdb10-b8f2-4647-8ed5-2e3ff3ed2802}</UniqueIdentifier>

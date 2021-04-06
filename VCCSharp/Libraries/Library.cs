@@ -349,8 +349,6 @@ namespace VCCSharp.Libraries
 
         public static class HD6309
         {
-            [DllImport(LIBRARY)]
-            public static extern unsafe HD6309State* GetHD6309State();
         }
 
         public static class Joystick
