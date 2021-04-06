@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using VCCSharp.Enums;
 using VCCSharp.Models;
+using VCCSharp.Models.CPU.HD6309;
 using HINSTANCE = System.IntPtr;
 using HANDLE = System.IntPtr;
 using HWND = System.IntPtr;

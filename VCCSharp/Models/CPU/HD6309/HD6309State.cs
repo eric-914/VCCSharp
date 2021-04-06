@@ -1,4 +1,4 @@
-﻿namespace VCCSharp.Models
+﻿namespace VCCSharp.Models.CPU.HD6309
 {
     public struct HD6309State
     {

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace VCCSharp.Models
+namespace VCCSharp.Models.CPU.HD6309
 {
     [StructLayout(LayoutKind.Explicit)]
     public class HD6309CpuRegister
