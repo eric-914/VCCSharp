@@ -352,7 +352,4 @@ extern "C" __declspec(dllexport) unsigned short __cdecl MC6809_CalculateEA(unsig
 
 extern "C" __declspec(dllexport) void __cdecl MC6809AssertInterrupt(unsigned char, unsigned char);
 extern "C" __declspec(dllexport) void __cdecl MC6809Reset();
-extern "C" __declspec(dllexport) void __cdecl MC6809_cpu_firq();
-extern "C" __declspec(dllexport) void __cdecl MC6809_cpu_irq();
-extern "C" __declspec(dllexport) void __cdecl MC6809_cpu_nmi();
 extern "C" __declspec(dllexport) void __cdecl mc6809_setcc(unsigned char);

@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using System.Security;
 using VCCSharp.Enums;
 using VCCSharp.Models;
-using VCCSharp.Models.CPU.HD6309;
 using HINSTANCE = System.IntPtr;
 using HANDLE = System.IntPtr;
 using HWND = System.IntPtr;
@@ -401,6 +400,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern byte MC6809_getcc();
+
+            [DllImport(LIBRARY)]
+            public static extern ushort MC6809_CalculateEA(byte postByte);
         }
 
         public static class MC6821

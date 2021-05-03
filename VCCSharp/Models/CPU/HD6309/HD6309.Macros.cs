@@ -241,6 +241,8 @@ namespace VCCSharp.Models.CPU.HD6309
         public bool OVERFLOW8(bool c, byte a, ushort b, byte r) => ((c ? (byte)1 : (byte)0) ^ (((a ^ b ^ r) >> 7) & 1)) != 0;
         public bool OVERFLOW16(bool c, uint a, ushort b, ushort r) => ((c ? (byte)1 : (byte)0) ^ (((a ^ b ^ r) >> 15) & 1)) != 0;
 
+        #region MD Masks Macros
+
         public bool MD_NATIVE6309
         {
             get => _cpu.md[(int)MDFlagMasks.NATIVE6309] == Define.TRUE;
@@ -288,6 +290,8 @@ namespace VCCSharp.Models.CPU.HD6309
             get => _cpu.md[(int)MDFlagMasks.ZERODIV] == Define.TRUE;
             set => _cpu.md[(int)MDFlagMasks.ZERODIV] = value ? Define.TRUE : Define.FALSE;
         }
+
+        #endregion
 
         #endregion
     }

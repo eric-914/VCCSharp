@@ -134,7 +134,8 @@ namespace VCCSharp.Models.CPU.HD6309
                 if (_syncWaiting == 1)
                 {
                     //Abort the run nothing happens asynchronously from the CPU
-                    break; // WDZ - Experimental SyncWaiting should still return used cycles (and not zero) by breaking from loop
+                    // WDZ - Experimental SyncWaiting should still return used cycles (and not zero) by breaking from loop
+                    break; 
                 }
 
                 _gCycleFor = cycleFor;

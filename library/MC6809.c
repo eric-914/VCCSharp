@@ -46,12 +46,14 @@ extern "C" {
   }
 }
 
+//==============================================================================
+// Still used by OpCodes
+//==============================================================================
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl MC6809_getcc()
-  {
-    unsigned char bincc = 0;
+  __declspec(dllexport) unsigned char __cdecl MC6809_getcc() {
+    unsigned char cc = 0;
 
-#define TST(_CC, _F) if (_CC) { bincc |= (1 << _F); }
+#define TST(_CC, _F) if (_CC) { cc |= (1 << _F); }
 
     TST(CC_E, E);
     TST(CC_F, F);
@@ -62,7 +64,7 @@ extern "C" {
     TST(CC_V, V);
     TST(CC_C, C);
 
-    return(bincc);
+    return(cc);
   }
 }
 

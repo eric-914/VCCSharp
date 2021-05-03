@@ -4,6 +4,7 @@ using VCCSharp.Configuration;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models.CPU.HD6309;
+using VCCSharp.Models.CPU.MC6809;
 using VCCSharp.Modules;
 using VCCSharp.TapePlayer;
 
