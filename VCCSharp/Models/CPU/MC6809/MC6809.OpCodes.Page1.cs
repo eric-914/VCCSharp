@@ -222,20 +222,16 @@
 
         public void Page_2() // 10
         {
-            LIB(0x10);
+            byte opCode = MemRead8(PC_REG++);
 
-            //byte opCode = MemRead8(PC_REG++);
-
-            //_jmpVec2[opCode]();
+            _jmpVec2[opCode]();
         }
 
         public void Page_3() // 11
         {
-            LIB(0x11);
+            byte opCode = MemRead8(PC_REG++);
 
-            //byte opCode = MemRead8(PC_REG++);
-
-            //_jmpVec3[opCode]();
+            _jmpVec3[opCode]();
         }
 
         public void Nop_I() // 12
@@ -244,10 +240,6 @@
             {
                 _instance->CycleCounter += 2;
             }
-
-            //LIB(0x12);
-
-            //_cycleCounter += _instance._21;
         }
 
         public void Sync_I() // 13
@@ -257,11 +249,6 @@
                 _instance->CycleCounter = _gCycleFor;
                 _instance->SyncWaiting = 1;
             }
-
-            //LIB(0x13);
-
-            //_cycleCounter = _gCycleFor;
-            //_syncWaiting = 1;
         }
 
         // 14       //InvalidInsHandler

@@ -396,13 +396,16 @@ namespace VCCSharp.Libraries
             public static extern void MC6809AssertInterrupt(byte interrupt, byte waiter);
 
             [DllImport(LIBRARY)]
-            public static extern void MC6809ExecOpCode(int cycleFor, byte opCode);
-
-            [DllImport(LIBRARY)]
             public static extern byte MC6809_getcc();
 
             [DllImport(LIBRARY)]
             public static extern ushort MC6809_CalculateEA(byte postByte);
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6809ExecOpCode2(byte opCode);
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6809ExecOpCode3(byte opCode);
         }
 
         public static class MC6821
