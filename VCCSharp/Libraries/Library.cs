@@ -400,12 +400,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern ushort MC6809_CalculateEA(byte postByte);
-
-            [DllImport(LIBRARY)]
-            public static extern void MC6809ExecOpCode2(byte opCode);
-
-            [DllImport(LIBRARY)]
-            public static extern void MC6809ExecOpCode3(byte opCode);
         }
 
         public static class MC6821

@@ -48,7 +48,6 @@
 
             PC_REG += 2;
             _cycleCounter += 6;
-
         }
 
         public void LBcs_R() // 25 
@@ -760,7 +759,7 @@
 
                 var dest8 = _dest == 2 ? getcc() : PUR(_dest);
 
-                byte source8 ;
+                byte source8;
                 if (_source > 7) // 8 bit source
                 {
                     _source &= 7;
@@ -855,7 +854,7 @@
 
                 var dest8 = _dest == 2 ? getcc() : PUR(_dest);
 
-                byte source8 ;
+                byte source8;
                 if (_source > 7) // 8 bit source
                 {
                     _source &= 7;
@@ -990,7 +989,7 @@
 
         #region 0x40 - 0x4F
 
-        public unsafe void Negd_I() // 40 
+        public void Negd_I() // 40 
         {
             D_REG = (ushort)(0 - D_REG);
             CC_C = _temp16 > 0;
@@ -1000,7 +999,7 @@
             _cycleCounter += _instance._32;
         }
 
-        public unsafe void Comd_I() // 43 
+        public void Comd_I() // 43 
         {
             D_REG = (ushort)(0xFFFF - D_REG);
             CC_Z = ZTEST(D_REG);
@@ -1010,7 +1009,7 @@
             _cycleCounter += _instance._32;
         }
 
-        public unsafe void Lsrd_I() // 44 
+        public void Lsrd_I() // 44 
         {
             CC_C = (D_REG & 1) != 0;
             D_REG = (ushort)(D_REG >> 1);
@@ -1019,7 +1018,7 @@
             _cycleCounter += _instance._32;
         }
 
-        public unsafe void Rord_I() // 46 
+        public void Rord_I() // 46 
         {
             _postWord = CC_C ? (ushort)0x8000 : (ushort)0x0000; //CC_C<< 15;
             CC_C = (D_REG & 1) != 0;
@@ -1029,7 +1028,7 @@
             _cycleCounter += _instance._32;
         }
 
-        public unsafe void Asrd_I() // 47 
+        public void Asrd_I() // 47 
         {
             CC_C = (D_REG & 1) != 0;
             D_REG = (ushort)((D_REG & 0x8000) | (D_REG >> 1));
@@ -1038,7 +1037,7 @@
             _cycleCounter += _instance._32;
         }
 
-        public unsafe void Asld_I() // 48 
+        public void Asld_I() // 48 
         {
             CC_C = D_REG >> 15 != 0;
             CC_V = ((CC_C ? 1 : 0) ^ ((D_REG & 0x4000) >> 14)) != 0;
@@ -1048,7 +1047,7 @@
             _cycleCounter += _instance._32;
         }
 
-        public unsafe void Rold_I() // 49 
+        public void Rold_I() // 49 
         {
             _postWord = (ushort)(CC_C ? 1 : 0);
             CC_C = D_REG >> 15 != 0;
@@ -1059,7 +1058,7 @@
             _cycleCounter += _instance._32;
         }
 
-        public unsafe void Decd_I() // 4A 
+        public void Decd_I() // 4A 
         {
             D_REG--;
             CC_Z = ZTEST(D_REG);
@@ -1068,7 +1067,7 @@
             _cycleCounter += _instance._32;
         }
 
-        public unsafe void Incd_I() // 4C 
+        public void Incd_I() // 4C 
         {
             D_REG++;
             CC_Z = ZTEST(D_REG);
@@ -1077,7 +1076,7 @@
             _cycleCounter += _instance._32;
         }
 
-        public unsafe void Tstd_I() // 4D 
+        public void Tstd_I() // 4D 
         {
             CC_Z = ZTEST(D_REG);
             CC_N = NTEST16(D_REG);
@@ -1085,7 +1084,7 @@
             _cycleCounter += _instance._32;
         }
 
-        public unsafe void Clrd_I() // 4F 
+        public void Clrd_I() // 4F 
         {
             D_REG = 0;
             CC_C = false; //0;
@@ -1099,7 +1098,7 @@
 
         #region 0x50 - 0x5F
 
-        public unsafe void Comw_I() // 53 
+        public void Comw_I() // 53 
         {
             W_REG = (ushort)(0xFFFF - W_REG);
             CC_Z = ZTEST(W_REG);
@@ -1110,7 +1109,7 @@
 
         }
 
-        public unsafe void Lsrw_I() // 54 
+        public void Lsrw_I() // 54 
         {
             CC_C = (W_REG & 1) != 0;
             W_REG = (ushort)(W_REG >> 1);
@@ -1119,7 +1118,7 @@
             _cycleCounter += _instance._32;
         }
 
-        public unsafe void Rorw_I() // 56 
+        public void Rorw_I() // 56 
         {
             _postWord = (ushort)((CC_C ? 1 : 0) << 15);
             CC_C = (W_REG & 1) != 0;
@@ -1129,7 +1128,7 @@
             _cycleCounter += _instance._32;
         }
 
-        public unsafe void Rolw_I() // 59 
+        public void Rolw_I() // 59 
         {
             _postWord = CC_C ? (ushort)1 : (ushort)0;
             CC_C = W_REG >> 15 != 0;
@@ -1140,7 +1139,7 @@
             _cycleCounter += _instance._32;
         }
 
-        public unsafe void Decw_I() // 5A 
+        public void Decw_I() // 5A 
         {
             W_REG--;
             CC_Z = ZTEST(W_REG);
@@ -1149,7 +1148,7 @@
             _cycleCounter += _instance._32;
         }
 
-        public unsafe void Incw_I() // 5C 
+        public void Incw_I() // 5C 
         {
             W_REG++;
             CC_Z = ZTEST(W_REG);
@@ -1158,7 +1157,7 @@
             _cycleCounter += _instance._32;
         }
 
-        public unsafe void Tstw_I() // 5D 
+        public void Tstw_I() // 5D 
         {
             CC_Z = ZTEST(W_REG);
             CC_N = NTEST16(W_REG);
@@ -1166,7 +1165,7 @@
             _cycleCounter += _instance._32;
         }
 
-        public unsafe void Clrw_I() // 5F 
+        public void Clrw_I() // 5F 
         {
             W_REG = 0;
             CC_C = false; //0;
@@ -1183,7 +1182,7 @@
 
         #region 0x80 - 0x8F
 
-        public unsafe void Subw_M() // 80 
+        public void Subw_M() // 80 
         {
             _postWord = MemRead16(PC_REG);
             _temp16 = (ushort)(W_REG - _postWord);
@@ -1196,7 +1195,7 @@
             _cycleCounter += _instance._54;
         }
 
-        public unsafe void Cmpw_M() // 81 
+        public void Cmpw_M() // 81 
         {
             _postWord = MemRead16(PC_REG);
             _temp16 = (ushort)(W_REG - _postWord);
@@ -1208,7 +1207,7 @@
             _cycleCounter += _instance._54;
         }
 
-        public unsafe void Sbcd_M() // 82 
+        public void Sbcd_M() // 82 
         {
             _postWord = MemRead16(PC_REG);
             _temp32 = (uint)(D_REG - _postWord - (CC_C ? 1 : 0));
@@ -1221,7 +1220,7 @@
             _cycleCounter += _instance._54;
         }
 
-        public unsafe void Cmpd_M() // 83 
+        public void Cmpd_M() // 83 
         {
             _postWord = MemRead16(PC_REG);
             _temp16 = (ushort)(D_REG - _postWord);
@@ -1233,7 +1232,7 @@
             _cycleCounter += _instance._54;
         }
 
-        public unsafe void Andd_M() // 84 
+        public void Andd_M() // 84 
         {
             D_REG &= MemRead16(PC_REG);
             CC_N = NTEST16(D_REG);
@@ -1243,7 +1242,7 @@
             _cycleCounter += _instance._54;
         }
 
-        public unsafe void Bitd_M() // 85 
+        public void Bitd_M() // 85 
         {
             _temp16 = (ushort)(D_REG & MemRead16(PC_REG));
             CC_N = NTEST16(_temp16);
@@ -1253,7 +1252,7 @@
             _cycleCounter += _instance._54;
         }
 
-        public unsafe void Ldw_M() // 86  
+        public void Ldw_M() // 86  
         {
             W_REG = MemRead16(PC_REG);
             CC_Z = ZTEST(W_REG);
@@ -1263,7 +1262,7 @@
             _cycleCounter += _instance._54;
         }
 
-        public unsafe void Eord_M() // 88 
+        public void Eord_M() // 88 
         {
             D_REG ^= MemRead16(PC_REG);
             CC_N = NTEST16(D_REG);
@@ -1273,7 +1272,7 @@
             _cycleCounter += _instance._54;
         }
 
-        public unsafe void Adcd_M() // 89 
+        public void Adcd_M() // 89 
         {
             _postWord = MemRead16(PC_REG);
             _temp32 = (ushort)(D_REG + _postWord + (CC_C ? 1 : 0));
@@ -1287,7 +1286,7 @@
             _cycleCounter += _instance._54;
         }
 
-        public unsafe void Ord_M() // 8A  
+        public void Ord_M() // 8A  
         {
             D_REG |= MemRead16(PC_REG);
             CC_N = NTEST16(D_REG);
@@ -1297,7 +1296,7 @@
             _cycleCounter += _instance._54;
         }
 
-        public unsafe void Addw_M() // 8B 
+        public void Addw_M() // 8B 
         {
             _temp16 = MemRead16(PC_REG);
             _temp32 = (uint)(W_REG + _temp16);
@@ -1310,7 +1309,7 @@
             _cycleCounter += _instance._54;
         }
 
-        public unsafe void Cmpy_M() // 8C 
+        public void Cmpy_M() // 8C 
         {
             _postWord = MemRead16(PC_REG);
             _temp16 = (ushort)(Y_REG - _postWord);
@@ -1322,7 +1321,7 @@
             _cycleCounter += _instance._54;
         }
 
-        public unsafe void Ldy_M() // 8E  
+        public void Ldy_M() // 8E  
         {
             Y_REG = MemRead16(PC_REG);
             CC_Z = ZTEST(Y_REG);
@@ -1336,7 +1335,7 @@
 
         #region 0x90 - 0x9F
 
-        public unsafe void Subw_D() // 90 
+        public void Subw_D() // 90 
         {
             _temp16 = MemRead16(DPADDRESS(PC_REG++));
             _temp32 = (uint)(W_REG - _temp16);
@@ -1348,7 +1347,7 @@
             _cycleCounter += _instance._75;
         }
 
-        public unsafe void Cmpw_D() // 91 
+        public void Cmpw_D() // 91 
         {
             _postWord = MemRead16(DPADDRESS(PC_REG++));
             _temp16 = (ushort)(W_REG - _postWord);
@@ -1359,7 +1358,7 @@
             _cycleCounter += _instance._75;
         }
 
-        public unsafe void Sbcd_D() // 92 
+        public void Sbcd_D() // 92 
         {
             _postWord = MemRead16(DPADDRESS(PC_REG++));
             _temp32 = (uint)(D_REG - _postWord - (CC_C ? 1 : 0));
@@ -1371,7 +1370,7 @@
             _cycleCounter += _instance._75;
         }
 
-        public unsafe void Cmpd_D() // 93 
+        public void Cmpd_D() // 93 
         {
             _postWord = MemRead16(DPADDRESS(PC_REG++));
             _temp16 = (ushort)(D_REG - _postWord);
@@ -1382,7 +1381,7 @@
             _cycleCounter += _instance._75;
         }
 
-        public unsafe void Andd_D() // 94 
+        public void Andd_D() // 94 
         {
             _postWord = MemRead16(DPADDRESS(PC_REG++));
             D_REG &= _postWord;
@@ -1392,7 +1391,7 @@
             _cycleCounter += _instance._75;
         }
 
-        public unsafe void Bitd_D() // 95 
+        public void Bitd_D() // 95 
         {
             _temp16 = (ushort)(D_REG & MemRead16(DPADDRESS(PC_REG++)));
             CC_N = NTEST16(_temp16);
@@ -1401,7 +1400,7 @@
             _cycleCounter += _instance._75;
         }
 
-        public unsafe void Ldw_D() // 96 
+        public void Ldw_D() // 96 
         {
             W_REG = MemRead16(DPADDRESS(PC_REG++));
             CC_Z = ZTEST(W_REG);
@@ -1410,7 +1409,7 @@
             _cycleCounter += _instance._65;
         }
 
-        public unsafe void Stw_D() // 97 
+        public void Stw_D() // 97 
         {
             MemWrite16(W_REG, DPADDRESS(PC_REG++));
             CC_Z = ZTEST(W_REG);
@@ -1419,7 +1418,7 @@
             _cycleCounter += _instance._65;
         }
 
-        public unsafe void Eord_D() // 98 
+        public void Eord_D() // 98 
         {
             D_REG ^= MemRead16(DPADDRESS(PC_REG++));
             CC_N = NTEST16(D_REG);
@@ -1428,7 +1427,7 @@
             _cycleCounter += _instance._75;
         }
 
-        public unsafe void Adcd_D() // 99 
+        public void Adcd_D() // 99 
         {
             _postWord = MemRead16(DPADDRESS(PC_REG++));
             _temp32 = (uint)(D_REG + _postWord + (CC_C ? 1 : 0));
@@ -1441,7 +1440,7 @@
             _cycleCounter += _instance._75;
         }
 
-        public unsafe void Ord_D() // 9A 
+        public void Ord_D() // 9A 
         {
             D_REG |= MemRead16(DPADDRESS(PC_REG++));
             CC_N = NTEST16(D_REG);
@@ -1450,7 +1449,7 @@
             _cycleCounter += _instance._75;
         }
 
-        public unsafe void Addw_D() // 9B 
+        public void Addw_D() // 9B 
         {
             _temp16 = MemRead16(DPADDRESS(PC_REG++));
             _temp32 = (uint)(W_REG + _temp16);
@@ -1462,7 +1461,7 @@
             _cycleCounter += _instance._75;
         }
 
-        public unsafe void Cmpy_D() // 9C 
+        public void Cmpy_D() // 9C 
         {
             _postWord = MemRead16(DPADDRESS(PC_REG++));
             _temp16 = (ushort)(Y_REG - _postWord);
@@ -1473,7 +1472,7 @@
             _cycleCounter += _instance._75;
         }
 
-        public unsafe void Ldy_D() // 9E 
+        public void Ldy_D() // 9E 
         {
             Y_REG = MemRead16(DPADDRESS(PC_REG++));
             CC_Z = ZTEST(Y_REG);
@@ -1482,7 +1481,7 @@
             _cycleCounter += _instance._65;
         }
 
-        public unsafe void Sty_D() // 9F 
+        public void Sty_D() // 9F 
         {
             MemWrite16(Y_REG, DPADDRESS(PC_REG++));
             CC_Z = ZTEST(Y_REG);
@@ -1495,7 +1494,7 @@
 
         #region 0xA0 - 0xAF
 
-        public unsafe void Subw_X() // A0 
+        public void Subw_X() // A0 
         {
             _temp16 = MemRead16(INDADDRESS(PC_REG++));
             _temp32 = (uint)(W_REG - _temp16);
@@ -1507,7 +1506,7 @@
             _cycleCounter += _instance._76;
         }
 
-        public unsafe void Cmpw_X() // A1 
+        public void Cmpw_X() // A1 
         {
             _postWord = MemRead16(INDADDRESS(PC_REG++));
             _temp16 = (ushort)(W_REG - _postWord);
@@ -1518,7 +1517,7 @@
             _cycleCounter += _instance._76;
         }
 
-        public unsafe void Sbcd_X() // A2 
+        public void Sbcd_X() // A2 
         {
             _postWord = MemRead16(INDADDRESS(PC_REG++));
             _temp32 = (uint)(D_REG - _postWord - (CC_C ? 1 : 0));
@@ -1530,7 +1529,7 @@
             _cycleCounter += _instance._76;
         }
 
-        public unsafe void Cmpd_X() // A3 
+        public void Cmpd_X() // A3 
         {
             _postWord = MemRead16(INDADDRESS(PC_REG++));
             _temp16 = (ushort)(D_REG - _postWord);
@@ -1541,7 +1540,7 @@
             _cycleCounter += _instance._76;
         }
 
-        public unsafe void Andd_X() // A4 
+        public void Andd_X() // A4 
         {
             D_REG &= MemRead16(INDADDRESS(PC_REG++));
             CC_N = NTEST16(D_REG);
@@ -1550,7 +1549,7 @@
             _cycleCounter += _instance._76;
         }
 
-        public unsafe void Bitd_X() // A5 
+        public void Bitd_X() // A5 
         {
             _temp16 = (ushort)(D_REG & MemRead16(INDADDRESS(PC_REG++)));
             CC_N = NTEST16(_temp16);
@@ -1577,7 +1576,7 @@
             _cycleCounter += 6;
         }
 
-        public unsafe void Eord_X() // A8 
+        public void Eord_X() // A8 
         {
             D_REG ^= MemRead16(INDADDRESS(PC_REG++));
             CC_N = NTEST16(D_REG);
@@ -1586,7 +1585,7 @@
             _cycleCounter += _instance._76;
         }
 
-        public unsafe void Adcd_X() // A9 
+        public void Adcd_X() // A9 
         {
             _postWord = MemRead16(INDADDRESS(PC_REG++));
             _temp32 = (uint)(D_REG + _postWord + (CC_C ? 1 : 0));
@@ -1599,7 +1598,7 @@
             _cycleCounter += _instance._76;
         }
 
-        public unsafe void Ord_X() // AA 
+        public void Ord_X() // AA 
         {
             D_REG |= MemRead16(INDADDRESS(PC_REG++));
             CC_N = NTEST16(D_REG);
@@ -1608,7 +1607,7 @@
             _cycleCounter += _instance._76;
         }
 
-        public unsafe void Addw_X() // AB 
+        public void Addw_X() // AB 
         {
             _temp16 = MemRead16(INDADDRESS(PC_REG++));
             _temp32 = (uint)(W_REG + _temp16);
@@ -1620,7 +1619,7 @@
             _cycleCounter += _instance._76;
         }
 
-        public unsafe void Cmpy_X() // AC 
+        public void Cmpy_X() // AC 
         {
             _postWord = MemRead16(INDADDRESS(PC_REG++));
             _temp16 = (ushort)(Y_REG - _postWord);
@@ -1653,7 +1652,7 @@
 
         #region 0xB0 - 0xBF
 
-        public unsafe void Subw_E() // B0 
+        public void Subw_E() // B0 
         {
             _temp16 = MemRead16(MemRead16(PC_REG));
             _temp32 = (uint)(W_REG - _temp16);
@@ -1666,7 +1665,7 @@
             _cycleCounter += _instance._86;
         }
 
-        public unsafe void Cmpw_E() // B1 
+        public void Cmpw_E() // B1 
         {
             _postWord = MemRead16(MemRead16(PC_REG));
             _temp16 = (ushort)(W_REG - _postWord);
@@ -1678,7 +1677,7 @@
             _cycleCounter += _instance._86;
         }
 
-        public unsafe void Sbcd_E() // B2 
+        public void Sbcd_E() // B2 
         {
             _temp16 = MemRead16(MemRead16(PC_REG));
             _temp32 = (uint)(D_REG - _temp16 - (CC_C ? 1 : 0));
@@ -1691,7 +1690,7 @@
             _cycleCounter += _instance._86;
         }
 
-        public unsafe void Cmpd_E() // B3 
+        public void Cmpd_E() // B3 
         {
             _postWord = MemRead16(MemRead16(PC_REG));
             _temp16 = (ushort)(D_REG - _postWord);
@@ -1703,7 +1702,7 @@
             _cycleCounter += _instance._86;
         }
 
-        public unsafe void Andd_E() // B4 
+        public void Andd_E() // B4 
         {
             D_REG &= MemRead16(MemRead16(PC_REG));
             CC_N = NTEST16(D_REG);
@@ -1713,7 +1712,7 @@
             _cycleCounter += _instance._86;
         }
 
-        public unsafe void Bitd_E() // B5 
+        public void Bitd_E() // B5 
         {
             _temp16 = (ushort)(D_REG & MemRead16(MemRead16(PC_REG)));
             CC_N = NTEST16(_temp16);
@@ -1723,7 +1722,7 @@
             _cycleCounter += _instance._86;
         }
 
-        public unsafe void Ldw_E() // B6 
+        public void Ldw_E() // B6 
         {
             W_REG = MemRead16(MemRead16(PC_REG));
             CC_Z = ZTEST(W_REG);
@@ -1733,7 +1732,7 @@
             _cycleCounter += _instance._76;
         }
 
-        public unsafe void Stw_E() // B7 
+        public void Stw_E() // B7 
         {
             MemWrite16(W_REG, MemRead16(PC_REG));
             CC_Z = ZTEST(W_REG);
@@ -1743,7 +1742,7 @@
             _cycleCounter += _instance._76;
         }
 
-        public unsafe void Eord_E() // B8 
+        public void Eord_E() // B8 
         {
             D_REG ^= MemRead16(MemRead16(PC_REG));
             CC_N = NTEST16(D_REG);
@@ -1753,7 +1752,7 @@
             _cycleCounter += _instance._86;
         }
 
-        public unsafe void Adcd_E() // B9 
+        public void Adcd_E() // B9 
         {
             _postWord = MemRead16(MemRead16(PC_REG));
             _temp32 = (uint)(D_REG + _postWord + (CC_C ? 1 : 0));
@@ -1767,7 +1766,7 @@
             _cycleCounter += _instance._86;
         }
 
-        public unsafe void Ord_E() // BA 
+        public void Ord_E() // BA 
         {
             D_REG |= MemRead16(MemRead16(PC_REG));
             CC_N = NTEST16(D_REG);
@@ -1777,7 +1776,7 @@
             _cycleCounter += _instance._86;
         }
 
-        public unsafe void Addw_E() // BB 
+        public void Addw_E() // BB 
         {
             _temp16 = MemRead16(MemRead16(PC_REG));
             _temp32 = (uint)(W_REG + _temp16);
@@ -1790,7 +1789,7 @@
             _cycleCounter += _instance._86;
         }
 
-        public unsafe void Cmpy_E() // BC 
+        public void Cmpy_E() // BC 
         {
             _postWord = MemRead16(MemRead16(PC_REG));
             _temp16 = (ushort)(Y_REG - _postWord);
@@ -1802,7 +1801,7 @@
             _cycleCounter += _instance._86;
         }
 
-        public unsafe void Ldy_E() // BE 
+        public void Ldy_E() // BE 
         {
             Y_REG = MemRead16(MemRead16(PC_REG));
             CC_Z = ZTEST(Y_REG);
@@ -1812,7 +1811,7 @@
             _cycleCounter += _instance._76;
         }
 
-        public unsafe void Sty_E() // BF 
+        public void Sty_E() // BF 
         {
             MemWrite16(Y_REG, MemRead16(PC_REG));
             CC_Z = ZTEST(Y_REG);
@@ -1840,7 +1839,7 @@
 
         #region 0xD0 - 0xDF
 
-        public unsafe void Ldq_D() // DC 
+        public void Ldq_D() // DC 
         {
             Q_REG = MemRead32(DPADDRESS(PC_REG++));
             CC_Z = ZTEST(Q_REG);
@@ -1849,7 +1848,7 @@
             _cycleCounter += _instance._87;
         }
 
-        public unsafe void Stq_D() // DD 
+        public void Stq_D() // DD 
         {
             MemWrite32(Q_REG, DPADDRESS(PC_REG++));
             CC_Z = ZTEST(Q_REG);
@@ -1858,7 +1857,7 @@
             _cycleCounter += _instance._87;
         }
 
-        public unsafe void Lds_D() // DE 
+        public void Lds_D() // DE 
         {
             S_REG = MemRead16(DPADDRESS(PC_REG++));
             CC_Z = ZTEST(S_REG);
@@ -1867,7 +1866,7 @@
             _cycleCounter += _instance._65;
         }
 
-        public unsafe void Sts_D() // DF 
+        public void Sts_D() // DF 
         {
             MemWrite16(S_REG, DPADDRESS(PC_REG++));
             CC_Z = ZTEST(S_REG);
@@ -1920,7 +1919,7 @@
 
         #region 0xF0 - 0xFF
 
-        public unsafe void Ldq_E() // FC 
+        public void Ldq_E() // FC 
         {
             Q_REG = MemRead32(MemRead16(PC_REG));
             CC_Z = ZTEST(Q_REG);
@@ -1930,7 +1929,7 @@
             _cycleCounter += _instance._98;
         }
 
-        public unsafe void Stq_E() // FD 
+        public void Stq_E() // FD 
         {
             MemWrite32(Q_REG, MemRead16(PC_REG));
             CC_Z = ZTEST(Q_REG);
@@ -1940,7 +1939,7 @@
             _cycleCounter += _instance._98;
         }
 
-        public unsafe void Lds_E() // FE 
+        public void Lds_E() // FE 
         {
             S_REG = MemRead16(MemRead16(PC_REG));
             CC_Z = ZTEST(S_REG);
@@ -1950,7 +1949,7 @@
             _cycleCounter += _instance._76;
         }
 
-        public unsafe void Sts_E() // FF 
+        public void Sts_E() // FF 
         {
             MemWrite16(S_REG, MemRead16(PC_REG));
             CC_Z = ZTEST(S_REG);

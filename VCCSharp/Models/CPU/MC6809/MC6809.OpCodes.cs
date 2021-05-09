@@ -854,16 +854,6 @@ namespace VCCSharp.Models.CPU.MC6809
             _jmpVec1[opCode]();
         }
 
-        public void LIB2(byte opCode)
-        {
-            Library.MC6809.MC6809ExecOpCode2(opCode);
-        }
-
-        public void LIB3(byte opCode)
-        {
-            Library.MC6809.MC6809ExecOpCode3(opCode);
-        }
-
         public void InvalidInsHandler()
         {
         }

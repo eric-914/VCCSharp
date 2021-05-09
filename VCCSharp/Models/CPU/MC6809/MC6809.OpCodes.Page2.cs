@@ -3,436 +3,711 @@
     // ReSharper disable once InconsistentNaming
     public partial class MC6809
     {
-        //1000
-        //1001
-        //1002
-        //1003
-        //1004
-        //1005
-        //1006
-        //1007
-        //1008
-        //1009
-        //100A
-        //100B
-        //100C
-        //100D
-        //100E
-        //100F
-        
-        //1010
-        //1011
-        //1012
-        //1013
-        //1014
-        //1015
-        //1016
-        //1017
-        //1018
-        //1019
-        //101A
-        //101B
-        //101C
-        //101D
-        //101E
-        //101F
+        //0x1000 - 0x101F
 
-        //1020
+        #region 0x20 - 0x2F
 
-        public void LBRN_R() //1021
+        //0x1020
+
+        public void LBRN_R() //0x1021
         {
-            LIB2(0x21);
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
         }
 
-        public void LBHI_R() //1022
+        public void LBHI_R() //0x1022
         {
-            LIB2(0x22);
+            if (!(CC_C | CC_Z))
+            {
+                PC_REG += (ushort)(short)MemRead16(PC_REG);
+
+                unsafe
+                {
+                    _instance->CycleCounter += 1;
+                }
+            }
+
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
         }
 
-        public void LBLS_R() //1023
+        public void LBLS_R() //0x1023
         {
-            LIB2(0x23);
+            if (CC_C | CC_Z)
+            {
+                PC_REG += (ushort)(short)MemRead16(PC_REG);
+
+                unsafe
+                {
+                    _instance->CycleCounter += 1;
+                }
+            }
+
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
         }
 
-        public void LBHS_R() //1024
+        public void LBHS_R() //0x1024
         {
-            LIB2(0x24);
+            if (!CC_C)
+            {
+                PC_REG += (ushort)(short)MemRead16(PC_REG);
+
+                unsafe
+                {
+                    _instance->CycleCounter += 1;
+                }
+            }
+
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 6;
+            }
         }
 
-        public void LBCS_R() //1025
+        public void LBCS_R() //0x1025
         {
-            LIB2(0x25);
+            if (CC_C)
+            {
+                PC_REG += (ushort)(short)MemRead16(PC_REG);
+
+                unsafe
+                {
+                    _instance->CycleCounter += 1;
+                }
+            }
+
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
         }
 
-        public void LBNE_R() //1026
+        public void LBNE_R() //0x1026
         {
-            LIB2(0x26);
-        }
-        
-        public void LBEQ_R() //1027
-        {
-            LIB2(0x27);
-        }
-        
-        public void LBVC_R() //1028
-        {
-            LIB2(0x28);
-        }
-        
-        public void LBVS_R() //1029
-        {
-            LIB2(0x29);
-        }
-        
-        public void LBPL_R() //102A
-        {
-            LIB2(0x2A);
-        }
-        
-        public void LBMI_R() //102B
-        {
-            LIB2(0x2B);
-        }
-        
-        public void LBGE_R() //102C
-        {
-            LIB2(0x2C);
-        }
-        
-        public void LBLT_R() //102D
-        {
-            LIB2(0x2D);
-        }
-        
-        public void LBGT_R() //102E
-        {
-            LIB2(0x2E);
-        }
-        
-        public void LBLE_R() //102F
-        {
-            LIB2(0x2F);
-        }
-        
-        //1030
-        //1031
-        //1032
-        //1033
-        //1034
-        //1035
-        //1036
-        //1037
-        //1038
-        //1039
-        //103A
-        //103B
-        //103C
-        //103D
-        //103E
+            if (!CC_Z)
+            {
+                PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-        public void SWI2_I() //103F
-        {
-            LIB2(0x3F);
+                unsafe
+                {
+                    _instance->CycleCounter += 1;
+                }
+            }
+
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
         }
 
-        //1040
-        //1041
-        //1042
-        //1043
-        //1044
-        //1045
-        //1046
-        //1047
-        //1048
-        //1049
-        //104A
-        //104B
-        //104C
-        //104D
-        //104E
-        //104F
-
-        //1050
-        //1051
-        //1052
-        //1053
-        //1054
-        //1055
-        //1056
-        //1057
-        //1058
-        //1059
-        //105A
-        //105B
-        //105C
-        //105D
-        //105E
-        //105F
-
-        //1060
-        //1061
-        //1062
-        //1063
-        //1064
-        //1065
-        //1066
-        //1067
-        //1068
-        //1069
-        //106A
-        //106B
-        //106C
-        //106D
-        //106E
-        //106F
-
-        //1070
-        //1071
-        //1072
-        //1073
-        //1074
-        //1075
-        //1076
-        //1077
-        //1078
-        //1079
-        //107A
-        //107B
-        //107C
-        //107D
-        //107E
-        //107F
-
-        //1080
-        //1081
-        //1082
-
-        public void CMPD_M() //1083
+        public void LBEQ_R() //0x1027
         {
-            LIB2(0x83);
-        }
-        
-        //1084
-        //1085
-        //1086
-        //1087
-        //1088
-        //1089
-        //108A
-        //108B
+            if (CC_Z)
+            {
+                PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-        public void CMPY_M() //108C
-        {
-            LIB2(0x8C);
-        }
-        
-        public void LDY_M() //108E
-        {
-            LIB2(0x8E);
+                unsafe
+                {
+                    _instance->CycleCounter += 1;
+                }
+            }
+
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
         }
 
-        //108F
-
-        //1090
-        //1091
-        //1092
-
-        public void CMPD_D() //1093
+        public void LBVC_R() //0x1028
         {
-            LIB2(0x93);
-        }
-        
-        //1094
-        //1095
-        //1096
-        //1097
-        //1098
-        //1099
-        //109A
-        //109B
+            if (!CC_V)
+            {
+                PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-        public void CMPY_D()	//109C
-        {
-            LIB2(0x9C);
+                unsafe
+                {
+                    _instance->CycleCounter += 1;
+                }
+            }
+
+            PC_REG += 2;
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
         }
 
-        //109D
+        public void LBVS_R() //0x1029
+        {
+            if (CC_V)
+            {
+                PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-        public void LDY_D() //109E
-        {
-            LIB2(0x9E);
-        }
-        
-        public void STY_D() //109F
-        {
-            LIB2(0x9F);
-        }
-        
-        //10A0
-        //10A1
-        //10A2
+                unsafe
+                {
+                    _instance->CycleCounter += 1;
+                }
+            }
 
-        public void CMPD_X() //10A3
-        {
-            LIB2(0xA3);
-        }
-        
-        //10A4
-        //10A5
-        //10A6
-        //10A7
-        //10A8
-        //10A9
-        //10AA
-        //10AB
+            PC_REG += 2;
 
-        public void CMPY_X() //10AC
-        {
-            LIB2(0xAC);
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
         }
-        
-        //10AD
 
-        public void LDY_X() //10AE
+        public void LBPL_R() //0x102A
         {
-            LIB2(0xAE);
-        }
-        
-        public void STY_X() //10AF
-        {
-            LIB2(0xAF);
-        }
-        
-        //10B0
-        //10B1
-        //10B2
+            if (!CC_N)
+            {
+                PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-        public void CMPD_E() //10B3
-        {
-            LIB2(0xB3);
-        }
-        
-        //10B4
-        //10B5
-        //10B6
-        //10B7
-        //10B8
-        //10B9
-        //10BA
-        //10BB
+                unsafe
+                {
+                    _instance->CycleCounter += 1;
+                }
+            }
 
-        public void CMPY_E() //10BC
-        {
-            LIB2(0xBC);
-        }
-        
-        //10BD
+            PC_REG += 2;
 
-        public void LDY_E() //10BE
-        {
-            LIB2(0xBE);
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
         }
-        
-        public void STY_E() //10BF
-        {
-            LIB2(0xBF);
-        }
-        
-        //10C0
-        //10C1
-        //10C2
-        //10C3
-        //10C4
-        //10C5
-        //10C6
-        //10C7
-        //10C8
-        //10C9
-        //10CA
-        //10CB
-        //10CC
-        //10CD
 
-        public void LDS_I() //10CE
+        public void LBMI_R() //0x102B
         {
-            LIB2(0xCE);
-        }
-        
-        //10CF
+            if (CC_N)
+            {
+                PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-        //10D0
-        //10D1
-        //10D2
-        //10D3
-        //10D4
-        //10D5
-        //10D6
-        //10D7
-        //10D8
-        //10D9
-        //10DA
-        //10DB
-        //10DC
-        //10DD
+                unsafe
+                {
+                    _instance->CycleCounter += 1;
+                }
+            }
 
-        public void LDS_D() //10DE
-        {
-            LIB2(0xDE);
-        }
-        
-        public void STS_D() //10DF
-        {
-            LIB2(0xDF);
-        }
-        
-        //10E0
-        //10E1
-        //10E2
-        //10E3
-        //10E4
-        //10E5
-        //10E6
-        //10E7
-        //10E8
-        //10E9
-        //10EA
-        //10EB
-        //10EC
-        //10ED
+            PC_REG += 2;
 
-        public void LDS_X() //10EE
-        {
-            LIB2(0xEE);
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
         }
-        
-        public void STS_X() //10EF
-        {
-            LIB2(0xEF);
-        }
-        
-        //10F0
-        //10F1
-        //10F2
-        //10F3
-        //10F4
-        //10F5
-        //10F6
-        //10F7
-        //10F8
-        //10F9
-        //10FA
-        //10FB
-        //10FC
-        //10FD
 
-        public void LDS_E() //10FE
+        public void LBGE_R() //0x102C
         {
-            LIB2(0xFE);
+            if (!(CC_N ^ CC_V))
+            {
+                PC_REG += (ushort)(short)MemRead16(PC_REG);
+
+                unsafe
+                {
+                    _instance->CycleCounter += 1;
+                }
+            }
+
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
         }
-        
-        public void STS_E() //10FF
+
+        public void LBLT_R() //0x102D
         {
-            LIB2(0xFF);
+            if (CC_V ^ CC_N)
+            {
+                PC_REG += (ushort)(short)MemRead16(PC_REG);
+
+                unsafe
+                {
+                    _instance->CycleCounter += 1;
+                }
+            }
+
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
         }
+
+        public void LBGT_R() //0x102E
+        {
+            if (!(CC_Z | (CC_N ^ CC_V)))
+            {
+                PC_REG += (ushort)(short)MemRead16(PC_REG);
+
+                unsafe
+                {
+                    _instance->CycleCounter += 1;
+                }
+            }
+
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
+        }
+
+        public void LBLE_R() //0x102F
+        {
+            if (CC_Z | (CC_N ^ CC_V))
+            {
+                PC_REG += (ushort)(short)MemRead16(PC_REG);
+
+                unsafe
+                {
+                    _instance->CycleCounter += 1;
+                }
+            }
+
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
+        }
+
+        #endregion
+
+        #region 0x30 - 0x3F
+
+        //0x1030 - 0x103E
+
+        public void SWI2_I() //0x103F
+        {
+            CC_E = true; //1;
+            MemWrite8(PC_L, --S_REG);
+            MemWrite8(PC_H, --S_REG);
+            MemWrite8(U_L, --S_REG);
+            MemWrite8(U_H, --S_REG);
+            MemWrite8(Y_L, --S_REG);
+            MemWrite8(Y_H, --S_REG);
+            MemWrite8(X_L, --S_REG);
+            MemWrite8(X_H, --S_REG);
+            MemWrite8(DPA, --S_REG);
+
+            MemWrite8(B_REG, --S_REG);
+            MemWrite8(A_REG, --S_REG);
+            MemWrite8(MC6809_getcc(), --S_REG);
+            PC_REG = MemRead16(Define.VSWI2);
+
+            unsafe
+            {
+                _instance->CycleCounter += 20;
+            }
+        }
+
+        #endregion
+
+        //0x1040 - 0x107F
+
+        #region 0x80 - 0x8F
+
+        //0x1080 - 0x1082
+
+        public void CMPD_M() //0x1083
+        {
+            _postWord = MemRead16(PC_REG);
+            _temp16 = (ushort)(D_REG - _postWord);
+            CC_C = _temp16 > D_REG;
+            CC_V = OVERFLOW16(CC_C, _postWord, _temp16, D_REG);
+            CC_N = NTEST16(_temp16);
+            CC_Z = ZTEST(_temp16);
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
+        }
+
+        //0x1084 - 0x108B
+
+        public void CMPY_M() //0x108C
+        {
+            _postWord = MemRead16(PC_REG);
+            _temp16 = (ushort)(Y_REG - _postWord);
+            CC_C = _temp16 > Y_REG;
+            CC_V = OVERFLOW16(CC_C, _postWord, _temp16, Y_REG);
+            CC_N = NTEST16(_temp16);
+            CC_Z = ZTEST(_temp16);
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
+        }
+
+        public void LDY_M() //0x108E
+        {
+            Y_REG = MemRead16(PC_REG);
+            CC_Z = ZTEST(Y_REG);
+            CC_N = NTEST16(Y_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 5;
+            }
+        }
+
+        //0x108F
+
+        #endregion
+
+        #region 0x90 - 0x9F
+
+        //0x1090 - 0x1092
+
+        public void CMPD_D() //0x1093
+        {
+            _postWord = MemRead16(DPADDRESS(PC_REG++));
+            _temp16 = (ushort)(D_REG - _postWord);
+            CC_C = _temp16 > D_REG;
+            CC_V = OVERFLOW16(CC_C, _postWord, _temp16, D_REG);
+            CC_N = NTEST16(_temp16);
+            CC_Z = ZTEST(_temp16);
+
+            unsafe
+            {
+                _instance->CycleCounter += 7;
+            }
+        }
+
+        //0x1094 - 0x109B
+
+        public void CMPY_D()	//0x109C
+        {
+            _postWord = MemRead16(DPADDRESS(PC_REG++));
+            _temp16 = (ushort)(Y_REG - _postWord);
+            CC_C = _temp16 > Y_REG;
+            CC_V = OVERFLOW16(CC_C, _postWord, _temp16, Y_REG);
+            CC_N = NTEST16(_temp16);
+            CC_Z = ZTEST(_temp16);
+
+            unsafe
+            {
+                _instance->CycleCounter += 7;
+            }
+        }
+
+        //0x109D
+
+        public void LDY_D() //0x109E
+        {
+            Y_REG = MemRead16(DPADDRESS(PC_REG++));
+            CC_Z = ZTEST(Y_REG);
+            CC_N = NTEST16(Y_REG);
+            CC_V = false; //0;
+
+            unsafe
+            {
+                _instance->CycleCounter += 6;
+            }
+        }
+
+        public void STY_D() //0x109F
+        {
+            MemWrite16(Y_REG, DPADDRESS(PC_REG++));
+            CC_Z = ZTEST(Y_REG);
+            CC_N = NTEST16(Y_REG);
+            CC_V = false; //0;
+
+            unsafe
+            {
+                _instance->CycleCounter += 7;
+            }
+        }
+
+        #endregion
+
+        #region 0xA0 - 0xAF
+
+        //0x10A0 - 0x10A2
+
+        public void CMPD_X() //0x10A3
+        {
+            _postWord = MemRead16(INDADDRESS(PC_REG++));
+            _temp16 = (ushort)(D_REG - _postWord);
+            CC_C = _temp16 > D_REG;
+            CC_V = OVERFLOW16(CC_C, _postWord, _temp16, D_REG);
+            CC_N = NTEST16(_temp16);
+            CC_Z = ZTEST(_temp16);
+
+            unsafe
+            {
+                _instance->CycleCounter += 7;
+            }
+        }
+
+        //0x10A4 - 0x10AB
+
+        public void CMPY_X() //0x10AC
+        {
+            _postWord = MemRead16(INDADDRESS(PC_REG++));
+            _temp16 = (ushort)(Y_REG - _postWord);
+            CC_C = _temp16 > Y_REG;
+            CC_V = OVERFLOW16(CC_C, _postWord, _temp16, Y_REG);
+            CC_N = NTEST16(_temp16);
+            CC_Z = ZTEST(_temp16);
+
+            unsafe
+            {
+                _instance->CycleCounter += 7;
+            }
+        }
+
+        //0x10AD
+
+        public void LDY_X() //0x10AE
+        {
+            Y_REG = MemRead16(INDADDRESS(PC_REG++));
+            CC_Z = ZTEST(Y_REG);
+            CC_N = NTEST16(Y_REG);
+            CC_V = false; //0;
+
+            unsafe
+            {
+                _instance->CycleCounter += 6;
+            }
+        }
+
+        public void STY_X() //0x10AF
+        {
+            MemWrite16(Y_REG, INDADDRESS(PC_REG++));
+            CC_Z = ZTEST(Y_REG);
+            CC_N = NTEST16(Y_REG);
+            CC_V = false; //0;
+
+            unsafe
+            {
+                _instance->CycleCounter += 6;
+            }
+        }
+
+        #endregion
+
+        #region 0xB0 - 0xBF
+
+        //0x10B0 - 0x10B2
+
+        public void CMPD_E() //0x10B3
+        {
+            _postWord = MemRead16(MemRead16(PC_REG));
+            _temp16 = (ushort)(D_REG - _postWord);
+            CC_C = _temp16 > D_REG;
+            CC_V = OVERFLOW16(CC_C, _postWord, _temp16, D_REG);
+            CC_N = NTEST16(_temp16);
+            CC_Z = ZTEST(_temp16);
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 8;
+            }
+        }
+
+        //0x10B4 - 0x10BB
+
+        public void CMPY_E() //0x10BC
+        {
+            _postWord = MemRead16(MemRead16(PC_REG));
+            _temp16 = (ushort)(Y_REG - _postWord);
+            CC_C = _temp16 > Y_REG;
+            CC_V = OVERFLOW16(CC_C, _postWord, _temp16, Y_REG);
+            CC_N = NTEST16(_temp16);
+            CC_Z = ZTEST(_temp16);
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 8;
+            }
+        }
+
+        //0x10BD
+
+        public void LDY_E() //0x10BE
+        {
+            Y_REG = MemRead16(MemRead16(PC_REG));
+            CC_Z = ZTEST(Y_REG);
+            CC_N = NTEST16(Y_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 7;
+            }
+        }
+
+        public void STY_E() //0x10BF
+        {
+            MemWrite16(Y_REG, MemRead16(PC_REG));
+            CC_Z = ZTEST(Y_REG);
+            CC_N = NTEST16(Y_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 7;
+            }
+        }
+
+        #endregion
+
+        #region 0xC0 - 0xCF
+
+        //0x10C0 - 0x10CD
+
+        public void LDS_I() //0x10CE
+        {
+            S_REG = MemRead16(PC_REG);
+            CC_Z = ZTEST(S_REG);
+            CC_N = NTEST16(S_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 4;
+            }
+        }
+
+        //0x10CF
+
+        #endregion
+
+        #region 0xD0 - 0xDF
+
+        //0x10D0 - 0x10DD
+
+        public void LDS_D() //0x10DE
+        {
+            S_REG = MemRead16(DPADDRESS(PC_REG++));
+            CC_Z = ZTEST(S_REG);
+            CC_N = NTEST16(S_REG);
+            CC_V = false; //0;
+
+            unsafe
+            {
+                _instance->CycleCounter += 6;
+            }
+        }
+
+        public void STS_D() //0x10DF
+        {
+            MemWrite16(S_REG, DPADDRESS(PC_REG++));
+            CC_Z = ZTEST(S_REG);
+            CC_N = NTEST16(S_REG);
+            CC_V = false; //0;
+
+            unsafe
+            {
+                _instance->CycleCounter += 6;
+            }
+        }
+
+        #endregion
+
+        #region 0xE0 - 0xEF
+
+        //0x10E0 - 0x10ED
+
+        public void LDS_X() //0x10EE
+        {
+            S_REG = MemRead16(INDADDRESS(PC_REG++));
+            CC_Z = ZTEST(S_REG);
+            CC_N = NTEST16(S_REG);
+            CC_V = false; //0;
+
+            unsafe
+            {
+                _instance->CycleCounter += 6;
+            }
+        }
+
+        public void STS_X() //0x10EF
+        {
+            MemWrite16(S_REG, INDADDRESS(PC_REG++));
+            CC_Z = ZTEST(S_REG);
+            CC_N = NTEST16(S_REG);
+            CC_V = false; //0;
+
+            unsafe
+            {
+                _instance->CycleCounter += 6;
+            }
+        }
+
+        #endregion
+
+        #region 0xF0 - 0xFF
+
+        //0x10F0 - 0x10FD
+
+        public void LDS_E() //0x10FE
+        {
+            S_REG = MemRead16(MemRead16(PC_REG));
+            CC_Z = ZTEST(S_REG);
+            CC_N = NTEST16(S_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 7;
+            }
+        }
+
+        public void STS_E() //0x10FF
+        {
+            MemWrite16(S_REG, MemRead16(PC_REG));
+            CC_Z = ZTEST(S_REG);
+            CC_N = NTEST16(S_REG);
+            CC_V = false; //0;
+            PC_REG += 2;
+
+            unsafe
+            {
+                _instance->CycleCounter += 7;
+            }
+        }
+
+        #endregion
     }
 }

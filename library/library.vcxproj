@@ -187,7 +187,6 @@
     <ClCompile Include="keyboardlayout.c" />
     <ClCompile Include="library.cpp" />
     <ClCompile Include="MC6809.c" />
-    <ClCompile Include="MC6809OpCodes.c" />
     <ClCompile Include="MC6821.c" />
     <ClCompile Include="MenuCallbacks.c" />
     <ClCompile Include="MessageHandlers.c" />
@@ -241,7 +240,6 @@
     <ClInclude Include="macros.h" />
     <ClInclude Include="MC6809.h" />
     <ClInclude Include="MC6809Macros.h" />
-    <ClInclude Include="MC6809OpCodes.h" />
     <ClInclude Include="MC6821.h" />
     <ClInclude Include="MC6821State.h" />
     <ClInclude Include="MenuCallbacks.h" />

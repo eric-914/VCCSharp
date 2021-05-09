@@ -56,9 +56,6 @@
     <ClCompile Include="MC6809.c">
       <Filter>mc6809</Filter>
     </ClCompile>
-    <ClCompile Include="MC6809OpCodes.c">
-      <Filter>mc6809</Filter>
-    </ClCompile>
     <ClCompile Include="MessageHandlers.c">
       <Filter>events</Filter>
     </ClCompile>
@@ -182,9 +179,6 @@
       <Filter>mc6809</Filter>
     </ClInclude>
     <ClInclude Include="MC6809Macros.h">
-      <Filter>mc6809</Filter>
-    </ClInclude>
-    <ClInclude Include="MC6809OpCodes.h">
       <Filter>mc6809</Filter>
     </ClInclude>
     <ClInclude Include="MessageHandlers.h">
