@@ -390,16 +390,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe MC6809State * GetMC6809State();
 
             [DllImport(LIBRARY)]
-            public static extern void MC6809Reset();
-
-            [DllImport(LIBRARY)]
             public static extern void MC6809AssertInterrupt(byte interrupt, byte waiter);
-
-            [DllImport(LIBRARY)]
-            public static extern byte MC6809_getcc();
-
-            [DllImport(LIBRARY)]
-            public static extern ushort MC6809_CalculateEA(byte postByte);
         }
 
         public static class MC6821

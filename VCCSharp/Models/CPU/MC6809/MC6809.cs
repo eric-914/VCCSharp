@@ -87,9 +87,38 @@ namespace VCCSharp.Models.CPU.MC6809
             Library.MC6809.MC6809AssertInterrupt(irq, flag);
         }
 
-        public void Reset()
+        public unsafe void Reset()
         {
-            Library.MC6809.MC6809Reset();
+            MC6809State* instance = GetMC6809State();
+
+            byte index;
+
+            for (index = 0; index <= 5; index++)
+            {		//Set all register to 0 except V
+                PXF(index, 0);
+            }
+
+            for (index = 0; index <= 7; index++)
+            {
+                PUR(index, 0);
+            }
+
+            CC_E = false;
+            CC_F = true;
+            CC_H = false;
+            CC_I = true;
+            CC_N = false;
+            CC_Z = false;
+            CC_V = false;
+            CC_C = false;
+
+            DP_REG = 0;
+
+            instance->SyncWaiting = 0;
+
+            PC_REG = MemRead16(Define.VRESET);	//PC gets its reset vector
+
+            _modules.TC1014.SetMapType(0);	//shouldn't be here
         }
 
         public int Exec(int cycleFor)
@@ -243,25 +272,23 @@ namespace VCCSharp.Models.CPU.MC6809
 
         public byte MC6809_getcc()
         {
-            //int cc = 0;
+            int cc = 0;
 
-            //void Test(bool value, CCFlagMasks mask)
-            //{
-            //    if (value) { cc |= (1 << (int)mask); }
-            //}
+            void Test(bool value, CCFlagMasks mask)
+            {
+                if (value) { cc |= (1 << (int)mask); }
+            }
 
-            //Test(CC_E, CCFlagMasks.E);
-            //Test(CC_F, CCFlagMasks.F);
-            //Test(CC_H, CCFlagMasks.H);
-            //Test(CC_I, CCFlagMasks.I);
-            //Test(CC_N, CCFlagMasks.N);
-            //Test(CC_Z, CCFlagMasks.Z);
-            //Test(CC_V, CCFlagMasks.V);
-            //Test(CC_C, CCFlagMasks.C);
+            Test(CC_E, CCFlagMasks.E);
+            Test(CC_F, CCFlagMasks.F);
+            Test(CC_H, CCFlagMasks.H);
+            Test(CC_I, CCFlagMasks.I);
+            Test(CC_N, CCFlagMasks.N);
+            Test(CC_Z, CCFlagMasks.Z);
+            Test(CC_V, CCFlagMasks.V);
+            Test(CC_C, CCFlagMasks.C);
 
-            //return (byte)cc;
-
-            return Library.MC6809.MC6809_getcc();
+            return (byte)cc;
         }
 
         public void MC6809_setcc(byte cc)
@@ -283,9 +310,246 @@ namespace VCCSharp.Models.CPU.MC6809
             CC_C = Test(CCFlagMasks.C);
         }
 
-        public ushort MC6809_CalculateEA(byte postByte)
+        public unsafe ushort MC6809_CalculateEA(byte postByte)
         {
-            return Library.MC6809.MC6809_CalculateEA(postByte);
+            MC6809State* instance = GetMC6809State();
+
+            ushort ea = 0;
+
+            byte reg = (byte)(((postByte >> 5) & 3) + 1);
+
+            if ((postByte & 0x80) != 0)
+            {
+                switch (postByte & 0x1F)
+                {
+                    case 0:
+                        ea = PXF(reg);
+                        PXF(reg, (ushort)(PXF(reg) + 1));
+                        instance->CycleCounter += 2;
+                        break;
+
+                    case 1:
+                        ea = PXF(reg);
+                        PXF(reg, (ushort)(PXF(reg) + 2));
+                        instance->CycleCounter += 3;
+                        break;
+
+                    case 2:
+                        PXF(reg, (ushort)(PXF(reg) - 1));
+                        ea = PXF(reg);
+                        instance->CycleCounter += 2;
+                        break;
+
+                    case 3:
+                        PXF(reg, (ushort)(PXF(reg) - 2));
+                        ea = PXF(reg);
+                        instance->CycleCounter += 3;
+                        break;
+
+                    case 4:
+                        ea = PXF(reg);
+                        break;
+
+                    case 5:
+                        ea = (ushort)(PXF(reg) + ((sbyte)B_REG));
+                        instance->CycleCounter += 1;
+                        break;
+
+                    case 6:
+                        ea = (ushort)(PXF(reg) + ((sbyte)A_REG));
+                        instance->CycleCounter += 1;
+                        break;
+
+                    case 7:
+                        //ea = (ushort)(PXF(reg) + ((sbyte)E_REG));
+                        instance->CycleCounter += 1;
+                        break;
+
+                    case 8:
+                        ea = (ushort)(PXF(reg) + (sbyte)MemRead8(PC_REG++));
+                        instance->CycleCounter += 1;
+                        break;
+
+                    case 9:
+                        ea = (ushort)(PXF(reg) + MemRead16(PC_REG));
+                        instance->CycleCounter += 4;
+                        PC_REG += 2;
+                        break;
+
+                    case 10:
+                        //ea = (ushort)(PXF(reg) + ((sbyte)F_REG));
+                        instance->CycleCounter += 1;
+                        break;
+
+                    case 11:
+                        ea = (ushort)(PXF(reg) + D_REG);
+                        instance->CycleCounter += 4;
+                        break;
+
+                    case 12:
+                        ea = (ushort)((short)PC_REG + (sbyte)MemRead8(PC_REG) + 1);
+                        instance->CycleCounter += 1;
+                        PC_REG++;
+                        break;
+
+                    case 13: //MM
+                        ea = (ushort)(PC_REG + MemRead16(PC_REG) + 2);
+                        instance->CycleCounter += 5;
+                        PC_REG += 2;
+                        break;
+
+                    case 14:
+                        //ea = (ushort)(PXF(reg) + W_REG);
+                        instance->CycleCounter += 4;
+                        break;
+
+                    case 15: //01111
+                        sbyte signedByte = (sbyte)((postByte >> 5) & 3);
+
+                        switch (signedByte)
+                        {
+                            case 0:
+                                //ea = W_REG;
+                                break;
+
+                            case 1:
+                                //ea = (ushort)(W_REG + MemRead16(PC_REG));
+                                PC_REG += 2;
+                                //_cycleCounter += 2;
+                                break;
+
+                            case 2:
+                                //ea = W_REG;
+                                break;
+
+                            case 3:
+                                //W_REG -= 2;
+                                break;
+                        }
+                        break;
+
+                    case 16: //10000
+                        signedByte = (sbyte)((postByte >> 5) & 3);
+
+                        switch (signedByte)
+                        {
+                            case 0:
+                                //ea = MemRead16(W_REG);
+                                break;
+
+                            case 1:
+                                //ea = MemRead16((ushort)(W_REG + MemRead16(PC_REG)));
+                                PC_REG += 2;
+                                //_cycleCounter += 5;
+                                break;
+
+                            case 2:
+                                //ea = MemRead16(W_REG);
+                                break;
+
+                            case 3:
+                                //W_REG -= 2;
+                                break;
+                        }
+                        break;
+
+                    case 17: //10001
+                        ea = PXF(reg);
+                        PXF(reg, (ushort)(PXF(reg) + 2));
+                        ea = MemRead16(ea);
+                        instance->CycleCounter += 6;
+                        break;
+
+                    case 18: //10010
+                        instance->CycleCounter += 6;
+                        break;
+
+                    case 19: //10011
+                        PXF(reg, (ushort)(PXF(reg) - 2));
+                        ea = MemRead16(PXF(reg));
+                        instance->CycleCounter += 6;
+                        break;
+
+                    case 20: //10100
+                        ea = MemRead16(PXF(reg));
+                        instance->CycleCounter += 3;
+                        break;
+
+                    case 21: //10101
+                        ea = MemRead16((ushort)(PXF(reg) + ((sbyte)B_REG)));
+                        instance->CycleCounter += 4;
+                        break;
+
+                    case 22: //10110
+                        ea = MemRead16((ushort)(PXF(reg) + ((sbyte)A_REG)));
+                        instance->CycleCounter += 4;
+                        break;
+
+                    case 23: //10111
+                        //ea = MemRead16((ushort)(PXF(reg) + ((sbyte)E_REG)));
+                        ea = MemRead16(ea);
+                        instance->CycleCounter += 4;
+                        break;
+
+                    case 24: //11000
+                        ea = MemRead16((ushort)(PXF(reg) + (sbyte)MemRead8(PC_REG++)));
+                        instance->CycleCounter += 4;
+                        break;
+
+                    case 25: //11001
+                        ea = MemRead16((ushort)(PXF(reg) + MemRead16(PC_REG)));
+                        instance->CycleCounter += 7;
+                        PC_REG += 2;
+                        break;
+
+                    case 26: //11010
+                        //ea = MemRead16((ushort)(PXF(reg) + ((sbyte)F_REG)));
+                        ea = MemRead16(ea);
+                        instance->CycleCounter += 4;
+                        break;
+
+                    case 27: //11011
+                        ea = MemRead16((ushort)(PXF(reg) + D_REG));
+                        instance->CycleCounter += 7;
+                        break;
+
+                    case 28: //11100
+                        ea = MemRead16((ushort)((short)PC_REG + (sbyte)MemRead8(PC_REG) + 1));
+                        instance->CycleCounter += 4;
+                        PC_REG++;
+                        break;
+
+                    case 29: //11101
+                        ea = MemRead16((ushort)(PC_REG + MemRead16(PC_REG) + 2));
+                        instance->CycleCounter += 8;
+                        PC_REG += 2;
+                        break;
+
+                    case 30: //11110
+                        //ea = MemRead16((ushort)(PXF(reg) + W_REG));
+                        ea = MemRead16(ea);
+                        instance->CycleCounter += 7;
+                        break;
+
+                    case 31: //11111
+                        ea = MemRead16(MemRead16(PC_REG));
+                        instance->CycleCounter += 8;
+                        PC_REG += 2;
+                        break;
+                }
+            }
+            else
+            {
+                sbyte signedByte = (sbyte)(postByte & 0x1F);
+                signedByte <<= 3; //--Push the "sign" to the left-most bit.
+                signedByte /= 8;
+
+                ea = (ushort)(PXF(reg) + signedByte); //Was signed
+
+                instance->CycleCounter += 1;
+            }
+
+            return ea;
         }
     }
 }

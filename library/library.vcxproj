@@ -239,7 +239,6 @@
     <ClInclude Include="KeyboardState.h" />
     <ClInclude Include="macros.h" />
     <ClInclude Include="MC6809.h" />
-    <ClInclude Include="MC6809Macros.h" />
     <ClInclude Include="MC6821.h" />
     <ClInclude Include="MC6821State.h" />
     <ClInclude Include="MenuCallbacks.h" />

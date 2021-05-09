@@ -178,9 +178,6 @@
     <ClInclude Include="MC6809.h">
       <Filter>mc6809</Filter>
     </ClInclude>
-    <ClInclude Include="MC6809Macros.h">
-      <Filter>mc6809</Filter>
-    </ClInclude>
     <ClInclude Include="MessageHandlers.h">
       <Filter>events</Filter>
     </ClInclude>

@@ -367,346 +367,343 @@ namespace VCCSharp.Models.CPU.HD6309
 
         public ushort CalculateEA(byte postByte)
         {
-            unsafe
+            ushort ea = 0;
+
+            byte reg = (byte)(((postByte >> 5) & 3) + 1);
+
+            if ((postByte & 0x80) != 0)
             {
-                ushort ea = 0;
-
-                byte reg = (byte)(((postByte >> 5) & 3) + 1);
-
-                if ((postByte & 0x80) != 0)
+                switch (postByte & 0x1F)
                 {
-                    switch (postByte & 0x1F)
-                    {
-                        case 0: // Post inc by 1
-                            ea = PXF(reg);
+                    case 0: // Post inc by 1
+                        ea = PXF(reg);
 
-                            PXF(reg, (ushort)(PXF(reg) + 1));
+                        PXF(reg, (ushort)(PXF(reg) + 1));
 
-                            _cycleCounter += _instance._21;
+                        _cycleCounter += _instance._21;
 
-                            break;
+                        break;
 
-                        case 1: // post in by 2
-                            ea = PXF(reg);
+                    case 1: // post in by 2
+                        ea = PXF(reg);
 
-                            PXF(reg, (ushort)(PXF(reg) + 2));
+                        PXF(reg, (ushort)(PXF(reg) + 2));
 
-                            _cycleCounter += _instance._32;
+                        _cycleCounter += _instance._32;
 
-                            break;
+                        break;
 
-                        case 2: // pre dec by 1
-                            PXF(reg, (ushort)(PXF(reg) - 1));
+                    case 2: // pre dec by 1
+                        PXF(reg, (ushort)(PXF(reg) - 1));
 
-                            ea = PXF(reg);
+                        ea = PXF(reg);
 
-                            _cycleCounter += _instance._21;
+                        _cycleCounter += _instance._21;
 
-                            break;
+                        break;
 
-                        case 3: // pre dec by 2
-                            PXF(reg, (ushort)(PXF(reg) - 2));
+                    case 3: // pre dec by 2
+                        PXF(reg, (ushort)(PXF(reg) - 2));
 
-                            ea = PXF(reg);
+                        ea = PXF(reg);
 
-                            _cycleCounter += _instance._32;
+                        _cycleCounter += _instance._32;
 
-                            break;
+                        break;
 
-                        case 4: // no offset
-                            ea = PXF(reg);
+                    case 4: // no offset
+                        ea = PXF(reg);
 
-                            break;
+                        break;
 
-                        case 5: // B reg offset
-                            ea = (ushort)(PXF(reg) + ((sbyte)B_REG));
+                    case 5: // B reg offset
+                        ea = (ushort)(PXF(reg) + ((sbyte)B_REG));
 
-                            _cycleCounter += 1;
+                        _cycleCounter += 1;
 
-                            break;
+                        break;
 
-                        case 6: // A reg offset
-                            ea = (ushort)(PXF(reg) + ((sbyte)A_REG));
+                    case 6: // A reg offset
+                        ea = (ushort)(PXF(reg) + ((sbyte)A_REG));
 
-                            _cycleCounter += 1;
+                        _cycleCounter += 1;
 
-                            break;
+                        break;
 
-                        case 7: // E reg offset 
-                            ea = (ushort)(PXF(reg) + ((sbyte)E_REG));
+                    case 7: // E reg offset 
+                        ea = (ushort)(PXF(reg) + ((sbyte)E_REG));
 
-                            _cycleCounter += 1;
+                        _cycleCounter += 1;
 
-                            break;
+                        break;
 
-                        case 8: // 8 bit offset
-                            ea = (ushort)(PXF(reg) + (sbyte)MemRead8(PC_REG++));
+                    case 8: // 8 bit offset
+                        ea = (ushort)(PXF(reg) + (sbyte)MemRead8(PC_REG++));
 
-                            _cycleCounter += 1;
+                        _cycleCounter += 1;
 
-                            break;
+                        break;
 
-                        case 9: // 16 bit offset
-                            ea = (ushort)(PXF(reg) + MemRead16(PC_REG));
+                    case 9: // 16 bit offset
+                        ea = (ushort)(PXF(reg) + MemRead16(PC_REG));
 
-                            _cycleCounter += _instance._43;
+                        _cycleCounter += _instance._43;
 
-                            PC_REG += 2;
+                        PC_REG += 2;
 
-                            break;
+                        break;
 
-                        case 10: // F reg offset
-                            ea = (ushort)(PXF(reg) + ((sbyte)F_REG));
+                    case 10: // F reg offset
+                        ea = (ushort)(PXF(reg) + ((sbyte)F_REG));
 
-                            _cycleCounter += 1;
+                        _cycleCounter += 1;
 
-                            break;
+                        break;
 
-                        case 11: // D reg offset 
-                            ea = (ushort)(PXF(reg) + D_REG);
+                    case 11: // D reg offset 
+                        ea = (ushort)(PXF(reg) + D_REG);
 
-                            _cycleCounter += _instance._42;
+                        _cycleCounter += _instance._42;
 
-                            break;
+                        break;
 
-                        case 12: // 8 bit PC relative
-                            ea = (ushort)((short)PC_REG + (sbyte)MemRead8(PC_REG) + 1);
+                    case 12: // 8 bit PC relative
+                        ea = (ushort)((short)PC_REG + (sbyte)MemRead8(PC_REG) + 1);
 
-                            _cycleCounter += 1;
+                        _cycleCounter += 1;
 
-                            PC_REG++;
+                        PC_REG++;
 
-                            break;
+                        break;
 
-                        case 13: // 16 bit PC relative
-                            ea = (ushort)(PC_REG + MemRead16(PC_REG) + 2);
+                    case 13: // 16 bit PC relative
+                        ea = (ushort)(PC_REG + MemRead16(PC_REG) + 2);
 
-                            _cycleCounter += _instance._53;
+                        _cycleCounter += _instance._53;
 
-                            PC_REG += 2;
+                        PC_REG += 2;
 
-                            break;
+                        break;
 
-                        case 14: // W reg offset
-                            ea = (ushort)(PXF(reg) + W_REG);
+                    case 14: // W reg offset
+                        ea = (ushort)(PXF(reg) + W_REG);
 
-                            _cycleCounter += 4;
+                        _cycleCounter += 4;
 
-                            break;
+                        break;
 
-                        case 15: // W reg
-                            sbyte signedByte = (sbyte)((postByte >> 5) & 3);
+                    case 15: // W reg
+                        sbyte signedByte = (sbyte)((postByte >> 5) & 3);
 
-                            switch (signedByte)
-                            {
-                                case 0: // No offset from W reg
-                                    ea = W_REG;
+                        switch (signedByte)
+                        {
+                            case 0: // No offset from W reg
+                                ea = W_REG;
 
-                                    break;
+                                break;
 
-                                case 1: // 16 bit offset from W reg
-                                    ea = (ushort)(W_REG + MemRead16(PC_REG));
+                            case 1: // 16 bit offset from W reg
+                                ea = (ushort)(W_REG + MemRead16(PC_REG));
 
-                                    PC_REG += 2;
+                                PC_REG += 2;
 
-                                    _cycleCounter += 2;
+                                _cycleCounter += 2;
 
-                                    break;
+                                break;
 
-                                case 2: // Post inc by 2 from W reg
-                                    ea = W_REG;
+                            case 2: // Post inc by 2 from W reg
+                                ea = W_REG;
 
-                                    W_REG += 2;
+                                W_REG += 2;
 
-                                    _cycleCounter += 1;
+                                _cycleCounter += 1;
 
-                                    break;
+                                break;
 
-                                case 3: // Pre dec by 2 from W reg
-                                    W_REG -= 2;
+                            case 3: // Pre dec by 2 from W reg
+                                W_REG -= 2;
 
-                                    ea = W_REG;
+                                ea = W_REG;
 
-                                    _cycleCounter += 1;
+                                _cycleCounter += 1;
 
-                                    break;
-                            }
+                                break;
+                        }
 
-                            break;
+                        break;
 
-                        case 16: // W reg
-                            signedByte = (sbyte)((postByte >> 5) & 3);
+                    case 16: // W reg
+                        signedByte = (sbyte)((postByte >> 5) & 3);
 
-                            switch (signedByte)
-                            {
-                                case 0: // Indirect no offset from W reg
-                                    ea = MemRead16(W_REG);
+                        switch (signedByte)
+                        {
+                            case 0: // Indirect no offset from W reg
+                                ea = MemRead16(W_REG);
 
-                                    _cycleCounter += 3;
+                                _cycleCounter += 3;
 
-                                    break;
+                                break;
 
-                                case 1: // Indirect 16 bit offset from W reg
-                                    ea = MemRead16((ushort)(W_REG + MemRead16(PC_REG)));
+                            case 1: // Indirect 16 bit offset from W reg
+                                ea = MemRead16((ushort)(W_REG + MemRead16(PC_REG)));
 
-                                    PC_REG += 2;
+                                PC_REG += 2;
 
-                                    _cycleCounter += 5;
+                                _cycleCounter += 5;
 
-                                    break;
+                                break;
 
-                                case 2: // Indirect post inc by 2 from W reg
-                                    ea = MemRead16(W_REG);
+                            case 2: // Indirect post inc by 2 from W reg
+                                ea = MemRead16(W_REG);
 
-                                    W_REG += 2;
+                                W_REG += 2;
 
-                                    _cycleCounter += 4;
+                                _cycleCounter += 4;
 
-                                    break;
+                                break;
 
-                                case 3: // Indirect pre dec by 2 from W reg
-                                    W_REG -= 2;
+                            case 3: // Indirect pre dec by 2 from W reg
+                                W_REG -= 2;
 
-                                    ea = MemRead16(W_REG);
+                                ea = MemRead16(W_REG);
 
-                                    _cycleCounter += 4;
+                                _cycleCounter += 4;
 
-                                    break;
-                            }
+                                break;
+                        }
 
-                            break;
+                        break;
 
-                        case 17: // Indirect post inc by 2 
-                            ea = PXF(reg);
+                    case 17: // Indirect post inc by 2 
+                        ea = PXF(reg);
 
-                            PXF(reg, (ushort)(PXF(reg) + 2));
+                        PXF(reg, (ushort)(PXF(reg) + 2));
 
-                            ea = MemRead16(ea);
+                        ea = MemRead16(ea);
 
-                            _cycleCounter += 6;
+                        _cycleCounter += 6;
 
-                            break;
+                        break;
 
-                        case 18: // possibly illegal instruction
-                            _cycleCounter += 6;
+                    case 18: // possibly illegal instruction
+                        _cycleCounter += 6;
 
-                            break;
+                        break;
 
-                        case 19: // Indirect pre dec by 2
-                            PXF(reg, (ushort)(PXF(reg) - 2));
+                    case 19: // Indirect pre dec by 2
+                        PXF(reg, (ushort)(PXF(reg) - 2));
 
-                            ea = MemRead16(PXF(reg));
+                        ea = MemRead16(PXF(reg));
 
-                            _cycleCounter += 6;
+                        _cycleCounter += 6;
 
-                            break;
+                        break;
 
-                        case 20: // Indirect no offset 
-                            ea = MemRead16(PXF(reg));
+                    case 20: // Indirect no offset 
+                        ea = MemRead16(PXF(reg));
 
-                            _cycleCounter += 3;
+                        _cycleCounter += 3;
 
-                            break;
+                        break;
 
-                        case 21: // Indirect B reg offset
-                            ea = MemRead16((ushort)(PXF(reg) + ((sbyte)B_REG)));
+                    case 21: // Indirect B reg offset
+                        ea = MemRead16((ushort)(PXF(reg) + ((sbyte)B_REG)));
 
-                            _cycleCounter += 4;
+                        _cycleCounter += 4;
 
-                            break;
+                        break;
 
-                        case 22: // indirect A reg offset
-                            ea = MemRead16((ushort)(PXF(reg) + ((sbyte)A_REG)));
+                    case 22: // indirect A reg offset
+                        ea = MemRead16((ushort)(PXF(reg) + ((sbyte)A_REG)));
 
-                            _cycleCounter += 4;
+                        _cycleCounter += 4;
 
-                            break;
+                        break;
 
-                        case 23: // indirect E reg offset
-                            ea = MemRead16((ushort)(PXF(reg) + ((sbyte)E_REG)));
+                    case 23: // indirect E reg offset
+                        ea = MemRead16((ushort)(PXF(reg) + ((sbyte)E_REG)));
 
-                            _cycleCounter += 4;
+                        _cycleCounter += 4;
 
-                            break;
+                        break;
 
-                        case 24: // indirect 8 bit offset
-                            ea = MemRead16((ushort)(PXF(reg) + (sbyte)MemRead8(PC_REG++)));
+                    case 24: // indirect 8 bit offset
+                        ea = MemRead16((ushort)(PXF(reg) + (sbyte)MemRead8(PC_REG++)));
 
-                            _cycleCounter += 4;
+                        _cycleCounter += 4;
 
-                            break;
+                        break;
 
-                        case 25: // indirect 16 bit offset
-                            ea = MemRead16((ushort)(PXF(reg) + MemRead16(PC_REG)));
+                    case 25: // indirect 16 bit offset
+                        ea = MemRead16((ushort)(PXF(reg) + MemRead16(PC_REG)));
 
-                            _cycleCounter += 7;
+                        _cycleCounter += 7;
 
-                            PC_REG += 2;
+                        PC_REG += 2;
 
-                            break;
+                        break;
 
-                        case 26: // indirect F reg offset
-                            ea = MemRead16((ushort)(PXF(reg) + ((sbyte)F_REG)));
+                    case 26: // indirect F reg offset
+                        ea = MemRead16((ushort)(PXF(reg) + ((sbyte)F_REG)));
 
-                            _cycleCounter += 4;
+                        _cycleCounter += 4;
 
-                            break;
+                        break;
 
-                        case 27: // indirect D reg offset
-                            ea = MemRead16((ushort)(PXF(reg) + D_REG));
+                    case 27: // indirect D reg offset
+                        ea = MemRead16((ushort)(PXF(reg) + D_REG));
 
-                            _cycleCounter += 7;
+                        _cycleCounter += 7;
 
-                            break;
+                        break;
 
-                        case 28: // indirect 8 bit PC relative
-                            ea = MemRead16((ushort)((short)PC_REG + (sbyte)MemRead8(PC_REG) + 1));
+                    case 28: // indirect 8 bit PC relative
+                        ea = MemRead16((ushort)((short)PC_REG + (sbyte)MemRead8(PC_REG) + 1));
 
-                            _cycleCounter += 4;
+                        _cycleCounter += 4;
 
-                            PC_REG++;
+                        PC_REG++;
 
-                            break;
+                        break;
 
-                        case 29: //indirect 16 bit PC relative
-                            ea = MemRead16((ushort)(PC_REG + MemRead16(PC_REG) + 2));
+                    case 29: //indirect 16 bit PC relative
+                        ea = MemRead16((ushort)(PC_REG + MemRead16(PC_REG) + 2));
 
-                            _cycleCounter += 8;
+                        _cycleCounter += 8;
 
-                            PC_REG += 2;
+                        PC_REG += 2;
 
-                            break;
+                        break;
 
-                        case 30: // indirect W reg offset
-                            ea = MemRead16((ushort)(PXF(reg) + W_REG));
+                    case 30: // indirect W reg offset
+                        ea = MemRead16((ushort)(PXF(reg) + W_REG));
 
-                            _cycleCounter += 7;
+                        _cycleCounter += 7;
 
-                            break;
+                        break;
 
-                        case 31: // extended indirect
-                            ea = MemRead16(MemRead16(PC_REG));
+                    case 31: // extended indirect
+                        ea = MemRead16(MemRead16(PC_REG));
 
-                            _cycleCounter += 8;
+                        _cycleCounter += 8;
 
-                            PC_REG += 2;
+                        PC_REG += 2;
 
-                            break;
-                    }
+                        break;
                 }
-                else // 5 bit offset
-                {
-                    sbyte signedByte = (sbyte)(postByte & 0x1F);
-                    signedByte <<= 3; //--Push the "sign" to the left-most bit.
-                    signedByte /= 8;
-
-                    ea = (ushort)(PXF(reg) + signedByte); //Was signed
-
-                    _cycleCounter += 1;
-                }
-
-                return ea;
             }
+            else // 5 bit offset
+            {
+                sbyte signedByte = (sbyte)(postByte & 0x1F);
+                signedByte <<= 3; //--Push the "sign" to the left-most bit.
+                signedByte /= 8;
+
+                ea = (ushort)(PXF(reg) + signedByte); //Was signed
+
+                _cycleCounter += 1;
+            }
+
+            return ea;
         }
     }
 }

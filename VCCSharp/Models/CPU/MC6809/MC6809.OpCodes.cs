@@ -19,6 +19,8 @@ namespace VCCSharp.Models.CPU.MC6809
         private static Action[] _jmpVec2 = new Action[256];
         private static Action[] _jmpVec3 = new Action[256];
 
+        //Last Char (D) Direct (I) Inherent (R) Relative (M) Immediate (X) Indexed (E) extended
+
         private void InitializeJmpVectors()
         {
             _jmpVec1 = new Action[]
