@@ -223,10 +223,28 @@ namespace VCCSharp.Models.CPU.HD6309
 
         public byte MemRead8(ushort address) => _modules.TC1014.MemRead8(address);
         public void MemWrite8(byte data, ushort address) => _modules.TC1014.MemWrite8(data, address);
-        public ushort MemRead16(ushort address) => _modules.TC1014.MemRead16(address);
-        public void MemWrite16(ushort data, ushort address) => _modules.TC1014.MemWrite16(data, address);
-        public uint MemRead32(ushort address) => _modules.TC1014.MemRead32(address);
-        public void MemWrite32(uint data, ushort address) => _modules.TC1014.MemWrite32(data, address);
+
+        public ushort MemRead16(ushort address)
+        {
+            return (ushort)(MemRead8(address) << 8 | MemRead8((ushort)(address + 1)));
+        }
+
+        public void MemWrite16(ushort data, ushort address)
+        {
+            MemWrite8((byte)(data >> 8), address);
+            MemWrite8((byte)(data & 0xFF), (ushort)(address + 1));
+        }
+
+        public uint MemRead32(ushort address)
+        {
+            return (uint)(MemRead16(address) << 16 | MemRead16((ushort)(address + 2)));
+        }
+
+        public void MemWrite32(uint data, ushort address)
+        {
+            MemWrite16((ushort)(data >> 16), address);
+            MemWrite16((ushort)(data & 0xFFFF), (ushort)(address + 2));
+        }
 
         public ushort INDADDRESS(ushort address) => CalculateEA(MemRead8(address));
 

@@ -74,22 +74,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MemWrite16(unsigned short data, unsigned short addr)
-  {
-    MemWrite8(data >> 8, addr);
-    MemWrite8(data & 0xFF, addr + 1);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl MemWrite32(unsigned int data, unsigned short addr)
-  {
-    MemWrite16(data >> 16, addr);
-    MemWrite16(data & 0xFFFF, addr + 2);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl UpdateMmuArray(void)
   {
     if (instance->MapType) {
@@ -256,13 +240,6 @@ extern "C" {
   __declspec(dllexport) unsigned short __cdecl MemRead16(unsigned short addr)
   {
     return (MemRead8(addr) << 8 | MemRead8(addr + 1));
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned int __cdecl MemRead32(unsigned short addr)
-  {
-    return MemRead16(addr) << 16 | MemRead16(addr + 2);
   }
 }
 

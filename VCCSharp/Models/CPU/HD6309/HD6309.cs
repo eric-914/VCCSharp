@@ -176,7 +176,7 @@ namespace VCCSharp.Models.CPU.HD6309
             _cpu.cc[(int)CCFlagMasks.I] = 1;
             _cpu.cc[(int)CCFlagMasks.F] = 1;
 
-            _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VNMI);
+            _cpu.pc.Reg = MemRead16(Define.VNMI);
 
             _pendingInterrupts &= 251;
         }
@@ -200,7 +200,7 @@ namespace VCCSharp.Models.CPU.HD6309
                         _cpu.cc[(int)CCFlagMasks.I] = 1;
                         _cpu.cc[(int)CCFlagMasks.F] = 1;
 
-                        _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
+                        _cpu.pc.Reg = MemRead16(Define.VFIRQ);
 
                         break;
 
@@ -231,7 +231,7 @@ namespace VCCSharp.Models.CPU.HD6309
                         _cpu.cc[(int)CCFlagMasks.I] = 1;
                         _cpu.cc[(int)CCFlagMasks.F] = 1;
 
-                        _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
+                        _cpu.pc.Reg = MemRead16(Define.VFIRQ);
 
                         break;
                 }
@@ -275,7 +275,7 @@ namespace VCCSharp.Models.CPU.HD6309
 
                 _cpu.cc[(int)CCFlagMasks.I] = 1;
 
-                _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VIRQ);
+                _cpu.pc.Reg = MemRead16(Define.VIRQ);
             }
 
             _pendingInterrupts &= 254;

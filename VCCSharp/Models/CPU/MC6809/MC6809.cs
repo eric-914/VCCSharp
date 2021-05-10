@@ -161,7 +161,7 @@ namespace VCCSharp.Models.CPU.MC6809
             _cpu.cc[(int)CCFlagMasks.I] = 1;
             _cpu.cc[(int)CCFlagMasks.F] = 1;
 
-            _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VNMI);
+            _cpu.pc.Reg = MemRead16(Define.VNMI);
 
             _pendingInterrupts &= 251;
         }
@@ -182,7 +182,7 @@ namespace VCCSharp.Models.CPU.MC6809
                 _cpu.cc[(int)CCFlagMasks.I] = 1;
                 _cpu.cc[(int)CCFlagMasks.F] = 1;
 
-                _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
+                _cpu.pc.Reg = MemRead16(Define.VFIRQ);
             }
 
             _pendingInterrupts &= 253;
@@ -214,7 +214,7 @@ namespace VCCSharp.Models.CPU.MC6809
 
                 _modules.TC1014.MemWrite8(MC6809_getcc(), --_cpu.s.Reg);
 
-                _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VIRQ);
+                _cpu.pc.Reg = MemRead16(Define.VIRQ);
                 _cpu.cc[(int)CCFlagMasks.I] = 1;
             }
 
