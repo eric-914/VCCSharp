@@ -20,10 +20,7 @@
             MemWrite8(MC6809_getcc(), --S_REG);
             PC_REG = MemRead16(Define.VSWI3);
 
-            unsafe
-            {
-                _instance->CycleCounter += 20;
-            }
+            _cycleCounter += 20;
         }
 
         public void CMPU_M() //1183 
@@ -36,10 +33,7 @@
             CC_Z = ZTEST(_temp16);
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         public void CMPS_M() //118C 
@@ -52,10 +46,7 @@
             CC_Z = ZTEST(_temp16);
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         public void CMPU_D() //1193 
@@ -67,10 +58,7 @@
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
 
-            unsafe
-            {
-                _instance->CycleCounter += 7;
-            }
+            _cycleCounter += 7;
         }
 
         public void CMPS_D() //119C 
@@ -82,10 +70,7 @@
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
 
-            unsafe
-            {
-                _instance->CycleCounter += 7;
-            }
+            _cycleCounter += 7;
         }
 
         public void CMPU_X() //11A3 
@@ -97,10 +82,7 @@
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
 
-            unsafe
-            {
-                _instance->CycleCounter += 7;
-            }
+            _cycleCounter += 7;
         }
 
         public void CMPS_X() //11AC 
@@ -112,10 +94,7 @@
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
 
-            unsafe
-            {
-                _instance->CycleCounter += 7;
-            }
+            _cycleCounter += 7;
         }
 
         public void CMPU_E() //11B3 
@@ -128,26 +107,20 @@
             CC_Z = ZTEST(_temp16);
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 8;
-            }
+            _cycleCounter += 8;
         }
 
         public void CMPS_E() //11BC 
         {
-            //_postWord = MemRead16(MemRead16(PC_REG));
-            //_temp16 = (ushort)(S_REG - _postWord);
-            //CC_C = _temp16 > S_REG;
-            //CC_V = OVERFLOW16(CC_C, _postWord, _temp16, S_REG);
-            //CC_N = NTEST16(_temp16);
-            //CC_Z = ZTEST(_temp16);
-            //PC_REG += 2;
+            _postWord = MemRead16(MemRead16(PC_REG));
+            _temp16 = (ushort)(S_REG - _postWord);
+            CC_C = _temp16 > S_REG;
+            CC_V = OVERFLOW16(CC_C, _postWord, _temp16, S_REG);
+            CC_N = NTEST16(_temp16);
+            CC_Z = ZTEST(_temp16);
+            PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 8;
-            }
+            _cycleCounter += 8;
         }
     }
 }

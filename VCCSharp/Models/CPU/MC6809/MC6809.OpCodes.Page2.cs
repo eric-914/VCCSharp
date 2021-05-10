@@ -13,10 +13,7 @@
         {
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         public void LBHI_R() //0x1022
@@ -25,18 +22,12 @@
             {
                 PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-                unsafe
-                {
-                    _instance->CycleCounter += 1;
-                }
+                _cycleCounter += 1;
             }
 
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         public void LBLS_R() //0x1023
@@ -45,18 +36,12 @@
             {
                 PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-                unsafe
-                {
-                    _instance->CycleCounter += 1;
-                }
+                _cycleCounter += 1;
             }
 
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         public void LBHS_R() //0x1024
@@ -65,18 +50,12 @@
             {
                 PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-                unsafe
-                {
-                    _instance->CycleCounter += 1;
-                }
+                _cycleCounter += 1;
             }
 
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 6;
-            }
+            _cycleCounter += 6;
         }
 
         public void LBCS_R() //0x1025
@@ -85,18 +64,12 @@
             {
                 PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-                unsafe
-                {
-                    _instance->CycleCounter += 1;
-                }
+                _cycleCounter += 1;
             }
 
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         public void LBNE_R() //0x1026
@@ -105,18 +78,12 @@
             {
                 PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-                unsafe
-                {
-                    _instance->CycleCounter += 1;
-                }
+                _cycleCounter += 1;
             }
 
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         public void LBEQ_R() //0x1027
@@ -125,18 +92,12 @@
             {
                 PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-                unsafe
-                {
-                    _instance->CycleCounter += 1;
-                }
+                _cycleCounter += 1;
             }
 
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         public void LBVC_R() //0x1028
@@ -145,17 +106,12 @@
             {
                 PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-                unsafe
-                {
-                    _instance->CycleCounter += 1;
-                }
+                _cycleCounter += 1;
             }
 
             PC_REG += 2;
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            
+            _cycleCounter += 5;
         }
 
         public void LBVS_R() //0x1029
@@ -164,18 +120,12 @@
             {
                 PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-                unsafe
-                {
-                    _instance->CycleCounter += 1;
-                }
+                _cycleCounter += 1;
             }
 
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         public void LBPL_R() //0x102A
@@ -184,18 +134,12 @@
             {
                 PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-                unsafe
-                {
-                    _instance->CycleCounter += 1;
-                }
+                _cycleCounter += 1;
             }
 
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         public void LBMI_R() //0x102B
@@ -204,18 +148,12 @@
             {
                 PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-                unsafe
-                {
-                    _instance->CycleCounter += 1;
-                }
+                _cycleCounter += 1;
             }
 
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         public void LBGE_R() //0x102C
@@ -224,18 +162,12 @@
             {
                 PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-                unsafe
-                {
-                    _instance->CycleCounter += 1;
-                }
+                _cycleCounter += 1;
             }
 
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         public void LBLT_R() //0x102D
@@ -244,18 +176,12 @@
             {
                 PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-                unsafe
-                {
-                    _instance->CycleCounter += 1;
-                }
+                _cycleCounter += 1;
             }
 
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         public void LBGT_R() //0x102E
@@ -264,18 +190,12 @@
             {
                 PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-                unsafe
-                {
-                    _instance->CycleCounter += 1;
-                }
+                _cycleCounter += 1;
             }
 
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         public void LBLE_R() //0x102F
@@ -284,18 +204,12 @@
             {
                 PC_REG += (ushort)(short)MemRead16(PC_REG);
 
-                unsafe
-                {
-                    _instance->CycleCounter += 1;
-                }
+                _cycleCounter += 1;
             }
 
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         #endregion
@@ -322,10 +236,7 @@
             MemWrite8(MC6809_getcc(), --S_REG);
             PC_REG = MemRead16(Define.VSWI2);
 
-            unsafe
-            {
-                _instance->CycleCounter += 20;
-            }
+            _cycleCounter += 20;
         }
 
         #endregion
@@ -346,10 +257,7 @@
             CC_Z = ZTEST(_temp16);
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         //0x1084 - 0x108B
@@ -364,10 +272,7 @@
             CC_Z = ZTEST(_temp16);
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         public void LDY_M() //0x108E
@@ -378,10 +283,7 @@
             CC_V = false; //0;
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 5;
-            }
+            _cycleCounter += 5;
         }
 
         //0x108F
@@ -401,10 +303,7 @@
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
 
-            unsafe
-            {
-                _instance->CycleCounter += 7;
-            }
+            _cycleCounter += 7;
         }
 
         //0x1094 - 0x109B
@@ -418,10 +317,7 @@
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
 
-            unsafe
-            {
-                _instance->CycleCounter += 7;
-            }
+            _cycleCounter += 7;
         }
 
         //0x109D
@@ -433,10 +329,7 @@
             CC_N = NTEST16(Y_REG);
             CC_V = false; //0;
 
-            unsafe
-            {
-                _instance->CycleCounter += 6;
-            }
+            _cycleCounter += 6;
         }
 
         public void STY_D() //0x109F
@@ -446,10 +339,7 @@
             CC_N = NTEST16(Y_REG);
             CC_V = false; //0;
 
-            unsafe
-            {
-                _instance->CycleCounter += 7;
-            }
+            _cycleCounter += 7;
         }
 
         #endregion
@@ -467,10 +357,7 @@
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
 
-            unsafe
-            {
-                _instance->CycleCounter += 7;
-            }
+            _cycleCounter += 7;
         }
 
         //0x10A4 - 0x10AB
@@ -484,10 +371,7 @@
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
 
-            unsafe
-            {
-                _instance->CycleCounter += 7;
-            }
+            _cycleCounter += 7;
         }
 
         //0x10AD
@@ -499,10 +383,7 @@
             CC_N = NTEST16(Y_REG);
             CC_V = false; //0;
 
-            unsafe
-            {
-                _instance->CycleCounter += 6;
-            }
+            _cycleCounter += 6;
         }
 
         public void STY_X() //0x10AF
@@ -512,10 +393,7 @@
             CC_N = NTEST16(Y_REG);
             CC_V = false; //0;
 
-            unsafe
-            {
-                _instance->CycleCounter += 6;
-            }
+            _cycleCounter += 6;
         }
 
         #endregion
@@ -534,10 +412,7 @@
             CC_Z = ZTEST(_temp16);
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 8;
-            }
+            _cycleCounter += 8;
         }
 
         //0x10B4 - 0x10BB
@@ -552,10 +427,7 @@
             CC_Z = ZTEST(_temp16);
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 8;
-            }
+            _cycleCounter += 8;
         }
 
         //0x10BD
@@ -568,10 +440,7 @@
             CC_V = false; //0;
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 7;
-            }
+            _cycleCounter += 7;
         }
 
         public void STY_E() //0x10BF
@@ -582,10 +451,7 @@
             CC_V = false; //0;
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 7;
-            }
+            _cycleCounter += 7;
         }
 
         #endregion
@@ -602,10 +468,7 @@
             CC_V = false; //0;
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 4;
-            }
+            _cycleCounter += 4;
         }
 
         //0x10CF
@@ -623,10 +486,7 @@
             CC_N = NTEST16(S_REG);
             CC_V = false; //0;
 
-            unsafe
-            {
-                _instance->CycleCounter += 6;
-            }
+            _cycleCounter += 6;
         }
 
         public void STS_D() //0x10DF
@@ -636,10 +496,7 @@
             CC_N = NTEST16(S_REG);
             CC_V = false; //0;
 
-            unsafe
-            {
-                _instance->CycleCounter += 6;
-            }
+            _cycleCounter += 6;
         }
 
         #endregion
@@ -655,10 +512,7 @@
             CC_N = NTEST16(S_REG);
             CC_V = false; //0;
 
-            unsafe
-            {
-                _instance->CycleCounter += 6;
-            }
+            _cycleCounter += 6;
         }
 
         public void STS_X() //0x10EF
@@ -668,10 +522,7 @@
             CC_N = NTEST16(S_REG);
             CC_V = false; //0;
 
-            unsafe
-            {
-                _instance->CycleCounter += 6;
-            }
+            _cycleCounter += 6;
         }
 
         #endregion
@@ -688,10 +539,7 @@
             CC_V = false; //0;
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 7;
-            }
+            _cycleCounter += 7;
         }
 
         public void STS_E() //0x10FF
@@ -702,10 +550,7 @@
             CC_V = false; //0;
             PC_REG += 2;
 
-            unsafe
-            {
-                _instance->CycleCounter += 7;
-            }
+            _cycleCounter += 7;
         }
 
         #endregion

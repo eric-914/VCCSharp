@@ -50,5 +50,4 @@ typedef struct {
   unsigned char IRQWaiter;
   unsigned char PendingInterrupts;
   unsigned int SyncWaiting;
-  int CycleCounter;
 } MC6809State;

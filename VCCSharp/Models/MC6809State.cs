@@ -14,6 +14,5 @@
         public byte IRQWaiter;
         public byte PendingInterrupts;
         public uint SyncWaiting;
-        public int CycleCounter;
     }
 }

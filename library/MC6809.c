@@ -15,7 +15,6 @@ MC6809State* InitializeInstance(MC6809State* p) {
   p->IRQWaiter = 0;
   p->PendingInterrupts = 0;
   p->SyncWaiting = 0;
-  p->CycleCounter = 0;
 
   return p;
 }
