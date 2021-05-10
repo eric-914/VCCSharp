@@ -1,6 +1,5 @@
 ﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Libraries;
 
 namespace VCCSharp.Models.CPU.MC6809
 {
@@ -16,8 +15,6 @@ namespace VCCSharp.Models.CPU.MC6809
 
         private readonly MC6809CpuRegisters _cpu = new MC6809CpuRegisters();
 
-        private readonly unsafe MC6809State* _instance;
-
         private byte _inInterrupt;
         private int _cycleCounter;
         private uint _syncWaiting;
@@ -32,16 +29,6 @@ namespace VCCSharp.Models.CPU.MC6809
             _modules = modules;
 
             InitializeJmpVectors();
-
-            unsafe
-            {
-                _instance = GetMC6809State();
-            }
-        }
-
-        public unsafe MC6809State* GetMC6809State()
-        {
-            return Library.MC6809.GetMC6809State();
         }
 
         public void Init()
@@ -154,9 +141,64 @@ namespace VCCSharp.Models.CPU.MC6809
 
         public void MC6809_cpu_nmi()
         {
-            unsafe
+            _cpu.cc[(int)CCFlagMasks.E] = 1;
+
+            _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
+
+            _modules.TC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg);
+
+            _modules.TC1014.MemWrite8(MC6809_getcc(), --_cpu.s.Reg);
+
+            _cpu.cc[(int)CCFlagMasks.I] = 1;
+            _cpu.cc[(int)CCFlagMasks.F] = 1;
+
+            _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VNMI);
+
+            _pendingInterrupts &= 251;
+        }
+
+        public void MC6809_cpu_firq()
+        {
+            if (_cpu.cc[(int)CCFlagMasks.F] == 0)
             {
-                _instance->cc[(int)CCFlagMasks.E] = 1;
+                _inInterrupt = 1; //Flag to indicate FIRQ has been asserted
+
+                _cpu.cc[(int)CCFlagMasks.E] = 0; // Turn E flag off
+
+                _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
+
+                _modules.TC1014.MemWrite8(MC6809_getcc(), --_cpu.s.Reg);
+
+                _cpu.cc[(int)CCFlagMasks.I] = 1;
+                _cpu.cc[(int)CCFlagMasks.F] = 1;
+
+                _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
+            }
+
+            _pendingInterrupts &= 253;
+        }
+
+        public void MC6809_cpu_irq()
+        {
+            if (_inInterrupt == 1)
+            {
+                //If FIRQ is running postpone the IRQ
+                return;
+            }
+
+            if (_cpu.cc[(int)CCFlagMasks.I] == 0)
+            {
+                _cpu.cc[(int)CCFlagMasks.E] = 1;
 
                 _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
                 _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
@@ -167,80 +209,16 @@ namespace VCCSharp.Models.CPU.MC6809
                 _modules.TC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
                 _modules.TC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
                 _modules.TC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
-
                 _modules.TC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg);
                 _modules.TC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg);
 
                 _modules.TC1014.MemWrite8(MC6809_getcc(), --_cpu.s.Reg);
 
-                _instance->cc[(int)CCFlagMasks.I] = 1;
-                _instance->cc[(int)CCFlagMasks.F] = 1;
-
-                _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VNMI);
-
-                _pendingInterrupts &= 251;
+                _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VIRQ);
+                _cpu.cc[(int)CCFlagMasks.I] = 1;
             }
-        }
 
-        public void MC6809_cpu_firq()
-        {
-            unsafe
-            {
-                if (_instance->cc[(int)CCFlagMasks.F] == 0)
-                {
-                    _inInterrupt = 1; //Flag to indicate FIRQ has been asserted
-
-                    _instance->cc[(int)CCFlagMasks.E] = 0; // Turn E flag off
-
-                    _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
-
-                    _modules.TC1014.MemWrite8(MC6809_getcc(), --_cpu.s.Reg);
-
-                    _instance->cc[(int)CCFlagMasks.I] = 1;
-                    _instance->cc[(int)CCFlagMasks.F] = 1;
-
-                    _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
-                }
-
-                _pendingInterrupts &= 253;
-            }
-        }
-
-        public void MC6809_cpu_irq()
-        {
-            unsafe
-            {
-                if (_inInterrupt == 1)
-                {
-                    //If FIRQ is running postpone the IRQ
-                    return;
-                }
-
-                if (_instance->cc[(int)CCFlagMasks.I] == 0)
-                {
-                    _instance->cc[(int)CCFlagMasks.E] = 1;
-
-                    _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg);
-                    _modules.TC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg);
-
-                    _modules.TC1014.MemWrite8(MC6809_getcc(), --_cpu.s.Reg);
-
-                    _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VIRQ);
-                    _instance->cc[(int)CCFlagMasks.I] = 1;
-                }
-
-                _pendingInterrupts &= 254;
-            }
+            _pendingInterrupts &= 254;
         }
 
         public byte MC6809_getcc()
@@ -266,7 +244,7 @@ namespace VCCSharp.Models.CPU.MC6809
 
         public void MC6809_setcc(byte cc)
         {
-            unsafe { _instance->ccbits = cc; }
+            _cpu.ccbits = cc;
 
             bool Test(CCFlagMasks mask)
             {

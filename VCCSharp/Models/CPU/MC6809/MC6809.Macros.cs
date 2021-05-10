@@ -7,52 +7,52 @@ namespace VCCSharp.Models.CPU.MC6809
     {
         #region CC Masks Macros
 
-        public unsafe bool CC_E
+        public bool CC_E
         {
-            get => _instance->cc[(int)CCFlagMasks.E] == Define.TRUE;
-            set => _instance->cc[(int)CCFlagMasks.E] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.E] == Define.TRUE;
+            set => _cpu.cc[(int)CCFlagMasks.E] = value ? Define.TRUE : Define.FALSE;
         }
 
-        public unsafe bool CC_F
+        public bool CC_F
         {
-            get => _instance->cc[(int)CCFlagMasks.F] == Define.TRUE;
-            set => _instance->cc[(int)CCFlagMasks.F] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.F] == Define.TRUE;
+            set => _cpu.cc[(int)CCFlagMasks.F] = value ? Define.TRUE : Define.FALSE;
         }
 
-        public unsafe bool CC_H
+        public bool CC_H
         {
-            get => _instance->cc[(int)CCFlagMasks.H] == Define.TRUE;
-            set => _instance->cc[(int)CCFlagMasks.H] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.H] == Define.TRUE;
+            set => _cpu.cc[(int)CCFlagMasks.H] = value ? Define.TRUE : Define.FALSE;
         }
 
-        public unsafe bool CC_I
+        public bool CC_I
         {
-            get => _instance->cc[(int)CCFlagMasks.I] == Define.TRUE;
-            set => _instance->cc[(int)CCFlagMasks.I] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.I] == Define.TRUE;
+            set => _cpu.cc[(int)CCFlagMasks.I] = value ? Define.TRUE : Define.FALSE;
         }
 
-        public unsafe bool CC_N
+        public bool CC_N
         {
-            get => _instance->cc[(int)CCFlagMasks.N] == Define.TRUE;
-            set => _instance->cc[(int)CCFlagMasks.N] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.N] == Define.TRUE;
+            set => _cpu.cc[(int)CCFlagMasks.N] = value ? Define.TRUE : Define.FALSE;
         }
 
-        public unsafe bool CC_Z
+        public bool CC_Z
         {
-            get => _instance->cc[(int)CCFlagMasks.Z] == Define.TRUE;
-            set => _instance->cc[(int)CCFlagMasks.Z] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.Z] == Define.TRUE;
+            set => _cpu.cc[(int)CCFlagMasks.Z] = value ? Define.TRUE : Define.FALSE;
         }
 
-        public unsafe bool CC_V
+        public bool CC_V
         {
-            get => _instance->cc[(int)CCFlagMasks.V] == Define.TRUE;
-            set => _instance->cc[(int)CCFlagMasks.V] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.V] == Define.TRUE;
+            set => _cpu.cc[(int)CCFlagMasks.V] = value ? Define.TRUE : Define.FALSE;
         }
 
-        public unsafe bool CC_C
+        public bool CC_C
         {
-            get => _instance->cc[(int)CCFlagMasks.C] == Define.TRUE;
-            set => _instance->cc[(int)CCFlagMasks.C] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.C] == Define.TRUE;
+            set => _cpu.cc[(int)CCFlagMasks.C] = value ? Define.TRUE : Define.FALSE;
         }
 
         #endregion

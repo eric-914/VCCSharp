@@ -316,10 +316,7 @@
         {
             _postByte = MemRead8(PC_REG++);
 
-            unsafe
-            {
-                _instance->ccbits = MC6809_getcc();
-            }
+            _cpu.ccbits = MC6809_getcc();
 
             if (((_postByte & 0x80) >> 4) == (_postByte & 0x08)) //Verify like size registers
             {
@@ -337,11 +334,8 @@
                 }
             }
 
-            unsafe
-            {
-                MC6809_setcc(_instance->ccbits);
-                _cycleCounter += 8;
-            }
+            MC6809_setcc(_cpu.ccbits);
+            _cycleCounter += 8;
         }
 
         public void Tfr_M() // 1F
@@ -384,10 +378,7 @@
                 case 11:
                 case 14:
                 case 15:
-                    unsafe
-                    {
-                        _instance->ccbits = MC6809_getcc();
-                    }
+                    _cpu.ccbits = MC6809_getcc();
 
                     PUR(dest & 7, 0xFF);
 
@@ -400,10 +391,7 @@
                         PUR(dest & 7, PUR(source & 7));
                     }
 
-                    unsafe
-                    {
-                        MC6809_setcc(_instance->ccbits);
-                    }
+                    MC6809_setcc(_cpu.ccbits);
 
                     break;
             }
@@ -950,16 +938,13 @@
         {
             _postByte = MemRead8(PC_REG++);
 
-            unsafe
-            {
-                _instance->ccbits = MC6809_getcc();
-                _instance->ccbits &= _postByte;
+            _cpu.ccbits = MC6809_getcc();
+            _cpu.ccbits &= _postByte;
 
-                MC6809_setcc(_instance->ccbits);
+            MC6809_setcc(_cpu.ccbits);
 
-                _cycleCounter = _gCycleFor;
-                _syncWaiting = 1;
-            }
+            _cycleCounter = _gCycleFor;
+            _syncWaiting = 1;
         }
 
         public void Mul_I() // 3D

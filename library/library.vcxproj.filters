@@ -53,9 +53,6 @@
     <ClCompile Include="DirectDraw.c">
       <Filter>directdraw</Filter>
     </ClCompile>
-    <ClCompile Include="MC6809.c">
-      <Filter>mc6809</Filter>
-    </ClCompile>
     <ClCompile Include="MessageHandlers.c">
       <Filter>events</Filter>
     </ClCompile>
@@ -174,9 +171,6 @@
     </ClInclude>
     <ClInclude Include="DirectDraw.h">
       <Filter>directdraw</Filter>
-    </ClInclude>
-    <ClInclude Include="MC6809.h">
-      <Filter>mc6809</Filter>
     </ClInclude>
     <ClInclude Include="MessageHandlers.h">
       <Filter>events</Filter>
@@ -350,9 +344,6 @@
     </Filter>
     <Filter Include="legal">
       <UniqueIdentifier>{b1110f74-34ea-4882-92c9-833443968697}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="mc6809">
-      <UniqueIdentifier>{a3dcb2f5-8404-425f-9ce5-c07298c7194e}</UniqueIdentifier>
     </Filter>
     <Filter Include="mc6821">
       <UniqueIdentifier>{2b9a7721-f759-46fe-8cae-76488c5d9ac0}</UniqueIdentifier>

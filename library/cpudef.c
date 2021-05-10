@@ -2,8 +2,6 @@
 
 #include "cpudef.h"
 
-#include "MC6809.h"
-
 CPU* InitializeInstance(CPU*);
 
 static CPU* instance = InitializeInstance(new CPU());

@@ -344,10 +344,6 @@ namespace VCCSharp.Libraries
             public static extern void SetMonitorTypePalettes(byte monType, byte palIndex);
         }
 
-        public static class HD6309
-        {
-        }
-
         public static class Joystick
         {
             [DllImport(LIBRARY)]
@@ -380,12 +376,6 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe void DynamicMenuCallback(EmuState* emuState, string menuName, int menuId, int type);
-        }
-
-        public static class MC6809
-        {
-            [DllImport(LIBRARY)]
-            public static extern unsafe MC6809State * GetMC6809State();
         }
 
         public static class MC6821
