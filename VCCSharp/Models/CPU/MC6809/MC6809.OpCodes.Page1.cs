@@ -205,11 +205,8 @@
 
         public void Sync_I() // 13
         {
-            unsafe
-            {
-                _cycleCounter = _gCycleFor;
-                _instance->SyncWaiting = 1;
-            }
+            _cycleCounter = _gCycleFor;
+            _syncWaiting = 1;
         }
 
         // 14       //InvalidInsHandler
@@ -930,11 +927,8 @@
         {
             MC6809_setcc(MemRead8(S_REG++));
 
-            unsafe
-            {
-                _cycleCounter += 6;
-                _instance->InInterrupt = 0;
-            }
+            _cycleCounter += 6;
+            _inInterrupt = 0;
 
             if (CC_E)
             {
@@ -967,7 +961,7 @@
                 MC6809_setcc(_instance->ccbits);
 
                 _cycleCounter = _gCycleFor;
-                _instance->SyncWaiting = 1;
+                _syncWaiting = 1;
             }
         }
 

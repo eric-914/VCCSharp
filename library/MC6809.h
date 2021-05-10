@@ -45,9 +45,4 @@ typedef struct {
 
   unsigned char* ureg8[8];
   unsigned short* xfreg16[8];
-
-  char InInterrupt;
-  unsigned char IRQWaiter;
-  unsigned char PendingInterrupts;
-  unsigned int SyncWaiting;
 } MC6809State;

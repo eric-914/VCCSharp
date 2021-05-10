@@ -7,7 +7,6 @@ namespace VCCSharp.Models.CPU.MC6809
     // ReSharper disable once InconsistentNaming
     public interface IMC6809 : IProcessor
     {
-        unsafe MC6809State* GetMC6809State();
     }
 
     // ReSharper disable once InconsistentNaming
@@ -19,9 +18,14 @@ namespace VCCSharp.Models.CPU.MC6809
 
         private readonly unsafe MC6809State* _instance;
 
+        private byte _inInterrupt;
         private int _cycleCounter;
-
+        private uint _syncWaiting;
         private int _gCycleFor;
+
+        //--Interrupt states
+        private byte _irqWaiter;
+        private byte _pendingInterrupts;
 
         public MC6809(IModules modules)
         {
@@ -70,31 +74,25 @@ namespace VCCSharp.Models.CPU.MC6809
             {
                 _instance->pc.Reg = address;
 
-                _instance->PendingInterrupts = 0;
-                _instance->SyncWaiting = 0;
+                _pendingInterrupts = 0;
+                _syncWaiting = 0;
             }
         }
 
         public void DeAssertInterrupt(byte irq)
         {
-            unsafe
-            {
-                _instance->PendingInterrupts &= (byte)~(1 << (irq - 1));
-                _instance->InInterrupt = 0;
-            }
+            _pendingInterrupts &= (byte)~(1 << (irq - 1));
+            _inInterrupt = 0;
         }
 
         public void AssertInterrupt(byte irq, byte flag)
         {
-            unsafe
-            {
-                _instance->SyncWaiting = 0;
-                _instance->PendingInterrupts |= (byte)(1 << (irq - 1));
-                _instance->IRQWaiter = flag;
-            }
+            _syncWaiting = 0;
+            _pendingInterrupts |= (byte)(1 << (irq - 1));
+            _irqWaiter = flag;
         }
 
-        public unsafe void Reset()
+        public void Reset()
         {
             byte index;
 
@@ -119,7 +117,7 @@ namespace VCCSharp.Models.CPU.MC6809
 
             DP_REG = 0;
 
-            _instance->SyncWaiting = 0;
+            _syncWaiting = 0;
 
             PC_REG = MemRead16(Define.VRESET);	//PC gets its reset vector
 
@@ -134,21 +132,21 @@ namespace VCCSharp.Models.CPU.MC6809
 
                 while (_cycleCounter < cycleFor)
                 {
-                    if (_instance->PendingInterrupts != 0)
+                    if (_pendingInterrupts != 0)
                     {
-                        if ((_instance->PendingInterrupts & 4) != 0)
+                        if ((_pendingInterrupts & 4) != 0)
                         {
                             MC6809_cpu_nmi();
                         }
 
-                        if ((_instance->PendingInterrupts & 2) != 0)
+                        if ((_pendingInterrupts & 2) != 0)
                         {
                             MC6809_cpu_firq();
                         }
 
-                        if ((_instance->PendingInterrupts & 1) != 0)
+                        if ((_pendingInterrupts & 1) != 0)
                         {
-                            if (_instance->IRQWaiter == 0)
+                            if (_irqWaiter == 0)
                             {
                                 // This is needed to fix a subtle timing problem
                                 // It allows the CPU to see $FF03 bit 7 high before...
@@ -157,12 +155,12 @@ namespace VCCSharp.Models.CPU.MC6809
                             else
                             {
                                 // ...The IRQ is asserted.
-                                _instance->IRQWaiter -= 1;
+                                _irqWaiter -= 1;
                             }
                         }
                     }
 
-                    if (_instance->SyncWaiting == 1)
+                    if (_syncWaiting == 1)
                     {
                         //Abort the run nothing happens asynchronously from the CPU
                         // WDZ - Experimental SyncWaiting should still return used cycles (and not zero) by breaking from loop
@@ -206,7 +204,7 @@ namespace VCCSharp.Models.CPU.MC6809
 
                 _instance->pc.Reg = _modules.TC1014.MemRead16(Define.VNMI);
 
-                _instance->PendingInterrupts &= 251;
+                _pendingInterrupts &= 251;
             }
         }
 
@@ -216,7 +214,7 @@ namespace VCCSharp.Models.CPU.MC6809
             {
                 if (_instance->cc[(int)CCFlagMasks.F] == 0)
                 {
-                    _instance->InInterrupt = 1; //Flag to indicate FIRQ has been asserted
+                    _inInterrupt = 1; //Flag to indicate FIRQ has been asserted
 
                     _instance->cc[(int)CCFlagMasks.E] = 0; // Turn E flag off
 
@@ -231,7 +229,7 @@ namespace VCCSharp.Models.CPU.MC6809
                     _instance->pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
                 }
 
-                _instance->PendingInterrupts &= 253;
+                _pendingInterrupts &= 253;
             }
         }
 
@@ -239,7 +237,7 @@ namespace VCCSharp.Models.CPU.MC6809
         {
             unsafe
             {
-                if (_instance->InInterrupt == 1)
+                if (_inInterrupt == 1)
                 {
                     //If FIRQ is running postpone the IRQ
                     return;
@@ -267,7 +265,7 @@ namespace VCCSharp.Models.CPU.MC6809
                     _instance->cc[(int)CCFlagMasks.I] = 1;
                 }
 
-                _instance->PendingInterrupts &= 254;
+                _pendingInterrupts &= 254;
             }
         }
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using VCCSharp.Libraries;
 
 namespace VCCSharp.Models.CPU.MC6809
 {
