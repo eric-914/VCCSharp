@@ -52,7 +52,3 @@ typedef struct {
   unsigned int SyncWaiting;
   int CycleCounter;
 } MC6809State;
-
-extern "C" __declspec(dllexport) MC6809State * __cdecl GetMC6809State();
-
-extern "C" __declspec(dllexport) void __cdecl MC6809AssertInterrupt(unsigned char, unsigned char);

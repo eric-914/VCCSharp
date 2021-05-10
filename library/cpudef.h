@@ -24,5 +24,3 @@ typedef struct
 } CPU;
 
 extern "C" __declspec(dllexport) void __cdecl CPUAssertInterrupt(unsigned char irq, unsigned char flag);
-
-extern "C" __declspec(dllexport) void __cdecl SetCPUToMC6809();

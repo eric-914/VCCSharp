@@ -66,9 +66,6 @@ namespace VCCSharp.Modules
         public void SetCPUToMC6809()
         {
             _processor = _modules.MC6809;
-
-            Library.CPU.SetCPUToMC6809();
         }
-
     }
 }

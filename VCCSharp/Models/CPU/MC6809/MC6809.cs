@@ -84,17 +84,20 @@ namespace VCCSharp.Models.CPU.MC6809
 
         public void AssertInterrupt(byte irq, byte flag)
         {
-            Library.MC6809.MC6809AssertInterrupt(irq, flag);
+            unsafe
+            {
+                _instance->SyncWaiting = 0;
+                _instance->PendingInterrupts |= (byte)(1 << (irq - 1));
+                _instance->IRQWaiter = flag;
+            }
         }
 
         public unsafe void Reset()
         {
-            MC6809State* instance = GetMC6809State();
-
             byte index;
 
             for (index = 0; index <= 5; index++)
-            {		//Set all register to 0 except V
+            {
                 PXF(index, 0);
             }
 
@@ -114,7 +117,7 @@ namespace VCCSharp.Models.CPU.MC6809
 
             DP_REG = 0;
 
-            instance->SyncWaiting = 0;
+            _instance->SyncWaiting = 0;
 
             PC_REG = MemRead16(Define.VRESET);	//PC gets its reset vector
 
@@ -125,27 +128,25 @@ namespace VCCSharp.Models.CPU.MC6809
         {
             unsafe
             {
-                MC6809State* instance = GetMC6809State();
+                _instance->CycleCounter = 0;
 
-                instance->CycleCounter = 0;
-
-                while (instance->CycleCounter < cycleFor)
+                while (_instance->CycleCounter < cycleFor)
                 {
-                    if (instance->PendingInterrupts != 0)
+                    if (_instance->PendingInterrupts != 0)
                     {
-                        if ((instance->PendingInterrupts & 4) != 0)
+                        if ((_instance->PendingInterrupts & 4) != 0)
                         {
                             MC6809_cpu_nmi();
                         }
 
-                        if ((instance->PendingInterrupts & 2) != 0)
+                        if ((_instance->PendingInterrupts & 2) != 0)
                         {
                             MC6809_cpu_firq();
                         }
 
-                        if ((instance->PendingInterrupts & 1) != 0)
+                        if ((_instance->PendingInterrupts & 1) != 0)
                         {
-                            if (instance->IRQWaiter == 0)
+                            if (_instance->IRQWaiter == 0)
                             {
                                 // This is needed to fix a subtle timing problem
                                 // It allows the CPU to see $FF03 bit 7 high before...
@@ -154,12 +155,12 @@ namespace VCCSharp.Models.CPU.MC6809
                             else
                             {
                                 // ...The IRQ is asserted.
-                                instance->IRQWaiter -= 1;
+                                _instance->IRQWaiter -= 1;
                             }
                         }
                     }
 
-                    if (instance->SyncWaiting == 1)
+                    if (_instance->SyncWaiting == 1)
                     {
                         //Abort the run nothing happens asynchronously from the CPU
                         // WDZ - Experimental SyncWaiting should still return used cycles (and not zero) by breaking from loop
@@ -168,12 +169,12 @@ namespace VCCSharp.Models.CPU.MC6809
 
                     _gCycleFor = cycleFor;
 
-                    byte opCode = _modules.TC1014.MemRead8(instance->pc.Reg++);   //PC_REG
+                    byte opCode = _modules.TC1014.MemRead8(_instance->pc.Reg++);   //PC_REG
 
                     Exec(opCode);
                 }
 
-                return cycleFor - instance->CycleCounter;
+                return cycleFor - _instance->CycleCounter;
             }
         }
 
@@ -211,26 +212,24 @@ namespace VCCSharp.Models.CPU.MC6809
         {
             unsafe
             {
-                MC6809State* instance = GetMC6809State();
-
-                if (instance->cc[(int)CCFlagMasks.F] == 0)
+                if (_instance->cc[(int)CCFlagMasks.F] == 0)
                 {
-                    instance->InInterrupt = 1; //Flag to indicate FIRQ has been asserted
+                    _instance->InInterrupt = 1; //Flag to indicate FIRQ has been asserted
 
-                    instance->cc[(int)CCFlagMasks.E] = 0; // Turn E flag off
+                    _instance->cc[(int)CCFlagMasks.E] = 0; // Turn E flag off
 
-                    _modules.TC1014.MemWrite8(instance->pc.lsb, --instance->s.Reg);
-                    _modules.TC1014.MemWrite8(instance->pc.msb, --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(_instance->pc.lsb, --_instance->s.Reg);
+                    _modules.TC1014.MemWrite8(_instance->pc.msb, --_instance->s.Reg);
 
-                    _modules.TC1014.MemWrite8(MC6809_getcc(), --instance->s.Reg);
+                    _modules.TC1014.MemWrite8(MC6809_getcc(), --_instance->s.Reg);
 
-                    instance->cc[(int)CCFlagMasks.I] = 1;
-                    instance->cc[(int)CCFlagMasks.F] = 1;
+                    _instance->cc[(int)CCFlagMasks.I] = 1;
+                    _instance->cc[(int)CCFlagMasks.F] = 1;
 
-                    instance->pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
+                    _instance->pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
                 }
 
-                instance->PendingInterrupts &= 253;
+                _instance->PendingInterrupts &= 253;
             }
         }
 
@@ -312,8 +311,6 @@ namespace VCCSharp.Models.CPU.MC6809
 
         public unsafe ushort MC6809_CalculateEA(byte postByte)
         {
-            MC6809State* instance = GetMC6809State();
-
             ushort ea = 0;
 
             byte reg = (byte)(((postByte >> 5) & 3) + 1);
@@ -325,25 +322,25 @@ namespace VCCSharp.Models.CPU.MC6809
                     case 0:
                         ea = PXF(reg);
                         PXF(reg, (ushort)(PXF(reg) + 1));
-                        instance->CycleCounter += 2;
+                        _instance->CycleCounter += 2;
                         break;
 
                     case 1:
                         ea = PXF(reg);
                         PXF(reg, (ushort)(PXF(reg) + 2));
-                        instance->CycleCounter += 3;
+                        _instance->CycleCounter += 3;
                         break;
 
                     case 2:
                         PXF(reg, (ushort)(PXF(reg) - 1));
                         ea = PXF(reg);
-                        instance->CycleCounter += 2;
+                        _instance->CycleCounter += 2;
                         break;
 
                     case 3:
                         PXF(reg, (ushort)(PXF(reg) - 2));
                         ea = PXF(reg);
-                        instance->CycleCounter += 3;
+                        _instance->CycleCounter += 3;
                         break;
 
                     case 4:
@@ -352,55 +349,55 @@ namespace VCCSharp.Models.CPU.MC6809
 
                     case 5:
                         ea = (ushort)(PXF(reg) + ((sbyte)B_REG));
-                        instance->CycleCounter += 1;
+                        _instance->CycleCounter += 1;
                         break;
 
                     case 6:
                         ea = (ushort)(PXF(reg) + ((sbyte)A_REG));
-                        instance->CycleCounter += 1;
+                        _instance->CycleCounter += 1;
                         break;
 
                     case 7:
                         //ea = (ushort)(PXF(reg) + ((sbyte)E_REG));
-                        instance->CycleCounter += 1;
+                        _instance->CycleCounter += 1;
                         break;
 
                     case 8:
                         ea = (ushort)(PXF(reg) + (sbyte)MemRead8(PC_REG++));
-                        instance->CycleCounter += 1;
+                        _instance->CycleCounter += 1;
                         break;
 
                     case 9:
                         ea = (ushort)(PXF(reg) + MemRead16(PC_REG));
-                        instance->CycleCounter += 4;
+                        _instance->CycleCounter += 4;
                         PC_REG += 2;
                         break;
 
                     case 10:
                         //ea = (ushort)(PXF(reg) + ((sbyte)F_REG));
-                        instance->CycleCounter += 1;
+                        _instance->CycleCounter += 1;
                         break;
 
                     case 11:
                         ea = (ushort)(PXF(reg) + D_REG);
-                        instance->CycleCounter += 4;
+                        _instance->CycleCounter += 4;
                         break;
 
                     case 12:
                         ea = (ushort)((short)PC_REG + (sbyte)MemRead8(PC_REG) + 1);
-                        instance->CycleCounter += 1;
+                        _instance->CycleCounter += 1;
                         PC_REG++;
                         break;
 
                     case 13: //MM
                         ea = (ushort)(PC_REG + MemRead16(PC_REG) + 2);
-                        instance->CycleCounter += 5;
+                        _instance->CycleCounter += 5;
                         PC_REG += 2;
                         break;
 
                     case 14:
                         //ea = (ushort)(PXF(reg) + W_REG);
-                        instance->CycleCounter += 4;
+                        _instance->CycleCounter += 4;
                         break;
 
                     case 15: //01111
@@ -457,83 +454,83 @@ namespace VCCSharp.Models.CPU.MC6809
                         ea = PXF(reg);
                         PXF(reg, (ushort)(PXF(reg) + 2));
                         ea = MemRead16(ea);
-                        instance->CycleCounter += 6;
+                        _instance->CycleCounter += 6;
                         break;
 
                     case 18: //10010
-                        instance->CycleCounter += 6;
+                        _instance->CycleCounter += 6;
                         break;
 
                     case 19: //10011
                         PXF(reg, (ushort)(PXF(reg) - 2));
                         ea = MemRead16(PXF(reg));
-                        instance->CycleCounter += 6;
+                        _instance->CycleCounter += 6;
                         break;
 
                     case 20: //10100
                         ea = MemRead16(PXF(reg));
-                        instance->CycleCounter += 3;
+                        _instance->CycleCounter += 3;
                         break;
 
                     case 21: //10101
                         ea = MemRead16((ushort)(PXF(reg) + ((sbyte)B_REG)));
-                        instance->CycleCounter += 4;
+                        _instance->CycleCounter += 4;
                         break;
 
                     case 22: //10110
                         ea = MemRead16((ushort)(PXF(reg) + ((sbyte)A_REG)));
-                        instance->CycleCounter += 4;
+                        _instance->CycleCounter += 4;
                         break;
 
                     case 23: //10111
                         //ea = MemRead16((ushort)(PXF(reg) + ((sbyte)E_REG)));
                         ea = MemRead16(ea);
-                        instance->CycleCounter += 4;
+                        _instance->CycleCounter += 4;
                         break;
 
                     case 24: //11000
                         ea = MemRead16((ushort)(PXF(reg) + (sbyte)MemRead8(PC_REG++)));
-                        instance->CycleCounter += 4;
+                        _instance->CycleCounter += 4;
                         break;
 
                     case 25: //11001
                         ea = MemRead16((ushort)(PXF(reg) + MemRead16(PC_REG)));
-                        instance->CycleCounter += 7;
+                        _instance->CycleCounter += 7;
                         PC_REG += 2;
                         break;
 
                     case 26: //11010
                         //ea = MemRead16((ushort)(PXF(reg) + ((sbyte)F_REG)));
                         ea = MemRead16(ea);
-                        instance->CycleCounter += 4;
+                        _instance->CycleCounter += 4;
                         break;
 
                     case 27: //11011
                         ea = MemRead16((ushort)(PXF(reg) + D_REG));
-                        instance->CycleCounter += 7;
+                        _instance->CycleCounter += 7;
                         break;
 
                     case 28: //11100
                         ea = MemRead16((ushort)((short)PC_REG + (sbyte)MemRead8(PC_REG) + 1));
-                        instance->CycleCounter += 4;
+                        _instance->CycleCounter += 4;
                         PC_REG++;
                         break;
 
                     case 29: //11101
                         ea = MemRead16((ushort)(PC_REG + MemRead16(PC_REG) + 2));
-                        instance->CycleCounter += 8;
+                        _instance->CycleCounter += 8;
                         PC_REG += 2;
                         break;
 
                     case 30: //11110
                         //ea = MemRead16((ushort)(PXF(reg) + W_REG));
                         ea = MemRead16(ea);
-                        instance->CycleCounter += 7;
+                        _instance->CycleCounter += 7;
                         break;
 
                     case 31: //11111
                         ea = MemRead16(MemRead16(PC_REG));
-                        instance->CycleCounter += 8;
+                        _instance->CycleCounter += 8;
                         PC_REG += 2;
                         break;
                 }
@@ -546,7 +543,7 @@ namespace VCCSharp.Models.CPU.MC6809
 
                 ea = (ushort)(PXF(reg) + signedByte); //Was signed
 
-                instance->CycleCounter += 1;
+                _instance->CycleCounter += 1;
             }
 
             return ea;

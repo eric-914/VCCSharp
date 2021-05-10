@@ -15,12 +15,6 @@ CPU* InitializeInstance(CPU* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetCPUToMC6809() {
-    instance->CPUAssertInterrupt = MC6809AssertInterrupt;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl CPUAssertInterrupt(unsigned char irq, unsigned char flag)
   {
     instance->CPUAssertInterrupt(irq, flag);

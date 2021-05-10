@@ -117,8 +117,6 @@ namespace VCCSharp.Libraries
 
         public static class CPU
         {
-            [DllImport(LIBRARY)]
-            public static extern void SetCPUToMC6809();
         }
 
         public static class DirectDraw
@@ -388,9 +386,6 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe MC6809State * GetMC6809State();
-
-            [DllImport(LIBRARY)]
-            public static extern void MC6809AssertInterrupt(byte interrupt, byte waiter);
         }
 
         public static class MC6821
