@@ -59,137 +59,137 @@ namespace VCCSharp.Models.CPU.MC6809
 
         #region Register Macros
 
-        public unsafe ushort PC_REG
+        public ushort PC_REG
         {
-            get => _instance->pc.Reg;
-            set => _instance->pc.Reg = value;
+            get => _cpu.pc.Reg;
+            set => _cpu.pc.Reg = value;
         }
 
-        public unsafe ushort DP_REG
+        public ushort DP_REG
         {
-            get => _instance->dp.Reg;
-            set => _instance->dp.Reg = value;
+            get => _cpu.dp.Reg;
+            set => _cpu.dp.Reg = value;
         }
 
-        public unsafe ushort D_REG
+        public ushort D_REG
         {
-            get => _instance->d.Reg;
-            set => _instance->d.Reg = value;
+            get => _cpu.d.Reg;
+            set => _cpu.d.Reg = value;
         }
 
-        public unsafe ushort S_REG
+        public ushort S_REG
         {
-            get => _instance->s.Reg;
-            set => _instance->s.Reg = value;
+            get => _cpu.s.Reg;
+            set => _cpu.s.Reg = value;
         }
 
-        public unsafe byte S_L
+        public byte S_L
         {
-            get => _instance->s.lsb;
-            set => _instance->s.lsb = value;
+            get => _cpu.s.lsb;
+            set => _cpu.s.lsb = value;
         }
 
-        public unsafe byte S_H
+        public byte S_H
         {
-            get => _instance->s.msb;
-            set => _instance->s.msb = value;
+            get => _cpu.s.msb;
+            set => _cpu.s.msb = value;
         }
 
-        public unsafe ushort U_REG
+        public ushort U_REG
         {
-            get => _instance->u.Reg;
-            set => _instance->u.Reg = value;
+            get => _cpu.u.Reg;
+            set => _cpu.u.Reg = value;
         }
 
-        public unsafe byte PC_L
+        public byte PC_L
         {
-            get => _instance->pc.lsb;
-            set => _instance->pc.lsb = value;
+            get => _cpu.pc.lsb;
+            set => _cpu.pc.lsb = value;
         }
 
-        public unsafe byte PC_H
+        public byte PC_H
         {
-            get => _instance->pc.msb;
-            set => _instance->pc.msb = value;
+            get => _cpu.pc.msb;
+            set => _cpu.pc.msb = value;
         }
 
-        public unsafe ushort X_REG
+        public ushort X_REG
         {
-            get => _instance->x.Reg;
-            set => _instance->x.Reg = value;
+            get => _cpu.x.Reg;
+            set => _cpu.x.Reg = value;
         }
 
-        public unsafe byte X_L
+        public byte X_L
         {
-            get => _instance->x.lsb;
-            set => _instance->x.lsb = value;
+            get => _cpu.x.lsb;
+            set => _cpu.x.lsb = value;
         }
 
-        public unsafe byte X_H
+        public byte X_H
         {
-            get => _instance->x.msb;
-            set => _instance->x.msb = value;
+            get => _cpu.x.msb;
+            set => _cpu.x.msb = value;
         }
 
-        public unsafe ushort Y_REG
+        public ushort Y_REG
         {
-            get => _instance->y.Reg;
-            set => _instance->y.Reg = value;
+            get => _cpu.y.Reg;
+            set => _cpu.y.Reg = value;
         }
 
-        public unsafe byte Y_L
+        public byte Y_L
         {
-            get => _instance->y.lsb;
-            set => _instance->y.lsb = value;
+            get => _cpu.y.lsb;
+            set => _cpu.y.lsb = value;
         }
 
-        public unsafe byte Y_H
+        public byte Y_H
         {
-            get => _instance->y.msb;
-            set => _instance->y.msb = value;
+            get => _cpu.y.msb;
+            set => _cpu.y.msb = value;
         }
 
-        public unsafe byte U_L
+        public byte U_L
         {
-            get => _instance->u.lsb;
-            set => _instance->u.lsb = value;
+            get => _cpu.u.lsb;
+            set => _cpu.u.lsb = value;
         }
 
-        public unsafe byte U_H
+        public byte U_H
         {
-            get => _instance->u.msb;
-            set => _instance->u.msb = value;
+            get => _cpu.u.msb;
+            set => _cpu.u.msb = value;
         }
 
-        public unsafe byte A_REG
+        public byte A_REG
         {
-            get => _instance->d.msb;
-            set => _instance->d.msb = value;
+            get => _cpu.d.msb;
+            set => _cpu.d.msb = value;
         }
 
-        public unsafe byte B_REG
+        public byte B_REG
         {
-            get => _instance->d.lsb;
-            set => _instance->d.lsb = value;
+            get => _cpu.d.lsb;
+            set => _cpu.d.lsb = value;
         }
 
-        public unsafe byte DPA
+        public byte DPA
         {
-            get => _instance->dp.msb;
-            set => _instance->dp.msb = value;
+            get => _cpu.dp.msb;
+            set => _cpu.dp.msb = value;
         }
 
         #endregion
 
         #region Macros
 
-        public unsafe byte PUR(int i) => *(byte*)(_instance->ureg8[i]);
-        public unsafe void PUR(int i, byte value) => *(byte*)(_instance->ureg8[i]) = value;
+        public byte PUR(int i) => _cpu.ureg8[i];
+        public void PUR(int i, byte value) => _cpu.ureg8[i] = value;
 
-        public unsafe ushort PXF(int i) => *(ushort*)(_instance->xfreg16[i]);
-        public unsafe void PXF(int i, ushort value) => *(ushort*)(_instance->xfreg16[i]) = value;
+        public ushort PXF(int i) => _cpu.xfreg16[i];
+        public void PXF(int i, ushort value) => _cpu.xfreg16[i] = value;
 
-        public unsafe ushort DPADDRESS(ushort r) => (ushort)(_instance->dp.Reg | MemRead8(r));
+        public ushort DPADDRESS(ushort r) => (ushort)(_cpu.dp.Reg | MemRead8(r));
 
         public byte MemRead8(ushort address) => _modules.TC1014.MemRead8(address);
         public void MemWrite8(byte data, ushort address) => _modules.TC1014.MemWrite8(data, address);

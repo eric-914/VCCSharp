@@ -370,12 +370,9 @@
                     else if (source <= 7)
                     {
                         //make sure the source is value
-                        unsafe
+                        if (_cpu.xfreg16[source] != 0)
                         {
-                            if (_instance->xfreg16[source] != 0)
-                            {
-                                PXF(dest, PXF(source));
-                            }
+                            PXF(dest, PXF(source));
                         }
                     }
 

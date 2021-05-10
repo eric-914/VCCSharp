@@ -28,21 +28,7 @@
 #define PUR(_I) (*(instance->ureg8[_I]))
 #define PXF(_I) (*(instance->xfreg16[_I]))
 
-typedef union
-{
-  unsigned short Reg;
-  struct
-  {
-    unsigned char lsb, msb;
-  } B;
-} MC6809CpuRegister;
-
 typedef struct {
-  MC6809CpuRegister pc, x, y, u, s, dp, d;
-
   unsigned char ccbits;
   unsigned int cc[8];
-
-  unsigned char* ureg8[8];
-  unsigned short* xfreg16[8];
 } MC6809State;

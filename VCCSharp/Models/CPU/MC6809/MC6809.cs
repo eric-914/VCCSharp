@@ -14,7 +14,7 @@ namespace VCCSharp.Models.CPU.MC6809
     {
         private readonly IModules _modules;
 
-        //private readonly MC6809CpuRegisters _cpu = new MC6809CpuRegisters();
+        private readonly MC6809CpuRegisters _cpu = new MC6809CpuRegisters();
 
         private readonly unsafe MC6809State* _instance;
 
@@ -46,37 +46,14 @@ namespace VCCSharp.Models.CPU.MC6809
 
         public void Init()
         {
-            unsafe
-            {
-                //Call this first or RESET will core!
-                // reg pointers for TFR and EXG and LEA ops
-                _instance->xfreg16[0] = (long)&(_instance->d.Reg); // &D_REG;
-                _instance->xfreg16[1] = (long)&(_instance->x.Reg); // &X_REG;
-                _instance->xfreg16[2] = (long)&(_instance->y.Reg); // &Y_REG;
-                _instance->xfreg16[3] = (long)&(_instance->u.Reg); // &U_REG;
-                _instance->xfreg16[4] = (long)&(_instance->s.Reg); // &S_REG;
-                _instance->xfreg16[5] = (long)&(_instance->pc.Reg); // &PC_REG;
-
-                _instance->ureg8[0] = (long)&(_instance->d.msb); //(byte*)(&A_REG);
-                _instance->ureg8[1] = (long)&(_instance->d.lsb); //(byte*)(&B_REG);
-                _instance->ureg8[2] = (long)&(_instance->ccbits); //(byte*)(&(instance->ccbits));
-                _instance->ureg8[3] = (long)&(_instance->dp.msb); //(byte*)(&DPA);
-                _instance->ureg8[4] = (long)&(_instance->dp.msb); //(byte*)(&DPA);
-                _instance->ureg8[5] = (long)&(_instance->dp.msb); //(byte*)(&DPA);
-                _instance->ureg8[6] = (long)&(_instance->dp.msb); //(byte*)(&DPA);
-                _instance->ureg8[7] = (long)&(_instance->dp.msb); //(byte*)(&DPA);
-            }
         }
 
         public void ForcePC(ushort address)
         {
-            unsafe
-            {
-                _instance->pc.Reg = address;
+            _cpu.pc.Reg = address;
 
-                _pendingInterrupts = 0;
-                _syncWaiting = 0;
-            }
+            _pendingInterrupts = 0;
+            _syncWaiting = 0;
         }
 
         public void DeAssertInterrupt(byte irq)
@@ -126,56 +103,53 @@ namespace VCCSharp.Models.CPU.MC6809
 
         public int Exec(int cycleFor)
         {
-            unsafe
+            _cycleCounter = 0;
+
+            while (_cycleCounter < cycleFor)
             {
-                _cycleCounter = 0;
-
-                while (_cycleCounter < cycleFor)
+                if (_pendingInterrupts != 0)
                 {
-                    if (_pendingInterrupts != 0)
+                    if ((_pendingInterrupts & 4) != 0)
                     {
-                        if ((_pendingInterrupts & 4) != 0)
-                        {
-                            MC6809_cpu_nmi();
-                        }
-
-                        if ((_pendingInterrupts & 2) != 0)
-                        {
-                            MC6809_cpu_firq();
-                        }
-
-                        if ((_pendingInterrupts & 1) != 0)
-                        {
-                            if (_irqWaiter == 0)
-                            {
-                                // This is needed to fix a subtle timing problem
-                                // It allows the CPU to see $FF03 bit 7 high before...
-                                MC6809_cpu_irq();
-                            }
-                            else
-                            {
-                                // ...The IRQ is asserted.
-                                _irqWaiter -= 1;
-                            }
-                        }
+                        MC6809_cpu_nmi();
                     }
 
-                    if (_syncWaiting == 1)
+                    if ((_pendingInterrupts & 2) != 0)
                     {
-                        //Abort the run nothing happens asynchronously from the CPU
-                        // WDZ - Experimental SyncWaiting should still return used cycles (and not zero) by breaking from loop
-                        break;
+                        MC6809_cpu_firq();
                     }
 
-                    _gCycleFor = cycleFor;
-
-                    byte opCode = _modules.TC1014.MemRead8(_instance->pc.Reg++);   //PC_REG
-
-                    Exec(opCode);
+                    if ((_pendingInterrupts & 1) != 0)
+                    {
+                        if (_irqWaiter == 0)
+                        {
+                            // This is needed to fix a subtle timing problem
+                            // It allows the CPU to see $FF03 bit 7 high before...
+                            MC6809_cpu_irq();
+                        }
+                        else
+                        {
+                            // ...The IRQ is asserted.
+                            _irqWaiter -= 1;
+                        }
+                    }
                 }
 
-                return cycleFor - _cycleCounter;
+                if (_syncWaiting == 1)
+                {
+                    //Abort the run nothing happens asynchronously from the CPU
+                    // WDZ - Experimental SyncWaiting should still return used cycles (and not zero) by breaking from loop
+                    break;
+                }
+
+                _gCycleFor = cycleFor;
+
+                byte opCode = _modules.TC1014.MemRead8(_cpu.pc.Reg++);   //PC_REG
+
+                Exec(opCode);
             }
+
+            return cycleFor - _cycleCounter;
         }
 
         public void MC6809_cpu_nmi()
@@ -184,25 +158,25 @@ namespace VCCSharp.Models.CPU.MC6809
             {
                 _instance->cc[(int)CCFlagMasks.E] = 1;
 
-                _modules.TC1014.MemWrite8(_instance->pc.lsb, --_instance->s.Reg);
-                _modules.TC1014.MemWrite8(_instance->pc.msb, --_instance->s.Reg);
-                _modules.TC1014.MemWrite8(_instance->u.lsb, --_instance->s.Reg);
-                _modules.TC1014.MemWrite8(_instance->u.msb, --_instance->s.Reg);
-                _modules.TC1014.MemWrite8(_instance->y.lsb, --_instance->s.Reg);
-                _modules.TC1014.MemWrite8(_instance->y.msb, --_instance->s.Reg);
-                _modules.TC1014.MemWrite8(_instance->x.lsb, --_instance->s.Reg);
-                _modules.TC1014.MemWrite8(_instance->x.msb, --_instance->s.Reg);
-                _modules.TC1014.MemWrite8(_instance->dp.msb, --_instance->s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
 
-                _modules.TC1014.MemWrite8(_instance->d.lsb, --_instance->s.Reg);
-                _modules.TC1014.MemWrite8(_instance->d.msb, --_instance->s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg);
 
-                _modules.TC1014.MemWrite8(MC6809_getcc(), --_instance->s.Reg);
+                _modules.TC1014.MemWrite8(MC6809_getcc(), --_cpu.s.Reg);
 
                 _instance->cc[(int)CCFlagMasks.I] = 1;
                 _instance->cc[(int)CCFlagMasks.F] = 1;
 
-                _instance->pc.Reg = _modules.TC1014.MemRead16(Define.VNMI);
+                _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VNMI);
 
                 _pendingInterrupts &= 251;
             }
@@ -218,15 +192,15 @@ namespace VCCSharp.Models.CPU.MC6809
 
                     _instance->cc[(int)CCFlagMasks.E] = 0; // Turn E flag off
 
-                    _modules.TC1014.MemWrite8(_instance->pc.lsb, --_instance->s.Reg);
-                    _modules.TC1014.MemWrite8(_instance->pc.msb, --_instance->s.Reg);
+                    _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
+                    _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
 
-                    _modules.TC1014.MemWrite8(MC6809_getcc(), --_instance->s.Reg);
+                    _modules.TC1014.MemWrite8(MC6809_getcc(), --_cpu.s.Reg);
 
                     _instance->cc[(int)CCFlagMasks.I] = 1;
                     _instance->cc[(int)CCFlagMasks.F] = 1;
 
-                    _instance->pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
+                    _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VFIRQ);
                 }
 
                 _pendingInterrupts &= 253;
@@ -247,21 +221,21 @@ namespace VCCSharp.Models.CPU.MC6809
                 {
                     _instance->cc[(int)CCFlagMasks.E] = 1;
 
-                    _modules.TC1014.MemWrite8(_instance->pc.lsb, --_instance->s.Reg);
-                    _modules.TC1014.MemWrite8(_instance->pc.msb, --_instance->s.Reg);
-                    _modules.TC1014.MemWrite8(_instance->u.lsb, --_instance->s.Reg);
-                    _modules.TC1014.MemWrite8(_instance->u.msb, --_instance->s.Reg);
-                    _modules.TC1014.MemWrite8(_instance->y.lsb, --_instance->s.Reg);
-                    _modules.TC1014.MemWrite8(_instance->y.msb, --_instance->s.Reg);
-                    _modules.TC1014.MemWrite8(_instance->x.lsb, --_instance->s.Reg);
-                    _modules.TC1014.MemWrite8(_instance->x.msb, --_instance->s.Reg);
-                    _modules.TC1014.MemWrite8(_instance->dp.msb, --_instance->s.Reg);
-                    _modules.TC1014.MemWrite8(_instance->d.lsb, --_instance->s.Reg);
-                    _modules.TC1014.MemWrite8(_instance->d.msb, --_instance->s.Reg);
+                    _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
+                    _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
+                    _modules.TC1014.MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
+                    _modules.TC1014.MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
+                    _modules.TC1014.MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
+                    _modules.TC1014.MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
+                    _modules.TC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
+                    _modules.TC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
+                    _modules.TC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
+                    _modules.TC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg);
+                    _modules.TC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg);
 
-                    _modules.TC1014.MemWrite8(MC6809_getcc(), --_instance->s.Reg);
+                    _modules.TC1014.MemWrite8(MC6809_getcc(), --_cpu.s.Reg);
 
-                    _instance->pc.Reg = _modules.TC1014.MemRead16(Define.VIRQ);
+                    _cpu.pc.Reg = _modules.TC1014.MemRead16(Define.VIRQ);
                     _instance->cc[(int)CCFlagMasks.I] = 1;
                 }
 
