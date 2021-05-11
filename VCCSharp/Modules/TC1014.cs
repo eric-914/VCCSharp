@@ -4567,16 +4567,6 @@ Could not locate {ROM} in any of these locations:
             _modules.CoCo.SetTimerClockRate((byte)(data & 32));	//TINS
         }
 
-        public void SetGimeIRQSteering(byte data)
-        {
-            Library.TC1014.SetGimeIRQSteering(data);
-        }
-
-        public void SetGimeFIRQSteering(byte data)
-        {
-            Library.TC1014.SetGimeFIRQSteering(data);
-        }
-
         public void SetTimerMSB(byte data)
         {
             ushort temp;
@@ -4634,6 +4624,39 @@ Could not locate {ROM} in any of these locations:
         public void SetMmuEnabled(byte usingmmu)
         {
             Library.TC1014.SetMmuEnabled(usingmmu);
+        }
+
+        public void SetGimeIRQSteering(byte data)
+        {
+            unsafe
+            {
+                TC1014RegistersState* registersState = GetTC1014RegistersState();
+
+                bool TestMask(int address, int mask) => (registersState->GimeRegisters[address] & mask) != 0;
+                byte Test(int mask) => TestMask(0x92, mask) | TestMask(0x93, mask) ? (byte)1 : (byte)0;
+
+                _modules.Keyboard.GimeSetKeyboardInterruptState(Test(2));
+                _modules.CoCo.SetVertInterruptState(Test(8));
+                _modules.CoCo.SetHorzInterruptState(Test(16));
+                _modules.CoCo.SetTimerInterruptState(Test(32));
+            }
+        }
+
+        //--TODO: Not sure why this is the same as IRQ above
+        public void SetGimeFIRQSteering(byte data)
+        {
+            unsafe
+            {
+                TC1014RegistersState* registersState = GetTC1014RegistersState();
+
+                bool TestMask(int address, int mask) => (registersState->GimeRegisters[address] & mask) != 0;
+                byte Test(int mask) => TestMask(0x92, mask) | TestMask(0x93, mask) ? (byte)1 : (byte)0;
+
+                _modules.Keyboard.GimeSetKeyboardInterruptState(Test(2));
+                _modules.CoCo.SetVertInterruptState(Test(8));
+                _modules.CoCo.SetHorzInterruptState(Test(16));
+                _modules.CoCo.SetTimerInterruptState(Test(32));
+            }
         }
     }
 }

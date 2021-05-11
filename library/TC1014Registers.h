@@ -17,10 +17,4 @@ typedef struct {
   unsigned char* Rom;
 } TC1014RegistersState;
 
-extern "C" __declspec(dllexport) TC1014RegistersState * __cdecl GetTC1014RegistersState();
-
-extern "C" __declspec(dllexport) void __cdecl GimeAssertHorzInterrupt(void);
 extern "C" __declspec(dllexport) void __cdecl GimeAssertKeyboardInterrupt(void);
-extern "C" __declspec(dllexport) void __cdecl GimeAssertTimerInterrupt(void);
-extern "C" __declspec(dllexport) void __cdecl SetGimeFIRQSteering(unsigned char data);
-extern "C" __declspec(dllexport) void __cdecl SetGimeIRQSteering(unsigned char data);

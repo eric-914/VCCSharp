@@ -17,6 +17,9 @@ namespace VCCSharp.Modules
         byte SetSndOutMode(byte mode);
         void SetInterruptTimer(ushort timer);
         void SetTimerClockRate(byte clockRate);
+        void SetVertInterruptState(byte state);
+        void SetHorzInterruptState(byte state);
+        void SetTimerInterruptState(byte state);
     }
 
     public class CoCo : ICoCo
@@ -673,6 +676,21 @@ namespace VCCSharp.Modules
         public void SetTimerClockRate(byte clockRate)
         {
             Library.CoCo.SetTimerClockRate(clockRate);
+        }
+
+        public void SetVertInterruptState(byte state)
+        {
+            Library.CoCo.SetVertInterruptState(state);
+        }
+
+        public void SetHorzInterruptState(byte state)
+        {
+            Library.CoCo.SetHorzInterruptState(state);
+        }
+
+        public void SetTimerInterruptState(byte state)
+        {
+            Library.CoCo.SetTimerInterruptState(state);
         }
     }
 }

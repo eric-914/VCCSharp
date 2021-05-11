@@ -91,6 +91,15 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetTimerClockRate(byte clockRate);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetVertInterruptState(byte state);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetHorzInterruptState(byte state);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetTimerInterruptState(byte state);
         }
 
         public static class Config
@@ -402,6 +411,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void vccKeyboardBuildRuntimeTable(byte keyMapIndex);
+
+            [DllImport(LIBRARY)]
+            public static extern void GimeSetKeyboardInterruptState(byte state);
         }
 
         public static class MenuCallbacks
@@ -522,12 +534,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void SwitchMasterMode32(EmuState* emuState, byte masterMode, uint start, uint yStride);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetGimeIRQSteering(byte data);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetGimeFIRQSteering(byte data);
 
             [DllImport(LIBRARY)]
             public static extern void SetDistoRamBank(byte data);
