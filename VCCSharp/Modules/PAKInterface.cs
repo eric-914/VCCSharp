@@ -1,10 +1,10 @@
-﻿using System;
-using VCCSharp.IoC;
+﻿using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
+    // ReSharper disable once InconsistentNaming
     public interface IPAKInterface
     {
         unsafe PakInterfaceState* GetPakInterfaceState();
@@ -17,8 +17,11 @@ namespace VCCSharp.Modules
         int HasHeartBeat();
         void InvokeHeartBeat();
         string GetCurrentModule();
+        byte PakPortRead(byte port);
+        void PakPortWrite(byte port, byte data);
     }
 
+    // ReSharper disable once InconsistentNaming
     public class PAKInterface : IPAKInterface
     {
         private readonly IModules _modules;
@@ -145,6 +148,16 @@ namespace VCCSharp.Modules
         public unsafe void GetModuleStatus(EmuState* emuState)
         {
             Library.PAKInterface.GetModuleStatus(emuState);
+        }
+
+        public byte PakPortRead(byte port)
+        {
+            return Library.PAKInterface.PakPortRead(port);
+        }
+
+        public void PakPortWrite(byte port, byte data)
+        {
+            Library.PAKInterface.PakPortWrite(port, data);
         }
     }
 }

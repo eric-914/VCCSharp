@@ -36,6 +36,11 @@ namespace VCCSharp.Modules
         unsafe void UpdateScreen24(EmuState* emuState);
         unsafe void UpdateScreen32(EmuState* emuState);
         unsafe void UpdateScreen8(EmuState* emuState);
+
+        byte SAMRead(byte port);
+        void SAMWrite(byte data, byte port);
+        byte GimeRead(byte port);
+        void GimeWrite(byte port, byte data);
     }
 
     public class TC1014 : ITC1014
@@ -4312,6 +4317,26 @@ Could not locate {ROM} in any of these locations:
 
                     #endregion
             }
+        }
+
+        public byte SAMRead(byte port)
+        {
+            return Library.TC1014.SAMRead(port);
+        }
+
+        public void SAMWrite(byte data, byte port)
+        {
+            Library.TC1014.SAMWrite(data, port);
+        }
+
+        public byte GimeRead(byte port)
+        {
+            return Library.TC1014.GimeRead(port);
+        }
+
+        public void GimeWrite(byte port, byte data)
+        {
+            Library.TC1014.GimeWrite(port, data);
         }
     }
 }

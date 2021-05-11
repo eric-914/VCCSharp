@@ -18,6 +18,11 @@ namespace VCCSharp.Modules
         void MC6821_SetMonState(int state);
         void MC6821_SetSerialParams(byte textMode);
         int MC6821_OpenPrintFile(string filename);
+
+        byte MC6821_pia0_read(byte port);
+        byte MC6821_pia1_read(byte port);
+        void MC6821_pia0_write(byte data, byte port);
+        void MC6821_pia1_write(byte data, byte port);
     }
 
     // ReSharper disable once InconsistentNaming
@@ -201,6 +206,26 @@ namespace VCCSharp.Modules
         public int MC6821_OpenPrintFile(string filename)
         {
             return Library.MC6821.MC6821_OpenPrintFile(filename);
+        }
+
+        public byte MC6821_pia0_read(byte port)
+        {
+            return Library.MC6821.MC6821_pia0_read(port);
+        }
+
+        public byte MC6821_pia1_read(byte port)
+        {
+            return Library.MC6821.MC6821_pia1_read(port);
+        }
+
+        public void MC6821_pia0_write(byte data, byte port)
+        {
+            Library.MC6821.MC6821_pia0_write(data, port);
+        }
+
+        public void MC6821_pia1_write(byte data, byte port)
+        {
+            Library.MC6821.MC6821_pia1_write(data, port);
         }
     }
 }

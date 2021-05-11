@@ -47,9 +47,6 @@
     <ClCompile Include="PAKInterface.c">
       <Filter>pakinterface</Filter>
     </ClCompile>
-    <ClCompile Include="IOBus.c">
-      <Filter>iobus</Filter>
-    </ClCompile>
     <ClCompile Include="DirectDraw.c">
       <Filter>directdraw</Filter>
     </ClCompile>
@@ -165,9 +162,6 @@
     </ClInclude>
     <ClInclude Include="PAKInterface.h">
       <Filter>pakinterface</Filter>
-    </ClInclude>
-    <ClInclude Include="IOBus.h">
-      <Filter>iobus</Filter>
     </ClInclude>
     <ClInclude Include="DirectDraw.h">
       <Filter>directdraw</Filter>
@@ -338,9 +332,6 @@
     </Filter>
     <Filter Include="directdraw">
       <UniqueIdentifier>{fcd2e4e7-3346-4625-b980-414909633751}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="iobus">
-      <UniqueIdentifier>{76dcdb10-b8f2-4647-8ed5-2e3ff3ed2802}</UniqueIdentifier>
     </Filter>
     <Filter Include="legal">
       <UniqueIdentifier>{b1110f74-34ea-4882-92c9-833443968697}</UniqueIdentifier>

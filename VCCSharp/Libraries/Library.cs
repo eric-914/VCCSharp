@@ -343,15 +343,6 @@ namespace VCCSharp.Libraries
             public static extern void SetMonitorTypePalettes(byte monType, byte palIndex);
         }
 
-        public static class IOBus
-        {
-            [DllImport(LIBRARY)]
-            public static extern byte port_read(ushort address);
-
-            [DllImport(LIBRARY)]
-            public static extern void port_write(byte data, ushort address);
-        }
-
         public static class Joystick
         {
             [DllImport(LIBRARY)]
@@ -399,6 +390,18 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern int MC6821_OpenPrintFile(string filename);
+
+            [DllImport(LIBRARY)]
+            public static extern byte MC6821_pia0_read(byte port);
+
+            [DllImport(LIBRARY)]
+            public static extern byte MC6821_pia1_read(byte port);
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6821_pia0_write(byte data, byte port);
+
+            [DllImport(LIBRARY)]
+            public static extern void MC6821_pia1_write(byte data, byte port);
         } //--MC6821
 
         public static class PAKInterface
@@ -444,6 +447,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void InvokeModuleReset();
+
+            [DllImport(LIBRARY)]
+            public static extern byte PakPortRead(byte port);
+
+            [DllImport(LIBRARY)]
+            public static extern void PakPortWrite(byte port, byte data);
         } //--PAKInterface
 
         public static class TC1014
@@ -483,6 +492,18 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void SwitchMasterMode32(EmuState* emuState, byte masterMode, uint start, uint yStride);
+
+            [DllImport(LIBRARY)]
+            public static extern byte SAMRead(byte port);
+
+            [DllImport(LIBRARY)]
+            public static extern void SAMWrite(byte data, byte port);
+
+            [DllImport(LIBRARY)]
+            public static extern byte GimeRead(byte port);
+
+            [DllImport(LIBRARY)]
+            public static extern void GimeWrite(byte port, byte data);
         }
 
         public static class Vcc
