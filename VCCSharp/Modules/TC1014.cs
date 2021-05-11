@@ -459,7 +459,16 @@ namespace VCCSharp.Modules
 
         public void MC6883Reset()
         {
-            Library.TC1014.MC6883Reset();
+            unsafe
+            {
+                TC1014RegistersState* registersState = GetTC1014RegistersState();
+
+                registersState->VDG_Mode = 0;
+                registersState->Dis_Offset = 0;
+                registersState->MPU_Rate = 0;
+
+                registersState->Rom = GetInternalRomPointer();
+            }
         }
 
         //TODO: Used by MmuInit()
@@ -4538,12 +4547,24 @@ Could not locate {ROM} in any of these locations:
 
         public void SetInit0(byte data)
         {
-            Library.TC1014.SetInit0(data);
+            unsafe
+            {
+                TC1014RegistersState* registersState = GetTC1014RegistersState();
+
+                _modules.Graphics.SetCompatMode((byte)((data & 128) == 0 ? 0 : 1));
+                SetMmuEnabled((byte)((data & 64) == 0 ? 0 : 1)); //MMUEN
+                SetRomMap((byte)(data & 3)); //MC0-MC1
+                SetVectors((byte)(data & 8)); //MC3
+
+                registersState->EnhancedFIRQFlag = (byte)((data & 16) >> 4);
+                registersState->EnhancedIRQFlag = (byte)((data & 32) >> 5);
+            }
         }
 
         public void SetInit1(byte data)
         {
-            Library.TC1014.SetInit1(data);
+            SetMmuTask((byte)(data & 1));                       //TR
+            _modules.CoCo.SetTimerClockRate((byte)(data & 32));	//TINS
         }
 
         public void SetGimeIRQSteering(byte data)
@@ -4558,12 +4579,31 @@ Could not locate {ROM} in any of these locations:
 
         public void SetTimerMSB(byte data)
         {
-            Library.TC1014.SetTimerMSB(data);
+            ushort temp;
+
+            unsafe
+            {
+                TC1014RegistersState* registersState = GetTC1014RegistersState();
+
+                temp = (ushort)(((registersState->GimeRegisters[0x94] << 8) + registersState->GimeRegisters[0x95]) & 4095);
+            }
+
+            _modules.CoCo.SetInterruptTimer(temp);
+
         }
 
         public void SetTimerLSB(byte data)
         {
-            Library.TC1014.SetTimerLSB(data);
+            ushort temp;
+
+            unsafe
+            {
+                TC1014RegistersState* registersState = GetTC1014RegistersState();
+
+                temp = (ushort)(((registersState->GimeRegisters[0x94] << 8) + registersState->GimeRegisters[0x95]) & 4095);
+            }
+
+            _modules.CoCo.SetInterruptTimer(temp);
         }
 
         public void SetDistoRamBank(byte data)
@@ -4574,6 +4614,26 @@ Could not locate {ROM} in any of these locations:
         public void SetMmuRegister(byte register, byte data)
         {
             Library.TC1014.SetMmuRegister(register, data);
+        }
+
+        public unsafe byte* GetInternalRomPointer()
+        {
+            return Library.TC1014.GetInternalRomPointer();
+        }
+
+        public void SetMmuTask(byte task)
+        {
+            Library.TC1014.SetMmuTask(task);
+        }
+
+        public void SetVectors(byte data)
+        {
+            Library.TC1014.SetVectors(data);
+        }
+
+        public void SetMmuEnabled(byte usingmmu)
+        {
+            Library.TC1014.SetMmuEnabled(usingmmu);
         }
     }
 }

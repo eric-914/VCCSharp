@@ -51,7 +51,7 @@ TC1014MmuState* InitializeInstance(TC1014MmuState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char* __cdecl GetInternalRomPointer(void)
+  __declspec(dllexport) unsigned char* __cdecl GetInternalRomPointer()
   {
     return instance->InternalRomBuffer;
   }

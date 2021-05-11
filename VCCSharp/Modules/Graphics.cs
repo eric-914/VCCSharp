@@ -33,6 +33,7 @@ namespace VCCSharp.Modules
         void SetVerticalOffsetRegister(ushort voRegister);
         void SetGimeHorzOffset(byte data);
         void SetGimePalette(byte palette, byte color);
+        void SetCompatMode(byte mode);
     }
 
     public class Graphics : IGraphics
@@ -401,6 +402,11 @@ namespace VCCSharp.Modules
         public void SetGimePalette(byte palette, byte color)
         {
             Library.Graphics.SetGimePalette(palette, color);
+        }
+
+        public void SetCompatMode(byte mode)
+        {
+            Library.Graphics.SetCompatMode(mode);
         }
     }
 }

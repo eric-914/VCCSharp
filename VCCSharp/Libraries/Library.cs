@@ -85,6 +85,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetAudioEventCassIn();
+
+            [DllImport(LIBRARY)]
+            public static extern void SetInterruptTimer(ushort timer);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetTimerClockRate(byte clockRate);
         }
 
         public static class Config
@@ -365,6 +371,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetGimePalette(byte palette, byte color);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetCompatMode(byte mode);
         }
 
         public static class Joystick
@@ -488,9 +497,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe TC1014RegistersState* GetTC1014RegistersState();
 
             [DllImport(LIBRARY)]
-            public static extern void MC6883Reset();
-            
-            [DllImport(LIBRARY)]
             public static extern void GimeAssertHorzInterrupt();
 
             [DllImport(LIBRARY)]
@@ -518,28 +524,28 @@ namespace VCCSharp.Libraries
             public static extern unsafe void SwitchMasterMode32(EmuState* emuState, byte masterMode, uint start, uint yStride);
 
             [DllImport(LIBRARY)]
-            public static extern void SetInit0(byte data);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetInit1(byte data);
-
-            [DllImport(LIBRARY)]
             public static extern void SetGimeIRQSteering(byte data);
 
             [DllImport(LIBRARY)]
             public static extern void SetGimeFIRQSteering(byte data);
 
             [DllImport(LIBRARY)]
-            public static extern void SetTimerMSB(byte data);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetTimerLSB(byte data);
-
-            [DllImport(LIBRARY)]
             public static extern void SetDistoRamBank(byte data);
 
             [DllImport(LIBRARY)]
             public static extern void SetMmuRegister(byte register, byte data);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe byte* GetInternalRomPointer();
+
+            [DllImport(LIBRARY)]
+            public static extern void SetMmuTask(byte task);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetVectors(byte data);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetMmuEnabled(byte usingmmu);
         }
 
         public static class Vcc

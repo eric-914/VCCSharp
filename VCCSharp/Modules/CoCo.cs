@@ -15,6 +15,8 @@ namespace VCCSharp.Modules
         void CocoReset();
         ushort SetAudioRate(ushort rate);
         byte SetSndOutMode(byte mode);
+        void SetInterruptTimer(ushort timer);
+        void SetTimerClockRate(byte clockRate);
     }
 
     public class CoCo : ICoCo
@@ -661,6 +663,16 @@ namespace VCCSharp.Modules
             };
 
             mapping[(BitDepthStates) emuState->BitDepth]();
+        }
+
+        public void SetInterruptTimer(ushort timer)
+        {
+            Library.CoCo.SetInterruptTimer(timer);
+        }
+
+        public void SetTimerClockRate(byte clockRate)
+        {
+            Library.CoCo.SetTimerClockRate(clockRate);
         }
     }
 }

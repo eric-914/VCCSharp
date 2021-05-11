@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "TC1014Registers.h"
 #include "TC1014MMU.h"
 #include "Graphics.h"
@@ -87,19 +89,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MC6883Reset()
-  {
-    TC1014RegistersState* registersState = GetTC1014RegistersState();
-
-    registersState->VDG_Mode = 0;
-    registersState->Dis_Offset = 0;
-    registersState->MPU_Rate = 0;
-
-    registersState->Rom = GetInternalRomPointer();
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl SetGimeFIRQSteering(unsigned char data) //93
   {
     TC1014RegistersState* registersState = GetTC1014RegistersState();
@@ -167,54 +156,5 @@ extern "C" {
     else {
       SetTimerInterruptState(0);
     }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetInit0(unsigned char data)
-  {
-    TC1014RegistersState* registersState = GetTC1014RegistersState();
-
-    SetCompatMode(!!(data & 128));
-    SetMmuEnabled(!!(data & 64)); //MMUEN
-    SetRomMap(data & 3);			//MC0-MC1
-    SetVectors(data & 8);			//MC3
-
-    registersState->EnhancedFIRQFlag = (data & 16) >> 4;
-    registersState->EnhancedIRQFlag = (data & 32) >> 5;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetInit1(unsigned char data)
-  {
-    SetMmuTask(data & 1);			//TR
-    SetTimerClockRate(data & 32);	//TINS
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetTimerLSB(unsigned char data) //95
-  {
-    unsigned short temp;
-
-    TC1014RegistersState* registersState = GetTC1014RegistersState();
-
-    temp = ((registersState->GimeRegisters[0x94] << 8) + registersState->GimeRegisters[0x95]) & 4095;
-
-    SetInterruptTimer(temp);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetTimerMSB(unsigned char data) //94
-  {
-    unsigned short temp;
-
-    TC1014RegistersState* registersState = GetTC1014RegistersState();
-
-    temp = ((registersState->GimeRegisters[0x94] << 8) + registersState->GimeRegisters[0x95]) & 4095;
-
-    SetInterruptTimer(temp);
   }
 }
