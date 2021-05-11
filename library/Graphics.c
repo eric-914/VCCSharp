@@ -138,14 +138,14 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetGimePalette(unsigned char pallete, unsigned char color)
+  __declspec(dllexport) void __cdecl SetGimePalette(unsigned char palette, unsigned char color)
   {
     // Convert the 6bit rgbrgb value to rrrrrggggggbbbbb for the Real video hardware.
     //	unsigned char r,g,b;
-    colors->Palette[pallete] = ((color & 63));
-    colors->Palette8Bit[pallete] = colors->PaletteLookup8[instance->MonType][color & 63];
-    colors->Palette16Bit[pallete] = colors->PaletteLookup16[instance->MonType][color & 63];
-    colors->Palette32Bit[pallete] = colors->PaletteLookup32[instance->MonType][color & 63];
+    colors->Palette[palette] = ((color & 63));
+    colors->Palette8Bit[palette] = colors->PaletteLookup8[instance->MonType][color & 63];
+    colors->Palette16Bit[palette] = colors->PaletteLookup16[instance->MonType][color & 63];
+    colors->Palette32Bit[palette] = colors->PaletteLookup32[instance->MonType][color & 63];
   }
 }
 

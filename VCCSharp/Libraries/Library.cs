@@ -25,6 +25,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetCPUMultiplierFlag(byte double_speed);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetTurboMode(byte data);
         }
 
         public static class Audio
@@ -341,6 +344,27 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetMonitorTypePalettes(byte monType, byte palIndex);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetGimeVdgMode(byte vdgMode);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetGimeVdgOffset(byte offset);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetGimeVmode(byte vmode);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetGimeVres(byte vres);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetVerticalOffsetRegister(ushort voRegister);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetGimeHorzOffset(byte data);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetGimePalette(byte palette, byte color);
         }
 
         public static class Joystick
@@ -494,16 +518,28 @@ namespace VCCSharp.Libraries
             public static extern unsafe void SwitchMasterMode32(EmuState* emuState, byte masterMode, uint start, uint yStride);
 
             [DllImport(LIBRARY)]
-            public static extern byte SAMRead(byte port);
+            public static extern void SetInit0(byte data);
 
             [DllImport(LIBRARY)]
-            public static extern void SAMWrite(byte data, byte port);
+            public static extern void SetInit1(byte data);
 
             [DllImport(LIBRARY)]
-            public static extern byte GimeRead(byte port);
+            public static extern void SetGimeIRQSteering(byte data);
 
             [DllImport(LIBRARY)]
-            public static extern void GimeWrite(byte port, byte data);
+            public static extern void SetGimeFIRQSteering(byte data);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetTimerMSB(byte data);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetTimerLSB(byte data);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetDistoRamBank(byte data);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetMmuRegister(byte register, byte data);
         }
 
         public static class Vcc

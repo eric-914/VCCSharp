@@ -15,6 +15,8 @@ namespace VCCSharp.Modules
         unsafe void HardReset(EmuState* emuState);
         void SetCPUMultiplier(byte multiplier);
         void SetEmuRunning(bool flag);
+        void SetCPUMultiplierFlag(byte double_speed);
+        void SetTurboMode(byte data);
     }
 
     public class Emu : IEmu
@@ -128,6 +130,11 @@ namespace VCCSharp.Modules
         public void SetCPUMultiplierFlag(byte double_speed)
         {
             Library.Emu.SetCPUMultiplierFlag(double_speed);
+        }
+
+        public void SetTurboMode(byte data)
+        {
+            Library.Emu.SetTurboMode(data);
         }
     }
 }

@@ -25,6 +25,14 @@ namespace VCCSharp.Modules
         void FlipArtifacts();
         void InvalidateBorder();
         bool CheckState(byte attributes);
+        void SetGimeVdgMode(byte vdgMode);
+        void SetGimeVdgOffset(byte offset);
+        void SetGimeVmode(byte vmode);
+        void SetGimeVres(byte vres);
+        void SetGimeBorderColor(byte data);
+        void SetVerticalOffsetRegister(ushort voRegister);
+        void SetGimeHorzOffset(byte data);
+        void SetGimePalette(byte palette, byte color);
     }
 
     public class Graphics : IGraphics
@@ -358,6 +366,41 @@ namespace VCCSharp.Modules
                 //return (!instance->BlinkState) & !!(attributes & 128);
                 return (instance->BlinkState == 0) && ((attributes & 128) != 0);
             }
+        }
+
+        public void SetGimeVdgMode(byte vdgMode)
+        {
+            Library.Graphics.SetGimeVdgMode(vdgMode);
+        }
+
+        public void SetGimeVdgOffset(byte offset)
+        {
+            Library.Graphics.SetGimeVdgOffset(offset);
+        }
+
+        public void SetGimeVmode(byte vmode)
+        {
+            Library.Graphics.SetGimeVmode(vmode);
+        }
+
+        public void SetGimeVres(byte vres)
+        {
+            Library.Graphics.SetGimeVres(vres);
+        }
+
+        public void SetVerticalOffsetRegister(ushort voRegister)
+        {
+            Library.Graphics.SetVerticalOffsetRegister(voRegister);
+        }
+
+        public void SetGimeHorzOffset(byte data)
+        {
+            Library.Graphics.SetGimeHorzOffset(data);
+        }
+
+        public void SetGimePalette(byte palette, byte color)
+        {
+            Library.Graphics.SetGimePalette(palette, color);
         }
     }
 }

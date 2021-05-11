@@ -695,8 +695,9 @@ Could not locate {ROM} in any of these locations:
             {
                 TC1014MmuState* instance = GetTC1014MmuState();
 
-                if (instance->RamVectors != 0) { //Address must be $FE00 - $FEFF
-                    return(instance->Memory[(0x2000 * instance->VectorMask[instance->CurrentRamConfig]) | (address & 0x1FFF)]);
+                if (instance->RamVectors != 0)
+                { //Address must be $FE00 - $FEFF
+                    return (instance->Memory[(0x2000 * instance->VectorMask[instance->CurrentRamConfig]) | (address & 0x1FFF)]);
                 }
 
                 return MemRead8(address);
@@ -728,10 +729,12 @@ Could not locate {ROM} in any of these locations:
             {
                 TC1014MmuState* instance = GetTC1014MmuState();
 
-                if (instance->RamVectors != 0) { //Address must be $FE00 - $FEFF
+                if (instance->RamVectors != 0)
+                { //Address must be $FE00 - $FEFF
                     instance->Memory[(0x2000 * instance->VectorMask[instance->CurrentRamConfig]) | (address & 0x1FFF)] = data;
                 }
-                else {
+                else
+                {
                     MemWrite8(data, address);
                 }
             }
@@ -4321,22 +4324,256 @@ Could not locate {ROM} in any of these locations:
 
         public byte SAMRead(byte port)
         {
-            return Library.TC1014.SAMRead(port);
+            unsafe
+            {
+                TC1014RegistersState* registersState = GetTC1014RegistersState();
+
+                if ((port >= 0xF0) && (port <= 0xFF))
+                { //IRQ vectors from rom
+                    return (registersState->Rom[0x3F00 + port]);
+                }
+
+                return (0);
+            }
         }
 
         public void SAMWrite(byte data, byte port)
         {
-            Library.TC1014.SAMWrite(data, port);
+            byte mask = 0;
+            byte reg = 0;
+
+            unsafe
+            {
+                TC1014RegistersState* registersState = GetTC1014RegistersState();
+
+                if ((port >= 0xC6) && (port <= 0xD3))	//VDG Display offset Section
+                {
+                    port -= 0xC6;
+                    reg = (byte)((port & 0x0E) >> 1);
+                    mask = (byte)(1 << reg);
+
+                    registersState->Dis_Offset = (byte)(registersState->Dis_Offset & (0xFF - mask)); //Shut the bit off
+
+                    if ((port & 1) != 0)
+                    {
+                        registersState->Dis_Offset |= mask;
+                    }
+
+                    _modules.Graphics.SetGimeVdgOffset(registersState->Dis_Offset);
+                }
+
+                if ((port >= 0xC0) && (port <= 0xC5))	//VDG Mode
+                {
+                    port -= 0xC0;
+                    reg = (byte)((port & 0x0E) >> 1);
+                    mask = (byte)(1 << reg);
+                    registersState->VDG_Mode = (byte)(registersState->VDG_Mode & (0xFF - mask));
+
+                    if ((port & 1) != 0)
+                    {
+                        registersState->VDG_Mode |= mask;
+                    }
+
+                    _modules.Graphics.SetGimeVdgMode(registersState->VDG_Mode);
+                }
+            }
+
+            if ((port == 0xDE) || (port == 0xDF))
+            {
+                SetMapType((byte)(port & 1));
+            }
+
+            if ((port == 0xD7) || (port == 0xD9))
+            {
+                _modules.Emu.SetCPUMultiplierFlag(1);
+            }
+
+            if ((port == 0xD6) || (port == 0xD8))
+            {
+                _modules.Emu.SetCPUMultiplierFlag(0);
+            }
         }
 
         public byte GimeRead(byte port)
         {
-            return Library.TC1014.GimeRead(port);
+            byte temp;
+
+            unsafe
+            {
+                TC1014RegistersState* registersState = GetTC1014RegistersState();
+
+                switch (port)
+                {
+                    case 0x92:
+                        temp = registersState->LastIrq;
+                        registersState->LastIrq = 0;
+
+                        return (temp);
+
+                    case 0x93:
+                        temp = registersState->LastFirq;
+                        registersState->LastFirq = 0;
+
+                        return (temp);
+
+                    case 0x94:
+                    case 0x95:
+                        return (126);
+
+                    default:
+                        return (registersState->GimeRegisters[port]);
+                }
+            }
         }
 
         public void GimeWrite(byte port, byte data)
         {
-            Library.TC1014.GimeWrite(port, data);
+            unsafe
+            {
+                TC1014RegistersState* registersState = GetTC1014RegistersState();
+
+                registersState->GimeRegisters[port] = data;
+
+                switch (port)
+                {
+                    case 0x90:
+                        SetInit0(data);
+                        break;
+
+                    case 0x91:
+                        SetInit1(data);
+                        break;
+
+                    case 0x92:
+                        SetGimeIRQSteering(data);
+                        break;
+
+                    case 0x93:
+                        SetGimeFIRQSteering(data);
+                        break;
+
+                    case 0x94:
+                        SetTimerMSB(data);
+                        break;
+
+                    case 0x95:
+                        SetTimerLSB(data);
+                        break;
+
+                    case 0x96:
+                        _modules.Emu.SetTurboMode((byte)(data & 1));
+                        break;
+
+                    case 0x97:
+                        break;
+
+                    case 0x98:
+                        _modules.Graphics.SetGimeVmode(data);
+                        break;
+
+                    case 0x99:
+                        _modules.Graphics.SetGimeVres(data);
+                        break;
+
+                    case 0x9A:
+                        _modules.Graphics.SetGimeBorderColor(data);
+                        break;
+
+                    case 0x9B:
+                        SetDistoRamBank(data);
+                        break;
+
+                    case 0x9C:
+                        break;
+
+                    case 0x9D:
+                    case 0x9E:
+                        _modules.Graphics.SetVerticalOffsetRegister((ushort)((registersState->GimeRegisters[0x9D] << 8) | registersState->GimeRegisters[0x9E]));
+                        break;
+
+                    case 0x9F:
+                        _modules.Graphics.SetGimeHorzOffset(data);
+                        break;
+
+                    case 0xA0:
+                    case 0xA1:
+                    case 0xA2:
+                    case 0xA3:
+                    case 0xA4:
+                    case 0xA5:
+                    case 0xA6:
+                    case 0xA7:
+                    case 0xA8:
+                    case 0xA9:
+                    case 0xAA:
+                    case 0xAB:
+                    case 0xAC:
+                    case 0xAD:
+                    case 0xAE:
+                    case 0xAF:
+                        SetMmuRegister(port, data);
+                        break;
+
+                    case 0xB0:
+                    case 0xB1:
+                    case 0xB2:
+                    case 0xB3:
+                    case 0xB4:
+                    case 0xB5:
+                    case 0xB6:
+                    case 0xB7:
+                    case 0xB8:
+                    case 0xB9:
+                    case 0xBA:
+                    case 0xBB:
+                    case 0xBC:
+                    case 0xBD:
+                    case 0xBE:
+                    case 0xBF:
+                        _modules.Graphics.SetGimePalette((byte)(port - 0xB0), (byte)(data & 63));
+                        break;
+                }
+            }
+        }
+
+        public void SetInit0(byte data)
+        {
+            Library.TC1014.SetInit0(data);
+        }
+
+        public void SetInit1(byte data)
+        {
+            Library.TC1014.SetInit1(data);
+        }
+
+        public void SetGimeIRQSteering(byte data)
+        {
+            Library.TC1014.SetGimeIRQSteering(data);
+        }
+
+        public void SetGimeFIRQSteering(byte data)
+        {
+            Library.TC1014.SetGimeFIRQSteering(data);
+        }
+
+        public void SetTimerMSB(byte data)
+        {
+            Library.TC1014.SetTimerMSB(data);
+        }
+
+        public void SetTimerLSB(byte data)
+        {
+            Library.TC1014.SetTimerLSB(data);
+        }
+
+        public void SetDistoRamBank(byte data)
+        {
+            Library.TC1014.SetDistoRamBank(data);
+        }
+
+        public void SetMmuRegister(byte register, byte data)
+        {
+            Library.TC1014.SetMmuRegister(register, data);
         }
     }
 }
