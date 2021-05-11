@@ -467,13 +467,7 @@ namespace VCCSharp.Libraries
             public static extern byte MemRead8(ushort address);
 
             [DllImport(LIBRARY)]
-            public static extern byte VectorMemRead8(ushort address);
-
-            [DllImport(LIBRARY)]
             public static extern void MemWrite8(byte data, ushort address);
-
-            [DllImport(LIBRARY)]
-            public static extern void VectorMemWrite8(byte data, ushort address);
 
             [DllImport(LIBRARY)]
             public static extern void SetMapType(byte type);

@@ -681,7 +681,21 @@ Could not locate {ROM} in any of these locations:
                 return _modules.IOBus.port_read(address);
             }
 
-            return Library.TC1014.VectorMemRead8(address);
+            return VectorMemRead8(address);
+        }
+
+        public byte VectorMemRead8(ushort address)
+        {
+            unsafe
+            {
+                TC1014MmuState* instance = GetTC1014MmuState();
+
+                if (instance->RamVectors != 0) { //Address must be $FE00 - $FEFF
+                    return(instance->Memory[(0x2000 * instance->VectorMask[instance->CurrentRamConfig]) | (address & 0x1FFF)]);
+                }
+
+                return MemRead8(address);
+            }
         }
 
         public void MemWrite8(byte data, ushort address)
@@ -700,7 +714,22 @@ Could not locate {ROM} in any of these locations:
                 return;
             }
 
-            Library.TC1014.VectorMemWrite8(data, address);
+            VectorMemWrite8(data, address);
+        }
+
+        public void VectorMemWrite8(byte data, ushort address)
+        {
+            unsafe
+            {
+                TC1014MmuState* instance = GetTC1014MmuState();
+
+                if (instance->RamVectors != 0) { //Address must be $FE00 - $FEFF
+                    instance->Memory[(0x2000 * instance->VectorMask[instance->CurrentRamConfig]) | (address & 0x1FFF)] = data;
+                }
+                else {
+                    MemWrite8(data, address);
+                }
+            }
         }
 
         //--I think this is just a hack to access memory directly for the 40/80 char-wide screen-scrapes

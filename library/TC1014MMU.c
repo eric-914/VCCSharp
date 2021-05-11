@@ -208,6 +208,10 @@ extern "C" {
   }
 }
 
+/******************************************************************************************
+* Following still used by PakInterfaceModule.InvokeDmaMemPointer(...) as function pointers
+*******************************************************************************************/
+
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl MemRead8(unsigned short address)
   {
@@ -220,33 +224,10 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl VectorMemRead8(unsigned short address)
-  {
-    if (instance->RamVectors) { //Address must be $FE00 - $FEFF
-      return(instance->Memory[(0x2000 * instance->VectorMask[instance->CurrentRamConfig]) | (address & 0x1FFF)]);
-    }
-
-    return MemRead8(address);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl MemWrite8(unsigned char data, unsigned short address)
   {
     if (instance->MapType || (instance->MmuRegisters[instance->MmuState][address >> 13] < instance->VectorMaska[instance->CurrentRamConfig]) || (instance->MmuRegisters[instance->MmuState][address >> 13] > instance->VectorMask[instance->CurrentRamConfig])) {
       instance->MemPages[instance->MmuRegisters[instance->MmuState][address >> 13]][address & 0x1FFF] = data;
-    }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl VectorMemWrite8(unsigned char data, unsigned short address)
-  {
-    if (instance->RamVectors) { //Address must be $FE00 - $FEFF
-      instance->Memory[(0x2000 * instance->VectorMask[instance->CurrentRamConfig]) | (address & 0x1FFF)] = data;
-    }
-    else {
-      MemWrite8(data, address);
     }
   }
 }
