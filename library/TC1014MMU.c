@@ -211,23 +211,6 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl MemRead8(unsigned short address)
   {
-    if (address < 0xFE00)
-    {
-      if (instance->MemPageOffsets[instance->MmuRegisters[instance->MmuState][address >> 13]] == 1) {
-        return(instance->MemPages[instance->MmuRegisters[instance->MmuState][address >> 13]][address & 0x1FFF]);
-      }
-
-      return(PakMem8Read(instance->MemPageOffsets[instance->MmuRegisters[instance->MmuState][address >> 13]] + (address & 0x1FFF)));
-    }
-
-    if (address > 0xFEFF) {
-      return (port_read(address));
-    }
-
-    if (instance->RamVectors) { //Address must be $FE00 - $FEFF
-      return(instance->Memory[(0x2000 * instance->VectorMask[instance->CurrentRamConfig]) | (address & 0x1FFF)]);
-    }
-
     if (instance->MemPageOffsets[instance->MmuRegisters[instance->MmuState][address >> 13]] == 1) {
       return(instance->MemPages[instance->MmuRegisters[instance->MmuState][address >> 13]][address & 0x1FFF]);
     }
@@ -237,36 +220,33 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned short __cdecl MemRead16(unsigned short addr)
+  __declspec(dllexport) unsigned char __cdecl VectorMemRead8(unsigned short address)
   {
-    return (MemRead8(addr) << 8 | MemRead8(addr + 1));
+    if (instance->RamVectors) { //Address must be $FE00 - $FEFF
+      return(instance->Memory[(0x2000 * instance->VectorMask[instance->CurrentRamConfig]) | (address & 0x1FFF)]);
+    }
+
+    return MemRead8(address);
   }
 }
 
 extern "C" {
   __declspec(dllexport) void __cdecl MemWrite8(unsigned char data, unsigned short address)
   {
-    if (address < 0xFE00)
-    {
-      if (instance->MapType || (instance->MmuRegisters[instance->MmuState][address >> 13] < instance->VectorMaska[instance->CurrentRamConfig]) || (instance->MmuRegisters[instance->MmuState][address >> 13] > instance->VectorMask[instance->CurrentRamConfig])) {
-        instance->MemPages[instance->MmuRegisters[instance->MmuState][address >> 13]][address & 0x1FFF] = data;
-      }
-
-      return;
+    if (instance->MapType || (instance->MmuRegisters[instance->MmuState][address >> 13] < instance->VectorMaska[instance->CurrentRamConfig]) || (instance->MmuRegisters[instance->MmuState][address >> 13] > instance->VectorMask[instance->CurrentRamConfig])) {
+      instance->MemPages[instance->MmuRegisters[instance->MmuState][address >> 13]][address & 0x1FFF] = data;
     }
+  }
+}
 
-    if (address > 0xFEFF)
-    {
-      port_write(data, address);
-
-      return;
-    }
-
+extern "C" {
+  __declspec(dllexport) void __cdecl VectorMemWrite8(unsigned char data, unsigned short address)
+  {
     if (instance->RamVectors) { //Address must be $FE00 - $FEFF
       instance->Memory[(0x2000 * instance->VectorMask[instance->CurrentRamConfig]) | (address & 0x1FFF)] = data;
     }
-    else if (instance->MapType || (instance->MmuRegisters[instance->MmuState][address >> 13] < instance->VectorMaska[instance->CurrentRamConfig]) || (instance->MmuRegisters[instance->MmuState][address >> 13] > instance->VectorMask[instance->CurrentRamConfig])) {
-      instance->MemPages[instance->MmuRegisters[instance->MmuState][address >> 13]][address & 0x1FFF] = data;
+    else {
+      MemWrite8(data, address);
     }
   }
 }

@@ -671,12 +671,36 @@ Could not locate {ROM} in any of these locations:
 
         public byte MemRead8(ushort address)
         {
-            return Library.TC1014.MemRead8(address);
+            if (address < 0xFE00)
+            {
+                return Library.TC1014.MemRead8(address);
+            }
+
+            if (address > 0xFEFF)
+            {
+                return _modules.IOBus.port_read(address);
+            }
+
+            return Library.TC1014.VectorMemRead8(address);
         }
 
         public void MemWrite8(byte data, ushort address)
         {
-            Library.TC1014.MemWrite8(data, address);
+            if (address < 0xFE00)
+            {
+                Library.TC1014.MemWrite8(data, address);
+
+                return;
+            }
+
+            if (address > 0xFEFF)
+            {
+                _modules.IOBus.port_write(data, address);
+
+                return;
+            }
+
+            Library.TC1014.VectorMemWrite8(data, address);
         }
 
         //--I think this is just a hack to access memory directly for the 40/80 char-wide screen-scrapes
@@ -4257,7 +4281,7 @@ Could not locate {ROM} in any of these locations:
                     return;
 
 
-                #endregion
+                    #endregion
             }
         }
     }

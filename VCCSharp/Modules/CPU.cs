@@ -1,15 +1,15 @@
 ﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
+    // ReSharper disable once InconsistentNaming
     public interface ICPU
     {
         void CPUReset();
         void CPUInit();
-        void CPUForcePC(ushort xferAddress);
+        void CPUForcePC(ushort address);
         int CPUExec(int cycle);
         void CPUAssertInterrupt(CPUInterrupts irq, byte flag);
         void CPUDeAssertInterrupt(CPUInterrupts irq);
@@ -17,6 +17,7 @@ namespace VCCSharp.Modules
         void SetCPUToMC6809();
     }
 
+    // ReSharper disable once InconsistentNaming
     public class CPU : ICPU
     {
         private readonly IModules _modules;

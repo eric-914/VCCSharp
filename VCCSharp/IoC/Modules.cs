@@ -19,6 +19,7 @@ namespace VCCSharp.IoC
         IEvents Events { get; }
         IGDI GDI { get; }
         IGraphics Graphics { get; }
+        IIOBus IOBus { get; }
         IJoystick Joystick { get; }
         IKeyboard Keyboard { get; }
         IMenuCallbacks MenuCallbacks { get; }
@@ -55,6 +56,7 @@ namespace VCCSharp.IoC
         public IEvents Events => _factory.Get<IEvents>();
         public IGDI GDI => _factory.Get<IGDI>();
         public IGraphics Graphics => _factory.Get<IGraphics>();
+        public IIOBus IOBus => _factory.Get<IIOBus>();
         public IJoystick Joystick => _factory.Get<IJoystick>();
         public IKeyboard Keyboard => _factory.Get<IKeyboard>();
         public IMenuCallbacks MenuCallbacks => _factory.Get<IMenuCallbacks>();

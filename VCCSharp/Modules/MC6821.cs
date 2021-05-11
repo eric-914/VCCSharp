@@ -6,6 +6,7 @@ using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
+    // ReSharper disable once InconsistentNaming
     public interface IMC6821
     {
         unsafe MC6821State* GetMC6821State();
@@ -19,6 +20,7 @@ namespace VCCSharp.Modules
         int MC6821_OpenPrintFile(string filename);
     }
 
+    // ReSharper disable once InconsistentNaming
     public class MC6821 : IMC6821
     {
         private readonly IModules _modules;

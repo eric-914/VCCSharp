@@ -35,6 +35,7 @@ namespace VCCSharp
                 .Singleton<IGraphics, Graphics>()
                 .Singleton<IJoystick, Joystick>()
                 .Singleton<IKeyboard, Keyboard>()
+                .Singleton<IIOBus, IOBus>()
                 .Singleton<IMenuCallbacks, MenuCallbacks>()
                 .Singleton<IMC6821, MC6821>()
                 .Singleton<IQuickLoad, QuickLoad>()

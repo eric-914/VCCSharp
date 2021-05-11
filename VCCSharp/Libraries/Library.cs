@@ -5,7 +5,6 @@ using System.Security;
 using VCCSharp.Enums;
 using VCCSharp.Models;
 using HINSTANCE = System.IntPtr;
-using HANDLE = System.IntPtr;
 using HWND = System.IntPtr;
 
 namespace VCCSharp.Libraries
@@ -344,6 +343,15 @@ namespace VCCSharp.Libraries
             public static extern void SetMonitorTypePalettes(byte monType, byte palIndex);
         }
 
+        public static class IOBus
+        {
+            [DllImport(LIBRARY)]
+            public static extern byte port_read(ushort address);
+
+            [DllImport(LIBRARY)]
+            public static extern void port_write(byte data, ushort address);
+        }
+
         public static class Joystick
         {
             [DllImport(LIBRARY)]
@@ -459,7 +467,13 @@ namespace VCCSharp.Libraries
             public static extern byte MemRead8(ushort address);
 
             [DllImport(LIBRARY)]
+            public static extern byte VectorMemRead8(ushort address);
+
+            [DllImport(LIBRARY)]
             public static extern void MemWrite8(byte data, ushort address);
+
+            [DllImport(LIBRARY)]
+            public static extern void VectorMemWrite8(byte data, ushort address);
 
             [DllImport(LIBRARY)]
             public static extern void SetMapType(byte type);
