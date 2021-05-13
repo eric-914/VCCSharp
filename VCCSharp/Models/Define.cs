@@ -114,5 +114,10 @@
         public const ushort VSWI = 0xFFFA;
         public const ushort VNMI = 0xFFFC;
         public const ushort VRESET = 0xFFFE;
+
+        //Common CPU defs
+        public const byte IRQ = 1;
+        public const byte FIRQ = 2;
+        public const byte NMI = 3;
     }
 }

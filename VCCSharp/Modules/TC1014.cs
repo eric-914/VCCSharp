@@ -618,16 +618,6 @@ Could not locate {ROM} in any of these locations:
             }
         }
 
-        public void GimeAssertHorzInterrupt()
-        {
-            Library.TC1014.GimeAssertHorzInterrupt();
-        }
-
-        public void GimeAssertTimerInterrupt()
-        {
-            Library.TC1014.GimeAssertTimerInterrupt();
-        }
-
         public ushort LoadInternalRom(string filename)
         {
             Debug.WriteLine($"LoadInternalRom: {filename}");
@@ -758,16 +748,6 @@ Could not locate {ROM} in any of these locations:
 
                 return instance->Memory[address];
             }
-        }
-
-        public void SetMapType(byte type)
-        {
-            Library.TC1014.SetMapType(type);
-        }
-
-        public void SetRomMap(byte data)
-        {
-            Library.TC1014.SetRomMap(data);
         }
 
         public unsafe void DrawTopBorder8(EmuState* emuState)
@@ -4596,36 +4576,6 @@ Could not locate {ROM} in any of these locations:
             _modules.CoCo.SetInterruptTimer(temp);
         }
 
-        public void SetDistoRamBank(byte data)
-        {
-            Library.TC1014.SetDistoRamBank(data);
-        }
-
-        public void SetMmuRegister(byte register, byte data)
-        {
-            Library.TC1014.SetMmuRegister(register, data);
-        }
-
-        public unsafe byte* GetInternalRomPointer()
-        {
-            return Library.TC1014.GetInternalRomPointer();
-        }
-
-        public void SetMmuTask(byte task)
-        {
-            Library.TC1014.SetMmuTask(task);
-        }
-
-        public void SetVectors(byte data)
-        {
-            Library.TC1014.SetVectors(data);
-        }
-
-        public void SetMmuEnabled(byte usingmmu)
-        {
-            Library.TC1014.SetMmuEnabled(usingmmu);
-        }
-
         public void SetGimeIRQSteering(byte data)
         {
             unsafe
@@ -4656,6 +4606,236 @@ Could not locate {ROM} in any of these locations:
                 _modules.CoCo.SetVertInterruptState(Test(8));
                 _modules.CoCo.SetHorzInterruptState(Test(16));
                 _modules.CoCo.SetTimerInterruptState(Test(32));
+            }
+        }
+
+        public void GimeAssertHorzInterrupt()
+        {
+            unsafe
+            {
+                TC1014RegistersState* registersState = GetTC1014RegistersState();
+
+                if (((registersState->GimeRegisters[0x93] & 16) != 0) && (registersState->EnhancedFIRQFlag == 1))
+                {
+                    _modules.CPU.CPUAssertInterrupt(Define.FIRQ, 0);
+
+                    registersState->LastFirq |= 16;
+                }
+                else if (((registersState->GimeRegisters[0x92] & 16) != 0) && (registersState->EnhancedIRQFlag == 1))
+                {
+                    _modules.CPU.CPUAssertInterrupt(Define.IRQ, 0);
+
+                    registersState->LastIrq |= 16;
+                }
+            }
+        }
+
+        public void GimeAssertTimerInterrupt()
+        {
+            unsafe
+            {
+                TC1014RegistersState* registersState = GetTC1014RegistersState();
+
+                if (((registersState->GimeRegisters[0x93] & 32) != 0) && (registersState->EnhancedFIRQFlag == 1))
+                {
+                    _modules.CPU.CPUAssertInterrupt(Define.FIRQ, 0);
+
+                    registersState->LastFirq |= 32;
+                }
+                else if (((registersState->GimeRegisters[0x92] & 32) != 0) && (registersState->EnhancedIRQFlag == 1))
+                {
+                    _modules.CPU.CPUAssertInterrupt(Define.IRQ, 0);
+
+                    registersState->LastIrq |= 32;
+                }
+            }
+        }
+
+        public void SetMapType(byte type)
+        {
+            unsafe
+            {
+                TC1014MmuState* instance = GetTC1014MmuState();
+
+                instance->MapType = type;
+            }
+
+            UpdateMmuArray();
+        }
+
+        public void SetRomMap(byte data)
+        {
+            unsafe
+            {
+                TC1014MmuState* instance = GetTC1014MmuState();
+
+                instance->RomMap = (byte)(data & 3);
+            }
+
+            UpdateMmuArray();
+        }
+
+        public void UpdateMmuArray()
+        {
+            unsafe
+            {
+                TC1014MmuState* instance = GetTC1014MmuState();
+
+                if (instance->MapType != 0)
+                {
+                    instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 3] = (long)(instance->Memory + (0x2000 * (instance->VectorMask[instance->CurrentRamConfig] - 3)));
+                    instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 2] = (long)(instance->Memory + (0x2000 * (instance->VectorMask[instance->CurrentRamConfig] - 2)));
+                    instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 1] = (long)(instance->Memory + (0x2000 * (instance->VectorMask[instance->CurrentRamConfig] - 1)));
+                    instance->MemPages[instance->VectorMask[instance->CurrentRamConfig]] = (long)(instance->Memory + (0x2000 * instance->VectorMask[instance->CurrentRamConfig]));
+
+                    instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 3] = 1;
+                    instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 2] = 1;
+                    instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 1] = 1;
+                    instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig]] = 1;
+
+                    return;
+                }
+
+                switch (instance->RomMap)
+                {
+                    case 0:
+                    case 1: //16K Internal 16K External
+                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 3] = (long)(instance->InternalRomBuffer);
+                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 2] = (long)(instance->InternalRomBuffer + 0x2000);
+                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 1] = (long)(IntPtr.Zero);
+                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig]] = (long)(IntPtr.Zero);
+
+                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 3] = 1;
+                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 2] = 1;
+                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 1] = 0;
+                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig]] = 0x2000;
+
+                        return;
+
+                    case 2: // 32K Internal
+                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 3] = (long)(instance->InternalRomBuffer);
+                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 2] = (long)(instance->InternalRomBuffer + 0x2000);
+                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 1] = (long)(instance->InternalRomBuffer + 0x4000);
+                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig]] = (long)(instance->InternalRomBuffer + 0x6000);
+
+                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 3] = 1;
+                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 2] = 1;
+                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 1] = 1;
+                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig]] = 1;
+
+                        return;
+
+                    case 3: //32K External
+                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 1] = (long)IntPtr.Zero;
+                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig]] = (long)IntPtr.Zero;
+                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 3] = (long)IntPtr.Zero;
+                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 2] = (long)IntPtr.Zero;
+
+                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 1] = 0;
+                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig]] = 0x2000;
+                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 3] = 0x4000;
+                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 2] = 0x6000;
+
+                        return;
+                }
+            }
+        }
+
+        public void SetMmuTask(byte task)
+        {
+            unsafe
+            {
+                TC1014MmuState* instance = GetTC1014MmuState();
+
+                instance->MmuTask = task;
+                instance->MmuState = (byte)((instance->MmuEnabled == 0 ? 1 : 0) << 1 | instance->MmuTask);
+            }
+        }
+
+        public void SetMmuRegister(byte register, byte data)
+        {
+            byte bankRegister = (byte)(register & 7);
+            byte task = (byte)((register & 8) == 0 ? 0 : 1);
+
+            unsafe
+            {
+                TC1014MmuState* instance = GetTC1014MmuState();
+
+                int index = 8 * task + bankRegister;
+                //instance->MmuRegisters[task][bankRegister] = (ushort)(instance->MmuPrefix | (data & instance->RamMask[instance->CurrentRamConfig]));
+
+                //gime.c returns what was written so I can get away with this
+                instance->MmuRegisters[index] = (ushort)(instance->MmuPrefix | (data & instance->RamMask[instance->CurrentRamConfig]));
+            }
+        }
+
+        public void SetDistoRamBank(byte data)
+        {
+            unsafe
+            {
+                TC1014MmuState* instance = GetTC1014MmuState();
+
+                switch (instance->CurrentRamConfig)
+                {
+                    case 0:	// 128K
+                        return;
+
+                    case 1:	//512K
+                        return;
+
+                    case 2:	//2048K
+                        _modules.Graphics.SetVideoBank((byte)(data & 3));
+                        SetMmuPrefix(0);
+
+                        return;
+
+                    case 3:	//8192K	//No Can 3 
+                        _modules.Graphics.SetVideoBank((byte)(data & 0x0F));
+                        SetMmuPrefix((byte)((data & 0x30) >> 4));
+
+                        return;
+                }
+            }
+        }
+
+        public void SetMmuPrefix(byte data)
+        {
+            unsafe
+            {
+                TC1014MmuState* instance = GetTC1014MmuState();
+
+                instance->MmuPrefix = (ushort)((data & 3) << 8);
+            }
+        }
+
+        public unsafe byte* GetInternalRomPointer()
+        {
+            unsafe
+            {
+                TC1014MmuState* instance = GetTC1014MmuState();
+
+                return instance->InternalRomBuffer;
+            }
+        }
+
+        public void SetVectors(byte data)
+        {
+            unsafe
+            {
+                TC1014MmuState* instance = GetTC1014MmuState();
+
+                instance->RamVectors = (byte)(data == 0 ? 0 : 1); //Bit 3 of $FF90 MC3
+            }
+        }
+
+        public void SetMmuEnabled(byte flag)
+        {
+            unsafe
+            {
+                TC1014MmuState* instance = GetTC1014MmuState();
+
+                instance->MmuEnabled = flag;
+                instance->MmuState = (byte)((instance->MmuEnabled == 0 ? 1 : 0) << 1 | instance->MmuTask);
             }
         }
     }

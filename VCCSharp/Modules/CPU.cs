@@ -1,5 +1,6 @@
 ﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
+using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
@@ -15,6 +16,7 @@ namespace VCCSharp.Modules
         void CPUDeAssertInterrupt(CPUInterrupts irq);
         void SetCPUToHD6309();
         void SetCPUToMC6809();
+        void CPUAssertInterrupt(byte irq, byte flag);
     }
 
     // ReSharper disable once InconsistentNaming
@@ -67,6 +69,11 @@ namespace VCCSharp.Modules
         public void SetCPUToMC6809()
         {
             _processor = _modules.MC6809;
+        }
+
+        public void CPUAssertInterrupt(byte irq, byte flag)
+        {
+            Library.CPU.CPUAssertInterrupt(irq, flag);
         }
     }
 }

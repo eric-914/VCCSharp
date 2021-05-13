@@ -34,6 +34,7 @@ namespace VCCSharp.Modules
         void SetGimeHorzOffset(byte data);
         void SetGimePalette(byte palette, byte color);
         void SetCompatMode(byte mode);
+        void SetVideoBank(byte data);
     }
 
     public class Graphics : IGraphics
@@ -407,6 +408,11 @@ namespace VCCSharp.Modules
         public void SetCompatMode(byte mode)
         {
             Library.Graphics.SetCompatMode(mode);
+        }
+
+        public void SetVideoBank(byte data)
+        {
+            Library.Graphics.SetVideoBank(data);
         }
     }
 }
