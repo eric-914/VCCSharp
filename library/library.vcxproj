@@ -260,6 +260,7 @@
     <ClInclude Include="library.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="EmuState.h" />
+    <ClInclude Include="TC1014RegistersState.h" />
     <ClInclude Include="VccState.h" />
     <ClInclude Include="xDebug.h" />
   </ItemGroup>

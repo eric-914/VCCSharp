@@ -1,11 +1,4 @@
-#include <iostream>
-
-#include "TC1014Registers.h"
-#include "TC1014MMU.h"
-#include "Graphics.h"
-#include "Keyboard.h"
-#include "CoCo.h"
-#include "Emu.h"
+#include "TC1014RegistersState.h"
 
 #include "cpudef.h"
 #include "defines.h"

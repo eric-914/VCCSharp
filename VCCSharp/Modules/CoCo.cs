@@ -639,7 +639,7 @@ namespace VCCSharp.Modules
                 {BitDepthStates.BIT_32, () => _modules.TC1014.DrawTopBorder32(emuState)}
             };
 
-            mapping[(BitDepthStates) emuState->BitDepth]();
+            mapping[(BitDepthStates)emuState->BitDepth]();
         }
 
         private unsafe void CoCoUpdateScreen(EmuState* emuState)
@@ -652,7 +652,7 @@ namespace VCCSharp.Modules
                 {BitDepthStates.BIT_32, () => _modules.TC1014.UpdateScreen32(emuState)}
             };
 
-            mapping[(BitDepthStates) emuState->BitDepth]();
+            mapping[(BitDepthStates)emuState->BitDepth]();
         }
 
         private unsafe void CoCoDrawBottomBorder(EmuState* emuState)
@@ -665,32 +665,91 @@ namespace VCCSharp.Modules
                 {BitDepthStates.BIT_32, () => _modules.TC1014.DrawBottomBorder32(emuState)}
             };
 
-            mapping[(BitDepthStates) emuState->BitDepth]();
+            mapping[(BitDepthStates)emuState->BitDepth]();
         }
 
         public void SetInterruptTimer(ushort timer)
         {
-            Library.CoCo.SetInterruptTimer(timer);
+            unsafe
+            {
+                CoCoState* instance = GetCoCoState();
+
+                instance->UnxlatedTickCounter = (timer & 0xFFF);
+            }
+
+            SetMasterTickCounter();
         }
 
         public void SetTimerClockRate(byte clockRate)
         {
-            Library.CoCo.SetTimerClockRate(clockRate);
+            unsafe
+            {
+                //1= 279.265nS (1/ColorBurst)
+                //0= 63.695uS  (1/60*262)  1 scanline time
+
+                CoCoState* instance = GetCoCoState();
+
+                instance->TimerClockRate = (ushort)(clockRate == 0 ? 0 : 1);
+            }
+
+            SetMasterTickCounter();
         }
 
         public void SetVertInterruptState(byte state)
         {
-            Library.CoCo.SetVertInterruptState(state);
+            unsafe
+            {
+                CoCoState* instance = GetCoCoState();
+
+                instance->VertInterruptEnabled = (byte)(state == 0 ? 1 : 0);
+            }
         }
 
         public void SetHorzInterruptState(byte state)
         {
-            Library.CoCo.SetHorzInterruptState(state);
+            unsafe
+            {
+                CoCoState* instance = GetCoCoState();
+
+                instance->HorzInterruptEnabled = (byte)(state == 0 ? 1 : 0);
+            }
         }
 
         public void SetTimerInterruptState(byte state)
         {
-            Library.CoCo.SetTimerInterruptState(state);
+            unsafe
+            {
+                CoCoState* instance = GetCoCoState();
+
+                instance->TimerInterruptEnabled = state;
+            }
+        }
+
+        public void SetMasterTickCounter()
+        {
+            double[] rate = { Define.PICOSECOND / (Define.TARGETFRAMERATE * Define.LINESPERFIELD), Define.PICOSECOND / Define.COLORBURST };
+
+            unsafe
+            {
+                CoCoState* instance = GetCoCoState();
+
+                if (instance->UnxlatedTickCounter == 0)
+                {
+                    instance->MasterTickCounter = 0;
+                }
+                else
+                {
+                    instance->MasterTickCounter = (instance->UnxlatedTickCounter + 2) * rate[instance->TimerClockRate];
+                }
+
+                if (instance->MasterTickCounter != instance->OldMaster)
+                {
+                    instance->OldMaster = instance->MasterTickCounter;
+                    instance->PicosToInterrupt = instance->MasterTickCounter;
+                }
+
+                instance->IntEnable = instance->MasterTickCounter == 0 ? 0 : 1;
+            }
         }
     }
 }

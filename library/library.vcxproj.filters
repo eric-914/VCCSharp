@@ -286,6 +286,9 @@
     <ClInclude Include="DirectDrawSurfaceDesc.h">
       <Filter>directdraw</Filter>
     </ClInclude>
+    <ClInclude Include="TC1014RegistersState.h">
+      <Filter>models</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="audio">

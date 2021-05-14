@@ -25,6 +25,11 @@
 
         public const ushort FRAMEINTERVAL = 120;
         public const int TARGETFRAMERATE = 60;
+        public const int LINESPERFIELD = 262;
+
+        public const double FRAMESPERSECORD = 59.923;   //The coco really runs at about 59.923 Frames per second
+        public const double PICOSECOND = 1000000000;
+        public const double COLORBURST = 3579545;
 
         public const int AUDIOBUFFERS = 12;
 

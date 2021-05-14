@@ -85,21 +85,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetAudioEventCassIn();
-
-            [DllImport(LIBRARY)]
-            public static extern void SetInterruptTimer(ushort timer);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetTimerClockRate(byte clockRate);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetVertInterruptState(byte state);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetHorzInterruptState(byte state);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetTimerInterruptState(byte state);
         }
 
         public static class Config

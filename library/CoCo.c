@@ -71,20 +71,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetVertInterruptState(unsigned char state)
-  {
-    instance->VertInterruptEnabled = state == 0 ? 1 : 0;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetHorzInterruptState(unsigned char state)
-  {
-    instance->HorzInterruptEnabled = state == 0 ? 1 : 0;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) unsigned short __cdecl SetAudioRate(unsigned short rate)
   {
     instance->CycleDrift = 0;
@@ -108,56 +94,6 @@ extern "C" {
     instance->SoundRate = rate;
 
     return(0);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetMasterTickCounter()
-  {
-    double Rate[2] = { PICOSECOND / (TARGETFRAMERATE * LINESPERFIELD), PICOSECOND / COLORBURST };
-
-    if (instance->UnxlatedTickCounter == 0) {
-      instance->MasterTickCounter = 0;
-    }
-    else {
-      instance->MasterTickCounter = (instance->UnxlatedTickCounter + 2) * Rate[instance->TimerClockRate];
-    }
-
-    if (instance->MasterTickCounter != instance->OldMaster)
-    {
-      instance->OldMaster = instance->MasterTickCounter;
-      instance->PicosToInterrupt = instance->MasterTickCounter;
-    }
-
-    instance->IntEnable = instance->MasterTickCounter == 0 ? 0 : 1;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetTimerInterruptState(unsigned char state)
-  {
-    instance->TimerInterruptEnabled = state;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetInterruptTimer(unsigned short timer)
-  {
-    instance->UnxlatedTickCounter = (timer & 0xFFF);
-
-    SetMasterTickCounter();
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetTimerClockRate(unsigned char clockRate)
-  {
-    //1= 279.265nS (1/ColorBurst)
-    //0= 63.695uS  (1/60*262)  1 scanline time
-
-    instance->TimerClockRate = !!clockRate;
-
-    SetMasterTickCounter();
   }
 }
 
