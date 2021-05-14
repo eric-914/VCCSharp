@@ -436,9 +436,6 @@ namespace VCCSharp.Libraries
             public static extern int MC6821_OpenPrintFile(string filename);
 
             [DllImport(LIBRARY)]
-            public static extern void MC6821_CaptureBit(byte sample);
-
-            [DllImport(LIBRARY)]
             public static extern byte MC6821_GetMuxState();
         } //--MC6821
 

@@ -237,7 +237,7 @@ namespace VCCSharp.Modules
                             return instance->rega_dd[port];
                         }
 
-                    case 2: //Write 
+                    case 2: //WritePrint 
                         if (ddb != 0)
                         {
                             instance->rega[3] = (byte)(instance->rega[3] & 63);
@@ -422,14 +422,110 @@ namespace VCCSharp.Modules
             }
         }
 
+        private byte _bitMask = 1, _startWait = 1;
+        private ulong _bytesMoved = 0;
+
         public void MC6821_CaptureBit(byte sample)
         {
-            Library.MC6821.MC6821_CaptureBit(sample);
+            unsafe
+            {
+                MC6821State* instance = GetMC6821State();
+                
+                byte data = 0;
+
+                if ((long)(instance->hPrintFile) == -1) { //INVALID_HANDLE_VALUE
+                    return;
+                }
+
+                if ((_startWait & sample) != 0) { //Waiting for start bit
+                    return;
+                }
+
+                if (_startWait != 0)
+                {
+                    _startWait = 0;
+
+                    return;
+                }
+
+                if (sample != 0) {
+                    data |= _bitMask;
+                }
+
+                _bitMask = (byte)(_bitMask << 1);
+
+                if (_bitMask == 0)
+                {
+                    _bitMask = 1;
+                    _startWait = 1;
+
+                    _bytesMoved = WritePrint(data);
+
+                    if (instance->MonState != 0) {
+                        MC6821_WritePrintMon(&data);
+                    }
+
+                    if ((data == 0x0D) && (instance->AddLF != 0))
+                    {
+                        data = 0x0A;
+
+                        _bytesMoved = WritePrint(data);
+                    }
+
+                    data = 0;
+                }
+            }
+        }
+
+        private ulong WritePrint(byte data)
+        {
+            ulong bytesMoved = 0;
+
+            //TODO: Writing to a print file?
+            //WriteFile(instance->hPrintFile, &data, 1, &bytesMoved, NULL);
+
+            return bytesMoved;
         }
 
         public byte MC6821_GetMuxState()
         {
+            //unsafe
+            //{
+            //    MC6821State* instance = GetMC6821State();
+            //}
+
             return Library.MC6821.MC6821_GetMuxState();
         }
+
+
+        public unsafe void MC6821_WritePrintMon(byte* data)
+        {
+            WriteConsole(data);
+
+            if (data[0] == 0x0D)
+            {
+                data[0] = 0x0A;
+
+                WriteConsole(data);
+            }
+        }
+
+        private unsafe void WriteConsole(byte* data)
+        {
+            //ulong dummy = 0;
+
+            //if (instance->hOut == IntPtr.Zero)
+            {
+                //AllocConsole();
+
+                //instance->hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+                //SetConsoleTitle("Printer Monitor");
+            }
+
+            //TODO: Writing to a console?
+            //WriteConsole(instance->hOut, data, 1, &dummy, 0);
+        }
+
     }
 }
