@@ -1,5 +1,4 @@
-﻿using System;
-using VCCSharp.Enums;
+﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -11,6 +10,7 @@ namespace VCCSharp.Modules
         unsafe CassetteState* GetCassetteState();
         unsafe void FlushCassetteBuffer(byte* buffer, uint length);
         unsafe void LoadCassetteBuffer(byte* cassBuffer);
+        void Motor(byte state);
     }
 
     public class Cassette : ICassette
@@ -174,6 +174,11 @@ namespace VCCSharp.Modules
         public unsafe void FlushCassetteBuffer(byte* buffer, uint length)
         {
             Library.Cassette.FlushCassetteBuffer(buffer, length);
+        }
+
+        public void Motor(byte state)
+        {
+            Library.Cassette.Motor(state);
         }
     }
 }

@@ -35,6 +35,7 @@ namespace VCCSharp.Modules
         void SetGimePalette(byte palette, byte color);
         void SetCompatMode(byte mode);
         void SetVideoBank(byte data);
+        void SetGimeVdgMode2(byte vdgmode2);
     }
 
     public class Graphics : IGraphics
@@ -413,6 +414,11 @@ namespace VCCSharp.Modules
         public void SetVideoBank(byte data)
         {
             Library.Graphics.SetVideoBank(data);
+        }
+
+        public void SetGimeVdgMode2(byte vdgmode2)
+        {
+            Library.Graphics.SetGimeVdgMode2(vdgmode2);
         }
     }
 }

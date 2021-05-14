@@ -58,6 +58,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void FlushCassetteBuffer(byte* buffer, uint length);
+
+            [DllImport(LIBRARY)]
+            public static extern void Motor(byte state);
         }
 
         public static class Clipboard
@@ -373,6 +376,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetVideoBank(byte data);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetGimeVdgMode2(byte vdgmode2);
         }
 
         public static class Joystick
@@ -404,6 +410,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void GimeSetKeyboardInterruptState(byte state);
+
+            [DllImport(LIBRARY)]
+            public static extern byte vccKeyboardGetScan(byte column);
         }
 
         public static class MenuCallbacks
@@ -427,16 +436,10 @@ namespace VCCSharp.Libraries
             public static extern int MC6821_OpenPrintFile(string filename);
 
             [DllImport(LIBRARY)]
-            public static extern byte MC6821_pia0_read(byte port);
+            public static extern void MC6821_CaptureBit(byte sample);
 
             [DllImport(LIBRARY)]
-            public static extern byte MC6821_pia1_read(byte port);
-
-            [DllImport(LIBRARY)]
-            public static extern void MC6821_pia0_write(byte data, byte port);
-
-            [DllImport(LIBRARY)]
-            public static extern void MC6821_pia1_write(byte data, byte port);
+            public static extern byte MC6821_GetMuxState();
         } //--MC6821
 
         public static class PAKInterface

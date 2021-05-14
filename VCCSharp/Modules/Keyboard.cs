@@ -12,6 +12,7 @@ namespace VCCSharp.Modules
         void vccKeyboardBuildRuntimeTable(byte keyMapIndex);
         void SetPaste(bool flag);
         void GimeSetKeyboardInterruptState(byte state);
+        byte vccKeyboardGetScan(byte column);
     }
 
     public class Keyboard : IKeyboard
@@ -54,6 +55,11 @@ namespace VCCSharp.Modules
         public void GimeSetKeyboardInterruptState(byte state)
         {
             Library.Keyboard.GimeSetKeyboardInterruptState(state);
+        }
+
+        public byte vccKeyboardGetScan(byte column)
+        {
+            return Library.Keyboard.vccKeyboardGetScan(column);
         }
     }
 }
