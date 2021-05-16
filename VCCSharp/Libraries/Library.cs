@@ -61,6 +61,15 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void Motor(byte state);
+
+            [DllImport(LIBRARY)]
+            public static extern void TapeBrowse();
+
+            [DllImport(LIBRARY)]
+            public static extern void SetTapeCounter(uint count);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetTapeMode(byte mode);
         }
 
         public static class Clipboard
@@ -448,9 +457,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe void UnloadDll(EmuState* emuState);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void GetModuleStatus(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
             public static extern void ResetBus();
 
             [DllImport(LIBRARY)]
@@ -488,6 +494,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void PakPortWrite(byte port, byte data);
+
+            [DllImport(LIBRARY)]
+            public static extern int HasModuleStatus();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void InvokeModuleStatus(byte* statusLine);
         } //--PAKInterface
 
         public static class TC1014

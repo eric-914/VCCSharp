@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VCCSharp.TapePlayer"
+        xmlns:converters="clr-namespace:VCCSharp.Converters"
         mc:Ignorable="d"
         Title="TapePlayerWindow" Height="250" Width="800">
   <Window.DataContext>
@@ -33,6 +34,7 @@
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="BorderBrush" Value="Black" />
     </Style>
+    <converters:TapeModeToTextConverter x:Key="TapeModeToTextConverter"/>
   </Window.Resources>
   <Grid Margin="10">
     <Grid.RowDefinitions>
@@ -50,7 +52,7 @@
         <ColumnDefinition Width="5"/>
       </Grid.ColumnDefinitions>
       <TextBox Grid.Column="0" Text="{Binding FilePath}"/>
-      <Button Grid.Column="2">Browse</Button>
+      <Button Grid.Column="2" Click="Browse">Browse</Button>
     </Grid>
     <Grid Grid.Row="2">
       <Grid.ColumnDefinitions>
@@ -60,11 +62,11 @@
         <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="*"/>
       </Grid.ColumnDefinitions>
-      <Button Grid.Column="0">Record</Button>
-      <Button Grid.Column="1">Play</Button>
-      <Button Grid.Column="2">Stop</Button>
-      <Button Grid.Column="3">Eject</Button>
-      <Button Grid.Column="4">Rewind</Button>
+      <Button Grid.Column="0" Click="Record">Record</Button>
+      <Button Grid.Column="1" Click="Play">Play</Button>
+      <Button Grid.Column="2" Click="Stop">Stop</Button>
+      <Button Grid.Column="3" Click="Eject">Eject</Button>
+      <Button Grid.Column="4" Click="Rewind">Rewind</Button>
     </Grid>
     <Grid Grid.Row="4" Margin="20,0,0,0">
       <Grid.ColumnDefinitions>
@@ -80,7 +82,7 @@
         <RowDefinition Height="*"/>
       </Grid.RowDefinitions>
       <Border Grid.Row="0" Grid.Column="0">
-        <Label HorizontalContentAlignment="Center" Content="{Binding Mode}"/>
+        <Label HorizontalContentAlignment="Center" Content="{Binding Mode, Converter={StaticResource TapeModeToTextConverter}}"/>
       </Border>
       <Label Grid.Row="2" Grid.Column="0">Mode</Label>
 

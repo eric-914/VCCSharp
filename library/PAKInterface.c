@@ -66,18 +66,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl GetModuleStatus(EmuState* emuState)
-  {
-    if (HasModuleStatus()) {
-      InvokeModuleStatus(emuState->StatusLine);
-    }
-    else {
-      sprintf(emuState->StatusLine, "");
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) unsigned char __cdecl PakPortRead(unsigned char port)
   {
     if (HasModulePortRead()) {
@@ -113,13 +101,6 @@ extern "C" {
     }
 
     return(0);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl PakMem8Write(unsigned char port, unsigned char data)
-  {
-    //TODO: This really is empty
   }
 }
 

@@ -62,6 +62,39 @@ extern "C" {
 }
 
 extern "C" {
+  __declspec(dllexport) void TapeInitialize(HWND hDlg) {
+    ConfigState* configState = GetConfigState();
+
+    configState->TapeCounter = GetTapeCounter();
+    GetTapeName(configState->TapeFileName);
+
+    SetDialogTapeCounter(hDlg, configState->TapeCounter);
+    SetDialogTapeMode(hDlg, configState->TapeMode);
+    SetDialogTapeFileName(hDlg, configState->TapeFileName);
+
+    SendDlgItemMessage(hDlg, IDC_TAPEFILE, WM_SETTEXT, strlen(configState->TapeFileName), (LPARAM)(LPCSTR)(configState->TapeFileName));
+    SendDlgItemMessage(hDlg, IDC_TCOUNT, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0, 0, 0));
+    SendDlgItemMessage(hDlg, IDC_TCOUNT, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&CounterText);
+    SendDlgItemMessage(hDlg, IDC_MODE, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0, 0, 0));
+    SendDlgItemMessage(hDlg, IDC_MODE, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&CounterText);
+
+    configState->hDlgTape = hDlg;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void TapeBrowse() {
+    ConfigState* configState = GetConfigState();
+
+    LoadTape();
+
+    configState->TapeCounter = 0;
+
+    SetTapeCounter(configState->TapeCounter);
+  }
+}
+
+extern "C" {
   __declspec(dllexport) LRESULT CALLBACK CreateTapeConfigDialogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
   {
     ConfigState* configState = GetConfigState();
@@ -79,61 +112,7 @@ extern "C" {
     switch (message)
     {
     case WM_INITDIALOG:
-      configState->TapeCounter = GetTapeCounter();
-      GetTapeName(configState->TapeFileName);
-
-      SetDialogTapeCounter(hDlg, configState->TapeCounter);
-      SetDialogTapeMode(hDlg, configState->TapeMode);
-      SetDialogTapeFileName(hDlg, configState->TapeFileName);
-
-      SendDlgItemMessage(hDlg, IDC_TAPEFILE, WM_SETTEXT, strlen(configState->TapeFileName), (LPARAM)(LPCSTR)(configState->TapeFileName));
-      SendDlgItemMessage(hDlg, IDC_TCOUNT, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0, 0, 0));
-      SendDlgItemMessage(hDlg, IDC_TCOUNT, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&CounterText);
-      SendDlgItemMessage(hDlg, IDC_MODE, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0, 0, 0));
-      SendDlgItemMessage(hDlg, IDC_MODE, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&CounterText);
-
-      configState->hDlgTape = hDlg;
-
-      break;
-
-    case WM_COMMAND:
-      switch (LOWORD(wParam))
-      {
-      case IDC_PLAY:
-        configState->TapeMode = PLAY;
-        SetTapeMode(PLAY);
-        break;
-
-      case IDC_REC:
-        configState->TapeMode = REC;
-        SetTapeMode(REC);
-        break;
-
-      case IDC_STOP:
-        configState->TapeMode = STOP;
-        SetTapeMode(STOP);
-        break;
-
-      case IDC_EJECT:
-        configState->TapeMode = EJECT;
-        SetTapeMode(EJECT);
-        break;
-
-      case IDC_RESET:
-        configState->TapeCounter = 0;
-        SetTapeCounter(configState->TapeCounter);
-        break;
-
-      case IDC_TBROWSE:
-        LoadTape();
-
-        configState->TapeCounter = 0;
-
-        SetTapeCounter(configState->TapeCounter);
-
-        break;
-      }
-
+      TapeInitialize(hDlg);
       break;
     }
 

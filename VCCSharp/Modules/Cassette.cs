@@ -11,6 +11,11 @@ namespace VCCSharp.Modules
         unsafe void FlushCassetteBuffer(byte* buffer, uint length);
         unsafe void LoadCassetteBuffer(byte* cassBuffer);
         void Motor(byte state);
+
+        void TapeBrowse();
+
+        void SetTapeCounter(uint count);
+        void SetTapeMode(byte mode);
     }
 
     public class Cassette : ICassette
@@ -179,6 +184,21 @@ namespace VCCSharp.Modules
         public void Motor(byte state)
         {
             Library.Cassette.Motor(state);
+        }
+
+        public void TapeBrowse()
+        {
+            Library.Cassette.TapeBrowse();
+        }
+
+        public void SetTapeCounter(uint count)
+        {
+            Library.Cassette.SetTapeCounter(count);
+        }
+
+        public void SetTapeMode(byte mode)
+        {
+            Library.Cassette.SetTapeMode(mode);
         }
     }
 }

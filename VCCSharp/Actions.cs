@@ -75,7 +75,12 @@ namespace VCCSharp
 
         public void TapeRecorder()
         {
-            _options.TapePlayer.ShowDialog();
+            unsafe
+            {
+                ConfigState* configState = _modules.Config.GetConfigState();
+
+                _options.TapePlayer.ShowDialog(configState);
+            }
         }
 
         public void BitBanger()

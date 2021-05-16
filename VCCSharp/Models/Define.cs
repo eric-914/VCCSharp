@@ -124,5 +124,10 @@
         public const byte IRQ = 1;
         public const byte FIRQ = 2;
         public const byte NMI = 3;
+
+        public const byte STOP = 0;
+        public const byte PLAY = 1;
+        public const byte REC = 2;
+        public const byte EJECT = 3;
     }
 }

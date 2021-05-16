@@ -1,4 +1,5 @@
-﻿using VCCSharp.IoC;
+﻿using System;
+using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 
@@ -147,7 +148,13 @@ namespace VCCSharp.Modules
 
         public unsafe void GetModuleStatus(EmuState* emuState)
         {
-            Library.PAKInterface.GetModuleStatus(emuState);
+            if (HasModuleStatus()) {
+                InvokeModuleStatus(emuState->StatusLine);
+            }
+            else {
+                //sprintf(emuState->StatusLine, "");
+                Converter.ToByteArray("", emuState->StatusLine);
+            }
         }
 
         public byte PakPortRead(byte port)
@@ -158,6 +165,16 @@ namespace VCCSharp.Modules
         public void PakPortWrite(byte port, byte data)
         {
             Library.PAKInterface.PakPortWrite(port, data);
+        }
+
+        public bool HasModuleStatus()
+        {
+            return Library.PAKInterface.HasModuleStatus() != 0;
+        }
+
+        public unsafe void InvokeModuleStatus(byte* statusLine)
+        {
+            Library.PAKInterface.InvokeModuleStatus(statusLine);
         }
     }
 }

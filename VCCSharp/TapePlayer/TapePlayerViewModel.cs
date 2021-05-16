@@ -1,13 +1,20 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using VCCSharp.Annotations;
+using VCCSharp.Enums;
+using VCCSharp.Models;
 
 namespace VCCSharp.TapePlayer
 {
     public class TapePlayerViewModel : INotifyPropertyChanged
     {
+        private const string NO_FILE = "EMPTY";
+
+        //TODO: Remove STATIC once safe
+        private static unsafe ConfigState* _state;
+
         private string _filePath = "Sample Browse File Text";
-        private string _mode = "STOP";
+        private TapeModes _mode = TapeModes.STOP;
         private int _counter;
 
         #region INotifyPropertyChanged
@@ -21,25 +28,55 @@ namespace VCCSharp.TapePlayer
         }
 
         #endregion
-        
+
+        public unsafe ConfigState* State
+        {
+            get => _state;
+            set
+            {
+                if (_state != null) return;
+
+                _state = value;
+            }
+        }
+
         public string FilePath
         {
-            get => _filePath;
+            get
+            {
+                unsafe
+                {
+                    if (State == null) return string.Empty;
+
+                    string file = Converter.ToString(State->TapeFileName, Define.MAX_PATH);
+
+                    _filePath = string.IsNullOrEmpty(file) ? NO_FILE : file;
+
+                    return _filePath;
+                }
+            }
             set
             {
                 if (value == _filePath) return;
 
                 _filePath = value;
+
+                unsafe
+                {
+                    Converter.ToByteArray(value, State->TapeFileName);
+                }
+
                 OnPropertyChanged();
             }
         }
 
-        public string Mode
+        public TapeModes Mode
         {
             get => _mode;
             set
             {
                 if (value == _mode) return;
+
                 _mode = value;
                 OnPropertyChanged();
             }
@@ -52,6 +89,12 @@ namespace VCCSharp.TapePlayer
             {
                 if (value == _counter) return;
                 _counter = value;
+
+                unsafe
+                {
+                    State->TapeCounter = (ushort)value;
+                }
+
                 OnPropertyChanged();
             }
         }
