@@ -358,16 +358,3 @@ extern "C" {
     UpdateTapeDialog(instance->TapeOffset, instance->TapeMode);
   }
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetTapeCounter(unsigned int count)
-  {
-    instance->TapeOffset = count;
-
-    if (instance->TapeOffset > instance->TotalSize) {
-      instance->TotalSize = instance->TapeOffset;
-    }
-
-    UpdateTapeDialog(instance->TapeOffset, instance->TapeMode);
-  }
-}

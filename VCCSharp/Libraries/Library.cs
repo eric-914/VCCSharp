@@ -60,9 +60,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe void FlushCassetteBuffer(byte* buffer, uint length);
 
             [DllImport(LIBRARY)]
-            public static extern void SetTapeCounter(uint count);
-
-            [DllImport(LIBRARY)]
             public static extern uint LoadTape();
 
             [DllImport(LIBRARY)]

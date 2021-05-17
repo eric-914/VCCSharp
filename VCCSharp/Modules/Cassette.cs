@@ -310,7 +310,18 @@ namespace VCCSharp.Modules
 
         public void SetTapeCounter(uint count)
         {
-            Library.Cassette.SetTapeCounter(count);
+            unsafe
+            {
+                CassetteState* instance = GetCassetteState();
+
+                instance->TapeOffset = count;
+
+                if (instance->TapeOffset > instance->TotalSize) {
+                    instance->TotalSize = instance->TapeOffset;
+                }
+
+                _modules.Config.UpdateTapeDialog(instance->TapeOffset, instance->TapeMode);
+            }
         }
 
         public void SyncFileBuffer()
