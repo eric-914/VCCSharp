@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Resources;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
@@ -32,7 +31,8 @@ namespace VCCSharp.Modules
         void UpdateTapeDialog(ushort counter, byte tapeMode);
         bool GetRememberSize();
         Point GetIniWindowSize();
-        string AppTitle { get; } 
+        string AppTitle { get; }
+        void UpdateTapeDialog(uint counter, byte tapeMode);
     }
 
     public class Config : IConfig
@@ -647,6 +647,11 @@ namespace VCCSharp.Modules
         public Point GetIniWindowSize()
         {
             return Library.Config.GetIniWindowSize();
+        }
+
+        public void UpdateTapeDialog(uint counter, byte tapeMode)
+        {
+            Library.Config.UpdateTapeDialog(counter, tapeMode);
         }
     }
 }

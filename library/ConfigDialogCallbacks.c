@@ -58,32 +58,8 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void TapeBrowse() {
-    ConfigState* configState = GetConfigState();
-
-    LoadTape();
-
-    configState->TapeCounter = 0;
-
-    SetTapeCounter(configState->TapeCounter);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) LRESULT CALLBACK CreateTapeConfigDialogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
   {
-    ConfigState* configState = GetConfigState();
-
-    CounterText.cbSize = sizeof(CHARFORMAT);
-    CounterText.dwMask = CFM_BOLD | CFM_COLOR;
-    CounterText.dwEffects = CFE_BOLD;
-    CounterText.crTextColor = RGB(255, 255, 255);
-
-    ModeText.cbSize = sizeof(CHARFORMAT);
-    ModeText.dwMask = CFM_BOLD | CFM_COLOR;
-    ModeText.dwEffects = CFE_BOLD;
-    ModeText.crTextColor = RGB(255, 0, 0);
-
     switch (message)
     {
     case WM_INITDIALOG:

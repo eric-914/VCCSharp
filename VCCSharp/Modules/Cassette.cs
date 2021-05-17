@@ -1,4 +1,5 @@
-﻿using VCCSharp.Enums;
+﻿using System;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -12,10 +13,10 @@ namespace VCCSharp.Modules
         unsafe void LoadCassetteBuffer(byte* cassBuffer);
         void Motor(byte state);
 
-        void TapeBrowse();
-
         void SetTapeCounter(uint count);
         void SetTapeMode(byte mode);
+
+        uint LoadTape();
     }
 
     public class Cassette : ICassette
@@ -58,7 +59,7 @@ namespace VCCSharp.Modules
 
             _modules.Config.UpdateTapeDialog((ushort)cassetteState->TapeOffset, cassetteState->TapeMode);
         }
-        
+
         public unsafe void LoadCassetteBufferCAS(byte* cassBuffer, uint* bytesMoved)
         {
             CasToWav(cassBuffer, Define.TAPEAUDIORATE / 60, bytesMoved);
@@ -186,11 +187,6 @@ namespace VCCSharp.Modules
             Library.Cassette.Motor(state);
         }
 
-        public void TapeBrowse()
-        {
-            Library.Cassette.TapeBrowse();
-        }
-
         public void SetTapeCounter(uint count)
         {
             Library.Cassette.SetTapeCounter(count);
@@ -198,7 +194,70 @@ namespace VCCSharp.Modules
 
         public void SetTapeMode(byte mode)
         {
-            Library.Cassette.SetTapeMode(mode);
+            unsafe
+            {
+                CassetteState* instance = GetCassetteState();
+
+                instance->TapeMode = mode;
+
+                switch (instance->TapeMode)
+                {
+                    case Define.STOP:
+                        break;
+
+                    case Define.PLAY:
+                        if (instance->TapeHandle == IntPtr.Zero)
+                        {
+                            if (LoadTape() == 0)
+                            {
+                                instance->TapeMode = Define.STOP;
+                            }
+                            else
+                            {
+                                instance->TapeMode = Define.PLAY;
+                            }
+                        }
+
+                        if (instance->MotorState != 0)
+                        {
+                            Motor(1);
+                        }
+
+                        break;
+
+                    case Define.REC:
+                        if (instance->TapeHandle == IntPtr.Zero)
+                        {
+                            if (LoadTape() == 0)
+                            {
+                                instance->TapeMode = Define.STOP;
+                            }
+                            else
+                            {
+                                instance->TapeMode = Define.REC;
+                            }
+                        }
+                        break;
+
+                    case Define.EJECT:
+                        CloseTapeFile();
+                        Converter.ToByteArray("EMPTY", instance->TapeFileName);
+
+                        break;
+                }
+
+                _modules.Config.UpdateTapeDialog(instance->TapeOffset, instance->TapeMode);
+            }
+        }
+
+        public uint LoadTape()
+        {
+            return Library.Cassette.LoadTape();
+        }
+
+        public void CloseTapeFile()
+        {
+            Library.Cassette.CloseTapeFile();
         }
     }
 }

@@ -63,13 +63,13 @@ namespace VCCSharp.Libraries
             public static extern void Motor(byte state);
 
             [DllImport(LIBRARY)]
-            public static extern void TapeBrowse();
-
-            [DllImport(LIBRARY)]
             public static extern void SetTapeCounter(uint count);
 
             [DllImport(LIBRARY)]
-            public static extern void SetTapeMode(byte mode);
+            public static extern uint LoadTape();
+
+            [DllImport(LIBRARY)]
+            public static extern void CloseTapeFile();
         }
 
         public static class Clipboard
@@ -127,6 +127,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern Point GetIniWindowSize();
+ 
+            [DllImport(LIBRARY)]
+            public static extern void UpdateTapeDialog(uint counter, byte tapeMode);
         }
 
         public static class CPU

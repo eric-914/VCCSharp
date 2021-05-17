@@ -25,7 +25,7 @@ namespace VCCSharp.TapePlayer
                     case "FilePath":
                         break;
 
-                    case "ModeText":
+                    case "Mode":
                         break;
 
                     case "Counter":
@@ -46,7 +46,16 @@ namespace VCCSharp.TapePlayer
 
         public void Browse()
         {
-            _modules.Cassette.TapeBrowse();
+            _modules.Cassette.LoadTape();
+
+            unsafe
+            {
+                ConfigState* configState = _modules.Config.GetConfigState();
+
+                configState->TapeCounter = 0;
+            }
+
+            _modules.Cassette.SetTapeCounter(0);
 
             _viewModel.Counter = 0;
         }
