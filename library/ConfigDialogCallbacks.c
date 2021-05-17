@@ -34,28 +34,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void SetDialogTapeMode(HWND hDlg, unsigned char tapeMode) {
-    SendDlgItemMessage(hDlg, IDC_MODE, WM_SETTEXT, strlen(TapeModes[tapeMode]), (LPARAM)(LPCSTR)(TapeModes[tapeMode]));
-
-    //--Update visual state
-    switch (tapeMode)
-    {
-    case REC:
-      SendDlgItemMessage(hDlg, IDC_MODE, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0xAF, 0, 0));
-      break;
-
-    case PLAY:
-      SendDlgItemMessage(hDlg, IDC_MODE, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0, 0xAF, 0));
-      break;
-
-    default:
-      SendDlgItemMessage(hDlg, IDC_MODE, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0, 0, 0));
-      break;
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void SetDialogTapeFileName(HWND hDlg, char* tapeFileName) {
     SendDlgItemMessage(hDlg, IDC_TAPEFILE, WM_SETTEXT, strlen(tapeFileName), (LPARAM)(LPCSTR)(tapeFileName));
   }
@@ -69,14 +47,11 @@ extern "C" {
     GetTapeName(configState->TapeFileName);
 
     SetDialogTapeCounter(hDlg, configState->TapeCounter);
-    SetDialogTapeMode(hDlg, configState->TapeMode);
     SetDialogTapeFileName(hDlg, configState->TapeFileName);
 
     SendDlgItemMessage(hDlg, IDC_TAPEFILE, WM_SETTEXT, strlen(configState->TapeFileName), (LPARAM)(LPCSTR)(configState->TapeFileName));
     SendDlgItemMessage(hDlg, IDC_TCOUNT, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0, 0, 0));
     SendDlgItemMessage(hDlg, IDC_TCOUNT, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&CounterText);
-    SendDlgItemMessage(hDlg, IDC_MODE, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0, 0, 0));
-    SendDlgItemMessage(hDlg, IDC_MODE, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&CounterText);
 
     configState->hDlgTape = hDlg;
   }

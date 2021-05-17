@@ -160,7 +160,6 @@ extern "C" {
     FilePathStripPath(instance->TapeFileName);
 
     SetDialogTapeCounter(instance->hDlgTape, instance->TapeCounter);
-    SetDialogTapeMode(instance->hDlgTape, instance->TapeMode);
     SetDialogTapeFileName(instance->hDlgTape, instance->TapeFileName);
   }
 }
