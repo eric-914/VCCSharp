@@ -60,9 +60,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe void FlushCassetteBuffer(byte* buffer, uint length);
 
             [DllImport(LIBRARY)]
-            public static extern void Motor(byte state);
-
-            [DllImport(LIBRARY)]
             public static extern void SetTapeCounter(uint count);
 
             [DllImport(LIBRARY)]
@@ -70,6 +67,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void CloseTapeFile();
+
+            [DllImport(LIBRARY)]
+            public static extern void SyncFileBuffer();
         }
 
         public static class Clipboard

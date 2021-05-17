@@ -177,21 +177,6 @@ namespace VCCSharp.Modules
             }
         }
 
-        public unsafe void FlushCassetteBuffer(byte* buffer, uint length)
-        {
-            Library.Cassette.FlushCassetteBuffer(buffer, length);
-        }
-
-        public void Motor(byte state)
-        {
-            Library.Cassette.Motor(state);
-        }
-
-        public void SetTapeCounter(uint count)
-        {
-            Library.Cassette.SetTapeCounter(count);
-        }
-
         public void SetTapeMode(byte mode)
         {
             unsafe
@@ -258,6 +243,79 @@ namespace VCCSharp.Modules
         public void CloseTapeFile()
         {
             Library.Cassette.CloseTapeFile();
+        }
+
+        public unsafe void FlushCassetteBuffer(byte* buffer, uint length)
+        {
+            Library.Cassette.FlushCassetteBuffer(buffer, length);
+        }
+
+        public void Motor(byte state)
+        {
+            unsafe
+            {
+                CassetteState* instance = GetCassetteState();
+
+                instance->MotorState = state;
+
+                switch (instance->MotorState)
+                {
+                    case 0:
+                        _modules.CoCo.SetSndOutMode(0);
+
+                        switch (instance->TapeMode)
+                        {
+                            case Define.STOP:
+                                break;
+
+                            case Define.PLAY:
+                                instance->Quiet = 30;
+                                instance->TempIndex = 0;
+                                break;
+
+                            case Define.REC:
+                                SyncFileBuffer();
+                                break;
+
+                            case Define.EJECT:
+                                break;
+                        }
+
+                        break;
+
+                    case 1:
+                        switch (instance->TapeMode)
+                        {
+                            case Define.STOP:
+                                _modules.CoCo.SetSndOutMode(0);
+                                break;
+
+                            case Define.PLAY:
+                                _modules.CoCo.SetSndOutMode(2);
+                                break;
+
+                            case Define.REC:
+                                _modules.CoCo.SetSndOutMode(1);
+                                break;
+
+                            case Define.EJECT:
+                                _modules.CoCo.SetSndOutMode(0);
+                                break;
+                        }
+
+                        break;
+                }
+            }
+        }
+
+        public void SetTapeCounter(uint count)
+        {
+            Library.Cassette.SetTapeCounter(count);
+        }
+
+        public void SyncFileBuffer()
+        {
+            Library.Cassette.SyncFileBuffer();
         }
     }
 }
