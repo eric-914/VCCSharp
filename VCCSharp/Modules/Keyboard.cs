@@ -1,6 +1,7 @@
 ﻿using VCCSharp.Enums;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using VCCSharp.Models.Keyboard;
 
 namespace VCCSharp.Modules
 {
@@ -13,6 +14,7 @@ namespace VCCSharp.Modules
         void SetPaste(bool flag);
         void GimeSetKeyboardInterruptState(byte state);
         byte vccKeyboardGetScan(byte column);
+        void SetKeyTranslations();
     }
 
     public class Keyboard : IKeyboard
@@ -60,6 +62,14 @@ namespace VCCSharp.Modules
         public byte vccKeyboardGetScan(byte column)
         {
             return Library.Keyboard.vccKeyboardGetScan(column);
+        }
+
+        public void SetKeyTranslations()
+        {
+            Library.Keyboard.SetKeyTranslationsCoCo(KeyboardLayout.GetKeyTranslationsCoCo());
+            Library.Keyboard.SetKeyTranslationsNatural(KeyboardLayout.GetKeyTranslationsNatural());
+            Library.Keyboard.SetKeyTranslationsCompact(KeyboardLayout.GetKeyTranslationsCompact());
+            Library.Keyboard.SetKeyTranslationsCustom(KeyboardLayout.GetKeyTranslationsCustom());
         }
     }
 }

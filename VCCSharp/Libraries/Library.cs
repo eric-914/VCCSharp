@@ -422,6 +422,18 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern byte vccKeyboardGetScan(byte column);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetKeyTranslationsCoCo(KeyTranslationEntry[] value);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetKeyTranslationsNatural(KeyTranslationEntry[] value);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetKeyTranslationsCompact(KeyTranslationEntry[] value);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetKeyTranslationsCustom(KeyTranslationEntry[] value);
         }
 
         public static class MenuCallbacks

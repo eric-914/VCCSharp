@@ -50,6 +50,7 @@ namespace VCCSharp
                 _modules.Emu.SetEmuState(emuState);
 
                 _modules.DirectDraw.InitDirectDraw(hInstance, _hResources);
+                _modules.Keyboard.SetKeyTranslations();
 
                 _modules.CoCo.SetClockSpeed(1);  //Default clock speed .89 MHZ	
 
