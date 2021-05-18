@@ -34,12 +34,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void SetDialogTapeFileName(HWND hDlg, char* tapeFileName) {
-    SendDlgItemMessage(hDlg, IDC_TAPEFILE, WM_SETTEXT, strlen(tapeFileName), (LPARAM)(LPCSTR)(tapeFileName));
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void TapeInitialize(HWND hDlg) {
     ConfigState* configState = GetConfigState();
 
@@ -47,7 +41,6 @@ extern "C" {
     GetTapeName(configState->TapeFileName);
 
     SetDialogTapeCounter(hDlg, configState->TapeCounter);
-    SetDialogTapeFileName(hDlg, configState->TapeFileName);
 
     SendDlgItemMessage(hDlg, IDC_TAPEFILE, WM_SETTEXT, strlen(configState->TapeFileName), (LPARAM)(LPCSTR)(configState->TapeFileName));
     SendDlgItemMessage(hDlg, IDC_TCOUNT, EM_SETBKGNDCOLOR, 0, (LPARAM)RGB(0, 0, 0));

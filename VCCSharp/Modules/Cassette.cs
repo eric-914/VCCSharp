@@ -14,9 +14,10 @@ namespace VCCSharp.Modules
         void Motor(byte state);
 
         void SetTapeCounter(uint count);
-        void SetTapeMode(byte mode);
+        //void SetTapeMode(byte mode);
 
-        uint LoadTape();
+        unsafe int MountTape(byte* filename);
+        void CloseTapeFile();
     }
 
     public class Cassette : ICassette
@@ -177,79 +178,6 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void SetTapeMode(byte mode)
-        {
-            unsafe
-            {
-                CassetteState* instance = GetCassetteState();
-
-                instance->TapeMode = mode;
-
-                switch (instance->TapeMode)
-                {
-                    case Define.STOP:
-                        break;
-
-                    case Define.PLAY:
-                        if (instance->TapeHandle == IntPtr.Zero)
-                        {
-                            if (LoadTape() == 0)
-                            {
-                                instance->TapeMode = Define.STOP;
-                            }
-                            else
-                            {
-                                instance->TapeMode = Define.PLAY;
-                            }
-                        }
-
-                        if (instance->MotorState != 0)
-                        {
-                            Motor(1);
-                        }
-
-                        break;
-
-                    case Define.REC:
-                        if (instance->TapeHandle == IntPtr.Zero)
-                        {
-                            if (LoadTape() == 0)
-                            {
-                                instance->TapeMode = Define.STOP;
-                            }
-                            else
-                            {
-                                instance->TapeMode = Define.REC;
-                            }
-                        }
-                        break;
-
-                    case Define.EJECT:
-                        CloseTapeFile();
-                        Converter.ToByteArray("EMPTY", instance->TapeFileName);
-
-                        break;
-                }
-
-                _modules.Config.UpdateTapeDialog(instance->TapeOffset, instance->TapeMode);
-            }
-        }
-
-        public uint LoadTape()
-        {
-            return Library.Cassette.LoadTape();
-        }
-
-        public void CloseTapeFile()
-        {
-            Library.Cassette.CloseTapeFile();
-        }
-
-        public unsafe void FlushCassetteBuffer(byte* buffer, uint length)
-        {
-            Library.Cassette.FlushCassetteBuffer(buffer, length);
-        }
-
         public void Motor(byte state)
         {
             unsafe
@@ -327,6 +255,21 @@ namespace VCCSharp.Modules
         public void SyncFileBuffer()
         {
             Library.Cassette.SyncFileBuffer();
+        }
+
+        public void CloseTapeFile()
+        {
+            Library.Cassette.CloseTapeFile();
+        }
+
+        public unsafe void FlushCassetteBuffer(byte* buffer, uint length)
+        {
+            Library.Cassette.FlushCassetteBuffer(buffer, length);
+        }
+
+        public unsafe int MountTape(byte* filename)
+        {
+            return Library.Cassette.MountTape(filename);
         }
     }
 }

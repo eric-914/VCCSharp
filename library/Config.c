@@ -160,7 +160,6 @@ extern "C" {
     FilePathStripPath(instance->TapeFileName);
 
     SetDialogTapeCounter(instance->hDlgTape, instance->TapeCounter);
-    SetDialogTapeFileName(instance->hDlgTape, instance->TapeFileName);
   }
 }
 static HWND hWndTabDialog;

@@ -1,6 +1,8 @@
-﻿using VCCSharp.Enums;
+﻿using System;
+using System.IO;
+using System.Windows;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.TapePlayer
@@ -46,18 +48,7 @@ namespace VCCSharp.TapePlayer
 
         public void Browse()
         {
-            _modules.Cassette.LoadTape();
-
-            unsafe
-            {
-                ConfigState* configState = _modules.Config.GetConfigState();
-
-                configState->TapeCounter = 0;
-            }
-
-            _modules.Cassette.SetTapeCounter(0);
-
-            _viewModel.Counter = 0;
+            LoadTape();
         }
 
         public void Record()
@@ -71,7 +62,7 @@ namespace VCCSharp.TapePlayer
                 configState->TapeMode = Define.REC;
             }
 
-            _modules.Cassette.SetTapeMode(Define.REC);
+            SetTapeMode(Define.REC);
         }
 
         public void Play()
@@ -85,7 +76,7 @@ namespace VCCSharp.TapePlayer
                 configState->TapeMode = Define.PLAY;
             }
 
-            _modules.Cassette.SetTapeMode(Define.PLAY);
+            SetTapeMode(Define.PLAY);
         }
 
         public void Stop()
@@ -99,13 +90,13 @@ namespace VCCSharp.TapePlayer
                 configState->TapeMode = Define.STOP;
             }
 
-            _modules.Cassette.SetTapeMode(Define.STOP);
+            SetTapeMode(Define.STOP);
         }
 
         public void Eject()
         {
             _viewModel.Mode = TapeModes.EJECT;
-            
+
             unsafe
             {
                 ConfigState* configState = _modules.Config.GetConfigState();
@@ -113,7 +104,7 @@ namespace VCCSharp.TapePlayer
                 configState->TapeMode = Define.EJECT;
             }
 
-            _modules.Cassette.SetTapeMode(Define.EJECT);
+            SetTapeMode(Define.EJECT);
         }
 
         public void Rewind()
@@ -128,6 +119,112 @@ namespace VCCSharp.TapePlayer
 
                 _modules.Cassette.SetTapeCounter(0);
             }
+        }
+
+        public void SetTapeMode(byte mode)
+        {
+            unsafe
+            {
+                CassetteState* instance = _modules.Cassette.GetCassetteState();
+
+                instance->TapeMode = mode;
+
+                switch (instance->TapeMode)
+                {
+                    case Define.STOP:
+                        break;
+
+                    case Define.PLAY:
+                        if (instance->TapeHandle == IntPtr.Zero)
+                        {
+                            if (LoadTape() == 0)
+                            {
+                                instance->TapeMode = Define.STOP;
+                            }
+                            else
+                            {
+                                instance->TapeMode = Define.PLAY;
+                            }
+                        }
+
+                        if (instance->MotorState != 0)
+                        {
+                            _modules.Cassette.Motor(1);
+                        }
+
+                        break;
+
+                    case Define.REC:
+                        if (instance->TapeHandle == IntPtr.Zero)
+                        {
+                            if (LoadTape() == 0)
+                            {
+                                instance->TapeMode = Define.STOP;
+                            }
+                            else
+                            {
+                                instance->TapeMode = Define.REC;
+                            }
+                        }
+                        break;
+
+                    case Define.EJECT:
+                        _modules.Cassette.CloseTapeFile();
+                        Converter.ToByteArray("EMPTY", instance->TapeFileName);
+
+                        break;
+                }
+
+                _modules.Config.UpdateTapeDialog(instance->TapeOffset, instance->TapeMode);
+
+                //_viewModel.FilePath = Path.GetFileName(Converter.ToString(instance->TapeFileName));
+            }
+        }
+
+        public unsafe int LoadTape()
+        {
+            ConfigState* configState = _modules.Config.GetConfigState();
+            CassetteState* cassetteState = _modules.Cassette.GetCassetteState();
+
+            string szFileName = Converter.ToString(configState->TapeFileName);
+            string appPath = Converter.ToString(configState->Model->CassPath) ?? "C:\\";
+
+            var openFileDlg = new Microsoft.Win32.OpenFileDialog
+            {
+                FileName = szFileName,
+                DefaultExt = ".cas",
+                Filter = "Cassette Files (*.cas)|*.cas|Wave Files (*.wav)|*.wav",
+                InitialDirectory = appPath,
+                CheckFileExists = true,
+                ShowReadOnly = false,
+                Title = "Insert Tape Image"
+            };
+
+            if (openFileDlg.ShowDialog() == true)
+            {
+                var file = openFileDlg.FileName;
+
+                //_viewModel.FilePath = file;
+                _viewModel.FilePath = Path.GetFileName(file);
+
+                Converter.ToByteArray(file, cassetteState->TapeFileName);
+
+                if (_modules.Cassette.MountTape(cassetteState->TapeFileName) == 0) {
+                    MessageBox.Show("Can't open file", "Error");
+                }
+
+                Converter.ToByteArray(Path.GetDirectoryName(file), configState->Model->CassPath);
+
+                configState->TapeCounter = 0;
+
+                _modules.Cassette.SetTapeCounter(0);
+
+                _viewModel.Counter = 0;
+
+                return 1;
+            }
+
+            return 0;
         }
     }
 }

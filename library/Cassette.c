@@ -214,60 +214,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned int __cdecl LoadTape()
-  {
-    static unsigned char dialogOpen = 0;
-    unsigned int retVal = 0;
-
-    HANDLE hr = NULL;
-    OPENFILENAME ofn;
-
-    if (dialogOpen == 1) {	//Only allow 1 dialog open 
-      return(0);
-    }
-
-    dialogOpen = 1;
-
-    memset(&ofn, 0, sizeof(ofn));
-
-    ofn.lStructSize = sizeof(OPENFILENAME);
-    ofn.hwndOwner = NULL;
-    ofn.Flags = OFN_HIDEREADONLY;
-    ofn.hInstance = GetModuleHandle(0);
-    ofn.lpstrDefExt = "";
-    ofn.lpstrFilter = "Cassette Files (*.cas)\0*.cas\0Wave Files (*.wav)\0*.wav\0\0";
-    ofn.nFilterIndex = 0;								  // current filter index
-    ofn.lpstrFile = instance->TapeFileName;					// contains full path and filename on return
-    ofn.nMaxFile = MAX_PATH;						  // sizeof lpstrFile
-    ofn.lpstrFileTitle = NULL;						// filename and extension only
-    ofn.nMaxFileTitle = MAX_PATH;					// sizeof lpstrFileTitle
-    ofn.lpstrInitialDir = GetConfigState()->Model->CassPath;				// initial directory
-    ofn.lpstrTitle = "Insert Tape Image";	// title bar string
-
-    retVal = GetOpenFileName(&ofn);
-
-    if (retVal)
-    {
-      if (MountTape(instance->TapeFileName) == 0) {
-        MessageBox(NULL, "Can't open file", "Error", 0);
-      }
-    }
-
-    dialogOpen = 0;
-
-    if (ofn.lpstrFile != "") {
-      string tmp = ofn.lpstrFile;
-      size_t idx = tmp.find_last_of("\\");
-      tmp = tmp.substr(0, idx);
-
-      strcpy(GetConfigState()->Model->CassPath, tmp.c_str());
-    }
-
-    return(retVal);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl WavToCas(unsigned char* waveBuffer, unsigned int length)
   {
     unsigned char bit = 0, sample = 0;

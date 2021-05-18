@@ -60,13 +60,13 @@ namespace VCCSharp.Libraries
             public static extern unsafe void FlushCassetteBuffer(byte* buffer, uint length);
 
             [DllImport(LIBRARY)]
-            public static extern uint LoadTape();
-
-            [DllImport(LIBRARY)]
             public static extern void CloseTapeFile();
 
             [DllImport(LIBRARY)]
             public static extern void SyncFileBuffer();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int MountTape(byte* filename);
         }
 
         public static class Clipboard
