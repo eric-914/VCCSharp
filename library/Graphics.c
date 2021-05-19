@@ -284,42 +284,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetCompatMode(unsigned char mode)
-  {
-    if (instance->CompatMode != mode)
-    {
-      instance->CompatMode = mode;
-      SetupDisplay();
-      instance->BorderChange = 3;
-    }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetGimeBorderColor(unsigned char data)
-  {
-    if (instance->CC3BorderColor != (data & 63))
-    {
-      instance->CC3BorderColor = data & 63;
-      SetupDisplay();
-      instance->BorderChange = 3;
-    }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetGimeHorzOffset(unsigned char data)
-  {
-    if (instance->HorzOffsetReg != data)
-    {
-      instance->Hoffset = (data << 1);
-      instance->HorzOffsetReg = data;
-      SetupDisplay();
-    }
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl SetGimeVdgMode(unsigned char vdgMode) //3 bits from SAM Registers
   {
     if (instance->CC2VDGMode != vdgMode)

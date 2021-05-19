@@ -331,7 +331,17 @@ namespace VCCSharp.Modules
 
         public void SetGimeBorderColor(byte data)
         {
-            Library.Graphics.SetGimeBorderColor(data);
+            unsafe
+            {
+                GraphicsState* instance = GetGraphicsState();
+
+                if (instance->CC3BorderColor != (data & 63))
+                {
+                    instance->CC3BorderColor = (byte)(data & 63);
+                    SetupDisplay();
+                    instance->BorderChange = 3;
+                }
+            }
         }
 
         public void SetPaletteLookup(byte index, byte r, byte g, byte b)
@@ -398,7 +408,17 @@ namespace VCCSharp.Modules
 
         public void SetGimeHorzOffset(byte data)
         {
-            Library.Graphics.SetGimeHorzOffset(data);
+            unsafe
+            {
+                GraphicsState* instance = GetGraphicsState();
+
+                if (instance->HorzOffsetReg != data)
+                {
+                    instance->Hoffset = (byte)(data << 1);
+                    instance->HorzOffsetReg = data;
+                    SetupDisplay();
+                }
+            }
         }
 
         public void SetGimePalette(byte palette, byte color)
@@ -408,7 +428,17 @@ namespace VCCSharp.Modules
 
         public void SetCompatMode(byte mode)
         {
-            Library.Graphics.SetCompatMode(mode);
+            unsafe
+            {
+                GraphicsState* instance = GetGraphicsState();
+
+                if (instance->CompatMode != mode)
+                {
+                    instance->CompatMode = mode;
+                    SetupDisplay();
+                    instance->BorderChange = 3;
+                }
+            }
         }
 
         public void SetVideoBank(byte data)
@@ -419,6 +449,11 @@ namespace VCCSharp.Modules
         public void SetGimeVdgMode2(byte vdgmode2)
         {
             Library.Graphics.SetGimeVdgMode2(vdgmode2);
+        }
+
+        public void SetupDisplay()
+        {
+            Library.Graphics.SetupDisplay();
         }
     }
 }

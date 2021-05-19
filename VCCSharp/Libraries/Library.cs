@@ -354,9 +354,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe GraphicsColors* GetGraphicsColors();
 
             [DllImport(LIBRARY)]
-            public static extern void SetGimeBorderColor(byte data);
-
-            [DllImport(LIBRARY)]
             public static extern void SetMonitorTypePalettes(byte monType, byte palIndex);
 
             [DllImport(LIBRARY)]
@@ -375,19 +372,16 @@ namespace VCCSharp.Libraries
             public static extern void SetVerticalOffsetRegister(ushort voRegister);
 
             [DllImport(LIBRARY)]
-            public static extern void SetGimeHorzOffset(byte data);
-
-            [DllImport(LIBRARY)]
             public static extern void SetGimePalette(byte palette, byte color);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetCompatMode(byte mode);
 
             [DllImport(LIBRARY)]
             public static extern void SetVideoBank(byte data);
 
             [DllImport(LIBRARY)]
             public static extern void SetGimeVdgMode2(byte vdgmode2);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetupDisplay();
         }
 
         public static class Joystick

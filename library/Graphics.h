@@ -10,9 +10,6 @@ extern "C" __declspec(dllexport) GraphicsState* __cdecl GetGraphicsState();
 extern "C" __declspec(dllexport) GraphicsSurfaces* __cdecl GetGraphicsSurfaces();
 extern "C" __declspec(dllexport) GraphicsColors* __cdecl GetGraphicsColors();
 
-
-extern "C" __declspec(dllexport) void __cdecl SetCompatMode(unsigned char);
-extern "C" __declspec(dllexport) void __cdecl SetGimeBorderColor(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetGimeHorzOffset(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetGimePalette(unsigned char, unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetGimeVdgMode(unsigned char);
