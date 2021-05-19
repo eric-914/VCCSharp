@@ -1694,7 +1694,7 @@
         public void Suba_M() // 80
         {
             _postByte = MemRead8(PC_REG++);
-            _temp16 = (byte)(A_REG - _postByte);
+            _temp16 = (ushort)(A_REG - _postByte);
 
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
