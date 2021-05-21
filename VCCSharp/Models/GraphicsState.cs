@@ -2,10 +2,6 @@
 {
     public struct GraphicsState
     {
-        public byte BlinkState;
-        public byte BorderChange;
-        public byte Bpp;
-        public byte BytesperRow;
         public byte CC2Offset;
         public byte CC2VDGMode;
         public byte CC2VDGPiaMode;

@@ -10,10 +10,6 @@ GraphicsState* InitializeInstance(GraphicsState*);
 static GraphicsState* instance = InitializeInstance(new GraphicsState());
 
 GraphicsState* InitializeInstance(GraphicsState* p) {
-  p->BlinkState = 1;
-  p->BorderChange = 3;
-  p->Bpp = 0;
-  p->BytesperRow = 32;
   p->CC2Offset = 0;
   p->CC2VDGMode = 0;
   p->CC2VDGPiaMode = 0;

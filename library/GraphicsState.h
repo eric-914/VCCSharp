@@ -2,10 +2,6 @@
 
 typedef struct
 {
-  unsigned char BlinkState;
-  unsigned char BorderChange;
-  unsigned char Bpp;
-  unsigned char BytesperRow;
   unsigned char CC2Offset;
   unsigned char CC2VDGMode;
   unsigned char CC2VDGPiaMode;

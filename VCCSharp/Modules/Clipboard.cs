@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Text;
 using System.Windows;
 using VCCSharp.IoC;
@@ -15,15 +16,15 @@ namespace VCCSharp.Modules
         void PopClipboard();
         void CopyText();
         void PasteClipboard();
-        void PasteBASIC();
-        void PasteBASICWithNew();
+        void PasteBasic();
+        void PasteBasicWithNew();
     }
 
     public class Clipboard : IClipboard
     {
         #region pcchars
 
-        private readonly char[] _pcchars32 =
+        private readonly char[] _pcChars32 =
         {
             '@','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','[','\\',']',' ',' ',
             ' ','!','\"','#','$','%','&','\'','(',')','*','+',',','-','.','/','0','1','2','3','4','5','6','7','8','9',':',';','<','=','>','?',
@@ -31,7 +32,7 @@ namespace VCCSharp.Modules
             ' ','!','\"','#','$','%','&','\'','(',')','*','+',',','-','.','/','0','1','2','3','4','5','6','7','8','9',':',';','<','=','>','?'
         };
 
-        private readonly char[] _pcchars40 =
+        private readonly char[] _pcChars40 =
         {
             ' ', '!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4',
             '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?',
@@ -39,10 +40,10 @@ namespace VCCSharp.Modules
             'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', ' ', ' ',
             '^', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
             'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', '_',
-            (char) 'Ç', (char) 'ü', (char) 'é', (char) 'â', (char) 'ä', (char) 'à', (char) 'å', (char) 'ç',
-            (char) 'ê', (char) 'ë', (char) 'è', (char) 'ï', (char) 'î', (char) 'ß', (char) 'Ä', (char) 'Â',
-            (char) 'Ó', (char) 'æ', (char) 'Æ', (char) 'ô', (char) 'ö', (char) 'ø', (char) 'û', (char) 'ù',
-            (char) 'Ø', (char) 'Ö', (char) 'Ü', (char) '§', (char) '£', (char) '±', (char) 'º', (char) '¥',
+            'Ç', 'ü', 'é', 'â', 'ä', 'à', 'å', 'ç',
+            'ê', 'ë', 'è', 'ï', 'î', 'ß', 'Ä', 'Â',
+            'Ó', 'æ', 'Æ', 'ô', 'ö', 'ø', 'û', 'ù',
+            'Ø', 'Ö', 'Ü', '§', '£', '±', 'º', '¥',
             ' ', ' ', '!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3',
             '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>',
             '?', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
@@ -67,7 +68,7 @@ namespace VCCSharp.Modules
             return Library.Clipboard.GetClipboardState();
         }
 
-        public void PasteBASIC()
+        public void PasteBasic()
         {
             unsafe
             {
@@ -81,7 +82,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void PasteBASICWithNew()
+        public void PasteBasicWithNew()
         {
             const string warning =
                 "Warning: This operation will erase the Coco's BASIC memory before pasting. Continue?";
@@ -174,21 +175,21 @@ namespace VCCSharp.Modules
 
         private static string ParseText(string text, bool codePaste)
         {
-            const char Return = '\n';
+            const char result = '\n';
 
             string line = "";
             string parsed = "";
 
             foreach (var c in text)
             {
-                if (c != Return)
+                if (c != result)
                 {
                     line += c;
                 }
                 else if (line.Length <= 249 || !codePaste) //...the character is a <CR>
                 {
                     // Just a regular line.
-                    parsed += line + Return;
+                    parsed += line + result;
                     line = "";
                 }
                 //TODO: Look at this later.  Some of the 256 is used by line number.
@@ -203,8 +204,8 @@ namespace VCCSharp.Modules
                 //TODO: Look at this later.  I think it's using some trick with EDIT to squeeze more in.
                 else
                 {
-                    int blank = line.IndexOf(" ");
-                    string main = line.Substring(0, 249);
+                    int blank = line.IndexOf(" ", StringComparison.Ordinal);
+                    string main = line[..249];
                     string extra = line[249..^249];  //Translation: from '249' to 'all but 249'
                     string spaces = "";
 
@@ -213,9 +214,9 @@ namespace VCCSharp.Modules
                         spaces += " ";
                     }
 
-                    string linestr = line.Substring(0, blank);
+                    string substring = line[..blank];
 
-                    line = main + "\n\nEDIT " + linestr + "\n" + spaces + "I" + extra + "\n";
+                    line = $"{main}\n\nEDIT {substring}\n{spaces}I{extra}\n";
                     parsed += line;
                     line = "";
                 }
@@ -231,7 +232,9 @@ namespace VCCSharp.Modules
             foreach (var letter in text)
             {
                 char sc = GetScanCode(letter);
+                // ReSharper disable once InconsistentNaming
                 bool CSHIFT = GetCSHIFT(letter);
+                // ReSharper disable once InconsistentNaming
                 bool LCNTRL = GetLCNTRL(letter);
 
                 if (CSHIFT) { result.Append((char)0x36); }
@@ -349,6 +352,7 @@ namespace VCCSharp.Modules
             };
         }
 
+        // ReSharper disable once InconsistentNaming
         public bool GetCSHIFT(char letter)
         {
             return letter switch
@@ -455,6 +459,7 @@ namespace VCCSharp.Modules
             };
         }
 
+        // ReSharper disable once InconsistentNaming
         public bool GetLCNTRL(char letter)
         {
             return letter switch
@@ -587,9 +592,9 @@ namespace VCCSharp.Modules
             {
                 GraphicsState* graphicsState = _modules.Graphics.GetGraphicsState();
 
-                byte bytesPerRow = graphicsState->BytesperRow;
+                byte bytesPerRow = _modules.Graphics.BytesperRow;
                 byte graphicsMode = graphicsState->GraphicsMode;
-                uint startOfVidram = graphicsState->StartofVidram;
+                uint startOfVidRam = graphicsState->StartofVidram;
 
                 if (graphicsMode != 0)
                 {
@@ -599,7 +604,7 @@ namespace VCCSharp.Modules
                     return;
                 }
 
-                Debug.WriteLine($"StartOfVidram is: {startOfVidram}\nGraphicsMode is: {graphicsMode}");
+                Debug.WriteLine($"StartOfVidRam is: {startOfVidRam}\nGraphicsMode is: {graphicsMode}");
 
                 int lines = bytesPerRow == 32 ? 15 : 23;
                 string clipOut = "";
@@ -609,8 +614,8 @@ namespace VCCSharp.Modules
                 {
                     for (int y = 0; y <= lines; y++)
                     {
-                        int lastchar = 0;
-                        string tmpline = "";
+                        int lastChar = 0;
+                        string tmpLine = "";
 
                         for (int idx = 0; idx < bytesPerRow; idx++)
                         {
@@ -619,20 +624,20 @@ namespace VCCSharp.Modules
 
                             if (tmp != 32 && tmp != 64 && tmp != 96)
                             {
-                                lastchar = idx + 1;
+                                lastChar = idx + 1;
                             }
 
                             if (tmp < 128) //--Ignore anything beyond ASCII 
                             {
-                                tmpline += _pcchars32[tmp];
+                                tmpLine += _pcChars32[tmp];
                             }
                         }
 
-                        tmpline = tmpline[..lastchar];
+                        tmpLine = tmpLine[..lastChar];
 
-                        if (lastchar != 0)
+                        if (lastChar != 0)
                         {
-                            clipOut += tmpline + "\n";
+                            clipOut += tmpLine + "\n";
                         }
                     }
 
@@ -649,14 +654,13 @@ namespace VCCSharp.Modules
 
                     for (int y = 0; y <= lines; y++)
                     {
-                        int lastchar = 0;
-                        string tmpline = "";
-                        int tmp;
+                        int lastChar = 0;
+                        string tmpLine = "";
 
                         for (int idx = 0; idx < bytesPerRow * 2; idx += 2)
                         {
-                            int address = (int)(startOfVidram + y * (bytesPerRow * 2) + idx);
-                            tmp = _modules.TC1014.GetMem(address);
+                            int address = (int)(startOfVidRam + y * (bytesPerRow * 2) + idx);
+                            int tmp = _modules.TC1014.GetMem(address);
 
                             if (tmp == 32 || tmp == 64 || tmp == 96)
                             {
@@ -664,17 +668,17 @@ namespace VCCSharp.Modules
                             }
                             else
                             {
-                                lastchar = idx / 2 + 1;
+                                lastChar = idx / 2 + 1;
                             }
 
-                            tmpline += _pcchars40[tmp - offset];
+                            tmpLine += _pcChars40[tmp - offset];
                         }
 
-                        tmpline = tmpline[..lastchar];
+                        tmpLine = tmpLine[..lastChar];
 
-                        if (lastchar != 0)
+                        if (lastChar != 0)
                         {
-                            clipOut += tmpline; clipOut += "\n";
+                            clipOut += tmpLine; clipOut += "\n";
                         }
                     }
                 }

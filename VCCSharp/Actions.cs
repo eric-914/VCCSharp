@@ -60,12 +60,12 @@ namespace VCCSharp
 
         public void PasteBasicCodeMerge()
         {
-            _modules.Clipboard.PasteBASIC();
+            _modules.Clipboard.PasteBasic();
         }
 
         public void PasteBasicCodeNew()
         {
-            _modules.Clipboard.PasteBASICWithNew();
+            _modules.Clipboard.PasteBasicWithNew();
         }
 
         public void FlipArtifactColors() //F7

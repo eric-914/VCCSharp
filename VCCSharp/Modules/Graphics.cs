@@ -31,12 +31,17 @@ namespace VCCSharp.Modules
         void SetGimeVres(byte res);
         void SetGimeBorderColor(byte data);
         void SetVerticalOffsetRegister(ushort voRegister);
-        void SetGimeHorzOffset(byte data);
+        void SetGimeHorizontalOffset(byte data);
         void SetGimePalette(byte palette, byte color);
         void SetCompatMode(byte mode);
         void SetVideoBank(byte data);
         void SetGimeVdgMode2(byte mode);
         unsafe void SetGraphicsSurfaces(void* ddsdGetSurface);
+
+        byte BlinkState { get; set; }
+        byte BorderChange { get; set; }
+        byte Bpp { get; set; }
+        byte BytesperRow { get; set; }
     }
 
     public class Graphics : IGraphics
@@ -77,7 +82,12 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
 
         private readonly GraphicsColors _colors = new GraphicsColors();
-        private static readonly GraphicsSurfaces _surfaces = new GraphicsSurfaces();
+        private static readonly GraphicsSurfaces Surfaces = new GraphicsSurfaces();
+
+        public byte BlinkState { get; set; }
+        public byte BorderChange { get; set; } = 3;
+        public byte Bpp { get; set; }
+        public byte BytesperRow { get; set; } = 32;
 
         public Graphics(IModules modules)
         {
@@ -89,7 +99,7 @@ namespace VCCSharp.Modules
             return Library.Graphics.GetGraphicsState();
         }
 
-        public GraphicsSurfaces GetGraphicsSurfaces() => _surfaces;
+        public GraphicsSurfaces GetGraphicsSurfaces() => Surfaces;
 
         public GraphicsColors GetGraphicsColors() => _colors;
 
@@ -110,7 +120,7 @@ namespace VCCSharp.Modules
                 graphicsState->HorzOffsetReg = 0;
                 graphicsState->TagY = 0;
                 graphicsState->DistoOffset = 0;
-                graphicsState->BorderChange = 3;
+                BorderChange = 3;
                 graphicsState->CC2Offset = 0;
                 graphicsState->Hoffset = 0;
                 graphicsState->VerticalOffsetRegister = 0;
@@ -119,25 +129,14 @@ namespace VCCSharp.Modules
 
         public void SetBlinkState(byte state)
         {
-            unsafe
-            {
-                GraphicsState* graphicsState = GetGraphicsState();
-
-                graphicsState->BlinkState = state;
-            }
+            BlinkState = state;
         }
 
         public void SetBorderChange()
         {
-            unsafe
+            if (BorderChange > 0)
             {
-                GraphicsState* graphicsState = GetGraphicsState();
-
-                if (graphicsState->BorderChange > 0)
-                {
-                    graphicsState->BorderChange--;
-                }
-
+                BorderChange--;
             }
         }
 
@@ -164,14 +163,12 @@ namespace VCCSharp.Modules
         //TODO: ScanLines never really worked right to begin with...
         public unsafe void SetScanLines(EmuState* emuState, byte lines)
         {
-            GraphicsState* graphicsState = GetGraphicsState();
-
             emuState->ScanLines = lines;
             emuState->ResetPending = (byte)ResetPendingStates.Cls;
 
             _modules.DirectDraw.ClearScreen();
 
-            graphicsState->BorderChange = 3;
+            BorderChange = 3;
         }
 
         public void MakeCmpPalette(int paletteType)
@@ -298,12 +295,7 @@ namespace VCCSharp.Modules
 
         public void InvalidateBorder()
         {
-            unsafe
-            {
-                GraphicsState* instance = GetGraphicsState();
-
-                instance->BorderChange = 5;
-            }
+            BorderChange = 5;
         }
 
         public void MakeRgbPalette()
@@ -345,7 +337,7 @@ namespace VCCSharp.Modules
                 {
                     instance->CC3BorderColor = (byte)(data & 63);
                     SetupDisplay();
-                    instance->BorderChange = 3;
+                    BorderChange = 3;
                 }
             }
         }
@@ -371,13 +363,8 @@ namespace VCCSharp.Modules
 
         public bool CheckState(byte attributes)
         {
-            unsafe
-            {
-                GraphicsState* instance = GetGraphicsState();
-
-                //return (!instance->BlinkState) & !!(attributes & 128);
-                return (instance->BlinkState == 0) && ((attributes & 128) != 0);
-            }
+            //return (!instance->BlinkState) & !!(attributes & 128);
+            return (BlinkState == 0) && ((attributes & 128) != 0);
         }
 
         //3 bits from SAM Registers
@@ -391,7 +378,7 @@ namespace VCCSharp.Modules
                 {
                     instance->CC2VDGMode = vdgMode;
                     SetupDisplay();
-                    instance->BorderChange = 3;
+                    BorderChange = 3;
                 }
             }
         }
@@ -421,7 +408,7 @@ namespace VCCSharp.Modules
                 {
                     instance->CC3Vmode = vmode;
                     SetupDisplay();
-                    instance->BorderChange = 3;
+                    BorderChange = 3;
                 }
             }
         }
@@ -436,7 +423,7 @@ namespace VCCSharp.Modules
                 {
                     instance->CC3Vres = vres;
                     SetupDisplay();
-                    instance->BorderChange = 3;
+                    BorderChange = 3;
                 }
             }
         }
@@ -457,7 +444,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void SetGimeHorzOffset(byte data)
+        public void SetGimeHorizontalOffset(byte data)
         {
             unsafe
             {
@@ -481,7 +468,9 @@ namespace VCCSharp.Modules
                 byte offset = (byte)(color & 63);
                 int index = instance->MonType * 64 + offset;
 
+                // ReSharper disable CommentTypo
                 // Convert the 6bit rgbrgb value to rrrrrggggggbbbbb for the Real video hardware.
+                // ReSharper restore CommentTypo
                 //	unsigned char r,g,b;
                 _colors.Palette[palette] = offset;
                 _colors.Palette8Bit[palette] = _colors.PaletteLookup8[index]; //colors->PaletteLookup8[instance->MonType][offset];
@@ -500,7 +489,7 @@ namespace VCCSharp.Modules
                 {
                     instance->CompatMode = mode;
                     SetupDisplay();
-                    instance->BorderChange = 3;
+                    BorderChange = 3;
                 }
             }
         }
@@ -528,14 +517,14 @@ namespace VCCSharp.Modules
                 {
                     instance->CC2VDGPiaMode = mode;
                     SetupDisplay();
-                    instance->BorderChange = 3;
+                    BorderChange = 3;
                 }
             }
         }
 
         public unsafe void SetGraphicsSurfaces(void* pSurface)
         {
-            _surfaces.pSurface = pSurface;
+            Surfaces.pSurface = pSurface;
         }
 
         public void SetupDisplay()
@@ -553,9 +542,9 @@ namespace VCCSharp.Modules
                         instance->GraphicsMode = (byte)((instance->CC3Vmode & 128) >> 7);
                         instance->VresIndex = (byte)((instance->CC3Vres & 96) >> 5);
                         CoCo3LinesPerRow[7] = instance->LinesperScreen;   // For 1 pixel high modes
-                        instance->Bpp = (byte)(instance->CC3Vres & 3);
+                        Bpp = (byte)(instance->CC3Vres & 3);
                         instance->LinesperRow = CoCo3LinesPerRow[instance->CC3Vmode & 7];
-                        instance->BytesperRow = CoCo3BytesPerRow[(instance->CC3Vres & 28) >> 2];
+                        BytesperRow = CoCo3BytesPerRow[(instance->CC3Vres & 28) >> 2];
                         instance->PaletteIndex = 0;
 
                         if (instance->GraphicsMode != 0)
@@ -565,15 +554,16 @@ namespace VCCSharp.Modules
                                 instance->ExtendedText = 2;
                             }
 
-                            instance->Bpp = 0;
-                            instance->BytesperRow = CoCo3BytesPerTextRow[(instance->CC3Vres & 28) >> 2];
+                            Bpp = 0;
+                            BytesperRow = CoCo3BytesPerTextRow[(instance->CC3Vres & 28) >> 2];
                         }
 
                         break;
 
-                    case 1:                 //Color Computer 2 Mode
+                    case 1:
+                        //Color Computer 2 Mode
                         instance->CC3BorderColor = 0;   //Black for text modes
-                        instance->BorderChange = 3;
+                        BorderChange = 3;
                         instance->NewStartofVidram = (uint)((512 * instance->CC2Offset) + (instance->VerticalOffsetRegister & 0xE0FF) * 8);
                         instance->GraphicsMode = (byte)((instance->CC2VDGPiaMode & 16) >> 4); //PIA Set on graphics clear on text
                         instance->VresIndex = 0;
@@ -594,16 +584,16 @@ namespace VCCSharp.Modules
                                 instance->CC3BorderColor = 63; //63 White 
                             }
 
-                            instance->BorderChange = 3;
-                            instance->Bpp = CoCo2Bpp[(instance->CC2VDGPiaMode & 15) >> 1];
-                            instance->BytesperRow = CoCo2BytesPerRow[(instance->CC2VDGPiaMode & 15) >> 1];
-                            tmpByte = (byte)((instance->CC2VDGPiaMode & 1) << 1 | (instance->Bpp & 1));
+                            BorderChange = 3;
+                            Bpp = CoCo2Bpp[(instance->CC2VDGPiaMode & 15) >> 1];
+                            BytesperRow = CoCo2BytesPerRow[(instance->CC2VDGPiaMode & 15) >> 1];
+                            tmpByte = (byte)((instance->CC2VDGPiaMode & 1) << 1 | (Bpp & 1));
                             instance->PaletteIndex = CoCo2PaletteSet[tmpByte];
                         }
                         else
                         {   //Setup for 32x16 text Mode
-                            instance->Bpp = 0;
-                            instance->BytesperRow = 32;
+                            Bpp = 0;
+                            BytesperRow = 32;
                             instance->InvertAll = (byte)((instance->CC2VDGPiaMode & 4) >> 2);
                             instance->LowerCase = (byte)((instance->CC2VDGPiaMode & 2) >> 1);
                             colorSet = (byte)(instance->CC2VDGPiaMode & 1);
@@ -642,7 +632,7 @@ namespace VCCSharp.Modules
                 _modules.CoCo.SetLinesperScreen(instance->VresIndex);
 
                 instance->VertCenter = (byte)(instance->VcenterTable[instance->VresIndex] - 4); //4 un-rendered top lines
-                instance->PixelsperLine = (ushort)(instance->BytesperRow * PixelsPerByte[instance->Bpp]);
+                instance->PixelsperLine = (ushort)(BytesperRow * PixelsPerByte[Bpp]);
 
                 if ((instance->PixelsperLine % 40) != 0)
                 {
@@ -655,7 +645,7 @@ namespace VCCSharp.Modules
                     instance->HorzCenter = 0;
                 }
 
-                instance->VPitch = instance->BytesperRow;
+                instance->VPitch = BytesperRow;
 
                 if ((instance->HorzOffsetReg & 128) != 0)
                 {
@@ -669,8 +659,8 @@ namespace VCCSharp.Modules
                 instance->BorderColor16 = _colors.PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonType][instance->CC3BorderColor & 63];
                 instance->BorderColor32 = _colors.PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][instance->CC3BorderColor & 63];
 
-                instance->NewStartofVidram = (instance->NewStartofVidram & instance->VidMask) + instance->DistoOffset; //DistoOffset for 2M configuration
-                instance->MasterMode = (byte)((instance->GraphicsMode << 7) | (instance->CompatMode << 6) | ((instance->Bpp & 3) << 4) | (instance->Stretch & 15));
+                instance->NewStartofVidram = (instance->NewStartofVidram & instance->VidMask) + instance->DistoOffset; //Dist Offset for 2M configuration
+                instance->MasterMode = (byte)((instance->GraphicsMode << 7) | (instance->CompatMode << 6) | ((Bpp & 3) << 4) | (instance->Stretch & 15));
             }
         }
     }
