@@ -2,10 +2,6 @@
 
 typedef struct
 {
-  unsigned char InvertAll;
-  unsigned char LinesperRow;
-  unsigned char LinesperScreen;
-  unsigned char LowerCase;
   unsigned char MasterMode;
   unsigned char MonType;
   unsigned char PaletteIndex;

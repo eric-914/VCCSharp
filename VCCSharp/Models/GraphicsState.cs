@@ -2,10 +2,6 @@
 {
     public struct GraphicsState
     {
-        public byte InvertAll;
-        public byte LinesperRow;
-        public byte LinesperScreen;
-        public byte LowerCase;
         public byte MasterMode;
         public byte MonType;
         public byte PaletteIndex;

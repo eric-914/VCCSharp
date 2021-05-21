@@ -834,11 +834,11 @@ Could not locate {ROM} in any of these locations:
 
             for (ushort x = 0; x < emuState->WindowSize.X; x++)
             {
-                graphicsSurfaces.pSurface8[x + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = (byte)(gs->BorderColor8 | 128);
+                graphicsSurfaces.pSurface8[x + (2 * (emuState->LineCounter + _graphics.LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = (byte)(gs->BorderColor8 | 128);
 
                 if (emuState->ScanLines == Define.FALSE)
                 {
-                    graphicsSurfaces.pSurface8[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = (byte)(gs->BorderColor8 | 128);
+                    graphicsSurfaces.pSurface8[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + _graphics.LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = (byte)(gs->BorderColor8 | 128);
                 }
             }
         }
@@ -855,11 +855,11 @@ Could not locate {ROM} in any of these locations:
 
             for (ushort x = 0; x < emuState->WindowSize.X; x++)
             {
-                graphicsSurfaces.pSurface16[x + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor16;
+                graphicsSurfaces.pSurface16[x + (2 * (emuState->LineCounter + _graphics.LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor16;
 
                 if (emuState->ScanLines == Define.FALSE)
                 {
-                    graphicsSurfaces.pSurface16[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor16;
+                    graphicsSurfaces.pSurface16[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + _graphics.LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor16;
                 }
             }
         }
@@ -881,11 +881,11 @@ Could not locate {ROM} in any of these locations:
 
             for (ushort x = 0; x < emuState->WindowSize.X; x++)
             {
-                graphicsSurfaces.pSurface32[x + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor32;
+                graphicsSurfaces.pSurface32[x + (2 * (emuState->LineCounter + _graphics.LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor32;
 
                 if (emuState->ScanLines == Define.FALSE)
                 {
-                    graphicsSurfaces.pSurface32[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor32;
+                    graphicsSurfaces.pSurface32[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + _graphics.LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor32;
                 }
             }
         }
@@ -915,7 +915,7 @@ Could not locate {ROM} in any of these locations:
                 }
             }
 
-            if (gs->LinesperRow < 13)
+            if (_graphics.LinesperRow < 13)
             {
                 gs->TagY++;
             }
@@ -926,7 +926,7 @@ Could not locate {ROM} in any of these locations:
                 gs->TagY = (ushort)(emuState->LineCounter);
             }
 
-            uint start = (uint)(gs->StartOfVidRam + (gs->TagY / gs->LinesperRow) * (gs->VPitch * _graphics.ExtendedText));
+            uint start = (uint)(gs->StartOfVidRam + (gs->TagY / _graphics.LinesperRow) * (gs->VPitch * _graphics.ExtendedText));
             uint yStride = (uint)((((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch) + (_graphics.HorzCenter) - 1);
 
             SwitchMasterMode8(emuState, gs->MasterMode, start, yStride);
@@ -957,7 +957,7 @@ Could not locate {ROM} in any of these locations:
                 }
             }
 
-            if (gs->LinesperRow < 13)
+            if (_graphics.LinesperRow < 13)
             {
                 gs->TagY++;
             }
@@ -968,7 +968,7 @@ Could not locate {ROM} in any of these locations:
                 gs->TagY = (ushort)(emuState->LineCounter);
             }
 
-            uint start = (uint)(gs->StartOfVidRam + (gs->TagY / gs->LinesperRow) * (gs->VPitch * _graphics.ExtendedText));
+            uint start = (uint)(gs->StartOfVidRam + (gs->TagY / _graphics.LinesperRow) * (gs->VPitch * _graphics.ExtendedText));
             uint yStride = (uint)((((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch) + (_graphics.HorzCenter * 1) - 1);
 
             SwitchMasterMode16(emuState, gs->MasterMode, start, yStride);
@@ -1009,7 +1009,7 @@ Could not locate {ROM} in any of these locations:
                 }
             }
 
-            if (gs->LinesperRow < 13)
+            if (_graphics.LinesperRow < 13)
             {
                 gs->TagY++;
             }
@@ -1020,7 +1020,7 @@ Could not locate {ROM} in any of these locations:
                 gs->TagY = y;
             }
 
-            uint start = (uint)(gs->StartOfVidRam + (gs->TagY / gs->LinesperRow) * (gs->VPitch * _graphics.ExtendedText));
+            uint start = (uint)(gs->StartOfVidRam + (gs->TagY / _graphics.LinesperRow) * (gs->VPitch * _graphics.ExtendedText));
             uint yStride = (uint)((((y + gs->VertCenter) * 2) * Xpitch) + (_graphics.HorzCenter * 1) - 1);
 
             SwitchMasterMode32(emuState, gs->MasterMode, start, yStride);
@@ -1068,19 +1068,19 @@ Could not locate {ROM} in any of these locations:
 
                     if ((_graphics.HorzOffsetReg & 128) != 0)
                     {
-                        start = (uint)(gs->StartOfVidRam + (gs->TagY / gs->LinesperRow) * (gs->VPitch)); //Fix for Horizontal Offset Register in text mode.
+                        start = (uint)(gs->StartOfVidRam + (gs->TagY / _graphics.LinesperRow) * (gs->VPitch)); //Fix for Horizontal Offset Register in text mode.
                     }
 
                     for (ushort beam = 0; beam < _graphics.BytesPerRow * _graphics.ExtendedText; beam += _graphics.ExtendedText)
                     {
                         character = ramBuffer[start + (byte)(beam + _graphics.Hoffset)];
-                        pixel = cc3Fontdata8x12[character * 12 + (y % gs->LinesperRow)];
+                        pixel = cc3Fontdata8x12[character * 12 + (y % _graphics.LinesperRow)];
 
                         if (_graphics.ExtendedText == 2)
                         {
                             attributes = ramBuffer[start + (byte)(beam + _graphics.Hoffset) + 1];
 
-                            if (((attributes & 64) != 0) && (y % gs->LinesperRow == (gs->LinesperRow - 1)))
+                            if (((attributes & 64) != 0) && (y % _graphics.LinesperRow == (_graphics.LinesperRow - 1)))
                             {   //UnderLine
                                 pixel = 255;
                             }
@@ -1130,13 +1130,13 @@ Could not locate {ROM} in any of these locations:
                     for (ushort beam = 0; beam < _graphics.BytesPerRow * _graphics.ExtendedText; beam += _graphics.ExtendedText)
                     {
                         character = ramBuffer[start + (byte)(beam + _graphics.Hoffset)];
-                        pixel = cc3Fontdata8x12[character * 12 + (y % gs->LinesperRow)];
+                        pixel = cc3Fontdata8x12[character * 12 + (y % _graphics.LinesperRow)];
 
                         if (_graphics.ExtendedText == 2)
                         {
                             attributes = ramBuffer[start + (byte)(beam + _graphics.Hoffset) + 1];
 
-                            if (((attributes & 64) != 0) && (y % gs->LinesperRow == (gs->LinesperRow - 1)))
+                            if (((attributes & 64) != 0) && (y % _graphics.LinesperRow == (_graphics.LinesperRow - 1)))
                             {   //UnderLine
                                 pixel = 255;
                             }
@@ -1376,7 +1376,7 @@ Could not locate {ROM} in any of these locations:
                                 textPalette[0] = graphicsColors.Palette32Bit[gs->TextBGPalette];
                                 textPalette[1] = graphicsColors.Palette32Bit[gs->TextFGPalette];
 
-                                if ((gs->LowerCase != 0) && (character < 32))
+                                if ((_graphics.LowerCase != 0) && (character < 32))
                                     pixel = ntsc_round_fontdata8x12[(character + 80) * 12 + (y % 12)];
                                 else
                                     pixel = (byte)~ntsc_round_fontdata8x12[(character) * 12 + (y % 12)];

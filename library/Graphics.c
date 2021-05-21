@@ -10,10 +10,6 @@ GraphicsState* InitializeInstance(GraphicsState*);
 static GraphicsState* instance = InitializeInstance(new GraphicsState());
 
 GraphicsState* InitializeInstance(GraphicsState* p) {
-  p->InvertAll = 0;
-  p->LinesperRow = 1;
-  p->LinesperScreen = 0;
-  p->LowerCase = 0;
   p->MasterMode = 0;
   p->MonType = 1;
   p->PaletteIndex = 0;

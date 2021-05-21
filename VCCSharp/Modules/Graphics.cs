@@ -43,9 +43,12 @@ namespace VCCSharp.Modules
         byte ColorInvert { get; set; }
         byte ExtendedText { get; set; }
         byte GraphicsMode { get; set; }
-        byte Hoffset{ get; set; }
-        byte HorzCenter{ get; set; }
-        byte HorzOffsetReg{ get; set; }
+        byte Hoffset { get; set; }
+        byte HorzCenter { get; set; }
+        byte HorzOffsetReg { get; set; }
+        byte LinesperRow { get; set; }
+        byte LinesperScreen { get; set; }
+        byte LowerCase { get; set; }
     }
 
     public class Graphics : IGraphics
@@ -99,12 +102,16 @@ namespace VCCSharp.Modules
         public byte CC3Vmode { get; set; }
         public byte CC3Vres { get; set; }
         public byte ColorInvert { get; set; } = 1;
-        public byte CompatMode{ get; set; }
+        public byte CompatMode { get; set; }
         public byte ExtendedText { get; set; } = 1;
         public byte GraphicsMode { get; set; }
-        public byte Hoffset{ get; set; }
-        public byte HorzCenter{ get; set; }
-        public byte HorzOffsetReg{ get; set; }
+        public byte Hoffset { get; set; }
+        public byte HorzCenter { get; set; }
+        public byte HorzOffsetReg { get; set; }
+        public byte InvertAll { get; set; }
+        public byte LinesperRow { get; set; } = 1;
+        public byte LinesperScreen { get; set; }
+        public byte LowerCase { get; set; }
 
         public Graphics(IModules modules)
         {
@@ -131,8 +138,8 @@ namespace VCCSharp.Modules
                 graphicsState->StartOfVidRam = 0;
                 graphicsState->NewStartofVidram = 0;
                 GraphicsMode = 0;
-                graphicsState->LowerCase = 0;
-                graphicsState->InvertAll = 0;
+                LowerCase = 0;
+                InvertAll = 0;
                 ExtendedText = 1;
                 HorzOffsetReg = 0;
                 graphicsState->TagY = 0;
@@ -428,16 +435,11 @@ namespace VCCSharp.Modules
 
         public void SetGimeHorizontalOffset(byte data)
         {
-            unsafe
+            if (HorzOffsetReg != data)
             {
-                GraphicsState* instance = GetGraphicsState();
-
-                if (HorzOffsetReg != data)
-                {
-                    Hoffset = (byte)(data << 1);
-                    HorzOffsetReg = data;
-                    SetupDisplay();
-                }
+                Hoffset = (byte)(data << 1);
+                HorzOffsetReg = data;
+                SetupDisplay();
             }
         }
 
@@ -513,9 +515,9 @@ namespace VCCSharp.Modules
                         instance->NewStartofVidram = (uint)(instance->VerticalOffsetRegister * 8);
                         GraphicsMode = (byte)((CC3Vmode & 128) >> 7);
                         instance->VresIndex = (byte)((CC3Vres & 96) >> 5);
-                        CoCo3LinesPerRow[7] = instance->LinesperScreen;   // For 1 pixel high modes
+                        CoCo3LinesPerRow[7] = LinesperScreen;   // For 1 pixel high modes
                         Bpp = (byte)(CC3Vres & 3);
-                        instance->LinesperRow = CoCo3LinesPerRow[CC3Vmode & 7];
+                        LinesperRow = CoCo3LinesPerRow[CC3Vmode & 7];
                         BytesPerRow = CoCo3BytesPerRow[(CC3Vres & 28) >> 2];
                         instance->PaletteIndex = 0;
 
@@ -539,7 +541,7 @@ namespace VCCSharp.Modules
                         instance->NewStartofVidram = (uint)((512 * CC2Offset) + (instance->VerticalOffsetRegister & 0xE0FF) * 8);
                         GraphicsMode = (byte)((CC2VDGPiaMode & 16) >> 4); //PIA Set on graphics clear on text
                         instance->VresIndex = 0;
-                        instance->LinesperRow = CoCo2LinesPerRow[CC2VDGMode];
+                        LinesperRow = CoCo2LinesPerRow[CC2VDGMode];
 
                         byte colorSet;
                         byte tmpByte;
@@ -548,7 +550,7 @@ namespace VCCSharp.Modules
                         {
                             colorSet = (byte)(CC2VDGPiaMode & 1);
 
-                            CC3BorderColor = colorSet == 0 ? (byte) 18 : (byte) 63;
+                            CC3BorderColor = colorSet == 0 ? (byte)18 : (byte)63;
 
                             BorderChange = 3;
                             Bpp = CoCo2Bpp[(CC2VDGPiaMode & 15) >> 1];
@@ -560,10 +562,10 @@ namespace VCCSharp.Modules
                         {   //Setup for 32x16 text Mode
                             Bpp = 0;
                             BytesPerRow = 32;
-                            instance->InvertAll = (byte)((CC2VDGPiaMode & 4) >> 2);
-                            instance->LowerCase = (byte)((CC2VDGPiaMode & 2) >> 1);
+                            InvertAll = (byte)((CC2VDGPiaMode & 4) >> 2);
+                            LowerCase = (byte)((CC2VDGPiaMode & 2) >> 1);
                             colorSet = (byte)(CC2VDGPiaMode & 1);
-                            tmpByte = (byte)((colorSet << 1) | instance->InvertAll);
+                            tmpByte = (byte)((colorSet << 1) | InvertAll);
 
                             switch (tmpByte)
                             {
@@ -593,7 +595,7 @@ namespace VCCSharp.Modules
                 }
 
                 //gs->ColorInvert = (gs->CC3Vmode & 32) >> 5;
-                instance->LinesperScreen = instance->Lpf[instance->VresIndex];
+                LinesperScreen = instance->Lpf[instance->VresIndex];
 
                 _modules.CoCo.SetLinesperScreen(instance->VresIndex);
 
