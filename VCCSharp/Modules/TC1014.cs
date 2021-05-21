@@ -45,6 +45,8 @@ namespace VCCSharp.Modules
 
     public class TC1014 : ITC1014
     {
+        private IGraphics _graphics;
+
         #region CC2 Font
 
         private static byte[] ntsc_round_fontdata8x12 =
@@ -445,6 +447,8 @@ namespace VCCSharp.Modules
         public TC1014(IModules modules)
         {
             _modules = modules;
+
+            _graphics = _modules.Graphics;
         }
 
         public unsafe TC1014MmuState* GetTC1014MmuState()
@@ -595,7 +599,7 @@ Could not locate {ROM} in any of these locations:
                     mmuState->Memory[index] = (byte)((index & 1) == 0 ? 0 : 0xFF);
                 }
 
-                _modules.Graphics.SetVidMask(mmuState->VidMask[mmuState->CurrentRamConfig]);
+                _graphics.SetVidMask(mmuState->VidMask[mmuState->CurrentRamConfig]);
 
                 FreeMemory(mmuState->InternalRomBuffer);
                 mmuState->InternalRomBuffer = AllocateMemory(0x8001); //--TODO: Weird that the extra byte is needed here
@@ -752,10 +756,10 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void DrawTopBorder8(EmuState* emuState)
         {
-            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsState* gs = _graphics.GetGraphicsState();
+            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
-            if (_modules.Graphics.BorderChange == 0)
+            if (_graphics.BorderChange == 0)
             {
                 return;
             }
@@ -773,10 +777,10 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void DrawTopBorder16(EmuState* emuState)
         {
-            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsState* gs = _graphics.GetGraphicsState();
+            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
-            if (_modules.Graphics.BorderChange == 0)
+            if (_graphics.BorderChange == 0)
             {
                 return;
             }
@@ -799,10 +803,10 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void DrawTopBorder32(EmuState* emuState)
         {
-            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsState* gs = _graphics.GetGraphicsState();
+            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
-            if (_modules.Graphics.BorderChange == 0)
+            if (_graphics.BorderChange == 0)
             {
                 return;
             }
@@ -820,10 +824,10 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void DrawBottomBorder8(EmuState* emuState)
         {
-            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsState* gs = _graphics.GetGraphicsState();
+            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
-            if (_modules.Graphics.BorderChange == 0)
+            if (_graphics.BorderChange == 0)
             {
                 return;
             }
@@ -841,10 +845,10 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void DrawBottomBorder16(EmuState* emuState)
         {
-            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsState* gs = _graphics.GetGraphicsState();
+            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
-            if (_modules.Graphics.BorderChange == 0)
+            if (_graphics.BorderChange == 0)
             {
                 return;
             }
@@ -867,10 +871,10 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void DrawBottomBorder32(EmuState* emuState)
         {
-            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsState* gs = _graphics.GetGraphicsState();
+            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
-            if (_modules.Graphics.BorderChange == 0)
+            if (_graphics.BorderChange == 0)
             {
                 return;
             }
@@ -888,10 +892,10 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void UpdateScreen8(EmuState* emuState)
         {
-            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsState* gs = _graphics.GetGraphicsState();
+            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
-            if ((gs->HorzCenter != 0) && (_modules.Graphics.BorderChange > 0))
+            if ((gs->HorzCenter != 0) && (_graphics.BorderChange > 0))
             {
                 for (ushort x = 0; x < gs->HorzCenter; x++)
                 {
@@ -922,7 +926,7 @@ Could not locate {ROM} in any of these locations:
                 gs->TagY = (ushort)(emuState->LineCounter);
             }
 
-            uint start = (uint)(gs->StartofVidram + (gs->TagY / gs->LinesperRow) * (gs->VPitch * gs->ExtendedText));
+            uint start = (uint)(gs->StartofVidram + (gs->TagY / gs->LinesperRow) * (gs->VPitch * _graphics.ExtendedText));
             uint yStride = (uint)((((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch) + (gs->HorzCenter) - 1);
 
             SwitchMasterMode8(emuState, gs->MasterMode, start, yStride);
@@ -930,10 +934,10 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void UpdateScreen16(EmuState* emuState)
         {
-            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsState* gs = _graphics.GetGraphicsState();
+            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
-            if ((gs->HorzCenter != 0) && (_modules.Graphics.BorderChange > 0))
+            if ((gs->HorzCenter != 0) && (_graphics.BorderChange > 0))
             {
                 for (ushort x = 0; x < gs->HorzCenter; x++)
                 {
@@ -964,7 +968,7 @@ Could not locate {ROM} in any of these locations:
                 gs->TagY = (ushort)(emuState->LineCounter);
             }
 
-            uint start = (uint)(gs->StartofVidram + (gs->TagY / gs->LinesperRow) * (gs->VPitch * gs->ExtendedText));
+            uint start = (uint)(gs->StartofVidram + (gs->TagY / gs->LinesperRow) * (gs->VPitch * _graphics.ExtendedText));
             uint yStride = (uint)((((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch) + (gs->HorzCenter * 1) - 1);
 
             SwitchMasterMode16(emuState, gs->MasterMode, start, yStride);
@@ -977,15 +981,15 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void UpdateScreen32(EmuState* emuState)
         {
-            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsState* gs = _graphics.GetGraphicsState();
+            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
             uint* szSurface32 = graphicsSurfaces.pSurface32;
 
             ushort y = (ushort)emuState->LineCounter;
             long Xpitch = emuState->SurfacePitch;
 
-            if ((gs->HorzCenter != 0) && (_modules.Graphics.BorderChange > 0))
+            if ((gs->HorzCenter != 0) && (_graphics.BorderChange > 0))
             {
                 for (ushort x = 0; x < gs->HorzCenter; x++)
                 {
@@ -1016,7 +1020,7 @@ Could not locate {ROM} in any of these locations:
                 gs->TagY = y;
             }
 
-            uint start = (uint)(gs->StartofVidram + (gs->TagY / gs->LinesperRow) * (gs->VPitch * gs->ExtendedText));
+            uint start = (uint)(gs->StartofVidram + (gs->TagY / gs->LinesperRow) * (gs->VPitch * _graphics.ExtendedText));
             uint yStride = (uint)((((y + gs->VertCenter) * 2) * Xpitch) + (gs->HorzCenter * 1) - 1);
 
             SwitchMasterMode32(emuState, gs->MasterMode, start, yStride);
@@ -1042,9 +1046,9 @@ Could not locate {ROM} in any of these locations:
             byte carry1 = 1, carry2 = 0;
             byte color = 0;
 
-            GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
-            GraphicsColors graphicsColors = _modules.Graphics.GetGraphicsColors();
+            GraphicsState* gs = _graphics.GetGraphicsState();
+            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
+            GraphicsColors graphicsColors = _graphics.GetGraphicsColors();
             TC1014MmuState* mmu = GetTC1014MmuState();
 
             byte* ramBuffer = mmu->Memory;
@@ -1067,12 +1071,12 @@ Could not locate {ROM} in any of these locations:
                         start = (uint)(gs->StartofVidram + (gs->TagY / gs->LinesperRow) * (gs->VPitch)); //Fix for Horizontal Offset Register in text mode.
                     }
 
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow * gs->ExtendedText; beam += gs->ExtendedText)
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow * _graphics.ExtendedText; beam += _graphics.ExtendedText)
                     {
                         character = ramBuffer[start + (byte)(beam + gs->Hoffset)];
                         pixel = cc3Fontdata8x12[character * 12 + (y % gs->LinesperRow)];
 
-                        if (gs->ExtendedText == 2)
+                        if (_graphics.ExtendedText == 2)
                         {
                             attributes = ramBuffer[start + (byte)(beam + gs->Hoffset) + 1];
 
@@ -1081,7 +1085,7 @@ Could not locate {ROM} in any of these locations:
                                 pixel = 255;
                             }
 
-                            if (_modules.Graphics.CheckState(attributes))
+                            if (_graphics.CheckState(attributes))
                             {
                                 pixel = 0;
                             }
@@ -1123,12 +1127,12 @@ Could not locate {ROM} in any of these locations:
                 case 2: //Width 40
                     attributes = 0;
 
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow * gs->ExtendedText; beam += gs->ExtendedText)
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow * _graphics.ExtendedText; beam += _graphics.ExtendedText)
                     {
                         character = ramBuffer[start + (byte)(beam + gs->Hoffset)];
                         pixel = cc3Fontdata8x12[character * 12 + (y % gs->LinesperRow)];
 
-                        if (gs->ExtendedText == 2)
+                        if (_graphics.ExtendedText == 2)
                         {
                             attributes = ramBuffer[start + (byte)(beam + gs->Hoffset) + 1];
 
@@ -1137,7 +1141,7 @@ Could not locate {ROM} in any of these locations:
                                 pixel = 255;
                             }
 
-                            if (_modules.Graphics.CheckState(attributes))
+                            if (_graphics.CheckState(attributes))
                             {
                                 pixel = 0;
                             }
@@ -1254,7 +1258,7 @@ Could not locate {ROM} in any of these locations:
                 case 63:
                     return; //TODO: Why?
 
-                //for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow * gs->ExtendedText; beam += gs->ExtendedText)
+                //for (ushort beam = 0; beam < _graphics.BytesPerRow * gs->ExtendedText; beam += gs->ExtendedText)
                 //{
                 //    character = ramBuffer[start + (byte)(beam + gs->Hoffset)];
 
@@ -1274,7 +1278,7 @@ Could not locate {ROM} in any of these locations:
                 //        pixel = 255;
                 //    }
 
-                //    if (_modules.Graphics.CheckState(attributes))
+                //    if (_graphics.CheckState(attributes))
                 //    {
                 //        pixel = 0;
                 //    }
@@ -1361,7 +1365,7 @@ Could not locate {ROM} in any of these locations:
                 case 125:
                 case 126:
                 case 127:
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam++)
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam++)
                     {
                         character = ramBuffer[start + (byte)(beam + gs->Hoffset)];
 
@@ -1442,7 +1446,7 @@ Could not locate {ROM} in any of these locations:
                 #region case 128 + 0 //Bpp=0 Sr=0 1BPP Stretch=1
 
                 case 128 + 0:
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //1bbp Stretch=1
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=1
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
@@ -1493,7 +1497,7 @@ Could not locate {ROM} in any of these locations:
 
                 case 128 + 1: //Bpp=0 Sr=1 1BPP Stretch=2
                 case 128 + 2:   //Bpp=0 Sr=2 
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //1bbp Stretch=2
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=2
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
 
@@ -1579,7 +1583,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 4: //Bpp=0 Sr=4
                 case 128 + 5: //Bpp=0 Sr=5
                 case 128 + 6: //Bpp=0 Sr=6
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //1bbp Stretch=4
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=4
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
 
@@ -1733,7 +1737,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 12: //Bpp=0 Sr=12
                 case 128 + 13: //Bpp=0 Sr=13
                 case 128 + 14: //Bpp=0 Sr=14
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //1bbp Stretch=8
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=8
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
@@ -2008,7 +2012,7 @@ Could not locate {ROM} in any of these locations:
 
                 case 128 + 15: //Bpp=0 Sr=15 1BPP Stretch=16
                 case 128 + 16: //BPP=1 Sr=0  2BPP Stretch=1
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //2bbp Stretch=1
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=1
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
@@ -2043,7 +2047,7 @@ Could not locate {ROM} in any of these locations:
 
                 case 128 + 17: //Bpp=1 Sr=1  2BPP Stretch=2
                 case 128 + 18: //Bpp=1 Sr=2
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //2bbp Stretch=2
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=2
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
@@ -2097,7 +2101,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 20: //Bpp=1 Sr=4
                 case 128 + 21: //Bpp=1 Sr=5
                 case 128 + 22: //Bpp=1 Sr=6
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //2bbp Stretch=4
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=4
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
@@ -2186,7 +2190,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 28: //Bpp=1 Sr=12 
                 case 128 + 29: //Bpp=1 Sr=13 
                 case 128 + 30: //Bpp=1 Sr=14
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //2bbp Stretch=8
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=8
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
@@ -2332,7 +2336,7 @@ Could not locate {ROM} in any of these locations:
                 #region case 128 + 31 //Bpp=1 Sr=15 2BPP Stretch=16 
 
                 case 128 + 31: //Bpp=1 Sr=15 2BPP Stretch=16 
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //2bbp Stretch=16
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=16
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
@@ -2606,7 +2610,7 @@ Could not locate {ROM} in any of these locations:
                 #region case 128 + 32 //Bpp=2 Sr=0 4BPP Stretch=1
 
                 case 128 + 32: //Bpp=2 Sr=0 4BPP Stretch=1
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //4bbp Stretch=1
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //4bbp Stretch=1
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
@@ -2633,7 +2637,7 @@ Could not locate {ROM} in any of these locations:
 
                 case 128 + 33: //Bpp=2 Sr=1 4BPP Stretch=2 
                 case 128 + 34: //Bpp=2 Sr=2
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //4bbp Stretch=2
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //4bbp Stretch=2
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
@@ -2670,7 +2674,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 36: //Bpp=2 Sr=4 
                 case 128 + 37: //Bpp=2 Sr=5 
                 case 128 + 38: //Bpp=2 Sr=6 
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //4bbp Stretch=4
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //4bbp Stretch=4
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
@@ -2727,7 +2731,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 44: //Bpp=2 Sr=12 
                 case 128 + 45: //Bpp=2 Sr=13 
                 case 128 + 46: //Bpp=2 Sr=14 
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //4bbp Stretch=8
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //4bbp Stretch=8
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
@@ -2809,7 +2813,7 @@ Could not locate {ROM} in any of these locations:
                 #region case 128 + 47: //Bpp=2 Sr=15 4BPP Stretch=16
 
                 case 128 + 47: //Bpp=2 Sr=15 4BPP Stretch=16
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //4bbp Stretch=16
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //4bbp Stretch=16
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
@@ -2977,7 +2981,7 @@ Could not locate {ROM} in any of these locations:
                 #region case 192 + 0: //Bpp=0 Sr=0 1BPP Stretch=1
 
                 case 192 + 0: //Bpp=0 Sr=0 1BPP Stretch=1
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //1bbp Stretch=1
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=1
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (1 & (widePixel >> 7))];
@@ -3028,7 +3032,7 @@ Could not locate {ROM} in any of these locations:
 
                 case 192 + 1: //Bpp=0 Sr=1 1BPP Stretch=2
                 case 192 + 2:   //Bpp=0 Sr=2 
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //1bbp Stretch=2
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=2
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
 
@@ -3058,18 +3062,18 @@ Could not locate {ROM} in any of these locations:
 
                                     case 3:
                                         color = 3;
-                                        szSurface32[yStride - 1] = graphicsColors.Afacts32[gs->ColorInvert * 4 + 3];
+                                        szSurface32[yStride - 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
 
                                         if (emuState->ScanLines == Define.FALSE)
                                         {
-                                            szSurface32[yStride + Xpitch - 1] = graphicsColors.Afacts32[gs->ColorInvert * 4 + 3];
+                                            szSurface32[yStride + Xpitch - 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
                                         }
 
-                                        szSurface32[yStride] = graphicsColors.Afacts32[gs->ColorInvert * 4 + 3];
+                                        szSurface32[yStride] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
 
                                         if (emuState->ScanLines == Define.FALSE)
                                         {
-                                            szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[gs->ColorInvert * 4 + 3];
+                                            szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
                                         }
 
                                         break;
@@ -3079,18 +3083,18 @@ Could not locate {ROM} in any of these locations:
                                         break;
                                 }
 
-                                szSurface32[yStride += 1] = graphicsColors.Afacts32[gs->ColorInvert * 4 + color];
+                                szSurface32[yStride += 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
 
                                 if (emuState->ScanLines == Define.FALSE)
                                 {
-                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[gs->ColorInvert * 4 + color];
+                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
                                 }
 
-                                szSurface32[yStride += 1] = graphicsColors.Afacts32[gs->ColorInvert * 4 + color];
+                                szSurface32[yStride += 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
 
                                 if (emuState->ScanLines == Define.FALSE)
                                 {
-                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[gs->ColorInvert * 4 + color];
+                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
                                 }
 
                                 carry2 = carry1;
@@ -3120,18 +3124,18 @@ Could not locate {ROM} in any of these locations:
 
                                     case 3:
                                         color = 3;
-                                        szSurface32[yStride - 1] = graphicsColors.Afacts32[gs->ColorInvert * 4 + 3];
+                                        szSurface32[yStride - 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
 
                                         if (emuState->ScanLines == Define.FALSE)
                                         {
-                                            szSurface32[yStride + Xpitch - 1] = graphicsColors.Afacts32[gs->ColorInvert * 4 + 3];
+                                            szSurface32[yStride + Xpitch - 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
                                         }
 
-                                        szSurface32[yStride] = graphicsColors.Afacts32[gs->ColorInvert * 4 + 3];
+                                        szSurface32[yStride] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
 
                                         if (emuState->ScanLines == Define.FALSE)
                                         {
-                                            szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[gs->ColorInvert * 4 + 3];
+                                            szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
                                         }
 
                                         break;
@@ -3141,18 +3145,18 @@ Could not locate {ROM} in any of these locations:
                                         break;
                                 }
 
-                                szSurface32[yStride += 1] = graphicsColors.Afacts32[gs->ColorInvert * 4 + color];
+                                szSurface32[yStride += 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
 
                                 if (emuState->ScanLines == Define.FALSE)
                                 {
-                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[gs->ColorInvert * 4 + color];
+                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
                                 }
 
-                                szSurface32[yStride += 1] = graphicsColors.Afacts32[gs->ColorInvert * 4 + color];
+                                szSurface32[yStride += 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
 
                                 if (emuState->ScanLines == Define.FALSE)
                                 {
-                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[gs->ColorInvert * 4 + color];
+                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
                                 }
 
                                 carry2 = carry1;
@@ -3244,7 +3248,7 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 4: //Bpp=0 Sr=4
                 case 192 + 5: //Bpp=0 Sr=5
                 case 192 + 6: //Bpp=0 Sr=6
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //1bbp Stretch=4
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=4
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
 
@@ -3398,7 +3402,7 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 12: //Bpp=0 Sr=12
                 case 192 + 13: //Bpp=0 Sr=13
                 case 192 + 14: //Bpp=0 Sr=14
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //1bbp Stretch=8
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=8
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (1 & (widePixel >> 7))];
@@ -3673,7 +3677,7 @@ Could not locate {ROM} in any of these locations:
 
                 case 192 + 15: //Bpp=0 Sr=15 1BPP Stretch=16
                 case 192 + 16: //BPP=1 Sr=0  2BPP Stretch=1
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //2bbp Stretch=1
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=1
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];
@@ -3708,7 +3712,7 @@ Could not locate {ROM} in any of these locations:
 
                 case 192 + 17: //Bpp=1 Sr=1  2BPP Stretch=2
                 case 192 + 18: //Bpp=1 Sr=2
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //2bbp Stretch=2
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=2
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];
@@ -3762,7 +3766,7 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 20: //Bpp=1 Sr=4
                 case 192 + 21: //Bpp=1 Sr=5
                 case 192 + 22: //Bpp=1 Sr=6
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //2bbp Stretch=4
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=4
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];
@@ -3851,7 +3855,7 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 28: //Bpp=1 Sr=12 
                 case 192 + 29: //Bpp=1 Sr=13 
                 case 192 + 30: //Bpp=1 Sr=14
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //2bbp Stretch=8
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=8
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];
@@ -3998,7 +4002,7 @@ Could not locate {ROM} in any of these locations:
                 #region case 192 + 31: //Bpp=1 Sr=15 2BPP Stretch=16 
 
                 case 192 + 31: //Bpp=1 Sr=15 2BPP Stretch=16 
-                    for (ushort beam = 0; beam < _modules.Graphics.BytesPerRow; beam += 2) //2bbp Stretch=16
+                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=16
                     {
                         widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];
@@ -4348,7 +4352,7 @@ Could not locate {ROM} in any of these locations:
                         registersState->Dis_Offset |= mask;
                     }
 
-                    _modules.Graphics.SetGimeVdgOffset(registersState->Dis_Offset);
+                    _graphics.SetGimeVdgOffset(registersState->Dis_Offset);
                 }
 
                 if ((port >= 0xC0) && (port <= 0xC5))	//VDG Mode
@@ -4363,7 +4367,7 @@ Could not locate {ROM} in any of these locations:
                         registersState->VDG_Mode |= mask;
                     }
 
-                    _modules.Graphics.SetGimeVdgMode(registersState->VDG_Mode);
+                    _graphics.SetGimeVdgMode(registersState->VDG_Mode);
                 }
             }
 
@@ -4457,15 +4461,15 @@ Could not locate {ROM} in any of these locations:
                         break;
 
                     case 0x98:
-                        _modules.Graphics.SetGimeVmode(data);
+                        _graphics.SetGimeVmode(data);
                         break;
 
                     case 0x99:
-                        _modules.Graphics.SetGimeVres(data);
+                        _graphics.SetGimeVres(data);
                         break;
 
                     case 0x9A:
-                        _modules.Graphics.SetGimeBorderColor(data);
+                        _graphics.SetGimeBorderColor(data);
                         break;
 
                     case 0x9B:
@@ -4477,11 +4481,11 @@ Could not locate {ROM} in any of these locations:
 
                     case 0x9D:
                     case 0x9E:
-                        _modules.Graphics.SetVerticalOffsetRegister((ushort)((registersState->GimeRegisters[0x9D] << 8) | registersState->GimeRegisters[0x9E]));
+                        _graphics.SetVerticalOffsetRegister((ushort)((registersState->GimeRegisters[0x9D] << 8) | registersState->GimeRegisters[0x9E]));
                         break;
 
                     case 0x9F:
-                        _modules.Graphics.SetGimeHorizontalOffset(data);
+                        _graphics.SetGimeHorizontalOffset(data);
                         break;
 
                     case 0xA0:
@@ -4519,7 +4523,7 @@ Could not locate {ROM} in any of these locations:
                     case 0xBD:
                     case 0xBE:
                     case 0xBF:
-                        _modules.Graphics.SetGimePalette((byte)(port - 0xB0), (byte)(data & 63));
+                        _graphics.SetGimePalette((byte)(port - 0xB0), (byte)(data & 63));
                         break;
                 }
             }
@@ -4531,7 +4535,7 @@ Could not locate {ROM} in any of these locations:
             {
                 TC1014RegistersState* registersState = GetTC1014RegistersState();
 
-                _modules.Graphics.SetCompatMode((byte)((data & 128) == 0 ? 0 : 1));
+                _graphics.SetCompatMode((byte)((data & 128) == 0 ? 0 : 1));
                 SetMmuEnabled((byte)((data & 64) == 0 ? 0 : 1)); //MMUEN
                 SetRomMap((byte)(data & 3)); //MC0-MC1
                 SetVectors((byte)(data & 8)); //MC3
@@ -4784,13 +4788,13 @@ Could not locate {ROM} in any of these locations:
                         return;
 
                     case 2:	//2048K
-                        _modules.Graphics.SetVideoBank((byte)(data & 3));
+                        _graphics.SetVideoBank((byte)(data & 3));
                         SetMmuPrefix(0);
 
                         return;
 
                     case 3:	//8192K	//No Can 3 
-                        _modules.Graphics.SetVideoBank((byte)(data & 0x0F));
+                        _graphics.SetVideoBank((byte)(data & 0x0F));
                         SetMmuPrefix((byte)((data & 0x30) >> 4));
 
                         return;

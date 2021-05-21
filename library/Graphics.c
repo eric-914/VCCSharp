@@ -10,9 +10,6 @@ GraphicsState* InitializeInstance(GraphicsState*);
 static GraphicsState* instance = InitializeInstance(new GraphicsState());
 
 GraphicsState* InitializeInstance(GraphicsState* p) {
-  p->ColorInvert = 1;
-  p->CompatMode = 0;
-  p->ExtendedText = 1;
   p->GraphicsMode = 0;
   p->Hoffset = 0;
   p->HorzCenter = 0;

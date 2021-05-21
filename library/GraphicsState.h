@@ -2,9 +2,6 @@
 
 typedef struct
 {
-  unsigned char ColorInvert;
-  unsigned char CompatMode;
-  unsigned char ExtendedText;
   unsigned char GraphicsMode;
   unsigned char Hoffset;
   unsigned char HorzCenter;

@@ -2,9 +2,6 @@
 {
     public struct GraphicsState
     {
-        public byte ColorInvert;
-        public byte CompatMode;
-        public byte ExtendedText;
         public byte GraphicsMode;
         public byte Hoffset;
         public byte HorzCenter;

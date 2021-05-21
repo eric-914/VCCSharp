@@ -40,6 +40,8 @@ namespace VCCSharp.Modules
 
         byte BorderChange { get; set; }
         byte BytesPerRow { get; set; }
+        byte ColorInvert { get; set; }
+        byte ExtendedText { get; set; }
     }
 
     public class Graphics : IGraphics
@@ -92,6 +94,9 @@ namespace VCCSharp.Modules
         public byte CC3BorderColor { get; set; }
         public byte CC3Vmode { get; set; }
         public byte CC3Vres { get; set; }
+        public byte ColorInvert { get; set; } = 1;
+        public byte CompatMode{ get; set; }
+        public byte ExtendedText { get; set; } = 1;
 
         public Graphics(IModules modules)
         {
@@ -120,7 +125,7 @@ namespace VCCSharp.Modules
                 graphicsState->GraphicsMode = 0;
                 graphicsState->LowerCase = 0;
                 graphicsState->InvertAll = 0;
-                graphicsState->ExtendedText = 1;
+                ExtendedText = 1;
                 graphicsState->HorzOffsetReg = 0;
                 graphicsState->TagY = 0;
                 graphicsState->DistoOffset = 0;
@@ -156,12 +161,7 @@ namespace VCCSharp.Modules
 
         public void FlipArtifacts()
         {
-            unsafe
-            {
-                GraphicsState* graphicsState = GetGraphicsState();
-
-                graphicsState->ColorInvert = graphicsState->ColorInvert == Define.FALSE ? Define.TRUE : Define.FALSE;
-            }
+            ColorInvert = ColorInvert == Define.FALSE ? Define.TRUE : Define.FALSE;
         }
 
         //TODO: ScanLines never really worked right to begin with...
@@ -328,16 +328,11 @@ namespace VCCSharp.Modules
 
         public void SetGimeBorderColor(byte data)
         {
-            unsafe
+            if (CC3BorderColor != (data & 63))
             {
-                GetGraphicsState();
-
-                if (CC3BorderColor != (data & 63))
-                {
-                    CC3BorderColor = (byte)(data & 63);
-                    SetupDisplay();
-                    BorderChange = 3;
-                }
+                CC3BorderColor = (byte)(data & 63);
+                SetupDisplay();
+                BorderChange = 3;
             }
         }
 
@@ -399,16 +394,11 @@ namespace VCCSharp.Modules
 
         public void SetGimeVres(byte vres)
         {
-            unsafe
+            if (CC3Vres != vres)
             {
-                GetGraphicsState();
-
-                if (CC3Vres != vres)
-                {
-                    CC3Vres = vres;
-                    SetupDisplay();
-                    BorderChange = 3;
-                }
+                CC3Vres = vres;
+                SetupDisplay();
+                BorderChange = 3;
             }
         }
 
@@ -465,16 +455,11 @@ namespace VCCSharp.Modules
 
         public void SetCompatMode(byte mode)
         {
-            unsafe
+            if (CompatMode != mode)
             {
-                GraphicsState* instance = GetGraphicsState();
-
-                if (instance->CompatMode != mode)
-                {
-                    instance->CompatMode = mode;
-                    SetupDisplay();
-                    BorderChange = 3;
-                }
+                CompatMode = mode;
+                SetupDisplay();
+                BorderChange = 3;
             }
         }
 
@@ -512,9 +497,9 @@ namespace VCCSharp.Modules
             {
                 GraphicsState* instance = GetGraphicsState();
 
-                instance->ExtendedText = 1;
+                ExtendedText = 1;
 
-                switch (instance->CompatMode)
+                switch (CompatMode)
                 {
                     case 0:     //Color Computer 3 Mode
                         instance->NewStartofVidram = (uint)(instance->VerticalOffsetRegister * 8);
@@ -530,7 +515,7 @@ namespace VCCSharp.Modules
                         {
                             if ((CC3Vres & 1) != 0)
                             {
-                                instance->ExtendedText = 2;
+                                ExtendedText = 2;
                             }
 
                             Bpp = 0;
@@ -550,6 +535,7 @@ namespace VCCSharp.Modules
 
                         byte colorSet;
                         byte tmpByte;
+
                         if (instance->GraphicsMode != 0)
                         {
                             colorSet = (byte)(CC2VDGPiaMode & 1);
@@ -639,7 +625,7 @@ namespace VCCSharp.Modules
                 instance->BorderColor32 = _colors.PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][instance->CC3BorderColor & 63];
 
                 instance->NewStartofVidram = (instance->NewStartofVidram & instance->VidMask) + instance->DistoOffset; //Dist Offset for 2M configuration
-                instance->MasterMode = (byte)((instance->GraphicsMode << 7) | (instance->CompatMode << 6) | ((Bpp & 3) << 4) | (instance->Stretch & 15));
+                instance->MasterMode = (byte)((instance->GraphicsMode << 7) | (CompatMode << 6) | ((Bpp & 3) << 4) | (instance->Stretch & 15));
             }
         }
     }
