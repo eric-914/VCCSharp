@@ -42,6 +42,10 @@ namespace VCCSharp.Modules
         byte BytesPerRow { get; set; }
         byte ColorInvert { get; set; }
         byte ExtendedText { get; set; }
+        byte GraphicsMode { get; set; }
+        byte Hoffset{ get; set; }
+        byte HorzCenter{ get; set; }
+        byte HorzOffsetReg{ get; set; }
     }
 
     public class Graphics : IGraphics
@@ -97,6 +101,10 @@ namespace VCCSharp.Modules
         public byte ColorInvert { get; set; } = 1;
         public byte CompatMode{ get; set; }
         public byte ExtendedText { get; set; } = 1;
+        public byte GraphicsMode { get; set; }
+        public byte Hoffset{ get; set; }
+        public byte HorzCenter{ get; set; }
+        public byte HorzOffsetReg{ get; set; }
 
         public Graphics(IModules modules)
         {
@@ -120,18 +128,18 @@ namespace VCCSharp.Modules
 
                 CC3Vmode = 0;
                 CC3Vres = 0;
-                graphicsState->StartofVidram = 0;
+                graphicsState->StartOfVidRam = 0;
                 graphicsState->NewStartofVidram = 0;
-                graphicsState->GraphicsMode = 0;
+                GraphicsMode = 0;
                 graphicsState->LowerCase = 0;
                 graphicsState->InvertAll = 0;
                 ExtendedText = 1;
-                graphicsState->HorzOffsetReg = 0;
+                HorzOffsetReg = 0;
                 graphicsState->TagY = 0;
                 graphicsState->DistoOffset = 0;
                 BorderChange = 3;
                 CC2Offset = 0;
-                graphicsState->Hoffset = 0;
+                Hoffset = 0;
                 graphicsState->VerticalOffsetRegister = 0;
             }
         }
@@ -424,10 +432,10 @@ namespace VCCSharp.Modules
             {
                 GraphicsState* instance = GetGraphicsState();
 
-                if (instance->HorzOffsetReg != data)
+                if (HorzOffsetReg != data)
                 {
-                    instance->Hoffset = (byte)(data << 1);
-                    instance->HorzOffsetReg = data;
+                    Hoffset = (byte)(data << 1);
+                    HorzOffsetReg = data;
                     SetupDisplay();
                 }
             }
@@ -503,7 +511,7 @@ namespace VCCSharp.Modules
                 {
                     case 0:     //Color Computer 3 Mode
                         instance->NewStartofVidram = (uint)(instance->VerticalOffsetRegister * 8);
-                        instance->GraphicsMode = (byte)((CC3Vmode & 128) >> 7);
+                        GraphicsMode = (byte)((CC3Vmode & 128) >> 7);
                         instance->VresIndex = (byte)((CC3Vres & 96) >> 5);
                         CoCo3LinesPerRow[7] = instance->LinesperScreen;   // For 1 pixel high modes
                         Bpp = (byte)(CC3Vres & 3);
@@ -511,7 +519,7 @@ namespace VCCSharp.Modules
                         BytesPerRow = CoCo3BytesPerRow[(CC3Vres & 28) >> 2];
                         instance->PaletteIndex = 0;
 
-                        if (instance->GraphicsMode != 0)
+                        if (GraphicsMode != 0)
                         {
                             if ((CC3Vres & 1) != 0)
                             {
@@ -529,25 +537,18 @@ namespace VCCSharp.Modules
                         CC3BorderColor = 0;   //Black for text modes
                         BorderChange = 3;
                         instance->NewStartofVidram = (uint)((512 * CC2Offset) + (instance->VerticalOffsetRegister & 0xE0FF) * 8);
-                        instance->GraphicsMode = (byte)((CC2VDGPiaMode & 16) >> 4); //PIA Set on graphics clear on text
+                        GraphicsMode = (byte)((CC2VDGPiaMode & 16) >> 4); //PIA Set on graphics clear on text
                         instance->VresIndex = 0;
                         instance->LinesperRow = CoCo2LinesPerRow[CC2VDGMode];
 
                         byte colorSet;
                         byte tmpByte;
 
-                        if (instance->GraphicsMode != 0)
+                        if (GraphicsMode != 0)
                         {
                             colorSet = (byte)(CC2VDGPiaMode & 1);
 
-                            if (colorSet == 0)
-                            {
-                                CC3BorderColor = 18; //18 Bright Green
-                            }
-                            else
-                            {
-                                CC3BorderColor = 63; //63 White 
-                            }
+                            CC3BorderColor = colorSet == 0 ? (byte) 18 : (byte) 63;
 
                             BorderChange = 3;
                             Bpp = CoCo2Bpp[(CC2VDGPiaMode & 15) >> 1];
@@ -602,17 +603,17 @@ namespace VCCSharp.Modules
                 if ((instance->PixelsperLine % 40) != 0)
                 {
                     instance->Stretch = (byte)((512 / instance->PixelsperLine) - 1);
-                    instance->HorzCenter = 64;
+                    HorzCenter = 64;
                 }
                 else
                 {
                     instance->Stretch = (byte)((640 / instance->PixelsperLine) - 1);
-                    instance->HorzCenter = 0;
+                    HorzCenter = 0;
                 }
 
                 instance->VPitch = BytesPerRow;
 
-                if ((instance->HorzOffsetReg & 128) != 0)
+                if ((HorzOffsetReg & 128) != 0)
                 {
                     instance->VPitch = 256;
                 }
@@ -625,7 +626,7 @@ namespace VCCSharp.Modules
                 instance->BorderColor32 = _colors.PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][instance->CC3BorderColor & 63];
 
                 instance->NewStartofVidram = (instance->NewStartofVidram & instance->VidMask) + instance->DistoOffset; //Dist Offset for 2M configuration
-                instance->MasterMode = (byte)((instance->GraphicsMode << 7) | (CompatMode << 6) | ((Bpp & 3) << 4) | (instance->Stretch & 15));
+                instance->MasterMode = (byte)((GraphicsMode << 7) | (CompatMode << 6) | ((Bpp & 3) << 4) | (instance->Stretch & 15));
             }
         }
     }

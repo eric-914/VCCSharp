@@ -57,10 +57,12 @@ namespace VCCSharp.Modules
         private string _clipboardText;
 
         private readonly IModules _modules;
+        private readonly IGraphics _graphics;
 
         public Clipboard(IModules modules)
         {
             _modules = modules;
+            _graphics = _modules.Graphics;
         }
 
         public unsafe ClipboardState* GetClipboardState()
@@ -114,9 +116,7 @@ namespace VCCSharp.Modules
             {
                 ClipboardState* clipboardState = GetClipboardState();
 
-                GraphicsState* graphicsState = _modules.Graphics.GetGraphicsState();
-
-                int graphicsMode = graphicsState->GraphicsMode;
+                int graphicsMode = _graphics.GraphicsMode;
 
                 if (graphicsMode != 0)
                 {
@@ -590,11 +590,11 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                GraphicsState* graphicsState = _modules.Graphics.GetGraphicsState();
+                GraphicsState* graphicsState = _graphics.GetGraphicsState();
 
-                byte bytesPerRow = _modules.Graphics.BytesPerRow;
-                byte graphicsMode = graphicsState->GraphicsMode;
-                uint startOfVidRam = graphicsState->StartofVidram;
+                byte bytesPerRow = _graphics.BytesPerRow;
+                byte graphicsMode = _graphics.GraphicsMode;
+                uint startOfVidRam = graphicsState->StartOfVidRam;
 
                 if (graphicsMode != 0)
                 {

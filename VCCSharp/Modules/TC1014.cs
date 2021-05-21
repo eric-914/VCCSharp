@@ -895,9 +895,9 @@ Could not locate {ROM} in any of these locations:
             GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
-            if ((gs->HorzCenter != 0) && (_graphics.BorderChange > 0))
+            if ((_graphics.HorzCenter != 0) && (_graphics.BorderChange > 0))
             {
-                for (ushort x = 0; x < gs->HorzCenter; x++)
+                for (ushort x = 0; x < _graphics.HorzCenter; x++)
                 {
                     graphicsSurfaces.pSurface8[x + (((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch)] = gs->BorderColor8;
 
@@ -906,11 +906,11 @@ Could not locate {ROM} in any of these locations:
                         graphicsSurfaces.pSurface8[x + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor8;
                     }
 
-                    graphicsSurfaces.pSurface8[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch)] = gs->BorderColor8;
+                    graphicsSurfaces.pSurface8[x + (gs->PixelsperLine * (gs->Stretch + 1)) + _graphics.HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch)] = gs->BorderColor8;
 
                     if (emuState->ScanLines == Define.FALSE)
                     {
-                        graphicsSurfaces.pSurface8[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor8;
+                        graphicsSurfaces.pSurface8[x + (gs->PixelsperLine * (gs->Stretch + 1)) + _graphics.HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor8;
                     }
                 }
             }
@@ -922,12 +922,12 @@ Could not locate {ROM} in any of these locations:
 
             if (emuState->LineCounter == Define.FALSE)
             {
-                gs->StartofVidram = gs->NewStartofVidram;
+                gs->StartOfVidRam = gs->NewStartofVidram;
                 gs->TagY = (ushort)(emuState->LineCounter);
             }
 
-            uint start = (uint)(gs->StartofVidram + (gs->TagY / gs->LinesperRow) * (gs->VPitch * _graphics.ExtendedText));
-            uint yStride = (uint)((((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch) + (gs->HorzCenter) - 1);
+            uint start = (uint)(gs->StartOfVidRam + (gs->TagY / gs->LinesperRow) * (gs->VPitch * _graphics.ExtendedText));
+            uint yStride = (uint)((((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch) + (_graphics.HorzCenter) - 1);
 
             SwitchMasterMode8(emuState, gs->MasterMode, start, yStride);
         }
@@ -937,9 +937,9 @@ Could not locate {ROM} in any of these locations:
             GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
-            if ((gs->HorzCenter != 0) && (_graphics.BorderChange > 0))
+            if ((_graphics.HorzCenter != 0) && (_graphics.BorderChange > 0))
             {
-                for (ushort x = 0; x < gs->HorzCenter; x++)
+                for (ushort x = 0; x < _graphics.HorzCenter; x++)
                 {
                     graphicsSurfaces.pSurface16[x + (((emuState->LineCounter + gs->VertCenter) * 2) * (emuState->SurfacePitch))] = gs->BorderColor16;
 
@@ -948,11 +948,11 @@ Could not locate {ROM} in any of these locations:
                         graphicsSurfaces.pSurface16[x + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * (emuState->SurfacePitch))] = gs->BorderColor16;
                     }
 
-                    graphicsSurfaces.pSurface16[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2) * (emuState->SurfacePitch))] = gs->BorderColor16;
+                    graphicsSurfaces.pSurface16[x + (gs->PixelsperLine * (gs->Stretch + 1)) + _graphics.HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2) * (emuState->SurfacePitch))] = gs->BorderColor16;
 
                     if (emuState->ScanLines == Define.FALSE)
                     {
-                        graphicsSurfaces.pSurface16[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * (emuState->SurfacePitch))] = gs->BorderColor16;
+                        graphicsSurfaces.pSurface16[x + (gs->PixelsperLine * (gs->Stretch + 1)) + _graphics.HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * (emuState->SurfacePitch))] = gs->BorderColor16;
                     }
                 }
             }
@@ -964,12 +964,12 @@ Could not locate {ROM} in any of these locations:
 
             if (emuState->LineCounter == Define.FALSE)
             {
-                gs->StartofVidram = gs->NewStartofVidram;
+                gs->StartOfVidRam = gs->NewStartofVidram;
                 gs->TagY = (ushort)(emuState->LineCounter);
             }
 
-            uint start = (uint)(gs->StartofVidram + (gs->TagY / gs->LinesperRow) * (gs->VPitch * _graphics.ExtendedText));
-            uint yStride = (uint)((((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch) + (gs->HorzCenter * 1) - 1);
+            uint start = (uint)(gs->StartOfVidRam + (gs->TagY / gs->LinesperRow) * (gs->VPitch * _graphics.ExtendedText));
+            uint yStride = (uint)((((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch) + (_graphics.HorzCenter * 1) - 1);
 
             SwitchMasterMode16(emuState, gs->MasterMode, start, yStride);
         }
@@ -989,9 +989,9 @@ Could not locate {ROM} in any of these locations:
             ushort y = (ushort)emuState->LineCounter;
             long Xpitch = emuState->SurfacePitch;
 
-            if ((gs->HorzCenter != 0) && (_graphics.BorderChange > 0))
+            if ((_graphics.HorzCenter != 0) && (_graphics.BorderChange > 0))
             {
-                for (ushort x = 0; x < gs->HorzCenter; x++)
+                for (ushort x = 0; x < _graphics.HorzCenter; x++)
                 {
                     szSurface32[x + (((y + gs->VertCenter) * 2) * Xpitch)] = gs->BorderColor32;
 
@@ -1000,11 +1000,11 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[x + (((y + gs->VertCenter) * 2 + 1) * Xpitch)] = gs->BorderColor32;
                     }
 
-                    szSurface32[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((y + gs->VertCenter) * 2) * Xpitch)] = gs->BorderColor32;
+                    szSurface32[x + (gs->PixelsperLine * (gs->Stretch + 1)) + _graphics.HorzCenter + (((y + gs->VertCenter) * 2) * Xpitch)] = gs->BorderColor32;
 
                     if (emuState->ScanLines == Define.FALSE)
                     {
-                        szSurface32[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((y + gs->VertCenter) * 2 + 1) * Xpitch)] = gs->BorderColor32;
+                        szSurface32[x + (gs->PixelsperLine * (gs->Stretch + 1)) + _graphics.HorzCenter + (((y + gs->VertCenter) * 2 + 1) * Xpitch)] = gs->BorderColor32;
                     }
                 }
             }
@@ -1016,12 +1016,12 @@ Could not locate {ROM} in any of these locations:
 
             if (y == Define.FALSE)
             {
-                gs->StartofVidram = gs->NewStartofVidram;
+                gs->StartOfVidRam = gs->NewStartofVidram;
                 gs->TagY = y;
             }
 
-            uint start = (uint)(gs->StartofVidram + (gs->TagY / gs->LinesperRow) * (gs->VPitch * _graphics.ExtendedText));
-            uint yStride = (uint)((((y + gs->VertCenter) * 2) * Xpitch) + (gs->HorzCenter * 1) - 1);
+            uint start = (uint)(gs->StartOfVidRam + (gs->TagY / gs->LinesperRow) * (gs->VPitch * _graphics.ExtendedText));
+            uint yStride = (uint)((((y + gs->VertCenter) * 2) * Xpitch) + (_graphics.HorzCenter * 1) - 1);
 
             SwitchMasterMode32(emuState, gs->MasterMode, start, yStride);
         }
@@ -1066,19 +1066,19 @@ Could not locate {ROM} in any of these locations:
                 case 0: //Width 80
                     attributes = 0;
 
-                    if ((gs->HorzOffsetReg & 128) != 0)
+                    if ((_graphics.HorzOffsetReg & 128) != 0)
                     {
-                        start = (uint)(gs->StartofVidram + (gs->TagY / gs->LinesperRow) * (gs->VPitch)); //Fix for Horizontal Offset Register in text mode.
+                        start = (uint)(gs->StartOfVidRam + (gs->TagY / gs->LinesperRow) * (gs->VPitch)); //Fix for Horizontal Offset Register in text mode.
                     }
 
                     for (ushort beam = 0; beam < _graphics.BytesPerRow * _graphics.ExtendedText; beam += _graphics.ExtendedText)
                     {
-                        character = ramBuffer[start + (byte)(beam + gs->Hoffset)];
+                        character = ramBuffer[start + (byte)(beam + _graphics.Hoffset)];
                         pixel = cc3Fontdata8x12[character * 12 + (y % gs->LinesperRow)];
 
                         if (_graphics.ExtendedText == 2)
                         {
-                            attributes = ramBuffer[start + (byte)(beam + gs->Hoffset) + 1];
+                            attributes = ramBuffer[start + (byte)(beam + _graphics.Hoffset) + 1];
 
                             if (((attributes & 64) != 0) && (y % gs->LinesperRow == (gs->LinesperRow - 1)))
                             {   //UnderLine
@@ -1129,12 +1129,12 @@ Could not locate {ROM} in any of these locations:
 
                     for (ushort beam = 0; beam < _graphics.BytesPerRow * _graphics.ExtendedText; beam += _graphics.ExtendedText)
                     {
-                        character = ramBuffer[start + (byte)(beam + gs->Hoffset)];
+                        character = ramBuffer[start + (byte)(beam + _graphics.Hoffset)];
                         pixel = cc3Fontdata8x12[character * 12 + (y % gs->LinesperRow)];
 
                         if (_graphics.ExtendedText == 2)
                         {
-                            attributes = ramBuffer[start + (byte)(beam + gs->Hoffset) + 1];
+                            attributes = ramBuffer[start + (byte)(beam + _graphics.Hoffset) + 1];
 
                             if (((attributes & 64) != 0) && (y % gs->LinesperRow == (gs->LinesperRow - 1)))
                             {   //UnderLine
@@ -1260,11 +1260,11 @@ Could not locate {ROM} in any of these locations:
 
                 //for (ushort beam = 0; beam < _graphics.BytesPerRow * gs->ExtendedText; beam += gs->ExtendedText)
                 //{
-                //    character = ramBuffer[start + (byte)(beam + gs->Hoffset)];
+                //    character = ramBuffer[start + (byte)(beam + _graphics.Hoffset)];
 
                 //    if (gs->ExtendedText == 2)
                 //    {
-                //        attributes = ramBuffer[start + (byte)(beam + gs->Hoffset) + 1];
+                //        attributes = ramBuffer[start + (byte)(beam + _graphics.Hoffset) + 1];
                 //    }
                 //    else
                 //    {
@@ -1367,7 +1367,7 @@ Could not locate {ROM} in any of these locations:
                 case 127:
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam++)
                     {
-                        character = ramBuffer[start + (byte)(beam + gs->Hoffset)];
+                        character = ramBuffer[start + (byte)(beam + _graphics.Hoffset)];
 
                         switch ((character & 192) >> 6)
                         {
@@ -1448,7 +1448,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 0:
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=1
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 5)];
@@ -1499,7 +1499,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 2:   //Bpp=0 Sr=2 
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=2
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
 
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
@@ -1585,7 +1585,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 6: //Bpp=0 Sr=6
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=4
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
 
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
@@ -1739,7 +1739,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 14: //Bpp=0 Sr=14
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=8
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
@@ -2014,7 +2014,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 16: //BPP=1 Sr=0  2BPP Stretch=1
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=1
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 2)];
@@ -2049,7 +2049,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 18: //Bpp=1 Sr=2
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=2
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 4)];
@@ -2103,7 +2103,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 22: //Bpp=1 Sr=6
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=4
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
@@ -2192,7 +2192,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 30: //Bpp=1 Sr=14
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=8
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
@@ -2338,7 +2338,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 31: //Bpp=1 Sr=15 2BPP Stretch=16 
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=16
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
@@ -2612,7 +2612,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 32: //Bpp=2 Sr=0 4BPP Stretch=1
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //4bbp Stretch=1
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & widePixel];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 12)];
@@ -2639,7 +2639,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 34: //Bpp=2 Sr=2
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //4bbp Stretch=2
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & widePixel];
@@ -2676,7 +2676,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 38: //Bpp=2 Sr=6 
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //4bbp Stretch=4
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
@@ -2733,7 +2733,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 46: //Bpp=2 Sr=14 
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //4bbp Stretch=8
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
@@ -2815,7 +2815,7 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 47: //Bpp=2 Sr=15 4BPP Stretch=16
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //4bbp Stretch=16
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
@@ -2983,7 +2983,7 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 0: //Bpp=0 Sr=0 1BPP Stretch=1
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=1
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (1 & (widePixel >> 7))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (1 & (widePixel >> 6))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (1 & (widePixel >> 5))];
@@ -3034,7 +3034,7 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 2:   //Bpp=0 Sr=2 
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=2
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
 
                         if (gs->MonType == 0)
                         { //Pcolor
@@ -3250,7 +3250,7 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 6: //Bpp=0 Sr=6
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=4
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
 
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (1 & (widePixel >> 7))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (1 & (widePixel >> 7))];
@@ -3404,7 +3404,7 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 14: //Bpp=0 Sr=14
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=8
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (1 & (widePixel >> 7))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (1 & (widePixel >> 7))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (1 & (widePixel >> 7))];
@@ -3679,7 +3679,7 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 16: //BPP=1 Sr=0  2BPP Stretch=1
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=1
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 4))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 2))];
@@ -3714,7 +3714,7 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 18: //Bpp=1 Sr=2
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=2
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 4))];
@@ -3768,7 +3768,7 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 22: //Bpp=1 Sr=6
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=4
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];
@@ -3857,7 +3857,7 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 30: //Bpp=1 Sr=14
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=8
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];
@@ -4004,7 +4004,7 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 31: //Bpp=1 Sr=15 2BPP Stretch=16 
                     for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=16
                     {
-                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(gs->Hoffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(gs->VidMask & (start + (byte)(_graphics.Hoffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[gs->PaletteIndex + (3 & (widePixel >> 6))];

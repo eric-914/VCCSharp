@@ -10,10 +10,6 @@ GraphicsState* InitializeInstance(GraphicsState*);
 static GraphicsState* instance = InitializeInstance(new GraphicsState());
 
 GraphicsState* InitializeInstance(GraphicsState* p) {
-  p->GraphicsMode = 0;
-  p->Hoffset = 0;
-  p->HorzCenter = 0;
-  p->HorzOffsetReg = 0;
   p->InvertAll = 0;
   p->LinesperRow = 1;
   p->LinesperScreen = 0;

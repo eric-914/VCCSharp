@@ -2,10 +2,6 @@
 
 typedef struct
 {
-  unsigned char GraphicsMode;
-  unsigned char Hoffset;
-  unsigned char HorzCenter;
-  unsigned char HorzOffsetReg;
   unsigned char InvertAll;
   unsigned char LinesperRow;
   unsigned char LinesperScreen;

@@ -2,10 +2,6 @@
 {
     public struct GraphicsState
     {
-        public byte GraphicsMode;
-        public byte Hoffset;
-        public byte HorzCenter;
-        public byte HorzOffsetReg;
         public byte InvertAll;
         public byte LinesperRow;
         public byte LinesperScreen;
@@ -28,7 +24,7 @@
 
         public uint DistoOffset;
         public uint NewStartofVidram;
-        public uint StartofVidram;
+        public uint StartOfVidRam;
         public uint VidMask;
 
         public byte BorderColor8;
