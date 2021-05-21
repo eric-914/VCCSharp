@@ -94,6 +94,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetAudioEventCassIn();
+
+            [DllImport(LIBRARY)]
+            public static extern void SetLinesperScreen(byte lines);
         }
 
         public static class Config
@@ -352,9 +355,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe GraphicsColors* GetGraphicsColors();
-
-            [DllImport(LIBRARY)]
-            public static extern void SetupDisplay();
         }
 
         public static class Joystick

@@ -20,6 +20,7 @@ namespace VCCSharp.Modules
         void SetVertInterruptState(byte state);
         void SetHorzInterruptState(byte state);
         void SetTimerInterruptState(byte state);
+        void SetLinesperScreen(byte lines);
     }
 
     public class CoCo : ICoCo
@@ -622,6 +623,11 @@ namespace VCCSharp.Modules
         public void SetAudioEventCassIn()
         {
             Library.CoCo.SetAudioEventCassIn();
+        }
+
+        public void SetLinesperScreen(byte lines)
+        {
+            Library.CoCo.SetLinesperScreen(lines);
         }
 
         private void ExecuteAudioEvent()
