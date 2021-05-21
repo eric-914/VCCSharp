@@ -282,10 +282,10 @@
         public void Orcc_M() // 1A
         {
             _postByte = MemRead8(PC_REG++);
-            _temp8 = MC6809_getcc();
+            _temp8 = getcc();
             _temp8 = (byte)(_temp8 | _postByte);
 
-            MC6809_setcc(_temp8);
+            setcc(_temp8);
 
             _cycleCounter += 3;
         }
@@ -295,10 +295,10 @@
         public void Andcc_M() // 1C
         {
             _postByte = MemRead8(PC_REG++);
-            _temp8 = MC6809_getcc();
+            _temp8 = getcc();
             _temp8 = (byte)(_temp8 & _postByte);
 
-            MC6809_setcc(_temp8);
+            setcc(_temp8);
 
             _cycleCounter += 3;
         }
@@ -316,7 +316,7 @@
         {
             _postByte = MemRead8(PC_REG++);
 
-            _cpu.ccbits = MC6809_getcc();
+            _cpu.ccbits = getcc();
 
             if (((_postByte & 0x80) >> 4) == (_postByte & 0x08)) //Verify like size registers
             {
@@ -334,7 +334,7 @@
                 }
             }
 
-            MC6809_setcc(_cpu.ccbits);
+            setcc(_cpu.ccbits);
             _cycleCounter += 8;
         }
 
@@ -363,11 +363,7 @@
                     }
                     else if (source <= 7)
                     {
-                        //make sure the source is value
-                        if (_cpu.xfreg16[source] != 0)
-                        {
-                            PXF(dest, PXF(source));
-                        }
+                        PXF(dest, PXF(source));
                     }
 
                     break;
@@ -378,7 +374,7 @@
                 case 11:
                 case 14:
                 case 15:
-                    _cpu.ccbits = MC6809_getcc();
+                    _cpu.ccbits = getcc();
 
                     PUR(dest & 7, 0xFF);
 
@@ -391,7 +387,7 @@
                         PUR(dest & 7, PUR(source & 7));
                     }
 
-                    MC6809_setcc(_cpu.ccbits);
+                    setcc(_cpu.ccbits);
 
                     break;
             }
@@ -682,7 +678,7 @@
 
             if ((_postByte & 0x01) != 0)
             {
-                MemWrite8(MC6809_getcc(), --S_REG);
+                MemWrite8(getcc(), --S_REG);
 
                 _cycleCounter += 1;
             }
@@ -696,7 +692,7 @@
 
             if ((_postByte & 0x01) != 0)
             {
-                MC6809_setcc(MemRead8(S_REG++));
+                setcc(MemRead8(S_REG++));
 
                 _cycleCounter += 1;
             }
@@ -816,7 +812,7 @@
 
             if ((_postByte & 0x01) != 0)
             {
-                MemWrite8(MC6809_getcc(), --U_REG);
+                MemWrite8(getcc(), --U_REG);
 
                 _cycleCounter += 1;
             }
@@ -830,7 +826,7 @@
 
             if ((_postByte & 0x01) != 0)
             {
-                MC6809_setcc(MemRead8(U_REG++));
+                setcc(MemRead8(U_REG++));
 
                 _cycleCounter += 1;
             }
@@ -910,7 +906,7 @@
 
         public void Rti_I() // 3B
         {
-            MC6809_setcc(MemRead8(S_REG++));
+            setcc(MemRead8(S_REG++));
 
             _cycleCounter += 6;
             _inInterrupt = 0;
@@ -938,10 +934,10 @@
         {
             _postByte = MemRead8(PC_REG++);
 
-            _cpu.ccbits = MC6809_getcc();
+            _cpu.ccbits = getcc();
             _cpu.ccbits &= _postByte;
 
-            MC6809_setcc(_cpu.ccbits);
+            setcc(_cpu.ccbits);
 
             _cycleCounter = _gCycleFor;
             _syncWaiting = 1;
@@ -974,7 +970,7 @@
             MemWrite8(B_REG, --S_REG);
             MemWrite8(A_REG, --S_REG);
 
-            MemWrite8(MC6809_getcc(), --S_REG);
+            MemWrite8(getcc(), --S_REG);
 
             PC_REG = MemRead16(Define.VSWI);
 
@@ -1062,7 +1058,7 @@
         {
             CC_C = A_REG > 0x7F;
             CC_V = CC_C ^ ((A_REG & 0x40) >> 6 != 0);
-            
+
             A_REG = (byte)(A_REG << 1);
 
             CC_N = NTEST8(A_REG);
@@ -1140,12 +1136,12 @@
         public void Negb_I() // 50
         {
             _temp8 = (byte)(0 - B_REG);
-            
+
             CC_C = _temp8 > 0;
             CC_V = B_REG == 0x80;
             CC_N = NTEST8(_temp8);
             CC_Z = ZTEST(_temp8);
-            
+
             B_REG = _temp8;
 
             _cycleCounter += 2;
@@ -1199,7 +1195,7 @@
             CC_C = (B_REG & 1) != 0;
 
             B_REG = (byte)((B_REG & 0x80) | (B_REG >> 1));
-            
+
             CC_Z = ZTEST(B_REG);
             CC_N = NTEST8(B_REG);
 
@@ -1290,7 +1286,7 @@
             _temp16 = INDADDRESS(PC_REG++);
             _postByte = MemRead8(_temp16);
             _temp8 = (byte)(0 - _postByte);
-            
+
             CC_C = _temp8 > 0;
             CC_V = _postByte == 0x80;
             CC_N = NTEST8(_temp8);
@@ -1309,12 +1305,12 @@
             _temp16 = INDADDRESS(PC_REG++);
             _temp8 = MemRead8(_temp16);
             _temp8 = (byte)(0xFF - _temp8);
-            
+
             CC_Z = ZTEST(_temp8);
             CC_N = NTEST8(_temp8);
             CC_V = false; //0;
             CC_C = true; //1;
-            
+
             MemWrite8(_temp8, _temp16);
 
             _cycleCounter += 6;
@@ -1324,11 +1320,11 @@
         {
             _temp16 = INDADDRESS(PC_REG++);
             _temp8 = MemRead8(_temp16);
-            
+
             CC_C = (_temp8 & 1) != 0;
-            
+
             _temp8 = (byte)(_temp8 >> 1);
-            
+
             CC_Z = ZTEST(_temp8);
             CC_N = false; //0;
 
@@ -1361,11 +1357,11 @@
         {
             _temp16 = INDADDRESS(PC_REG++);
             _temp8 = MemRead8(_temp16);
-            
+
             CC_C = (_temp8 & 1) != 0;
-            
+
             _temp8 = (byte)((_temp8 & 0x80) | (_temp8 >> 1));
-            
+
             CC_Z = ZTEST(_temp8);
             CC_N = NTEST8(_temp8);
 
@@ -1378,12 +1374,12 @@
         {
             _temp16 = INDADDRESS(PC_REG++);
             _temp8 = MemRead8(_temp16);
-            
+
             CC_C = _temp8 > 0x7F;
             CC_V = CC_C ^ ((_temp8 & 0x40) >> 6 != 0);
-            
+
             _temp8 = (byte)(_temp8 << 1);
-            
+
             CC_N = NTEST8(_temp8);
             CC_Z = ZTEST(_temp8);
 
@@ -1397,15 +1393,15 @@
             _temp16 = INDADDRESS(PC_REG++);
             _temp8 = MemRead8(_temp16);
             _postByte = CC_C ? (byte)1 : (byte)0;
-            
+
             CC_C = _temp8 > 0x7F;
             CC_V = CC_C ^ ((_temp8 & 0x40) >> 6 != 0);
-            
+
             _temp8 = (byte)((_temp8 << 1) | _postByte);
-            
+
             CC_Z = ZTEST(_temp8);
             CC_N = NTEST8(_temp8);
-            
+
             MemWrite8(_temp8, _temp16);
 
             _cycleCounter += 6;
@@ -1437,7 +1433,7 @@
             CC_V = (_temp8 == 0x80);
             CC_N = NTEST8(_temp8);
             CC_Z = ZTEST(_temp8);
-            
+
             MemWrite8(_temp8, _temp16);
 
             _cycleCounter += 6;
@@ -1446,7 +1442,7 @@
         public void Tst_X() // 6D
         {
             _temp8 = MemRead8(INDADDRESS(PC_REG++));
-            
+
             CC_Z = ZTEST(_temp8);
             CC_N = NTEST8(_temp8);
             CC_V = false; //0;
@@ -1482,14 +1478,14 @@
             _temp16 = MemRead16(PC_REG);
             _postByte = MemRead8(_temp16);
             _temp8 = (byte)(0 - _postByte);
-            
+
             CC_C = _temp8 > 0;
             CC_V = _postByte == 0x80;
             CC_N = NTEST8(_temp8);
             CC_Z = ZTEST(_temp8);
 
             MemWrite8(_temp8, _temp16);
-            
+
             PC_REG += 2;
 
             _cycleCounter += 7;
@@ -1601,17 +1597,17 @@
             _temp16 = MemRead16(PC_REG);
             _temp8 = MemRead8(_temp16);
             _postByte = CC_C ? (byte)1 : (byte)0;
-            
+
             CC_C = _temp8 > 0x7F;
             CC_V = CC_C ^ ((_temp8 & 0x40) >> 6 != 0);
-            
+
             _temp8 = (byte)((_temp8 << 1) | _postByte);
-            
+
             CC_Z = ZTEST(_temp8);
             CC_N = NTEST8(_temp8);
-            
+
             MemWrite8(_temp8, _temp16);
-            
+
             PC_REG += 2;
 
             _cycleCounter += 7;
@@ -1626,9 +1622,9 @@
             CC_Z = ZTEST(_temp8);
             CC_N = NTEST8(_temp8);
             CC_V = _temp8 == 0x7F;
-            
+
             MemWrite8(_temp8, _temp16);
-            
+
             PC_REG += 2;
 
             _cycleCounter += 7;
@@ -1647,7 +1643,7 @@
             CC_N = NTEST8(_temp8);
 
             MemWrite8(_temp8, _temp16);
-            
+
             PC_REG += 2;
 
             _cycleCounter += 7;
@@ -1660,7 +1656,7 @@
             CC_Z = ZTEST(_temp8);
             CC_N = NTEST8(_temp8);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 7;
@@ -1700,7 +1696,7 @@
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
 
             A_REG = (byte)_temp16;
-            
+
             CC_Z = ZTEST(A_REG);
             CC_N = NTEST8(A_REG);
 
@@ -1711,7 +1707,7 @@
         {
             _postByte = MemRead8(PC_REG++);
             _temp8 = (byte)(A_REG - _postByte);
-            
+
             CC_C = _temp8 > A_REG;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp8, A_REG);
             CC_N = NTEST8(_temp8);
@@ -1727,9 +1723,9 @@
 
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
-            
+
             A_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(A_REG);
             CC_Z = ZTEST(A_REG);
 
@@ -1740,15 +1736,15 @@
         {
             _temp16 = MemRead16(PC_REG);
             _temp32 = (uint)(D_REG - _temp16);
-            
+
             CC_C = (_temp32 & 0x10000) >> 16 != 0;
             CC_V = OVERFLOW16(CC_C, _temp32, _temp16, D_REG);
-            
+
             D_REG = (ushort)_temp32;
-            
+
             CC_Z = ZTEST(D_REG);
             CC_N = NTEST16(D_REG);
-            
+
             PC_REG += 2;
 
             _cycleCounter += 4;
@@ -1768,7 +1764,7 @@
         public void Bita_M() // 85
         {
             _temp8 = (byte)(A_REG & MemRead8(PC_REG++));
-            
+
             CC_N = NTEST8(_temp8);
             CC_Z = ZTEST(_temp8);
             CC_V = false; //0;
@@ -1808,9 +1804,9 @@
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
             CC_H = ((A_REG ^ _temp16 ^ _postByte) & 0x10) >> 4 != 0;
-            
+
             A_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(A_REG);
             CC_Z = ZTEST(A_REG);
 
@@ -1836,9 +1832,9 @@
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_H = ((A_REG ^ _postByte ^ _temp16) & 0x10) >> 4 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
-            
+
             A_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(A_REG);
             CC_Z = ZTEST(A_REG);
 
@@ -1854,7 +1850,7 @@
             CC_V = OVERFLOW16(CC_C, _postWord, _temp16, X_REG);
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
-            
+
             PC_REG += 2;
 
             _cycleCounter += 4;
@@ -1881,7 +1877,7 @@
             CC_Z = ZTEST(X_REG);
             CC_N = NTEST16(X_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 3;
@@ -1897,12 +1893,12 @@
         {
             _postByte = MemRead8(DPADDRESS(PC_REG++));
             _temp16 = (ushort)(A_REG - _postByte);
-            
+
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
-            
+
             A_REG = (byte)_temp16;
-            
+
             CC_Z = ZTEST(A_REG);
             CC_N = NTEST8(A_REG);
 
@@ -1926,12 +1922,12 @@
         {
             _postByte = MemRead8(DPADDRESS(PC_REG++));
             _temp16 = (ushort)(A_REG - _postByte - (CC_C ? (byte)1 : (byte)0));
-            
+
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
 
             A_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(A_REG);
             CC_Z = ZTEST(A_REG);
 
@@ -1945,9 +1941,9 @@
 
             CC_C = (_temp32 & 0x10000) >> 16 != 0;
             CC_V = OVERFLOW16(CC_C, _temp32, _temp16, D_REG);
-            
+
             D_REG = (ushort)_temp32;
-            
+
             CC_Z = ZTEST(D_REG);
             CC_N = NTEST16(D_REG);
 
@@ -1968,7 +1964,7 @@
         public void Bita_D() // 95
         {
             _temp8 = (byte)(A_REG & MemRead8(DPADDRESS(PC_REG++)));
-            
+
             CC_N = NTEST8(_temp8);
             CC_Z = ZTEST(_temp8);
             CC_V = false; //0;
@@ -2017,9 +2013,9 @@
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
             CC_H = ((A_REG ^ _temp16 ^ _postByte) & 0x10) >> 4 != 0;
-            
+
             A_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(A_REG);
             CC_Z = ZTEST(A_REG);
 
@@ -2070,12 +2066,12 @@
         public void Jsr_D() // 9D
         {
             _temp16 = DPADDRESS(PC_REG++);
-            
+
             S_REG--;
 
             MemWrite8(PC_L, S_REG--);
             MemWrite8(PC_H, S_REG);
-            
+
             PC_REG = _temp16;
 
             _cycleCounter += 7;
@@ -2114,9 +2110,9 @@
 
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
-            
+
             A_REG = (byte)_temp16;
-            
+
             CC_Z = ZTEST(A_REG);
             CC_N = NTEST8(A_REG);
 
@@ -2140,12 +2136,12 @@
         {
             _postByte = MemRead8(INDADDRESS(PC_REG++));
             _temp16 = (ushort)(A_REG - _postByte - (CC_C ? 1 : 0));
-            
+
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
-            
+
             A_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(A_REG);
             CC_Z = ZTEST(A_REG);
 
@@ -2156,12 +2152,12 @@
         {
             _temp16 = MemRead16(INDADDRESS(PC_REG++));
             _temp32 = (uint)(D_REG - _temp16);
-            
+
             CC_C = (_temp32 & 0x10000) >> 16 != 0;
             CC_V = OVERFLOW16(CC_C, _temp32, _temp16, D_REG);
-            
+
             D_REG = (ushort)_temp32;
-            
+
             CC_Z = ZTEST(D_REG);
             CC_N = NTEST16(D_REG);
 
@@ -2171,7 +2167,7 @@
         public void Anda_X() // A4
         {
             A_REG &= MemRead8(INDADDRESS(PC_REG++));
-            
+
             CC_N = NTEST8(A_REG);
             CC_Z = ZTEST(A_REG);
             CC_V = false; //0;
@@ -2215,7 +2211,7 @@
         public void Eora_X() // A8
         {
             A_REG ^= MemRead8(INDADDRESS(PC_REG++));
-            
+
             CC_N = NTEST8(A_REG);
             CC_Z = ZTEST(A_REG);
             CC_V = false; //0;
@@ -2231,9 +2227,9 @@
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
             CC_H = ((A_REG ^ _temp16 ^ _postByte) & 0x10) >> 4 != 0;
-            
+
             A_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(A_REG);
             CC_Z = ZTEST(A_REG);
 
@@ -2255,13 +2251,13 @@
         {
             _postByte = MemRead8(INDADDRESS(PC_REG++));
             _temp16 = (ushort)(A_REG + _postByte);
-            
+
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_H = ((A_REG ^ _postByte ^ _temp16) & 0x10) >> 4 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
-            
+
             A_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(A_REG);
             CC_Z = ZTEST(A_REG);
 
@@ -2283,9 +2279,9 @@
         public void Jsr_X() // AD
         {
             _temp16 = INDADDRESS(PC_REG++);
-            
+
             S_REG--;
-            
+
             MemWrite8(PC_L, S_REG--);
             MemWrite8(PC_H, S_REG);
 
@@ -2380,10 +2376,10 @@
             CC_V = OVERFLOW16(CC_C, _temp32, _temp16, D_REG);
 
             D_REG = (ushort)_temp32;
-            
+
             CC_Z = ZTEST(D_REG);
             CC_N = NTEST16(D_REG);
-            
+
             PC_REG += 2;
 
             _cycleCounter += 7;
@@ -2398,7 +2394,7 @@
             CC_N = NTEST8(A_REG);
             CC_Z = ZTEST(A_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -2411,7 +2407,7 @@
             CC_N = NTEST8(_temp8);
             CC_Z = ZTEST(_temp8);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -2424,7 +2420,7 @@
             CC_Z = ZTEST(A_REG);
             CC_N = NTEST8(A_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -2437,7 +2433,7 @@
             CC_Z = ZTEST(A_REG);
             CC_N = NTEST8(A_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -2450,7 +2446,7 @@
             CC_N = NTEST8(A_REG);
             CC_Z = ZTEST(A_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -2464,12 +2460,12 @@
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
             CC_H = ((A_REG ^ _temp16 ^ _postByte) & 0x10) >> 4 != 0;
-            
+
             A_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(A_REG);
             CC_Z = ZTEST(A_REG);
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -2482,7 +2478,7 @@
             CC_N = NTEST8(A_REG);
             CC_Z = ZTEST(A_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -2496,12 +2492,12 @@
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_H = ((A_REG ^ _postByte ^ _temp16) & 0x10) >> 4 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
-            
+
             A_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(A_REG);
             CC_Z = ZTEST(A_REG);
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -2516,7 +2512,7 @@
             CC_V = OVERFLOW16(CC_C, _postWord, _temp16, X_REG);
             CC_N = NTEST16(_temp16);
             CC_Z = ZTEST(_temp16);
-            
+
             PC_REG += 2;
 
             _cycleCounter += 7;
@@ -2532,7 +2528,7 @@
 
             MemWrite8(PC_L, S_REG--);
             MemWrite8(PC_H, S_REG);
-            
+
             PC_REG = _postWord;
 
             _cycleCounter += 8;
@@ -2545,7 +2541,7 @@
             CC_Z = ZTEST(X_REG);
             CC_N = NTEST16(X_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 6;
@@ -2558,7 +2554,7 @@
             CC_Z = ZTEST(X_REG);
             CC_N = NTEST16(X_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 6;
@@ -2575,9 +2571,9 @@
 
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
-            
+
             B_REG = (byte)_temp16;
-            
+
             CC_Z = ZTEST(B_REG);
             CC_N = NTEST8(B_REG);
 
@@ -2685,9 +2681,9 @@
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
             CC_H = ((B_REG ^ _temp16 ^ _postByte) & 0x10) >> 4 != 0;
-            
+
             B_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(B_REG);
             CC_Z = ZTEST(B_REG);
 
@@ -2713,9 +2709,9 @@
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_H = ((B_REG ^ _postByte ^ _temp16) & 0x10) >> 4 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
-            
+
             B_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(B_REG);
             CC_Z = ZTEST(B_REG);
 
@@ -2725,11 +2721,11 @@
         public void Ldd_M() // CC
         {
             D_REG = MemRead16(PC_REG);
-            
+
             CC_Z = ZTEST(D_REG);
             CC_N = NTEST16(D_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 2;
@@ -2760,10 +2756,10 @@
         {
             _postByte = MemRead8(DPADDRESS(PC_REG++));
             _temp16 = (ushort)(B_REG - _postByte);
-            
+
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
-            
+
             B_REG = (byte)_temp16;
 
             CC_Z = ZTEST(B_REG);
@@ -2776,7 +2772,7 @@
         {
             _postByte = MemRead8(DPADDRESS(PC_REG++));
             _temp8 = (byte)(B_REG - _postByte);
-            
+
             CC_C = _temp8 > B_REG;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp8, B_REG);
             CC_N = NTEST8(_temp8);
@@ -2792,9 +2788,9 @@
 
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
-            
+
             B_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(B_REG);
             CC_Z = ZTEST(B_REG);
 
@@ -2808,9 +2804,9 @@
 
             CC_C = (_temp32 & 0x10000) >> 16 != 0;
             CC_V = OVERFLOW16(CC_C, _temp32, _temp16, D_REG);
-            
+
             D_REG = (ushort)_temp32;
-            
+
             CC_Z = ZTEST(D_REG);
             CC_N = NTEST16(D_REG);
 
@@ -2831,7 +2827,7 @@
         public void Bitb_D() // D5
         {
             _temp8 = (byte)(B_REG & MemRead8(DPADDRESS(PC_REG++)));
-            
+
             CC_N = NTEST8(_temp8);
             CC_Z = ZTEST(_temp8);
             CC_V = false; //0;
@@ -2842,7 +2838,7 @@
         public void Ldb_D() // D6
         {
             B_REG = MemRead8(DPADDRESS(PC_REG++));
-            
+
             CC_Z = ZTEST(B_REG);
             CC_N = NTEST8(B_REG);
             CC_V = false; //0;
@@ -2853,7 +2849,7 @@
         public void Stb_D() // D7
         {
             MemWrite8(B_REG, DPADDRESS(PC_REG++));
-            
+
             CC_Z = ZTEST(B_REG);
             CC_N = NTEST8(B_REG);
             CC_V = false; //0;
@@ -2876,13 +2872,13 @@
         {
             _postByte = MemRead8(DPADDRESS(PC_REG++));
             _temp16 = (ushort)(B_REG + _postByte + (CC_C ? 1 : 0));
-            
+
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
             CC_H = ((B_REG ^ _temp16 ^ _postByte) & 0x10) >> 4 != 0;
-            
+
             B_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(B_REG);
             CC_Z = ZTEST(B_REG);
 
@@ -2892,7 +2888,7 @@
         public void Orb_D() // DA
         {
             B_REG |= MemRead8(DPADDRESS(PC_REG++));
-            
+
             CC_N = NTEST8(B_REG);
             CC_Z = ZTEST(B_REG);
             CC_V = false; //0;
@@ -2904,13 +2900,13 @@
         {
             _postByte = MemRead8(DPADDRESS(PC_REG++));
             _temp16 = (ushort)(B_REG + _postByte);
-            
+
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_H = ((B_REG ^ _postByte ^ _temp16) & 0x10) >> 4 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
-            
+
             B_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(B_REG);
             CC_Z = ZTEST(B_REG);
 
@@ -2972,9 +2968,9 @@
 
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
-            
+
             B_REG = (byte)_temp16;
-            
+
             CC_Z = ZTEST(B_REG);
             CC_N = NTEST8(B_REG);
 
@@ -2985,7 +2981,7 @@
         {
             _postByte = MemRead8(INDADDRESS(PC_REG++));
             _temp8 = (byte)(B_REG - _postByte);
-            
+
             CC_C = _temp8 > B_REG;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp8, B_REG);
             CC_N = NTEST8(_temp8);
@@ -3001,9 +2997,9 @@
 
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
-            
+
             B_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(B_REG);
             CC_Z = ZTEST(B_REG);
 
@@ -3014,12 +3010,12 @@
         {
             _temp16 = MemRead16(INDADDRESS(PC_REG++));
             _temp32 = (uint)(D_REG + _temp16);
-            
+
             CC_C = (_temp32 & 0x10000) >> 16 != 0;
             CC_V = OVERFLOW16(CC_C, _temp32, _temp16, D_REG);
-            
+
             D_REG = (ushort)_temp32;
-            
+
             CC_Z = ZTEST(D_REG);
             CC_N = NTEST16(D_REG);
 
@@ -3061,7 +3057,7 @@
 
         public void Stb_X() // E7
         {
-            MemWrite8(B_REG, MC6809_CalculateEA(MemRead8(PC_REG++)));
+            MemWrite8(B_REG, CalculateEA(MemRead8(PC_REG++)));
 
             CC_Z = ZTEST(B_REG);
             CC_N = NTEST8(B_REG);
@@ -3085,13 +3081,13 @@
         {
             _postByte = MemRead8(INDADDRESS(PC_REG++));
             _temp16 = (ushort)(B_REG + _postByte + (CC_C ? 1 : 0));
-            
+
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
             CC_H = ((B_REG ^ _temp16 ^ _postByte) & 0x10) >> 4 != 0;
-            
+
             B_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(B_REG);
             CC_Z = ZTEST(B_REG);
 
@@ -3117,9 +3113,9 @@
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_H = ((B_REG ^ _postByte ^ _temp16) & 0x10) >> 4 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
-            
+
             B_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(B_REG);
             CC_Z = ZTEST(B_REG);
 
@@ -3129,7 +3125,7 @@
         public void Ldd_X() // EC
         {
             D_REG = MemRead16(INDADDRESS(PC_REG++));
-            
+
             CC_Z = ZTEST(D_REG);
             CC_N = NTEST16(D_REG);
             CC_V = false;//0;
@@ -3181,12 +3177,12 @@
 
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
-            
+
             B_REG = (byte)_temp16;
-            
+
             CC_Z = ZTEST(B_REG);
             CC_N = NTEST8(B_REG);
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -3201,7 +3197,7 @@
             CC_V = OVERFLOW8(CC_C, _postByte, _temp8, B_REG);
             CC_N = NTEST8(_temp8);
             CC_Z = ZTEST(_temp8);
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -3214,12 +3210,12 @@
 
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
-            
+
             B_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(B_REG);
             CC_Z = ZTEST(B_REG);
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -3232,12 +3228,12 @@
 
             CC_C = (_temp32 & 0x10000) >> 16 != 0;
             CC_V = OVERFLOW16(CC_C, _temp32, _temp16, D_REG);
-            
+
             D_REG = (ushort)_temp32;
-            
+
             CC_Z = ZTEST(D_REG);
             CC_N = NTEST16(D_REG);
-            
+
             PC_REG += 2;
 
             _cycleCounter += 7;
@@ -3246,11 +3242,11 @@
         public void Andb_E() // F4
         {
             B_REG &= MemRead8(MemRead16(PC_REG));
-            
+
             CC_N = NTEST8(B_REG);
             CC_Z = ZTEST(B_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -3263,7 +3259,7 @@
             CC_N = NTEST8(_temp8);
             CC_Z = ZTEST(_temp8);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -3276,7 +3272,7 @@
             CC_Z = ZTEST(B_REG);
             CC_N = NTEST8(B_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -3289,7 +3285,7 @@
             CC_Z = ZTEST(B_REG);
             CC_N = NTEST8(B_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -3302,7 +3298,7 @@
             CC_N = NTEST8(B_REG);
             CC_Z = ZTEST(B_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -3316,12 +3312,12 @@
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
             CC_H = ((B_REG ^ _temp16 ^ _postByte) & 0x10) >> 4 != 0;
-            
+
             B_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(B_REG);
             CC_Z = ZTEST(B_REG);
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -3334,7 +3330,7 @@
             CC_N = NTEST8(B_REG);
             CC_Z = ZTEST(B_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -3348,12 +3344,12 @@
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_H = ((B_REG ^ _postByte ^ _temp16) & 0x10) >> 4 != 0;
             CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
-            
+
             B_REG = (byte)_temp16;
-            
+
             CC_N = NTEST8(B_REG);
             CC_Z = ZTEST(B_REG);
-            
+
             PC_REG += 2;
 
             _cycleCounter += 5;
@@ -3366,7 +3362,7 @@
             CC_Z = ZTEST(D_REG);
             CC_N = NTEST16(D_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 6;
@@ -3379,7 +3375,7 @@
             CC_Z = ZTEST(D_REG);
             CC_N = NTEST16(D_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 6;
@@ -3392,7 +3388,7 @@
             CC_Z = ZTEST(U_REG);
             CC_N = NTEST16(U_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 6;
@@ -3405,7 +3401,7 @@
             CC_Z = ZTEST(U_REG);
             CC_N = NTEST16(U_REG);
             CC_V = false; //0;
-            
+
             PC_REG += 2;
 
             _cycleCounter += 6;

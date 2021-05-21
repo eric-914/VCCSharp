@@ -233,7 +233,7 @@
 
             MemWrite8(B_REG, --S_REG);
             MemWrite8(A_REG, --S_REG);
-            MemWrite8(MC6809_getcc(), --S_REG);
+            MemWrite8(getcc(), --S_REG);
             PC_REG = MemRead16(Define.VSWI2);
 
             _cycleCounter += 20;

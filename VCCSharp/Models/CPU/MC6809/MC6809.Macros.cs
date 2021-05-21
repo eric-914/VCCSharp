@@ -205,7 +205,7 @@ namespace VCCSharp.Models.CPU.MC6809
             MemWrite8((byte)(data & 0xFF), (ushort)(address + 1));
         }
 
-        public ushort INDADDRESS(ushort address) => MC6809_CalculateEA(MemRead8(address));
+        public ushort INDADDRESS(ushort address) => CalculateEA(MemRead8(address));
 
         public bool NTEST8(byte value) => value > 0x7F;
         public bool NTEST16(ushort value) => value > 0x7FFF;
