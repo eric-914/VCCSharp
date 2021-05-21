@@ -354,33 +354,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe GraphicsColors* GetGraphicsColors();
 
             [DllImport(LIBRARY)]
-            public static extern void SetMonitorTypePalettes(byte monType, byte palIndex);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetGimeVdgMode(byte vdgMode);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetGimeVdgOffset(byte offset);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetGimeVmode(byte vmode);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetGimeVres(byte vres);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetVerticalOffsetRegister(ushort voRegister);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetGimePalette(byte palette, byte color);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetVideoBank(byte data);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetGimeVdgMode2(byte vdgmode2);
-
-            [DllImport(LIBRARY)]
             public static extern void SetupDisplay();
         }
 
@@ -521,15 +494,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void MemWrite8(byte data, ushort address);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void SwitchMasterMode8(EmuState* emuState, byte masterMode, uint start, uint yStride);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void SwitchMasterMode16(EmuState* emuState, byte masterMode, uint start, uint yStride);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void SwitchMasterMode32(EmuState* emuState, byte masterMode, uint start, uint yStride);
         }
 
         public static class Vcc

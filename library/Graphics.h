@@ -10,14 +10,4 @@ extern "C" __declspec(dllexport) GraphicsState* __cdecl GetGraphicsState();
 extern "C" __declspec(dllexport) GraphicsSurfaces* __cdecl GetGraphicsSurfaces();
 extern "C" __declspec(dllexport) GraphicsColors* __cdecl GetGraphicsColors();
 
-extern "C" __declspec(dllexport) void __cdecl SetGimeHorzOffset(unsigned char);
-extern "C" __declspec(dllexport) void __cdecl SetGimePalette(unsigned char, unsigned char);
-extern "C" __declspec(dllexport) void __cdecl SetGimeVdgMode(unsigned char);
-extern "C" __declspec(dllexport) void __cdecl SetGimeVdgMode2(unsigned char);
-extern "C" __declspec(dllexport) void __cdecl SetGimeVdgOffset(unsigned char);
-extern "C" __declspec(dllexport) void __cdecl SetGimeVmode(unsigned char);
-extern "C" __declspec(dllexport) void __cdecl SetGimeVres(unsigned char);
-extern "C" __declspec(dllexport) void __cdecl SetVerticalOffsetRegister(unsigned short);
-extern "C" __declspec(dllexport) void __cdecl SetVideoBank(unsigned char);
 extern "C" __declspec(dllexport) void __cdecl SetupDisplay();
-extern "C" __declspec(dllexport) void __cdecl SetMonitorTypePalettes(unsigned char monType, unsigned char palIndex);

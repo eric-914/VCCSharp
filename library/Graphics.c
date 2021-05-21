@@ -138,18 +138,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl SetGimePalette(unsigned char palette, unsigned char color)
-  {
-    // Convert the 6bit rgbrgb value to rrrrrggggggbbbbb for the Real video hardware.
-    //	unsigned char r,g,b;
-    colors->Palette[palette] = ((color & 63));
-    colors->Palette8Bit[palette] = colors->PaletteLookup8[instance->MonType][color & 63];
-    colors->Palette16Bit[palette] = colors->PaletteLookup16[instance->MonType][color & 63];
-    colors->Palette32Bit[palette] = colors->PaletteLookup32[instance->MonType][color & 63];
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl SetupDisplay()
   {
     static unsigned char CC2Bpp[8] = { 1,0,1,0,1,0,1,0 };
@@ -280,95 +268,5 @@ extern "C" {
 
     instance->NewStartofVidram = (instance->NewStartofVidram & instance->VidMask) + instance->DistoOffset; //DistoOffset for 2M configuration
     instance->MasterMode = (instance->GraphicsMode << 7) | (instance->CompatMode << 6) | ((instance->Bpp & 3) << 4) | (instance->Stretch & 15);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetGimeVdgMode(unsigned char vdgMode) //3 bits from SAM Registers
-  {
-    if (instance->CC2VDGMode != vdgMode)
-    {
-      instance->CC2VDGMode = vdgMode;
-      SetupDisplay();
-      instance->BorderChange = 3;
-    }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetGimeVdgMode2(unsigned char vdgmode2) //5 bits from PIA Register
-  {
-    if (instance->CC2VDGPiaMode != vdgmode2)
-    {
-      instance->CC2VDGPiaMode = vdgmode2;
-      SetupDisplay();
-      instance->BorderChange = 3;
-    }
-  }
-}
-
-// These grab the Video info for all COCO 2 modes
-extern "C" {
-  __declspec(dllexport) void __cdecl SetGimeVdgOffset(unsigned char offset)
-  {
-    if (instance->CC2Offset != offset)
-    {
-      instance->CC2Offset = offset;
-      SetupDisplay();
-    }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetGimeVmode(unsigned char vmode)
-  {
-    if (instance->CC3Vmode != vmode)
-    {
-      instance->CC3Vmode = vmode;
-      SetupDisplay();
-      instance->BorderChange = 3;
-    }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetGimeVres(unsigned char vres)
-  {
-    if (instance->CC3Vres != vres)
-    {
-      instance->CC3Vres = vres;
-      SetupDisplay();
-      instance->BorderChange = 3;
-    }
-  }
-}
-
-//These grab the Video info for all COCO 3 modes
-extern "C" {
-  __declspec(dllexport) void __cdecl SetVerticalOffsetRegister(unsigned short voRegister)
-  {
-    if (instance->VerticalOffsetRegister != voRegister)
-    {
-      instance->VerticalOffsetRegister = voRegister;
-
-      SetupDisplay();
-    }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetVideoBank(unsigned char data)
-  {
-    instance->DistoOffset = data * (512 * 1024);
-
-    SetupDisplay();
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetMonitorTypePalettes(unsigned char monType, unsigned char palIndex) {
-    colors->Palette16Bit[palIndex] = colors->PaletteLookup16[monType][colors->Palette[palIndex]];
-    colors->Palette32Bit[palIndex] = colors->PaletteLookup32[monType][colors->Palette[palIndex]];
-    colors->Palette8Bit[palIndex] = colors->PaletteLookup8[monType][colors->Palette[palIndex]];
   }
 }

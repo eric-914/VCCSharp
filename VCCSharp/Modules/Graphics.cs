@@ -326,7 +326,16 @@ namespace VCCSharp.Modules
 
         public void SetMonitorTypePalettes(byte monType, byte palIndex)
         {
-            Library.Graphics.SetMonitorTypePalettes(monType, palIndex);
+            unsafe
+            {
+                GraphicsColors* colors = GetGraphicsColors();
+
+                int offset = monType * 64 + palIndex;
+
+                colors->Palette16Bit[palIndex] = colors->PaletteLookup16[offset]; //colors->PaletteLookup16[monType][colors->Palette[palIndex]];
+                colors->Palette32Bit[palIndex] = colors->PaletteLookup32[offset]; //colors->PaletteLookup32[monType][colors->Palette[palIndex]];
+                colors->Palette8Bit[palIndex] = colors->PaletteLookup8[offset]; //colors->PaletteLookup8[monType][colors->Palette[palIndex]];
+            }
         }
 
         public void SetGimeBorderColor(byte data)
@@ -381,29 +390,83 @@ namespace VCCSharp.Modules
             }
         }
 
+        //3 bits from SAM Registers
         public void SetGimeVdgMode(byte vdgMode)
         {
-            Library.Graphics.SetGimeVdgMode(vdgMode);
+            //Library.Graphics.SetGimeVdgMode(vdgMode);
+
+            unsafe
+            {
+                GraphicsState* instance = GetGraphicsState();
+
+                if (instance->CC2VDGMode != vdgMode)
+                {
+                    instance->CC2VDGMode = vdgMode;
+                    SetupDisplay();
+                    instance->BorderChange = 3;
+                }
+            }
         }
 
+        // These grab the Video info for all COCO 2 modes
         public void SetGimeVdgOffset(byte offset)
         {
-            Library.Graphics.SetGimeVdgOffset(offset);
+            unsafe
+            {
+                GraphicsState* instance = GetGraphicsState();
+
+                if (instance->CC2Offset != offset)
+                {
+                    instance->CC2Offset = offset;
+                    SetupDisplay();
+                }
+            }
         }
 
         public void SetGimeVmode(byte vmode)
         {
-            Library.Graphics.SetGimeVmode(vmode);
+            unsafe
+            {
+                GraphicsState* instance = GetGraphicsState();
+
+                if (instance->CC3Vmode != vmode)
+                {
+                    instance->CC3Vmode = vmode;
+                    SetupDisplay();
+                    instance->BorderChange = 3;
+                }
+            }
         }
 
         public void SetGimeVres(byte vres)
         {
-            Library.Graphics.SetGimeVres(vres);
+            unsafe
+            {
+                GraphicsState* instance = GetGraphicsState();
+
+                if (instance->CC3Vres != vres)
+                {
+                    instance->CC3Vres = vres;
+                    SetupDisplay();
+                    instance->BorderChange = 3;
+                }
+            }
         }
 
+        //These grab the Video info for all COCO 3 modes
         public void SetVerticalOffsetRegister(ushort voRegister)
         {
-            Library.Graphics.SetVerticalOffsetRegister(voRegister);
+            unsafe
+            {
+                GraphicsState* instance = GetGraphicsState();
+
+                if (instance->VerticalOffsetRegister != voRegister)
+                {
+                    instance->VerticalOffsetRegister = voRegister;
+
+                    SetupDisplay();
+                }
+            }
         }
 
         public void SetGimeHorzOffset(byte data)
@@ -423,7 +486,21 @@ namespace VCCSharp.Modules
 
         public void SetGimePalette(byte palette, byte color)
         {
-            Library.Graphics.SetGimePalette(palette, color);
+            unsafe
+            {
+                GraphicsState* instance = GetGraphicsState();
+                GraphicsColors* colors = GetGraphicsColors();
+
+                byte offset = (byte)(color & 63);
+                int index = instance->MonType * 64 + offset;
+
+                // Convert the 6bit rgbrgb value to rrrrrggggggbbbbb for the Real video hardware.
+                //	unsigned char r,g,b;
+                colors->Palette[palette] = offset;
+                colors->Palette8Bit[palette] = colors->PaletteLookup8[index]; //colors->PaletteLookup8[instance->MonType][offset];
+                colors->Palette16Bit[palette] = colors->PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonType][offset];
+                colors->Palette32Bit[palette] = colors->PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][offset];
+            }
         }
 
         public void SetCompatMode(byte mode)
@@ -443,12 +520,30 @@ namespace VCCSharp.Modules
 
         public void SetVideoBank(byte data)
         {
-            Library.Graphics.SetVideoBank(data);
+            unsafe
+            {
+                GraphicsState* instance = GetGraphicsState();
+
+                instance->DistoOffset = (uint)(data * (512 * 1024));
+
+                SetupDisplay();
+            }
         }
 
+        //5 bits from PIA Register
         public void SetGimeVdgMode2(byte vdgmode2)
         {
-            Library.Graphics.SetGimeVdgMode2(vdgmode2);
+            unsafe
+            {
+                GraphicsState* instance = GetGraphicsState();
+
+                if (instance->CC2VDGPiaMode != vdgmode2)
+                {
+                    instance->CC2VDGPiaMode = vdgmode2;
+                    SetupDisplay();
+                    instance->BorderChange = 3;
+                }
+            }
         }
 
         public void SetupDisplay()
