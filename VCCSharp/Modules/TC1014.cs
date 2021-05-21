@@ -753,7 +753,7 @@ Could not locate {ROM} in any of these locations:
         public unsafe void DrawTopBorder8(EmuState* emuState)
         {
             GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
 
             if (gs->BorderChange == 0)
             {
@@ -762,11 +762,11 @@ Could not locate {ROM} in any of these locations:
 
             for (ushort x = 0; x < emuState->WindowSize.X; x++)
             {
-                graphicsSurfaces->pSurface8[x + ((emuState->LineCounter * 2) * emuState->SurfacePitch)] = (byte)(gs->BorderColor8 | 128);
+                graphicsSurfaces.pSurface8[x + ((emuState->LineCounter * 2) * emuState->SurfacePitch)] = (byte)(gs->BorderColor8 | 128);
 
                 if (emuState->ScanLines == Define.FALSE)
                 {
-                    graphicsSurfaces->pSurface8[x + ((emuState->LineCounter * 2 + 1) * emuState->SurfacePitch)] = (byte)(gs->BorderColor8 | 128);
+                    graphicsSurfaces.pSurface8[x + ((emuState->LineCounter * 2 + 1) * emuState->SurfacePitch)] = (byte)(gs->BorderColor8 | 128);
                 }
             }
         }
@@ -774,7 +774,7 @@ Could not locate {ROM} in any of these locations:
         public unsafe void DrawTopBorder16(EmuState* emuState)
         {
             GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
 
             if (gs->BorderChange == 0)
             {
@@ -783,11 +783,11 @@ Could not locate {ROM} in any of these locations:
 
             for (ushort x = 0; x < emuState->WindowSize.X; x++)
             {
-                graphicsSurfaces->pSurface16[x + ((emuState->LineCounter * 2) * emuState->SurfacePitch)] = gs->BorderColor16;
+                graphicsSurfaces.pSurface16[x + ((emuState->LineCounter * 2) * emuState->SurfacePitch)] = gs->BorderColor16;
 
                 if (emuState->ScanLines == Define.FALSE)
                 {
-                    graphicsSurfaces->pSurface16[x + ((emuState->LineCounter * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor16;
+                    graphicsSurfaces.pSurface16[x + ((emuState->LineCounter * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor16;
                 }
             }
         }
@@ -800,7 +800,7 @@ Could not locate {ROM} in any of these locations:
         public unsafe void DrawTopBorder32(EmuState* emuState)
         {
             GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
 
             if (gs->BorderChange == 0)
             {
@@ -809,11 +809,11 @@ Could not locate {ROM} in any of these locations:
 
             for (ushort x = 0; x < emuState->WindowSize.X; x++)
             {
-                graphicsSurfaces->pSurface32[x + ((emuState->LineCounter * 2) * emuState->SurfacePitch)] = gs->BorderColor32;
+                graphicsSurfaces.pSurface32[x + ((emuState->LineCounter * 2) * emuState->SurfacePitch)] = gs->BorderColor32;
 
                 if (emuState->ScanLines == Define.FALSE)
                 {
-                    graphicsSurfaces->pSurface32[x + ((emuState->LineCounter * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor32;
+                    graphicsSurfaces.pSurface32[x + ((emuState->LineCounter * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor32;
                 }
             }
         }
@@ -821,7 +821,7 @@ Could not locate {ROM} in any of these locations:
         public unsafe void DrawBottomBorder8(EmuState* emuState)
         {
             GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
 
             if (gs->BorderChange == 0)
             {
@@ -830,11 +830,11 @@ Could not locate {ROM} in any of these locations:
 
             for (ushort x = 0; x < emuState->WindowSize.X; x++)
             {
-                graphicsSurfaces->pSurface8[x + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = (byte)(gs->BorderColor8 | 128);
+                graphicsSurfaces.pSurface8[x + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = (byte)(gs->BorderColor8 | 128);
 
                 if (emuState->ScanLines == Define.FALSE)
                 {
-                    graphicsSurfaces->pSurface8[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = (byte)(gs->BorderColor8 | 128);
+                    graphicsSurfaces.pSurface8[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = (byte)(gs->BorderColor8 | 128);
                 }
             }
         }
@@ -842,7 +842,7 @@ Could not locate {ROM} in any of these locations:
         public unsafe void DrawBottomBorder16(EmuState* emuState)
         {
             GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
 
             if (gs->BorderChange == 0)
             {
@@ -851,11 +851,11 @@ Could not locate {ROM} in any of these locations:
 
             for (ushort x = 0; x < emuState->WindowSize.X; x++)
             {
-                graphicsSurfaces->pSurface16[x + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor16;
+                graphicsSurfaces.pSurface16[x + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor16;
 
                 if (emuState->ScanLines == Define.FALSE)
                 {
-                    graphicsSurfaces->pSurface16[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor16;
+                    graphicsSurfaces.pSurface16[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor16;
                 }
             }
         }
@@ -868,7 +868,7 @@ Could not locate {ROM} in any of these locations:
         public unsafe void DrawBottomBorder32(EmuState* emuState)
         {
             GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
 
             if (gs->BorderChange == 0)
             {
@@ -877,11 +877,11 @@ Could not locate {ROM} in any of these locations:
 
             for (ushort x = 0; x < emuState->WindowSize.X; x++)
             {
-                graphicsSurfaces->pSurface32[x + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor32;
+                graphicsSurfaces.pSurface32[x + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor32;
 
                 if (emuState->ScanLines == Define.FALSE)
                 {
-                    graphicsSurfaces->pSurface32[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor32;
+                    graphicsSurfaces.pSurface32[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + gs->LinesperScreen + gs->VertCenter) * emuState->SurfacePitch)] = gs->BorderColor32;
                 }
             }
         }
@@ -889,24 +889,24 @@ Could not locate {ROM} in any of these locations:
         public unsafe void UpdateScreen8(EmuState* emuState)
         {
             GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
 
             if ((gs->HorzCenter != 0) && (gs->BorderChange > 0))
             {
                 for (ushort x = 0; x < gs->HorzCenter; x++)
                 {
-                    graphicsSurfaces->pSurface8[x + (((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch)] = gs->BorderColor8;
+                    graphicsSurfaces.pSurface8[x + (((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch)] = gs->BorderColor8;
 
                     if (emuState->ScanLines == Define.FALSE)
                     {
-                        graphicsSurfaces->pSurface8[x + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor8;
+                        graphicsSurfaces.pSurface8[x + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor8;
                     }
 
-                    graphicsSurfaces->pSurface8[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch)] = gs->BorderColor8;
+                    graphicsSurfaces.pSurface8[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2) * emuState->SurfacePitch)] = gs->BorderColor8;
 
                     if (emuState->ScanLines == Define.FALSE)
                     {
-                        graphicsSurfaces->pSurface8[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor8;
+                        graphicsSurfaces.pSurface8[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * emuState->SurfacePitch)] = gs->BorderColor8;
                     }
                 }
             }
@@ -931,24 +931,24 @@ Could not locate {ROM} in any of these locations:
         public unsafe void UpdateScreen16(EmuState* emuState)
         {
             GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
 
             if ((gs->HorzCenter != 0) && (gs->BorderChange > 0))
             {
                 for (ushort x = 0; x < gs->HorzCenter; x++)
                 {
-                    graphicsSurfaces->pSurface16[x + (((emuState->LineCounter + gs->VertCenter) * 2) * (emuState->SurfacePitch))] = gs->BorderColor16;
+                    graphicsSurfaces.pSurface16[x + (((emuState->LineCounter + gs->VertCenter) * 2) * (emuState->SurfacePitch))] = gs->BorderColor16;
 
                     if (emuState->ScanLines == Define.FALSE)
                     {
-                        graphicsSurfaces->pSurface16[x + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * (emuState->SurfacePitch))] = gs->BorderColor16;
+                        graphicsSurfaces.pSurface16[x + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * (emuState->SurfacePitch))] = gs->BorderColor16;
                     }
 
-                    graphicsSurfaces->pSurface16[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2) * (emuState->SurfacePitch))] = gs->BorderColor16;
+                    graphicsSurfaces.pSurface16[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2) * (emuState->SurfacePitch))] = gs->BorderColor16;
 
                     if (emuState->ScanLines == Define.FALSE)
                     {
-                        graphicsSurfaces->pSurface16[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * (emuState->SurfacePitch))] = gs->BorderColor16;
+                        graphicsSurfaces.pSurface16[x + (gs->PixelsperLine * (gs->Stretch + 1)) + gs->HorzCenter + (((emuState->LineCounter + gs->VertCenter) * 2 + 1) * (emuState->SurfacePitch))] = gs->BorderColor16;
                     }
                 }
             }
@@ -978,9 +978,9 @@ Could not locate {ROM} in any of these locations:
         public unsafe void UpdateScreen32(EmuState* emuState)
         {
             GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
 
-            uint* szSurface32 = graphicsSurfaces->pSurface32;
+            uint* szSurface32 = graphicsSurfaces.pSurface32;
 
             ushort y = (ushort)emuState->LineCounter;
             long Xpitch = emuState->SurfacePitch;
@@ -1043,14 +1043,14 @@ Could not locate {ROM} in any of these locations:
             byte color = 0;
 
             GraphicsState* gs = _modules.Graphics.GetGraphicsState();
-            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
             GraphicsColors graphicsColors = _modules.Graphics.GetGraphicsColors();
             TC1014MmuState* mmu = GetTC1014MmuState();
 
             byte* ramBuffer = mmu->Memory;
             ushort* wRamBuffer = (ushort*)ramBuffer;
 
-            uint* szSurface32 = graphicsSurfaces->pSurface32;
+            uint* szSurface32 = graphicsSurfaces.pSurface32;
 
             uint Xpitch = (uint)(emuState->SurfacePitch);
             ushort y = (ushort)(emuState->LineCounter);

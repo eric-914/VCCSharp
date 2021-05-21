@@ -227,7 +227,6 @@
     <ClInclude Include="GDI.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsState.h" />
-    <ClInclude Include="GraphicsSurfaces.h" />
     <ClInclude Include="Joystick.h" />
     <ClInclude Include="JoystickModel.h" />
     <ClInclude Include="JoystickState.h" />

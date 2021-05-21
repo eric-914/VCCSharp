@@ -10,7 +10,7 @@ namespace VCCSharp.Modules
     public interface IGraphics
     {
         unsafe GraphicsState* GetGraphicsState();
-        unsafe GraphicsSurfaces* GetGraphicsSurfaces();
+        GraphicsSurfaces GetGraphicsSurfaces();
         GraphicsColors GetGraphicsColors();
 
         void ResetGraphicsState();
@@ -36,6 +36,7 @@ namespace VCCSharp.Modules
         void SetCompatMode(byte mode);
         void SetVideoBank(byte data);
         void SetGimeVdgMode2(byte mode);
+        unsafe void SetGraphicsSurfaces(void* ddsdGetSurface);
     }
 
     public class Graphics : IGraphics
@@ -76,6 +77,7 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
 
         private readonly GraphicsColors _colors = new GraphicsColors();
+        private static readonly GraphicsSurfaces _surfaces = new GraphicsSurfaces();
 
         public Graphics(IModules modules)
         {
@@ -87,10 +89,7 @@ namespace VCCSharp.Modules
             return Library.Graphics.GetGraphicsState();
         }
 
-        public unsafe GraphicsSurfaces* GetGraphicsSurfaces()
-        {
-            return Library.Graphics.GetGraphicsSurfaces();
-        }
+        public GraphicsSurfaces GetGraphicsSurfaces() => _surfaces;
 
         public GraphicsColors GetGraphicsColors() => _colors;
 
@@ -519,19 +518,24 @@ namespace VCCSharp.Modules
         }
 
         //5 bits from PIA Register
-        public void SetGimeVdgMode2(byte vdgmode2)
+        public void SetGimeVdgMode2(byte mode)
         {
             unsafe
             {
                 GraphicsState* instance = GetGraphicsState();
 
-                if (instance->CC2VDGPiaMode != vdgmode2)
+                if (instance->CC2VDGPiaMode != mode)
                 {
-                    instance->CC2VDGPiaMode = vdgmode2;
+                    instance->CC2VDGPiaMode = mode;
                     SetupDisplay();
                     instance->BorderChange = 3;
                 }
             }
+        }
+
+        public unsafe void SetGraphicsSurfaces(void* pSurface)
+        {
+            _surfaces.pSurface = pSurface;
         }
 
         public void SetupDisplay()

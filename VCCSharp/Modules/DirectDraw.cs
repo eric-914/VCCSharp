@@ -86,7 +86,7 @@ namespace VCCSharp.Modules
         public unsafe void DoCls(EmuState* emuState)
         {
             DirectDrawState* instance = GetDirectDrawState();
-            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
 
             if (LockScreen(emuState) == Define.TRUE)
             {
@@ -100,7 +100,7 @@ namespace VCCSharp.Modules
                     {
                         for (int x = 0; x < 640; x++)
                         {
-                            graphicsSurfaces->pSurface8[x + (y * emuState->SurfacePitch)] = (byte)(instance->Color | 128);
+                            graphicsSurfaces.pSurface8[x + (y * emuState->SurfacePitch)] = (byte)(instance->Color | 128);
                         }
                     }
                     break;
@@ -110,7 +110,7 @@ namespace VCCSharp.Modules
                     {
                         for (int x = 0; x < 640; x++)
                         {
-                            graphicsSurfaces->pSurface16[x + (y * emuState->SurfacePitch)] = (ushort)instance->Color;
+                            graphicsSurfaces.pSurface16[x + (y * emuState->SurfacePitch)] = (ushort)instance->Color;
                         }
                     }
                     break;
@@ -120,9 +120,9 @@ namespace VCCSharp.Modules
                     {
                         for (int x = 0; x < 640; x++)
                         {
-                            graphicsSurfaces->pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = (byte)((instance->Color & 0xFF0000) >> 16);
-                            graphicsSurfaces->pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = (byte)((instance->Color & 0x00FF00) >> 8);
-                            graphicsSurfaces->pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = (byte)(instance->Color & 0xFF);
+                            graphicsSurfaces.pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = (byte)((instance->Color & 0xFF0000) >> 16);
+                            graphicsSurfaces.pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = (byte)((instance->Color & 0x00FF00) >> 8);
+                            graphicsSurfaces.pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = (byte)(instance->Color & 0xFF);
                         }
                     }
                     break;
@@ -132,7 +132,7 @@ namespace VCCSharp.Modules
                     {
                         for (int x = 0; x < 640; x++)
                         {
-                            graphicsSurfaces->pSurface32[x + (y * emuState->SurfacePitch)] = instance->Color;
+                            graphicsSurfaces.pSurface32[x + (y * emuState->SurfacePitch)] = instance->Color;
                         }
                     }
                     break;
@@ -156,13 +156,13 @@ namespace VCCSharp.Modules
             return _modules.Throttle.CalculateFPS();
         }
 
-        private unsafe void Static(EmuState* emuState, GraphicsSurfaces* graphicsSurfaces)
+        private unsafe void Static(EmuState* emuState, GraphicsSurfaces graphicsSurfaces)
         {
             var random = new Random();
 
             LockScreen(emuState);
 
-            if (graphicsSurfaces->pSurface32 == null)
+            if (graphicsSurfaces.pSurface32 == null)
             {
                 return; //TODO: Seems bad to exit w/out unlocking first
             }
@@ -178,8 +178,8 @@ namespace VCCSharp.Modules
                         {
                             byte temp = (byte)(random.Next() & 3);
 
-                            graphicsSurfaces->pSurface32[x + (y * emuState->SurfacePitch >> 2)] = (uint)(greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24));
-                            graphicsSurfaces->pSurface32[x + ((y + 1) * emuState->SurfacePitch >> 2)] = (uint)(greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24));
+                            graphicsSurfaces.pSurface32[x + (y * emuState->SurfacePitch >> 2)] = (uint)(greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24));
+                            graphicsSurfaces.pSurface32[x + ((y + 1) * emuState->SurfacePitch >> 2)] = (uint)(greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24));
                         }
                     }
                     break;
@@ -191,8 +191,8 @@ namespace VCCSharp.Modules
                         {
                             byte temp = (byte)(random.Next() & 31);
 
-                            graphicsSurfaces->pSurface32[x + (y * emuState->SurfacePitch >> 1)] = (uint)(temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27));
-                            graphicsSurfaces->pSurface32[x + ((y + 1) * emuState->SurfacePitch >> 1)] = (uint)(temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27));
+                            graphicsSurfaces.pSurface32[x + (y * emuState->SurfacePitch >> 1)] = (uint)(temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27));
+                            graphicsSurfaces.pSurface32[x + ((y + 1) * emuState->SurfacePitch >> 1)] = (uint)(temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27));
                         }
                     }
                     break;
@@ -203,9 +203,9 @@ namespace VCCSharp.Modules
                         for (int x = 0; x < 640; x++)
                         {
                             byte temp = (byte)(random.Next() & 255);
-                            graphicsSurfaces->pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = temp;
-                            graphicsSurfaces->pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = temp;
-                            graphicsSurfaces->pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = temp;
+                            graphicsSurfaces.pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = temp;
+                            graphicsSurfaces.pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = temp;
+                            graphicsSurfaces.pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = temp;
                         }
                     }
                     break;
@@ -217,7 +217,7 @@ namespace VCCSharp.Modules
                         {
                             byte temp = (byte)(random.Next() & 255);
 
-                            graphicsSurfaces->pSurface32[x + (y * emuState->SurfacePitch)] = (uint)(temp | (temp << 8) | (temp << 16));
+                            graphicsSurfaces.pSurface32[x + (y * emuState->SurfacePitch)] = (uint)(temp | (temp << 8) | (temp << 16));
                         }
                     }
                     break;
@@ -553,13 +553,15 @@ namespace VCCSharp.Modules
 
         public unsafe void SetSurfaces(DDSURFACEDESC* ddsd)
         {
-            GraphicsSurfaces* graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
+            _modules.Graphics.SetGraphicsSurfaces(DDSDGetSurface(ddsd));
 
-            void* surface = DDSDGetSurface(ddsd);
+            //GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
 
-            graphicsSurfaces->pSurface8 = (byte*)surface;
-            graphicsSurfaces->pSurface16 = (ushort*)surface;
-            graphicsSurfaces->pSurface32 = (uint*)surface;
+            //graphicsSurfaces.pSurface = DDSDGetSurface(ddsd);
+
+            //graphicsSurfaces.pSurface8 = (byte*)surface;
+            //graphicsSurfaces.pSurface16 = (ushort*)surface;
+            //graphicsSurfaces.pSurface32 = (uint*)surface;
         }
 
         public bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE hResources)

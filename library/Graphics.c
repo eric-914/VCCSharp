@@ -1,5 +1,4 @@
 #include "GraphicsState.h"
-#include "GraphicsSurfaces.h"
 
 #include "macros.h" //ARRAYCOPY
 
@@ -7,10 +6,8 @@ static const unsigned char  Lpf[4] = { 192, 199, 225, 225 }; // #2 is really und
 static const unsigned char  VcenterTable[4] = { 29, 23, 12, 12 };
 
 GraphicsState* InitializeInstance(GraphicsState*);
-GraphicsSurfaces* InitializeSurfaces(GraphicsSurfaces*);
 
 static GraphicsState* instance = InitializeInstance(new GraphicsState());
-static GraphicsSurfaces* surfaces = InitializeSurfaces(new GraphicsSurfaces());
 
 GraphicsState* InitializeInstance(GraphicsState* p) {
   p->BlinkState = 1;
@@ -65,18 +62,8 @@ GraphicsState* InitializeInstance(GraphicsState* p) {
   return p;
 }
 
-GraphicsSurfaces* InitializeSurfaces(GraphicsSurfaces* p) {
-  return p;
-}
-
 extern "C" {
   __declspec(dllexport) GraphicsState* __cdecl GetGraphicsState() {
     return instance;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) GraphicsSurfaces* __cdecl GetGraphicsSurfaces() {
-    return surfaces;
   }
 }

@@ -350,8 +350,8 @@ namespace VCCSharp.Libraries
             [DllImport(LIBRARY)]
             public static extern unsafe GraphicsState* GetGraphicsState();
 
-            [DllImport(LIBRARY)]
-            public static extern unsafe GraphicsSurfaces* GetGraphicsSurfaces();
+            //[DllImport(LIBRARY)]
+            //public static extern unsafe GraphicsSurfaces* GetGraphicsSurfaces();
         }
 
         public static class Joystick

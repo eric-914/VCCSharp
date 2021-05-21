@@ -250,9 +250,6 @@
     <ClInclude Include="VccState.h">
       <Filter>vcc</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsSurfaces.h">
-      <Filter>models</Filter>
-    </ClInclude>
     <ClInclude Include="DirectSoundState.h">
       <Filter>models</Filter>
     </ClInclude>
