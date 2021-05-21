@@ -2,12 +2,6 @@
 {
     public struct GraphicsState
     {
-        public byte CC2Offset;
-        public byte CC2VDGMode;
-        public byte CC2VDGPiaMode;
-        public byte CC3BorderColor;
-        public byte CC3Vmode;
-        public byte CC3Vres;
         public byte ColorInvert;
         public byte CompatMode;
         public byte ExtendedText;

@@ -2,12 +2,6 @@
 
 typedef struct
 {
-  unsigned char CC2Offset;
-  unsigned char CC2VDGMode;
-  unsigned char CC2VDGPiaMode;
-  unsigned char CC3BorderColor;
-  unsigned char CC3Vmode;
-  unsigned char CC3Vres;
   unsigned char ColorInvert;
   unsigned char CompatMode;
   unsigned char ExtendedText;

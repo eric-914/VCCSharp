@@ -592,7 +592,7 @@ namespace VCCSharp.Modules
             {
                 GraphicsState* graphicsState = _modules.Graphics.GetGraphicsState();
 
-                byte bytesPerRow = _modules.Graphics.BytesperRow;
+                byte bytesPerRow = _modules.Graphics.BytesPerRow;
                 byte graphicsMode = graphicsState->GraphicsMode;
                 uint startOfVidRam = graphicsState->StartofVidram;
 

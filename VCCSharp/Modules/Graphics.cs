@@ -38,10 +38,8 @@ namespace VCCSharp.Modules
         void SetGimeVdgMode2(byte mode);
         unsafe void SetGraphicsSurfaces(void* ddsdGetSurface);
 
-        byte BlinkState { get; set; }
         byte BorderChange { get; set; }
-        byte Bpp { get; set; }
-        byte BytesperRow { get; set; }
+        byte BytesPerRow { get; set; }
     }
 
     public class Graphics : IGraphics
@@ -87,7 +85,13 @@ namespace VCCSharp.Modules
         public byte BlinkState { get; set; }
         public byte BorderChange { get; set; } = 3;
         public byte Bpp { get; set; }
-        public byte BytesperRow { get; set; } = 32;
+        public byte BytesPerRow { get; set; } = 32;
+        public byte CC2Offset { get; set; }
+        public byte CC2VDGMode { get; set; }
+        public byte CC2VDGPiaMode { get; set; }
+        public byte CC3BorderColor { get; set; }
+        public byte CC3Vmode { get; set; }
+        public byte CC3Vres { get; set; }
 
         public Graphics(IModules modules)
         {
@@ -109,8 +113,8 @@ namespace VCCSharp.Modules
             {
                 GraphicsState* graphicsState = GetGraphicsState();
 
-                graphicsState->CC3Vmode = 0;
-                graphicsState->CC3Vres = 0;
+                CC3Vmode = 0;
+                CC3Vres = 0;
                 graphicsState->StartofVidram = 0;
                 graphicsState->NewStartofVidram = 0;
                 graphicsState->GraphicsMode = 0;
@@ -121,7 +125,7 @@ namespace VCCSharp.Modules
                 graphicsState->TagY = 0;
                 graphicsState->DistoOffset = 0;
                 BorderChange = 3;
-                graphicsState->CC2Offset = 0;
+                CC2Offset = 0;
                 graphicsState->Hoffset = 0;
                 graphicsState->VerticalOffsetRegister = 0;
             }
@@ -260,16 +264,11 @@ namespace VCCSharp.Modules
 
         public void SetPaletteType()
         {
-            unsafe
-            {
-                GraphicsState* graphicsState = GetGraphicsState();
+            byte borderColor = CC3BorderColor;
 
-                byte borderColor = graphicsState->CC3BorderColor;
-
-                SetGimeBorderColor(0);
-                MakeCmpPalette(_modules.Config.GetPaletteType());
-                SetGimeBorderColor(borderColor);
-            }
+            SetGimeBorderColor(0);
+            MakeCmpPalette(_modules.Config.GetPaletteType());
+            SetGimeBorderColor(borderColor);
         }
 
         public void SetMonitorType(byte type)
@@ -278,7 +277,7 @@ namespace VCCSharp.Modules
             {
                 GraphicsState* graphicsState = GetGraphicsState();
 
-                byte borderColor = graphicsState->CC3BorderColor;
+                byte borderColor = CC3BorderColor;
 
                 SetGimeBorderColor(0);
 
@@ -331,11 +330,11 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                GraphicsState* instance = GetGraphicsState();
+                GetGraphicsState();
 
-                if (instance->CC3BorderColor != (data & 63))
+                if (CC3BorderColor != (data & 63))
                 {
-                    instance->CC3BorderColor = (byte)(data & 63);
+                    CC3BorderColor = (byte)(data & 63);
                     SetupDisplay();
                     BorderChange = 3;
                 }
@@ -370,46 +369,31 @@ namespace VCCSharp.Modules
         //3 bits from SAM Registers
         public void SetGimeVdgMode(byte vdgMode)
         {
-            unsafe
+            if (CC2VDGMode != vdgMode)
             {
-                GraphicsState* instance = GetGraphicsState();
-
-                if (instance->CC2VDGMode != vdgMode)
-                {
-                    instance->CC2VDGMode = vdgMode;
-                    SetupDisplay();
-                    BorderChange = 3;
-                }
+                CC2VDGMode = vdgMode;
+                SetupDisplay();
+                BorderChange = 3;
             }
         }
 
         // These grab the Video info for all COCO 2 modes
         public void SetGimeVdgOffset(byte offset)
         {
-            unsafe
+            if (CC2Offset != offset)
             {
-                GraphicsState* instance = GetGraphicsState();
-
-                if (instance->CC2Offset != offset)
-                {
-                    instance->CC2Offset = offset;
-                    SetupDisplay();
-                }
+                CC2Offset = offset;
+                SetupDisplay();
             }
         }
 
         public void SetGimeVmode(byte vmode)
         {
-            unsafe
+            if (CC3Vmode != vmode)
             {
-                GraphicsState* instance = GetGraphicsState();
-
-                if (instance->CC3Vmode != vmode)
-                {
-                    instance->CC3Vmode = vmode;
-                    SetupDisplay();
-                    BorderChange = 3;
-                }
+                CC3Vmode = vmode;
+                SetupDisplay();
+                BorderChange = 3;
             }
         }
 
@@ -417,11 +401,11 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                GraphicsState* instance = GetGraphicsState();
+                GetGraphicsState();
 
-                if (instance->CC3Vres != vres)
+                if (CC3Vres != vres)
                 {
-                    instance->CC3Vres = vres;
+                    CC3Vres = vres;
                     SetupDisplay();
                     BorderChange = 3;
                 }
@@ -509,16 +493,11 @@ namespace VCCSharp.Modules
         //5 bits from PIA Register
         public void SetGimeVdgMode2(byte mode)
         {
-            unsafe
+            if (CC2VDGPiaMode != mode)
             {
-                GraphicsState* instance = GetGraphicsState();
-
-                if (instance->CC2VDGPiaMode != mode)
-                {
-                    instance->CC2VDGPiaMode = mode;
-                    SetupDisplay();
-                    BorderChange = 3;
-                }
+                CC2VDGPiaMode = mode;
+                SetupDisplay();
+                BorderChange = 3;
             }
         }
 
@@ -539,64 +518,64 @@ namespace VCCSharp.Modules
                 {
                     case 0:     //Color Computer 3 Mode
                         instance->NewStartofVidram = (uint)(instance->VerticalOffsetRegister * 8);
-                        instance->GraphicsMode = (byte)((instance->CC3Vmode & 128) >> 7);
-                        instance->VresIndex = (byte)((instance->CC3Vres & 96) >> 5);
+                        instance->GraphicsMode = (byte)((CC3Vmode & 128) >> 7);
+                        instance->VresIndex = (byte)((CC3Vres & 96) >> 5);
                         CoCo3LinesPerRow[7] = instance->LinesperScreen;   // For 1 pixel high modes
-                        Bpp = (byte)(instance->CC3Vres & 3);
-                        instance->LinesperRow = CoCo3LinesPerRow[instance->CC3Vmode & 7];
-                        BytesperRow = CoCo3BytesPerRow[(instance->CC3Vres & 28) >> 2];
+                        Bpp = (byte)(CC3Vres & 3);
+                        instance->LinesperRow = CoCo3LinesPerRow[CC3Vmode & 7];
+                        BytesPerRow = CoCo3BytesPerRow[(CC3Vres & 28) >> 2];
                         instance->PaletteIndex = 0;
 
                         if (instance->GraphicsMode != 0)
                         {
-                            if ((instance->CC3Vres & 1) != 0)
+                            if ((CC3Vres & 1) != 0)
                             {
                                 instance->ExtendedText = 2;
                             }
 
                             Bpp = 0;
-                            BytesperRow = CoCo3BytesPerTextRow[(instance->CC3Vres & 28) >> 2];
+                            BytesPerRow = CoCo3BytesPerTextRow[(CC3Vres & 28) >> 2];
                         }
 
                         break;
 
                     case 1:
                         //Color Computer 2 Mode
-                        instance->CC3BorderColor = 0;   //Black for text modes
+                        CC3BorderColor = 0;   //Black for text modes
                         BorderChange = 3;
-                        instance->NewStartofVidram = (uint)((512 * instance->CC2Offset) + (instance->VerticalOffsetRegister & 0xE0FF) * 8);
-                        instance->GraphicsMode = (byte)((instance->CC2VDGPiaMode & 16) >> 4); //PIA Set on graphics clear on text
+                        instance->NewStartofVidram = (uint)((512 * CC2Offset) + (instance->VerticalOffsetRegister & 0xE0FF) * 8);
+                        instance->GraphicsMode = (byte)((CC2VDGPiaMode & 16) >> 4); //PIA Set on graphics clear on text
                         instance->VresIndex = 0;
-                        instance->LinesperRow = CoCo2LinesPerRow[instance->CC2VDGMode];
+                        instance->LinesperRow = CoCo2LinesPerRow[CC2VDGMode];
 
                         byte colorSet;
                         byte tmpByte;
                         if (instance->GraphicsMode != 0)
                         {
-                            colorSet = (byte)(instance->CC2VDGPiaMode & 1);
+                            colorSet = (byte)(CC2VDGPiaMode & 1);
 
                             if (colorSet == 0)
                             {
-                                instance->CC3BorderColor = 18; //18 Bright Green
+                                CC3BorderColor = 18; //18 Bright Green
                             }
                             else
                             {
-                                instance->CC3BorderColor = 63; //63 White 
+                                CC3BorderColor = 63; //63 White 
                             }
 
                             BorderChange = 3;
-                            Bpp = CoCo2Bpp[(instance->CC2VDGPiaMode & 15) >> 1];
-                            BytesperRow = CoCo2BytesPerRow[(instance->CC2VDGPiaMode & 15) >> 1];
-                            tmpByte = (byte)((instance->CC2VDGPiaMode & 1) << 1 | (Bpp & 1));
+                            Bpp = CoCo2Bpp[(CC2VDGPiaMode & 15) >> 1];
+                            BytesPerRow = CoCo2BytesPerRow[(CC2VDGPiaMode & 15) >> 1];
+                            tmpByte = (byte)((CC2VDGPiaMode & 1) << 1 | (Bpp & 1));
                             instance->PaletteIndex = CoCo2PaletteSet[tmpByte];
                         }
                         else
                         {   //Setup for 32x16 text Mode
                             Bpp = 0;
-                            BytesperRow = 32;
-                            instance->InvertAll = (byte)((instance->CC2VDGPiaMode & 4) >> 2);
-                            instance->LowerCase = (byte)((instance->CC2VDGPiaMode & 2) >> 1);
-                            colorSet = (byte)(instance->CC2VDGPiaMode & 1);
+                            BytesPerRow = 32;
+                            instance->InvertAll = (byte)((CC2VDGPiaMode & 4) >> 2);
+                            instance->LowerCase = (byte)((CC2VDGPiaMode & 2) >> 1);
+                            colorSet = (byte)(CC2VDGPiaMode & 1);
                             tmpByte = (byte)((colorSet << 1) | instance->InvertAll);
 
                             switch (tmpByte)
@@ -632,7 +611,7 @@ namespace VCCSharp.Modules
                 _modules.CoCo.SetLinesperScreen(instance->VresIndex);
 
                 instance->VertCenter = (byte)(instance->VcenterTable[instance->VresIndex] - 4); //4 un-rendered top lines
-                instance->PixelsperLine = (ushort)(BytesperRow * PixelsPerByte[Bpp]);
+                instance->PixelsperLine = (ushort)(BytesPerRow * PixelsPerByte[Bpp]);
 
                 if ((instance->PixelsperLine % 40) != 0)
                 {
@@ -645,14 +624,14 @@ namespace VCCSharp.Modules
                     instance->HorzCenter = 0;
                 }
 
-                instance->VPitch = BytesperRow;
+                instance->VPitch = BytesPerRow;
 
                 if ((instance->HorzOffsetReg & 128) != 0)
                 {
                     instance->VPitch = 256;
                 }
 
-                byte offset = (byte)(instance->CC3BorderColor & 63);
+                byte offset = (byte)(CC3BorderColor & 63);
                 int index = instance->MonType * 64 + offset;
 
                 instance->BorderColor8 = (byte)(offset | 128);

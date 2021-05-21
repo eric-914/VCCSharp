@@ -10,12 +10,6 @@ GraphicsState* InitializeInstance(GraphicsState*);
 static GraphicsState* instance = InitializeInstance(new GraphicsState());
 
 GraphicsState* InitializeInstance(GraphicsState* p) {
-  p->CC2Offset = 0;
-  p->CC2VDGMode = 0;
-  p->CC2VDGPiaMode = 0;
-  p->CC3BorderColor = 0;
-  p->CC3Vmode = 0;
-  p->CC3Vres = 0;
   p->ColorInvert = 1;
   p->CompatMode = 0;
   p->ExtendedText = 1;
