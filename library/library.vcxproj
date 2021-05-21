@@ -226,7 +226,6 @@
     <ClInclude Include="Emu.h" />
     <ClInclude Include="GDI.h" />
     <ClInclude Include="Graphics.h" />
-    <ClInclude Include="GraphicsColors.h" />
     <ClInclude Include="GraphicsState.h" />
     <ClInclude Include="GraphicsSurfaces.h" />
     <ClInclude Include="Joystick.h" />

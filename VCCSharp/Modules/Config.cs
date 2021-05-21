@@ -76,7 +76,7 @@ namespace VCCSharp.Modules
 
             string iniFile = GetIniFilePath(cmdLineArgs.IniFile);
 
-            Converter.ToByteArray(AppTitle, configState->Model->Release);   //--A kind of "versioning" I guess
+            Converter.ToByteArray(AppTitle, configState->Model->Release);   //--A kind of "version" I guess
             Converter.ToByteArray(iniFile, configState->IniFilePath);
 
             //--TODO: Silly way to get C# to look at the SoundCardList array correctly
@@ -102,7 +102,7 @@ namespace VCCSharp.Modules
 
             var array = configState->SoundCards.ToArray();
             SoundCardList soundCard = array[soundCardIndex];
-            _GUID* guid = (_GUID*)soundCard.Guid;
+            _GUID* guid = soundCard.Guid;
 
             _modules.Audio.SoundInit(emuState->WindowHandle, guid, configState->Model->AudioRate);
 
@@ -142,7 +142,7 @@ namespace VCCSharp.Modules
             _modules.Graphics.SetPaletteType();
             _modules.DirectDraw.SetAspect(model->ForceAspect);
             _modules.Graphics.SetScanLines(emuState, model->ScanLines);
-            _modules.Emu.SetCPUMultiplier(model->CPUMultiplier);
+            _modules.Emu.SetCpuMultiplier(model->CPUMultiplier);
 
             SetCpuType(model->CpuType);
 
@@ -191,8 +191,6 @@ namespace VCCSharp.Modules
 
         public void ConfigureJoysticks()
         {
-            int temp = 0;
-
             unsafe
             {
                 ConfigState* configState = GetConfigState();
@@ -204,7 +202,7 @@ namespace VCCSharp.Modules
 
                 for (byte index = 0; index < configState->NumberOfJoysticks; index++)
                 {
-                    temp = _modules.Joystick.InitJoyStick(index);
+                    _modules.Joystick.InitJoyStick(index);
                 }
 
                 if (right->DiDevice >= configState->NumberOfJoysticks)

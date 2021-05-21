@@ -11,11 +11,11 @@ namespace VCCSharp.Modules
     {
         unsafe GraphicsState* GetGraphicsState();
         unsafe GraphicsSurfaces* GetGraphicsSurfaces();
-        unsafe GraphicsColors* GetGraphicsColors();
+        GraphicsColors GetGraphicsColors();
 
         void ResetGraphicsState();
-        void MakeRGBPalette();
-        void MakeCMPPalette(int paletteType);
+        void MakeRgbPalette();
+        void MakeCmpPalette(int paletteType);
         void SetBlinkState(byte state);
         void SetBorderChange();
         void SetVidMask(uint mask);
@@ -27,20 +27,20 @@ namespace VCCSharp.Modules
         bool CheckState(byte attributes);
         void SetGimeVdgMode(byte vdgMode);
         void SetGimeVdgOffset(byte offset);
-        void SetGimeVmode(byte vmode);
-        void SetGimeVres(byte vres);
+        void SetGimeVmode(byte mode);
+        void SetGimeVres(byte res);
         void SetGimeBorderColor(byte data);
         void SetVerticalOffsetRegister(ushort voRegister);
         void SetGimeHorzOffset(byte data);
         void SetGimePalette(byte palette, byte color);
         void SetCompatMode(byte mode);
         void SetVideoBank(byte data);
-        void SetGimeVdgMode2(byte vdgmode2);
+        void SetGimeVdgMode2(byte mode);
     }
 
     public class Graphics : IGraphics
     {
-        private readonly int[] red =
+        private readonly int[] _red =
         {
             0, 14, 12, 21, 51, 86, 108, 118, 113, 92, 61, 21, 1, 5, 12, 13,
             50, 29, 49, 86, 119, 158, 179, 192, 186, 165, 133, 94, 23, 16, 23, 25,
@@ -48,7 +48,7 @@ namespace VCCSharp.Modules
             253, 137, 161, 189, 215, 240, 253, 253, 251, 237, 214, 183, 134, 121, 116, 255
         };
 
-        private readonly int[] green =
+        private readonly int[] _green =
         {
             0, 78, 69, 53, 33, 4, 1, 1, 12, 24, 31, 35, 37, 51, 67, 77,
             50, 149, 141, 123, 103, 77, 55, 39, 35, 43, 53, 63, 100, 119, 137, 148,
@@ -56,7 +56,7 @@ namespace VCCSharp.Modules
             253, 230, 221, 207, 192, 174, 158, 148, 143, 144, 150, 162, 196, 212, 225, 255
         };
 
-        private readonly int[] blue =
+        private readonly int[] _blue =
         {
             0, 20, 18, 14, 10, 10, 12, 19, 76, 135, 178, 196, 148, 97, 29, 20,
             50, 38, 36, 32, 28, 25, 24, 78, 143, 207, 248, 249, 228, 174, 99, 46,
@@ -64,16 +64,18 @@ namespace VCCSharp.Modules
             254, 104, 83, 77, 82, 105, 142, 188, 237, 251, 251, 251, 252, 240, 183, 255
         };
 
-        private static readonly byte[] CC2Bpp = { 1, 0, 1, 0, 1, 0, 1, 0 };
-        private static readonly byte[] CC2LinesperRow = { 12, 3, 3, 2, 2, 1, 1, 1 };
-        private static readonly byte[] CC3LinesperRow = { 1, 1, 2, 8, 9, 10, 11, 200 };
-        private static readonly byte[] CC2BytesperRow = { 16, 16, 32, 16, 32, 16, 32, 32 };
-        private static readonly byte[] CC3BytesperRow = { 16, 20, 32, 40, 64, 80, 128, 160 };
-        private static readonly byte[] CC3BytesperTextRow = { 32, 40, 32, 40, 64, 80, 64, 80 };
-        private static readonly byte[] CC2PaletteSet = { 8, 0, 10, 4 };
-        private static readonly byte[] CCPixelsperByte = { 8, 4, 2, 2 };
+        private static readonly byte[] CoCo2Bpp = { 1, 0, 1, 0, 1, 0, 1, 0 };
+        private static readonly byte[] CoCo2LinesPerRow = { 12, 3, 3, 2, 2, 1, 1, 1 };
+        private static readonly byte[] CoCo3LinesPerRow = { 1, 1, 2, 8, 9, 10, 11, 200 };
+        private static readonly byte[] CoCo2BytesPerRow = { 16, 16, 32, 16, 32, 16, 32, 32 };
+        private static readonly byte[] CoCo3BytesPerRow = { 16, 20, 32, 40, 64, 80, 128, 160 };
+        private static readonly byte[] CoCo3BytesPerTextRow = { 32, 40, 32, 40, 64, 80, 64, 80 };
+        private static readonly byte[] CoCo2PaletteSet = { 8, 0, 10, 4 };
+        private static readonly byte[] PixelsPerByte = { 8, 4, 2, 2 };
 
         private readonly IModules _modules;
+
+        private readonly GraphicsColors _colors = new GraphicsColors();
 
         public Graphics(IModules modules)
         {
@@ -90,10 +92,7 @@ namespace VCCSharp.Modules
             return Library.Graphics.GetGraphicsSurfaces();
         }
 
-        public unsafe GraphicsColors* GetGraphicsColors()
-        {
-            return Library.Graphics.GetGraphicsColors();
-        }
+        public GraphicsColors GetGraphicsColors() => _colors;
 
         public void ResetGraphicsState()
         {
@@ -176,24 +175,25 @@ namespace VCCSharp.Modules
             graphicsState->BorderChange = 3;
         }
 
-        public void MakeCMPPalette(int paletteType)
+        public void MakeCmpPalette(int paletteType)
         {
             Debug.WriteLine(paletteType == 1 ? "Loading new CMP palette." : "Loading old CMP palette.");
 
             float gamma = 1.4f;
-            double r, g, b;
 
             for (byte index = 0; index <= 63; index++)
             {
+                double r, g, b;
+
                 if (paletteType == 1)
                 {
                     if (index > 39) { gamma = 1.1f; }
 
                     if (index > 55) { gamma = 1; }
 
-                    r = red[index] * (double)gamma; if (r > 255) { r = 255; }
-                    g = green[index] * (double)gamma; if (g > 255) { g = 255; }
-                    b = blue[index] * (double)gamma; if (b > 255) { b = 255; }
+                    r = _red[index] * (double)gamma; if (r > 255) { r = 255; }
+                    g = _green[index] * (double)gamma; if (g > 255) { g = 255; }
+                    b = _blue[index] * (double)gamma; if (b > 255) { b = 255; }
                 }
                 else //Old palette //Stolen from M.E.S.S.
                 {
@@ -221,7 +221,7 @@ namespace VCCSharp.Modules
                             double contrast = 70;
                             double saturation = 92;
                             double brightness = -20;
-                            brightness += (((double)index / 16) + (double)1) * contrast;
+                            brightness += (((double)index / 16) + 1) * contrast;
                             int offset = (index % 16) - 1 + (index / 16) * 15;
                             r = Math.Cos(w * (offset + 9.2)) * saturation + brightness;
                             g = Math.Cos(w * (offset + 14.2)) * saturation + brightness;
@@ -271,7 +271,7 @@ namespace VCCSharp.Modules
                 byte borderColor = graphicsState->CC3BorderColor;
 
                 SetGimeBorderColor(0);
-                MakeCMPPalette(_modules.Config.GetPaletteType());
+                MakeCmpPalette(_modules.Config.GetPaletteType());
                 SetGimeBorderColor(borderColor);
             }
         }
@@ -307,44 +307,33 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void MakeRGBPalette()
+        public void MakeRgbPalette()
         {
-            unsafe
+            for (byte index = 0; index < 64; index++)
             {
-                GraphicsColors* colors = GetGraphicsColors();
+                //colors->PaletteLookup8[1][index] = index | 128;
 
-                for (byte index = 0; index < 64; index++)
-                {
-                    byte r, g, b;
+                //r = colors->ColorTable16Bit[(index & 32) >> 4 | (index & 4) >> 2];
+                //g = colors->ColorTable16Bit[(index & 16) >> 3 | (index & 2) >> 1];
+                //b = colors->ColorTable16Bit[(index & 8) >> 2 | (index & 1)];
+                //colors->PaletteLookup16[1][index] = (r << 11) | (g << 6) | b;
 
-                    //colors->PaletteLookup8[1][index] = index | 128;
+                //32BIT
+                byte r = _colors.ColorTable32Bit[(index & 32) >> 4 | (index & 4) >> 2];
+                byte g = _colors.ColorTable32Bit[(index & 16) >> 3 | (index & 2) >> 1];
+                byte b = _colors.ColorTable32Bit[(index & 8) >> 2 | (index & 1)];
 
-                    //r = colors->ColorTable16Bit[(index & 32) >> 4 | (index & 4) >> 2];
-                    //g = colors->ColorTable16Bit[(index & 16) >> 3 | (index & 2) >> 1];
-                    //b = colors->ColorTable16Bit[(index & 8) >> 2 | (index & 1)];
-                    //colors->PaletteLookup16[1][index] = (r << 11) | (g << 6) | b;
-
-                    //32BIT
-                    r = colors->ColorTable32Bit[(index & 32) >> 4 | (index & 4) >> 2];
-                    g = colors->ColorTable32Bit[(index & 16) >> 3 | (index & 2) >> 1];
-                    b = colors->ColorTable32Bit[(index & 8) >> 2 | (index & 1)];
-                    colors->PaletteLookup32[1 * 64 + index] = (uint)(r << 16 | g << 8 | b);
-                }
+                _colors.PaletteLookup32[1 * 64 + index] = (uint)(r << 16 | g << 8 | b);
             }
         }
 
         public void SetMonitorTypePalettes(byte monType, byte palIndex)
         {
-            unsafe
-            {
-                GraphicsColors* colors = GetGraphicsColors();
+            int offset = monType * 64 + palIndex;
 
-                int offset = monType * 64 + palIndex;
-
-                colors->Palette16Bit[palIndex] = colors->PaletteLookup16[offset]; //colors->PaletteLookup16[monType][colors->Palette[palIndex]];
-                colors->Palette32Bit[palIndex] = colors->PaletteLookup32[offset]; //colors->PaletteLookup32[monType][colors->Palette[palIndex]];
-                colors->Palette8Bit[palIndex] = colors->PaletteLookup8[offset]; //colors->PaletteLookup8[monType][colors->Palette[palIndex]];
-            }
+            _colors.Palette16Bit[palIndex] = _colors.PaletteLookup16[offset]; //colors->PaletteLookup16[monType][colors->Palette[palIndex]];
+            _colors.Palette32Bit[palIndex] = _colors.PaletteLookup32[offset]; //colors->PaletteLookup32[monType][colors->Palette[palIndex]];
+            _colors.Palette8Bit[palIndex] = _colors.PaletteLookup8[offset]; //colors->PaletteLookup8[monType][colors->Palette[palIndex]];
         }
 
         public void SetGimeBorderColor(byte data)
@@ -364,28 +353,21 @@ namespace VCCSharp.Modules
 
         public void SetPaletteLookup(byte index, byte r, byte g, byte b)
         {
-            unsafe
-            {
-                byte rr, gg, bb;
+            byte rr = r;
+            byte gg = g;
+            byte bb = b;
 
-                GraphicsColors* colors = GetGraphicsColors();
+            _colors.PaletteLookup32[0 * 64 + index] = (uint)((rr << 16) | (gg << 8) | bb);
 
-                rr = r;
-                gg = g;
-                bb = b;
-                colors->PaletteLookup32[0 * 64 + index] = (uint)((rr << 16) | (gg << 8) | bb);
+            //rr >>= 3;
+            //gg >>= 3;
+            //bb >>= 3;
+            //colors->PaletteLookup16[0][index] = (rr << 11) | (gg << 6) | bb;
 
-                //rr >>= 3;
-                //gg >>= 3;
-                //bb >>= 3;
-                //colors->PaletteLookup16[0][index] = (rr << 11) | (gg << 6) | bb;
-
-                //rr >>= 3;
-                //gg >>= 3;
-                //bb >>= 3;
-                //colors->PaletteLookup8[0][index] = 0x80 | ((rr & 2) << 4) | ((gg & 2) << 3) | ((bb & 2) << 2) | ((rr & 1) << 2) | ((gg & 1) << 1) | (bb & 1);
-
-            }
+            //rr >>= 3;
+            //gg >>= 3;
+            //bb >>= 3;
+            //colors->PaletteLookup8[0][index] = 0x80 | ((rr & 2) << 4) | ((gg & 2) << 3) | ((bb & 2) << 2) | ((rr & 1) << 2) | ((gg & 1) << 1) | (bb & 1);
         }
 
         public bool CheckState(byte attributes)
@@ -496,17 +478,16 @@ namespace VCCSharp.Modules
             unsafe
             {
                 GraphicsState* instance = GetGraphicsState();
-                GraphicsColors* colors = GetGraphicsColors();
 
                 byte offset = (byte)(color & 63);
                 int index = instance->MonType * 64 + offset;
 
                 // Convert the 6bit rgbrgb value to rrrrrggggggbbbbb for the Real video hardware.
                 //	unsigned char r,g,b;
-                colors->Palette[palette] = offset;
-                colors->Palette8Bit[palette] = colors->PaletteLookup8[index]; //colors->PaletteLookup8[instance->MonType][offset];
-                colors->Palette16Bit[palette] = colors->PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonType][offset];
-                colors->Palette32Bit[palette] = colors->PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][offset];
+                _colors.Palette[palette] = offset;
+                _colors.Palette8Bit[palette] = _colors.PaletteLookup8[index]; //colors->PaletteLookup8[instance->MonType][offset];
+                _colors.Palette16Bit[palette] = _colors.PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonType][offset];
+                _colors.Palette32Bit[palette] = _colors.PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][offset];
             }
         }
 
@@ -558,7 +539,6 @@ namespace VCCSharp.Modules
             unsafe
             {
                 GraphicsState* instance = GetGraphicsState();
-                GraphicsColors* colors = GetGraphicsColors();
 
                 instance->ExtendedText = 1;
 
@@ -568,10 +548,10 @@ namespace VCCSharp.Modules
                         instance->NewStartofVidram = (uint)(instance->VerticalOffsetRegister * 8);
                         instance->GraphicsMode = (byte)((instance->CC3Vmode & 128) >> 7);
                         instance->VresIndex = (byte)((instance->CC3Vres & 96) >> 5);
-                        CC3LinesperRow[7] = instance->LinesperScreen;   // For 1 pixel high modes
+                        CoCo3LinesPerRow[7] = instance->LinesperScreen;   // For 1 pixel high modes
                         instance->Bpp = (byte)(instance->CC3Vres & 3);
-                        instance->LinesperRow = CC3LinesperRow[instance->CC3Vmode & 7];
-                        instance->BytesperRow = CC3BytesperRow[(instance->CC3Vres & 28) >> 2];
+                        instance->LinesperRow = CoCo3LinesPerRow[instance->CC3Vmode & 7];
+                        instance->BytesperRow = CoCo3BytesPerRow[(instance->CC3Vres & 28) >> 2];
                         instance->PaletteIndex = 0;
 
                         if (instance->GraphicsMode != 0)
@@ -582,7 +562,7 @@ namespace VCCSharp.Modules
                             }
 
                             instance->Bpp = 0;
-                            instance->BytesperRow = CC3BytesperTextRow[(instance->CC3Vres & 28) >> 2];
+                            instance->BytesperRow = CoCo3BytesPerTextRow[(instance->CC3Vres & 28) >> 2];
                         }
 
                         break;
@@ -593,7 +573,7 @@ namespace VCCSharp.Modules
                         instance->NewStartofVidram = (uint)((512 * instance->CC2Offset) + (instance->VerticalOffsetRegister & 0xE0FF) * 8);
                         instance->GraphicsMode = (byte)((instance->CC2VDGPiaMode & 16) >> 4); //PIA Set on graphics clear on text
                         instance->VresIndex = 0;
-                        instance->LinesperRow = CC2LinesperRow[instance->CC2VDGMode];
+                        instance->LinesperRow = CoCo2LinesPerRow[instance->CC2VDGMode];
 
                         byte colorSet;
                         byte tmpByte;
@@ -611,10 +591,10 @@ namespace VCCSharp.Modules
                             }
 
                             instance->BorderChange = 3;
-                            instance->Bpp = CC2Bpp[(instance->CC2VDGPiaMode & 15) >> 1];
-                            instance->BytesperRow = CC2BytesperRow[(instance->CC2VDGPiaMode & 15) >> 1];
+                            instance->Bpp = CoCo2Bpp[(instance->CC2VDGPiaMode & 15) >> 1];
+                            instance->BytesperRow = CoCo2BytesPerRow[(instance->CC2VDGPiaMode & 15) >> 1];
                             tmpByte = (byte)((instance->CC2VDGPiaMode & 1) << 1 | (instance->Bpp & 1));
-                            instance->PaletteIndex = CC2PaletteSet[tmpByte];
+                            instance->PaletteIndex = CoCo2PaletteSet[tmpByte];
                         }
                         else
                         {   //Setup for 32x16 text Mode
@@ -658,7 +638,7 @@ namespace VCCSharp.Modules
                 _modules.CoCo.SetLinesperScreen(instance->VresIndex);
 
                 instance->VertCenter = (byte)(instance->VcenterTable[instance->VresIndex] - 4); //4 un-rendered top lines
-                instance->PixelsperLine = (ushort)(instance->BytesperRow * CCPixelsperByte[instance->Bpp]);
+                instance->PixelsperLine = (ushort)(instance->BytesperRow * PixelsPerByte[instance->Bpp]);
 
                 if ((instance->PixelsperLine % 40) != 0)
                 {
@@ -682,8 +662,8 @@ namespace VCCSharp.Modules
                 int index = instance->MonType * 64 + offset;
 
                 instance->BorderColor8 = (byte)(offset | 128);
-                instance->BorderColor16 = colors->PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonType][instance->CC3BorderColor & 63];
-                instance->BorderColor32 = colors->PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][instance->CC3BorderColor & 63];
+                instance->BorderColor16 = _colors.PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonType][instance->CC3BorderColor & 63];
+                instance->BorderColor32 = _colors.PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][instance->CC3BorderColor & 63];
 
                 instance->NewStartofVidram = (instance->NewStartofVidram & instance->VidMask) + instance->DistoOffset; //DistoOffset for 2M configuration
                 instance->MasterMode = (byte)((instance->GraphicsMode << 7) | (instance->CompatMode << 6) | ((instance->Bpp & 3) << 4) | (instance->Stretch & 15));

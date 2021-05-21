@@ -13,9 +13,9 @@ namespace VCCSharp.Modules
         unsafe void SetEmuState(EmuState* emuState);
         void SoftReset();
         unsafe void HardReset(EmuState* emuState);
-        void SetCPUMultiplier(byte multiplier);
+        void SetCpuMultiplier(byte multiplier);
         void SetEmuRunning(bool flag);
-        void SetCPUMultiplierFlag(byte double_speed);
+        void SetCpuMultiplierFlag(byte doubleSpeed);
         void SetTurboMode(byte data);
     }
 
@@ -96,11 +96,11 @@ namespace VCCSharp.Modules
         private void GimeReset()
         {
             _modules.Graphics.ResetGraphicsState();
-            _modules.Graphics.MakeRGBPalette();
+            _modules.Graphics.MakeRgbPalette();
 
             int paletteType = _modules.Config.GetPaletteType();
 
-            _modules.Graphics.MakeCMPPalette(paletteType);
+            _modules.Graphics.MakeCmpPalette(paletteType);
 
             _modules.CoCo.CocoReset();
 
@@ -115,7 +115,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void SetCPUMultiplier(byte multiplier)
+        public void SetCpuMultiplier(byte multiplier)
         {
             unsafe
             {
@@ -123,13 +123,13 @@ namespace VCCSharp.Modules
 
                 emuState->DoubleSpeedMultiplier = multiplier;
 
-                SetCPUMultiplierFlag(emuState->DoubleSpeedFlag);
+                SetCpuMultiplierFlag(emuState->DoubleSpeedFlag);
             }
         }
 
-        public void SetCPUMultiplierFlag(byte double_speed)
+        public void SetCpuMultiplierFlag(byte doubleSpeed)
         {
-            Library.Emu.SetCPUMultiplierFlag(double_speed);
+            Library.Emu.SetCPUMultiplierFlag(doubleSpeed);
         }
 
         public void SetTurboMode(byte data)

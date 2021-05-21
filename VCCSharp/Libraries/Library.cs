@@ -127,7 +127,7 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern Point GetIniWindowSize();
- 
+
             [DllImport(LIBRARY)]
             public static extern void UpdateTapeDialog(uint counter, byte tapeMode);
         }
@@ -352,9 +352,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe GraphicsSurfaces* GetGraphicsSurfaces();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe GraphicsColors* GetGraphicsColors();
         }
 
         public static class Joystick
