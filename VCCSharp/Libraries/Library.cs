@@ -120,16 +120,10 @@ namespace VCCSharp.Libraries
             public static extern byte GetSoundCardIndex(string soundCardName);
 
             [DllImport(LIBRARY)]
-            public static extern void UpdateTapeDialog(uint counter);
-
-            [DllImport(LIBRARY)]
             public static extern int GetRememberSize();
 
             [DllImport(LIBRARY)]
             public static extern Point GetIniWindowSize();
-
-            [DllImport(LIBRARY)]
-            public static extern void UpdateTapeDialog(uint counter, byte tapeMode);
         }
 
         public static class CPU

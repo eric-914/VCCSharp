@@ -28,7 +28,6 @@ namespace VCCSharp.Modules
         short GetCurrentKeyboardLayout();
         void SaveConfig();
         byte GetSoundCardIndex(string soundCardName);
-        void UpdateTapeDialog(uint counter);
         bool GetRememberSize();
         Point GetIniWindowSize();
         string AppTitle { get; }
@@ -629,11 +628,6 @@ namespace VCCSharp.Modules
         public byte GetSoundCardIndex(string soundCardName)
         {
             return Library.Config.GetSoundCardIndex(soundCardName);
-        }
-
-        public void UpdateTapeDialog(uint counter)
-        {
-            Library.Config.UpdateTapeDialog(counter);
         }
 
         public bool GetRememberSize()

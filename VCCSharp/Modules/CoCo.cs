@@ -20,6 +20,8 @@ namespace VCCSharp.Modules
         void SetHorizontalInterruptState(byte state);
         void SetTimerInterruptState(byte state);
         void SetLinesPerScreen(byte lines);
+
+        Action<int> UpdateTapeDialog { get; set; }
     }
 
     public class CoCo : ICoCo
@@ -28,9 +30,13 @@ namespace VCCSharp.Modules
 
         private static byte _lastMode;
 
+        public Action<int> UpdateTapeDialog { get; set; }
+
         public CoCo(IModules modules)
         {
             _modules = modules;
+
+            UpdateTapeDialog = offset => { }; //_modules.Config.UpdateTapeDialog((uint)offset);
         }
 
         public unsafe CoCoState* GetCoCoState()
@@ -755,12 +761,13 @@ namespace VCCSharp.Modules
         {
             uint offset = _modules.Cassette.FlushCassetteBuffer(buffer, length);
 
-            _modules.Config.UpdateTapeDialog(offset);
+            UpdateTapeDialog((int)offset);
         }
 
         private unsafe void LoadCassetteBuffer(CoCoState* cocoState)
         {
             _modules.Cassette.LoadCassetteBuffer(cocoState->CassBuffer);
         }
+
     }
 }

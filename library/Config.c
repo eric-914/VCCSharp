@@ -146,18 +146,6 @@ extern "C" {
   }
 }
 
-extern "C" {
-  __declspec(dllexport) void __cdecl UpdateTapeDialog(unsigned int counter)
-  {
-    if (instance->hDlgTape == NULL) {
-      return;
-    }
-
-    instance->TapeCounter = counter;
-
-    SetDialogTapeCounter(instance->hDlgTape, instance->TapeCounter);
-  }
-}
 static HWND hWndTabDialog;
 
 void MainInitDialog(HWND hDlg) {

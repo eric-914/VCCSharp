@@ -34,6 +34,9 @@ namespace VCCSharp.TapePlayer
                         break;
                 }
             };
+
+            _modules.CoCo.UpdateTapeDialog = SetTapeCounter;
+            _modules.Cassette.UpdateTapeDialog = SetTapeCounter;
         }
 
         public unsafe void ShowDialog(ConfigState* state)
@@ -227,7 +230,8 @@ namespace VCCSharp.TapePlayer
 
         private void SetTapeCounter(int counter)
         {
-            _modules.Cassette.SetTapeCounter((uint)counter);
+            //_modules.Cassette.SetTapeCounter((uint)counter);
+            //_modules.Config.UpdateTapeDialog((uint) counter);
             _viewModel.Counter = counter;
         }
     }

@@ -1,4 +1,5 @@
-﻿using VCCSharp.Enums;
+﻿using System;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -17,6 +18,8 @@ namespace VCCSharp.Modules
 
         unsafe int MountTape(byte* filename);
         void CloseTapeFile();
+
+        Action<int> UpdateTapeDialog { get; set; }
     }
 
     public class Cassette : ICassette
@@ -24,10 +27,14 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
         private readonly IKernel _kernel;
 
+        public Action<int> UpdateTapeDialog { get; set; }
+
         public Cassette(IModules modules, IKernel kernel)
         {
             _modules = modules;
             _kernel = kernel;
+
+            UpdateTapeDialog = offset => { }; //_modules.Config.UpdateTapeDialog((uint) offset);
         }
 
         public unsafe CassetteState* GetCassetteState()
@@ -57,7 +64,7 @@ namespace VCCSharp.Modules
                     break;
             }
 
-            UpdateTapeDialog(instance->TapeOffset);
+            UpdateTapeDialog((int)instance->TapeOffset);
         }
 
         public unsafe void LoadCassetteBufferCAS(byte* cassBuffer, uint* bytesMoved)
@@ -248,7 +255,7 @@ namespace VCCSharp.Modules
                     instance->TotalSize = instance->TapeOffset;
                 }
 
-                UpdateTapeDialog(instance->TapeOffset);
+                UpdateTapeDialog((int)instance->TapeOffset);
             }
         }
 
@@ -261,7 +268,7 @@ namespace VCCSharp.Modules
         {
             Library.Cassette.CloseTapeFile();
         }
-
+        
         public unsafe uint FlushCassetteBuffer(byte* buffer, uint length)
         {
             CassetteState* instance = GetCassetteState();
@@ -277,11 +284,6 @@ namespace VCCSharp.Modules
         public unsafe int MountTape(byte* filename)
         {
             return Library.Cassette.MountTape(filename);
-        }
-
-        public void UpdateTapeDialog(uint offset)
-        {
-            _modules.Config.UpdateTapeDialog(offset);
         }
     }
 }
