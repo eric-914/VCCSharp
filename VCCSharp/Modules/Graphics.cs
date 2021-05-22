@@ -56,6 +56,15 @@ namespace VCCSharp.Modules
         byte TextBgPalette { get; set; }
         byte TextFgPalette { get; set; }
         byte VerticalCenter { get; set; }
+        ushort PixelsPerLine { get; set; }
+        ushort TagY { get; set; }
+        ushort VPitch { get; set; }
+        uint NewStartOfVidRam { get; set; }
+        uint StartOfVidRam { get; set; }
+        uint VidMask { get; set; }
+        byte BorderColor8 { get; set; }
+        ushort BorderColor16 { get; set; }
+        uint BorderColor32 { get; set; }
     }
 
     public class Graphics : IGraphics
@@ -130,6 +139,20 @@ namespace VCCSharp.Modules
         public byte VerticalCenter { get; set; }
         public byte VresIndex { get; set; }
 
+        public ushort PixelsPerLine { get; set; }
+        public ushort TagY { get; set; }
+        public ushort VerticalOffsetRegister { get; set; }
+        public ushort VPitch { get; set; } = 32;
+
+        public uint DistoOffset { get; set; }
+        public uint NewStartOfVidRam { get; set; }
+        public uint StartOfVidRam { get; set; }
+        public uint VidMask { get; set; } = 0x1FFFF;
+
+        public byte BorderColor8 { get; set; }
+        public ushort BorderColor16 { get; set; }
+        public uint BorderColor32 { get; set; }
+
         public Graphics(IModules modules)
         {
             _modules = modules;
@@ -146,26 +169,21 @@ namespace VCCSharp.Modules
 
         public void ResetGraphicsState()
         {
-            unsafe
-            {
-                GraphicsState* graphicsState = GetGraphicsState();
-
-                CC3Vmode = 0;
-                CC3Vres = 0;
-                graphicsState->StartOfVidRam = 0;
-                graphicsState->NewStartofVidram = 0;
-                GraphicsMode = 0;
-                LowerCase = 0;
-                InvertAll = 0;
-                ExtendedText = 1;
-                HorizontalOffsetReg = 0;
-                graphicsState->TagY = 0;
-                graphicsState->DistoOffset = 0;
-                BorderChange = 3;
-                CC2Offset = 0;
-                HorizontalOffset = 0;
-                graphicsState->VerticalOffsetRegister = 0;
-            }
+            CC3Vmode = 0;
+            CC3Vres = 0;
+            StartOfVidRam = 0;
+            NewStartOfVidRam = 0;
+            GraphicsMode = 0;
+            LowerCase = 0;
+            InvertAll = 0;
+            ExtendedText = 1;
+            HorizontalOffsetReg = 0;
+            TagY = 0;
+            DistoOffset = 0;
+            BorderChange = 3;
+            CC2Offset = 0;
+            HorizontalOffset = 0;
+            VerticalOffsetRegister = 0;
         }
 
         public void SetBlinkState(byte state)
@@ -183,12 +201,7 @@ namespace VCCSharp.Modules
 
         public void SetVidMask(uint mask)
         {
-            unsafe
-            {
-                GraphicsState* graphicsState = GetGraphicsState();
-
-                graphicsState->VidMask = mask;
-            }
+            VidMask = mask;
         }
 
         public void FlipArtifacts()
@@ -432,16 +445,11 @@ namespace VCCSharp.Modules
         //These grab the Video info for all COCO 3 modes
         public void SetVerticalOffsetRegister(ushort voRegister)
         {
-            unsafe
+            if (VerticalOffsetRegister != voRegister)
             {
-                GraphicsState* instance = GetGraphicsState();
+                VerticalOffsetRegister = voRegister;
 
-                if (instance->VerticalOffsetRegister != voRegister)
-                {
-                    instance->VerticalOffsetRegister = voRegister;
-
-                    SetupDisplay();
-                }
+                SetupDisplay();
             }
         }
 
@@ -482,14 +490,9 @@ namespace VCCSharp.Modules
 
         public void SetVideoBank(byte data)
         {
-            unsafe
-            {
-                GraphicsState* instance = GetGraphicsState();
+            DistoOffset = (uint)(data * (512 * 1024));
 
-                instance->DistoOffset = (uint)(data * (512 * 1024));
-
-                SetupDisplay();
-            }
+            SetupDisplay();
         }
 
         //5 bits from PIA Register
@@ -519,7 +522,7 @@ namespace VCCSharp.Modules
                 switch (CompatMode)
                 {
                     case 0:     //Color Computer 3 Mode
-                        instance->NewStartofVidram = (uint)(instance->VerticalOffsetRegister * 8);
+                        NewStartOfVidRam = (uint)(VerticalOffsetRegister * 8);
                         GraphicsMode = (byte)((CC3Vmode & 128) >> 7);
                         VresIndex = (byte)((CC3Vres & 96) >> 5);
                         CoCo3LinesPerRow[7] = LinesPerScreen;   // For 1 pixel high modes
@@ -545,7 +548,7 @@ namespace VCCSharp.Modules
                         //Color Computer 2 Mode
                         CC3BorderColor = 0;   //Black for text modes
                         BorderChange = 3;
-                        instance->NewStartofVidram = (uint)((512 * CC2Offset) + (instance->VerticalOffsetRegister & 0xE0FF) * 8);
+                        NewStartOfVidRam = (uint)((512 * CC2Offset) + (VerticalOffsetRegister & 0xE0FF) * 8);
                         GraphicsMode = (byte)((CC2VDGPiaMode & 16) >> 4); //PIA Set on graphics clear on text
                         VresIndex = 0;
                         LinesPerRow = CoCo2LinesPerRow[CC2VDGMode];
@@ -607,34 +610,34 @@ namespace VCCSharp.Modules
                 _modules.CoCo.SetLinesperScreen(VresIndex);
 
                 VerticalCenter = (byte)(instance->VcenterTable[VresIndex] - 4); //4 un-rendered top lines
-                instance->PixelsperLine = (ushort)(BytesPerRow * PixelsPerByte[Bpp]);
+                PixelsPerLine = (ushort)(BytesPerRow * PixelsPerByte[Bpp]);
 
-                if ((instance->PixelsperLine % 40) != 0)
+                if ((PixelsPerLine % 40) != 0)
                 {
-                    Stretch = (byte)((512 / instance->PixelsperLine) - 1);
+                    Stretch = (byte)((512 / PixelsPerLine) - 1);
                     HorizontalCenter = 64;
                 }
                 else
                 {
-                    Stretch = (byte)((640 / instance->PixelsperLine) - 1);
+                    Stretch = (byte)((640 / PixelsPerLine) - 1);
                     HorizontalCenter = 0;
                 }
 
-                instance->VPitch = BytesPerRow;
+                VPitch = BytesPerRow;
 
                 if ((HorizontalOffsetReg & 128) != 0)
                 {
-                    instance->VPitch = 256;
+                    VPitch = 256;
                 }
 
                 byte offset = (byte)(CC3BorderColor & 63);
                 int index = MonType * 64 + offset;
 
-                instance->BorderColor8 = (byte)(offset | 128);
-                instance->BorderColor16 = _colors.PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonType][instance->CC3BorderColor & 63];
-                instance->BorderColor32 = _colors.PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][instance->CC3BorderColor & 63];
+                BorderColor8 = (byte)(offset | 128);
+                BorderColor16 = _colors.PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonType][instance->CC3BorderColor & 63];
+                BorderColor32 = _colors.PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][instance->CC3BorderColor & 63];
 
-                instance->NewStartofVidram = (instance->NewStartofVidram & instance->VidMask) + instance->DistoOffset; //Dist Offset for 2M configuration
+                NewStartOfVidRam = (NewStartOfVidRam & VidMask) + DistoOffset; //Dist Offset for 2M configuration
                 MasterMode = (byte)((GraphicsMode << 7) | (CompatMode << 6) | ((Bpp & 3) << 4) | (Stretch & 15));
             }
         }

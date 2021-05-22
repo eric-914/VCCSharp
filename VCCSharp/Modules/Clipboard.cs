@@ -588,103 +588,98 @@ namespace VCCSharp.Modules
 
         public void CopyText()
         {
-            unsafe
+            byte bytesPerRow = _graphics.BytesPerRow;
+            byte graphicsMode = _graphics.GraphicsMode;
+            uint startOfVidRam = _graphics.StartOfVidRam;
+
+            if (graphicsMode != 0)
             {
-                GraphicsState* graphicsState = _graphics.GetGraphicsState();
+                const string error = "ERROR: Graphics screen can not be copied.\nCopy can ONLY use a hardware text screen.";
+                MessageBox.Show(error, "Clipboard");
 
-                byte bytesPerRow = _graphics.BytesPerRow;
-                byte graphicsMode = _graphics.GraphicsMode;
-                uint startOfVidRam = graphicsState->StartOfVidRam;
-
-                if (graphicsMode != 0)
-                {
-                    const string error = "ERROR: Graphics screen can not be copied.\nCopy can ONLY use a hardware text screen.";
-                    MessageBox.Show(error, "Clipboard");
-
-                    return;
-                }
-
-                Debug.WriteLine($"StartOfVidRam is: {startOfVidRam}\nGraphicsMode is: {graphicsMode}");
-
-                int lines = bytesPerRow == 32 ? 15 : 23;
-                string clipOut = "";
-
-                // Read the lo-res text screen...
-                if (bytesPerRow == 32)
-                {
-                    for (int y = 0; y <= lines; y++)
-                    {
-                        int lastChar = 0;
-                        string tmpLine = "";
-
-                        for (int idx = 0; idx < bytesPerRow; idx++)
-                        {
-                            ushort address = (ushort)(0x0400 + y * bytesPerRow + idx);
-                            byte tmp = _modules.TC1014.MemRead8(address);
-
-                            if (tmp != 32 && tmp != 64 && tmp != 96)
-                            {
-                                lastChar = idx + 1;
-                            }
-
-                            if (tmp < 128) //--Ignore anything beyond ASCII 
-                            {
-                                tmpLine += _pcChars32[tmp];
-                            }
-                        }
-
-                        tmpLine = tmpLine[..lastChar];
-
-                        if (lastChar != 0)
-                        {
-                            clipOut += tmpLine + "\n";
-                        }
-                    }
-
-                    if (string.IsNullOrEmpty(clipOut))
-                    {
-                        MessageBox.Show("No text found on screen.", "Clipboard");
-                    }
-
-                }
-                //TODO: This is untested since C# conversion
-                else if (bytesPerRow == 40 || bytesPerRow == 80)
-                {
-                    int offset = 32;
-
-                    for (int y = 0; y <= lines; y++)
-                    {
-                        int lastChar = 0;
-                        string tmpLine = "";
-
-                        for (int idx = 0; idx < bytesPerRow * 2; idx += 2)
-                        {
-                            int address = (int)(startOfVidRam + y * (bytesPerRow * 2) + idx);
-                            int tmp = _modules.TC1014.GetMem(address);
-
-                            if (tmp == 32 || tmp == 64 || tmp == 96)
-                            {
-                                tmp = offset;
-                            }
-                            else
-                            {
-                                lastChar = idx / 2 + 1;
-                            }
-
-                            tmpLine += _pcChars40[tmp - offset];
-                        }
-
-                        tmpLine = tmpLine[..lastChar];
-
-                        if (lastChar != 0)
-                        {
-                            clipOut += tmpLine; clipOut += "\n";
-                        }
-                    }
-                }
-
-                System.Windows.Clipboard.SetText(clipOut);
+                return;
             }
+
+            Debug.WriteLine($"StartOfVidRam is: {startOfVidRam}\nGraphicsMode is: {graphicsMode}");
+
+            int lines = bytesPerRow == 32 ? 15 : 23;
+            string clipOut = "";
+
+            // Read the lo-res text screen...
+            if (bytesPerRow == 32)
+            {
+                for (int y = 0; y <= lines; y++)
+                {
+                    int lastChar = 0;
+                    string tmpLine = "";
+
+                    for (int idx = 0; idx < bytesPerRow; idx++)
+                    {
+                        ushort address = (ushort)(0x0400 + y * bytesPerRow + idx);
+                        byte tmp = _modules.TC1014.MemRead8(address);
+
+                        if (tmp != 32 && tmp != 64 && tmp != 96)
+                        {
+                            lastChar = idx + 1;
+                        }
+
+                        if (tmp < 128) //--Ignore anything beyond ASCII 
+                        {
+                            tmpLine += _pcChars32[tmp];
+                        }
+                    }
+
+                    tmpLine = tmpLine[..lastChar];
+
+                    if (lastChar != 0)
+                    {
+                        clipOut += tmpLine + "\n";
+                    }
+                }
+
+                if (string.IsNullOrEmpty(clipOut))
+                {
+                    MessageBox.Show("No text found on screen.", "Clipboard");
+                }
+
+            }
+            //TODO: This is untested since C# conversion
+            else if (bytesPerRow == 40 || bytesPerRow == 80)
+            {
+                int offset = 32;
+
+                for (int y = 0; y <= lines; y++)
+                {
+                    int lastChar = 0;
+                    string tmpLine = "";
+
+                    for (int idx = 0; idx < bytesPerRow * 2; idx += 2)
+                    {
+                        int address = (int)(startOfVidRam + y * (bytesPerRow * 2) + idx);
+                        int tmp = _modules.TC1014.GetMem(address);
+
+                        if (tmp == 32 || tmp == 64 || tmp == 96)
+                        {
+                            tmp = offset;
+                        }
+                        else
+                        {
+                            lastChar = idx / 2 + 1;
+                        }
+
+                        tmpLine += _pcChars40[tmp - offset];
+                    }
+
+                    tmpLine = tmpLine[..lastChar];
+
+                    if (lastChar != 0)
+                    {
+                        clipOut += tmpLine; clipOut += "\n";
+                    }
+                }
+            }
+
+            System.Windows.Clipboard.SetText(clipOut);
         }
     }
 }

@@ -10,20 +10,6 @@ GraphicsState* InitializeInstance(GraphicsState*);
 static GraphicsState* instance = InitializeInstance(new GraphicsState());
 
 GraphicsState* InitializeInstance(GraphicsState* p) {
-  p->PixelsperLine = 0;
-  p->TagY = 0;
-  p->VerticalOffsetRegister = 0;
-  p->VPitch = 32;
-
-  p->DistoOffset = 0;
-  p->NewStartofVidram = 0;
-  p->StartofVidram = 0;
-  p->VidMask = 0x1FFFF;
-
-  p->BorderColor8 = 0;
-  p->BorderColor16 = 0;
-  p->BorderColor32 = 0;
-
   ARRAYCOPY(Lpf);
   ARRAYCOPY(VcenterTable);
 
