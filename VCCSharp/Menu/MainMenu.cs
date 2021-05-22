@@ -51,9 +51,7 @@
                 Separator,
                 new MenuItemViewModel {Header = "Configuration", Action = actions.OpenConfiguration},
                 Separator,
-                new MenuItemViewModel {Header = "Bit Banger", Action = actions.BitBanger},
-                Separator,
-                new MenuItemViewModel {Header = "(Old) Config", Action = actions.OpenOldConfiguration}
+                new MenuItemViewModel {Header = "Bit Banger", Action = actions.BitBanger}
             }
         };
 

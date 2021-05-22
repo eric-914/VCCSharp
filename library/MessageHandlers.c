@@ -1,16 +1,10 @@
 #include <windows.h>
 
-#include "ConfigDialogCallbacks.h"
-#include "Config.h"
-#include "Graphics.h"
 #include "Keyboard.h"
 #include "Joystick.h"
-#include "DirectDraw.h"
 #include "Emu.h"
 
 #include "ProcessCommandMessage.h"
-
-#include "VccState.h"
 
 #include "../resources/resource.h"
 
@@ -24,12 +18,6 @@ extern "C" {
     else {
       SetMenu(hWnd, NULL);
     }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HWND __cdecl CreateConfigurationDialog(HINSTANCE resources, HWND windowHandle) {
-    return CreateDialog(resources, (LPCTSTR)IDD_TCONFIG, windowHandle, (DLGPROC)CreateMainConfigDialogCallback);
   }
 }
 

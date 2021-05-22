@@ -103,11 +103,6 @@ namespace VCCSharp
             }
         }
 
-        public void OpenOldConfiguration()
-        {
-            _modules.Events.ShowConfiguration();
-        }
-
         public void LoadCartridge()
         {
             MessageBox.Show("Load Cartridge");

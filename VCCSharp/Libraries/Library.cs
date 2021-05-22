@@ -318,9 +318,6 @@ namespace VCCSharp.Libraries
         public static class Events
         {
             [DllImport(LIBRARY)]
-            public static extern HWND CreateConfigurationDialog(HINSTANCE resources, HWND windowHandle);
-
-            [DllImport(LIBRARY)]
             public static extern void ProcessMessage(HWND hWnd, uint message, IntPtr wParam, IntPtr lParam);
         }
 

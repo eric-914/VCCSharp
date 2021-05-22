@@ -1,33 +1,14 @@
-#include "di.version.h"
-#include <dinput.h>
-#include <direct.h>
-#include <assert.h>
 #include <ShlObj.h>
-#include <string>
 
 #include "../resources/resource.h"
 
 #include "Config.h"
-#include "DirectDraw.h"
-#include "PAKInterface.h"
-#include "Keyboard.h"
 #include "Cassette.h"
-#include "Joystick.h"
-#include "MC6821.h"
-#include "Graphics.h"
 #include "Audio.h"
-#include "Emu.h"
 
 #include "fileoperations.h"
-#include "CmdLineArguments.h"
-#include "ConfigDialogCallbacks.h"
 
 #include "VccState.h"
-
-#include "macros.h"
-
-#include "resource.h"
-#include "JoystickModel.h"
 
 #include "ConfigConstants.h"
 
@@ -146,56 +127,6 @@ extern "C" {
   }
 }
 
-static HWND hWndTabDialog;
-
-void MainInitDialog(HWND hDlg) {
-  TCITEM tabs = TCITEM();
-
-  ConfigState* configState = GetConfigState();
-  EmuState* emuState = GetEmuState();
-
-  InitCommonControls();
-
-  //configModel = configState->Model;
-
-  hWndTabDialog = GetDlgItem(hDlg, IDC_CONFIGTAB); //get handle of Tabbed Dialog
-
-  //get handles to all the sub panels in the control
-  configState->hWndConfig[0] = CreateDialog(emuState->Resources, MAKEINTRESOURCE(IDD_CASSETTE), hWndTabDialog, (DLGPROC)CreateTapeConfigDialogCallback);
-
-  //Set the title text for all tabs
-  for (unsigned char tabCount = 0; tabCount < TABS; tabCount++)
-  {
-    tabs.mask = TCIF_TEXT | TCIF_IMAGE;
-    tabs.iImage = -1;
-    tabs.pszText = TabTitles[tabCount];
-
-    TabCtrl_InsertItem(hWndTabDialog, tabCount, &tabs);
-  }
-
-  TabCtrl_SetCurSel(hWndTabDialog, 0);	//Set Initial Tab to 0
-
-  for (unsigned char tabCount = 0; tabCount < TABS; tabCount++) {	//Hide All the Sub Panels
-    ShowWindow(configState->hWndConfig[tabCount], SW_HIDE);
-  }
-
-  SetWindowPos(configState->hWndConfig[0], HWND_TOP, 10, 30, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW);
-}
-
-void MainNotify(WPARAM wParam) {
-  ConfigState* configState = GetConfigState();
-
-  if ((LOWORD(wParam)) == IDC_CONFIGTAB) {
-    unsigned char selectedTab = TabCtrl_GetCurSel(hWndTabDialog);
-
-    for (unsigned char tabCount = 0; tabCount < TABS; tabCount++) {
-      ShowWindow(configState->hWndConfig[tabCount], SW_HIDE);
-    }
-
-    SetWindowPos(configState->hWndConfig[selectedTab], HWND_TOP, 10, 30, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW);
-  }
-}
-
 void CheckAudioChange(EmuState* emuState, ConfigModel* current, SoundCardList* soundCards) {
   //unsigned char currentSoundCardIndex = GetSoundCardIndex(current->SoundCardName);
   //unsigned char tempSoundCardIndex = GetSoundCardIndex(temp->SoundCardName);
@@ -206,22 +137,4 @@ void CheckAudioChange(EmuState* emuState, ConfigModel* current, SoundCardList* s
   //SoundInit(emuState->WindowHandle, soundCards[tempSoundCardIndex].Guid, temp->AudioRate);
   SoundInit(emuState->WindowHandle, soundCards[tempSoundCardIndex].Guid, current->AudioRate);
   //}
-}
-
-void MainCommandCancel(HWND hDlg) {
-  ConfigState* configState = GetConfigState();
-  EmuState* emuState = GetEmuState();
-
-  for (unsigned char temp = 0; temp < TABS; temp++)
-  {
-    DestroyWindow(configState->hWndConfig[temp]);
-  }
-
-#ifdef CONFIG_DIALOG_MODAL
-  EndDialog(hDlg, LOWORD(wParam));
-#else
-  DestroyWindow(hDlg);
-#endif
-
-  emuState->ConfigDialog = NULL;
 }

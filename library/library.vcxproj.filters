@@ -71,9 +71,6 @@
     <ClCompile Include="DirectSoundEnumerateCallback.c">
       <Filter>callbacks</Filter>
     </ClCompile>
-    <ClCompile Include="ConfigDialogCallbacks.c">
-      <Filter>callbacks</Filter>
-    </ClCompile>
     <ClCompile Include="Emu.c">
       <Filter>emu</Filter>
     </ClCompile>
@@ -215,9 +212,6 @@
       <Filter>models</Filter>
     </ClInclude>
     <ClInclude Include="DirectSoundEnumerateCallback.h">
-      <Filter>callbacks</Filter>
-    </ClInclude>
-    <ClInclude Include="ConfigDialogCallbacks.h">
       <Filter>callbacks</Filter>
     </ClInclude>
     <ClInclude Include="EmuState.h">

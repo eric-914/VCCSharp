@@ -4,8 +4,6 @@ using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using HWND = System.IntPtr;
-using HINSTANCE = System.IntPtr;
-using static System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -14,7 +12,6 @@ namespace VCCSharp.Modules
         void EmuRun();
         void EmuReset(ResetPendingStates state);
         void EmuExit();
-        void ShowConfiguration();
         void ToggleOnOff();
         void SlowDown();
         void SpeedUp();
@@ -22,20 +19,16 @@ namespace VCCSharp.Modules
         void ToggleThrottle();
         void ToggleFullScreen();
         void ToggleInfoBand();
-
-        void ProcessMessage(HWND hWnd, uint message, IntPtr wParam, IntPtr lParam);
     }
 
     public class Events : IEvents
     {
         private readonly IModules _modules;
-        private readonly IUser32 _user32;
         private IGraphics _graphics => _modules.Graphics;
 
-        public Events(IModules modules, IUser32 user32)
+        public Events(IModules modules)
         {
             _modules = modules;
-            _user32 = user32;
         }
 
         public void EmuRun()
@@ -144,31 +137,6 @@ namespace VCCSharp.Modules
                     emuState->FullScreen = emuState->FullScreen == Define.TRUE ? Define.FALSE : Define.TRUE;
                 }
             }
-        }
-
-        public void ShowConfiguration()
-        {
-            unsafe
-            {
-                EmuState* emuState = _modules.Emu.GetEmuState();
-
-                // open config dialog if not already open
-                // opens modeless so you can control the cassette
-                // while emulator is still running (assumed)
-                if (emuState->ConfigDialog == Zero)
-                {
-                    emuState->ConfigDialog = CreateConfigurationDialog(emuState->Resources, emuState->WindowHandle);
-
-                    // open modeless
-                    _user32.ShowWindow(emuState->ConfigDialog, (int)ShowWindowCommands.Normal);
-                }
-
-            }
-        }
-
-        public HWND CreateConfigurationDialog(HINSTANCE resources, HWND windowHandle)
-        {
-            return Library.Events.CreateConfigurationDialog(resources, windowHandle);
         }
 
         public void ProcessMessage(HWND hWnd, uint message, IntPtr wParam, IntPtr lParam)
