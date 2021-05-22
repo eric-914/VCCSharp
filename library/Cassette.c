@@ -296,7 +296,5 @@ extern "C" {
 
       break;
     }
-
-    UpdateTapeDialog(instance->TapeOffset, instance->TapeMode);
   }
 }

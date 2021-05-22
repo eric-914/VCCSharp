@@ -57,7 +57,7 @@ namespace VCCSharp.Modules
                     break;
             }
 
-            _modules.Config.UpdateTapeDialog((ushort)cassetteState->TapeOffset, cassetteState->TapeMode);
+            _modules.Config.UpdateTapeDialog(cassetteState->TapeOffset);
         }
 
         public unsafe void LoadCassetteBufferCAS(byte* cassBuffer, uint* bytesMoved)
@@ -247,7 +247,7 @@ namespace VCCSharp.Modules
                     instance->TotalSize = instance->TapeOffset;
                 }
 
-                _modules.Config.UpdateTapeDialog(instance->TapeOffset, instance->TapeMode);
+                _modules.Config.UpdateTapeDialog(instance->TapeOffset);
             }
         }
 
@@ -271,7 +271,7 @@ namespace VCCSharp.Modules
 
             Library.Cassette.FlushCassetteBuffer(buffer, length);
 
-            _modules.Config.UpdateTapeDialog(instance->TapeOffset, instance->TapeMode);
+            _modules.Config.UpdateTapeDialog(instance->TapeOffset);
         }
 
         public unsafe int MountTape(byte* filename)

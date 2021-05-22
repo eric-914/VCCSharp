@@ -147,17 +147,13 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl UpdateTapeDialog(unsigned int counter, unsigned char tapeMode)
+  __declspec(dllexport) void __cdecl UpdateTapeDialog(unsigned int counter)
   {
     if (instance->hDlgTape == NULL) {
       return;
     }
 
     instance->TapeCounter = counter;
-    instance->TapeMode = tapeMode;
-
-    GetTapeName(instance->TapeFileName);
-    FilePathStripPath(instance->TapeFileName);
 
     SetDialogTapeCounter(instance->hDlgTape, instance->TapeCounter);
   }

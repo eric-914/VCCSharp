@@ -120,7 +120,7 @@ namespace VCCSharp.Libraries
             public static extern byte GetSoundCardIndex(string soundCardName);
 
             [DllImport(LIBRARY)]
-            public static extern void UpdateTapeDialog(ushort counter, byte tapeMode);
+            public static extern void UpdateTapeDialog(uint counter);
 
             [DllImport(LIBRARY)]
             public static extern int GetRememberSize();

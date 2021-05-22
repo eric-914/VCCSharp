@@ -175,7 +175,7 @@ namespace VCCSharp.TapePlayer
                         break;
                 }
 
-                _modules.Config.UpdateTapeDialog(instance->TapeOffset, instance->TapeMode);
+                _modules.Config.UpdateTapeDialog(instance->TapeOffset);
 
                 //_viewModel.FilePath = Path.GetFileName(Converter.ToString(instance->TapeFileName));
             }
