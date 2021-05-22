@@ -7,12 +7,12 @@ namespace VCCSharp.IoC
     public interface IModules
     {
         IAudio Audio { get; }
-        ICassette Cassette { get; }
+        ICPU CPU { get; }
         ICallbacks Callbacks { get; }
+        ICassette Cassette { get; }
         IClipboard Clipboard { get; }
         ICoCo CoCo { get; }
         IConfig Config { get; }
-        ICPU CPU { get; }
         IDirectDraw DirectDraw { get; }
         IDirectSound DirectSound { get; }
         IEmu Emu { get; }
@@ -22,12 +22,12 @@ namespace VCCSharp.IoC
         IIOBus IOBus { get; }
         IJoystick Joystick { get; }
         IKeyboard Keyboard { get; }
-        IMenuCallbacks MenuCallbacks { get; }
         IMC6821 MC6821 { get; }
-        IQuickLoad QuickLoad { get; }
+        IMenuCallbacks MenuCallbacks { get; }
         IPAKInterface PAKInterface { get; }
-        IThrottle Throttle { get; }
+        IQuickLoad QuickLoad { get; }
         ITC1014 TC1014 { get; }
+        IThrottle Throttle { get; }
         IVcc Vcc { get; }
 
         IHD6309 HD6309 { get; }
@@ -38,34 +38,61 @@ namespace VCCSharp.IoC
     {
         private readonly IFactory _factory;
 
+        public IAudio Audio { get; private set; }
+        public ICPU CPU { get; private set; }
+        public ICallbacks Callbacks { get; private set; }
+        public ICassette Cassette { get; private set; }
+        public IClipboard Clipboard { get; private set; }
+        public ICoCo CoCo { get; private set; }
+        public IConfig Config { get; private set; }
+        public IDirectDraw DirectDraw { get; private set; }
+        public IDirectSound DirectSound { get; private set; }
+        public IEmu Emu { get; private set; }
+        public IEvents Events { get; private set; }
+        public IGDI GDI { get; private set; }
+        public IGraphics Graphics { get; private set; }
+        public IIOBus IOBus { get; private set; }
+        public IJoystick Joystick { get; private set; }
+        public IKeyboard Keyboard { get; private set; }
+        public IMC6821 MC6821 { get; private set; }
+        public IMenuCallbacks MenuCallbacks { get; private set; }
+        public IPAKInterface PAKInterface { get; private set; }
+        public IQuickLoad QuickLoad { get; private set; }
+        public ITC1014 TC1014 { get; private set; }
+        public IThrottle Throttle { get; private set; }
+        public IVcc Vcc { get; private set; }
+
         public Modules(IFactory factory)
         {
             _factory = factory;
         }
 
-        public IAudio Audio => _factory.Get<IAudio>();
-        public ICassette Cassette => _factory.Get<ICassette>();
-        public ICallbacks Callbacks => _factory.Get<ICallbacks>();
-        public IClipboard Clipboard => _factory.Get<IClipboard>();
-        public ICoCo CoCo => _factory.Get<ICoCo>();
-        public IConfig Config => _factory.Get<IConfig>();
-        public ICPU CPU => _factory.Get<ICPU>();
-        public IDirectDraw DirectDraw => _factory.Get<IDirectDraw>();
-        public IDirectSound DirectSound => _factory.Get<IDirectSound>();
-        public IEmu Emu => _factory.Get<IEmu>();
-        public IEvents Events => _factory.Get<IEvents>();
-        public IGDI GDI => _factory.Get<IGDI>();
-        public IGraphics Graphics => _factory.Get<IGraphics>();
-        public IIOBus IOBus => _factory.Get<IIOBus>();
-        public IJoystick Joystick => _factory.Get<IJoystick>();
-        public IKeyboard Keyboard => _factory.Get<IKeyboard>();
-        public IMenuCallbacks MenuCallbacks => _factory.Get<IMenuCallbacks>();
-        public IMC6821 MC6821 => _factory.Get<IMC6821>();
-        public IQuickLoad QuickLoad => _factory.Get<IQuickLoad>();
-        public IPAKInterface PAKInterface => _factory.Get<IPAKInterface>();
-        public IThrottle Throttle => _factory.Get<IThrottle>();
-        public ITC1014 TC1014 => _factory.Get<ITC1014>();
-        public IVcc Vcc => _factory.Get<IVcc>();
+        public void Initialize()
+        {
+            Audio = _factory.Get<IAudio>();
+            CPU = _factory.Get<ICPU>();
+            Callbacks = _factory.Get<ICallbacks>();
+            Cassette = _factory.Get<ICassette>();
+            Clipboard = _factory.Get<IClipboard>();
+            CoCo = _factory.Get<ICoCo>();
+            Config = _factory.Get<IConfig>();
+            DirectDraw = _factory.Get<IDirectDraw>();
+            DirectSound = _factory.Get<IDirectSound>();
+            Emu = _factory.Get<IEmu>();
+            Events = _factory.Get<IEvents>();
+            GDI = _factory.Get<IGDI>();
+            Graphics = _factory.Get<IGraphics>();
+            IOBus = _factory.Get<IIOBus>();
+            Joystick = _factory.Get<IJoystick>();
+            Keyboard = _factory.Get<IKeyboard>();
+            MC6821 = _factory.Get<IMC6821>();
+            MenuCallbacks = _factory.Get<IMenuCallbacks>();
+            PAKInterface = _factory.Get<IPAKInterface>();
+            QuickLoad = _factory.Get<IQuickLoad>();
+            TC1014 = _factory.Get<ITC1014>();
+            Throttle = _factory.Get<IThrottle>();
+            Vcc = _factory.Get<IVcc>();
+        }
 
         public IHD6309 HD6309 => _factory.Get<IHD6309>();
         public IMC6809 MC6809 => _factory.Get<IMC6809>();

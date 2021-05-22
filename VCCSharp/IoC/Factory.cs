@@ -11,14 +11,14 @@ namespace VCCSharp.IoC
         TInterface Get<TInterface>();
 
         MainWindowCommands MainWindowCommands { get; }
+        IFactory InitializeModules();
     }
 
     public class Factory : IFactory
     {
         public static Factory Instance { get; } = new Factory();
-
         private readonly IKernel _kernel = new StandardKernel();
-        
+
         public IFactory SelfBind()
         {
             _kernel.Bind<IFactory>().ToMethod(context  => Instance);
@@ -46,5 +46,13 @@ namespace VCCSharp.IoC
         }
 
         public MainWindowCommands MainWindowCommands => _kernel.Get<MainWindowCommands>();
+
+        public IFactory InitializeModules()
+        {
+            var modules = (Modules)Get<IModules>();
+            modules.Initialize();
+
+            return this;
+        }
     }
 }

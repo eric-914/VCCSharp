@@ -57,12 +57,11 @@ namespace VCCSharp.Modules
         private string _clipboardText;
 
         private readonly IModules _modules;
-        private readonly IGraphics _graphics;
+        private IGraphics _graphics => _modules.Graphics;
 
         public Clipboard(IModules modules)
         {
             _modules = modules;
-            _graphics = _modules.Graphics;
         }
 
         public unsafe ClipboardState* GetClipboardState()

@@ -21,27 +21,27 @@ namespace VCCSharp
 
                 //--Modules
                 .Singleton<IAudio, Audio>()
+                .Singleton<ICPU, CPU>()
                 .Singleton<ICallbacks, Callbacks>()
                 .Singleton<ICassette, Cassette>()
                 .Singleton<IClipboard, Modules.Clipboard>()
                 .Singleton<ICoCo, CoCo>()
                 .Singleton<IConfig, Config>()
-                .Singleton<ICPU, CPU>()
                 .Singleton<IDirectDraw, DirectDraw>()
                 .Singleton<IDirectSound, DirectSound>()
                 .Singleton<IEmu, Emu>()
                 .Singleton<IEvents, Events>()
                 .Singleton<IGDI, GDI>()
                 .Singleton<IGraphics, Graphics>()
+                .Singleton<IIOBus, IOBus>()
                 .Singleton<IJoystick, Joystick>()
                 .Singleton<IKeyboard, Keyboard>()
-                .Singleton<IIOBus, IOBus>()
-                .Singleton<IMenuCallbacks, MenuCallbacks>()
                 .Singleton<IMC6821, MC6821>()
-                .Singleton<IQuickLoad, QuickLoad>()
+                .Singleton<IMenuCallbacks, MenuCallbacks>()
                 .Singleton<IPAKInterface, PAKInterface>()
-                .Singleton<IThrottle, Throttle>()
+                .Singleton<IQuickLoad, QuickLoad>()
                 .Singleton<ITC1014, TC1014>()
+                .Singleton<IThrottle, Throttle>()
                 .Singleton<IVcc, Vcc>()
 
                 .Singleton<IHD6309, HD6309>()
@@ -67,6 +67,8 @@ namespace VCCSharp
 
                 //--Options container/accessor
                 .Singleton<IOptions, Options>()
+
+                .InitializeModules()
                 ;
         }
     }

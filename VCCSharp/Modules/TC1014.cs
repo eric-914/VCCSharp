@@ -45,8 +45,6 @@ namespace VCCSharp.Modules
 
     public class TC1014 : ITC1014
     {
-        private IGraphics _graphics;
-
         #region CC2 Font
 
         private static byte[] ntsc_round_fontdata8x12 =
@@ -443,12 +441,11 @@ namespace VCCSharp.Modules
         #endregion
 
         private readonly IModules _modules;
+        private IGraphics _graphics => _modules.Graphics;
 
         public TC1014(IModules modules)
         {
             _modules = modules;
-
-            _graphics = _modules.Graphics;
         }
 
         public unsafe TC1014MmuState* GetTC1014MmuState()

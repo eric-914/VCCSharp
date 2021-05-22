@@ -1,5 +1,4 @@
-﻿using System;
-using VCCSharp.Enums;
+﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -264,7 +263,15 @@ namespace VCCSharp.Modules
 
         public unsafe void FlushCassetteBuffer(byte* buffer, uint length)
         {
+            CassetteState* instance = GetCassetteState();
+
+            if (instance->TapeMode != Define.REC) {
+                return;
+            }
+
             Library.Cassette.FlushCassetteBuffer(buffer, length);
+
+            _modules.Config.UpdateTapeDialog(instance->TapeOffset, instance->TapeMode);
         }
 
         public unsafe int MountTape(byte* filename)

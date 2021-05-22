@@ -273,10 +273,6 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl FlushCassetteBuffer(unsigned char* buffer, unsigned int length)
   {
-    if (instance->TapeMode != REC) {
-      return;
-    }
-
     switch (instance->FileType)
     {
     case WAV:

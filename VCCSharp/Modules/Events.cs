@@ -30,14 +30,12 @@ namespace VCCSharp.Modules
     {
         private readonly IModules _modules;
         private readonly IUser32 _user32;
-        private IGraphics _graphics;
+        private IGraphics _graphics => _modules.Graphics;
 
         public Events(IModules modules, IUser32 user32)
         {
             _modules = modules;
             _user32 = user32;
-
-            _graphics = _modules.Graphics;
         }
 
         public void EmuRun()
