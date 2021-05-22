@@ -9,25 +9,24 @@ namespace VCCSharp.Modules
 {
     public interface ICoCo
     {
-        unsafe CoCoState* GetCoCoState();
-        void SetClockSpeed(ushort cycles);
         unsafe float RenderFrame(EmuState* emuState);
         void CocoReset();
+        void SetClockSpeed(ushort cycles);
         ushort SetAudioRate(ushort rate);
         byte SetSndOutMode(byte mode);
         void SetInterruptTimer(ushort timer);
         void SetTimerClockRate(byte clockRate);
-        void SetVertInterruptState(byte state);
-        void SetHorzInterruptState(byte state);
+        void SetVerticalInterruptState(byte state);
+        void SetHorizontalInterruptState(byte state);
         void SetTimerInterruptState(byte state);
-        void SetLinesperScreen(byte lines);
+        void SetLinesPerScreen(byte lines);
     }
 
     public class CoCo : ICoCo
     {
         private readonly IModules _modules;
 
-        private static byte lastMode = 0;
+        private static byte _lastMode;
 
         public CoCo(IModules modules)
         {
@@ -101,7 +100,7 @@ namespace VCCSharp.Modules
             for (short counter = 0; counter < 13; counter++)
             {
                 emuState->LineCounter = counter;
-                CPUCycle();
+                CpuCycle();
             }
 
             //for (emuState->LineCounter = 0; emuState->LineCounter < 4; emuState->LineCounter++)
@@ -109,7 +108,7 @@ namespace VCCSharp.Modules
             for (short counter = 0; counter < 4; counter++)
             {
                 emuState->LineCounter = counter;
-                CPUCycle();
+                CpuCycle();
             }
 
             if (emuState->FrameCounter % emuState->FrameSkip == Define.FALSE)
@@ -129,7 +128,7 @@ namespace VCCSharp.Modules
                     CoCoDrawTopBorder(emuState);
                 }
 
-                CPUCycle();
+                CpuCycle();
             }
 
             //for (emuState->LineCounter = 0; emuState->LineCounter < cocoState->LinesPerScreen; emuState->LineCounter++)
@@ -137,7 +136,7 @@ namespace VCCSharp.Modules
             for (short counter = 0; counter < cocoState->LinesperScreen; counter++)
             {
                 emuState->LineCounter = counter;
-                CPUCycle();
+                CpuCycle();
 
                 if (emuState->FrameCounter % emuState->FrameSkip == Define.FALSE)
                 {
@@ -157,7 +156,7 @@ namespace VCCSharp.Modules
             for (short counter = 0; counter < cocoState->BottomBorder; counter++)
             {
                 emuState->LineCounter = counter;
-                CPUCycle();
+                CpuCycle();
 
                 if (emuState->FrameCounter % emuState->FrameSkip == Define.FALSE)
                 {
@@ -176,7 +175,7 @@ namespace VCCSharp.Modules
             for (short counter = 0; counter < 4; counter++)
             {
                 emuState->LineCounter = counter;
-                CPUCycle();
+                CpuCycle();
             }
 
             return 0;
@@ -195,11 +194,11 @@ namespace VCCSharp.Modules
                         break;
 
                     case 1:
-                        _modules.Cassette.FlushCassetteBuffer(cocoState->CassBuffer, cocoState->AudioIndex);
+                        FlushCassetteBuffer(cocoState->CassBuffer, cocoState->AudioIndex);
                         break;
 
                     case 2:
-                        _modules.Cassette.LoadCassetteBuffer(cocoState->CassBuffer);
+                        LoadCassetteBuffer(cocoState);
                         break;
                 }
 
@@ -207,11 +206,12 @@ namespace VCCSharp.Modules
             }
         }
 
+
         #endregion
 
         #region CPUCycle
 
-        private /* _inline */ void CPUCycle()
+        private /* _inline */ void CpuCycle()
         {
             unsafe
             {
@@ -230,19 +230,19 @@ namespace VCCSharp.Modules
 
                 while (cocoState->PicosThisLine > 1)
                 {
-                    CPUCyclePicos(vccState);
+                    CpuCyclePicos();
                 }
 
                 if (!_modules.Clipboard.ClipboardEmpty())
                 {
-                    CPUCycleClipboard(vccState);
+                    CpuCycleClipboard(vccState);
                 }
             }
         }
 
-        private unsafe void CPUCycleClipboard(VccState* vccState)
+        private unsafe void CpuCycleClipboard(VccState* vccState)
         {
-            const char SHIFT = (char)0x36;
+            const char shift = (char)0x36;
             char key;
 
             CoCoState* cocoState = GetCoCoState();
@@ -265,9 +265,9 @@ namespace VCCSharp.Modules
             {
                 key = _modules.Clipboard.PeekClipboard();
 
-                if (key == SHIFT)
+                if (key == shift)
                 {
-                    _modules.Keyboard.vccKeyboardHandleKeyDown(SHIFT, SHIFT);  //Press shift and...
+                    _modules.Keyboard.vccKeyboardHandleKeyDown(shift, shift);  //Press shift and...
                     _modules.Clipboard.PopClipboard();
                     key = _modules.Clipboard.PeekClipboard();
                 }
@@ -280,7 +280,7 @@ namespace VCCSharp.Modules
             {
                 key = _modules.Clipboard.PeekClipboard();
 
-                _modules.Keyboard.vccKeyboardHandleKeyUp(SHIFT, SHIFT);
+                _modules.Keyboard.vccKeyboardHandleKeyUp(shift, shift);
                 _modules.Keyboard.vccKeyboardHandleKeyUp((char)0x42, key); //TODO: What is 0x42?
                 _modules.Clipboard.PopClipboard();
 
@@ -290,14 +290,7 @@ namespace VCCSharp.Modules
                     _modules.Keyboard.SetPaste(false);
 
                     //Done pasting. Reset throttle to original state
-                    if (cocoState->Throttle == 2)
-                    {
-                        vccState->Throttle = 0;
-                    }
-                    else
-                    {
-                        vccState->Throttle = 1;
-                    }
+                    vccState->Throttle = cocoState->Throttle == 2 ? (byte) 0 : (byte) 1;
 
                     //...and reset the keymap to the original state
                     ResetKeyMap();
@@ -315,7 +308,7 @@ namespace VCCSharp.Modules
 
         }
 
-        private unsafe void CPUCyclePicos(VccState* vccState)
+        private unsafe void CpuCyclePicos()
         {
             CoCoState* cocoState = GetCoCoState();
             cocoState->StateSwitch = 0;
@@ -334,17 +327,17 @@ namespace VCCSharp.Modules
 
             var cases = new Dictionary<uint, Action>
             {
-                {0, CPUCyclePicosCase0 },
-                {1, CPUCyclePicosCase1 },
-                {2, CPUCyclePicosCase2 },
-                {3, CPUCyclePicosCase3 }
+                {0, CpuCyclePicosCase0 },
+                {1, CpuCyclePicosCase1 },
+                {2, CpuCyclePicosCase2 },
+                {3, CpuCyclePicosCase3 }
             };
 
             cases[cocoState->StateSwitch]();
         }
 
         //No interrupts this line
-        private void CPUCyclePicosCase0()
+        private void CpuCyclePicosCase0()
         {
             unsafe
             {
@@ -368,7 +361,7 @@ namespace VCCSharp.Modules
         }
 
         //Only Interrupting
-        private void CPUCyclePicosCase1()
+        private void CpuCyclePicosCase1()
         {
             unsafe
             {
@@ -394,7 +387,7 @@ namespace VCCSharp.Modules
         }
 
         //Only Sampling
-        private void CPUCyclePicosCase2()
+        private void CpuCyclePicosCase2()
         {
             unsafe
             {
@@ -420,7 +413,7 @@ namespace VCCSharp.Modules
         }
 
         //Interrupting and Sampling
-        private void CPUCyclePicosCase3()
+        private void CpuCyclePicosCase3()
         {
             unsafe
             {
@@ -565,10 +558,10 @@ namespace VCCSharp.Modules
                 switch (mode)
                 {
                     case 0:
-                        if (lastMode == 1)
+                        if (_lastMode == 1)
                         {
                             //Send the last bits to be encoded
-                            _modules.Cassette.FlushCassetteBuffer(instance->CassBuffer, instance->AudioIndex); /* Cassette.cpp */
+                            FlushCassetteBuffer(instance->CassBuffer, instance->AudioIndex); /* Cassette.cpp */
                         }
 
                         SetAudioEventAudioOut();
@@ -577,7 +570,7 @@ namespace VCCSharp.Modules
                         break;
 
                     case 1:
-                        SetAudioEventCassOut();
+                        SetAudioEventCassetteOut();
 
                         primarySoundRate = instance->SoundRate;
 
@@ -586,7 +579,7 @@ namespace VCCSharp.Modules
                         break;
 
                     case 2:
-                        SetAudioEventCassIn();
+                        SetAudioEventCassetteIn();
 
                         primarySoundRate = instance->SoundRate;
 
@@ -598,10 +591,10 @@ namespace VCCSharp.Modules
                         return instance->SoundOutputMode;
                 }
 
-                if (mode != lastMode)
+                if (mode != _lastMode)
                 {
                     instance->AudioIndex = 0;	//Reset Buffer on true mode switch
-                    lastMode = mode;
+                    _lastMode = mode;
                 }
 
                 instance->SoundOutputMode = mode;
@@ -615,17 +608,17 @@ namespace VCCSharp.Modules
             Library.CoCo.SetAudioEventAudioOut();
         }
 
-        public void SetAudioEventCassOut()
+        public void SetAudioEventCassetteOut()
         {
             Library.CoCo.SetAudioEventCassOut();
         }
 
-        public void SetAudioEventCassIn()
+        public void SetAudioEventCassetteIn()
         {
             Library.CoCo.SetAudioEventCassIn();
         }
 
-        public void SetLinesperScreen(byte lines)
+        public void SetLinesPerScreen(byte lines)
         {
             Library.CoCo.SetLinesperScreen(lines);
         }
@@ -691,7 +684,7 @@ namespace VCCSharp.Modules
             unsafe
             {
                 //1= 279.265nS (1/ColorBurst)
-                //0= 63.695uS  (1/60*262)  1 scanline time
+                //0= 63.695uS  (1/60*262)  1 scan line time
 
                 CoCoState* instance = GetCoCoState();
 
@@ -701,7 +694,7 @@ namespace VCCSharp.Modules
             SetMasterTickCounter();
         }
 
-        public void SetVertInterruptState(byte state)
+        public void SetVerticalInterruptState(byte state)
         {
             unsafe
             {
@@ -711,7 +704,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void SetHorzInterruptState(byte state)
+        public void SetHorizontalInterruptState(byte state)
         {
             unsafe
             {
@@ -756,6 +749,18 @@ namespace VCCSharp.Modules
 
                 instance->IntEnable = instance->MasterTickCounter == 0 ? 0 : 1;
             }
+        }
+
+        private unsafe void FlushCassetteBuffer(byte* buffer, uint length)
+        {
+            uint offset = _modules.Cassette.FlushCassetteBuffer(buffer, length);
+
+            _modules.Config.UpdateTapeDialog(offset);
+        }
+
+        private unsafe void LoadCassetteBuffer(CoCoState* cocoState)
+        {
+            _modules.Cassette.LoadCassetteBuffer(cocoState->CassBuffer);
         }
     }
 }

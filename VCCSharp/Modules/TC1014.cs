@@ -4587,8 +4587,8 @@ Could not locate {ROM} in any of these locations:
                 byte Test(int mask) => TestMask(0x92, mask) | TestMask(0x93, mask) ? (byte)1 : (byte)0;
 
                 _modules.Keyboard.GimeSetKeyboardInterruptState(Test(2));
-                _modules.CoCo.SetVertInterruptState(Test(8));
-                _modules.CoCo.SetHorzInterruptState(Test(16));
+                _modules.CoCo.SetVerticalInterruptState(Test(8));
+                _modules.CoCo.SetHorizontalInterruptState(Test(16));
                 _modules.CoCo.SetTimerInterruptState(Test(32));
             }
         }
@@ -4604,8 +4604,8 @@ Could not locate {ROM} in any of these locations:
                 byte Test(int mask) => TestMask(0x92, mask) | TestMask(0x93, mask) ? (byte)1 : (byte)0;
 
                 _modules.Keyboard.GimeSetKeyboardInterruptState(Test(2));
-                _modules.CoCo.SetVertInterruptState(Test(8));
-                _modules.CoCo.SetHorzInterruptState(Test(16));
+                _modules.CoCo.SetVerticalInterruptState(Test(8));
+                _modules.CoCo.SetHorizontalInterruptState(Test(16));
                 _modules.CoCo.SetTimerInterruptState(Test(32));
             }
         }

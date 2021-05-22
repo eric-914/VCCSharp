@@ -117,7 +117,7 @@ namespace VCCSharp.TapePlayer
 
                 configState->TapeCounter = 0;
 
-                _modules.Cassette.SetTapeCounter(0);
+                SetTapeCounter(0);
             }
         }
 
@@ -175,7 +175,7 @@ namespace VCCSharp.TapePlayer
                         break;
                 }
 
-                _modules.Config.UpdateTapeDialog(instance->TapeOffset);
+                SetTapeCounter((int)instance->TapeOffset);
 
                 //_viewModel.FilePath = Path.GetFileName(Converter.ToString(instance->TapeFileName));
             }
@@ -204,12 +204,12 @@ namespace VCCSharp.TapePlayer
             {
                 var file = openFileDlg.FileName;
 
-                //_viewModel.FilePath = file;
                 _viewModel.FilePath = Path.GetFileName(file);
 
                 Converter.ToByteArray(file, cassetteState->TapeFileName);
 
-                if (_modules.Cassette.MountTape(cassetteState->TapeFileName) == 0) {
+                if (_modules.Cassette.MountTape(cassetteState->TapeFileName) == 0)
+                {
                     MessageBox.Show("Can't open file", "Error");
                 }
 
@@ -217,14 +217,18 @@ namespace VCCSharp.TapePlayer
 
                 configState->TapeCounter = 0;
 
-                _modules.Cassette.SetTapeCounter(0);
-
-                _viewModel.Counter = 0;
+                SetTapeCounter(0);
 
                 return 1;
             }
 
             return 0;
+        }
+
+        private void SetTapeCounter(int counter)
+        {
+            _modules.Cassette.SetTapeCounter((uint)counter);
+            _viewModel.Counter = counter;
         }
     }
 }

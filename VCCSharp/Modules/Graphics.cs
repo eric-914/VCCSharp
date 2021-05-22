@@ -607,7 +607,7 @@ namespace VCCSharp.Modules
                 //gs->ColorInvert = (gs->CC3Vmode & 32) >> 5;
                 LinesPerScreen = instance->Lpf[VresIndex];
 
-                _modules.CoCo.SetLinesperScreen(VresIndex);
+                _modules.CoCo.SetLinesPerScreen(VresIndex);
 
                 VerticalCenter = (byte)(instance->VcenterTable[VresIndex] - 4); //4 un-rendered top lines
                 PixelsPerLine = (ushort)(BytesPerRow * PixelsPerByte[Bpp]);

@@ -8,7 +8,7 @@ namespace VCCSharp.Modules
     public interface ICassette
     {
         unsafe CassetteState* GetCassetteState();
-        unsafe void FlushCassetteBuffer(byte* buffer, uint length);
+        unsafe uint FlushCassetteBuffer(byte* buffer, uint length);
         unsafe void LoadCassetteBuffer(byte* cassBuffer);
         void Motor(byte state);
 
@@ -37,16 +37,16 @@ namespace VCCSharp.Modules
 
         public unsafe void LoadCassetteBuffer(byte* cassBuffer)
         {
-            CassetteState* cassetteState = GetCassetteState();
+            CassetteState* instance = GetCassetteState();
 
             uint bytesMoved = 0;
 
-            if (cassetteState->TapeMode != (byte)TapeModes.PLAY)
+            if (instance->TapeMode != (byte)TapeModes.PLAY)
             {
                 return;
             }
 
-            switch ((TapeFileType)(cassetteState->FileType))
+            switch ((TapeFileType)(instance->FileType))
             {
                 case TapeFileType.WAV:
                     LoadCassetteBufferWAV(cassBuffer, &bytesMoved);
@@ -57,7 +57,7 @@ namespace VCCSharp.Modules
                     break;
             }
 
-            _modules.Config.UpdateTapeDialog(cassetteState->TapeOffset);
+            UpdateTapeDialog(instance->TapeOffset);
         }
 
         public unsafe void LoadCassetteBufferCAS(byte* cassBuffer, uint* bytesMoved)
@@ -243,11 +243,12 @@ namespace VCCSharp.Modules
 
                 instance->TapeOffset = count;
 
-                if (instance->TapeOffset > instance->TotalSize) {
+                if (instance->TapeOffset > instance->TotalSize)
+                {
                     instance->TotalSize = instance->TapeOffset;
                 }
 
-                _modules.Config.UpdateTapeDialog(instance->TapeOffset);
+                UpdateTapeDialog(instance->TapeOffset);
             }
         }
 
@@ -261,22 +262,26 @@ namespace VCCSharp.Modules
             Library.Cassette.CloseTapeFile();
         }
 
-        public unsafe void FlushCassetteBuffer(byte* buffer, uint length)
+        public unsafe uint FlushCassetteBuffer(byte* buffer, uint length)
         {
             CassetteState* instance = GetCassetteState();
 
-            if (instance->TapeMode != Define.REC) {
-                return;
+            if (instance->TapeMode == Define.REC)
+            {
+                Library.Cassette.FlushCassetteBuffer(buffer, length);
             }
 
-            Library.Cassette.FlushCassetteBuffer(buffer, length);
-
-            _modules.Config.UpdateTapeDialog(instance->TapeOffset);
+            return instance->TapeOffset;
         }
 
         public unsafe int MountTape(byte* filename)
         {
             return Library.Cassette.MountTape(filename);
+        }
+
+        public void UpdateTapeDialog(uint offset)
+        {
+            _modules.Config.UpdateTapeDialog(offset);
         }
     }
 }
