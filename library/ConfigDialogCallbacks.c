@@ -83,14 +83,6 @@ extern "C" {
     case WM_COMMAND:
       switch (LOWORD(wParam))
       {
-      case IDOK:
-        MainCommandOk(hDlg, configModel);
-        break;
-
-      case IDAPPLY:
-        MainCommandApply(configModel);
-        break;
-
       case IDCANCEL:
         MainCommandCancel(hDlg);
         break;

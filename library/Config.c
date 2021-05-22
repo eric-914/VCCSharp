@@ -224,29 +224,6 @@ void CheckAudioChange(EmuState* emuState, ConfigModel* current, SoundCardList* s
   //}
 }
 
-void MainCommandApply(ConfigModel* model) {
-  ConfigState* configState = GetConfigState();
-  EmuState* emuState = GetEmuState();
-
-  JoystickModel* left = configState->Model->Left;
-  JoystickModel* right = configState->Model->Right;
-
-  emuState->ResetPending = RESET_CLS_SYNCH;
-
-  //if ((configState->Model->RamSize != configModel->RamSize) || (configState->Model->CpuType != configModel->CpuType)) {
-  emuState->ResetPending = RESET_HARD;
-  //}
-
-  //CheckAudioChange(emuState, configState->Model, configModel, configState->SoundCards);
-  CheckAudioChange(emuState, configState->Model, configState->SoundCards);
-
-  //configState->Model = configModel;
-
-  vccKeyboardBuildRuntimeTable(configState->Model->KeyMapIndex);
-
-  SetStickNumbers(left->DiDevice, right->DiDevice);
-}
-
 void MainCommandCancel(HWND hDlg) {
   ConfigState* configState = GetConfigState();
   EmuState* emuState = GetEmuState();
@@ -263,14 +240,4 @@ void MainCommandCancel(HWND hDlg) {
 #endif
 
   emuState->ConfigDialog = NULL;
-  }
-
-void MainCommandOk(HWND hDlg, ConfigModel* model) {
-  ConfigState* configState = GetConfigState();
-
-  configState->hDlgBar = NULL;
-  configState->hDlgTape = NULL;
-
-  MainCommandApply(model);
-  MainCommandCancel(hDlg);
 }

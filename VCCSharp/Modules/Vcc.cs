@@ -192,7 +192,7 @@ namespace VCCSharp.Modules
                 emuState->ResetPending = (byte)ResetPendingStates.ClsSynch;
 
                 //if ((configState->Model->RamSize != configModel->RamSize) || (configState->Model->CpuType != configModel->CpuType)) {
-                //emuState->ResetPending = (byte)ResetPendingStates.Hard;
+                emuState->ResetPending = (byte)ResetPendingStates.Hard;
                 //}
 
                 //CheckAudioChange(emuState, configState->Model, configState->SoundCards);
