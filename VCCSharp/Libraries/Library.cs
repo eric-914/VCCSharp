@@ -118,12 +118,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern byte GetSoundCardIndex(string soundCardName);
-
-            [DllImport(LIBRARY)]
-            public static extern int GetRememberSize();
-
-            [DllImport(LIBRARY)]
-            public static extern Point GetIniWindowSize();
         }
 
         public static class CPU

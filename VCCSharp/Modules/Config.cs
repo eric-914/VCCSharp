@@ -632,12 +632,27 @@ namespace VCCSharp.Modules
 
         public bool GetRememberSize()
         {
-            return Library.Config.GetRememberSize() == Define.TRUE;
+            unsafe
+            {
+                ConfigState* instance = GetConfigState();
+
+                return (instance->Model->RememberSize != 0);
+            }
         }
 
         public Point GetIniWindowSize()
         {
-            return Library.Config.GetIniWindowSize();
+            Point p = new Point();
+
+            unsafe
+            {
+                ConfigState* instance = GetConfigState();
+
+                p.X = instance->Model->WindowSizeX;
+                p.Y = instance->Model->WindowSizeY;
+            }
+
+            return p;
         }
 
     }

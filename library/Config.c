@@ -59,8 +59,6 @@ ConfigState* InitializeInstance(ConfigState* p, ConfigModel* m, JoystickModel* l
   model->Left = left = l;
   model->Right = right = r;
 
-  OutputDebugString("Here!");
-
   p->NumberOfSoundCards = 0;
   p->NumberOfJoysticks = 0;
   p->PrintMonitorWindow = 0;
@@ -99,31 +97,6 @@ extern "C" {
     }
 
     return 0;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetIniFilePath(char* path)
-  {
-    //  Path must be to an existing ini file
-    strcpy(instance->IniFilePath, path);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) int __cdecl GetRememberSize() {
-    return((int)(instance->Model->RememberSize));
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) POINT __cdecl GetIniWindowSize() {
-    POINT out = POINT();
-
-    out.x = instance->Model->WindowSizeX;
-    out.y = instance->Model->WindowSizeY;
-
-    return(out);
   }
 }
 
