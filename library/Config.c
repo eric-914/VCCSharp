@@ -89,25 +89,7 @@ ConfigState* InitializeInstance(ConfigState* p, ConfigModel* m, JoystickModel* l
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl GetSoundCardIndex(char* soundCardName) {
-    for (unsigned char index = 0; index < instance->NumberOfSoundCards; index++) {
-      if (!strcmp(instance->SoundCards[index].CardName, soundCardName)) {
-        return index;
-      }
-    }
-
-    return 0;
+  __declspec(dllexport) char* __cdecl GetSoundCardNameAtIndex(byte index) {
+    return instance->SoundCards[index].CardName;
   }
-}
-
-void CheckAudioChange(EmuState* emuState, ConfigModel* current, SoundCardList* soundCards) {
-  //unsigned char currentSoundCardIndex = GetSoundCardIndex(current->SoundCardName);
-  //unsigned char tempSoundCardIndex = GetSoundCardIndex(temp->SoundCardName);
-  unsigned char tempSoundCardIndex = GetSoundCardIndex(current->SoundCardName);
-
-  //TODO: current and temp are pointing to the same object.
-  //if ((currentSoundCardIndex != tempSoundCardIndex) || (current->AudioRate != temp->AudioRate)) {
-  //SoundInit(emuState->WindowHandle, soundCards[tempSoundCardIndex].Guid, temp->AudioRate);
-  SoundInit(emuState->WindowHandle, soundCards[tempSoundCardIndex].Guid, current->AudioRate);
-  //}
 }

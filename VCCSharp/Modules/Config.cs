@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -627,7 +628,29 @@ namespace VCCSharp.Modules
 
         public byte GetSoundCardIndex(string soundCardName)
         {
-            return Library.Config.GetSoundCardIndex(soundCardName);
+            unsafe
+            {
+                ConfigState* instance = GetConfigState();
+
+                for (byte index = 0; index < instance->NumberOfSoundCards; index++)
+                {
+                    byte* item = GetSoundCardNameAtIndex(index);
+
+                    var t = Converter.ToString(item);
+
+                    if (soundCardName == t)
+                    {
+                        return index;
+                    }
+                }
+
+                return 0;
+            }
+        }
+
+        public unsafe byte* GetSoundCardNameAtIndex(byte index)
+        {
+            return Library.Config.GetSoundCardNameAtIndex(index);
         }
 
         public bool GetRememberSize()

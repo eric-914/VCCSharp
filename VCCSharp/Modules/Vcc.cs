@@ -195,7 +195,6 @@ namespace VCCSharp.Modules
                 emuState->ResetPending = (byte)ResetPendingStates.Hard;
                 //}
 
-                //CheckAudioChange(emuState, configState->Model, configState->SoundCards);
                 string soundCardName = Converter.ToString(configState->Model->SoundCardName);
                 byte tempSoundCardIndex = _modules.Config.GetSoundCardIndex(soundCardName);
                 _modules.Audio.SoundInit(emuState->WindowHandle, Lookup(tempSoundCardIndex).Guid, configState->Model->AudioRate);
