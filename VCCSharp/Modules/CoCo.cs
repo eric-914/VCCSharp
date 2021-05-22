@@ -132,7 +132,7 @@ namespace VCCSharp.Modules
                 CPUCycle();
             }
 
-            //for (emuState->LineCounter = 0; emuState->LineCounter < cocoState->LinesperScreen; emuState->LineCounter++)
+            //for (emuState->LineCounter = 0; emuState->LineCounter < cocoState->LinesPerScreen; emuState->LineCounter++)
             //Active Display area
             for (short counter = 0; counter < cocoState->LinesperScreen; counter++)
             {

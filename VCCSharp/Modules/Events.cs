@@ -30,18 +30,21 @@ namespace VCCSharp.Modules
     {
         private readonly IModules _modules;
         private readonly IUser32 _user32;
+        private IGraphics _graphics;
 
         public Events(IModules modules, IUser32 user32)
         {
             _modules = modules;
             _user32 = user32;
+
+            _graphics = _modules.Graphics;
         }
 
         public void EmuRun()
         {
             _modules.Emu.SetEmuRunning(true);
 
-            _modules.Graphics.InvalidateBorder();
+            _graphics.InvalidateBorder();
         }
 
         public void EmuReset(ResetPendingStates state)
@@ -83,14 +86,9 @@ namespace VCCSharp.Modules
 
         public void ToggleMonitorType() //F6
         {
-            unsafe
-            {
-                GraphicsState* graphicsState = _modules.Graphics.GetGraphicsState();
+            byte monType = _graphics.MonType == Define.FALSE ? Define.TRUE : Define.FALSE;
 
-                byte monType = graphicsState->MonType == Define.FALSE ? Define.TRUE : Define.FALSE;
-
-                _modules.Graphics.SetMonitorType(monType);
-            }
+            _modules.Graphics.SetMonitorType(monType);
         }
 
         public void ToggleThrottle() //F8

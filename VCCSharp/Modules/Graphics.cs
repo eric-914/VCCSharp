@@ -43,12 +43,19 @@ namespace VCCSharp.Modules
         byte ColorInvert { get; set; }
         byte ExtendedText { get; set; }
         byte GraphicsMode { get; set; }
-        byte Hoffset { get; set; }
-        byte HorzCenter { get; set; }
-        byte HorzOffsetReg { get; set; }
-        byte LinesperRow { get; set; }
-        byte LinesperScreen { get; set; }
+        byte HorizontalOffset { get; set; }
+        byte HorizontalCenter { get; set; }
+        byte HorizontalOffsetReg { get; set; }
+        byte LinesPerRow { get; set; }
+        byte LinesPerScreen { get; set; }
         byte LowerCase { get; set; }
+        byte MasterMode { get; set; }
+        byte MonType { get; set; }
+        byte PaletteIndex { get; set; }
+        byte Stretch { get; set; }
+        byte TextBgPalette { get; set; }
+        byte TextFgPalette { get; set; }
+        byte VerticalCenter { get; set; }
     }
 
     public class Graphics : IGraphics
@@ -105,13 +112,23 @@ namespace VCCSharp.Modules
         public byte CompatMode { get; set; }
         public byte ExtendedText { get; set; } = 1;
         public byte GraphicsMode { get; set; }
-        public byte Hoffset { get; set; }
-        public byte HorzCenter { get; set; }
-        public byte HorzOffsetReg { get; set; }
+        public byte HorizontalOffset { get; set; }
+        public byte HorizontalCenter { get; set; }
+        public byte HorizontalOffsetReg { get; set; }
         public byte InvertAll { get; set; }
-        public byte LinesperRow { get; set; } = 1;
-        public byte LinesperScreen { get; set; }
+        public byte LinesPerRow { get; set; } = 1;
+        public byte LinesPerScreen { get; set; }
         public byte LowerCase { get; set; }
+        public byte MasterMode { get; set; }
+        public byte MonType { get; set; } = 1;
+        public byte PaletteIndex { get; set; }
+        public byte Stretch { get; set; }
+        //public byte TextBGColor { get; set; }
+        public byte TextBgPalette { get; set; }
+        //public byte TextFGColor { get; set; }
+        public byte TextFgPalette { get; set; }
+        public byte VerticalCenter { get; set; }
+        public byte VresIndex { get; set; }
 
         public Graphics(IModules modules)
         {
@@ -141,12 +158,12 @@ namespace VCCSharp.Modules
                 LowerCase = 0;
                 InvertAll = 0;
                 ExtendedText = 1;
-                HorzOffsetReg = 0;
+                HorizontalOffsetReg = 0;
                 graphicsState->TagY = 0;
                 graphicsState->DistoOffset = 0;
                 BorderChange = 3;
                 CC2Offset = 0;
-                Hoffset = 0;
+                HorizontalOffset = 0;
                 graphicsState->VerticalOffsetRegister = 0;
             }
         }
@@ -288,23 +305,18 @@ namespace VCCSharp.Modules
 
         public void SetMonitorType(byte type)
         {
-            unsafe
+            byte borderColor = CC3BorderColor;
+
+            SetGimeBorderColor(0);
+
+            MonType = (type & 1) == 0 ? Define.FALSE : Define.TRUE;
+
+            for (byte palIndex = 0; palIndex < 16; palIndex++)
             {
-                GraphicsState* graphicsState = GetGraphicsState();
-
-                byte borderColor = CC3BorderColor;
-
-                SetGimeBorderColor(0);
-
-                graphicsState->MonType = (type & 1) == 0 ? Define.FALSE : Define.TRUE;
-
-                for (byte palIndex = 0; palIndex < 16; palIndex++)
-                {
-                    SetMonitorTypePalettes(graphicsState->MonType, palIndex);
-                }
-
-                SetGimeBorderColor(borderColor);
+                SetMonitorTypePalettes(MonType, palIndex);
             }
+
+            SetGimeBorderColor(borderColor);
         }
 
         public void InvalidateBorder()
@@ -435,32 +447,27 @@ namespace VCCSharp.Modules
 
         public void SetGimeHorizontalOffset(byte data)
         {
-            if (HorzOffsetReg != data)
+            if (HorizontalOffsetReg != data)
             {
-                Hoffset = (byte)(data << 1);
-                HorzOffsetReg = data;
+                HorizontalOffset = (byte)(data << 1);
+                HorizontalOffsetReg = data;
                 SetupDisplay();
             }
         }
 
         public void SetGimePalette(byte palette, byte color)
         {
-            unsafe
-            {
-                GraphicsState* instance = GetGraphicsState();
+            byte offset = (byte)(color & 63);
+            int index = MonType * 64 + offset;
 
-                byte offset = (byte)(color & 63);
-                int index = instance->MonType * 64 + offset;
-
-                // ReSharper disable CommentTypo
-                // Convert the 6bit rgbrgb value to rrrrrggggggbbbbb for the Real video hardware.
-                // ReSharper restore CommentTypo
-                //	unsigned char r,g,b;
-                _colors.Palette[palette] = offset;
-                _colors.Palette8Bit[palette] = _colors.PaletteLookup8[index]; //colors->PaletteLookup8[instance->MonType][offset];
-                _colors.Palette16Bit[palette] = _colors.PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonType][offset];
-                _colors.Palette32Bit[palette] = _colors.PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][offset];
-            }
+            // ReSharper disable CommentTypo
+            // Convert the 6bit rgbrgb value to rrrrrggggggbbbbb for the Real video hardware.
+            // ReSharper restore CommentTypo
+            //	unsigned char r,g,b;
+            _colors.Palette[palette] = offset;
+            _colors.Palette8Bit[palette] = _colors.PaletteLookup8[index]; //colors->PaletteLookup8[instance->MonType][offset];
+            _colors.Palette16Bit[palette] = _colors.PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonType][offset];
+            _colors.Palette32Bit[palette] = _colors.PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][offset];
         }
 
         public void SetCompatMode(byte mode)
@@ -514,12 +521,12 @@ namespace VCCSharp.Modules
                     case 0:     //Color Computer 3 Mode
                         instance->NewStartofVidram = (uint)(instance->VerticalOffsetRegister * 8);
                         GraphicsMode = (byte)((CC3Vmode & 128) >> 7);
-                        instance->VresIndex = (byte)((CC3Vres & 96) >> 5);
-                        CoCo3LinesPerRow[7] = LinesperScreen;   // For 1 pixel high modes
+                        VresIndex = (byte)((CC3Vres & 96) >> 5);
+                        CoCo3LinesPerRow[7] = LinesPerScreen;   // For 1 pixel high modes
                         Bpp = (byte)(CC3Vres & 3);
-                        LinesperRow = CoCo3LinesPerRow[CC3Vmode & 7];
+                        LinesPerRow = CoCo3LinesPerRow[CC3Vmode & 7];
                         BytesPerRow = CoCo3BytesPerRow[(CC3Vres & 28) >> 2];
-                        instance->PaletteIndex = 0;
+                        PaletteIndex = 0;
 
                         if (GraphicsMode != 0)
                         {
@@ -540,8 +547,8 @@ namespace VCCSharp.Modules
                         BorderChange = 3;
                         instance->NewStartofVidram = (uint)((512 * CC2Offset) + (instance->VerticalOffsetRegister & 0xE0FF) * 8);
                         GraphicsMode = (byte)((CC2VDGPiaMode & 16) >> 4); //PIA Set on graphics clear on text
-                        instance->VresIndex = 0;
-                        LinesperRow = CoCo2LinesPerRow[CC2VDGMode];
+                        VresIndex = 0;
+                        LinesPerRow = CoCo2LinesPerRow[CC2VDGMode];
 
                         byte colorSet;
                         byte tmpByte;
@@ -556,7 +563,7 @@ namespace VCCSharp.Modules
                             Bpp = CoCo2Bpp[(CC2VDGPiaMode & 15) >> 1];
                             BytesPerRow = CoCo2BytesPerRow[(CC2VDGPiaMode & 15) >> 1];
                             tmpByte = (byte)((CC2VDGPiaMode & 1) << 1 | (Bpp & 1));
-                            instance->PaletteIndex = CoCo2PaletteSet[tmpByte];
+                            PaletteIndex = CoCo2PaletteSet[tmpByte];
                         }
                         else
                         {   //Setup for 32x16 text Mode
@@ -570,23 +577,23 @@ namespace VCCSharp.Modules
                             switch (tmpByte)
                             {
                                 case 0:
-                                    instance->TextFGPalette = 12;
-                                    instance->TextBGPalette = 13;
+                                    TextFgPalette = 12;
+                                    TextBgPalette = 13;
                                     break;
 
                                 case 1:
-                                    instance->TextFGPalette = 13;
-                                    instance->TextBGPalette = 12;
+                                    TextFgPalette = 13;
+                                    TextBgPalette = 12;
                                     break;
 
                                 case 2:
-                                    instance->TextFGPalette = 14;
-                                    instance->TextBGPalette = 15;
+                                    TextFgPalette = 14;
+                                    TextBgPalette = 15;
                                     break;
 
                                 case 3:
-                                    instance->TextFGPalette = 15;
-                                    instance->TextBGPalette = 14;
+                                    TextFgPalette = 15;
+                                    TextBgPalette = 14;
                                     break;
                             }
                         }
@@ -595,40 +602,40 @@ namespace VCCSharp.Modules
                 }
 
                 //gs->ColorInvert = (gs->CC3Vmode & 32) >> 5;
-                LinesperScreen = instance->Lpf[instance->VresIndex];
+                LinesPerScreen = instance->Lpf[VresIndex];
 
-                _modules.CoCo.SetLinesperScreen(instance->VresIndex);
+                _modules.CoCo.SetLinesperScreen(VresIndex);
 
-                instance->VertCenter = (byte)(instance->VcenterTable[instance->VresIndex] - 4); //4 un-rendered top lines
+                VerticalCenter = (byte)(instance->VcenterTable[VresIndex] - 4); //4 un-rendered top lines
                 instance->PixelsperLine = (ushort)(BytesPerRow * PixelsPerByte[Bpp]);
 
                 if ((instance->PixelsperLine % 40) != 0)
                 {
-                    instance->Stretch = (byte)((512 / instance->PixelsperLine) - 1);
-                    HorzCenter = 64;
+                    Stretch = (byte)((512 / instance->PixelsperLine) - 1);
+                    HorizontalCenter = 64;
                 }
                 else
                 {
-                    instance->Stretch = (byte)((640 / instance->PixelsperLine) - 1);
-                    HorzCenter = 0;
+                    Stretch = (byte)((640 / instance->PixelsperLine) - 1);
+                    HorizontalCenter = 0;
                 }
 
                 instance->VPitch = BytesPerRow;
 
-                if ((HorzOffsetReg & 128) != 0)
+                if ((HorizontalOffsetReg & 128) != 0)
                 {
                     instance->VPitch = 256;
                 }
 
                 byte offset = (byte)(CC3BorderColor & 63);
-                int index = instance->MonType * 64 + offset;
+                int index = MonType * 64 + offset;
 
                 instance->BorderColor8 = (byte)(offset | 128);
                 instance->BorderColor16 = _colors.PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonType][instance->CC3BorderColor & 63];
                 instance->BorderColor32 = _colors.PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][instance->CC3BorderColor & 63];
 
                 instance->NewStartofVidram = (instance->NewStartofVidram & instance->VidMask) + instance->DistoOffset; //Dist Offset for 2M configuration
-                instance->MasterMode = (byte)((GraphicsMode << 7) | (CompatMode << 6) | ((Bpp & 3) << 4) | (instance->Stretch & 15));
+                MasterMode = (byte)((GraphicsMode << 7) | (CompatMode << 6) | ((Bpp & 3) << 4) | (Stretch & 15));
             }
         }
     }

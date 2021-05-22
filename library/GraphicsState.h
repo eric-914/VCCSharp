@@ -2,17 +2,6 @@
 
 typedef struct
 {
-  unsigned char MasterMode;
-  unsigned char MonType;
-  unsigned char PaletteIndex;
-  unsigned char Stretch;
-  unsigned char TextBGColor;
-  unsigned char TextBGPalette;
-  unsigned char TextFGColor;
-  unsigned char TextFGPalette;
-  unsigned char VertCenter;
-  unsigned char VresIndex;
-
   unsigned short PixelsperLine;
   unsigned short TagY;
   unsigned short VerticalOffsetRegister;

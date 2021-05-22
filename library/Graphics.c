@@ -10,17 +10,6 @@ GraphicsState* InitializeInstance(GraphicsState*);
 static GraphicsState* instance = InitializeInstance(new GraphicsState());
 
 GraphicsState* InitializeInstance(GraphicsState* p) {
-  p->MasterMode = 0;
-  p->MonType = 1;
-  p->PaletteIndex = 0;
-  p->Stretch = 0;
-  p->TextBGColor = 0;
-  p->TextBGPalette = 0;
-  p->TextFGColor = 0;
-  p->TextFGPalette = 0;
-  p->VertCenter = 0;
-  p->VresIndex = 0;
-
   p->PixelsperLine = 0;
   p->TagY = 0;
   p->VerticalOffsetRegister = 0;

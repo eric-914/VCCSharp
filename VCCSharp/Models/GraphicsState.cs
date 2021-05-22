@@ -2,17 +2,6 @@
 {
     public struct GraphicsState
     {
-        public byte MasterMode;
-        public byte MonType;
-        public byte PaletteIndex;
-        public byte Stretch;
-        public byte TextBGColor;
-        public byte TextBGPalette;
-        public byte TextFGColor;
-        public byte TextFGPalette;
-        public byte VertCenter;
-        public byte VresIndex;
-
         public ushort PixelsperLine;
         public ushort TagY;
         public ushort VerticalOffsetRegister;
