@@ -11,6 +11,8 @@ namespace VCCSharp.Configuration
     {
         //TODO: Remove STATIC once safe
         private static unsafe ConfigState* _state;
+        private static unsafe JoystickModel* _left;
+        private static unsafe JoystickModel* _right;
 
         public AudioSpectrum Spectrum { get; }
 
@@ -24,6 +26,28 @@ namespace VCCSharp.Configuration
         }
 
         public unsafe ConfigModel* Model => _state->Model;
+
+        public unsafe JoystickModel* LeftModel
+        {
+            get => _left;
+            set
+            {
+                if (_left != null) return;
+
+                _left = value;
+            }
+        }
+
+        public unsafe JoystickModel* RightModel
+        {
+            get => _right;
+            set
+            {
+                if (_right != null) return;
+
+                _right = value;
+            }
+        }
 
         public unsafe ConfigState* State
         {

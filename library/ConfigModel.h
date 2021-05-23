@@ -7,12 +7,6 @@
 #include "JoyStickModel.h"
 
 typedef struct {
-  //[LeftJoyStick]  //struct {} JoyStick
-  JoystickModel* Left;
-
-  //[RightJoyStick]
-  JoystickModel* Right;
-
   //[Version]
   char Release[MAX_LOADSTRING]; //## WRITE-ONLY ##//
 

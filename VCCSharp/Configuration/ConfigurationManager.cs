@@ -14,7 +14,13 @@ namespace VCCSharp.Configuration
 
         public unsafe void ShowDialog(ConfigState* state)
         {
-            var viewModel = new ConfigurationViewModel { State = state };
+            var viewModel = new ConfigurationViewModel
+            {
+                State = state, 
+                LeftModel = _modules.Config.GetLeftJoystick(), 
+                RightModel = _modules.Config.GetRightJoystick()
+            };
+
             var view = new ConfigurationWindow(viewModel) { Apply = ApplyChanges };
 
             view.Closing += (sender, args) => _modules.Audio.Spectrum = null;

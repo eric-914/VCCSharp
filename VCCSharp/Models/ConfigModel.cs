@@ -6,10 +6,10 @@ namespace VCCSharp.Models
     public struct ConfigModel
     {
         //[LeftJoyStick]  //struct {} JoyStick
-        public unsafe JoystickModel* Left;
+        //public unsafe JoystickModel* Left;
 
         //[RightJoyStick]
-        public unsafe JoystickModel* Right;
+        //public unsafe JoystickModel* Right;
 
         //[Version]
         public unsafe fixed byte Release[Define.MAX_LOADSTRING]; //## WRITE-ONLY ##//

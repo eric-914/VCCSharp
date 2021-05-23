@@ -21,7 +21,7 @@ namespace VCCSharp.Configuration
 
         public unsafe JoystickModel* Model
         {
-            get => _parent == null ? null : Side == JoystickSides.Left ? _parent.Model->Left : _parent.Model->Right;
+            get => _parent == null ? null : Side == JoystickSides.Left ? _parent.LeftModel : _parent.RightModel;
         }
 
         #region Constants

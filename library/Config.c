@@ -14,13 +14,13 @@
 
 using namespace std;
 
-ConfigState* InitializeInstance(ConfigState*, ConfigModel*, JoystickModel*, JoystickModel*);
+ConfigState* InitializeInstance(ConfigState*, ConfigModel*);
 JoystickModel* InitializeModel(JoystickModel* p);
 
-static ConfigState* instance = InitializeInstance(new ConfigState(), new ConfigModel(), InitializeModel(new JoystickModel()), InitializeModel(new JoystickModel()));
+static ConfigState* instance = InitializeInstance(new ConfigState(), new ConfigModel());
 static ConfigModel* model;
-static JoystickModel* left;
-static JoystickModel* right;
+static JoystickModel* left = InitializeModel(new JoystickModel());
+static JoystickModel* right = InitializeModel(new JoystickModel());
 
 extern "C" {
   __declspec(dllexport) ConfigState* __cdecl GetConfigState() {
@@ -54,10 +54,8 @@ JoystickModel* InitializeModel(JoystickModel* p) {
   return p;
 }
 
-ConfigState* InitializeInstance(ConfigState* p, ConfigModel* m, JoystickModel* l, JoystickModel* r) {
+ConfigState* InitializeInstance(ConfigState* p, ConfigModel* m) {
   p->Model = model = m;
-  model->Left = left = l;
-  model->Right = right = r;
 
   p->NumberOfSoundCards = 0;
   p->NumberOfJoysticks = 0;
