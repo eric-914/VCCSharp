@@ -1,9 +1,9 @@
 #include "di.version.h"
 #include <dinput.h>
 #include <assert.h>
+#include <windows.h>
 
 #include "Keyboard.h"
-#include "keyboardlayout.h"
 #include "Joystick.h"
 #include "MC6821.h"
 
@@ -12,6 +12,16 @@
 
 #define KEY_DOWN	1
 #define KEY_UP		0
+
+const int MAX_COCO = 80;
+const int MAX_NATURAL = 89;
+const int MAX_COMPACT = 84;
+const int MAX_CUSTOM = 89;
+
+KeyTranslationEntry keyTranslationsCoCo[MAX_COCO + 1];
+KeyTranslationEntry keyTranslationsNatural[MAX_NATURAL + 1];
+KeyTranslationEntry keyTranslationsCompact[MAX_COMPACT+ 1];
+KeyTranslationEntry keyTranslationsCustom[MAX_CUSTOM + 1];
 
 KeyboardState* InitializeInstance(KeyboardState*);
 
@@ -29,6 +39,54 @@ KeyboardState* InitializeInstance(KeyboardState* p) {
   p->Pasting = FALSE;
 
   return p;
+}
+
+extern "C" __declspec(dllexport) KeyTranslationEntry * __cdecl GetKeyTranslationsCoCo(void) {
+  return keyTranslationsCoCo;
+}
+
+extern "C" __declspec(dllexport) void __cdecl SetKeyTranslationsCoCo(KeyTranslationEntry * value) {
+  for (int i = 0; i < MAX_COCO; i++) {
+    keyTranslationsCoCo[i] = value[i];
+  }
+
+  keyTranslationsCoCo[MAX_COCO] = { 0, 0, 0, 0, 0, 0 }; // terminator
+}
+
+extern "C" __declspec(dllexport) KeyTranslationEntry * __cdecl GetKeyTranslationsNatural(void) {
+  return keyTranslationsNatural;
+}
+
+extern "C" __declspec(dllexport) void __cdecl SetKeyTranslationsNatural(KeyTranslationEntry * value) {
+  for (int i = 0; i < MAX_NATURAL; i++) {
+    keyTranslationsNatural[i] = value[i];
+  }
+
+  keyTranslationsNatural[MAX_NATURAL] = { 0, 0, 0, 0, 0, 0 }; // terminator
+}
+
+extern "C" __declspec(dllexport) KeyTranslationEntry * __cdecl GetKeyTranslationsCompact(void) {
+  return keyTranslationsCompact;
+}
+
+extern "C" __declspec(dllexport) void __cdecl SetKeyTranslationsCompact(KeyTranslationEntry * value) {
+  for (int i = 0; i < MAX_COMPACT; i++) {
+    keyTranslationsCompact[i] = value[i];
+  }
+
+  keyTranslationsCompact[MAX_COMPACT] = { 0, 0, 0, 0, 0, 0 }; // terminator
+}
+
+extern "C" __declspec(dllexport) KeyTranslationEntry * __cdecl GetKeyTranslationsCustom(void) {
+  return keyTranslationsCustom;
+}
+
+extern "C" __declspec(dllexport) void __cdecl SetKeyTranslationsCustom(KeyTranslationEntry * value) {
+  for (int i = 0; i < MAX_CUSTOM; i++) {
+    keyTranslationsCustom[i] = value[i];
+  }
+
+  keyTranslationsCustom[MAX_CUSTOM] = { 0, 0, 0, 0, 0, 0 }; // terminator
 }
 
 extern "C" {
@@ -125,20 +183,12 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) void __cdecl vccKeyboardSort() {
-    //
-    // Sort the key translation table
-    //
-    // Since the table is searched from beginning to end each
-    // time a key is pressed, we want them to be in the correct 
-    // order.
-    //
     qsort(instance->KeyTransTable, KBTABLE_ENTRY_COUNT, sizeof(KeyTranslationEntry), KeyTransCompare);
   }
 }
 
 extern "C" {
   __declspec(dllexport) void __cdecl vccKeyboardClear() {
-    // copy the selected keyboard layout to the run-time table
     memset(instance->KeyTransTable, 0, sizeof(instance->KeyTransTable));
   }
 }

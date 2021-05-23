@@ -308,11 +308,20 @@ namespace VCCSharp.Modules
 
         public void vccKeyboardClear()
         {
+            // copy the selected keyboard layout to the run-time table
             Library.Keyboard.vccKeyboardClear();
         }
 
         public void vccKeyboardSort()
         {
+            //
+            // Sort the key translation table
+            //
+            // Since the table is searched from beginning to end each
+            // time a key is pressed, we want them to be in the correct 
+            // order.
+            //
+
             Library.Keyboard.vccKeyboardSort(); ;
         }
 

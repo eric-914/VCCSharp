@@ -8,9 +8,6 @@
     <ClCompile Include="fileoperations.c">
       <Filter>file</Filter>
     </ClCompile>
-    <ClCompile Include="keyboardlayout.c">
-      <Filter>keyboard</Filter>
-    </ClCompile>
     <ClCompile Include="xDebug.c">
       <Filter>debug</Filter>
     </ClCompile>
@@ -113,9 +110,6 @@
     </ClInclude>
     <ClInclude Include="fileoperations.h">
       <Filter>file</Filter>
-    </ClInclude>
-    <ClInclude Include="keyboardlayout.h">
-      <Filter>keyboard</Filter>
     </ClInclude>
     <ClInclude Include="xDebug.h">
       <Filter>debug</Filter>
