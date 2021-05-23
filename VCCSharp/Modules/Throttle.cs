@@ -86,7 +86,8 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                AudioState* audioState = _modules.Audio.GetAudioState();
+                IAudio audio = _modules.Audio;
+                AudioState* audioState = audio.GetAudioState();
 
                 UpdateCurrentTime();
 
@@ -100,7 +101,7 @@ namespace VCCSharp.Modules
                     UpdateCurrentTime();
                 }
 
-                if (audioState->CurrentRate == Define.TRUE)
+                if (audio.CurrentRate == Define.TRUE)
                 {
                     _modules.Audio.PurgeAuxBuffer();
 

@@ -7,10 +7,6 @@
 typedef struct {
   char AuxBufferPointer;
 
-  unsigned short CurrentRate;
-  unsigned short BitRate;
-  unsigned short BlockSize;
-
   DWORD SndLength1;
   DWORD SndLength2;
   DWORD SndBuffLength;

@@ -7,10 +7,6 @@ namespace VCCSharp.Models
     {
         public byte AuxBufferPointer;
 
-        public ushort CurrentRate;
-        public ushort BitRate;
-        public ushort BlockSize;
-
         public uint SndLength1;
         public uint SndLength2;
         public uint SndBuffLength;

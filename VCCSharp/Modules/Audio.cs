@@ -17,6 +17,7 @@ namespace VCCSharp.Modules
         AudioSpectrum Spectrum { get; set; }
         void UpdateSoundBar(ushort left, ushort right);
         byte PauseAudio(byte pause);
+        ushort CurrentRate { get; set; }
     }
 
     public class Audio : IAudio
@@ -25,6 +26,10 @@ namespace VCCSharp.Modules
 
         public byte InitPassed;
         public byte AudioPause;
+
+        public ushort CurrentRate { get; set; }
+        public ushort BitRate;
+        public ushort BlockSize;
 
         public AudioSpectrum Spectrum { get; set; }
 
@@ -61,7 +66,7 @@ namespace VCCSharp.Modules
             {
                 AudioState* audioState = GetAudioState();
 
-                _modules.CoCo.SetAudioRate(audioState->iRateList[audioState->CurrentRate]);
+                _modules.CoCo.SetAudioRate(audioState->iRateList[CurrentRate]);
 
                 if (InitPassed == Define.TRUE)
                 {
@@ -170,46 +175,41 @@ namespace VCCSharp.Modules
                     maxSize = (long)(instance->SndBuffLength - instance->BuffOffset + playCursor);
                 }
 
-                return (int)(maxSize / instance->BlockSize);
+                return (int)(maxSize / BlockSize);
             }
         }
 
         public void PurgeAuxBuffer()
         {
-            unsafe
+            if (InitPassed == Define.FALSE || AudioPause == Define.TRUE)
             {
-                AudioState* instance = GetAudioState();
-
-                if (InitPassed == Define.FALSE || AudioPause == Define.TRUE)
-                {
-                    return;
-                }
-
-                return; //TODO: Why?
-
-                //instance->AuxBufferPointer--;			//Normally points to next free block Point to last used block
-
-                //if (instance->AuxBufferPointer >= 0) //zero is a valid data block
-                //{
-                //    while (GetFreeBlockCount() <= 0) { }
-
-                //    instance->hr = _modules.DirectSound.DirectSoundLock(instance->BuffOffset, instance->BlockSize, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2));
-
-                //    if (instance->hr != Define.DS_OK) {
-                //        return;
-                //    }
-
-                //    Library.Audio.PurgeAuxBuffer();
-
-                //    instance->BuffOffset = (instance->BuffOffset + instance->BlockSize) % instance->SndBuffLength;
-
-                //    instance->hr = _modules.DirectSound.DirectSoundUnlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);
-
-                //    instance->AuxBufferPointer--;
-                //}
-
-                //instance->AuxBufferPointer = 0;
+                return;
             }
+
+            return; //TODO: Why?
+
+            //instance->AuxBufferPointer--;			//Normally points to next free block Point to last used block
+
+            //if (instance->AuxBufferPointer >= 0) //zero is a valid data block
+            //{
+            //    while (GetFreeBlockCount() <= 0) { }
+
+            //    instance->hr = _modules.DirectSound.DirectSoundLock(instance->BuffOffset, instance->BlockSize, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2));
+
+            //    if (instance->hr != Define.DS_OK) {
+            //        return;
+            //    }
+
+            //    Library.Audio.PurgeAuxBuffer();
+
+            //    instance->BuffOffset = (instance->BuffOffset + instance->BlockSize) % instance->SndBuffLength;
+
+            //    instance->hr = _modules.DirectSound.DirectSoundUnlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);
+
+            //    instance->AuxBufferPointer--;
+            //}
+
+            //instance->AuxBufferPointer = 0;
         }
 
         /*****************************************************************
@@ -226,7 +226,7 @@ namespace VCCSharp.Modules
 
             AudioState* instance = GetAudioState();
 
-            instance->CurrentRate = rate;
+            CurrentRate = rate;
 
             if (InitPassed == Define.TRUE)
             {
@@ -248,9 +248,9 @@ namespace VCCSharp.Modules
             instance->SndLength2 = 0;
             instance->BuffOffset = 0;
             instance->AuxBufferPointer = 0;
-            instance->BitRate = instance->iRateList[rate];
-            instance->BlockSize = (ushort)(instance->BitRate * 4 / Define.TARGETFRAMERATE);
-            instance->SndBuffLength = (ushort)(instance->BlockSize * Define.AUDIOBUFFERS);
+            BitRate = instance->iRateList[rate];
+            BlockSize = (ushort)(BitRate * 4 / Define.TARGETFRAMERATE);
+            instance->SndBuffLength = (ushort)(BlockSize * Define.AUDIOBUFFERS);
 
             int result = 0;
 
@@ -270,7 +270,7 @@ namespace VCCSharp.Modules
                     return (1);
                 }
 
-                _modules.DirectSound.DirectSoundSetupFormatDataStructure(instance->BitRate);
+                _modules.DirectSound.DirectSoundSetupFormatDataStructure(BitRate);
 
                 _modules.DirectSound.DirectSoundSetupSecondaryBuffer(instance->SndBuffLength);
 
