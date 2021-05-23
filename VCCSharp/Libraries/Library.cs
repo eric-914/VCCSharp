@@ -123,7 +123,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe DirectDrawState* GetDirectDrawState();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int CreateDirectDrawWindow(HINSTANCE hInstance, void* hIcon, void* hCursor, void* hBrush, uint style, byte* lpszClassName, byte* lpszMenuName);
+            public static extern unsafe int CreateDirectDrawWindow(HINSTANCE hInstance, void* lpfnWndProc, void* hIcon, void* hCursor, void* hBrush, uint style, byte* lpszClassName, byte* lpszMenuName);
 
             [DllImport(LIBRARY)]
             public static extern int UnlockDDBackSurface();
@@ -250,6 +250,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void* DDGetBrush();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void* DDGetWinProc();
         }
 
         public static class DirectSound

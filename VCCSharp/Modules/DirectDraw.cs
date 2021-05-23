@@ -779,9 +779,10 @@ namespace VCCSharp.Modules
                 void* hIcon = GetIcon(resources);
                 void* hCursor = GetCursor(fullscreen);
                 void* hBrush = GetBrush();
+                void* lpfnWndProc = GetWinProc();
 
                 //And Rebuilt it from scratch
-                return Library.DirectDraw.CreateDirectDrawWindow(hInstance, hIcon, hCursor, hBrush, style, lpszClassName, null) != Define.FALSE;
+                return Library.DirectDraw.CreateDirectDrawWindow(hInstance, lpfnWndProc, hIcon, hCursor, hBrush, style, lpszClassName, null) != Define.FALSE;
             }
         }
 
@@ -1042,6 +1043,11 @@ namespace VCCSharp.Modules
         public unsafe void* GetBrush()
         {
             return Library.DirectDraw.DDGetBrush();
+        }
+
+        public unsafe void* GetWinProc()
+        {
+            return Library.DirectDraw.DDGetWinProc();
         }
     }
 }

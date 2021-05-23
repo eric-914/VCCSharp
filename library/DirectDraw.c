@@ -60,13 +60,17 @@ extern "C" {
 }
     
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindow(HINSTANCE hInstance, HICON hIcon, HCURSOR hCursor, HBRUSH hBrush, UINT style, LPCSTR lpszClassName, LPCSTR lpszMenuName)
+  __declspec(dllexport) WNDPROC __cdecl DDGetWinProc() {
+    return WndProc;
+  }
+}
+    
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindow(HINSTANCE hInstance, WNDPROC lpfnWndProc, HICON hIcon, HCURSOR hCursor, HBRUSH hBrush, UINT style, LPCSTR lpszClassName, LPCSTR lpszMenuName)
   {
-    //WNDPROC lpfnWndProc = WndProc; 
-
     return RegisterWcex(
       hInstance,
-      WndProc, 
+      lpfnWndProc, 
       lpszClassName,
       lpszMenuName, 
       style,
