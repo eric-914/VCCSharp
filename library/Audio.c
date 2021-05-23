@@ -22,9 +22,3 @@ AudioState* InitializeInstance(AudioState* p) {
 
   return p;
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl HandleSlowAudio(byte index, unsigned char* buffer, unsigned short length) {
-    memcpy(instance->AuxBuffer[index], buffer, length);	//Saving buffer to aux stack
-  }
-}

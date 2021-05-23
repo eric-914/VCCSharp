@@ -14,6 +14,4 @@ typedef struct {
 
   void* SndPointer1;
   void* SndPointer2;
-
-  unsigned short AuxBuffer[6][44100 / 60]; //Biggest block size possible
 } AudioState;

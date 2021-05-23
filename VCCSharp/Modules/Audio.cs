@@ -143,8 +143,11 @@ namespace VCCSharp.Modules
             //    instance->AuxBuffer[instance->AuxBufferPointer][index] = buffer[index];
             //}
 
-            Library.Audio.HandleSlowAudio(instance->AuxBufferPointer, buffer, length);
+            //Library.Audio.HandleSlowAudio(instance->AuxBufferPointer, buffer, length);
 
+            //HandleSlowAudio was this:
+            //memcpy(instance->AuxBuffer[index], buffer, length);	//Saving buffer to aux stack
+            
             instance->AuxBufferPointer++;		//and chase your own tail
             instance->AuxBufferPointer %= 5;	//At this point we are so far behind we may as well drop the buffer
         }
