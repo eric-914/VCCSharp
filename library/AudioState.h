@@ -2,8 +2,6 @@
 
 #include <windows.h>
 
-#include "SoundCardList.h"
-
 #define MAXCARDS	12
 
 typedef struct {
@@ -29,7 +27,4 @@ typedef struct {
   void* SndPointer2;
 
   unsigned short AuxBuffer[6][44100 / 60]; //Biggest block size possible
-
-  char RateList[4][7];
-
 } AudioState;

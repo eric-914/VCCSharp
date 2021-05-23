@@ -37,9 +37,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void HandleSlowAudio(byte* buffer, ushort length);
-
-            [DllImport(LIBRARY)]
-            public static extern void PurgeAuxBuffer();
         }
 
         public static class Callbacks

@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using HRESULT = System.IntPtr;
 
 namespace VCCSharp.Models
 {
@@ -32,7 +31,5 @@ namespace VCCSharp.Models
         public unsafe SoundCardList* Cards;
 
         public unsafe ushort** AuxBuffer; //[6][44100 / 60]; //Biggest block size possible
-
-        public unsafe byte** RateList; //[4][7];
     }
 }

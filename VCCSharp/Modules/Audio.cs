@@ -345,5 +345,19 @@ namespace VCCSharp.Modules
                 return instance->AudioPause;
             }
         }
+
+        #region This is what was in Audio.c
+
+        void Library_Audio_PurgeAuxBuffer()
+        {
+            //        memcpy(instance->SndPointer1, instance->AuxBuffer[instance->AuxBufferPointer], instance->SndLength1);
+
+            //        if (instance->SndPointer2 != NULL) {
+            //            memcpy(instance->SndPointer2, (instance->AuxBuffer[instance->AuxBufferPointer] + (instance->SndLength1 >> 2)), instance->SndLength2);
+            //        }
+        }
+
+        #endregion
+
     }
 }

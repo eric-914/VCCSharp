@@ -7,7 +7,6 @@
 #include "defines.h"
 #include "macros.h"
 
-const char RateList[4][7] = { "Mute", "11025", "22050", "44100" };
 const unsigned short iRateList[4] = { 0, 11025, 22050, 44100 };
 
 AudioState* InitializeInstance(AudioState*);
@@ -36,7 +35,6 @@ AudioState* InitializeInstance(AudioState* p) {
   p->SndPointer1 = NULL;
   p->SndPointer2 = NULL;
 
-  STRARRAYCOPY(RateList);
   ARRAYCOPY(iRateList);
 
   return p;
@@ -45,16 +43,5 @@ AudioState* InitializeInstance(AudioState* p) {
 extern "C" {
   __declspec(dllexport) void __cdecl HandleSlowAudio(unsigned char* buffer, unsigned short length) {
     memcpy(instance->AuxBuffer[instance->AuxBufferPointer], buffer, length);	//Saving buffer to aux stack
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl PurgeAuxBuffer()
-  {
-    memcpy(instance->SndPointer1, instance->AuxBuffer[instance->AuxBufferPointer], instance->SndLength1);
-
-    if (instance->SndPointer2 != NULL) {
-      memcpy(instance->SndPointer2, (instance->AuxBuffer[instance->AuxBufferPointer] + (instance->SndLength1 >> 2)), instance->SndLength2);
-    }
   }
 }
