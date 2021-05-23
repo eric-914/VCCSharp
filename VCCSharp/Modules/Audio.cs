@@ -253,7 +253,7 @@ namespace VCCSharp.Modules
 
             if (rate != 0)
             {
-                instance->hr = _modules.DirectSound.DirectSoundInitialize(guid);    // create a directsound object
+                instance->hr = _modules.DirectSound.DirectSoundInitialize(guid);    // create a direct sound object
 
                 if (instance->hr != Define.DS_OK)
                 {

@@ -13,8 +13,6 @@ namespace VCCSharp.Models
         public ushort BitRate;
         public ushort BlockSize;
 
-        public short CardCount;
-
         public uint SndLength1;
         public uint SndLength2;
         public uint SndBuffLength;
@@ -27,8 +25,6 @@ namespace VCCSharp.Models
 
         public unsafe void* SndPointer1;
         public unsafe void* SndPointer2;
-
-        public unsafe SoundCardList* Cards;
 
         public unsafe ushort** AuxBuffer; //[6][44100 / 60]; //Biggest block size possible
     }
