@@ -12,11 +12,7 @@ namespace VCCSharp.Models
         public uint SndBuffLength;
         public uint WritePointer;
         public uint BuffOffset;
-
-        public unsafe fixed ushort iRateList[4];
         
-        public int hr;
-
         public unsafe void* SndPointer1;
         public unsafe void* SndPointer2;
 

@@ -5,9 +5,6 @@
 #include "Coco.h"
 
 #include "defines.h"
-#include "macros.h"
-
-const unsigned short iRateList[4] = { 0, 11025, 22050, 44100 };
 
 AudioState* InitializeInstance(AudioState*);
 
@@ -29,8 +26,6 @@ AudioState* InitializeInstance(AudioState* p) {
 
   p->SndPointer1 = NULL;
   p->SndPointer2 = NULL;
-
-  ARRAYCOPY(iRateList);
 
   return p;
 }

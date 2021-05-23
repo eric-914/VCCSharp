@@ -13,10 +13,6 @@ typedef struct {
   DWORD WritePointer;
   DWORD BuffOffset;
 
-  unsigned short iRateList[4];
-
-  HRESULT hr;
-
   void* SndPointer1;
   void* SndPointer2;
 
