@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Security;
 using VCCSharp.Enums;
 using VCCSharp.Models;
+using HANDLE = System.IntPtr;
 using HINSTANCE = System.IntPtr;
 using HWND = System.IntPtr;
 
@@ -406,16 +406,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe MC6821State* GetMC6821State();
 
             [DllImport(LIBRARY)]
-            public static extern void MC6821_SetSerialParams(byte textMode);
-
-            [DllImport(LIBRARY)]
-            public static extern int MC6821_OpenPrintFile(string filename);
-
-            [DllImport(LIBRARY)]
-            public static extern byte MC6821_GetMuxState();
-
-            [DllImport(LIBRARY)]
-            public static extern byte MC6821_DACState();
+            public static extern HANDLE MC6821_OpenPrintFile(string filename);
         } //--MC6821
 
         public static class PAKInterface

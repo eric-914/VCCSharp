@@ -212,16 +212,6 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void MC6821_SetSerialParams(byte textMode)
-        {
-            Library.MC6821.MC6821_SetSerialParams(textMode);
-        }
-
-        public int MC6821_OpenPrintFile(string filename)
-        {
-            return Library.MC6821.MC6821_OpenPrintFile(filename);
-        }
-
         public byte MC6821_pia0_read(byte port)
         {
             unsafe
@@ -503,12 +493,12 @@ namespace VCCSharp.Modules
 
         public byte MC6821_GetMuxState()
         {
-            //unsafe
-            //{
-            //    MC6821State* instance = GetMC6821State();
-            //}
+            unsafe
+            {
+                MC6821State* instance = GetMC6821State();
 
-            return Library.MC6821.MC6821_GetMuxState();
+                return (byte)(((instance->rega[1] & 8) >> 3) + ((instance->rega[3] & 8) >> 2));
+            }
         }
         
         public unsafe void MC6821_WritePrintMon(byte* data)
@@ -542,7 +532,38 @@ namespace VCCSharp.Modules
 
         public byte MC6821_DACState()
         {
-            return Library.MC6821.MC6821_DACState();
+            unsafe
+            {
+                MC6821State* instance = GetMC6821State();
+
+                return (byte)(instance->regb[0] >> 2);
+            }
+        }
+
+        public int MC6821_OpenPrintFile(string filename)
+        {
+            unsafe
+            {
+                MC6821State* instance = GetMC6821State();
+
+                instance->hPrintFile = Library.MC6821.MC6821_OpenPrintFile(filename);
+
+                if (instance->hPrintFile == Define.INVALID_HANDLE_VALUE) {
+                    return 0;
+                }
+
+                return 1;
+            }
+        }
+
+        public void MC6821_SetSerialParams(byte textMode)
+        {
+            unsafe
+            {
+                MC6821State* instance = GetMC6821State();
+
+                instance->AddLF = textMode;
+            }
         }
     }
 }

@@ -87,13 +87,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl MC6821_DACState()
-  {
-    return (instance->regb[0] >> 2);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) unsigned char __cdecl MC6821_GetCasSample()
   {
     return(instance->Csample);
@@ -101,22 +94,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl MC6821_GetMuxState()
+  __declspec(dllexport) HANDLE __cdecl MC6821_OpenPrintFile(char* filename)
   {
-    return (((instance->rega[1] & 8) >> 3) + ((instance->rega[3] & 8) >> 2));
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) int __cdecl MC6821_OpenPrintFile(char* filename)
-  {
-    instance->hPrintFile = CreateFile(filename, GENERIC_READ | GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-
-    if (instance->hPrintFile == INVALID_HANDLE_VALUE) {
-      return(0);
-    }
-
-    return(1);
+    return CreateFile(filename, GENERIC_READ | GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
   }
 }
 
@@ -135,12 +115,5 @@ extern "C" {
     if (sample > 0x7F) {
       instance->regb[0] = instance->regb[0] | 1;
     }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl MC6821_SetSerialParams(unsigned char textMode)
-  {
-    instance->AddLF = textMode;
   }
 }
