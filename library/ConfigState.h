@@ -4,10 +4,8 @@
 
 #include "defines.h"
 
-#include "ConfigModel.h"
 #include "SoundCardList.h"
 
-#define TABS 1
 #define MAXCARDS 12
 
 typedef struct
@@ -33,6 +31,4 @@ typedef struct
 
   HWND hDlgBar;
   HWND hDlgTape;
-
-  HWND hWndConfig[TABS];
 } ConfigState;

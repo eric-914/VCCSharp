@@ -8,6 +8,7 @@
 #include "PakInterfaceModule.h"
 #include "Emu.h"
 #include "Cartridge.h"
+#include "Dmenu.h"
 
 static Dmenu MenuItem[100];
 

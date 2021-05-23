@@ -7,12 +7,12 @@
         public unsafe byte* Memory;	//Emulated RAM
         public unsafe byte* InternalRomBuffer;
 
-        public byte MmuTask;		// $FF91 bit 0
+        public byte MmuTask;	// $FF91 bit 0
         public byte MmuEnabled;	// $FF90 bit 6
         public byte RamVectors;	// $FF90 bit 3
 
-        public byte RomMap;		  // $FF90 bit 1-0
-        public byte MapType;		// $FFDE/FFDF toggle Map type 0 = ram/rom
+        public byte RomMap;		// $FF90 bit 1-0
+        public byte MapType;	// $FFDE/FFDF toggle Map type 0 = ram/rom
 
         public byte CurrentRamConfig;
         public ushort MmuPrefix;

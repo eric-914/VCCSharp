@@ -15,7 +15,7 @@ typedef struct {
   unsigned int StatusBarHeight;
   unsigned int Color;
 
-  char AppNameText[MAX_LOADSTRING];	// The title bar text
-  char TitleBarText[MAX_LOADSTRING];	// The title bar text
+  char AppNameText[MAX_LOADSTRING];
+  char TitleBarText[MAX_LOADSTRING];
   char StatusText[255];
 } DirectDrawState;

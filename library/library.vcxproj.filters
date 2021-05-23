@@ -247,9 +247,6 @@
     <ClInclude Include="MC6821State.h">
       <Filter>models</Filter>
     </ClInclude>
-    <ClInclude Include="ConfigConstants.h">
-      <Filter>config</Filter>
-    </ClInclude>
     <ClInclude Include="DirectDrawSurfaceDesc.h">
       <Filter>directdraw</Filter>
     </ClInclude>

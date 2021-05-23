@@ -3,12 +3,9 @@
 #include <windows.h>
 #include <stdint.h>
 
-#include "Dmenu.h"
-
 typedef struct {
   HINSTANCE hInstLib;
 
-  // Storage for Pak ROMs
   unsigned char* ExternalRomBuffer;
   BOOL RomPackLoaded;
 

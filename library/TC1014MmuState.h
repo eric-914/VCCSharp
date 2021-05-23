@@ -1,17 +1,17 @@
 #pragma once
 
 typedef struct {
-  unsigned char MmuState;	// Composite variable handles MmuTask and MmuEnabled
+  unsigned char MmuState;
   unsigned short MemPageOffsets[1024];
-  unsigned char* Memory;	//Emulated RAM
+  unsigned char* Memory;
   unsigned char* InternalRomBuffer;
 
-  unsigned char MmuTask;		// $FF91 bit 0
-  unsigned char MmuEnabled;	// $FF90 bit 6
-  unsigned char RamVectors;	// $FF90 bit 3
+  unsigned char MmuTask;
+  unsigned char MmuEnabled;
+  unsigned char RamVectors;
 
-  unsigned char RomMap;		  // $FF90 bit 1-0
-  unsigned char MapType;		// $FFDE/FFDF toggle Map type 0 = ram/rom
+  unsigned char RomMap;
+  unsigned char MapType;
 
   unsigned char CurrentRamConfig;
   unsigned short MmuPrefix;
@@ -24,5 +24,5 @@ typedef struct {
   unsigned long VidMask[4];
 
   unsigned char* MemPages[1024];
-  unsigned short MmuRegisters[4][8];	// $FFA0 - FFAF
+  unsigned short MmuRegisters[4][8];
 } TC1014MmuState;

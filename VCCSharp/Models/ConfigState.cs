@@ -48,9 +48,6 @@ namespace VCCSharp.Models
 
         public HWND hDlgBar;
         public HWND hDlgTape;
-
-        //TODO: HWND* is really a pointer to an array of HWND items.  Haven't figured how to define it as such yet.
-        public unsafe HWND* hWndConfig; //[Define.TABS]
     }
 
     public static class SoundCardListExtensions

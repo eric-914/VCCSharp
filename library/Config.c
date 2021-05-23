@@ -2,6 +2,7 @@
 
 #include "Config.h"
 #include "Cassette.h"
+#include "JoyStickModel.h"
 
 #include "fileoperations.h"
 

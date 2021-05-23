@@ -198,7 +198,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cartridge.h" />
-    <ClInclude Include="ConfigConstants.h" />
     <ClInclude Include="Cassette.h" />
     <ClInclude Include="CassetteState.h" />
     <ClInclude Include="Clipboard.h" />
