@@ -87,19 +87,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MC6821_ClosePrintFile()
-  {
-    CloseHandle(instance->hPrintFile);
-
-    instance->hPrintFile = INVALID_HANDLE_VALUE;
-
-    FreeConsole();
-
-    instance->hOut = NULL;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) unsigned char __cdecl MC6821_DACState()
   {
     return (instance->regb[0] >> 2);

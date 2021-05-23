@@ -16,6 +16,7 @@ namespace VCCSharp.Libraries
         unsafe int ReadFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToRead, uint* lpNumberOfBytesRead, void* lpOverlapped);
         unsafe uint SetFilePointer(HANDLE hFile, uint lDistanceToMove, uint* lpDistanceToMoveHigh, uint dwMoveMethod);
         int FreeConsole();
+        int CloseHandle(HANDLE hObject);
     }
 
     public class Kernel : IKernel
@@ -49,5 +50,8 @@ namespace VCCSharp.Libraries
 
         public int FreeConsole()
             => KernelDll.FreeConsole();
+
+        public int CloseHandle(HANDLE hObject) 
+            => KernelDll.CloseHandle(hObject);
     }
 }

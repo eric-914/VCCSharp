@@ -38,5 +38,8 @@ namespace VCCSharp.Libraries
 
         [DllImport(DLL)]
         public static extern int FreeConsole();
+
+        [DllImport(DLL)]
+        public static extern int CloseHandle(HANDLE hObject);
     }
 }

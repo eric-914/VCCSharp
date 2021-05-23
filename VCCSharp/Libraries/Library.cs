@@ -406,9 +406,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe MC6821State* GetMC6821State();
 
             [DllImport(LIBRARY)]
-            public static extern void MC6821_ClosePrintFile();
-
-            [DllImport(LIBRARY)]
             public static extern void MC6821_SetSerialParams(byte textMode);
 
             [DllImport(LIBRARY)]

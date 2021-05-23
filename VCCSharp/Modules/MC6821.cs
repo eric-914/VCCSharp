@@ -181,7 +181,18 @@ namespace VCCSharp.Modules
 
         public void MC6821_ClosePrintFile()
         {
-            Library.MC6821.MC6821_ClosePrintFile();
+            unsafe
+            {
+                MC6821State* instance = GetMC6821State();
+
+                _kernel.CloseHandle(instance->hPrintFile);
+
+                instance->hPrintFile = Define.INVALID_HANDLE_VALUE;
+
+                _kernel.FreeConsole();
+
+                instance->hOut = IntPtr.Zero;
+            }
         }
 
         public void MC6821_SetMonState(int state)

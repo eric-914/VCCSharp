@@ -1,9 +1,13 @@
-﻿namespace VCCSharp.Models
+﻿using System;
+
+namespace VCCSharp.Models
 {
     // ReSharper disable InconsistentNaming
     // ReSharper disable IdentifierTypo
     public static class Define
     {
+        public static readonly IntPtr INVALID_HANDLE_VALUE = (IntPtr.Add(IntPtr.Zero, -1));
+
         public const byte TRUE = 1;     //--Need to be careful, as TRUE doesn't necessarily mean NOT FALSE
         public const byte FALSE = 0;
 
