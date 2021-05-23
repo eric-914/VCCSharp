@@ -36,7 +36,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe AudioState* GetAudioState();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void HandleSlowAudio(byte* buffer, ushort length);
+            public static extern unsafe void HandleSlowAudio(byte index, byte* buffer, ushort length);
         }
 
         public static class Callbacks

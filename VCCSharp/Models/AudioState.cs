@@ -10,7 +10,6 @@ namespace VCCSharp.Models
         public uint SndLength1;
         public uint SndLength2;
         public uint SndBuffLength;
-        public uint WritePointer;
         public uint BuffOffset;
         
         public unsafe void* SndPointer1;

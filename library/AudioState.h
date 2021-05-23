@@ -10,7 +10,6 @@ typedef struct {
   DWORD SndLength1;
   DWORD SndLength2;
   DWORD SndBuffLength;
-  DWORD WritePointer;
   DWORD BuffOffset;
 
   void* SndPointer1;

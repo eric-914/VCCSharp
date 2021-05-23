@@ -1,10 +1,4 @@
 #include "AudioState.h"
-#include "DirectSound.h"
-
-#include "Config.h"
-#include "Coco.h"
-
-#include "defines.h"
 
 AudioState* InitializeInstance(AudioState*);
 
@@ -22,7 +16,6 @@ AudioState* InitializeInstance(AudioState* p) {
   p->SndBuffLength = 0;
   p->SndLength1 = 0;
   p->SndLength2 = 0;
-  p->WritePointer = 0;
 
   p->SndPointer1 = NULL;
   p->SndPointer2 = NULL;
@@ -31,7 +24,7 @@ AudioState* InitializeInstance(AudioState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl HandleSlowAudio(unsigned char* buffer, unsigned short length) {
-    memcpy(instance->AuxBuffer[instance->AuxBufferPointer], buffer, length);	//Saving buffer to aux stack
+  __declspec(dllexport) void __cdecl HandleSlowAudio(byte index, unsigned char* buffer, unsigned short length) {
+    memcpy(instance->AuxBuffer[index], buffer, length);	//Saving buffer to aux stack
   }
 }
