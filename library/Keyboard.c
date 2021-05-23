@@ -143,60 +143,15 @@ extern "C" {
   }
 }
 
-/*
-  Rebuilds the run-time keyboard translation lookup table based on the
-  current keyboard layout.
-
-  The entries are sorted.  Any SHIFT + [char] entries need to be placed first
-*/
 extern "C" {
-  __declspec(dllexport) void __cdecl vccKeyboardBuildRuntimeTable(unsigned char	keyMapIndex, KeyTranslationEntry* keyLayoutTable)
-  {
-    int index1 = 0;
-    int index2 = 0;
-    KeyTranslationEntry	keyTransEntry;
-    KeyboardLayouts keyBoardLayout = (KeyboardLayouts)keyMapIndex;
+  __declspec(dllexport) void __cdecl vccKeyboardCopyKeyTranslationEntry(KeyTranslationEntry* target, KeyTranslationEntry* source) {
+    memcpy(target, source, sizeof(KeyTranslationEntry));
+  }
+}
 
-    for (index1 = 0; ; index1++)
-    {
-      memcpy(&keyTransEntry, &keyLayoutTable[index1], sizeof(KeyTranslationEntry));
-
-      //
-      // Change entries to what the code expects
-      //
-      // Make sure ScanCode1 is never 0
-      // If the key combo uses SHIFT, put it in ScanCode1
-      // Completely clear unused entries (ScanCode1+2 are 0)
-      //
-
-      //
-      // swaps ScanCode1 with ScanCode2 if ScanCode2 == DIK_LSHIFT
-      //
-      if (keyTransEntry.ScanCode2 == DIK_LSHIFT)
-      {
-        keyTransEntry.ScanCode2 = keyTransEntry.ScanCode1;
-        keyTransEntry.ScanCode1 = DIK_LSHIFT;
-      }
-
-      //
-      // swaps ScanCode1 with ScanCode2 if ScanCode1 is zero
-      //
-      if ((keyTransEntry.ScanCode1 == 0) && (keyTransEntry.ScanCode2 != 0))
-      {
-        keyTransEntry.ScanCode1 = keyTransEntry.ScanCode2;
-        keyTransEntry.ScanCode2 = 0;
-      }
-
-      // check for terminating entry
-      if (keyTransEntry.ScanCode1 == 0 && keyTransEntry.ScanCode2 == 0)
-      {
-        break;
-      }
-
-      memcpy(&(instance->KeyTransTable[index2++]), &keyTransEntry, sizeof(KeyTranslationEntry));
-
-      assert(index2 <= KBTABLE_ENTRY_COUNT && "keyboard layout table is longer than we can handle");
-    }
+extern "C" {
+  __declspec(dllexport) void __cdecl vccKeyboardCopy(KeyTranslationEntry* keyTransEntry, int index) {
+    vccKeyboardCopyKeyTranslationEntry(&(instance->KeyTransTable[index]), keyTransEntry);
   }
 }
 

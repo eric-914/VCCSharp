@@ -355,9 +355,6 @@ namespace VCCSharp.Libraries
             public static extern void vccKeyboardHandleKey(char key, char scanCode, KeyStates keyState);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void vccKeyboardBuildRuntimeTable(byte keyMapIndex, KeyTranslationEntry* keyLayoutTable);
-
-            [DllImport(LIBRARY)]
             public static extern void GimeSetKeyboardInterruptState(byte state);
 
             [DllImport(LIBRARY)]
@@ -389,6 +386,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void vccKeyboardSort();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void vccKeyboardCopyKeyTranslationEntry(KeyTranslationEntry* target, KeyTranslationEntry* source);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void vccKeyboardCopy(KeyTranslationEntry* keyTransEntry, int index);
         }
 
         public static class MenuCallbacks
