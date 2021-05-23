@@ -39,9 +39,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe void HandleSlowAudio(byte* buffer, ushort length);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int SoundInit(HWND hWnd, _GUID* guid, ushort rate);
-
-            [DllImport(LIBRARY)]
             public static extern void PurgeAuxBuffer();
         }
 
