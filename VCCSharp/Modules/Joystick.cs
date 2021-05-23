@@ -35,7 +35,13 @@ namespace VCCSharp.Modules
 
         public void SetStickNumbers(byte leftStickNumber, byte rightStickNumber)
         {
-            Library.Joystick.SetStickNumbers(leftStickNumber, rightStickNumber);
+            unsafe
+            {
+                JoystickState* instance = GetJoystickState();
+
+                instance->LeftStickNumber = leftStickNumber;
+                instance->RightStickNumber = rightStickNumber;
+            }
         }
     }
 }

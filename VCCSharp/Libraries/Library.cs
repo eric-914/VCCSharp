@@ -349,9 +349,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern int InitJoyStick(byte stickNumber);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetStickNumbers(byte leftStickNumber, byte rightStickNumber);
         }
 
         public static class Keyboard

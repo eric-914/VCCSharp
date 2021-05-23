@@ -35,12 +35,6 @@ JoystickState* InitializeInstance(JoystickState* p) {
   return p;
 }
 
-extern "C" {
-  __declspec(dllexport) char* __cdecl GetStickName(int index) {
-    return StickName[index];
-  }
-}
-
 void SetStickName(unsigned char joystickIndex, const char* joystickName) {
   strncpy(StickName[joystickIndex], joystickName, STRLEN);
 }
@@ -177,15 +171,6 @@ extern "C"
     }
 
     return;
-  }
-}
-
-extern "C"
-{
-  __declspec(dllexport) void __cdecl SetStickNumbers(unsigned char leftStickNumber, unsigned char rightStickNumber)
-  {
-    instance->LeftStickNumber = leftStickNumber;
-    instance->RightStickNumber = rightStickNumber;
   }
 }
 
