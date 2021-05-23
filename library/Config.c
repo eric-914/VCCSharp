@@ -1,16 +1,9 @@
 #include <ShlObj.h>
 
-#include "../resources/resource.h"
-
 #include "Config.h"
 #include "Cassette.h"
-#include "Audio.h"
 
 #include "fileoperations.h"
-
-#include "VccState.h"
-
-#include "ConfigConstants.h"
 
 using namespace std;
 

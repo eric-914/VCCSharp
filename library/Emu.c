@@ -1,17 +1,6 @@
 #include "Emu.h"
 
 #include "CoCo.h"
-#include "Graphics.h"
-#include "PAKInterface.h"
-#include "TC1014MMU.h"
-#include "TC1014Registers.h"
-#include "Config.h"
-#include "Audio.h"
-
-#include "MC6821.h"
-
-#include "cpudef.h"
-#include "defines.h"
 
 EmuState* InitializeInstance(EmuState*);
 

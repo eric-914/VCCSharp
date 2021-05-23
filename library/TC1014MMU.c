@@ -1,6 +1,8 @@
 #include "TC1014MMU.h"
 #include "PAKInterface.h"
 
+#include "TC1014MmuState.h"
+
 #include "macros.h"
 
 const unsigned int MemConfig[4] = { 0x20000, 0x80000, 0x200000, 0x800000 };

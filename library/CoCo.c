@@ -4,8 +4,6 @@
 
 #include "Graphics.h"
 #include "MC6821.h"
-#include "Cassette.h"
-#include "Audio.h"
 
 static void (*AudioEvent)(void) = AudioOut;
 

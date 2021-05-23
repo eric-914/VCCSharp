@@ -6,10 +6,6 @@
 
 #include "EmuState.h"
 
-#define EMU_RUNSTATE_RUNNING	0
-#define EMU_RUNSTATE_REQWAIT	1
-#define EMU_RUNSTATE_WAITING	2
-
 typedef struct
 {
   unsigned char AutoStart;

@@ -10,6 +10,9 @@
 #include "TC1014Registers.h"
 #include "xDebug.h"
 
+#define KEY_DOWN	1
+#define KEY_UP		0
+
 KeyboardState* InitializeInstance(KeyboardState*);
 
 static KeyboardState* instance = InitializeInstance(new KeyboardState());

@@ -130,9 +130,6 @@
     <ClInclude Include="ConfigModel.h">
       <Filter>models</Filter>
     </ClInclude>
-    <ClInclude Include="Audio.h">
-      <Filter>audio</Filter>
-    </ClInclude>
     <ClInclude Include="Cassette.h">
       <Filter>cassette</Filter>
     </ClInclude>
@@ -193,9 +190,6 @@
     <ClInclude Include="ConfigState.h">
       <Filter>models</Filter>
     </ClInclude>
-    <ClInclude Include="AudioState.h">
-      <Filter>models</Filter>
-    </ClInclude>
     <ClInclude Include="CassetteState.h">
       <Filter>models</Filter>
     </ClInclude>
@@ -247,9 +241,6 @@
     <ClInclude Include="DirectSoundState.h">
       <Filter>models</Filter>
     </ClInclude>
-    <ClInclude Include="DirectSound.h">
-      <Filter>audio</Filter>
-    </ClInclude>
     <ClInclude Include="DirectDrawInternalState.h">
       <Filter>models</Filter>
     </ClInclude>
@@ -262,14 +253,8 @@
     <ClInclude Include="MC6821State.h">
       <Filter>models</Filter>
     </ClInclude>
-    <ClInclude Include="DirectInput.h">
-      <Filter>joystick</Filter>
-    </ClInclude>
     <ClInclude Include="ConfigConstants.h">
       <Filter>config</Filter>
-    </ClInclude>
-    <ClInclude Include="GDI.h">
-      <Filter>gdi</Filter>
     </ClInclude>
     <ClInclude Include="DirectDrawSurfaceDesc.h">
       <Filter>directdraw</Filter>

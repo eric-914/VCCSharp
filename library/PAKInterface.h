@@ -23,19 +23,10 @@
 
 extern "C" __declspec(dllexport) PakInterfaceState * __cdecl GetPakInterfaceState();
 
-extern "C" __declspec(dllexport) int __cdecl FileID(char*);
 extern "C" __declspec(dllexport) int __cdecl InsertModule(EmuState*, char*);
-extern "C" __declspec(dllexport) int __cdecl LoadROMPack(EmuState*, char*);
 
 extern "C" __declspec(dllexport) unsigned char __cdecl PakMem8Read(unsigned short);
-extern "C" __declspec(dllexport) unsigned char __cdecl PakPortRead(unsigned char);
 
 extern "C" __declspec(dllexport) unsigned short __cdecl PakAudioSample(void);
 
-extern "C" __declspec(dllexport) void __cdecl PakPortWrite(unsigned char, unsigned char);
-extern "C" __declspec(dllexport) void __cdecl UnloadDll(EmuState*);
 extern "C" __declspec(dllexport) void __cdecl UnloadPack(EmuState*);
-
-extern "C" __declspec(dllexport) int __cdecl InsertModuleCase0();
-extern "C" __declspec(dllexport) int __cdecl InsertModuleCase1(EmuState* emuState, char* modulePath);
-extern "C" __declspec(dllexport) int __cdecl InsertModuleCase2(EmuState* emuState, char* modulePath);

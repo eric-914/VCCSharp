@@ -1,5 +1,7 @@
 #include "Joystick.h"
 
+#define STRLEN 64
+
 static LPDIRECTINPUT8 di;
 static LPDIRECTINPUTDEVICE8 Joysticks[MAXSTICKS];
 

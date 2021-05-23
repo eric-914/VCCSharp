@@ -1,22 +1,11 @@
 //--This is just a wrapper of DirectX used
 #include "di.version.h"
-#include <stdio.h>
 #include <ddraw.h>
-#include <commctrl.h>	// Windows common controls
 
 #include "../resources/resource.h"
-#include "resource.h"
 
 #include "DirectDraw.h"
-#include "Config.h"
-#include "Graphics.h"
-#include "Audio.h"
-#include "MenuCallbacks.h"
-#include "Emu.h"
-
 #include "DirectDrawInternal.h"
-#include "DirectDrawSurfaceDesc.h"
-#include "GDI.h"
 
 #include "ProcessMessage.h"
 

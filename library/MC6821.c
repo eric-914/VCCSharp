@@ -1,15 +1,9 @@
-#include <stdint.h>
-
 #include "MC6821.h"
+#include "MC6821State.h"
 
 #include "macros.h"
-#include "cpudef.h"
-#include "defines.h"
 
 #include "PAKInterface.h"
-#include "Keyboard.h"
-#include "Cassette.h"
-#include "Graphics.h"
 
 const unsigned char rega[4] = { 0,0,0,0 };
 const unsigned char regb[4] = { 0,0,0,0 };

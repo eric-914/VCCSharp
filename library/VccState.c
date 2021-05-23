@@ -1,5 +1,7 @@
 #include "VccState.h"
 
+#define EMU_RUNSTATE_RUNNING	0
+
 VccState* InitializeInstance(VccState*);
 
 static VccState* instance = InitializeInstance(new VccState());
