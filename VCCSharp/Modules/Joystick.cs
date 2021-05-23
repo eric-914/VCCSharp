@@ -10,6 +10,7 @@ namespace VCCSharp.Modules
         short EnumerateJoysticks();
         int InitJoyStick(byte stickNumber);
         void SetStickNumbers(byte leftStickNumber, byte rightStickNumber);
+        ushort get_pot_value(byte pot);
     }
 
     public class Joystick : IJoystick
@@ -42,6 +43,11 @@ namespace VCCSharp.Modules
                 instance->LeftStickNumber = leftStickNumber;
                 instance->RightStickNumber = rightStickNumber;
             }
+        }
+
+        public ushort get_pot_value(byte pot)
+        {
+            return Library.Joystick.get_pot_value(pot);
         }
     }
 }

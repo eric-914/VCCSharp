@@ -340,6 +340,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern int InitJoyStick(byte stickNumber);
+
+            [DllImport(LIBRARY)]
+            public static extern ushort get_pot_value(byte pot);
         }
 
         public static class Keyboard
@@ -356,9 +359,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void GimeSetKeyboardInterruptState(byte state);
-
-            [DllImport(LIBRARY)]
-            public static extern byte vccKeyboardGetScan(byte column);
 
             [DllImport(LIBRARY)]
             public static extern void SetKeyTranslationsCoCo(KeyTranslationEntry[] value);
@@ -395,6 +395,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern byte MC6821_GetMuxState();
+
+            [DllImport(LIBRARY)]
+            public static extern byte MC6821_DACState();
         } //--MC6821
 
         public static class PAKInterface

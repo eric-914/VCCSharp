@@ -23,6 +23,9 @@ namespace VCCSharp.Modules
         byte MC6821_pia1_read(byte port);
         void MC6821_pia0_write(byte data, byte port);
         void MC6821_pia1_write(byte data, byte port);
+
+        byte MC6821_GetMuxState();
+        byte MC6821_DACState();
     }
 
     // ReSharper disable once InconsistentNaming
@@ -496,8 +499,7 @@ namespace VCCSharp.Modules
 
             return Library.MC6821.MC6821_GetMuxState();
         }
-
-
+        
         public unsafe void MC6821_WritePrintMon(byte* data)
         {
             WriteConsole(data);
@@ -527,5 +529,9 @@ namespace VCCSharp.Modules
             //WriteConsole(instance->hOut, data, 1, &dummy, 0);
         }
 
+        public byte MC6821_DACState()
+        {
+            return Library.MC6821.MC6821_DACState();
+        }
     }
 }
