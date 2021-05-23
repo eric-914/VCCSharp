@@ -311,5 +311,7 @@
 
 
         #endregion
+
+        public const int KBTABLE_ENTRY_COUNT = 100; //< key translation table maximum size, (arbitrary) most of the layouts are < 80 entries
     }
 }

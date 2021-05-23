@@ -1,4 +1,5 @@
-﻿using VCCSharp.Enums;
+﻿using System;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -50,21 +51,6 @@ namespace VCCSharp.Modules
 
                 keyboardState->Pasting = flag ? Define.TRUE : Define.FALSE;
             }
-        }
-
-        public void vccKeyboardHandleKey(char key, char scanCode, KeyStates keyState)
-        {
-            Library.Keyboard.vccKeyboardHandleKey(key, scanCode, keyState);
-        }
-
-        public void vccKeyboardBuildRuntimeTable(byte keyMapIndex)
-        {
-            Library.Keyboard.vccKeyboardBuildRuntimeTable(keyMapIndex);
-        }
-
-        public void GimeSetKeyboardInterruptState(byte state)
-        {
-            Library.Keyboard.GimeSetKeyboardInterruptState(state);
         }
 
         /*
@@ -167,6 +153,118 @@ namespace VCCSharp.Modules
             Library.Keyboard.SetKeyTranslationsNatural(KeyboardLayout.GetKeyTranslationsNatural());
             Library.Keyboard.SetKeyTranslationsCompact(KeyboardLayout.GetKeyTranslationsCompact());
             Library.Keyboard.SetKeyTranslationsCustom(KeyboardLayout.GetKeyTranslationsCustom());
+        }
+
+        public void vccKeyboardHandleKey(char key, char scanCode, KeyStates keyState)
+        {
+            Library.Keyboard.vccKeyboardHandleKey(key, scanCode, keyState);
+        }
+
+        public void GimeSetKeyboardInterruptState(byte state)
+        {
+            Library.Keyboard.GimeSetKeyboardInterruptState(state);
+        }
+
+        public void vccKeyboardBuildRuntimeTable(byte keyMapIndex)
+        {
+            unsafe
+            {
+                KeyboardState* instance = GetKeyboardState();
+
+                //int index1 = 0;
+                //int index2 = 0;
+                KeyTranslationEntry* keyLayoutTable = null;
+                //KeyTranslationEntry keyTransEntry;
+                KeyboardLayouts keyBoardLayout = (KeyboardLayouts)keyMapIndex;
+
+                switch (keyBoardLayout)
+                {
+                    case KeyboardLayouts.kKBLayoutCoCo:
+                        keyLayoutTable = GetKeyTranslationsCoCo();
+                        break;
+
+                    case KeyboardLayouts.kKBLayoutNatural:
+                        keyLayoutTable = GetKeyTranslationsNatural();
+                        break;
+
+                    case KeyboardLayouts.kKBLayoutCompact:
+                        keyLayoutTable = GetKeyTranslationsCompact();
+                        break;
+
+                    case KeyboardLayouts.kKBLayoutCustom:
+                        keyLayoutTable = GetKeyTranslationsCustom();
+                        break;
+                }
+
+                //XTRACE("Building run-time key table for layout # : %d - %s\n", keyBoardLayout, k_keyboardLayoutNames[keyBoardLayout]);
+
+                vccKeyboardClear();
+
+                Library.Keyboard.vccKeyboardBuildRuntimeTable(keyMapIndex, keyLayoutTable);
+
+                vccKeyboardSort();
+
+                #region DEBUG
+
+#if DEBUG
+                ////
+                //// Debug dump the table
+                ////
+                //for (int index1 = 0; index1 < Define.KBTABLE_ENTRY_COUNT; index1++)
+                //{
+                //    // check for null entry
+                //    if (instance->KeyTransTable[index1].ScanCode1 == 0 && instance->KeyTransTable[index1].ScanCode2 == 0)
+                //    {
+                //        // done
+                //        break;
+                //    }
+                //}
+#endif
+
+                #endregion
+            }
+
+            //XTRACE("Key: %3d - 0x%02X (%3d) 0x%02X (%3d) - %2d %2d  %2d %2d\n",
+            //  Index1,
+            //  KeyTransTable[Index1].ScanCode1,
+            //  KeyTransTable[Index1].ScanCode1,
+            //  KeyTransTable[Index1].ScanCode2,
+            //  KeyTransTable[Index1].ScanCode2,
+            //  KeyTransTable[Index1].Row1,
+            //  KeyTransTable[Index1].Col1,
+            //  KeyTransTable[Index1].Row2,
+            //  KeyTransTable[Index1].Col2
+            //);
+        }
+
+        public unsafe KeyTranslationEntry* GetKeyTranslationsCoCo()
+        {
+            return Library.Keyboard.GetKeyTranslationsCoCo();
+        }
+
+        public unsafe KeyTranslationEntry* GetKeyTranslationsNatural()
+        {
+            return Library.Keyboard.GetKeyTranslationsNatural();
+        }
+
+        public unsafe KeyTranslationEntry* GetKeyTranslationsCompact()
+        {
+            return Library.Keyboard.GetKeyTranslationsCompact();
+        }
+
+        public unsafe KeyTranslationEntry* GetKeyTranslationsCustom()
+        {
+            return Library.Keyboard.GetKeyTranslationsCustom();
+        }
+
+        public void vccKeyboardClear()
+        {
+            Library.Keyboard.vccKeyboardClear();
+        }
+
+        public void vccKeyboardSort()
+        {
+            Library.Keyboard.vccKeyboardSort();;
         }
     }
 }

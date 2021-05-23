@@ -123,6 +123,26 @@ extern "C" {
   }
 }
 
+extern "C" {
+  __declspec(dllexport) void __cdecl vccKeyboardSort() {
+    //
+    // Sort the key translation table
+    //
+    // Since the table is searched from beginning to end each
+    // time a key is pressed, we want them to be in the correct 
+    // order.
+    //
+    qsort(instance->KeyTransTable, KBTABLE_ENTRY_COUNT, sizeof(KeyTranslationEntry), KeyTransCompare);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl vccKeyboardClear() {
+    // copy the selected keyboard layout to the run-time table
+    memset(instance->KeyTransTable, 0, sizeof(instance->KeyTransTable));
+  }
+}
+
 /*
   Rebuilds the run-time keyboard translation lookup table based on the
   current keyboard layout.
@@ -130,44 +150,12 @@ extern "C" {
   The entries are sorted.  Any SHIFT + [char] entries need to be placed first
 */
 extern "C" {
-  __declspec(dllexport) void __cdecl vccKeyboardBuildRuntimeTable(unsigned char	keyMapIndex)
+  __declspec(dllexport) void __cdecl vccKeyboardBuildRuntimeTable(unsigned char	keyMapIndex, KeyTranslationEntry* keyLayoutTable)
   {
     int index1 = 0;
     int index2 = 0;
-    KeyTranslationEntry* keyLayoutTable = NULL;
     KeyTranslationEntry	keyTransEntry;
     KeyboardLayouts keyBoardLayout = (KeyboardLayouts)keyMapIndex;
-
-    assert(keyBoardLayout >= 0 && keyBoardLayout < kKBLayoutCount);
-
-    switch (keyBoardLayout)
-    {
-    case kKBLayoutCoCo:
-      keyLayoutTable = GetKeyTranslationsCoCo();
-      break;
-
-    case kKBLayoutNatural:
-      keyLayoutTable = GetKeyTranslationsNatural();
-      break;
-
-    case kKBLayoutCompact:
-      keyLayoutTable = GetKeyTranslationsCompact();
-      break;
-
-    case kKBLayoutCustom:
-      keyLayoutTable = GetKeyTranslationsCustom();
-      break;
-
-    default:
-      assert(0 && "unknown keyboard layout");
-      break;
-    }
-
-    //XTRACE("Building run-time key table for layout # : %d - %s\n", keyBoardLayout, k_keyboardLayoutNames[keyBoardLayout]);
-
-    // copy the selected keyboard layout to the run-time table
-    memset(instance->KeyTransTable, 0, sizeof(instance->KeyTransTable));
-    index2 = 0;
 
     for (index1 = 0; ; index1++)
     {
@@ -209,42 +197,6 @@ extern "C" {
 
       assert(index2 <= KBTABLE_ENTRY_COUNT && "keyboard layout table is longer than we can handle");
     }
-
-    //
-    // Sort the key translation table
-    //
-    // Since the table is searched from beginning to end each
-    // time a key is pressed, we want them to be in the correct 
-    // order.
-    //
-    qsort(instance->KeyTransTable, KBTABLE_ENTRY_COUNT, sizeof(KeyTranslationEntry), KeyTransCompare);
-
-#ifdef _DEBUG
-    //
-    // Debug dump the table
-    //
-    for (index1 = 0; index1 < KBTABLE_ENTRY_COUNT; index1++)
-    {
-      // check for null entry
-      if (instance->KeyTransTable[index1].ScanCode1 == 0 && instance->KeyTransTable[index1].ScanCode2 == 0)
-      {
-        // done
-        break;
-      }
-
-      //XTRACE("Key: %3d - 0x%02X (%3d) 0x%02X (%3d) - %2d %2d  %2d %2d\n",
-      //  Index1,
-      //  KeyTransTable[Index1].ScanCode1,
-      //  KeyTransTable[Index1].ScanCode1,
-      //  KeyTransTable[Index1].ScanCode2,
-      //  KeyTransTable[Index1].ScanCode2,
-      //  KeyTransTable[Index1].Row1,
-      //  KeyTransTable[Index1].Col1,
-      //  KeyTransTable[Index1].Row2,
-      //  KeyTransTable[Index1].Col2
-      //);
-    }
-#endif
   }
 }
 
@@ -359,7 +311,7 @@ extern "C" {
     if (ScanCode == DIK_RMENU)
     {
       ScanCode = DIK_LMENU;
-    }
+  }
 #endif
 
     switch (keyState)
@@ -411,5 +363,5 @@ extern "C" {
 
       break;
     }
-  }
+}
 }
