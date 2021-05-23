@@ -98,10 +98,11 @@ namespace VCCSharp
             unsafe
             {
                 ConfigState* configState = _modules.Config.GetConfigState();
-                JoystickModel* left = _modules.Config.GetLeftJoystick();
-                JoystickModel* right = _modules.Config.GetRightJoystick();
+                ConfigModel* configModel = _modules.Config.GetConfigModel();
+                JoystickModel* leftJoystickModel = _modules.Config.GetLeftJoystick();
+                JoystickModel* rightJoystickModel = _modules.Config.GetRightJoystick();
 
-                _options.Configuration.ShowDialog(configState, left, right);
+                _options.Configuration.ShowDialog(configState, configModel, leftJoystickModel, rightJoystickModel);
             }
         }
 

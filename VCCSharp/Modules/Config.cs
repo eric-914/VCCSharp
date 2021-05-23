@@ -17,6 +17,7 @@ namespace VCCSharp.Modules
     public interface IConfig
     {
         unsafe ConfigState* GetConfigState();
+        unsafe ConfigModel* GetConfigModel();
         unsafe JoystickModel* GetLeftJoystick();
         unsafe JoystickModel* GetRightJoystick();
 
@@ -75,10 +76,11 @@ namespace VCCSharp.Modules
         public unsafe void InitConfig(EmuState* emuState, ref CmdLineArguments cmdLineArgs)
         {
             ConfigState* configState = GetConfigState();
+            ConfigModel* configModel = GetConfigModel();
 
             string iniFile = GetIniFilePath(cmdLineArgs.IniFile);
 
-            Converter.ToByteArray(AppTitle, configState->Model->Release);   //--A kind of "version" I guess
+            Converter.ToByteArray(AppTitle, configModel->Release);   //--A kind of "version" I guess
             Converter.ToByteArray(iniFile, configState->IniFilePath);
 
             //--TODO: Silly way to get C# to look at the SoundCardList array correctly
@@ -99,14 +101,14 @@ namespace VCCSharp.Modules
 
             ConfigureJoysticks();
 
-            string soundCardName = Converter.ToString(configState->Model->SoundCardName);
+            string soundCardName = Converter.ToString(configModel->SoundCardName);
             byte soundCardIndex = GetSoundCardIndex(soundCardName);
 
             var array = configState->SoundCards.ToArray();
             SoundCardList soundCard = array[soundCardIndex];
             _GUID* guid = soundCard.Guid;
 
-            _modules.Audio.SoundInit(emuState->WindowHandle, guid, configState->Model->AudioRate);
+            _modules.Audio.SoundInit(emuState->WindowHandle, guid, configModel->AudioRate);
 
             //  Try to open the config file.  Create it if necessary.  Abort if failure.
             if (File.Exists(iniFile))
@@ -130,10 +132,8 @@ namespace VCCSharp.Modules
 
         public unsafe void SynchSystemWithConfig(EmuState* emuState)
         {
-            ConfigState* configState = GetConfigState();
+            ConfigModel* model = GetConfigModel();
             VccState* vccState = _modules.Vcc.GetVccState();
-
-            ConfigModel* model = configState->Model;
 
             vccState->AutoStart = model->AutoStart;
             vccState->Throttle = model->SpeedThrottle;
@@ -239,7 +239,7 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                return Converter.ToString(GetConfigState()->Model->ExternalBasicImage);
+                return Converter.ToString(GetConfigModel()->ExternalBasicImage);
             }
         }
 
@@ -295,21 +295,22 @@ namespace VCCSharp.Modules
         public unsafe void ReadIniFile(EmuState* emuState)
         {
             ConfigState* configState = GetConfigState();
+            ConfigModel* configModel = GetConfigModel();
 
             string iniFilePath = Converter.ToString(configState->IniFilePath);
-            string modulePath = Converter.ToString(configState->Model->ModulePath);
+            string modulePath = Converter.ToString(configModel->ModulePath);
 
-            LoadConfiguration(configState->Model, iniFilePath);
+            LoadConfiguration(configModel, iniFilePath);
 
-            ValidateModel(configState->Model);
+            ValidateModel(configModel);
 
-            _modules.Keyboard.vccKeyboardBuildRuntimeTable(configState->Model->KeyMapIndex);
+            _modules.Keyboard.vccKeyboardBuildRuntimeTable(configModel->KeyMapIndex);
 
             _modules.PAKInterface.InsertModule(emuState, modulePath);   // Should this be here?
 
-            if (configState->Model->RememberSize == Define.TRUE)
+            if (configModel->RememberSize == Define.TRUE)
             {
-                SetWindowSize(configState->Model->WindowSizeX, configState->Model->WindowSizeY);
+                SetWindowSize(configModel->WindowSizeX, configModel->WindowSizeY);
             }
             else
             {
@@ -337,11 +338,11 @@ namespace VCCSharp.Modules
 
         public unsafe void AdjustOverclockSpeed(EmuState* emuState, byte change)
         {
-            ConfigState* configState = GetConfigState();
+            ConfigModel* configModel = GetConfigModel();
 
-            byte cpuMultiplier = (byte)(configState->Model->CPUMultiplier + change);
+            byte cpuMultiplier = (byte)(configModel->CPUMultiplier + change);
 
-            if (cpuMultiplier < 2 || cpuMultiplier > configState->Model->MaxOverclock)
+            if (cpuMultiplier < 2 || cpuMultiplier > configModel->MaxOverclock)
             {
                 return;
             }
@@ -355,7 +356,7 @@ namespace VCCSharp.Modules
             //    _modules.Callbacks.SetDialogCpuMultiplier(hDlg, cpuMultiplier);
             //}
 
-            configState->Model->CPUMultiplier = cpuMultiplier;
+            configModel->CPUMultiplier = cpuMultiplier;
 
             emuState->ResetPending = (byte)ResetPendingStates.ClsSynch; // Without this, changing the config does nothing.
         }
@@ -493,24 +494,25 @@ namespace VCCSharp.Modules
         public unsafe void WriteIniFile(EmuState* emuState)
         {
             ConfigState* configState = GetConfigState();
+            ConfigModel* configModel = GetConfigModel();
 
-            configState->Model->WindowSizeX = (short)emuState->WindowSize.X;
-            configState->Model->WindowSizeY = (short)emuState->WindowSize.Y;
+            configModel->WindowSizeX = (short)emuState->WindowSize.X;
+            configModel->WindowSizeY = (short)emuState->WindowSize.Y;
 
-            string modulePath = Converter.ToString(configState->Model->ModulePath);
+            string modulePath = Converter.ToString(configModel->ModulePath);
 
             if (string.IsNullOrEmpty(modulePath))
             {
                 modulePath = _modules.PAKInterface.GetCurrentModule();
             }
 
-            Converter.ToByteArray(modulePath, configState->Model->ModulePath);
+            Converter.ToByteArray(modulePath, configModel->ModulePath);
 
-            ValidateModel(configState->Model);
+            ValidateModel(configModel);
 
             string iniFilePath = Converter.ToString(configState->IniFilePath);
 
-            SaveConfiguration(configState->Model, iniFilePath);
+            SaveConfiguration(configModel, iniFilePath);
         }
 
         public unsafe void ValidateModel(ConfigModel* model)
@@ -664,9 +666,7 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                ConfigState* instance = GetConfigState();
-
-                return (instance->Model->RememberSize != 0);
+                return (GetConfigModel()->RememberSize != 0);
             }
         }
 
@@ -676,10 +676,10 @@ namespace VCCSharp.Modules
 
             unsafe
             {
-                ConfigState* instance = GetConfigState();
+                ConfigModel* model = GetConfigModel();
 
-                p.X = instance->Model->WindowSizeX;
-                p.Y = instance->Model->WindowSizeY;
+                p.X = model->WindowSizeX;
+                p.Y = model->WindowSizeY;
             }
 
             return p;

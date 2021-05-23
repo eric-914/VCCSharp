@@ -22,7 +22,7 @@ extern "C" {
     ofn.nMaxFile = MAX_PATH;					          // sizeof lpstrFile
     ofn.lpstrFileTitle = NULL;						      // filename and extension only
     ofn.nMaxFileTitle = MAX_PATH;					      // sizeof lpstrFileTitle
-    ofn.lpstrInitialDir = GetConfigState()->Model->PakPath;  // initial directory
+    ofn.lpstrInitialDir = GetConfigModel()->PakPath;  // initial directory
     ofn.lpstrTitle = TEXT("Load Program Pack");	// title bar string
     ofn.Flags = OFN_HIDEREADONLY;
 
@@ -32,7 +32,7 @@ extern "C" {
         size_t idx = tmp.find_last_of("\\");
         tmp = tmp.substr(0, idx);
 
-        strcpy(GetConfigState()->Model->PakPath, tmp.c_str());
+        strcpy(GetConfigModel()->PakPath, tmp.c_str());
 
         return(0);
       }

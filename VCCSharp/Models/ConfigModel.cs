@@ -5,12 +5,6 @@ namespace VCCSharp.Models
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct ConfigModel
     {
-        //[LeftJoyStick]  //struct {} JoyStick
-        //public unsafe JoystickModel* Left;
-
-        //[RightJoyStick]
-        //public unsafe JoystickModel* Right;
-
         //[Version]
         public unsafe fixed byte Release[Define.MAX_LOADSTRING]; //## WRITE-ONLY ##//
 

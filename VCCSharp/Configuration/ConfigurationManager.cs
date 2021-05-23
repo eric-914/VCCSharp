@@ -12,11 +12,12 @@ namespace VCCSharp.Configuration
             _modules = modules;
         }
 
-        public unsafe void ShowDialog(ConfigState* state, JoystickModel* left, JoystickModel* right)
+        public unsafe void ShowDialog(ConfigState* state, ConfigModel* model, JoystickModel* left, JoystickModel* right)
         {
             var viewModel = new ConfigurationViewModel
             {
                 State = state, 
+                Model = model,
                 LeftModel = left, 
                 RightModel = right
             };

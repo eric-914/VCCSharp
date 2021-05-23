@@ -22,7 +22,6 @@ typedef struct
 
   short NumberOfSoundCards;
 
-  ConfigModel* Model;
   SoundCardList SoundCards[MAXCARDS];
 
   char AppDataPath[MAX_PATH];

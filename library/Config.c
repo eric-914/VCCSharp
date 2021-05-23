@@ -14,11 +14,11 @@
 
 using namespace std;
 
-ConfigState* InitializeInstance(ConfigState*, ConfigModel*);
-JoystickModel* InitializeModel(JoystickModel* p);
+ConfigState* InitializeInstance(ConfigState*);
+JoystickModel* InitializeModel(JoystickModel*);
 
-static ConfigState* instance = InitializeInstance(new ConfigState(), new ConfigModel());
-static ConfigModel* model;
+static ConfigState* instance = InitializeInstance(new ConfigState());
+static ConfigModel* model = new ConfigModel();
 static JoystickModel* left = InitializeModel(new JoystickModel());
 static JoystickModel* right = InitializeModel(new JoystickModel());
 
@@ -54,9 +54,7 @@ JoystickModel* InitializeModel(JoystickModel* p) {
   return p;
 }
 
-ConfigState* InitializeInstance(ConfigState* p, ConfigModel* m) {
-  p->Model = model = m;
-
+ConfigState* InitializeInstance(ConfigState* p) {
   p->NumberOfSoundCards = 0;
   p->NumberOfJoysticks = 0;
   p->PrintMonitorWindow = 0;
