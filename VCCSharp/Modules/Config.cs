@@ -17,6 +17,9 @@ namespace VCCSharp.Modules
     public interface IConfig
     {
         unsafe ConfigState* GetConfigState();
+        unsafe JoystickModel* GetLeftJoystick();
+        unsafe JoystickModel* GetRightJoystick();
+
         unsafe void InitConfig(EmuState* emuState, ref CmdLineArguments cmdLineArgs);
         unsafe void WriteIniFile(EmuState* emuState);
         unsafe void SynchSystemWithConfig(EmuState* emuState);
@@ -29,10 +32,7 @@ namespace VCCSharp.Modules
         void SaveConfig();
         byte GetSoundCardIndex(string soundCardName);
         bool GetRememberSize();
-
-        unsafe JoystickModel* GetLeftJoystick();
-        unsafe JoystickModel* GetRightJoystick();
-
+        
         Point GetIniWindowSize();
         string AppTitle { get; }
     }

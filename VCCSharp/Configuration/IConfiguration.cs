@@ -4,6 +4,6 @@ namespace VCCSharp.Configuration
 {
     public interface IConfiguration
     {
-        unsafe void ShowDialog(ConfigState* state);
+        unsafe void ShowDialog(ConfigState* state, JoystickModel* left, JoystickModel* right);
     }
 }
