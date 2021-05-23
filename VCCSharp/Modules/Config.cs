@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -30,6 +29,10 @@ namespace VCCSharp.Modules
         void SaveConfig();
         byte GetSoundCardIndex(string soundCardName);
         bool GetRememberSize();
+
+        unsafe JoystickModel* GetLeftJoystick();
+        unsafe JoystickModel* GetRightJoystick();
+
         Point GetIniWindowSize();
         string AppTitle { get; }
     }
@@ -87,8 +90,8 @@ namespace VCCSharp.Modules
             //--Synch joysticks to config instance
             JoystickState* joystickState = _modules.Joystick.GetJoystickState();
 
-            joystickState->Left = configState->Model->Left;
-            joystickState->Right = configState->Model->Right;
+            joystickState->Left = GetLeftJoystick();
+            joystickState->Right = GetRightJoystick();
 
             ReadIniFile(emuState);
 
@@ -194,8 +197,8 @@ namespace VCCSharp.Modules
             {
                 ConfigState* configState = GetConfigState();
 
-                JoystickModel* left = configState->Model->Left;
-                JoystickModel* right = configState->Model->Right;
+                JoystickModel* left = GetLeftJoystick();
+                JoystickModel* right = GetRightJoystick();
 
                 configState->NumberOfJoysticks = (byte)_modules.Joystick.EnumerateJoysticks();
 
@@ -404,26 +407,28 @@ namespace VCCSharp.Modules
             _kernel.GetPrivateProfileStringA("Module", "ModulePath", "", model->ModulePath, Define.MAX_PATH, iniFilePath);
 
             //[LeftJoyStick]
-            model->Left->UseMouse = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "UseMouse", 1, iniFilePath);
-            model->Left->Left = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Left", 75, iniFilePath);
-            model->Left->Right = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Right", 77, iniFilePath);
-            model->Left->Up = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Up", 72, iniFilePath);
-            model->Left->Down = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Down", 80, iniFilePath);
-            model->Left->Fire1 = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Fire1", 59, iniFilePath);
-            model->Left->Fire2 = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Fire2", 60, iniFilePath);
-            model->Left->DiDevice = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "DiDevice", 0, iniFilePath);
-            model->Left->HiRes = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "HiResDevice", 0, iniFilePath);
+            var left = GetLeftJoystick();
+            left->UseMouse = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "UseMouse", 1, iniFilePath);
+            left->Left = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Left", 75, iniFilePath);
+            left->Right = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Right", 77, iniFilePath);
+            left->Up = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Up", 72, iniFilePath);
+            left->Down = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Down", 80, iniFilePath);
+            left->Fire1 = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Fire1", 59, iniFilePath);
+            left->Fire2 = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Fire2", 60, iniFilePath);
+            left->DiDevice = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "DiDevice", 0, iniFilePath);
+            left->HiRes = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "HiResDevice", 0, iniFilePath);
 
             //[RightJoyStick]
-            model->Right->UseMouse = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "UseMouse", 1, iniFilePath);
-            model->Right->Left = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Left", 75, iniFilePath);
-            model->Right->Right = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Right", 77, iniFilePath);
-            model->Right->Up = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Up", 72, iniFilePath);
-            model->Right->Down = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Down", 80, iniFilePath);
-            model->Right->Fire1 = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Fire1", 59, iniFilePath);
-            model->Right->Fire2 = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Fire2", 60, iniFilePath);
-            model->Right->DiDevice = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "DiDevice", 0, iniFilePath);
-            model->Right->HiRes = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "HiResDevice", 0, iniFilePath);
+            var right = GetRightJoystick();
+            right->UseMouse = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "UseMouse", 1, iniFilePath);
+            right->Left = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Left", 75, iniFilePath);
+            right->Right = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Right", 77, iniFilePath);
+            right->Up = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Up", 72, iniFilePath);
+            right->Down = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Down", 80, iniFilePath);
+            right->Fire1 = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Fire1", 59, iniFilePath);
+            right->Fire2 = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Fire2", 60, iniFilePath);
+            right->DiDevice = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "DiDevice", 0, iniFilePath);
+            right->HiRes = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "HiResDevice", 0, iniFilePath);
 
             //[DefaultPaths]
             _kernel.GetPrivateProfileStringA("DefaultPaths", "CassPath", "", model->CassPath, Define.MAX_PATH, iniFilePath);
@@ -594,26 +599,28 @@ namespace VCCSharp.Modules
             SaveText("Module", "ModulePath", model->ModulePath);
 
             //[LeftJoyStick]
-            SaveInt("LeftJoyStick", "UseMouse", model->Left->UseMouse);
-            SaveInt("LeftJoyStick", "Left", model->Left->Left);
-            SaveInt("LeftJoyStick", "Right", model->Left->Right);
-            SaveInt("LeftJoyStick", "Up", model->Left->Up);
-            SaveInt("LeftJoyStick", "Down", model->Left->Down);
-            SaveInt("LeftJoyStick", "Fire1", model->Left->Fire1);
-            SaveInt("LeftJoyStick", "Fire2", model->Left->Fire2);
-            SaveInt("LeftJoyStick", "DiDevice", model->Left->DiDevice);
-            SaveInt("LeftJoyStick", "HiResDevice", model->Left->HiRes);
+            var left = GetLeftJoystick();
+            SaveInt("LeftJoyStick", "UseMouse", left->UseMouse);
+            SaveInt("LeftJoyStick", "Left", left->Left);
+            SaveInt("LeftJoyStick", "Right", left->Right);
+            SaveInt("LeftJoyStick", "Up", left->Up);
+            SaveInt("LeftJoyStick", "Down", left->Down);
+            SaveInt("LeftJoyStick", "Fire1", left->Fire1);
+            SaveInt("LeftJoyStick", "Fire2", left->Fire2);
+            SaveInt("LeftJoyStick", "DiDevice", left->DiDevice);
+            SaveInt("LeftJoyStick", "HiResDevice", left->HiRes);
 
             //[RightJoyStick]
-            SaveInt("RightJoyStick", "UseMouse", model->Right->UseMouse);
-            SaveInt("RightJoyStick", "Left", model->Right->Left);
-            SaveInt("RightJoyStick", "Right", model->Right->Right);
-            SaveInt("RightJoyStick", "Up", model->Right->Up);
-            SaveInt("RightJoyStick", "Down", model->Right->Down);
-            SaveInt("RightJoyStick", "Fire1", model->Right->Fire1);
-            SaveInt("RightJoyStick", "Fire2", model->Right->Fire2);
-            SaveInt("RightJoyStick", "DiDevice", model->Right->DiDevice);
-            SaveInt("RightJoyStick", "HiResDevice", model->Right->HiRes);
+            var right = GetRightJoystick();
+            SaveInt("RightJoyStick", "UseMouse", right->UseMouse);
+            SaveInt("RightJoyStick", "Left", right->Left);
+            SaveInt("RightJoyStick", "Right", right->Right);
+            SaveInt("RightJoyStick", "Up", right->Up);
+            SaveInt("RightJoyStick", "Down", right->Down);
+            SaveInt("RightJoyStick", "Fire1", right->Fire1);
+            SaveInt("RightJoyStick", "Fire2", right->Fire2);
+            SaveInt("RightJoyStick", "DiDevice", right->DiDevice);
+            SaveInt("RightJoyStick", "HiResDevice", right->HiRes);
 
             //[DefaultPaths]
             SaveText("DefaultPaths", "CassPath", model->CassPath);

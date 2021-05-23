@@ -186,8 +186,8 @@ namespace VCCSharp.Modules
                 ConfigState* configState = _modules.Config.GetConfigState();
                 EmuState* emuState = _modules.Emu.GetEmuState();
 
-                JoystickModel* left = configState->Model->Left;
-                JoystickModel* right = configState->Model->Right;
+                JoystickModel* left = _modules.Config.GetLeftJoystick();
+                JoystickModel* right = _modules.Config.GetRightJoystick();
 
                 emuState->ResetPending = (byte)ResetPendingStates.ClsSynch;
 
