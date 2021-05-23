@@ -42,22 +42,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindow(HINSTANCE resources, unsigned char fullscreen)
+  __declspec(dllexport) HBRUSH __cdecl DDGetBrush() {
+    return (HBRUSH)GetStockObject(BLACK_BRUSH);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HCURSOR __cdecl DDGetCursor(unsigned char fullscreen) {
+    return fullscreen ? LoadCursor(NULL, MAKEINTRESOURCE(IDC_NONE)) : LoadCursor(NULL, IDC_ARROW);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HICON __cdecl DDGetIcon(HINSTANCE resources) {
+    return LoadIcon(resources, (LPCTSTR)IDI_COCO3);
+  }
+}
+    
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindow(HINSTANCE hInstance, HICON hIcon, HCURSOR hCursor, HBRUSH hBrush, UINT style, LPCSTR lpszClassName, LPCSTR lpszMenuName)
   {
-    WNDPROC proc;
-    proc = WndProc;
-    //proc = DefWindowProcA;
+    //WNDPROC lpfnWndProc = WndProc; 
 
-    UINT style = CS_HREDRAW | CS_VREDRAW;
-    WNDPROC lpfnWndProc = proc; 
-    HINSTANCE hInstance = instance->hInstance;
-    HICON hIcon = LoadIcon(resources, (LPCTSTR)IDI_COCO3);
-    HBRUSH hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-    LPCSTR lpszClassName = instance->AppNameText;
-    LPCSTR lpszMenuName = NULL; //Menu is set on WM_CREATE
-    HCURSOR hCursor = fullscreen ? LoadCursor(NULL, MAKEINTRESOURCE(IDC_NONE)) : LoadCursor(NULL, IDC_ARROW);
-
-    //And Rebuilt it from scratch
-    return RegisterWcex(hInstance, lpfnWndProc, lpszClassName, lpszMenuName, style, hIcon, hCursor, hbrBackground);
+    return RegisterWcex(
+      hInstance,
+      WndProc, 
+      lpszClassName,
+      lpszMenuName, 
+      style,
+      hIcon,
+      hCursor,
+      hBrush
+    );
   }
 }

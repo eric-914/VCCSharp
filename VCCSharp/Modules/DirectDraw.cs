@@ -766,7 +766,23 @@ namespace VCCSharp.Modules
             //}
 
             //return Library.DirectDraw.CreateDirectDrawWindow(resources, fullscreen, WndProcCallback) != Define.FALSE;
-            return Library.DirectDraw.CreateDirectDrawWindow(resources, fullscreen) != Define.FALSE;
+
+            uint style = Define.CS_HREDRAW | Define.CS_VREDRAW;
+            //LPCSTR lpszMenuName = NULL; //Menu is set on WM_CREATE
+
+            unsafe
+            {
+                DirectDrawState* instance = GetDirectDrawState();
+
+                HINSTANCE hInstance = instance->hInstance;
+                byte* lpszClassName = instance->AppNameText;
+                void* hIcon = GetIcon(resources);
+                void* hCursor = GetCursor(fullscreen);
+                void* hBrush = GetBrush();
+
+                //And Rebuilt it from scratch
+                return Library.DirectDraw.CreateDirectDrawWindow(hInstance, hIcon, hCursor, hBrush, style, lpszClassName, null) != Define.FALSE;
+            }
         }
 
         public void DDRelease()
@@ -1011,6 +1027,21 @@ namespace VCCSharp.Modules
         public unsafe void DDSurfaceSetPalette(IDirectDrawPalette* ddPalette)
         {
             Library.DirectDraw.DDSurfaceSetPalette(ddPalette);
+        }
+
+        public unsafe void* GetIcon(HINSTANCE resources)
+        {
+            return Library.DirectDraw.DDGetIcon(resources);
+        }
+
+        public unsafe void* GetCursor(byte fullscreen)
+        {
+            return Library.DirectDraw.DDGetCursor(fullscreen);
+        }
+
+        public unsafe void* GetBrush()
+        {
+            return Library.DirectDraw.DDGetBrush();
         }
     }
 }
