@@ -5,8 +5,6 @@ namespace VCCSharp.Models
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct AudioState
     {
-        public byte InitPassed;
-        public byte AudioPause;
         public byte AuxBufferPointer;
 
         public ushort CurrentRate;

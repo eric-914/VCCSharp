@@ -5,8 +5,6 @@
 #define MAXCARDS	12
 
 typedef struct {
-  unsigned char InitPassed;
-  unsigned char AudioPause;
   char AuxBufferPointer;
 
   unsigned short CurrentRate;

@@ -20,13 +20,11 @@ extern "C" {
 }
 
 AudioState* InitializeInstance(AudioState* p) {
-  p->AudioPause = 0;
   p->AuxBufferPointer = 0;
   p->BitRate = 0;
   p->BlockSize = 0;
   p->BuffOffset = 0;
   p->CurrentRate = 0;
-  p->InitPassed = 0;
   p->SndBuffLength = 0;
   p->SndLength1 = 0;
   p->SndLength2 = 0;

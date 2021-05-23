@@ -23,6 +23,9 @@ namespace VCCSharp.Modules
     {
         private readonly IModules _modules;
 
+        public byte InitPassed;
+        public byte AudioPause;
+
         public AudioSpectrum Spectrum { get; set; }
 
         public Audio(IModules modules)
@@ -41,9 +44,9 @@ namespace VCCSharp.Modules
             {
                 AudioState* audioState = GetAudioState();
 
-                if (audioState->InitPassed != Define.FALSE)
+                if (InitPassed != Define.FALSE)
                 {
-                    audioState->InitPassed = 0;
+                    InitPassed = 0;
 
                     _modules.DirectSound.DirectSoundStopAndRelease();
                 }
@@ -60,7 +63,7 @@ namespace VCCSharp.Modules
 
                 _modules.CoCo.SetAudioRate(audioState->iRateList[audioState->CurrentRate]);
 
-                if (audioState->InitPassed == Define.TRUE)
+                if (InitPassed == Define.TRUE)
                 {
                     _modules.DirectSound.DirectSoundSetCurrentPosition(0);
                 }
@@ -81,7 +84,7 @@ namespace VCCSharp.Modules
 
             _modules.Audio.UpdateSoundBar(leftAverage, rightAverage);
 
-            if ((audioState->InitPassed == Define.FALSE) || (audioState->AudioPause != Define.FALSE))
+            if ((InitPassed == Define.FALSE) || (AudioPause != Define.FALSE))
             {
                 return;
             }
@@ -151,7 +154,7 @@ namespace VCCSharp.Modules
 
                 AudioState* instance = GetAudioState();
 
-                if (instance->InitPassed == Define.FALSE || instance->AudioPause == Define.TRUE)
+                if (InitPassed == Define.FALSE || AudioPause == Define.TRUE)
                 {
                     return Define.AUDIOBUFFERS;
                 }
@@ -177,7 +180,7 @@ namespace VCCSharp.Modules
             {
                 AudioState* instance = GetAudioState();
 
-                if (instance->InitPassed == Define.FALSE || instance->AudioPause == Define.TRUE)
+                if (InitPassed == Define.FALSE || AudioPause == Define.TRUE)
                 {
                     return;
                 }
@@ -225,9 +228,9 @@ namespace VCCSharp.Modules
 
             instance->CurrentRate = rate;
 
-            if (instance->InitPassed == Define.TRUE)
+            if (InitPassed == Define.TRUE)
             {
-                instance->InitPassed = 0;
+                InitPassed = 0;
                 _modules.DirectSound.DirectSoundStop();
 
                 if (_modules.DirectSound.DirectSoundHasBuffer() == Define.TRUE)
@@ -308,8 +311,8 @@ namespace VCCSharp.Modules
                     return (1);
                 }
 
-                instance->InitPassed = 1;
-                instance->AudioPause = 0;
+                InitPassed = 1;
+                AudioPause = 0;
 
                 _modules.CoCo.SetAudioRate(instance->iRateList[rate]);
             }
@@ -328,11 +331,11 @@ namespace VCCSharp.Modules
             {
                 AudioState* instance = GetAudioState();
 
-                instance->AudioPause = pause;
+                AudioPause = pause;
 
-                if (instance->InitPassed == Define.TRUE)
+                if (InitPassed == Define.TRUE)
                 {
-                    if (instance->AudioPause == Define.TRUE)
+                    if (AudioPause == Define.TRUE)
                     {
                         instance->hr = _modules.DirectSound.DirectSoundStop();
                     }
@@ -342,7 +345,7 @@ namespace VCCSharp.Modules
                     }
                 }
 
-                return instance->AudioPause;
+                return AudioPause;
             }
         }
 
