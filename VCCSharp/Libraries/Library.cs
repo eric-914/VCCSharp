@@ -60,12 +60,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe int MountTape(byte* filename);
         }
 
-        public static class Clipboard
-        {
-            [DllImport(LIBRARY)]
-            public static extern unsafe ClipboardState* GetClipboardState();
-        }
-
         public static class CoCo
         {
             [DllImport(LIBRARY)]

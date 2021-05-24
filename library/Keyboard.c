@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <windows.h>
 
-#include "Keyboard.h"
+#include "KeyboardState.h"
 #include "Joystick.h"
 #include "MC6821.h"
 

@@ -6,13 +6,14 @@ using HINSTANCE = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
+    // ReSharper disable once InconsistentNaming
     public interface IGDI
     {
         unsafe void GDIWriteTextOut(void* hdc, ushort x, ushort y, string message);
         unsafe void GDISetBkColor(void* hdc, uint color);
         unsafe void GDISetTextColor(void* hdc, uint color);
         unsafe void GDITextOut(void* hdc, int x, int y, string text, int textLength);
-        unsafe void* GetIcon(IntPtr resources);
+        unsafe void* GetIcon(HINSTANCE resources);
         unsafe void* GetCursor(byte fullscreen);
         unsafe void* GetBrush();
         unsafe void GDIGetClientRect(HWND hWnd, RECT* clientSize);
@@ -20,6 +21,7 @@ namespace VCCSharp.Modules
         void CreateMainMenuWindowed(HWND hWnd, HINSTANCE resources);
     }
 
+    // ReSharper disable once InconsistentNaming
     public class GDI : IGDI
     {
         public unsafe void GDIWriteTextOut(void* hdc, ushort x, ushort y, string message)
@@ -42,7 +44,7 @@ namespace VCCSharp.Modules
             Library.GDI.GDITextOut(hdc, x, y, text, textLength);
         }
 
-        public unsafe void* GetIcon(IntPtr resources)
+        public unsafe void* GetIcon(HINSTANCE resources)
         {
             return Library.GDI.GDIGetIcon(resources);
         }

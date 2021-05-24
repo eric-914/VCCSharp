@@ -538,12 +538,9 @@ namespace VCCSharp.Modules
 
         private void ResetKeyMap()
         {
-            unsafe
-            {
-                int currentKeyMap = _modules.Clipboard.GetClipboardState()->CurrentKeyMap;
+            int currentKeyMap = _modules.Clipboard.CurrentKeyMap;
 
-                _modules.Keyboard.vccKeyboardBuildRuntimeTable((byte)currentKeyMap);
-            }
+            _modules.Keyboard.vccKeyboardBuildRuntimeTable((byte)currentKeyMap);
         }
 
         public ushort SetAudioRate(ushort rate)

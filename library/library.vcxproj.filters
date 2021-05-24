@@ -17,9 +17,6 @@
     <ClCompile Include="Cassette.c">
       <Filter>cassette</Filter>
     </ClCompile>
-    <ClCompile Include="Clipboard.c">
-      <Filter>clipboard</Filter>
-    </ClCompile>
     <ClCompile Include="CoCo.c">
       <Filter>coco</Filter>
     </ClCompile>
@@ -112,9 +109,6 @@
     <ClInclude Include="Cassette.h">
       <Filter>cassette</Filter>
     </ClInclude>
-    <ClInclude Include="Clipboard.h">
-      <Filter>clipboard</Filter>
-    </ClInclude>
     <ClInclude Include="CoCo.h">
       <Filter>coco</Filter>
     </ClInclude>
@@ -126,9 +120,6 @@
     </ClInclude>
     <ClInclude Include="MC6821.h">
       <Filter>mc6821</Filter>
-    </ClInclude>
-    <ClInclude Include="Keyboard.h">
-      <Filter>keyboard</Filter>
     </ClInclude>
     <ClInclude Include="Graphics.h">
       <Filter>graphics</Filter>
@@ -155,9 +146,6 @@
       <Filter>models</Filter>
     </ClInclude>
     <ClInclude Include="CassetteState.h">
-      <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="ClipboardState.h">
       <Filter>models</Filter>
     </ClInclude>
     <ClInclude Include="CoCoState.h">
@@ -257,9 +245,6 @@
     </Filter>
     <Filter Include="resources">
       <UniqueIdentifier>{57f10a27-5161-423d-a617-cc41d9e82196}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="clipboard">
-      <UniqueIdentifier>{d02eba2c-0674-4a63-8489-bfc99f4df5c6}</UniqueIdentifier>
     </Filter>
     <Filter Include="coco">
       <UniqueIdentifier>{d1fdabc9-8d5d-4cb2-be9e-a7e7e59260ae}</UniqueIdentifier>

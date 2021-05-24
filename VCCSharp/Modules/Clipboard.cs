@@ -3,14 +3,12 @@ using System.Diagnostics;
 using System.Text;
 using System.Windows;
 using VCCSharp.IoC;
-using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
     public interface IClipboard
     {
-        unsafe ClipboardState* GetClipboardState();
         bool ClipboardEmpty();
         char PeekClipboard();
         void PopClipboard();
@@ -18,6 +16,7 @@ namespace VCCSharp.Modules
         void PasteClipboard();
         void PasteBasic();
         void PasteBasicWithNew();
+        int CurrentKeyMap { get; set; }
     }
 
     public class Clipboard : IClipboard
@@ -59,28 +58,22 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
         private IGraphics _graphics => _modules.Graphics;
 
+        public int CodePaste;
+        public int PasteWithNew;
+        public int CurrentKeyMap { get; set; }
+
         public Clipboard(IModules modules)
         {
             _modules = modules;
         }
 
-        public unsafe ClipboardState* GetClipboardState()
-        {
-            return Library.Clipboard.GetClipboardState();
-        }
-
         public void PasteBasic()
         {
-            unsafe
-            {
-                ClipboardState* instance = GetClipboardState();
+            CodePaste = Define.TRUE;
 
-                instance->CodePaste = Define.TRUE;
+            PasteClipboard();
 
-                PasteClipboard();
-
-                instance->CodePaste = Define.FALSE;
-            }
+            CodePaste = Define.FALSE;
         }
 
         public void PasteBasicWithNew()
@@ -95,81 +88,66 @@ namespace VCCSharp.Modules
                 return;
             }
 
-            unsafe
-            {
-                ClipboardState* instance = GetClipboardState();
+            CodePaste = Define.TRUE;
+            PasteWithNew = Define.TRUE;
 
-                instance->CodePaste = Define.TRUE;
-                instance->PasteWithNew = Define.TRUE;
+            PasteClipboard();
 
-                PasteClipboard();
-
-                instance->CodePaste = Define.FALSE;
-                instance->PasteWithNew = Define.FALSE;
-            }
+            CodePaste = Define.FALSE;
+            PasteWithNew = Define.FALSE;
         }
 
         public void PasteClipboard()
         {
-            unsafe
+            int graphicsMode = _graphics.GraphicsMode;
+
+            if (graphicsMode != 0)
             {
-                ClipboardState* clipboardState = GetClipboardState();
+                const string warning = "Warning: You are not in text mode. Continue Pasting?";
 
-                int graphicsMode = _graphics.GraphicsMode;
+                var result = MessageBox.Show(warning, "Clipboard", MessageBoxButton.YesNo);
 
-                if (graphicsMode != 0)
+                if (result == MessageBoxResult.No)
                 {
-                    const string warning = "Warning: You are not in text mode. Continue Pasting?";
-
-                    var result = MessageBox.Show(warning, "Clipboard", MessageBoxButton.YesNo);
-
-                    if (result == MessageBoxResult.No)
-                    {
-                        return;
-                    }
-                }
-
-                _modules.Keyboard.SetPaste(true);
-
-                //This sets the keyboard to Natural,
-                //but we need to read it first so we can set it back
-                clipboardState->CurrentKeyMap = _modules.Config.GetCurrentKeyboardLayout();
-
-                _modules.Keyboard.vccKeyboardBuildRuntimeTable(1); //Natural (OS9)
-
-                var text = System.Windows.Clipboard.GetText();
-
-                if (string.IsNullOrEmpty(text))
-                {
-                    MessageBox.Show("No text found in clipboard.", "Clipboard");
-
                     return;
                 }
-
-                PasteText(text);
-
-                //--This process is asynchronous.  The text will finish pasting long after here.
-                //_modules.Keyboard.vccKeyboardBuildRuntimeTable((byte)clipboardState->CurrentKeyMap);
             }
+
+            _modules.Keyboard.SetPaste(true);
+
+            //This sets the keyboard to Natural,
+            //but we need to read it first so we can set it back
+            CurrentKeyMap = _modules.Config.GetCurrentKeyboardLayout();
+
+            _modules.Keyboard.vccKeyboardBuildRuntimeTable(1); //Natural (OS9)
+
+            var text = System.Windows.Clipboard.GetText();
+
+            if (string.IsNullOrEmpty(text))
+            {
+                MessageBox.Show("No text found in clipboard.", "Clipboard");
+
+                return;
+            }
+
+            PasteText(text);
+
+            //--This process is asynchronous.  The text will finish pasting long after here.
+            //_modules.Keyboard.vccKeyboardBuildRuntimeTable((byte)clipboardState->CurrentKeyMap);
         }
 
         public void PasteText(string text)
         {
-            unsafe
+            if (PasteWithNew == Define.TRUE)
             {
-                ClipboardState* clipboardState = GetClipboardState();
-
-                if (clipboardState->PasteWithNew == Define.TRUE)
-                {
-                    text = $"NEW\n{text}";
-                }
-
-                text = ParseText(text, clipboardState->CodePaste == Define.TRUE);
-
-                string codes = ConvertScanCodes(text);
-
-                SetClipboardText(codes);
+                text = $"NEW\n{text}";
             }
+
+            text = ParseText(text, CodePaste == Define.TRUE);
+
+            string codes = ConvertScanCodes(text);
+
+            SetClipboardText(codes);
         }
 
         private static string ParseText(string text, bool codePaste)

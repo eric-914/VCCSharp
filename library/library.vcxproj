@@ -166,7 +166,6 @@
     <ClCompile Include="Audio.c" />
     <ClCompile Include="Cartridge.c" />
     <ClCompile Include="Cassette.c" />
-    <ClCompile Include="Clipboard.c" />
     <ClCompile Include="CoCo.c" />
     <ClCompile Include="Config.c" />
     <ClCompile Include="cpudef.c" />
@@ -195,8 +194,6 @@
     <ClInclude Include="Cartridge.h" />
     <ClInclude Include="Cassette.h" />
     <ClInclude Include="CassetteState.h" />
-    <ClInclude Include="Clipboard.h" />
-    <ClInclude Include="ClipboardState.h" />
     <ClInclude Include="CmdLineArguments.h" />
     <ClInclude Include="CoCo.h" />
     <ClInclude Include="CoCoState.h" />
@@ -214,7 +211,6 @@
     <ClInclude Include="Joystick.h" />
     <ClInclude Include="JoystickModel.h" />
     <ClInclude Include="JoystickState.h" />
-    <ClInclude Include="Keyboard.h" />
     <ClInclude Include="KeyboardState.h" />
     <ClInclude Include="macros.h" />
     <ClInclude Include="MC6821.h" />
