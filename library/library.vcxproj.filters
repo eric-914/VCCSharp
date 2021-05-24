@@ -56,9 +56,6 @@
     <ClCompile Include="ProcessKeyDownMessage.c">
       <Filter>events</Filter>
     </ClCompile>
-    <ClCompile Include="ProcessMessage.c">
-      <Filter>events</Filter>
-    </ClCompile>
     <ClCompile Include="TC1014Registers.c">
       <Filter>tc1014\registers</Filter>
     </ClCompile>
@@ -161,9 +158,6 @@
       <Filter>events</Filter>
     </ClInclude>
     <ClInclude Include="ProcessKeyDownMessage.h">
-      <Filter>events</Filter>
-    </ClInclude>
-    <ClInclude Include="ProcessMessage.h">
       <Filter>events</Filter>
     </ClInclude>
     <ClInclude Include="TC1014Registers.h">

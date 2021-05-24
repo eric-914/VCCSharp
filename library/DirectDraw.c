@@ -7,8 +7,6 @@
 #include "DirectDraw.h"
 #include "DirectDrawInternal.h"
 
-#include "ProcessMessage.h"
-
 DirectDrawState* InitializeInstance(DirectDrawState*);
 
 static DirectDrawState* instance = InitializeInstance(new DirectDrawState());

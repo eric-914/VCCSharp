@@ -314,7 +314,28 @@ namespace VCCSharp.Libraries
         public static class Events
         {
             [DllImport(LIBRARY)]
-            public static extern void ProcessMessage(HWND hWnd, uint message, IntPtr wParam, IntPtr lParam);
+            public static extern void ProcessCommandMessage(HWND hWnd, IntPtr wParam);
+
+            [DllImport(LIBRARY)]
+            public static extern void CreateMainMenu(HWND hWnd);
+
+            [DllImport(LIBRARY)]
+            public static extern void ProcessKeyDownMessage(IntPtr wParam, IntPtr lParam);
+
+            [DllImport(LIBRARY)]
+            public static extern void KeyUp(IntPtr wParam, IntPtr lParam);
+
+            [DllImport(LIBRARY)]
+            public static extern void SendSavedKeyEvents();
+
+            [DllImport(LIBRARY)]
+            public static extern void MouseMove(IntPtr lParam);
+
+            [DllImport(LIBRARY)]
+            public static extern void ProcessSysCommandMessage(HWND hWnd, IntPtr wParam);
+
+            [DllImport(LIBRARY)]
+            public static extern void ProcessSysKeyDownMessage(IntPtr wParam, IntPtr lParam);
         }
 
         public static class GDI
@@ -354,6 +375,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern ushort get_pot_value(byte pot);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetButtonStatus(byte side, byte state);
         }
 
         public static class Keyboard

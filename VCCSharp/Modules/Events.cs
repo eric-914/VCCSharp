@@ -140,67 +140,126 @@ namespace VCCSharp.Modules
             }
         }
 
+        //----------------------------------------------------------------------------------------
+        //	lParam bits
+        //	  0-15	The repeat count for the current message. The value is the number of times
+        //			the keystroke is auto repeated as a result of the user holding down the key.
+        //			If the keystroke is held long enough, multiple messages are sent. However,
+        //			the repeat count is not cumulative.
+        //	 16-23	The scan code. The value depends on the OEM.
+        //	    24	Indicates whether the key is an extended key, such as the right-hand ALT and
+        //			CTRL keys that appear on an enhanced 101- or 102-key keyboard. The value is
+        //			one if it is an extended key; otherwise, it is zero.
+        //	 25-28	Reserved; do not use.
+        //	    29	The context code. The value is always zero for a WM_KEYDOWN message.
+        //	    30	The previous key state. The value is one if the key is down before the
+        //	   		message is sent, or it is zero if the key is up.
+        //	    31	The transition state. The value is always zero for a WM_KEYDOWN message.
+        //----------------------------------------------------------------------------------------
         public void ProcessMessage(HWND hWnd, uint message, IntPtr wParam, IntPtr lParam)
         {
-            switch (message)
+            unsafe
             {
-                case Define.WM_CLOSE:
-                    //GetVccState()->BinaryRunning = false;     
-                    break;  //TODO: This is Events.EmuExit()
+                switch (message)
+                {
+                    //TODO: This is Events.EmuExit()
+                    case Define.WM_CLOSE:
+                        _modules.Vcc.GetVccState()->BinaryRunning = Define.FALSE;
+                        break;
 
-                case Define.WM_COMMAND:
-                    //ProcessCommandMessage(hWnd, wParam);
-                    break;
-                case Define.WM_CREATE: 
-                    //CreateMainMenu(hWnd); 
-                    break;
+                    case Define.WM_COMMAND:
+                        ProcessCommandMessage(hWnd, wParam);
+                        break;
 
-                case Define.WM_KEYDOWN: 
-                    //ProcessKeyDownMessage(wParam, lParam); 
-                    break;
+                    case Define.WM_CREATE:
+                        CreateMainMenu(hWnd);
+                        break;
 
-                case Define.WM_KEYUP: 
-                    //KeyUp(wParam, lParam); 
-                    break;
+                    case Define.WM_KEYDOWN:
+                        ProcessKeyDownMessage(wParam, lParam);
+                        break;
 
-                case Define.WM_KILLFOCUS: 
-                    //SendSavedKeyEvents(); 
-                    break;
+                    case Define.WM_KEYUP:
+                        KeyUp(wParam, lParam);
+                        break;
 
-                case Define.WM_LBUTTONDOWN: 
-                    //SetButtonStatus(0, 1); 
-                    break;
+                    case Define.WM_KILLFOCUS:
+                        SendSavedKeyEvents();
+                        break;
 
-                case Define.WM_LBUTTONUP: 
-                    //SetButtonStatus(0, 0); 
-                    break;
+                    case Define.WM_LBUTTONDOWN:
+                        _modules.Joystick.SetButtonStatus(0, 1);
+                        break;
 
-                case Define.WM_MOUSEMOVE: 
-                    //MouseMove(lParam); 
-                    break;
+                    case Define.WM_LBUTTONUP:
+                        _modules.Joystick.SetButtonStatus(0, 0);
+                        break;
 
-                case Define.WM_RBUTTONDOWN: 
-                    //SetButtonStatus(1, 1); 
-                    break;
+                    case Define.WM_MOUSEMOVE:
+                        MouseMove(lParam);
+                        break;
 
-                case Define.WM_RBUTTONUP: 
-                    //SetButtonStatus(1, 0); 
-                    break;
+                    case Define.WM_RBUTTONDOWN:
+                        _modules.Joystick.SetButtonStatus(1, 1);
+                        break;
 
-                case Define.WM_SYSCOMMAND: 
-                    //ProcessSysCommandMessage(hWnd, wParam); 
-                    break;
+                    case Define.WM_RBUTTONUP:
+                        _modules.Joystick.SetButtonStatus(1, 0);
+                        break;
 
-                case Define.WM_SYSKEYDOWN: 
-                    //ProcessSysKeyDownMessage(wParam, lParam); 
-                    break;
+                    case Define.WM_SYSCOMMAND:
+                        ProcessSysCommandMessage(hWnd, wParam);
+                        break;
 
-                case Define.WM_SYSKEYUP: 
-                    //KeyUp(wParam, lParam); 
-                    break;
+                    case Define.WM_SYSKEYDOWN:
+                        ProcessSysKeyDownMessage(wParam, lParam);
+                        break;
+
+                    case Define.WM_SYSKEYUP:
+                        KeyUp(wParam, lParam);
+                        break;
+                }
             }
+        }
 
-            Library.Events.ProcessMessage(hWnd, message, wParam, lParam);
+        public void ProcessCommandMessage(HWND hWnd, IntPtr wParam)
+        {
+            Library.Events.ProcessCommandMessage(hWnd, wParam);
+        }
+
+        public void CreateMainMenu(HWND hWnd)
+        {
+            Library.Events.CreateMainMenu(hWnd);
+        }
+
+        public void ProcessKeyDownMessage(IntPtr wParam, IntPtr lParam)
+        {
+            Library.Events.ProcessKeyDownMessage(wParam, lParam);
+        }
+
+        public void KeyUp(IntPtr wParam, IntPtr lParam)
+        {
+            Library.Events.KeyUp(wParam, lParam);
+        }
+
+        public void SendSavedKeyEvents()
+        {
+            Library.Events.SendSavedKeyEvents();
+        }
+
+        public void MouseMove(IntPtr lParam)
+        {
+            Library.Events.MouseMove(lParam);
+        }
+
+        public void ProcessSysCommandMessage(HWND hWnd, IntPtr wParam)
+        {
+            Library.Events.ProcessSysCommandMessage(hWnd, wParam);
+        }
+
+        public void ProcessSysKeyDownMessage(IntPtr wParam, IntPtr lParam)
+        {
+            Library.Events.ProcessSysKeyDownMessage(wParam, lParam);
         }
     }
 }
