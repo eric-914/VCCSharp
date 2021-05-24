@@ -3,6 +3,7 @@ using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using HWND = System.IntPtr;
+using KeyStates = VCCSharp.Enums.KeyStates;
 
 namespace VCCSharp.Modules
 {
@@ -263,19 +264,37 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void CreateMainMenu(HWND hWnd)
-        {
-            Library.Events.CreateMainMenu(hWnd);
-        }
-
         public void KeyUp(long wParam, long lParam)
         {
-            Library.Events.KeyUp(wParam, lParam);
+            // send emulator key up event to the emulator
+            // TODO: Key up checks whether the emulation is running, this does not
+
+            byte OEMscan = (byte )((lParam & 0x00FF0000) >> 16);
+
+            _modules.Keyboard.vccKeyboardHandleKey((byte )wParam, OEMscan, KeyStates.kEventKeyUp);
         }
 
         public void MouseMove(long lParam)
         {
-            Library.Events.MouseMove(lParam);
+            RECT clientSize;
+
+            unsafe
+            {
+                EmuState* emuState = _modules.Emu.GetEmuState();
+
+                if (emuState->EmulationRunning != 0)
+                {
+                    uint x = (uint)(lParam & 0xFFFF); // LOWORD(lParam);
+                    uint y = (uint)((lParam >> 16) & 0xFFFF); // HIWORD(lParam);
+
+                    _modules.GDI.GDIGetClientRect(emuState->WindowHandle, &clientSize);
+
+                    x /= (uint)((clientSize.right - clientSize.left) >> 6);
+                    y /= (uint)(((clientSize.bottom - clientSize.top) - 20) >> 6);
+
+                    _modules.Joystick.SetJoystick((ushort)x, (ushort)y);
+                }
+            }
         }
 
         public void ProcessSysKeyDownMessage(long wParam, long lParam)
@@ -384,5 +403,21 @@ namespace VCCSharp.Modules
             SC_save1 = 0;
             SC_save2 = 0;
         }
+
+        public void CreateMainMenu(HWND hWnd)
+        {
+            unsafe
+            {
+                EmuState* emuState = _modules.Emu.GetEmuState();
+
+                if (emuState->FullScreen == 0) {
+                    _modules.GDI.CreateMainMenuWindowed(hWnd, emuState->Resources);
+                }
+                else {
+                    _modules.GDI.CreateMainMenuFullScreen(hWnd);
+                }
+            }
+        }
+
     }
 }

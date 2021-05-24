@@ -1,5 +1,8 @@
 ﻿using System;
 using VCCSharp.Libraries;
+using VCCSharp.Models;
+using HWND = System.IntPtr;
+using HINSTANCE = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -12,6 +15,9 @@ namespace VCCSharp.Modules
         unsafe void* GetIcon(IntPtr resources);
         unsafe void* GetCursor(byte fullscreen);
         unsafe void* GetBrush();
+        unsafe void GDIGetClientRect(HWND hWnd, RECT* clientSize);
+        void CreateMainMenuFullScreen(HWND hWnd);
+        void CreateMainMenuWindowed(HWND hWnd, HINSTANCE resources);
     }
 
     public class GDI : IGDI
@@ -49,6 +55,21 @@ namespace VCCSharp.Modules
         public unsafe void* GetBrush()
         {
             return Library.GDI.GDIGetBrush();
+        }
+
+        public unsafe void GDIGetClientRect(HWND hWnd, RECT* clientSize)
+        {
+            Library.GDI.GDIGetClientRect(hWnd, clientSize);
+        }
+
+        public void CreateMainMenuFullScreen(HWND hWnd)
+        {
+            Library.GDI.CreateMainMenuFullScreen(hWnd);
+        }
+
+        public void CreateMainMenuWindowed(HWND hWnd, HINSTANCE resources)
+        {
+            Library.GDI.CreateMainMenuWindowed(hWnd, resources);
         }
     }
 }

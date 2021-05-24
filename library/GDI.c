@@ -7,7 +7,7 @@
 //--Stuff from wingdi.h
 
 extern "C" {
-  __declspec(dllexport) void __cdecl GDIWriteTextOut(HDC hdc, unsigned short x, unsigned short y, const char* message) 
+  __declspec(dllexport) void __cdecl GDIWriteTextOut(HDC hdc, unsigned short x, unsigned short y, const char* message)
   {
     TextOut(hdc, x, y, message, (int)strlen(message));
   }
@@ -55,5 +55,23 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) HICON __cdecl GDIGetIcon(HINSTANCE resources) {
     return LoadIcon(resources, (LPCTSTR)IDI_COCO3);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl GDIGetClientRect(HWND hwnd, RECT* clientSize) {
+    GetClientRect(hwnd, clientSize);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl CreateMainMenuFullScreen(HWND hWnd) {
+    SetMenu(hWnd, NULL);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl CreateMainMenuWindowed(HWND hWnd, HINSTANCE resources) {
+    SetMenu(hWnd, LoadMenu(resources, MAKEINTRESOURCE(IDR_MENU)));
   }
 }

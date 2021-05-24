@@ -44,9 +44,6 @@
     <ClCompile Include="PAKInterface.c">
       <Filter>pakinterface</Filter>
     </ClCompile>
-    <ClCompile Include="MessageHandlers.c">
-      <Filter>events</Filter>
-    </ClCompile>
     <ClCompile Include="TC1014Registers.c">
       <Filter>tc1014\registers</Filter>
     </ClCompile>
@@ -293,9 +290,6 @@
     </Filter>
     <Filter Include="callbacks">
       <UniqueIdentifier>{d7a009e7-f60a-4914-98dc-573a8e0f986e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="events">
-      <UniqueIdentifier>{a1eac0da-ece6-40f6-9e6f-7c28f6152beb}</UniqueIdentifier>
     </Filter>
     <Filter Include="emu">
       <UniqueIdentifier>{5f8f0b1c-f4d2-45c3-aa61-d4c3def83656}</UniqueIdentifier>

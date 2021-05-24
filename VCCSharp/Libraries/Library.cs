@@ -299,18 +299,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe long DirectSoundGetCurrentPosition(ulong* playCursor, ulong* writeCursor);
         }
 
-        public static class Events
-        {
-            [DllImport(LIBRARY)]
-            public static extern void CreateMainMenu(HWND hWnd);
-
-            [DllImport(LIBRARY)]
-            public static extern void KeyUp(long wParam, long lParam);
-
-            [DllImport(LIBRARY)]
-            public static extern void MouseMove(long lParam);
-        }
-
         public static class GDI
         {
             [DllImport(LIBRARY)]
@@ -333,6 +321,15 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void* GDIGetIcon(HINSTANCE resources);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void GDIGetClientRect(HWND hWnd, RECT* clientSize);
+
+            [DllImport(LIBRARY)]
+            public static extern void CreateMainMenuFullScreen(HWND hWnd);
+
+            [DllImport(LIBRARY)]
+            public static extern void CreateMainMenuWindowed(HWND hWnd, HINSTANCE resources);
         }
 
         public static class Graphics
@@ -360,6 +357,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetButtonStatus(byte side, byte state);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetJoystick(ushort x, ushort y);
         }
 
         public static class Keyboard

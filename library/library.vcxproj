@@ -184,7 +184,6 @@
     <ClCompile Include="library.cpp" />
     <ClCompile Include="MC6821.c" />
     <ClCompile Include="MenuCallbacks.c" />
-    <ClCompile Include="MessageHandlers.c" />
     <ClCompile Include="PakInterfaceModule.c" />
     <ClCompile Include="TC1014MMU.c" />
     <ClCompile Include="PAKInterface.c" />

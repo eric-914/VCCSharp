@@ -12,6 +12,7 @@ namespace VCCSharp.Modules
         void SetStickNumbers(byte leftStickNumber, byte rightStickNumber);
         ushort get_pot_value(byte pot);
         void SetButtonStatus(byte side, byte state);
+        void SetJoystick(ushort x, ushort y);
     }
 
     public class Joystick : IJoystick
@@ -54,6 +55,11 @@ namespace VCCSharp.Modules
         public void SetButtonStatus(byte side, byte state)
         {
             Library.Joystick.SetButtonStatus(side, state);
+        }
+
+        public void SetJoystick(ushort x, ushort y)
+        {
+            Library.Joystick.SetJoystick(x, y);
         }
     }
 }
