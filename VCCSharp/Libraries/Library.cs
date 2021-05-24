@@ -305,9 +305,6 @@ namespace VCCSharp.Libraries
             public static extern void CreateMainMenu(HWND hWnd);
 
             [DllImport(LIBRARY)]
-            public static extern void ProcessKeyDownMessage(long wParam, long lParam);
-
-            [DllImport(LIBRARY)]
             public static extern void KeyUp(long wParam, long lParam);
 
             [DllImport(LIBRARY)]
@@ -317,7 +314,7 @@ namespace VCCSharp.Libraries
             public static extern void MouseMove(long lParam);
 
             [DllImport(LIBRARY)]
-            public static extern void ProcessSysKeyDownMessage(long wParam, long lParam);
+            public static extern void KeyDown(long wParam, long lParam);
         }
 
         public static class GDI

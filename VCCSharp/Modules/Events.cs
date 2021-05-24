@@ -261,19 +261,9 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void ProcessSysKeyDownMessage(long wParam, long lParam)
-        {
-            Library.Events.ProcessSysKeyDownMessage(wParam, lParam);
-        }
-
         public void CreateMainMenu(HWND hWnd)
         {
             Library.Events.CreateMainMenu(hWnd);
-        }
-
-        public void ProcessKeyDownMessage(long wParam, long lParam)
-        {
-            Library.Events.ProcessKeyDownMessage(wParam, lParam);
         }
 
         public void KeyUp(long wParam, long lParam)
@@ -300,6 +290,51 @@ namespace VCCSharp.Modules
         public void MouseMove(long lParam)
         {
             Library.Events.MouseMove(lParam);
+        }
+
+        public void ProcessSysKeyDownMessage(long wParam, long lParam)
+        {
+            // Ignore repeated system keys
+            if ((lParam >> 30) != 0) {
+                KeyDown(wParam, lParam);
+            }
+        }
+
+        public void ProcessKeyDownMessage(long wParam, long lParam)
+        {
+            // get key scan code for emulator control keys
+            byte OEMscan = (byte )((lParam & 0x00FF0000) >> 16); // just get the scan code
+
+            switch (OEMscan)
+            {
+                case Define.DIK_F11:
+                    ToggleFullScreenState();
+                    break;
+
+                default:
+                    KeyDown(wParam, lParam);
+                    break;
+            }
+        }
+
+        public void ToggleFullScreenState()
+        {
+            unsafe
+            {
+                VccState* vccState = _modules.Vcc.GetVccState();
+                EmuState* emuState = _modules.Emu.GetEmuState();
+
+                if (vccState->RunState == 0)
+                {
+                    vccState->RunState = 1;
+                    emuState->FullScreen = emuState->FullScreen != 0 ? Define.FALSE : Define.TRUE;
+                }
+            }
+        }
+
+        public void KeyDown(long wParam, long lParam)
+        {
+            Library.Events.KeyDown(wParam, lParam);
         }
     }
 }
