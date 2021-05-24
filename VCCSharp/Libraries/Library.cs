@@ -120,9 +120,6 @@ namespace VCCSharp.Libraries
         public static class DirectDraw
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe DirectDrawState* GetDirectDrawState();
-
-            [DllImport(LIBRARY)]
             public static extern int UnlockDDBackSurface();
 
             [DllImport(LIBRARY)]
@@ -240,15 +237,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe void DDSurfaceSetPalette(IDirectDrawPalette* ddPalette);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void* DDGetIcon(HINSTANCE resources);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void* DDGetCursor(byte fullscreen);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void* DDGetBrush();
-
-            [DllImport(LIBRARY)]
             public static extern IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
             [DllImport(LIBRARY)]
@@ -351,6 +339,15 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void GDITextOut(void* hdc, int x, int y, string text, int textLength);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void* GDIGetBrush();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void* GDIGetCursor(byte fullscreen);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void* GDIGetIcon(HINSTANCE resources);
         }
 
         public static class Graphics

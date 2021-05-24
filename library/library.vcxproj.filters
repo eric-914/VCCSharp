@@ -44,9 +44,6 @@
     <ClCompile Include="PAKInterface.c">
       <Filter>pakinterface</Filter>
     </ClCompile>
-    <ClCompile Include="DirectDraw.c">
-      <Filter>directdraw</Filter>
-    </ClCompile>
     <ClCompile Include="MessageHandlers.c">
       <Filter>events</Filter>
     </ClCompile>
@@ -182,9 +179,6 @@
       <Filter>models</Filter>
     </ClInclude>
     <ClInclude Include="CoCoState.h">
-      <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectDrawState.h">
       <Filter>models</Filter>
     </ClInclude>
     <ClInclude Include="KeyboardState.h">

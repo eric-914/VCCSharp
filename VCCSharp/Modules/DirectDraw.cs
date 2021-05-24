@@ -15,7 +15,6 @@ namespace VCCSharp.Modules
 {
     public interface IDirectDraw
     {
-        unsafe DirectDrawState* GetDirectDrawState();
         bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources);
         void ClearScreen();
         void FullScreenToggle();
@@ -39,20 +38,24 @@ namespace VCCSharp.Modules
 
         private readonly IModules _modules;
         private readonly IUser32 _user32;
-        
+
         private static int _textX, _textY;
         private static byte _counter, _counter1 = 32, _phase = 1;
 
         private HWND _hWndStatusBar;
-        private HINSTANCE _hInstance;
+        private HINSTANCE _hInstance = IntPtr.Zero;
         private Point _windowSize;
 
-        public byte ForceAspect;
+        private byte _forceAspect;
 
-        public uint StatusBarHeight;
-        public uint Color;
+        private uint _statusBarHeight;
+        private uint _color;
 
         public byte InfoBand { get; set; }
+
+        public byte[] AppNameText = new byte[Define.MAX_LOADSTRING];	// The title bar text
+        public byte[] TitleBarText = new byte[Define.MAX_LOADSTRING];	// The title bar text
+        public byte[] StatusText = new byte[255];
 
         public DirectDraw(IModules modules, IUser32 user32)
         {
@@ -63,11 +66,6 @@ namespace VCCSharp.Modules
         static DirectDraw()
         {
             _textX = 0;
-        }
-
-        public unsafe DirectDrawState* GetDirectDrawState()
-        {
-            return Library.DirectDraw.GetDirectDrawState();
         }
 
         public IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
@@ -83,20 +81,23 @@ namespace VCCSharp.Modules
 
             unsafe
             {
-                DirectDrawState* instance = GetDirectDrawState();
+                var gdi = _modules.GDI;
 
                 //HINSTANCE hInstance = instance->hInstance;
-                byte* lpszClassName = instance->AppNameText;
-                void* hIcon = GetIcon(resources);
-                void* hCursor = GetCursor(fullscreen);
-                void* hBrush = GetBrush();
+                //byte* lpszClassName = Converter.ToByteArray() instance->AppNameText;
+                void* hIcon = gdi.GetIcon(resources);
+                void* hCursor = gdi.GetCursor(fullscreen);
+                void* hBrush = gdi.GetBrush();
 
                 //--Convert WinProc to void*
                 _delegateInstance = WndProc;
                 void* lpfnWndProc = (void*)Marshal.GetFunctionPointerForDelegate(_delegateInstance);
 
-                //And Rebuilt it from scratch
-                return Library.DirectDraw.RegisterWcex(_hInstance, lpfnWndProc, lpszClassName, null, style, hIcon, hCursor, hBrush) != Define.FALSE;
+                fixed (byte* appNameText = AppNameText)
+                {
+                    //And Rebuilt it from scratch
+                    return Library.DirectDraw.RegisterWcex(_hInstance, lpfnWndProc, appNameText, null, style, hIcon, hCursor, hBrush) != Define.FALSE;
+                }
             }
         }
 
@@ -127,12 +128,11 @@ namespace VCCSharp.Modules
 
         public void SetAspect(byte forceAspect)
         {
-            ForceAspect = forceAspect;
+            _forceAspect = forceAspect;
         }
 
         public unsafe void DoCls(EmuState* emuState)
         {
-            DirectDrawState* instance = GetDirectDrawState();
             GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
 
             if (LockScreen(emuState) == Define.TRUE)
@@ -147,7 +147,7 @@ namespace VCCSharp.Modules
                     {
                         for (int x = 0; x < 640; x++)
                         {
-                            graphicsSurfaces.pSurface8[x + (y * emuState->SurfacePitch)] = (byte)(Color | 128);
+                            graphicsSurfaces.pSurface8[x + (y * emuState->SurfacePitch)] = (byte)(_color | 128);
                         }
                     }
                     break;
@@ -157,7 +157,7 @@ namespace VCCSharp.Modules
                     {
                         for (int x = 0; x < 640; x++)
                         {
-                            graphicsSurfaces.pSurface16[x + (y * emuState->SurfacePitch)] = (ushort)Color;
+                            graphicsSurfaces.pSurface16[x + (y * emuState->SurfacePitch)] = (ushort)_color;
                         }
                     }
                     break;
@@ -167,9 +167,9 @@ namespace VCCSharp.Modules
                     {
                         for (int x = 0; x < 640; x++)
                         {
-                            graphicsSurfaces.pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = (byte)((Color & 0xFF0000) >> 16);
-                            graphicsSurfaces.pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = (byte)((Color & 0x00FF00) >> 8);
-                            graphicsSurfaces.pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = (byte)(Color & 0xFF);
+                            graphicsSurfaces.pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = (byte)((_color & 0xFF0000) >> 16);
+                            graphicsSurfaces.pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = (byte)((_color & 0x00FF00) >> 8);
+                            graphicsSurfaces.pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = (byte)(_color & 0xFF);
                         }
                     }
                     break;
@@ -179,7 +179,7 @@ namespace VCCSharp.Modules
                     {
                         for (int x = 0; x < 640; x++)
                         {
-                            graphicsSurfaces.pSurface32[x + (y * emuState->SurfacePitch)] = Color;
+                            graphicsSurfaces.pSurface32[x + (y * emuState->SurfacePitch)] = _color;
                         }
                     }
                     break;
@@ -190,7 +190,7 @@ namespace VCCSharp.Modules
 
         public void ClearScreen()
         {
-            Color = 0;
+            _color = 0;
         }
 
         public unsafe float Static(EmuState* emuState)
@@ -292,11 +292,9 @@ namespace VCCSharp.Modules
 
         public unsafe void UnlockScreen(EmuState* emuState)
         {
-            DirectDrawState* instance = GetDirectDrawState();
-
             if (emuState->FullScreen == Define.TRUE && InfoBand == Define.TRUE)
             {
-                WriteStatusText(Converter.ToString(instance->StatusText));
+                WriteStatusText(Converter.ToString(StatusText));
             }
 
             UnlockDDBackSurface();
@@ -341,15 +339,13 @@ namespace VCCSharp.Modules
 
         public unsafe void SetStatusBarText(string text, EmuState* emuState)
         {
-            DirectDrawState* instance = GetDirectDrawState();
-
             if (emuState->FullScreen == Define.FALSE)
             {
                 SetStatusBarText(text);
             }
             else
             {
-                Converter.ToByteArray(text, instance->StatusText);
+                StatusText = Converter.ToByteArray(text);
             }
         }
 
@@ -370,8 +366,6 @@ namespace VCCSharp.Modules
 
         public unsafe void DisplayFlip(EmuState* emuState)
         {
-            DirectDrawState* instance = GetDirectDrawState();
-
             if (emuState->FullScreen == Define.TRUE)
             {	// if we're windowed do the blit, else just Flip
                 DDSurfaceFlip();
@@ -401,9 +395,9 @@ namespace VCCSharp.Modules
                 //if (true) //--Currently, this is fixed at always resizable
                 //{
 
-                rcDest.bottom -= (int)StatusBarHeight;
+                rcDest.bottom -= (int)_statusBarHeight;
 
-                if (ForceAspect == Define.TRUE) // Adjust the Aspect Ratio if window is resized
+                if (_forceAspect == Define.TRUE) // Adjust the Aspect Ratio if window is resized
                 {
                     float srcWidth = _windowSize.X;
                     float srcHeight = _windowSize.Y;
@@ -415,7 +409,7 @@ namespace VCCSharp.Modules
 
                     _user32.GetClientRect(emuState->WindowHandle, &rcClient);  // x,y is always 0,0 so right, bottom is w,h
 
-                    rcClient.bottom -= (int)StatusBarHeight;
+                    rcClient.bottom -= (int)_statusBarHeight;
 
                     float clientWidth = rcClient.right;
                     float clientHeight = rcClient.bottom;
@@ -475,7 +469,7 @@ namespace VCCSharp.Modules
             _user32.GetClientRect(emuState->WindowHandle, &windowSize);
 
             emuState->WindowSize.X = windowSize.right;
-            emuState->WindowSize.Y = (int)(windowSize.bottom - StatusBarHeight);
+            emuState->WindowSize.Y = (int)(windowSize.bottom - _statusBarHeight);
         }
 
         public unsafe byte LockScreen(EmuState* emuState)
@@ -606,23 +600,14 @@ namespace VCCSharp.Modules
 
         public bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE hResources)
         {
-            unsafe
-            {
-                DirectDrawState* instance = GetDirectDrawState();
+            TitleBarText = Converter.ToByteArray(_modules.Config.AppTitle);
+            AppNameText = Converter.ToByteArray(_modules.Config.AppTitle);
 
-                this._hInstance = hInstance;
-
-                Converter.ToByteArray(_modules.Config.AppTitle, instance->TitleBarText);
-                Converter.ToByteArray(_modules.Config.AppTitle, instance->AppNameText);
-
-                return true;
-            }
+            return true;
         }
 
         public unsafe bool CreateDirectDrawWindowedMode(EmuState* emuState, DDSURFACEDESC* ddsd)
         {
-            DirectDrawState* instance = GetDirectDrawState();
-
             RECT rc = new RECT { top = 0, left = 0, right = _windowSize.X, bottom = _windowSize.Y };
 
             // Calculates the required size of the window rectangle, based on the desired client-rectangle size
@@ -632,10 +617,16 @@ namespace VCCSharp.Modules
             int width = rc.right - rc.left;
             int height = rc.bottom - rc.top;
 
-            // We create the Main window 
-            emuState->WindowHandle = _user32.CreateWindowExA(0, instance->AppNameText, instance->TitleBarText,
-                Define.WS_OVERLAPPEDWINDOW, Define.CW_USEDEFAULT, 0, width, height,
-                Zero, null, _hInstance, null);
+            fixed (byte* appNameText = AppNameText)
+            {
+                fixed (byte* titleBarText = TitleBarText)
+                {
+                    // We create the Main window 
+                    emuState->WindowHandle = _user32.CreateWindowExA(0, appNameText, titleBarText,
+                        Define.WS_OVERLAPPEDWINDOW, Define.CW_USEDEFAULT, 0, width, height,
+                        Zero, null, _hInstance, null);
+                }
+            }
 
             if (emuState->WindowHandle == null)
             {	// Can't create window
@@ -657,12 +648,12 @@ namespace VCCSharp.Modules
             // The dimensions are given in screen coordinates that are relative to the upper-left corner of the screen.
             _user32.GetWindowRect(_hWndStatusBar, &rStatBar); // Get the size of the Status bar
 
-            StatusBarHeight = (uint)(rStatBar.bottom - rStatBar.top); // Calculate its height
+            _statusBarHeight = (uint)(rStatBar.bottom - rStatBar.top); // Calculate its height
 
             _user32.GetWindowRect(emuState->WindowHandle, &rStatBar);
 
             width = rStatBar.right - rStatBar.left;
-            height = rStatBar.bottom + (int)(StatusBarHeight) - rStatBar.top;
+            height = rStatBar.bottom + (int)(_statusBarHeight) - rStatBar.top;
 
             // using MoveWindow to resize 
             _user32.MoveWindow(emuState->WindowHandle, rStatBar.left, rStatBar.top, width, height, 1);
@@ -742,13 +733,14 @@ namespace VCCSharp.Modules
 
         public unsafe bool CreateDirectDrawWindowFullScreen(EmuState* emuState, DDSURFACEDESC* ddsd)
         {
-            DirectDrawState* instance = GetDirectDrawState();
-
             DDSDSetPitch(ddsd, 0);
             DDSDSetRGBBitCount(ddsd, 0);
 
-            emuState->WindowHandle = _user32.CreateWindowExA(0, instance->AppNameText, null, Define.WS_POPUP | Define.WS_VISIBLE,
-                0, 0, _windowSize.X, _windowSize.Y, Zero, null, _hInstance, null);
+            fixed (byte* appNameText = AppNameText)
+            {
+                emuState->WindowHandle = _user32.CreateWindowExA(0, appNameText, null, Define.WS_POPUP | Define.WS_VISIBLE,
+                    0, 0, _windowSize.X, _windowSize.Y, Zero, null, _hInstance, null);
+            }
 
             if (emuState->WindowHandle == null) return false;
 
@@ -1036,21 +1028,6 @@ namespace VCCSharp.Modules
         public unsafe void DDSurfaceSetPalette(IDirectDrawPalette* ddPalette)
         {
             Library.DirectDraw.DDSurfaceSetPalette(ddPalette);
-        }
-
-        public unsafe void* GetIcon(HINSTANCE resources)
-        {
-            return Library.DirectDraw.DDGetIcon(resources);
-        }
-
-        public unsafe void* GetCursor(byte fullscreen)
-        {
-            return Library.DirectDraw.DDGetCursor(fullscreen);
-        }
-
-        public unsafe void* GetBrush()
-        {
-            return Library.DirectDraw.DDGetBrush();
         }
     }
 }

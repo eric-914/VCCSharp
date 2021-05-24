@@ -1,6 +1,9 @@
 #include "di.version.h"
 #include <ddraw.h>
 
+#include <windows.h>
+#include "../resources/resource.h"
+
 //--Stuff from wingdi.h
 
 extern "C" {
@@ -28,5 +31,29 @@ extern "C" {
   __declspec(dllexport) void __cdecl GDITextOut(HDC hdc, int x, int y, char* text, int textLength)
   {
     TextOut(hdc, x, y, text, textLength);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) LRESULT CALLBACK __cdecl WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+  {
+    return DefWindowProc(hWnd, message, wParam, lParam);
+  }
+}
+extern "C" {
+  __declspec(dllexport) HBRUSH __cdecl GDIGetBrush() {
+    return (HBRUSH)GetStockObject(BLACK_BRUSH);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HCURSOR __cdecl GDIGetCursor(unsigned char fullscreen) {
+    return fullscreen ? LoadCursor(NULL, MAKEINTRESOURCE(IDC_NONE)) : LoadCursor(NULL, IDC_ARROW);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HICON __cdecl GDIGetIcon(HINSTANCE resources) {
+    return LoadIcon(resources, (LPCTSTR)IDI_COCO3);
   }
 }

@@ -1,4 +1,5 @@
-﻿using VCCSharp.Libraries;
+﻿using System;
+using VCCSharp.Libraries;
 
 namespace VCCSharp.Modules
 {
@@ -8,6 +9,9 @@ namespace VCCSharp.Modules
         unsafe void GDISetBkColor(void* hdc, uint color);
         unsafe void GDISetTextColor(void* hdc, uint color);
         unsafe void GDITextOut(void* hdc, int x, int y, string text, int textLength);
+        unsafe void* GetIcon(IntPtr resources);
+        unsafe void* GetCursor(byte fullscreen);
+        unsafe void* GetBrush();
     }
 
     public class GDI : IGDI
@@ -30,6 +34,21 @@ namespace VCCSharp.Modules
         public unsafe void GDITextOut(void* hdc, int x, int y, string text, int textLength)
         {
             Library.GDI.GDITextOut(hdc, x, y, text, textLength);
+        }
+
+        public unsafe void* GetIcon(IntPtr resources)
+        {
+            return Library.GDI.GDIGetIcon(resources);
+        }
+
+        public unsafe void* GetCursor(byte fullscreen)
+        {
+            return Library.GDI.GDIGetCursor(fullscreen);
+        }
+
+        public unsafe void* GetBrush()
+        {
+            return Library.GDI.GDIGetBrush();
         }
     }
 }
