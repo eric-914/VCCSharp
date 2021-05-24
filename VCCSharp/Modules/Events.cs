@@ -25,7 +25,7 @@ namespace VCCSharp.Modules
     public class Events : IEvents
     {
         private readonly IModules _modules;
-        private IGraphics _graphics => _modules.Graphics;
+        private IGraphics Graphics => _modules.Graphics;
 
         public Events(IModules modules)
         {
@@ -36,7 +36,7 @@ namespace VCCSharp.Modules
         {
             _modules.Emu.SetEmuRunning(true);
 
-            _graphics.InvalidateBorder();
+            Graphics.InvalidateBorder();
         }
 
         public void EmuReset(ResetPendingStates state)
@@ -78,7 +78,7 @@ namespace VCCSharp.Modules
 
         public void ToggleMonitorType() //F6
         {
-            byte monType = _graphics.MonType == Define.FALSE ? Define.TRUE : Define.FALSE;
+            byte monType = Graphics.MonType == Define.FALSE ? Define.TRUE : Define.FALSE;
 
             _modules.Graphics.SetMonitorType(monType);
         }
@@ -115,12 +115,7 @@ namespace VCCSharp.Modules
 
         public void ToggleInfoBand() //F10
         {
-            unsafe
-            {
-                DirectDrawState* directDrawState = _modules.DirectDraw.GetDirectDrawState();
-
-                directDrawState->InfoBand = directDrawState->InfoBand == Define.TRUE ? Define.FALSE : Define.TRUE;
-            }
+            _modules.DirectDraw.InfoBand = _modules.DirectDraw.InfoBand == Define.TRUE ? Define.FALSE : Define.TRUE;
 
             _modules.Graphics.InvalidateBorder();
         }

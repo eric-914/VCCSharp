@@ -206,7 +206,6 @@
     <ClInclude Include="CoCoState.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="ConfigState.h" />
-    <ClInclude Include="DirectDraw.h" />
     <ClInclude Include="DirectDrawInternal.h" />
     <ClInclude Include="DirectDrawInternalState.h" />
     <ClInclude Include="DirectDrawState.h" />

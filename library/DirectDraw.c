@@ -1,11 +1,6 @@
-//--This is just a wrapper of DirectX used
-#include "di.version.h"
-#include <ddraw.h>
-
 #include "../resources/resource.h"
 
-#include "DirectDraw.h"
-#include "DirectDrawInternal.h"
+#include "DirectDrawState.h"
 
 DirectDrawState* InitializeInstance(DirectDrawState*);
 
@@ -18,20 +13,11 @@ extern "C" {
 }
 
 DirectDrawState* InitializeInstance(DirectDrawState* p) {
-  p->hWndStatusBar = NULL;
-
-  p->StatusBarHeight = 0;
-  p->InfoBand = 1;
-  p->ForceAspect = 1;
-  p->Color = 0;
-
   strcpy(p->StatusText, "");
 
   return p;
 }
 
-/*--------------------------------------------------------------------------*/
-// The Window Procedure
 extern "C" {
   __declspec(dllexport) LRESULT CALLBACK __cdecl WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
   {
@@ -53,21 +39,5 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) HICON __cdecl DDGetIcon(HINSTANCE resources) {
     return LoadIcon(resources, (LPCTSTR)IDI_COCO3);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindow(HINSTANCE hInstance, WNDPROC lpfnWndProc, HICON hIcon, HCURSOR hCursor, HBRUSH hBrush, UINT style, LPCSTR lpszClassName, LPCSTR lpszMenuName)
-  {
-    return RegisterWcex(
-      hInstance,
-      lpfnWndProc,
-      lpszClassName,
-      lpszMenuName,
-      style,
-      hIcon,
-      hCursor,
-      hBrush
-    );
   }
 }
