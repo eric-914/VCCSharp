@@ -62,30 +62,3 @@ extern "C" {
     SC_save2 = 0;
   }
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl ProcessCommandMessage(HWND hWnd, WPARAM wParam) {
-    int wmId, wmEvent;
-
-    // Force all keys up to prevent key repeats
-    SendSavedKeyEvents();
-
-    wmId = LOWORD(wParam);
-    wmEvent = HIWORD(wParam);
-
-    // Parse the menu selections:
-    // Added for Dynamic menu system
-    if ((wmId >= ID_DYNAMENU_START) && (wmId <= ID_DYNAMENU_END))
-    {
-      DynamicMenuActivated(GetEmuState(), wmId);	//Calls to the loaded DLL so it can do the right thing
-      return;
-    }
-
-    switch (wmId)
-    {
-    case IDOK:
-      SendMessage(hWnd, WM_CLOSE, 0, 0);
-      break;
-    }
-  }
-}

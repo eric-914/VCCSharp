@@ -237,7 +237,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe void DDSurfaceSetPalette(IDirectDrawPalette* ddPalette);
 
             [DllImport(LIBRARY)]
-            public static extern IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+            public static extern IntPtr WndProc(IntPtr hWnd, uint msg, long wParam, long lParam);
 
             [DllImport(LIBRARY)]
             public static extern unsafe int RegisterWcex(HINSTANCE hInstance, void* lpfnWndProc, byte* lpszClassName, byte* lpszMenuName, uint style, void* hIcon, void* hCursor, void* hbrBackground);
@@ -302,25 +302,22 @@ namespace VCCSharp.Libraries
         public static class Events
         {
             [DllImport(LIBRARY)]
-            public static extern void ProcessCommandMessage(HWND hWnd, IntPtr wParam);
-
-            [DllImport(LIBRARY)]
             public static extern void CreateMainMenu(HWND hWnd);
 
             [DllImport(LIBRARY)]
-            public static extern void ProcessKeyDownMessage(IntPtr wParam, IntPtr lParam);
+            public static extern void ProcessKeyDownMessage(long wParam, long lParam);
 
             [DllImport(LIBRARY)]
-            public static extern void KeyUp(IntPtr wParam, IntPtr lParam);
+            public static extern void KeyUp(long wParam, long lParam);
 
             [DllImport(LIBRARY)]
             public static extern void SendSavedKeyEvents();
 
             [DllImport(LIBRARY)]
-            public static extern void MouseMove(IntPtr lParam);
+            public static extern void MouseMove(long lParam);
 
             [DllImport(LIBRARY)]
-            public static extern void ProcessSysKeyDownMessage(IntPtr wParam, IntPtr lParam);
+            public static extern void ProcessSysKeyDownMessage(long wParam, long lParam);
         }
 
         public static class GDI
@@ -427,6 +424,9 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe void DynamicMenuCallback(EmuState* emuState, string menuName, int menuId, int type);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DynamicMenuActivated(EmuState* emuState, int menuItem);
         }
 
         public static class MC6821

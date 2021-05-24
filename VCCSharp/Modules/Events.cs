@@ -1,5 +1,4 @@
-﻿using System;
-using VCCSharp.Enums;
+﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -19,7 +18,7 @@ namespace VCCSharp.Modules
         void ToggleThrottle();
         void ToggleFullScreen();
         void ToggleInfoBand();
-        void ProcessMessage(HWND hWnd, uint message, IntPtr wParam, IntPtr lParam);
+        void ProcessMessage(HWND hWnd, uint message, long wParam, long lParam);
     }
 
     public class Events : IEvents
@@ -153,7 +152,7 @@ namespace VCCSharp.Modules
         //	   		message is sent, or it is zero if the key is up.
         //	    31	The transition state. The value is always zero for a WM_KEYDOWN message.
         //----------------------------------------------------------------------------------------
-        public void ProcessMessage(HWND hWnd, uint message, IntPtr wParam, IntPtr lParam)
+        public void ProcessMessage(HWND hWnd, uint message, long wParam, long lParam)
         {
             switch (message)
             {
@@ -216,9 +215,45 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void ProcessCommandMessage(HWND hWnd, IntPtr wParam)
+        public void ProcessSysCommandMessage(HWND hWnd, long wParam)
         {
-            Library.Events.ProcessCommandMessage(hWnd, wParam);
+            //-------------------------------------------------------------
+            // Control ATL key menu access.
+            // Here left ALT is hardcoded off and right ALT on
+            // TODO: Add config check boxes to control them
+            //-------------------------------------------------------------
+
+            bool notKeyMenu = wParam != Define.SC_KEYMENU;
+            short keyState = (short)(_user32.GetKeyState((int)Define.VK_LMENU) & 0x8000);
+
+            if (notKeyMenu || (keyState != 0))
+            {
+                ProcessCommandMessage(hWnd, wParam);
+            }
+        }
+
+        public void ProcessCommandMessage(HWND hWnd, long wParam)
+        {
+            // Force all keys up to prevent key repeats
+            SendSavedKeyEvents();
+
+            int wmId = (int)(wParam & 0xFFFF); //LOWORD(wParam);
+            //int wmEvent = (int)((wParam >> 16) & 0xFFFF); //HIWORD(wParam);
+
+            // Parse the menu selections:
+            // Added for Dynamic menu system
+            if (wmId >= Define.ID_DYNAMENU_START && wmId <= Define.ID_DYNAMENU_END)
+            {
+                unsafe
+                {
+                    _modules.MenuCallbacks.DynamicMenuActivated(_modules.Emu.GetEmuState(), wmId);	//Calls to the loaded DLL so it can do the right thing
+                }
+            }
+        }
+
+        public void ProcessSysKeyDownMessage(long wParam, long lParam)
+        {
+            Library.Events.ProcessSysKeyDownMessage(wParam, lParam);
         }
 
         public void CreateMainMenu(HWND hWnd)
@@ -226,12 +261,12 @@ namespace VCCSharp.Modules
             Library.Events.CreateMainMenu(hWnd);
         }
 
-        public void ProcessKeyDownMessage(IntPtr wParam, IntPtr lParam)
+        public void ProcessKeyDownMessage(long wParam, long lParam)
         {
             Library.Events.ProcessKeyDownMessage(wParam, lParam);
         }
 
-        public void KeyUp(IntPtr wParam, IntPtr lParam)
+        public void KeyUp(long wParam, long lParam)
         {
             Library.Events.KeyUp(wParam, lParam);
         }
@@ -241,32 +276,9 @@ namespace VCCSharp.Modules
             Library.Events.SendSavedKeyEvents();
         }
 
-        public void MouseMove(IntPtr lParam)
+        public void MouseMove(long lParam)
         {
             Library.Events.MouseMove(lParam);
-        }
-
-        public void ProcessSysCommandMessage(HWND hWnd, IntPtr wParam)
-        {
-            //-------------------------------------------------------------
-            // Control ATL key menu access.
-            // Here left ALT is hardcoded off and right ALT on
-            // TODO: Add config check boxes to control them
-            //-------------------------------------------------------------
-
-            //bool notKeyMenu = wParam != Define.SC_KEYMENU;
-            short keyState = (short)(_user32.GetKeyState((int)Define.VK_LMENU) & 0x8000);
-
-            //if (notKeyMenu || (keyState != 0))
-            if (keyState != 0)
-            {
-                ProcessCommandMessage(hWnd, wParam);
-            }
-        }
-
-        public void ProcessSysKeyDownMessage(IntPtr wParam, IntPtr lParam)
-        {
-            Library.Events.ProcessSysKeyDownMessage(wParam, lParam);
         }
     }
 }

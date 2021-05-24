@@ -350,5 +350,10 @@ namespace VCCSharp.Models
 
         public const uint SC_KEYMENU = 0xF100;
         public const uint VK_LMENU = 0xA4;
+
+        //Defines the start and end IDs for the dynamic menus
+        public const int ID_DYNAMENU_START = 5000;  
+        public const int ID_DYNAMENU_END = 5100;
+
     }
 }
