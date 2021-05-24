@@ -52,18 +52,3 @@ extern "C" {
     }
   }
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl KeyDown(WPARAM wParam, LPARAM lParam) {
-    unsigned char OEMscan = (unsigned char)((lParam & 0x00FF0000) >> 16); // just get the scan code
-
-    // send other keystrokes to the emulator if it is active
-    if (GetEmuState()->EmulationRunning)
-    {
-      vccKeyboardHandleKey((unsigned char)wParam, OEMscan, kEventKeyDown);
-
-      // Save key down in case focus is lost
-      SaveLastTwoKeyDownEvents((unsigned char)wParam, OEMscan);
-    }
-  }
-}

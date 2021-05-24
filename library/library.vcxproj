@@ -222,7 +222,6 @@
     <ClInclude Include="MC6821.h" />
     <ClInclude Include="MC6821State.h" />
     <ClInclude Include="MenuCallbacks.h" />
-    <ClInclude Include="MessageHandlers.h" />
     <ClInclude Include="PakInterfaceDelegates.h" />
     <ClInclude Include="PakInterfaceModule.h" />
     <ClInclude Include="PakInterfaceState.h" />

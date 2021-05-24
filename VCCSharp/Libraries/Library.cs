@@ -314,7 +314,7 @@ namespace VCCSharp.Libraries
             public static extern void MouseMove(long lParam);
 
             [DllImport(LIBRARY)]
-            public static extern void KeyDown(long wParam, long lParam);
+            public static extern void SaveLastTwoKeyDownEvents(byte kb_char, byte oemScan);
         }
 
         public static class GDI

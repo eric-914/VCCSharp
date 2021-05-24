@@ -295,7 +295,8 @@ namespace VCCSharp.Modules
         public void ProcessSysKeyDownMessage(long wParam, long lParam)
         {
             // Ignore repeated system keys
-            if ((lParam >> 30) != 0) {
+            if ((lParam >> 30) != 0)
+            {
                 KeyDown(wParam, lParam);
             }
         }
@@ -303,7 +304,7 @@ namespace VCCSharp.Modules
         public void ProcessKeyDownMessage(long wParam, long lParam)
         {
             // get key scan code for emulator control keys
-            byte OEMscan = (byte )((lParam & 0x00FF0000) >> 16); // just get the scan code
+            byte OEMscan = (byte)((lParam & 0x00FF0000) >> 16); // just get the scan code
 
             switch (OEMscan)
             {
@@ -334,7 +335,24 @@ namespace VCCSharp.Modules
 
         public void KeyDown(long wParam, long lParam)
         {
-            Library.Events.KeyDown(wParam, lParam);
+            byte OEMscan = (byte)((lParam & 0x00FF0000) >> 16); // just get the scan code
+
+            unsafe
+            {
+                // send other keystrokes to the emulator if it is active
+                if (_modules.Emu.GetEmuState()->EmulationRunning != 0)
+                {
+                    _modules.Keyboard.vccKeyboardHandleKey((byte)wParam, OEMscan, KeyStates.kEventKeyDown);
+
+                    // Save key down in case focus is lost
+                    SaveLastTwoKeyDownEvents((byte)wParam, OEMscan);
+                }
+            }
+        }
+
+        public void SaveLastTwoKeyDownEvents(byte kb_char, byte oemScan)
+        {
+            Library.Events.SaveLastTwoKeyDownEvents(kb_char, oemScan);
         }
     }
 }

@@ -142,9 +142,6 @@
     <ClInclude Include="PAKInterface.h">
       <Filter>pakinterface</Filter>
     </ClInclude>
-    <ClInclude Include="MessageHandlers.h">
-      <Filter>events</Filter>
-    </ClInclude>
     <ClInclude Include="ProcessCommandMessage.h">
       <Filter>events</Filter>
     </ClInclude>
