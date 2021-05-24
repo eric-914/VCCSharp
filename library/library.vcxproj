@@ -188,7 +188,6 @@
     <ClCompile Include="PAKInterface.c" />
     <ClCompile Include="TC1014Registers.c" />
     <ClCompile Include="VccState.c" />
-    <ClCompile Include="xDebug.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cartridge.h" />
@@ -235,7 +234,6 @@
     <ClInclude Include="EmuState.h" />
     <ClInclude Include="TC1014RegistersState.h" />
     <ClInclude Include="VccState.h" />
-    <ClInclude Include="xDebug.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="library.rc" />

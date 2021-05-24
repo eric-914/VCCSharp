@@ -8,7 +8,6 @@
 #include "MC6821.h"
 
 #include "TC1014Registers.h"
-#include "xDebug.h"
 
 #define KEY_DOWN	1
 #define KEY_UP		0
@@ -276,19 +275,10 @@ extern "C" {
   }
 }
 
-/*
-  Dispatch keyboard event to the emulator.
-
-  Called from system. eg. WndProc : WM_KEYDOWN/WM_SYSKEYDOWN/WM_SYSKEYUP/WM_KEYUP
-
-  @param key Windows virtual key code (VK_XXXX - not used)
-  @param ScanCode keyboard scan code (DIK_XXXX - DirectInput)
-  @param Status Key status - kEventKeyDown/kEventKeyUp
-*/
 extern "C" {
   __declspec(dllexport) void __cdecl vccKeyboardHandleKey(unsigned char key, unsigned char scanCode, KeyStates keyState)
   {
-    XTRACE("Key  : %c (%3d / 0x%02X)  Scan : %d / 0x%02X\n", key == 0 ? '0' : key, key == 0 ? '0' : key, key == 0 ? '0' : key, scanCode, scanCode);
+    //XTRACE("Key  : %c (%3d / 0x%02X)  Scan : %d / 0x%02X\n", key == 0 ? '0' : key, key == 0 ? '0' : key, key == 0 ? '0' : key, scanCode, scanCode);
 
     JoystickState* joystickState = GetJoystickState();
 

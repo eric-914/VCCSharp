@@ -8,9 +8,6 @@
     <ClCompile Include="fileoperations.c">
       <Filter>file</Filter>
     </ClCompile>
-    <ClCompile Include="xDebug.c">
-      <Filter>debug</Filter>
-    </ClCompile>
     <ClCompile Include="Audio.c">
       <Filter>audio</Filter>
     </ClCompile>
@@ -92,9 +89,6 @@
     </ClInclude>
     <ClInclude Include="fileoperations.h">
       <Filter>file</Filter>
-    </ClInclude>
-    <ClInclude Include="xDebug.h">
-      <Filter>debug</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>resources</Filter>
@@ -236,9 +230,6 @@
     </Filter>
     <Filter Include="tc1014">
       <UniqueIdentifier>{49389fe2-6b27-43b4-be8e-da55b700686d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="debug">
-      <UniqueIdentifier>{67f7f1e9-6d8a-48db-9f9f-c4c936b752a2}</UniqueIdentifier>
     </Filter>
     <Filter Include="config">
       <UniqueIdentifier>{f0e5d00c-8e47-4546-a76f-152ddb13e354}</UniqueIdentifier>

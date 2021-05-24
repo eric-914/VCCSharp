@@ -1,4 +1,5 @@
-﻿using VCCSharp.Enums;
+﻿using System.Diagnostics;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -153,11 +154,6 @@ namespace VCCSharp.Modules
             Library.Keyboard.SetKeyTranslationsNatural(KeyboardLayout.GetKeyTranslationsNatural());
             Library.Keyboard.SetKeyTranslationsCompact(KeyboardLayout.GetKeyTranslationsCompact());
             Library.Keyboard.SetKeyTranslationsCustom(KeyboardLayout.GetKeyTranslationsCustom());
-        }
-
-        public void vccKeyboardHandleKey(byte key, byte scanCode, KeyStates keyState)
-        {
-            Library.Keyboard.vccKeyboardHandleKey(key, scanCode, keyState);
         }
 
         public void GimeSetKeyboardInterruptState(byte state)
@@ -333,6 +329,25 @@ namespace VCCSharp.Modules
         public unsafe void vccKeyboardCopy(KeyTranslationEntry* keyTransEntry, int index)
         {
             Library.Keyboard.vccKeyboardCopy(keyTransEntry, index);
+        }
+
+        /*
+          Dispatch keyboard event to the emulator.
+
+          Called from system. eg. WndProc : WM_KEYDOWN/WM_SYSKEYDOWN/WM_SYSKEYUP/WM_KEYUP
+
+          @param key Windows virtual key code (VK_XXXX - not used)
+          @param ScanCode keyboard scan code (DIK_XXXX - DirectInput)
+          @param Status Key status - kEventKeyDown/kEventKeyUp
+        */
+        public void vccKeyboardHandleKey(byte key, byte scanCode, KeyStates keyState)
+        {
+            char c = key == 0 ? '0' : (char)key;
+
+            //Key  : S ( 83 / 0x53)  Scan : 31 / 0x1F
+            Debug.WriteLine($">>Key  : {c} ({key:###} / 0x{key:X})  Scan : {scanCode:###} / 0x{scanCode:X}", c, c, c, scanCode, scanCode);
+
+            Library.Keyboard.vccKeyboardHandleKey(key, scanCode, keyState);
         }
     }
 }
