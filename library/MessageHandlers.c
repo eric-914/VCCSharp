@@ -4,8 +4,6 @@
 #include "Joystick.h"
 #include "Emu.h"
 
-#include "ProcessCommandMessage.h"
-
 #include "../resources/resource.h"
 
 extern "C" {

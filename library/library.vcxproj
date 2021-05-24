@@ -188,7 +188,6 @@
     <ClCompile Include="PakInterfaceModule.c" />
     <ClCompile Include="TC1014MMU.c" />
     <ClCompile Include="PAKInterface.c" />
-    <ClCompile Include="ProcessCommandMessage.c" />
     <ClCompile Include="TC1014Registers.c" />
     <ClCompile Include="VccState.c" />
     <ClCompile Include="xDebug.c" />
@@ -227,7 +226,6 @@
     <ClInclude Include="PakInterfaceState.h" />
     <ClInclude Include="TC1014MMU.h" />
     <ClInclude Include="PAKInterface.h" />
-    <ClInclude Include="ProcessCommandMessage.h" />
     <ClInclude Include="TC1014MmuState.h" />
     <ClInclude Include="TC1014Registers.h" />
     <ClInclude Include="SoundCardList.h" />

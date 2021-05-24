@@ -32,10 +32,12 @@ namespace VCCSharp.Modules
         // or two keys down in the emulation that must be raised.  These routines
         // track the last two key down events so they can be raised when needed.
         //--------------------------------------------------------------------------
-        //private byte SC_save1 = 0;
-        //private byte SC_save2 = 0;
-        //private byte KB_save1 = 0;
-        //private byte KB_save2 = 0;
+        private byte SC_save1 = 0;
+        private byte SC_save2 = 0;
+        private byte KB_save1 = 0;
+        private byte KB_save2 = 0;
+
+        private bool KeySaveToggle = false;
 
         public Events(IModules modules, IUser32 user32)
         {
@@ -271,22 +273,6 @@ namespace VCCSharp.Modules
             Library.Events.KeyUp(wParam, lParam);
         }
 
-        public void SendSavedKeyEvents()
-        {
-            Library.Events.SendSavedKeyEvents();
-
-            //if (SC_save1 != 0) {
-            //    _modules.Keyboard.vccKeyboardHandleKey(KB_save1, SC_save1, KeyStates.kEventKeyUp);
-            //}
-
-            //if (SC_save2 != 0) {
-            //    _modules.Keyboard.vccKeyboardHandleKey(KB_save2, SC_save2, KeyStates.kEventKeyUp);
-            //}
-
-            //SC_save1 = 0;
-            //SC_save2 = 0;
-        }
-
         public void MouseMove(long lParam)
         {
             Library.Events.MouseMove(lParam);
@@ -350,9 +336,53 @@ namespace VCCSharp.Modules
             }
         }
 
+        //--------------------------------------------------------------------------
+        // When the main window is about to lose keyboard focus there are one
+        // or two keys down in the emulation that must be raised.  These routines
+        // track the last two key down events so they can be raised when needed.
+        //--------------------------------------------------------------------------
+
+        // Save last two key down events
         public void SaveLastTwoKeyDownEvents(byte kb_char, byte oemScan)
         {
-            Library.Events.SaveLastTwoKeyDownEvents(kb_char, oemScan);
+            // Ignore zero scan code
+            if (oemScan == 0)
+            {
+                return;
+            }
+
+            // Remember it
+            KeySaveToggle = !KeySaveToggle;
+
+            if (KeySaveToggle)
+            {
+                KB_save1 = kb_char;
+                SC_save1 = oemScan;
+            }
+            else
+            {
+                KB_save2 = kb_char;
+                SC_save2 = oemScan;
+            }
+        }
+
+        // Force keys up if main widow keyboard focus is lost.  Otherwise
+        // down keys will cause issues with OS-9 on return
+        // Send key up events to keyboard handler for saved keys
+        public void SendSavedKeyEvents()
+        {
+            if (SC_save1 != 0)
+            {
+                _modules.Keyboard.vccKeyboardHandleKey(KB_save1, SC_save1, KeyStates.kEventKeyUp);
+            }
+
+            if (SC_save2 != 0)
+            {
+                _modules.Keyboard.vccKeyboardHandleKey(KB_save2, SC_save2, KeyStates.kEventKeyUp);
+            }
+
+            SC_save1 = 0;
+            SC_save2 = 0;
         }
     }
 }

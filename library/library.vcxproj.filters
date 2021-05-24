@@ -47,9 +47,6 @@
     <ClCompile Include="MessageHandlers.c">
       <Filter>events</Filter>
     </ClCompile>
-    <ClCompile Include="ProcessCommandMessage.c">
-      <Filter>events</Filter>
-    </ClCompile>
     <ClCompile Include="TC1014Registers.c">
       <Filter>tc1014\registers</Filter>
     </ClCompile>
@@ -141,9 +138,6 @@
     </ClInclude>
     <ClInclude Include="PAKInterface.h">
       <Filter>pakinterface</Filter>
-    </ClInclude>
-    <ClInclude Include="ProcessCommandMessage.h">
-      <Filter>events</Filter>
     </ClInclude>
     <ClInclude Include="TC1014Registers.h">
       <Filter>tc1014\registers</Filter>
