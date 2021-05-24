@@ -354,6 +354,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetJoystick(ushort x, ushort y);
+
+            [DllImport(LIBRARY)]
+            public static extern byte SetMouseStatus(byte scanCode, byte phase);
         }
 
         public static class Keyboard
@@ -361,9 +364,6 @@ namespace VCCSharp.Libraries
             [DllImport(LIBRARY)]
             public static extern unsafe KeyboardState* GetKeyBoardState();
             //--Spelled funny because there's a GetKeyboardState() in User32.dll
-
-            [DllImport(LIBRARY)]
-            public static extern void vccKeyboardHandleKey(byte key, byte scanCode, KeyStates keyState);
 
             [DllImport(LIBRARY)]
             public static extern void GimeSetKeyboardInterruptState(byte state);
@@ -403,6 +403,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void vccKeyboardCopy(KeyTranslationEntry* keyTransEntry, int index);
+
+            [DllImport(LIBRARY)]
+            public static extern void vccKeyboardUpdateRolloverTable();
+
+            [DllImport(LIBRARY)]
+            public static extern byte GimeGetKeyboardInterruptState();
         }
 
         public static class MenuCallbacks
@@ -490,6 +496,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void MemWrite8(byte data, ushort address);
+
+            [DllImport(LIBRARY)]
+            public static extern void GimeAssertKeyboardInterrupt();
         }
 
         public static class Vcc

@@ -41,6 +41,7 @@ namespace VCCSharp.Modules
         void SAMWrite(byte data, byte port);
         byte GimeRead(byte port);
         void GimeWrite(byte port, byte data);
+        void GimeAssertKeyboardInterrupt();
     }
 
     public class TC1014 : ITC1014
@@ -4839,6 +4840,11 @@ Could not locate {ROM} in any of these locations:
                 instance->MmuEnabled = flag;
                 instance->MmuState = (byte)((instance->MmuEnabled == 0 ? 1 : 0) << 1 | instance->MmuTask);
             }
+        }
+
+        public void GimeAssertKeyboardInterrupt()
+        {
+            Library.TC1014.GimeAssertKeyboardInterrupt();
         }
     }
 }

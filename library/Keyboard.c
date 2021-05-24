@@ -19,7 +19,7 @@ const int MAX_CUSTOM = 89;
 
 KeyTranslationEntry keyTranslationsCoCo[MAX_COCO + 1];
 KeyTranslationEntry keyTranslationsNatural[MAX_NATURAL + 1];
-KeyTranslationEntry keyTranslationsCompact[MAX_COMPACT+ 1];
+KeyTranslationEntry keyTranslationsCompact[MAX_COMPACT + 1];
 KeyTranslationEntry keyTranslationsCustom[MAX_CUSTOM + 1];
 
 KeyboardState* InitializeInstance(KeyboardState*);
@@ -273,90 +273,4 @@ extern "C" {
       }
     }
   }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl vccKeyboardHandleKey(unsigned char key, unsigned char scanCode, KeyStates keyState)
-  {
-    //XTRACE("Key  : %c (%3d / 0x%02X)  Scan : %d / 0x%02X\n", key == 0 ? '0' : key, key == 0 ? '0' : key, key == 0 ? '0' : key, scanCode, scanCode);
-
-    JoystickState* joystickState = GetJoystickState();
-
-    //If requested, abort pasting operation.
-    if (scanCode == 0x01 || scanCode == 0x43 || scanCode == 0x3F) {
-      instance->Pasting = FALSE;
-
-      OutputDebugString("ABORT PASTING!!!\n");
-    }
-
-    // check for shift key
-    // Left and right shift generate different scan codes
-    if (scanCode == DIK_RSHIFT)
-    {
-      scanCode = DIK_LSHIFT;
-    }
-
-#if 0 // TODO: CTRL and/or ALT?
-    // CTRL key - right -> left
-    if (ScanCode == DIK_RCONTROL)
-    {
-      ScanCode = DIK_LCONTROL;
-    }
-    // ALT key - right -> left
-    if (ScanCode == DIK_RMENU)
-    {
-      ScanCode = DIK_LMENU;
-  }
-#endif
-
-    switch (keyState)
-    {
-    default:
-      // internal error
-      break;
-
-      // Key Down
-    case kEventKeyDown:
-      if ((joystickState->Left->UseMouse == 0) || (joystickState->Right->UseMouse == 0))
-      {
-        scanCode = SetMouseStatus(scanCode, 1);
-      }
-
-      // track key is down
-      instance->ScanTable[scanCode] = KEY_DOWN;
-
-      vccKeyboardUpdateRolloverTable();
-
-      if (GimeGetKeyboardInterruptState())
-      {
-        GimeAssertKeyboardInterrupt();
-      }
-
-      break;
-
-      // Key Up
-    case kEventKeyUp:
-      if ((joystickState->Left->UseMouse == 0) || (joystickState->Right->UseMouse == 0))
-      {
-        scanCode = SetMouseStatus(scanCode, 0);
-      }
-
-      // reset key (released)
-      instance->ScanTable[scanCode] = KEY_UP;
-
-      // TODO: verify this is accurate emulation
-      // Clean out rollover table on shift release
-      if (scanCode == DIK_LSHIFT)
-      {
-        for (int Index = 0; Index < KBTABLE_ENTRY_COUNT; Index++)
-        {
-          instance->ScanTable[Index] = KEY_UP;
-        }
-      }
-
-      vccKeyboardUpdateRolloverTable();
-
-      break;
-    }
-}
 }

@@ -345,9 +345,117 @@ namespace VCCSharp.Modules
             char c = key == 0 ? '0' : (char)key;
 
             //Key  : S ( 83 / 0x53)  Scan : 31 / 0x1F
-            Debug.WriteLine($">>Key  : {c} ({key:###} / 0x{key:X})  Scan : {scanCode:###} / 0x{scanCode:X}", c, c, c, scanCode, scanCode);
+            //Debug.WriteLine($">>Key  : {c} ({key:###} / 0x{key:X})  Scan : {scanCode:###} / 0x{scanCode:X}", c, c, c, scanCode, scanCode);
 
-            Library.Keyboard.vccKeyboardHandleKey(key, scanCode, keyState);
+            unsafe
+            {
+                KeyboardState* instance = GetKeyboardState();
+
+                //If requested, abort pasting operation.
+                if (scanCode == 0x01 || scanCode == 0x43 || scanCode == 0x3F)
+                {
+                    instance->Pasting = Define.FALSE;
+
+                    Debug.WriteLine("ABORT PASTING!!!");
+                }
+            }
+
+            // check for shift key
+            // Left and right shift generate different scan codes
+            if (scanCode == Define.DIK_RSHIFT)
+            {
+                scanCode = Define.DIK_LSHIFT;
+            }
+
+            //// TODO: CTRL and/or ALT?
+            //// CTRL key - right -> left
+            //if (ScanCode == DIK_RCONTROL)
+            //{
+            //    ScanCode = DIK_LCONTROL;
+            //}
+            //// ALT key - right -> left
+            //if (ScanCode == DIK_RMENU)
+            //{
+            //    ScanCode = DIK_LMENU;
+            //}
+
+            switch (keyState)
+            {
+                // Key Down
+                case KeyStates.kEventKeyDown:
+                    vccKeyboardHandleKeyDown(key, scanCode, keyState);
+                    break;
+
+                // Key Up
+                case KeyStates.kEventKeyUp:
+                    vccKeyboardHandleKeyUp(key, scanCode, keyState);
+                    break;
+            }
+        }
+
+        public void vccKeyboardHandleKeyDown(byte key, byte scanCode, KeyStates keyState)
+        {
+            unsafe
+            {
+                JoystickState* joystickState = _modules.Joystick.GetJoystickState();
+
+                if ((joystickState->Left->UseMouse == 0) || (joystickState->Right->UseMouse == 0))
+                {
+                    scanCode = _modules.Joystick.SetMouseStatus(scanCode, 1);
+                }
+
+                KeyboardState* instance = GetKeyboardState();
+
+                // track key is down
+                instance->ScanTable[scanCode] = Define.KEY_DOWN;
+            }
+
+            vccKeyboardUpdateRolloverTable();
+
+            if (GimeGetKeyboardInterruptState() != 0)
+            {
+                _modules.TC1014.GimeAssertKeyboardInterrupt();
+            }
+        }
+
+        public void vccKeyboardHandleKeyUp(byte key, byte scanCode, KeyStates keyState)
+        {
+            unsafe
+            {
+                JoystickState* joystickState = _modules.Joystick.GetJoystickState();
+
+                if ((joystickState->Left->UseMouse == 0) || (joystickState->Right->UseMouse == 0))
+                {
+                    scanCode = _modules.Joystick.SetMouseStatus(scanCode, 0);
+                }
+
+                KeyboardState* instance = GetKeyboardState();
+
+                // reset key (released)
+                instance->ScanTable[scanCode] = Define.KEY_UP;
+
+                // TODO: verify this is accurate emulation
+                // Clean out rollover table on shift release
+                if (scanCode == Define.DIK_LSHIFT)
+                {
+                    for (int index = 0; index < Define.KBTABLE_ENTRY_COUNT; index++)
+                    {
+                        instance->ScanTable[index] = Define.KEY_UP;
+                    }
+                }
+            }
+
+            vccKeyboardUpdateRolloverTable();
+        }
+
+        public void vccKeyboardUpdateRolloverTable()
+        {
+            Library.Keyboard.vccKeyboardUpdateRolloverTable();
+        }
+
+        public byte GimeGetKeyboardInterruptState()
+        {
+            return Library.Keyboard.GimeGetKeyboardInterruptState();
         }
     }
 }
