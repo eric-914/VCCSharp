@@ -34,13 +34,12 @@ DirectDrawState* InitializeInstance(DirectDrawState* p) {
 
 /*--------------------------------------------------------------------------*/
 // The Window Procedure
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-  ProcessMessage(hWnd, message, wParam, lParam);
-
-  return DefWindowProc(hWnd, message, wParam, lParam);
+extern "C" {
+  __declspec(dllexport) LRESULT CALLBACK __cdecl WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+  {
+    return DefWindowProc(hWnd, message, wParam, lParam);
+  }
 }
-
 extern "C" {
   __declspec(dllexport) HBRUSH __cdecl DDGetBrush() {
     return (HBRUSH)GetStockObject(BLACK_BRUSH);
@@ -58,21 +57,15 @@ extern "C" {
     return LoadIcon(resources, (LPCTSTR)IDI_COCO3);
   }
 }
-    
-extern "C" {
-  __declspec(dllexport) WNDPROC __cdecl DDGetWinProc() {
-    return WndProc;
-  }
-}
-    
+
 extern "C" {
   __declspec(dllexport) BOOL __cdecl CreateDirectDrawWindow(HINSTANCE hInstance, WNDPROC lpfnWndProc, HICON hIcon, HCURSOR hCursor, HBRUSH hBrush, UINT style, LPCSTR lpszClassName, LPCSTR lpszMenuName)
   {
     return RegisterWcex(
       hInstance,
-      lpfnWndProc, 
+      lpfnWndProc,
       lpszClassName,
-      lpszMenuName, 
+      lpszMenuName,
       style,
       hIcon,
       hCursor,

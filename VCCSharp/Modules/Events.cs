@@ -19,6 +19,7 @@ namespace VCCSharp.Modules
         void ToggleThrottle();
         void ToggleFullScreen();
         void ToggleInfoBand();
+        void ProcessMessage(HWND hWnd, uint message, IntPtr wParam, IntPtr lParam);
     }
 
     public class Events : IEvents
@@ -141,6 +142,64 @@ namespace VCCSharp.Modules
 
         public void ProcessMessage(HWND hWnd, uint message, IntPtr wParam, IntPtr lParam)
         {
+            switch (message)
+            {
+                case Define.WM_CLOSE:
+                    //GetVccState()->BinaryRunning = false;     
+                    break;  //TODO: This is Events.EmuExit()
+
+                case Define.WM_COMMAND:
+                    //ProcessCommandMessage(hWnd, wParam);
+                    break;
+                case Define.WM_CREATE: 
+                    //CreateMainMenu(hWnd); 
+                    break;
+
+                case Define.WM_KEYDOWN: 
+                    //ProcessKeyDownMessage(wParam, lParam); 
+                    break;
+
+                case Define.WM_KEYUP: 
+                    //KeyUp(wParam, lParam); 
+                    break;
+
+                case Define.WM_KILLFOCUS: 
+                    //SendSavedKeyEvents(); 
+                    break;
+
+                case Define.WM_LBUTTONDOWN: 
+                    //SetButtonStatus(0, 1); 
+                    break;
+
+                case Define.WM_LBUTTONUP: 
+                    //SetButtonStatus(0, 0); 
+                    break;
+
+                case Define.WM_MOUSEMOVE: 
+                    //MouseMove(lParam); 
+                    break;
+
+                case Define.WM_RBUTTONDOWN: 
+                    //SetButtonStatus(1, 1); 
+                    break;
+
+                case Define.WM_RBUTTONUP: 
+                    //SetButtonStatus(1, 0); 
+                    break;
+
+                case Define.WM_SYSCOMMAND: 
+                    //ProcessSysCommandMessage(hWnd, wParam); 
+                    break;
+
+                case Define.WM_SYSKEYDOWN: 
+                    //ProcessSysKeyDownMessage(wParam, lParam); 
+                    break;
+
+                case Define.WM_SYSKEYUP: 
+                    //KeyUp(wParam, lParam); 
+                    break;
+            }
+
             Library.Events.ProcessMessage(hWnd, message, wParam, lParam);
         }
     }

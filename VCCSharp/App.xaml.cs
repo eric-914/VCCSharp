@@ -16,6 +16,8 @@ namespace VCCSharp
         {
             base.OnStartup(e);
 
+            //ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
             Factory.Instance
                 .SelfBind()
 

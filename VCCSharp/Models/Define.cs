@@ -333,5 +333,20 @@ namespace VCCSharp.Models
         public const uint CS_BYTEALIGNWINDOW = 0x2000;
         public const uint CS_GLOBALCLASS = 0x4000;
 
+        public const uint WM_CREATE = 0x0001;
+        public const uint WM_KILLFOCUS = 0x0008;
+        public const uint WM_CLOSE = 0x0010;
+        public const uint WM_KEYDOWN = 0x0100;
+        public const uint WM_KEYUP = 0x0101;
+        public const uint WM_SYSKEYDOWN = 0x0104;
+        public const uint WM_SYSKEYUP = 0x0105;
+        public const uint WM_COMMAND = 0x0111;
+        public const uint WM_SYSCOMMAND = 0x0112;
+        public const uint WM_MOUSEMOVE = 0x0200;
+        public const uint WM_LBUTTONDOWN = 0x0201;
+        public const uint WM_LBUTTONUP = 0x0202;
+        public const uint WM_RBUTTONDOWN = 0x0204;
+        public const uint WM_RBUTTONUP = 0x0205;
+
     }
 }

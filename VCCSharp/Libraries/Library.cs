@@ -252,7 +252,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe void* DDGetBrush();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void* DDGetWinProc();
+            public static extern IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
         }
 
         public static class DirectSound

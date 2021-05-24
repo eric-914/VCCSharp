@@ -29,11 +29,16 @@ namespace VCCSharp.Modules
         unsafe void DisplayFlip(EmuState* emuState);
     }
 
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate IntPtr WndProcTemplate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+
     public class DirectDraw : IDirectDraw
     {
+        private static WndProcTemplate _delegateInstance;
+
         private readonly IModules _modules;
         private readonly IUser32 _user32;
-
+        
         private static int _textX = 0, _textY = 0;
         private static byte _counter = 0, _counter1 = 32, _phase = 1;
 
@@ -46,6 +51,36 @@ namespace VCCSharp.Modules
         public unsafe DirectDrawState* GetDirectDrawState()
         {
             return Library.DirectDraw.GetDirectDrawState();
+        }
+
+        public IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
+        {
+            _modules.Events.ProcessMessage(hWnd, msg, wParam, lParam);
+
+            return Library.DirectDraw.WndProc(hWnd, msg, wParam, lParam);
+        }
+
+        private bool CreateDirectDrawWindow(HINSTANCE resources, byte fullscreen)
+        {
+            uint style = Define.CS_HREDRAW | Define.CS_VREDRAW;
+
+            unsafe
+            {
+                DirectDrawState* instance = GetDirectDrawState();
+
+                HINSTANCE hInstance = instance->hInstance;
+                byte* lpszClassName = instance->AppNameText;
+                void* hIcon = GetIcon(resources);
+                void* hCursor = GetCursor(fullscreen);
+                void* hBrush = GetBrush();
+
+                //--Convert WinProc to void*
+                _delegateInstance = WndProc;
+                void* lpfnWndProc = (void*)Marshal.GetFunctionPointerForDelegate(_delegateInstance);
+
+                //And Rebuilt it from scratch
+                return Library.DirectDraw.CreateDirectDrawWindow(hInstance, lpfnWndProc, hIcon, hCursor, hBrush, style, lpszClassName, null) != Define.FALSE;
+            }
         }
 
         public void FullScreenToggle()
@@ -363,8 +398,8 @@ namespace VCCSharp.Modules
 
                 if (instance->ForceAspect == Define.TRUE) // Adjust the Aspect Ratio if window is resized
                 {
-                    float srcWidth = (float)instance->WindowSize.X;
-                    float srcHeight = (float)instance->WindowSize.Y;
+                    float srcWidth = instance->WindowSize.X;
+                    float srcHeight = instance->WindowSize.Y;
                     float srcRatio = srcWidth / srcHeight;
 
                     // change this to use the existing rcDest and the calc, w = right-left & h = bottom-top, 
@@ -413,7 +448,7 @@ namespace VCCSharp.Modules
                 //    rcDest.right = rcDest.left + (int)instance->WindowSize.X;
                 //    rcDest.bottom = rcDest.top + (int)instance->WindowSize.Y;
 
-                    //RECT defaultRect = _defaultSize;
+                //RECT defaultRect = _defaultSize;
 
                 //    _user32.GetWindowRect(emuState->WindowHandle, &rect);
                 //    _user32.MoveWindow(emuState->WindowHandle, rect.left, rect.top, defaultRect.right - defaultRect.left, defaultRect.bottom - defaultRect.top, 1);
@@ -755,36 +790,6 @@ namespace VCCSharp.Modules
 
             return true;
         }
-        
-        private bool CreateDirectDrawWindow(HINSTANCE resources, byte fullscreen)
-        {
-            //IntPtr WndProcCallback(HWND hWnd, uint msg, ulong wParam, long lParam)
-            //{
-            //    _modules.Events.ProcessMessage(hWnd, msg, wParam, lParam);
-
-            //    return _user32.DefWindowProcA(hWnd, msg, wParam, lParam);
-            //}
-
-            //return Library.DirectDraw.CreateDirectDrawWindow(resources, fullscreen, WndProcCallback) != Define.FALSE;
-
-            uint style = Define.CS_HREDRAW | Define.CS_VREDRAW;
-            //LPCSTR lpszMenuName = NULL; //Menu is set on WM_CREATE
-
-            unsafe
-            {
-                DirectDrawState* instance = GetDirectDrawState();
-
-                HINSTANCE hInstance = instance->hInstance;
-                byte* lpszClassName = instance->AppNameText;
-                void* hIcon = GetIcon(resources);
-                void* hCursor = GetCursor(fullscreen);
-                void* hBrush = GetBrush();
-                void* lpfnWndProc = GetWinProc();
-
-                //And Rebuilt it from scratch
-                return Library.DirectDraw.CreateDirectDrawWindow(hInstance, lpfnWndProc, hIcon, hCursor, hBrush, style, lpszClassName, null) != Define.FALSE;
-            }
-        }
 
         public void DDRelease()
         {
@@ -981,7 +986,7 @@ namespace VCCSharp.Modules
                 pal[i + 128].peRed = ColorValues[(i & 32) >> 4 | (i & 4) >> 2];
                 pal[i + 128].peFlags = Define.PC_RESERVED | Define.PC_NOCOLLAPSE;
             }
-            
+
             uint caps = Define.DDPCAPS_8BIT | Define.DDPCAPS_ALLOW256;
 
             unsafe
@@ -989,7 +994,7 @@ namespace VCCSharp.Modules
                 fixed (PALETTEENTRY* p = pal)
                 {
                     IDirectDrawPalette* ddPalette = DDCreatePalette(caps, p);
-                    
+
                     DDSurfaceSetPalette(ddPalette); // Set palette for Primary surface
                 }
             }
@@ -1043,11 +1048,6 @@ namespace VCCSharp.Modules
         public unsafe void* GetBrush()
         {
             return Library.DirectDraw.DDGetBrush();
-        }
-
-        public unsafe void* GetWinProc()
-        {
-            return Library.DirectDraw.DDGetWinProc();
         }
     }
 }
