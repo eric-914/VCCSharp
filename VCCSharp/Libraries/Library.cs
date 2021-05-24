@@ -320,9 +320,6 @@ namespace VCCSharp.Libraries
             public static extern void MouseMove(IntPtr lParam);
 
             [DllImport(LIBRARY)]
-            public static extern void ProcessSysCommandMessage(HWND hWnd, IntPtr wParam);
-
-            [DllImport(LIBRARY)]
             public static extern void ProcessSysKeyDownMessage(IntPtr wParam, IntPtr lParam);
         }
 

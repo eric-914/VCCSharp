@@ -78,5 +78,8 @@ namespace VCCSharp.Libraries
 
         [DllImport(DLL)]
         public static extern LRESULT DefWindowProc(HWND hWnd, uint Msg, ulong wParam, long lParam);
+
+        [DllImport(DLL)]
+        public static extern short GetKeyState(int nVirtKey);
     }
 }

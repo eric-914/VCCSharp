@@ -348,5 +348,7 @@ namespace VCCSharp.Models
         public const uint WM_RBUTTONDOWN = 0x0204;
         public const uint WM_RBUTTONUP = 0x0205;
 
+        public const uint SC_KEYMENU = 0xF100;
+        public const uint VK_LMENU = 0xA4;
     }
 }

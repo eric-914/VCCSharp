@@ -25,11 +25,13 @@ namespace VCCSharp.Modules
     public class Events : IEvents
     {
         private readonly IModules _modules;
+        private readonly IUser32 _user32;
         private IGraphics Graphics => _modules.Graphics;
 
-        public Events(IModules modules)
+        public Events(IModules modules, IUser32 user32)
         {
             _modules = modules;
+            _user32 = user32;
         }
 
         public void EmuRun()
@@ -153,67 +155,64 @@ namespace VCCSharp.Modules
         //----------------------------------------------------------------------------------------
         public void ProcessMessage(HWND hWnd, uint message, IntPtr wParam, IntPtr lParam)
         {
-            unsafe
+            switch (message)
             {
-                switch (message)
-                {
-                    //TODO: This is Events.EmuExit()
-                    case Define.WM_CLOSE:
-                        _modules.Vcc.GetVccState()->BinaryRunning = Define.FALSE;
-                        break;
+                //TODO: This is Events.EmuExit()
+                case Define.WM_CLOSE:
+                    _modules.Vcc.BinaryRunning = false;
+                    break;
 
-                    case Define.WM_COMMAND:
-                        ProcessCommandMessage(hWnd, wParam);
-                        break;
+                case Define.WM_COMMAND:
+                    ProcessCommandMessage(hWnd, wParam);
+                    break;
 
-                    case Define.WM_CREATE:
-                        CreateMainMenu(hWnd);
-                        break;
+                case Define.WM_CREATE:
+                    CreateMainMenu(hWnd);
+                    break;
 
-                    case Define.WM_KEYDOWN:
-                        ProcessKeyDownMessage(wParam, lParam);
-                        break;
+                case Define.WM_KEYDOWN:
+                    ProcessKeyDownMessage(wParam, lParam);
+                    break;
 
-                    case Define.WM_KEYUP:
-                        KeyUp(wParam, lParam);
-                        break;
+                case Define.WM_KEYUP:
+                    KeyUp(wParam, lParam);
+                    break;
 
-                    case Define.WM_KILLFOCUS:
-                        SendSavedKeyEvents();
-                        break;
+                case Define.WM_KILLFOCUS:
+                    SendSavedKeyEvents();
+                    break;
 
-                    case Define.WM_LBUTTONDOWN:
-                        _modules.Joystick.SetButtonStatus(0, 1);
-                        break;
+                case Define.WM_LBUTTONDOWN:
+                    _modules.Joystick.SetButtonStatus(0, 1);
+                    break;
 
-                    case Define.WM_LBUTTONUP:
-                        _modules.Joystick.SetButtonStatus(0, 0);
-                        break;
+                case Define.WM_LBUTTONUP:
+                    _modules.Joystick.SetButtonStatus(0, 0);
+                    break;
 
-                    case Define.WM_MOUSEMOVE:
-                        MouseMove(lParam);
-                        break;
+                case Define.WM_MOUSEMOVE:
+                    MouseMove(lParam);
+                    break;
 
-                    case Define.WM_RBUTTONDOWN:
-                        _modules.Joystick.SetButtonStatus(1, 1);
-                        break;
+                case Define.WM_RBUTTONDOWN:
+                    _modules.Joystick.SetButtonStatus(1, 1);
+                    break;
 
-                    case Define.WM_RBUTTONUP:
-                        _modules.Joystick.SetButtonStatus(1, 0);
-                        break;
+                case Define.WM_RBUTTONUP:
+                    _modules.Joystick.SetButtonStatus(1, 0);
+                    break;
 
-                    case Define.WM_SYSCOMMAND:
-                        ProcessSysCommandMessage(hWnd, wParam);
-                        break;
+                case Define.WM_SYSCOMMAND:
+                    ProcessSysCommandMessage(hWnd, wParam);
+                    break;
 
-                    case Define.WM_SYSKEYDOWN:
-                        ProcessSysKeyDownMessage(wParam, lParam);
-                        break;
+                case Define.WM_SYSKEYDOWN:
+                    ProcessSysKeyDownMessage(wParam, lParam);
+                    break;
 
-                    case Define.WM_SYSKEYUP:
-                        KeyUp(wParam, lParam);
-                        break;
-                }
+                case Define.WM_SYSKEYUP:
+                    KeyUp(wParam, lParam);
+                    break;
             }
         }
 
@@ -249,7 +248,20 @@ namespace VCCSharp.Modules
 
         public void ProcessSysCommandMessage(HWND hWnd, IntPtr wParam)
         {
-            Library.Events.ProcessSysCommandMessage(hWnd, wParam);
+            //-------------------------------------------------------------
+            // Control ATL key menu access.
+            // Here left ALT is hardcoded off and right ALT on
+            // TODO: Add config check boxes to control them
+            //-------------------------------------------------------------
+
+            //bool notKeyMenu = wParam != Define.SC_KEYMENU;
+            short keyState = (short)(_user32.GetKeyState((int)Define.VK_LMENU) & 0x8000);
+
+            //if (notKeyMenu || (keyState != 0))
+            if (keyState != 0)
+            {
+                ProcessCommandMessage(hWnd, wParam);
+            }
         }
 
         public void ProcessSysKeyDownMessage(IntPtr wParam, IntPtr lParam)

@@ -29,6 +29,7 @@ namespace VCCSharp.Libraries
         int UpdateWindow(HWND hWnd);
         LRESULT SendMessageA(HWND hWnd, uint Msg, ulong wParam, long lParam);
         LRESULT DefWindowProcA(HWND hWnd, uint Msg, ulong wParam, long lParam);
+        short GetKeyState(int nVirtKey);
     }
 
     public class User32 : IUser32
@@ -89,5 +90,8 @@ namespace VCCSharp.Libraries
 
         public LRESULT DefWindowProcA(HWND hWnd, uint Msg, ulong wParam, long lParam)
             => User32Dll.DefWindowProcA(hWnd, Msg, wParam, lParam);
+
+        public short GetKeyState(int nVirtKey)
+            => User32Dll.GetKeyState(nVirtKey);
     }
 }

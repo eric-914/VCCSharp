@@ -89,16 +89,3 @@ extern "C" {
     }
   }
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl ProcessSysCommandMessage(HWND hWnd, WPARAM wParam) {
-    //-------------------------------------------------------------
-    // Control ATL key menu access.
-    // Here left ALT is hardcoded off and right ALT on
-    // TODO: Add config check boxes to control them
-    //-------------------------------------------------------------
-    if ((wParam != SC_KEYMENU) || (!(GetKeyState(VK_LMENU) & 0x8000))) {
-      ProcessCommandMessage(hWnd, wParam);
-    }
-  }
-}

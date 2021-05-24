@@ -18,6 +18,8 @@ namespace VCCSharp.Modules
         void EmuLoop();
         string GetExecPath();
         void ApplyConfigurationChanges();
+
+        bool BinaryRunning { get; set; }
     }
 
     public class Vcc : IVcc
@@ -203,6 +205,12 @@ namespace VCCSharp.Modules
 
                 _modules.Joystick.SetStickNumbers(left->DiDevice, right->DiDevice);
             }
+        }
+
+        public unsafe bool BinaryRunning
+        {
+            get => GetVccState()->BinaryRunning != Define.FALSE;
+            set => GetVccState()->BinaryRunning = value ? Define.TRUE : Define.FALSE;
         }
 
         private unsafe SoundCardList Lookup(int index)
