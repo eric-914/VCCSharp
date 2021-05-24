@@ -378,7 +378,7 @@ namespace VCCSharp.Libraries
             //--Spelled funny because there's a GetKeyboardState() in User32.dll
 
             [DllImport(LIBRARY)]
-            public static extern void vccKeyboardHandleKey(char key, char scanCode, KeyStates keyState);
+            public static extern void vccKeyboardHandleKey(byte key, byte scanCode, KeyStates keyState);
 
             [DllImport(LIBRARY)]
             public static extern void GimeSetKeyboardInterruptState(byte state);

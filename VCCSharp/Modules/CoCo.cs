@@ -248,7 +248,7 @@ namespace VCCSharp.Modules
 
         private unsafe void CpuCycleClipboard(VccState* vccState)
         {
-            const char shift = (char)0x36;
+            const byte shift = 0x36;
             char key;
 
             CoCoState* cocoState = GetCoCoState();
@@ -278,7 +278,7 @@ namespace VCCSharp.Modules
                     key = _modules.Clipboard.PeekClipboard();
                 }
 
-                _modules.Keyboard.vccKeyboardHandleKeyDown(key, key);
+                _modules.Keyboard.vccKeyboardHandleKeyDown((byte)key, (byte)key);
 
                 cocoState->WaitCycle = key == 0x1c ? 6000 : 2000;
             }
@@ -287,7 +287,7 @@ namespace VCCSharp.Modules
                 key = _modules.Clipboard.PeekClipboard();
 
                 _modules.Keyboard.vccKeyboardHandleKeyUp(shift, shift);
-                _modules.Keyboard.vccKeyboardHandleKeyUp((char)0x42, key); //TODO: What is 0x42?
+                _modules.Keyboard.vccKeyboardHandleKeyUp(0x42, (byte)key); //TODO: What is 0x42?
                 _modules.Clipboard.PopClipboard();
 
                 //Finished?

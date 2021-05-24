@@ -1,5 +1,4 @@
-﻿using System;
-using VCCSharp.Enums;
+﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -10,13 +9,14 @@ namespace VCCSharp.Modules
     public interface IKeyboard
     {
         unsafe KeyboardState* GetKeyboardState();
-        void vccKeyboardHandleKeyDown(char key, char scanCode);
-        void vccKeyboardHandleKeyUp(char key, char scanCode);
+        void vccKeyboardHandleKeyDown(byte key, byte scanCode);
+        void vccKeyboardHandleKeyUp(byte key, byte scanCode);
         void vccKeyboardBuildRuntimeTable(byte keyMapIndex);
         void SetPaste(bool flag);
         void GimeSetKeyboardInterruptState(byte state);
         byte vccKeyboardGetScan(byte column);
         void SetKeyTranslations();
+        void vccKeyboardHandleKey(byte key, byte scanCode, KeyStates keyState);
     }
 
     public class Keyboard : IKeyboard
@@ -33,12 +33,12 @@ namespace VCCSharp.Modules
             return Library.Keyboard.GetKeyBoardState();
         }
 
-        public void vccKeyboardHandleKeyDown(char key, char scanCode)
+        public void vccKeyboardHandleKeyDown(byte key, byte scanCode)
         {
             vccKeyboardHandleKey(key, scanCode, KeyStates.kEventKeyDown);
         }
 
-        public void vccKeyboardHandleKeyUp(char key, char scanCode)
+        public void vccKeyboardHandleKeyUp(byte key, byte scanCode)
         {
             vccKeyboardHandleKey(key, scanCode, KeyStates.kEventKeyUp);
         }
@@ -155,7 +155,7 @@ namespace VCCSharp.Modules
             Library.Keyboard.SetKeyTranslationsCustom(KeyboardLayout.GetKeyTranslationsCustom());
         }
 
-        public void vccKeyboardHandleKey(char key, char scanCode, KeyStates keyState)
+        public void vccKeyboardHandleKey(byte key, byte scanCode, KeyStates keyState)
         {
             Library.Keyboard.vccKeyboardHandleKey(key, scanCode, keyState);
         }
@@ -322,7 +322,7 @@ namespace VCCSharp.Modules
             // order.
             //
 
-            Library.Keyboard.vccKeyboardSort(); ;
+            Library.Keyboard.vccKeyboardSort();
         }
 
         public unsafe void vccKeyboardCopyKeyTranslationEntry(KeyTranslationEntry* target, KeyTranslationEntry* source)

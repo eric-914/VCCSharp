@@ -27,6 +27,16 @@ namespace VCCSharp.Modules
         private readonly IUser32 _user32;
         private IGraphics Graphics => _modules.Graphics;
 
+        //--------------------------------------------------------------------------
+        // When the main window is about to lose keyboard focus there are one
+        // or two keys down in the emulation that must be raised.  These routines
+        // track the last two key down events so they can be raised when needed.
+        //--------------------------------------------------------------------------
+        //private byte SC_save1 = 0;
+        //private byte SC_save2 = 0;
+        //private byte KB_save1 = 0;
+        //private byte KB_save2 = 0;
+
         public Events(IModules modules, IUser32 user32)
         {
             _modules = modules;
@@ -274,6 +284,17 @@ namespace VCCSharp.Modules
         public void SendSavedKeyEvents()
         {
             Library.Events.SendSavedKeyEvents();
+
+            //if (SC_save1 != 0) {
+            //    _modules.Keyboard.vccKeyboardHandleKey(KB_save1, SC_save1, KeyStates.kEventKeyUp);
+            //}
+
+            //if (SC_save2 != 0) {
+            //    _modules.Keyboard.vccKeyboardHandleKey(KB_save2, SC_save2, KeyStates.kEventKeyUp);
+            //}
+
+            //SC_save1 = 0;
+            //SC_save2 = 0;
         }
 
         public void MouseMove(long lParam)
