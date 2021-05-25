@@ -405,10 +405,10 @@ namespace VCCSharp.Libraries
             public static extern unsafe void vccKeyboardCopy(KeyTranslationEntry* keyTransEntry, int index);
 
             [DllImport(LIBRARY)]
-            public static extern void vccKeyboardUpdateRolloverTable();
+            public static extern byte GimeGetKeyboardInterruptState();
 
             [DllImport(LIBRARY)]
-            public static extern byte GimeGetKeyboardInterruptState();
+            public static extern KeyTranslationEntry vccKeyTranslationEntry(int index);
         }
 
         public static class MenuCallbacks

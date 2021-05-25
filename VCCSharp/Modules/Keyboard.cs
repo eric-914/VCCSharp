@@ -448,14 +448,92 @@ namespace VCCSharp.Modules
             vccKeyboardUpdateRolloverTable();
         }
 
-        public void vccKeyboardUpdateRolloverTable()
-        {
-            Library.Keyboard.vccKeyboardUpdateRolloverTable();
-        }
-
         public byte GimeGetKeyboardInterruptState()
         {
             return Library.Keyboard.GimeGetKeyboardInterruptState();
+        }
+
+        public void vccKeyboardUpdateRolloverTable()
+        {
+            byte lockOut = 0;
+
+            unsafe
+            {
+                KeyboardState* instance = GetKeyboardState();
+
+                // clear the rollover table
+                for (int index = 0; index < 8; index++)
+                {
+                    instance->RolloverTable[index] = 0;
+                }
+
+                // set rollover table based on ScanTable key status
+                for (int index = 0; index < Define.KBTABLE_ENTRY_COUNT; index++)
+                {
+                    KeyTranslationEntry entry = vccKeyTranslationEntry(index);
+                    byte scanCode1 = entry.ScanCode1;
+                    byte scanCode2 = entry.ScanCode2;
+
+                    // stop at last entry
+                    if ((scanCode1 == 0) && (scanCode2 == 0))
+                    {
+                        break;
+                    }
+
+                    if (lockOut != scanCode1)
+                    {
+                        // Single input key 
+                        if ((scanCode1 != 0) && (scanCode2 == 0))
+                        {
+                            // check if key pressed
+                            if (instance->ScanTable[scanCode1] == Define.KEY_DOWN)
+                            {
+                                int col = entry.Col1;
+
+                                //assert(col >= 0 && col < 8);
+
+                                instance->RolloverTable[col] |= entry.Row1;
+
+                                col = entry.Col2;
+
+                                //assert(col >= 0 && col < 8);
+
+                                instance->RolloverTable[col] |= entry.Row2;
+                            }
+                        }
+
+                        // Double Input Key
+                        if ((scanCode1 != 0) && (scanCode2 != 0))
+                        {
+                            // check if both keys pressed
+                            if ((instance->ScanTable[scanCode1] == Define.KEY_DOWN) && (instance->ScanTable[scanCode2] == Define.KEY_DOWN))
+                            {
+                                int col = entry.Col1;
+
+                                //assert(col >= 0 && col < 8);
+
+                                instance->RolloverTable[col] |= entry.Row1;
+
+                                col = entry.Col2;
+
+                                //assert(col >= 0 && col < 8);
+
+                                instance->RolloverTable[col] |= entry.Row2;
+
+                                // always SHIFT
+                                lockOut = scanCode1;
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public KeyTranslationEntry vccKeyTranslationEntry(int index)
+        {
+            return Library.Keyboard.vccKeyTranslationEntry(index);
         }
     }
 }

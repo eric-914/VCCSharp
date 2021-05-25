@@ -102,90 +102,6 @@ extern "C" {
   }
 }
 
-/**
-  Key translation table compare function for sorting (with qsort)
-*/
-extern "C" {
-  __declspec(dllexport) int __cdecl KeyTransCompare(const void* e1, const void* e2)
-  {
-    KeyTranslationEntry* entry1 = (KeyTranslationEntry*)e1;
-    KeyTranslationEntry* entry2 = (KeyTranslationEntry*)e2;
-    int result = 0;
-
-    // empty listing push to end
-    if (entry1->ScanCode1 == 0 && entry1->ScanCode2 == 0 && entry2->ScanCode1 != 0)
-    {
-      return 1;
-    }
-    else {
-      if (entry2->ScanCode1 == 0 && entry2->ScanCode2 == 0 && entry1->ScanCode1 != 0)
-      {
-        return -1;
-      }
-      else {
-        // push shift/alt/control by themselves to the end
-        if (entry1->ScanCode2 == 0 && (entry1->ScanCode1 == DIK_LSHIFT || entry1->ScanCode1 == DIK_LMENU || entry1->ScanCode1 == DIK_LCONTROL))
-        {
-          result = 1;
-        }
-        else {
-          // push shift/alt/control by themselves to the end
-          if (entry2->ScanCode2 == 0 && (entry2->ScanCode1 == DIK_LSHIFT || entry2->ScanCode1 == DIK_LMENU || entry2->ScanCode1 == DIK_LCONTROL))
-          {
-            result = -1;
-          }
-          else {
-            // move double key combos in front of single ones
-            if (entry1->ScanCode2 == 0 && entry2->ScanCode2 != 0)
-            {
-              result = 1;
-            }
-            else {
-              // move double key combos in front of single ones
-              if (entry2->ScanCode2 == 0 && entry1->ScanCode2 != 0)
-              {
-                result = -1;
-              }
-              else
-              {
-                result = entry1->ScanCode1 - entry2->ScanCode1;
-
-                if (result == 0)
-                {
-                  result = entry1->Row1 - entry2->Row1;
-                }
-
-                if (result == 0)
-                {
-                  result = entry1->Col1 - entry2->Col1;
-                }
-
-                if (result == 0)
-                {
-                  result = entry1->Row2 - entry2->Row2;
-                }
-
-                if (result == 0)
-                {
-                  result = entry1->Col2 - entry2->Col2;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    return result;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl vccKeyboardSort() {
-    qsort(instance->KeyTransTable, KBTABLE_ENTRY_COUNT, sizeof(KeyTranslationEntry), KeyTransCompare);
-  }
-}
-
 extern "C" {
   __declspec(dllexport) void __cdecl vccKeyboardClear() {
     memset(instance->KeyTransTable, 0, sizeof(instance->KeyTransTable));
@@ -205,72 +121,52 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl vccKeyboardUpdateRolloverTable()
+  __declspec(dllexport) KeyTranslationEntry __cdecl vccKeyTranslationEntry(int index) {
+    return instance->KeyTransTable[index];
+  }
+}
+
+/**
+  Key translation table compare function for sorting (with qsort)
+*/
+extern "C" {
+  __declspec(dllexport) int __cdecl KeyTransCompare(const void* e1, const void* e2)
   {
-    unsigned char	lockOut = 0;
+    KeyTranslationEntry* entry1 = (KeyTranslationEntry*)e1;
+    KeyTranslationEntry* entry2 = (KeyTranslationEntry*)e2;
+    int result = 0;
 
-    // clear the rollover table
-    for (int index = 0; index < 8; index++)
-    {
-      instance->RolloverTable[index] = 0;
-    }
+    // empty listing push to end
+    if (entry1->ScanCode1 == 0 && entry1->ScanCode2 == 0 && entry2->ScanCode1 != 0) return 1;
+    if (entry2->ScanCode1 == 0 && entry2->ScanCode2 == 0 && entry1->ScanCode1 != 0) return -1;
 
-    // set rollover table based on ScanTable key status
-    for (int index = 0; index < KBTABLE_ENTRY_COUNT; index++)
-    {
-      // stop at last entry
-      if ((instance->KeyTransTable[index].ScanCode1 == 0) && (instance->KeyTransTable[index].ScanCode2 == 0))
-      {
-        break;
-      }
+    // push shift/alt/control by themselves to the end
+    if (entry1->ScanCode2 == 0 && (entry1->ScanCode1 == DIK_LSHIFT || entry1->ScanCode1 == DIK_LMENU || entry1->ScanCode1 == DIK_LCONTROL)) return 1;
+    // push shift/alt/control by themselves to the end
+    if (entry2->ScanCode2 == 0 && (entry2->ScanCode1 == DIK_LSHIFT || entry2->ScanCode1 == DIK_LMENU || entry2->ScanCode1 == DIK_LCONTROL)) return -1;
 
-      if (lockOut != instance->KeyTransTable[index].ScanCode1)
-      {
-        // Single input key 
-        if ((instance->KeyTransTable[index].ScanCode1 != 0) && (instance->KeyTransTable[index].ScanCode2 == 0))
-        {
-          // check if key pressed
-          if (instance->ScanTable[instance->KeyTransTable[index].ScanCode1] == KEY_DOWN)
-          {
-            int col = instance->KeyTransTable[index].Col1;
+    // move double key combos in front of single ones
+    if (entry1->ScanCode2 == 0 && entry2->ScanCode2 != 0) return 1;
 
-            assert(col >= 0 && col < 8);
+    // move double key combos in front of single ones
+    if (entry2->ScanCode2 == 0 && entry1->ScanCode2 != 0) return -1;
 
-            instance->RolloverTable[col] |= instance->KeyTransTable[index].Row1;
+    result = entry1->ScanCode1 - entry2->ScanCode1;
 
-            col = instance->KeyTransTable[index].Col2;
+    if (result == 0) result = entry1->Row1 - entry2->Row1;
 
-            assert(col >= 0 && col < 8);
+    if (result == 0) result = entry1->Col1 - entry2->Col1;
 
-            instance->RolloverTable[col] |= instance->KeyTransTable[index].Row2;
-          }
-        }
+    if (result == 0) result = entry1->Row2 - entry2->Row2;
 
-        // Double Input Key
-        if ((instance->KeyTransTable[index].ScanCode1 != 0) && (instance->KeyTransTable[index].ScanCode2 != 0))
-        {
-          // check if both keys pressed
-          if ((instance->ScanTable[instance->KeyTransTable[index].ScanCode1] == KEY_DOWN) && (instance->ScanTable[instance->KeyTransTable[index].ScanCode2] == KEY_DOWN))
-          {
-            int col = instance->KeyTransTable[index].Col1;
+    if (result == 0) result = entry1->Col2 - entry2->Col2;
 
-            assert(col >= 0 && col < 8);
+    return result;
+  }
+}
 
-            instance->RolloverTable[col] |= instance->KeyTransTable[index].Row1;
-
-            col = instance->KeyTransTable[index].Col2;
-
-            assert(col >= 0 && col < 8);
-
-            instance->RolloverTable[col] |= instance->KeyTransTable[index].Row2;
-
-            // always SHIFT
-            lockOut = instance->KeyTransTable[index].ScanCode1;
-
-            break;
-          }
-        }
-      }
-    }
+extern "C" {
+  __declspec(dllexport) void __cdecl vccKeyboardSort() {
+    qsort(instance->KeyTransTable, KBTABLE_ENTRY_COUNT, sizeof(KeyTranslationEntry), KeyTransCompare);
   }
 }
