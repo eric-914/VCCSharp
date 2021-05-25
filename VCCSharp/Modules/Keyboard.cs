@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
@@ -9,19 +10,23 @@ namespace VCCSharp.Modules
 {
     public interface IKeyboard
     {
-        unsafe KeyboardState* GetKeyboardState();
-        void vccKeyboardHandleKeyDown(byte key, byte scanCode);
-        void vccKeyboardHandleKeyUp(byte key, byte scanCode);
-        void vccKeyboardBuildRuntimeTable(byte keyMapIndex);
+        void KeyboardHandleKeyDown(byte key, byte scanCode);
+        void KeyboardHandleKeyUp(byte key, byte scanCode);
+        void KeyboardBuildRuntimeTable(byte keyMapIndex);
         void SetPaste(bool flag);
         void GimeSetKeyboardInterruptState(byte state);
-        byte vccKeyboardGetScan(byte column);
+        byte KeyboardGetScan(byte column);
         void SetKeyTranslations();
-        void vccKeyboardHandleKey(byte key, byte scanCode, KeyStates keyState);
+        void KeyboardHandleKey(byte key, byte scanCode, KeyStates keyState);
     }
 
     public class Keyboard : IKeyboard
     {
+        private const int MAX_COCO = 80;
+        private const int MAX_NATURAL = 89;
+        private const int MAX_COMPACT = 84;
+        private const int MAX_CUSTOM = 89;
+
         private readonly IModules _modules;
 
         public byte KeyboardInterruptEnabled;
@@ -33,6 +38,11 @@ namespace VCCSharp.Modules
         /** track all keyboard scan codes state (up/down) */
         public int[] ScanTable = new int[256];
 
+        private KeyTranslationEntry[] _keyTranslationsCoCo = new KeyTranslationEntry[MAX_COCO + 1];
+        private KeyTranslationEntry[] _keyTranslationsNatural = new KeyTranslationEntry[MAX_NATURAL + 1];
+        private KeyTranslationEntry[] _keyTranslationsCompact = new KeyTranslationEntry[MAX_COMPACT + 1];
+        private KeyTranslationEntry[] _keyTranslationsCustom = new KeyTranslationEntry[MAX_CUSTOM + 1];
+
         public Keyboard(IModules modules)
         {
             _modules = modules;
@@ -43,14 +53,14 @@ namespace VCCSharp.Modules
             return Library.Keyboard.GetKeyBoardState();
         }
 
-        public void vccKeyboardHandleKeyDown(byte key, byte scanCode)
+        public void KeyboardHandleKeyDown(byte key, byte scanCode)
         {
-            vccKeyboardHandleKey(key, scanCode, KeyStates.kEventKeyDown);
+            KeyboardHandleKey(key, scanCode, KeyStates.kEventKeyDown);
         }
 
-        public void vccKeyboardHandleKeyUp(byte key, byte scanCode)
+        public void KeyboardHandleKeyUp(byte key, byte scanCode)
         {
-            vccKeyboardHandleKey(key, scanCode, KeyStates.kEventKeyUp);
+            KeyboardHandleKey(key, scanCode, KeyStates.kEventKeyUp);
         }
 
         public void SetPaste(bool flag)
@@ -65,11 +75,11 @@ namespace VCCSharp.Modules
 
           should be a push instead of a pull?
         */
-        public byte vccKeyboardGetScan(byte column)
+        public byte KeyboardGetScan(byte column)
         {
             byte temp = (byte)~column; //Get column
             byte mask = 1;
-            byte ret_val = 0;
+            byte retVal = 0;
 
             unsafe
             {
@@ -82,13 +92,13 @@ namespace VCCSharp.Modules
                 {
                     if ((temp & mask) != 0) // Found an active column scan
                     {
-                        ret_val |= RolloverTable[x];
+                        retVal |= RolloverTable[x];
                     }
 
                     mask <<= 1;
                 }
 
-                ret_val = (byte)(127 - ret_val);
+                retVal = (byte)(127 - retVal);
 
                 //Collect CA2 and CB2 from the PIA (1of4 Multiplexer)
                 joystickState->StickValue = joystick.get_pot_value(mc6821.MC6821_GetMuxState());
@@ -97,32 +107,32 @@ namespace VCCSharp.Modules
                 {
                     if (joystickState->StickValue >= mc6821.MC6821_DACState())		// Set bit of stick >= DAC output $FF20 Bits 7-2
                     {
-                        ret_val |= 0x80;
+                        retVal |= 0x80;
                     }
                 }
 
                 if (joystickState->LeftButton1Status == 1)
                 {
                     //Left Joystick Button 1 Down?
-                    ret_val &= 0xFD;
+                    retVal &= 0xFD;
                 }
 
                 if (joystickState->RightButton1Status == 1)
                 {
                     //Right Joystick Button 1 Down?
-                    ret_val &= 0xFE;
+                    retVal &= 0xFE;
                 }
 
                 if (joystickState->LeftButton2Status == 1)
                 {
                     //Left Joystick Button 2 Down?
-                    ret_val &= 0xF7;
+                    retVal &= 0xF7;
                 }
 
                 if (joystickState->RightButton2Status == 1)
                 {
                     //Right Joystick Button 2 Down?
-                    ret_val &= 0xFB;
+                    retVal &= 0xFB;
                 }
 
                 #region // no noticeable change when this is disabled
@@ -147,16 +157,16 @@ namespace VCCSharp.Modules
 
                 #endregion
 
-                return ret_val;
+                return retVal;
             }
         }
 
         public void SetKeyTranslations()
         {
-            Library.Keyboard.SetKeyTranslationsCoCo(KeyboardLayout.GetKeyTranslationsCoCo());
-            Library.Keyboard.SetKeyTranslationsNatural(KeyboardLayout.GetKeyTranslationsNatural());
-            Library.Keyboard.SetKeyTranslationsCompact(KeyboardLayout.GetKeyTranslationsCompact());
-            Library.Keyboard.SetKeyTranslationsCustom(KeyboardLayout.GetKeyTranslationsCustom());
+            _keyTranslationsCoCo = KeyboardLayout.GetKeyTranslationsCoCo();
+            _keyTranslationsNatural = KeyboardLayout.GetKeyTranslationsNatural();
+            _keyTranslationsCompact = KeyboardLayout.GetKeyTranslationsCompact();
+            _keyTranslationsCustom = KeyboardLayout.GetKeyTranslationsCompact();
         }
 
         public void GimeSetKeyboardInterruptState(byte state)
@@ -170,45 +180,52 @@ namespace VCCSharp.Modules
 
           The entries are sorted.  Any SHIFT + [char] entries need to be placed first
         */
-        public void vccKeyboardBuildRuntimeTable(byte keyMapIndex)
+        public void KeyboardBuildRuntimeTable(byte keyMapIndex)
         {
             unsafe
             {
                 //int index1 = 0;
                 //int index2 = 0;
-                KeyTranslationEntry* keyLayoutTable = null;
+                KeyTranslationEntry[] keyTranslationTable = null;
                 KeyboardLayouts keyBoardLayout = (KeyboardLayouts)keyMapIndex;
 
                 switch (keyBoardLayout)
                 {
                     case KeyboardLayouts.kKBLayoutCoCo:
-                        keyLayoutTable = GetKeyTranslationsCoCo();
+                        keyTranslationTable = _keyTranslationsCoCo;
                         break;
 
                     case KeyboardLayouts.kKBLayoutNatural:
-                        keyLayoutTable = GetKeyTranslationsNatural();
+                        keyTranslationTable = _keyTranslationsNatural;
                         break;
 
                     case KeyboardLayouts.kKBLayoutCompact:
-                        keyLayoutTable = GetKeyTranslationsCompact();
+                        keyTranslationTable = _keyTranslationsCompact;
                         break;
 
                     case KeyboardLayouts.kKBLayoutCustom:
-                        keyLayoutTable = GetKeyTranslationsCustom();
+                        keyTranslationTable = _keyTranslationsCustom;
                         break;
                 }
 
                 //XTRACE("Building run-time key table for layout # : %d - %s\n", keyBoardLayout, k_keyboardLayoutNames[keyBoardLayout]);
 
-                vccKeyboardClear();
+                KeyboardClear();
 
                 KeyTranslationEntry keyTransEntry = new KeyTranslationEntry();
 
                 int index2 = 0;
                 for (var index1 = 0; ; index1++)
                 {
+                    if (keyTranslationTable == null)
+                    {
+                        throw new NullReferenceException("Missing Key Translation Table");
+                    }
 
-                    vccKeyboardCopyKeyTranslationEntry(&keyTransEntry, &keyLayoutTable[index1]);
+                    fixed (KeyTranslationEntry* keyLayoutTable = keyTranslationTable)
+                    {
+                        KeyboardCopyKeyTranslationEntry(&keyTransEntry, &keyLayoutTable[index1]);
+                    }
 
                     //
                     // Change entries to what the code expects
@@ -242,13 +259,13 @@ namespace VCCSharp.Modules
                         break;
                     }
 
-                    vccKeyboardCopy(&keyTransEntry, index2);
-                    //vccKeyboardCopyKeyTranslationEntry(&(instance->KeyTransTable[index2]), &keyTransEntry);
+                    KeyboardCopy(&keyTransEntry, index2);
+                    //KeyboardCopyKeyTranslationEntry(&(instance->KeyTransTable[index2]), &keyTransEntry);
 
                     index2++;
                 }
 
-                vccKeyboardSort();
+                KeyboardSort();
 
                 #region DEBUG
 
@@ -283,33 +300,13 @@ namespace VCCSharp.Modules
             //);
         }
 
-        public unsafe KeyTranslationEntry* GetKeyTranslationsCoCo()
-        {
-            return Library.Keyboard.GetKeyTranslationsCoCo();
-        }
-
-        public unsafe KeyTranslationEntry* GetKeyTranslationsNatural()
-        {
-            return Library.Keyboard.GetKeyTranslationsNatural();
-        }
-
-        public unsafe KeyTranslationEntry* GetKeyTranslationsCompact()
-        {
-            return Library.Keyboard.GetKeyTranslationsCompact();
-        }
-
-        public unsafe KeyTranslationEntry* GetKeyTranslationsCustom()
-        {
-            return Library.Keyboard.GetKeyTranslationsCustom();
-        }
-
-        public void vccKeyboardClear()
+        public void KeyboardClear()
         {
             // copy the selected keyboard layout to the run-time table
             Library.Keyboard.vccKeyboardClear();
         }
 
-        public void vccKeyboardSort()
+        public void KeyboardSort()
         {
             //
             // Sort the key translation table
@@ -322,12 +319,12 @@ namespace VCCSharp.Modules
             Library.Keyboard.vccKeyboardSort();
         }
 
-        public unsafe void vccKeyboardCopyKeyTranslationEntry(KeyTranslationEntry* target, KeyTranslationEntry* source)
+        public unsafe void KeyboardCopyKeyTranslationEntry(KeyTranslationEntry* target, KeyTranslationEntry* source)
         {
             Library.Keyboard.vccKeyboardCopyKeyTranslationEntry(target, source);
         }
 
-        public unsafe void vccKeyboardCopy(KeyTranslationEntry* keyTransEntry, int index)
+        public unsafe void KeyboardCopy(KeyTranslationEntry* keyTransEntry, int index)
         {
             Library.Keyboard.vccKeyboardCopy(keyTransEntry, index);
         }
@@ -341,7 +338,7 @@ namespace VCCSharp.Modules
           @param ScanCode keyboard scan code (DIK_XXXX - DirectInput)
           @param Status Key status - kEventKeyDown/kEventKeyUp
         */
-        public void vccKeyboardHandleKey(byte key, byte scanCode, KeyStates keyState)
+        public void KeyboardHandleKey(byte key, byte scanCode, KeyStates keyState)
         {
             //char c = key == 0 ? '0' : (char)key;
 
@@ -379,17 +376,17 @@ namespace VCCSharp.Modules
             {
                 // Key Down
                 case KeyStates.kEventKeyDown:
-                    vccKeyboardHandleKeyDown(key, scanCode, keyState);
+                    KeyboardHandleKeyDown(key, scanCode, keyState);
                     break;
 
                 // Key Up
                 case KeyStates.kEventKeyUp:
-                    vccKeyboardHandleKeyUp(key, scanCode, keyState);
+                    KeyboardHandleKeyUp(key, scanCode, keyState);
                     break;
             }
         }
 
-        public void vccKeyboardHandleKeyDown(byte key, byte scanCode, KeyStates keyState)
+        public void KeyboardHandleKeyDown(byte key, byte scanCode, KeyStates keyState)
         {
             unsafe
             {
@@ -400,13 +397,11 @@ namespace VCCSharp.Modules
                     scanCode = _modules.Joystick.SetMouseStatus(scanCode, 1);
                 }
 
-                KeyboardState* instance = GetKeyboardState();
-
                 // track key is down
                 ScanTable[scanCode] = Define.KEY_DOWN;
             }
 
-            vccKeyboardUpdateRolloverTable();
+            KeyboardUpdateRolloverTable();
 
             if (KeyboardInterruptEnabled != 0)
             {
@@ -414,7 +409,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void vccKeyboardHandleKeyUp(byte key, byte scanCode, KeyStates keyState)
+        public void KeyboardHandleKeyUp(byte key, byte scanCode, KeyStates keyState)
         {
             unsafe
             {
@@ -424,8 +419,6 @@ namespace VCCSharp.Modules
                 {
                     scanCode = _modules.Joystick.SetMouseStatus(scanCode, 0);
                 }
-
-                KeyboardState* instance = GetKeyboardState();
 
                 // reset key (released)
                 ScanTable[scanCode] = Define.KEY_UP;
@@ -441,10 +434,10 @@ namespace VCCSharp.Modules
                 }
             }
 
-            vccKeyboardUpdateRolloverTable();
+            KeyboardUpdateRolloverTable();
         }
 
-        public void vccKeyboardUpdateRolloverTable()
+        public void KeyboardUpdateRolloverTable()
         {
             byte lockOut = 0;
 
@@ -457,7 +450,7 @@ namespace VCCSharp.Modules
             // set rollover table based on ScanTable key status
             for (int index = 0; index < Define.KBTABLE_ENTRY_COUNT; index++)
             {
-                KeyTranslationEntry entry = vccKeyTranslationEntry(index);
+                KeyTranslationEntry entry = KeyTranslationEntry(index);
                 byte scanCode1 = entry.ScanCode1;
                 byte scanCode2 = entry.ScanCode2;
 
@@ -517,7 +510,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public KeyTranslationEntry vccKeyTranslationEntry(int index)
+        public KeyTranslationEntry KeyTranslationEntry(int index)
         {
             return Library.Keyboard.vccKeyTranslationEntry(index);
         }

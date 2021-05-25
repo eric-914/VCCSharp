@@ -119,7 +119,7 @@ namespace VCCSharp.Modules
             //but we need to read it first so we can set it back
             CurrentKeyMap = _modules.Config.GetCurrentKeyboardLayout();
 
-            _modules.Keyboard.vccKeyboardBuildRuntimeTable(1); //Natural (OS9)
+            _modules.Keyboard.KeyboardBuildRuntimeTable(1); //Natural (OS9)
 
             var text = System.Windows.Clipboard.GetText();
 
@@ -133,7 +133,7 @@ namespace VCCSharp.Modules
             PasteText(text);
 
             //--This process is asynchronous.  The text will finish pasting long after here.
-            //_modules.Keyboard.vccKeyboardBuildRuntimeTable((byte)clipboardState->CurrentKeyMap);
+            //_modules.Keyboard.KeyboardBuildRuntimeTable((byte)clipboardState->CurrentKeyMap);
         }
 
         public void PasteText(string text)

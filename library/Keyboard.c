@@ -1,11 +1,6 @@
 #include "di.version.h"
 #include <dinput.h>
 
-const int MAX_COCO = 80;
-const int MAX_NATURAL = 89;
-const int MAX_COMPACT = 84;
-const int MAX_CUSTOM = 89;
-
 #define KBTABLE_ENTRY_COUNT 100
 
 typedef struct KeyTranslationEntry
@@ -22,57 +17,12 @@ typedef struct {
   KeyTranslationEntry KeyTransTable[KBTABLE_ENTRY_COUNT];
 } KeyboardState;
 
-KeyTranslationEntry keyTranslationsCoCo[MAX_COCO + 1];
-KeyTranslationEntry keyTranslationsNatural[MAX_NATURAL + 1];
-KeyTranslationEntry keyTranslationsCompact[MAX_COMPACT + 1];
-KeyTranslationEntry keyTranslationsCustom[MAX_CUSTOM + 1];
-
 static KeyboardState* instance = new KeyboardState();
 
 //--Spelled funny because there's a GetKeyboardState() in User32.dll
 extern "C" {
   __declspec(dllexport) KeyboardState* __cdecl GetKeyBoardState() {
     return instance;
-  }
-}
-
-extern "C" __declspec(dllexport) KeyTranslationEntry * __cdecl GetKeyTranslationsCoCo(void) {
-  return keyTranslationsCoCo;
-}
-
-extern "C" __declspec(dllexport) void __cdecl SetKeyTranslationsCoCo(KeyTranslationEntry * value) {
-  for (int i = 0; i <= MAX_COCO; i++) {
-    keyTranslationsCoCo[i] = value[i];
-  }
-}
-
-extern "C" __declspec(dllexport) KeyTranslationEntry * __cdecl GetKeyTranslationsNatural(void) {
-  return keyTranslationsNatural;
-}
-
-extern "C" __declspec(dllexport) void __cdecl SetKeyTranslationsNatural(KeyTranslationEntry * value) {
-  for (int i = 0; i <= MAX_NATURAL; i++) {
-    keyTranslationsNatural[i] = value[i];
-  }
-}
-
-extern "C" __declspec(dllexport) KeyTranslationEntry * __cdecl GetKeyTranslationsCompact(void) {
-  return keyTranslationsCompact;
-}
-
-extern "C" __declspec(dllexport) void __cdecl SetKeyTranslationsCompact(KeyTranslationEntry * value) {
-  for (int i = 0; i <= MAX_COMPACT; i++) {
-    keyTranslationsCompact[i] = value[i];
-  }
-}
-
-extern "C" __declspec(dllexport) KeyTranslationEntry * __cdecl GetKeyTranslationsCustom(void) {
-  return keyTranslationsCustom;
-}
-
-extern "C" __declspec(dllexport) void __cdecl SetKeyTranslationsCustom(KeyTranslationEntry * value) {
-  for (int i = 0; i <= MAX_CUSTOM; i++) {
-    keyTranslationsCustom[i] = value[i];
   }
 }
 

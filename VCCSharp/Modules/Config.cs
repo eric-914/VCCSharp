@@ -304,7 +304,7 @@ namespace VCCSharp.Modules
 
             ValidateModel(configModel);
 
-            _modules.Keyboard.vccKeyboardBuildRuntimeTable(configModel->KeyMapIndex);
+            _modules.Keyboard.KeyboardBuildRuntimeTable(configModel->KeyMapIndex);
 
             _modules.PAKInterface.InsertModule(emuState, modulePath);   // Should this be here?
 

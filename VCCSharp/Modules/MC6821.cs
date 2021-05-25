@@ -234,7 +234,7 @@ namespace VCCSharp.Modules
                         {
                             instance->rega[1] = (byte)(instance->rega[1] & 63);
 
-                            return _modules.Keyboard.vccKeyboardGetScan(instance->rega[2]); //Read
+                            return _modules.Keyboard.KeyboardGetScan(instance->rega[2]); //Read
                         }
                         else
                         {

@@ -273,12 +273,12 @@ namespace VCCSharp.Modules
 
                 if (key == shift)
                 {
-                    _modules.Keyboard.vccKeyboardHandleKeyDown(shift, shift);  //Press shift and...
+                    _modules.Keyboard.KeyboardHandleKeyDown(shift, shift);  //Press shift and...
                     _modules.Clipboard.PopClipboard();
                     key = _modules.Clipboard.PeekClipboard();
                 }
 
-                _modules.Keyboard.vccKeyboardHandleKeyDown((byte)key, (byte)key);
+                _modules.Keyboard.KeyboardHandleKeyDown((byte)key, (byte)key);
 
                 cocoState->WaitCycle = key == 0x1c ? 6000 : 2000;
             }
@@ -286,8 +286,8 @@ namespace VCCSharp.Modules
             {
                 key = _modules.Clipboard.PeekClipboard();
 
-                _modules.Keyboard.vccKeyboardHandleKeyUp(shift, shift);
-                _modules.Keyboard.vccKeyboardHandleKeyUp(0x42, (byte)key); //TODO: What is 0x42?
+                _modules.Keyboard.KeyboardHandleKeyUp(shift, shift);
+                _modules.Keyboard.KeyboardHandleKeyUp(0x42, (byte)key); //TODO: What is 0x42?
                 _modules.Clipboard.PopClipboard();
 
                 //Finished?
@@ -540,7 +540,7 @@ namespace VCCSharp.Modules
         {
             int currentKeyMap = _modules.Clipboard.CurrentKeyMap;
 
-            _modules.Keyboard.vccKeyboardBuildRuntimeTable((byte)currentKeyMap);
+            _modules.Keyboard.KeyboardBuildRuntimeTable((byte)currentKeyMap);
         }
 
         public ushort SetAudioRate(ushort rate)

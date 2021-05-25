@@ -271,7 +271,7 @@ namespace VCCSharp.Modules
 
             byte OEMscan = (byte )((lParam & 0x00FF0000) >> 16);
 
-            _modules.Keyboard.vccKeyboardHandleKey((byte )wParam, OEMscan, KeyStates.kEventKeyUp);
+            _modules.Keyboard.KeyboardHandleKey((byte )wParam, OEMscan, KeyStates.kEventKeyUp);
         }
 
         public void MouseMove(long lParam)
@@ -347,7 +347,7 @@ namespace VCCSharp.Modules
                 // send other keystrokes to the emulator if it is active
                 if (_modules.Emu.GetEmuState()->EmulationRunning != 0)
                 {
-                    _modules.Keyboard.vccKeyboardHandleKey((byte)wParam, OEMscan, KeyStates.kEventKeyDown);
+                    _modules.Keyboard.KeyboardHandleKey((byte)wParam, OEMscan, KeyStates.kEventKeyDown);
 
                     // Save key down in case focus is lost
                     SaveLastTwoKeyDownEvents((byte)wParam, OEMscan);
@@ -392,12 +392,12 @@ namespace VCCSharp.Modules
         {
             if (SC_save1 != 0)
             {
-                _modules.Keyboard.vccKeyboardHandleKey(KB_save1, SC_save1, KeyStates.kEventKeyUp);
+                _modules.Keyboard.KeyboardHandleKey(KB_save1, SC_save1, KeyStates.kEventKeyUp);
             }
 
             if (SC_save2 != 0)
             {
-                _modules.Keyboard.vccKeyboardHandleKey(KB_save2, SC_save2, KeyStates.kEventKeyUp);
+                _modules.Keyboard.KeyboardHandleKey(KB_save2, SC_save2, KeyStates.kEventKeyUp);
             }
 
             SC_save1 = 0;

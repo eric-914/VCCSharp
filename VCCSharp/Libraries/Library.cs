@@ -365,30 +365,6 @@ namespace VCCSharp.Libraries
             //--Spelled funny because there's a GetKeyboardState() in User32.dll
 
             [DllImport(LIBRARY)]
-            public static extern void SetKeyTranslationsCoCo(KeyTranslationEntry[] value);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetKeyTranslationsNatural(KeyTranslationEntry[] value);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetKeyTranslationsCompact(KeyTranslationEntry[] value);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetKeyTranslationsCustom(KeyTranslationEntry[] value);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe KeyTranslationEntry* GetKeyTranslationsCoCo();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe KeyTranslationEntry* GetKeyTranslationsNatural();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe KeyTranslationEntry* GetKeyTranslationsCompact();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe KeyTranslationEntry* GetKeyTranslationsCustom();
-
-            [DllImport(LIBRARY)]
             public static extern void vccKeyboardClear();
 
             [DllImport(LIBRARY)]
