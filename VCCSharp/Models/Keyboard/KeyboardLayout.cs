@@ -1,4 +1,7 @@
-﻿namespace VCCSharp.Models.Keyboard
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace VCCSharp.Models.Keyboard
 {
     /*****************************************************************************/
     /*
@@ -48,6 +51,21 @@
                 Row2 = bytes[4],
                 Col2 = bytes[5]
             };
+        }
+
+        private static KeyTranslationEntry[] ToArray(byte[][] raw)
+        {
+            var terminator = new KeyTranslationEntry
+            {
+                ScanCode1 = 0,
+                ScanCode2 = 0,
+                Row1 = 0,
+                Col1 = 0,
+                Row2 = 0,
+                Col2 = 0
+            };
+
+            return raw.Select(CreateKeyTranslationEntry).Concat(new List<KeyTranslationEntry> { terminator }).ToArray();
         }
     }
 }

@@ -121,7 +121,7 @@ namespace VCCSharp.Models.Keyboard
         
         public static KeyTranslationEntry[] GetKeyTranslationsCoCo()
         {
-            return _keyTranslationsCoCo ??= KeyTranslationsCoCoRaw.Select(CreateKeyTranslationEntry).ToArray();
+            return _keyTranslationsCoCo ??= ToArray(KeyTranslationsCoCoRaw);
         }
     }
 }

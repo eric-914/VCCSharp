@@ -41,11 +41,9 @@ extern "C" __declspec(dllexport) KeyTranslationEntry * __cdecl GetKeyTranslation
 }
 
 extern "C" __declspec(dllexport) void __cdecl SetKeyTranslationsCoCo(KeyTranslationEntry * value) {
-  for (int i = 0; i < MAX_COCO; i++) {
+  for (int i = 0; i <= MAX_COCO; i++) {
     keyTranslationsCoCo[i] = value[i];
   }
-
-  keyTranslationsCoCo[MAX_COCO] = { 0, 0, 0, 0, 0, 0 }; // terminator
 }
 
 extern "C" __declspec(dllexport) KeyTranslationEntry * __cdecl GetKeyTranslationsNatural(void) {
@@ -53,11 +51,9 @@ extern "C" __declspec(dllexport) KeyTranslationEntry * __cdecl GetKeyTranslation
 }
 
 extern "C" __declspec(dllexport) void __cdecl SetKeyTranslationsNatural(KeyTranslationEntry * value) {
-  for (int i = 0; i < MAX_NATURAL; i++) {
+  for (int i = 0; i <= MAX_NATURAL; i++) {
     keyTranslationsNatural[i] = value[i];
   }
-
-  keyTranslationsNatural[MAX_NATURAL] = { 0, 0, 0, 0, 0, 0 }; // terminator
 }
 
 extern "C" __declspec(dllexport) KeyTranslationEntry * __cdecl GetKeyTranslationsCompact(void) {
@@ -65,11 +61,9 @@ extern "C" __declspec(dllexport) KeyTranslationEntry * __cdecl GetKeyTranslation
 }
 
 extern "C" __declspec(dllexport) void __cdecl SetKeyTranslationsCompact(KeyTranslationEntry * value) {
-  for (int i = 0; i < MAX_COMPACT; i++) {
+  for (int i = 0; i <= MAX_COMPACT; i++) {
     keyTranslationsCompact[i] = value[i];
   }
-
-  keyTranslationsCompact[MAX_COMPACT] = { 0, 0, 0, 0, 0, 0 }; // terminator
 }
 
 extern "C" __declspec(dllexport) KeyTranslationEntry * __cdecl GetKeyTranslationsCustom(void) {
@@ -77,11 +71,9 @@ extern "C" __declspec(dllexport) KeyTranslationEntry * __cdecl GetKeyTranslation
 }
 
 extern "C" __declspec(dllexport) void __cdecl SetKeyTranslationsCustom(KeyTranslationEntry * value) {
-  for (int i = 0; i < MAX_CUSTOM; i++) {
+  for (int i = 0; i <= MAX_CUSTOM; i++) {
     keyTranslationsCustom[i] = value[i];
   }
-
-  keyTranslationsCustom[MAX_CUSTOM] = { 0, 0, 0, 0, 0, 0 }; // terminator
 }
 
 extern "C" {

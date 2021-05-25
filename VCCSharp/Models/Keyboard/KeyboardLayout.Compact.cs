@@ -141,7 +141,7 @@ namespace VCCSharp.Models.Keyboard
 
         public static KeyTranslationEntry[] GetKeyTranslationsCompact()
         {
-            return _keyTranslationsCompact ??= KeyTranslationsCompactRaw.Select(CreateKeyTranslationEntry).ToArray();
+            return _keyTranslationsCompact ??= ToArray(KeyTranslationsCompactRaw);
         }
     }
 }
