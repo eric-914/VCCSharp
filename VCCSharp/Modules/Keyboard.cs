@@ -24,6 +24,9 @@ namespace VCCSharp.Modules
     {
         private readonly IModules _modules;
 
+        public byte KeyboardInterruptEnabled;
+        public int Pasting;  //Are the keyboard functions in the middle of a paste operation?
+
         public Keyboard(IModules modules)
         {
             _modules = modules;
@@ -46,12 +49,7 @@ namespace VCCSharp.Modules
 
         public void SetPaste(bool flag)
         {
-            unsafe
-            {
-                KeyboardState* keyboardState = GetKeyboardState();
-
-                keyboardState->Pasting = flag ? Define.TRUE : Define.FALSE;
-            }
+            Pasting = flag ? Define.TRUE : Define.FALSE;
         }
 
         /*
@@ -158,7 +156,7 @@ namespace VCCSharp.Modules
 
         public void GimeSetKeyboardInterruptState(byte state)
         {
-            Library.Keyboard.GimeSetKeyboardInterruptState(state);
+            KeyboardInterruptEnabled = state != 0 ? Define.TRUE : Define.FALSE;
         }
 
         /*
@@ -171,8 +169,6 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                KeyboardState* instance = GetKeyboardState();
-
                 //int index1 = 0;
                 //int index2 = 0;
                 KeyTranslationEntry* keyLayoutTable = null;
@@ -347,17 +343,12 @@ namespace VCCSharp.Modules
             //Key  : S ( 83 / 0x53)  Scan : 31 / 0x1F
             //Debug.WriteLine($">>Key  : {c} ({key:###} / 0x{key:X})  Scan : {scanCode:###} / 0x{scanCode:X}", c, c, c, scanCode, scanCode);
 
-            unsafe
+            //If requested, abort pasting operation.
+            if (scanCode == 0x01 || scanCode == 0x43 || scanCode == 0x3F)
             {
-                KeyboardState* instance = GetKeyboardState();
+                Pasting = Define.FALSE;
 
-                //If requested, abort pasting operation.
-                if (scanCode == 0x01 || scanCode == 0x43 || scanCode == 0x3F)
-                {
-                    instance->Pasting = Define.FALSE;
-
-                    Debug.WriteLine("ABORT PASTING!!!");
-                }
+                Debug.WriteLine("ABORT PASTING!!!");
             }
 
             // check for shift key
@@ -412,7 +403,7 @@ namespace VCCSharp.Modules
 
             vccKeyboardUpdateRolloverTable();
 
-            if (GimeGetKeyboardInterruptState() != 0)
+            if (KeyboardInterruptEnabled != 0)
             {
                 _modules.TC1014.GimeAssertKeyboardInterrupt();
             }
@@ -446,11 +437,6 @@ namespace VCCSharp.Modules
             }
 
             vccKeyboardUpdateRolloverTable();
-        }
-
-        public byte GimeGetKeyboardInterruptState()
-        {
-            return Library.Keyboard.GimeGetKeyboardInterruptState();
         }
 
         public void vccKeyboardUpdateRolloverTable()

@@ -1,43 +1,49 @@
 #include "di.version.h"
 #include <dinput.h>
-#include <assert.h>
-#include <windows.h>
-
-#include "KeyboardState.h"
-#include "Joystick.h"
-#include "MC6821.h"
-
-#include "TC1014Registers.h"
-
-#define KEY_DOWN	1
-#define KEY_UP		0
 
 const int MAX_COCO = 80;
 const int MAX_NATURAL = 89;
 const int MAX_COMPACT = 84;
 const int MAX_CUSTOM = 89;
 
+#define KBTABLE_ENTRY_COUNT 100
+
+typedef enum KeyStates
+{
+  kEventKeyUp = 0,
+  kEventKeyDown = 1
+} KeyStates;
+
+typedef struct KeyTranslationEntry
+{
+  unsigned char ScanCode1;
+  unsigned char ScanCode2;
+  unsigned char Row1;
+  unsigned char Col1;
+  unsigned char Row2;
+  unsigned char Col2;
+} KeyTranslationEntry;
+
+typedef struct {
+  unsigned char RolloverTable[8];
+
+  int ScanTable[256];
+
+  KeyTranslationEntry KeyTransTable[KBTABLE_ENTRY_COUNT];
+} KeyboardState;
+
 KeyTranslationEntry keyTranslationsCoCo[MAX_COCO + 1];
 KeyTranslationEntry keyTranslationsNatural[MAX_NATURAL + 1];
 KeyTranslationEntry keyTranslationsCompact[MAX_COMPACT + 1];
 KeyTranslationEntry keyTranslationsCustom[MAX_CUSTOM + 1];
 
-KeyboardState* InitializeInstance(KeyboardState*);
-
-static KeyboardState* instance = InitializeInstance(new KeyboardState());
+static KeyboardState* instance = new KeyboardState();
 
 //--Spelled funny because there's a GetKeyboardState() in User32.dll
 extern "C" {
   __declspec(dllexport) KeyboardState* __cdecl GetKeyBoardState() {
     return instance;
   }
-}
-
-KeyboardState* InitializeInstance(KeyboardState* p) {
-  p->KeyboardInterruptEnabled = 0;
-  p->Pasting = FALSE;
-
-  return p;
 }
 
 extern "C" __declspec(dllexport) KeyTranslationEntry * __cdecl GetKeyTranslationsCoCo(void) {
@@ -86,20 +92,6 @@ extern "C" __declspec(dllexport) void __cdecl SetKeyTranslationsCustom(KeyTransl
   }
 
   keyTranslationsCustom[MAX_CUSTOM] = { 0, 0, 0, 0, 0, 0 }; // terminator
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl GimeGetKeyboardInterruptState()
-  {
-    return instance->KeyboardInterruptEnabled;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl GimeSetKeyboardInterruptState(unsigned char state)
-  {
-    instance->KeyboardInterruptEnabled = !!state;
-  }
 }
 
 extern "C" {

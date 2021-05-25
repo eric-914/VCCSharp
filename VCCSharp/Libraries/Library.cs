@@ -366,9 +366,6 @@ namespace VCCSharp.Libraries
             //--Spelled funny because there's a GetKeyboardState() in User32.dll
 
             [DllImport(LIBRARY)]
-            public static extern void GimeSetKeyboardInterruptState(byte state);
-
-            [DllImport(LIBRARY)]
             public static extern void SetKeyTranslationsCoCo(KeyTranslationEntry[] value);
 
             [DllImport(LIBRARY)]
@@ -403,9 +400,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void vccKeyboardCopy(KeyTranslationEntry* keyTransEntry, int index);
-
-            [DllImport(LIBRARY)]
-            public static extern byte GimeGetKeyboardInterruptState();
 
             [DllImport(LIBRARY)]
             public static extern KeyTranslationEntry vccKeyTranslationEntry(int index);

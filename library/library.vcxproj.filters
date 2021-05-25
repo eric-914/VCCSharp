@@ -145,9 +145,6 @@
     <ClInclude Include="CoCoState.h">
       <Filter>models</Filter>
     </ClInclude>
-    <ClInclude Include="KeyboardState.h">
-      <Filter>models</Filter>
-    </ClInclude>
     <ClInclude Include="DirectSoundEnumerateCallback.h">
       <Filter>callbacks</Filter>
     </ClInclude>

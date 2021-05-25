@@ -2,9 +2,6 @@
 {
     public struct KeyboardState
     {
-        public byte KeyboardInterruptEnabled;
-        public int Pasting;  //Are the keyboard functions in the middle of a paste operation?
-
         /** run-time 'rollover' table to pass to the MC6821 when a key is pressed */
         public unsafe fixed byte RolloverTable[8];	// CoCo 'keys' for emulator
 
