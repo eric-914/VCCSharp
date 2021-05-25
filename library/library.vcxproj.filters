@@ -109,9 +109,6 @@
     <ClInclude Include="Config.h">
       <Filter>config</Filter>
     </ClInclude>
-    <ClInclude Include="Joystick.h">
-      <Filter>joystick</Filter>
-    </ClInclude>
     <ClInclude Include="MC6821.h">
       <Filter>mc6821</Filter>
     </ClInclude>

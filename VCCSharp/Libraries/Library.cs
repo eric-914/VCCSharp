@@ -346,16 +346,7 @@ namespace VCCSharp.Libraries
             public static extern int InitJoyStick(byte stickNumber);
 
             [DllImport(LIBRARY)]
-            public static extern ushort get_pot_value(byte pot);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetButtonStatus(byte side, byte state);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetJoystick(ushort x, ushort y);
-
-            [DllImport(LIBRARY)]
-            public static extern byte SetMouseStatus(byte scanCode, byte phase);
+            public static extern void get_pot_value();
         }
 
         public static class Keyboard
