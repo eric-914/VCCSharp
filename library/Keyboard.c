@@ -8,12 +8,6 @@ const int MAX_CUSTOM = 89;
 
 #define KBTABLE_ENTRY_COUNT 100
 
-typedef enum KeyStates
-{
-  kEventKeyUp = 0,
-  kEventKeyDown = 1
-} KeyStates;
-
 typedef struct KeyTranslationEntry
 {
   unsigned char ScanCode1;
@@ -25,10 +19,6 @@ typedef struct KeyTranslationEntry
 } KeyTranslationEntry;
 
 typedef struct {
-  unsigned char RolloverTable[8];
-
-  int ScanTable[256];
-
   KeyTranslationEntry KeyTransTable[KBTABLE_ENTRY_COUNT];
 } KeyboardState;
 

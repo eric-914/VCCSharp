@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security;
-using VCCSharp.Enums;
 using VCCSharp.Models;
 using HANDLE = System.IntPtr;
 using HINSTANCE = System.IntPtr;

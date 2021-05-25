@@ -27,6 +27,12 @@ namespace VCCSharp.Modules
         public byte KeyboardInterruptEnabled;
         public int Pasting;  //Are the keyboard functions in the middle of a paste operation?
 
+        /** run-time 'rollover' table to pass to the MC6821 when a key is pressed */
+        public byte[] RolloverTable = new byte[8];	// CoCo 'keys' for emulator
+
+        /** track all keyboard scan codes state (up/down) */
+        public int[] ScanTable = new int[256];
+
         public Keyboard(IModules modules)
         {
             _modules = modules;
@@ -70,14 +76,13 @@ namespace VCCSharp.Modules
                 IJoystick joystick = _modules.Joystick;
                 IMC6821 mc6821 = _modules.MC6821;
 
-                KeyboardState* instance = GetKeyboardState();
                 JoystickState* joystickState = joystick.GetJoystickState();
 
                 for (byte x = 0; x < 8; x++)
                 {
                     if ((temp & mask) != 0) // Found an active column scan
                     {
-                        ret_val |= instance->RolloverTable[x];
+                        ret_val |= RolloverTable[x];
                     }
 
                     mask <<= 1;
@@ -338,7 +343,7 @@ namespace VCCSharp.Modules
         */
         public void vccKeyboardHandleKey(byte key, byte scanCode, KeyStates keyState)
         {
-            char c = key == 0 ? '0' : (char)key;
+            //char c = key == 0 ? '0' : (char)key;
 
             //Key  : S ( 83 / 0x53)  Scan : 31 / 0x1F
             //Debug.WriteLine($">>Key  : {c} ({key:###} / 0x{key:X})  Scan : {scanCode:###} / 0x{scanCode:X}", c, c, c, scanCode, scanCode);
@@ -398,7 +403,7 @@ namespace VCCSharp.Modules
                 KeyboardState* instance = GetKeyboardState();
 
                 // track key is down
-                instance->ScanTable[scanCode] = Define.KEY_DOWN;
+                ScanTable[scanCode] = Define.KEY_DOWN;
             }
 
             vccKeyboardUpdateRolloverTable();
@@ -423,7 +428,7 @@ namespace VCCSharp.Modules
                 KeyboardState* instance = GetKeyboardState();
 
                 // reset key (released)
-                instance->ScanTable[scanCode] = Define.KEY_UP;
+                ScanTable[scanCode] = Define.KEY_UP;
 
                 // TODO: verify this is accurate emulation
                 // Clean out rollover table on shift release
@@ -431,7 +436,7 @@ namespace VCCSharp.Modules
                 {
                     for (int index = 0; index < Define.KBTABLE_ENTRY_COUNT; index++)
                     {
-                        instance->ScanTable[index] = Define.KEY_UP;
+                        ScanTable[index] = Define.KEY_UP;
                     }
                 }
             }
@@ -443,74 +448,69 @@ namespace VCCSharp.Modules
         {
             byte lockOut = 0;
 
-            unsafe
+            // clear the rollover table
+            for (int index = 0; index < 8; index++)
             {
-                KeyboardState* instance = GetKeyboardState();
+                RolloverTable[index] = 0;
+            }
 
-                // clear the rollover table
-                for (int index = 0; index < 8; index++)
+            // set rollover table based on ScanTable key status
+            for (int index = 0; index < Define.KBTABLE_ENTRY_COUNT; index++)
+            {
+                KeyTranslationEntry entry = vccKeyTranslationEntry(index);
+                byte scanCode1 = entry.ScanCode1;
+                byte scanCode2 = entry.ScanCode2;
+
+                // stop at last entry
+                if ((scanCode1 == 0) && (scanCode2 == 0))
                 {
-                    instance->RolloverTable[index] = 0;
+                    break;
                 }
 
-                // set rollover table based on ScanTable key status
-                for (int index = 0; index < Define.KBTABLE_ENTRY_COUNT; index++)
+                if (lockOut != scanCode1)
                 {
-                    KeyTranslationEntry entry = vccKeyTranslationEntry(index);
-                    byte scanCode1 = entry.ScanCode1;
-                    byte scanCode2 = entry.ScanCode2;
-
-                    // stop at last entry
-                    if ((scanCode1 == 0) && (scanCode2 == 0))
+                    // Single input key 
+                    if ((scanCode1 != 0) && (scanCode2 == 0))
                     {
-                        break;
+                        // check if key pressed
+                        if (ScanTable[scanCode1] == Define.KEY_DOWN)
+                        {
+                            int col = entry.Col1;
+
+                            //assert(col >= 0 && col < 8);
+
+                            RolloverTable[col] |= entry.Row1;
+
+                            col = entry.Col2;
+
+                            //assert(col >= 0 && col < 8);
+
+                            RolloverTable[col] |= entry.Row2;
+                        }
                     }
 
-                    if (lockOut != scanCode1)
+                    // Double Input Key
+                    if ((scanCode1 != 0) && (scanCode2 != 0))
                     {
-                        // Single input key 
-                        if ((scanCode1 != 0) && (scanCode2 == 0))
+                        // check if both keys pressed
+                        if ((ScanTable[scanCode1] == Define.KEY_DOWN) && (ScanTable[scanCode2] == Define.KEY_DOWN))
                         {
-                            // check if key pressed
-                            if (instance->ScanTable[scanCode1] == Define.KEY_DOWN)
-                            {
-                                int col = entry.Col1;
+                            int col = entry.Col1;
 
-                                //assert(col >= 0 && col < 8);
+                            //assert(col >= 0 && col < 8);
 
-                                instance->RolloverTable[col] |= entry.Row1;
+                            RolloverTable[col] |= entry.Row1;
 
-                                col = entry.Col2;
+                            col = entry.Col2;
 
-                                //assert(col >= 0 && col < 8);
+                            //assert(col >= 0 && col < 8);
 
-                                instance->RolloverTable[col] |= entry.Row2;
-                            }
-                        }
+                            RolloverTable[col] |= entry.Row2;
 
-                        // Double Input Key
-                        if ((scanCode1 != 0) && (scanCode2 != 0))
-                        {
-                            // check if both keys pressed
-                            if ((instance->ScanTable[scanCode1] == Define.KEY_DOWN) && (instance->ScanTable[scanCode2] == Define.KEY_DOWN))
-                            {
-                                int col = entry.Col1;
+                            // always SHIFT
+                            lockOut = scanCode1;
 
-                                //assert(col >= 0 && col < 8);
-
-                                instance->RolloverTable[col] |= entry.Row1;
-
-                                col = entry.Col2;
-
-                                //assert(col >= 0 && col < 8);
-
-                                instance->RolloverTable[col] |= entry.Row2;
-
-                                // always SHIFT
-                                lockOut = scanCode1;
-
-                                break;
-                            }
+                            break;
                         }
                     }
                 }
