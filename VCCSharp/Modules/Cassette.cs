@@ -307,13 +307,15 @@ namespace VCCSharp.Modules
 
             CassetteState* instance = GetCassetteState();
 
-            if (length != instance->BytesMoved) {
+            if (length != instance->BytesMoved)
+            {
                 return;
             }
 
             instance->TapeOffset += length;
 
-            if (instance->TapeOffset > instance->TotalSize) {
+            if (instance->TapeOffset > instance->TotalSize)
+            {
                 instance->TotalSize = instance->TapeOffset;
             }
         }
@@ -357,7 +359,7 @@ namespace VCCSharp.Modules
 
                             //Don't blow past the end of the buffer
                             if (instance->TapeOffset >= Define.WRITEBUFFERSIZE)
-                            {	
+                            {
                                 TapeMode = Define.STOP;
                             }
                         }
@@ -368,7 +370,7 @@ namespace VCCSharp.Modules
 
                 instance->LastSample = sample;
             }
-            
+
             instance->LastTrans -= (int)length;
 
             if (instance->TapeOffset > instance->TotalSize)
@@ -421,14 +423,29 @@ namespace VCCSharp.Modules
                 instance->LastSample = 0;
                 instance->TempIndex = 0;
 
-                Library.Cassette.MountTape();
+                ResetCassetteBuffer();
 
-                if (instance->BytesMoved != instance->TotalSize) {
+                _modules.FileOperations.FileSetFilePointer(instance->TapeHandle, Define.FILE_BEGIN);
+
+                ulong moved = 0;
+
+                //Read the whole file in for .CAS files
+                _modules.FileOperations.FileReadFile(instance->TapeHandle, instance->CasBuffer, instance->TotalSize, &moved);
+
+                instance->BytesMoved = (uint)moved;
+
+                if (instance->BytesMoved != instance->TotalSize)
+                {
                     return 0;
                 }
             }
 
             return 1;
+        }
+
+        public void ResetCassetteBuffer()
+        {
+            Library.Cassette.ResetCassetteBuffer(); ;
         }
     }
 }

@@ -141,19 +141,12 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl MountTape()	
+  __declspec(dllexport) void __cdecl ResetCassetteBuffer()
   {
-    char extension[4] = "";
-    unsigned char index = 0;
-
     if (instance->CasBuffer != NULL) {
       free(instance->CasBuffer);
     }
 
     instance->CasBuffer = (unsigned char*)malloc(WRITEBUFFERSIZE);
-
-    FileSetFilePointer(instance->TapeHandle, FILE_BEGIN);
-
-    FileReadFile(instance->TapeHandle, instance->CasBuffer, instance->TotalSize, &(instance->BytesMoved));	//Read the whole file in for .CAS files
   }
 }

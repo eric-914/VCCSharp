@@ -47,10 +47,10 @@ namespace VCCSharp.Libraries
             public static extern void SyncFileBuffer();
 
             [DllImport(LIBRARY)]
-            public static extern void MountTape();
+            public static extern unsafe void FlushCassetteWAV(byte* buffer, uint length);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void FlushCassetteWAV(byte* buffer, uint length);
+            public static extern void ResetCassetteBuffer();
         }
 
         public static class CoCo
@@ -275,6 +275,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern long FileSetFilePointer(HANDLE handle, long moveMethod);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int FileReadFile(HANDLE handle, byte* buffer, ulong size, ulong* moved);
         }
 
         public static class GDI

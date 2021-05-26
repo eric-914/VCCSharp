@@ -7,6 +7,7 @@ namespace VCCSharp.Modules
     {
         unsafe HANDLE FileCreateFile(byte* filename, long desiredAccess);
         long FileSetFilePointer(HANDLE handle, long moveMethod);
+        unsafe int FileReadFile(HANDLE handle, byte* buffer, ulong size, ulong* moved);
     }
 
     public class FileOperations : IFileOperations
@@ -19,6 +20,11 @@ namespace VCCSharp.Modules
         public long FileSetFilePointer(HANDLE handle, long moveMethod)
         {
             return Library.FileOperations.FileSetFilePointer(handle, moveMethod);
+        }
+
+        public unsafe int FileReadFile(HANDLE handle, byte* buffer, ulong size, ulong* moved)
+        {
+            return Library.FileOperations.FileReadFile(handle, buffer, size, moved);
         }
     }
 }
