@@ -268,17 +268,90 @@ namespace VCCSharp.Modules
         {
             Library.Cassette.CloseTapeFile();
         }
-        
+
         public unsafe uint FlushCassetteBuffer(byte* buffer, uint length)
         {
             CassetteState* instance = GetCassetteState();
 
             if (instance->TapeMode == Define.REC)
             {
-                Library.Cassette.FlushCassetteBuffer(buffer, length);
+                switch (instance->FileType)
+                {
+                    case Define.WAV:
+                        FlushCassetteWav(buffer, length);
+                        break;
+
+                    case Define.CAS:
+                        FlushCassetteCas(buffer, length);
+                        break;
+                }
             }
 
             return instance->TapeOffset;
+        }
+
+        public unsafe void FlushCassetteWav(byte* buffer, uint length)
+        {
+            Library.Cassette.FlushCassetteWAV(buffer, length);
+        }
+
+        public unsafe void FlushCassetteCas(byte* buffer, uint length)
+        {
+            CassetteState* instance = GetCassetteState();
+
+            for (int index = 0; index < length; index++)
+            {
+                var sample = buffer[index];
+
+                if ((instance->LastSample <= 0x80) && (sample > 0x80)) //Low to High transition
+                {
+                    var width = index - instance->LastTrans;
+
+                    if ((width < 10) || (width > 50))	//Invalid Sample Skip it
+                    {
+                        instance->LastSample = 0;
+                        instance->LastTrans = index;
+                        instance->Mask = 0;
+                        instance->Byte = 0;
+                    }
+                    else
+                    {
+                        byte bit = 1;
+
+                        if (width > 30)
+                        {
+                            bit = 0;
+                        }
+
+                        instance->Byte |= (byte)(bit << instance->Mask);
+                        instance->Mask++;
+                        instance->Mask &= 7;
+
+                        if (instance->Mask == 0)
+                        {
+                            instance->CasBuffer[instance->TapeOffset++] = instance->Byte;
+                            instance->Byte = 0;
+
+                            //Don't blow past the end of the buffer
+                            if (instance->TapeOffset >= Define.WRITEBUFFERSIZE)
+                            {	
+                                instance->TapeMode = Define.STOP;
+                            }
+                        }
+                    }
+
+                    instance->LastTrans = index;
+                }
+
+                instance->LastSample = sample;
+            }
+            
+            instance->LastTrans -= (int)length;
+
+            if (instance->TapeOffset > instance->TotalSize)
+            {
+                instance->TotalSize = instance->TapeOffset;
+            }
         }
 
         public unsafe int MountTape(byte* filename)

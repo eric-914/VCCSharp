@@ -359,5 +359,10 @@ namespace VCCSharp.Models
         public const int KEY_UP = 0;
 
         public const byte EMU_RUNSTATE_RUNNING = 0;
+
+        public const byte CAS = 1;
+        public const byte WAV = 0;
+
+        public const uint WRITEBUFFERSIZE = 0x1FFFF;
     }
 }

@@ -41,9 +41,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe CassetteState* GetCassetteState();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void FlushCassetteBuffer(byte* buffer, uint length);
-
-            [DllImport(LIBRARY)]
             public static extern void CloseTapeFile();
 
             [DllImport(LIBRARY)]
@@ -51,6 +48,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe int MountTape(byte* filename);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void FlushCassetteWAV(byte* buffer, uint length);
         }
 
         public static class CoCo

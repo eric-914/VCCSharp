@@ -1,13 +1,9 @@
-#include <iostream>
 #include <string>
 
 #include "CassetteState.h"
 
 #include "defines.h"
 #include "macros.h"
-
-#include "Config.h"
-#include "CoCo.h"
 
 using namespace std;
 
@@ -54,20 +50,6 @@ CassetteState* InitializeInstance(CassetteState* p) {
   ARRAYCOPY(One);
 
   return p;
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned int __cdecl GetTapeCounter()
-  {
-    return(instance->TapeOffset);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl GetTapeName(char* name)
-  {
-    strcpy(name, instance->TapeFileName);
-  }
 }
 
 extern "C" {
@@ -220,68 +202,8 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl WavToCas(unsigned char* waveBuffer, unsigned int length)
+  __declspec(dllexport) void __cdecl FlushCassetteWAV(unsigned char* buffer, unsigned int length)
   {
-    unsigned char bit = 0, sample = 0;
-    unsigned int index = 0, width = 0;
-
-    for (index = 0; index < length; index++) {
-      sample = waveBuffer[index];
-
-      if ((instance->LastSample <= 0x80) && (sample > 0x80))	//Low to High transition
-      {
-        width = index - instance->LastTrans;
-
-        if ((width < 10) || (width > 50))	//Invalid Sample Skip it
-        {
-          instance->LastSample = 0;
-          instance->LastTrans = index;
-          instance->Mask = 0;
-          instance->Byte = 0;
-        }
-        else
-        {
-          bit = 1;
-
-          if (width > 30) {
-            bit = 0;
-          }
-
-          instance->Byte = instance->Byte | (bit << instance->Mask);
-          instance->Mask++;
-          instance->Mask &= 7;
-
-          if (instance->Mask == 0)
-          {
-            instance->CasBuffer[instance->TapeOffset++] = instance->Byte;
-            instance->Byte = 0;
-
-            if (instance->TapeOffset >= WRITEBUFFERSIZE) {	//Don't blow past the end of the buffer
-              instance->TapeMode = STOP;
-            }
-          }
-        }
-
-        instance->LastTrans = index;
-      }
-
-      instance->LastSample = sample;
-    }
-
-    instance->LastTrans -= length;
-
-    if (instance->TapeOffset > instance->TotalSize) {
-      instance->TotalSize = instance->TapeOffset;
-    }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl FlushCassetteBuffer(unsigned char* buffer, unsigned int length)
-  {
-    switch (instance->FileType)
-    {
-    case WAV:
       SetFilePointer(instance->TapeHandle, instance->TapeOffset + 44, 0, FILE_BEGIN);
       WriteFile(instance->TapeHandle, buffer, length, &(instance->BytesMoved), NULL);
 
@@ -294,13 +216,5 @@ extern "C" {
       if (instance->TapeOffset > instance->TotalSize) {
         instance->TotalSize = instance->TapeOffset;
       }
-
-      break;
-
-    case CAS:
-      WavToCas(buffer, length);
-
-      break;
-    }
   }
 }
