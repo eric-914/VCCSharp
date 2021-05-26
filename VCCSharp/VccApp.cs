@@ -44,7 +44,7 @@ namespace VCCSharp
                 
                 EmuState* emuState = _modules.Emu.GetEmuState();
 
-                emuState->Resources = _hResources;
+                _modules.Emu.Resources = _hResources;
 
                 //TODO: Redundant at the moment
                 _modules.Emu.SetEmuState(emuState);

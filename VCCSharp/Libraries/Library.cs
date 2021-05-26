@@ -21,12 +21,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void SetEmuState(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetCPUMultiplierFlag(byte double_speed);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetTurboMode(byte data);
         }
 
         public static class Audio

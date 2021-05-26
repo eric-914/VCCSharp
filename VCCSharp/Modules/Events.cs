@@ -391,7 +391,7 @@ namespace VCCSharp.Modules
 
                 if (_modules.Emu.FullScreen == 0)
                 {
-                    _modules.GDI.CreateMainMenuWindowed(hWnd, emuState->Resources);
+                    _modules.GDI.CreateMainMenuWindowed(hWnd, _modules.Emu.Resources);
                 }
                 else
                 {

@@ -9,6 +9,7 @@ namespace VCCSharp.Modules
 {
     public interface ICoCo
     {
+        unsafe CoCoState* GetCoCoState();
         unsafe float RenderFrame(EmuState* emuState);
         void CocoReset();
         void SetClockSpeed(ushort cycles);

@@ -4,6 +4,7 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using HINSTANCE = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -11,6 +12,9 @@ namespace VCCSharp.Modules
     {
         unsafe EmuState* GetEmuState();
         unsafe void SetEmuState(EmuState* emuState);
+
+        HINSTANCE Resources { get; set; }
+
         void SoftReset();
         unsafe void HardReset(EmuState* emuState);
         void SetCpuMultiplier(byte multiplier);
@@ -27,13 +31,18 @@ namespace VCCSharp.Modules
         short FrameCounter { get; set; }
         short LineCounter { get; set; }
         long SurfacePitch { get; set; }
+        double CpuCurrentSpeed { get; set; }
 
         string StatusLine { get; set; }
+
+        Point WindowSize { get; set; }
     }
 
     public class Emu : IEmu
     {
         private readonly IModules _modules;
+
+        public HINSTANCE Resources { get; set; }
 
         public byte BitDepth { get; set; }
         public byte CpuType { get; set; }
@@ -50,6 +59,14 @@ namespace VCCSharp.Modules
         public long SurfacePitch { get; set; }
 
         public string StatusLine { get; set; }
+
+        public byte DoubleSpeedFlag;
+        public byte DoubleSpeedMultiplier = 2;
+
+        public double CpuCurrentSpeed { get; set; } = .894;
+        public byte TurboSpeedFlag = 1;
+
+        public Point WindowSize { get; set; }
 
         public Emu(IModules modules)
         {
@@ -78,12 +95,7 @@ namespace VCCSharp.Modules
             _modules.TC1014.CopyRom();
             _modules.PAKInterface.ResetBus();
 
-            unsafe
-            {
-                EmuState* emuState = GetEmuState();
-
-                emuState->TurboSpeedFlag = 1;
-            }
+            TurboSpeedFlag = 1;
         }
 
         public unsafe void HardReset(EmuState* emuState)
@@ -114,7 +126,7 @@ namespace VCCSharp.Modules
 
             _modules.PAKInterface.UpdateBusPointer();
 
-            emuState->TurboSpeedFlag = 1;
+            TurboSpeedFlag = 1;
 
             _modules.PAKInterface.ResetBus();
 
@@ -145,24 +157,57 @@ namespace VCCSharp.Modules
 
         public void SetCpuMultiplier(byte multiplier)
         {
-            unsafe
-            {
-                EmuState* emuState = GetEmuState();
+            DoubleSpeedMultiplier = multiplier;
 
-                emuState->DoubleSpeedMultiplier = multiplier;
-
-                SetCpuMultiplierFlag(emuState->DoubleSpeedFlag);
-            }
+            SetCpuMultiplierFlag(DoubleSpeedFlag);
         }
 
         public void SetCpuMultiplierFlag(byte doubleSpeed)
         {
-            Library.Emu.SetCPUMultiplierFlag(doubleSpeed);
+            unsafe
+            {
+                CoCoState* cocoState = _modules.CoCo.GetCoCoState();
+
+                cocoState->OverClock = 1;
+
+                DoubleSpeedFlag = doubleSpeed;
+
+                if (DoubleSpeedFlag != 0)
+                {
+                    cocoState->OverClock = DoubleSpeedMultiplier * TurboSpeedFlag;
+                }
+
+                CpuCurrentSpeed = .894;
+
+                if (DoubleSpeedFlag != 0)
+                {
+                    CpuCurrentSpeed *= (DoubleSpeedMultiplier * (double)TurboSpeedFlag);
+                }
+            }
         }
 
         public void SetTurboMode(byte data)
         {
-            Library.Emu.SetTurboMode(data);
+            unsafe
+            {
+                CoCoState* cocoState = _modules.CoCo.GetCoCoState();
+
+                cocoState->OverClock = 1;
+
+                TurboSpeedFlag = (byte)((data & 1) + 1);
+
+                if (DoubleSpeedFlag != 0)
+                {
+                    cocoState->OverClock = DoubleSpeedMultiplier * TurboSpeedFlag;
+                }
+
+                CpuCurrentSpeed = .894;
+
+                if (DoubleSpeedFlag != 0)
+                {
+                    CpuCurrentSpeed *= (DoubleSpeedMultiplier * (double)TurboSpeedFlag);
+                }
+            }
         }
     }
 }

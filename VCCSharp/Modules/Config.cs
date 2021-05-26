@@ -489,8 +489,8 @@ namespace VCCSharp.Modules
             ConfigState* configState = GetConfigState();
             ConfigModel* configModel = GetConfigModel();
 
-            configModel->WindowSizeX = (short)emuState->WindowSize.X;
-            configModel->WindowSizeY = (short)emuState->WindowSize.Y;
+            configModel->WindowSizeX = (short)_modules.Emu.WindowSize.X;
+            configModel->WindowSizeY = (short)_modules.Emu.WindowSize.Y;
 
             string modulePath = Converter.ToString(configModel->ModulePath);
 

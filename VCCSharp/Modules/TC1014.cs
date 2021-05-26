@@ -779,7 +779,7 @@ Could not locate {ROM} in any of these locations:
                 return;
             }
 
-            for (ushort x = 0; x < emuState->WindowSize.X; x++)
+            for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
             {
                 graphicsSurfaces.pSurface8[x + ((_modules.Emu.LineCounter * 2) * _modules.Emu.SurfacePitch)] = (byte)(_graphics.BorderColor8 | 128);
 
@@ -800,7 +800,7 @@ Could not locate {ROM} in any of these locations:
                 return;
             }
 
-            for (ushort x = 0; x < emuState->WindowSize.X; x++)
+            for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
             {
                 graphicsSurfaces.pSurface16[x + ((_modules.Emu.LineCounter * 2) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor16;
 
@@ -826,7 +826,7 @@ Could not locate {ROM} in any of these locations:
                 return;
             }
 
-            for (ushort x = 0; x < emuState->WindowSize.X; x++)
+            for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
             {
                 graphicsSurfaces.pSurface32[x + ((_modules.Emu.LineCounter * 2) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor32;
 
@@ -847,7 +847,7 @@ Could not locate {ROM} in any of these locations:
                 return;
             }
 
-            for (ushort x = 0; x < emuState->WindowSize.X; x++)
+            for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
             {
                 graphicsSurfaces.pSurface8[x + (2 * (_modules.Emu.LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = (byte)(_graphics.BorderColor8 | 128);
 
@@ -868,7 +868,7 @@ Could not locate {ROM} in any of these locations:
                 return;
             }
 
-            for (ushort x = 0; x < emuState->WindowSize.X; x++)
+            for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
             {
                 graphicsSurfaces.pSurface16[x + (2 * (_modules.Emu.LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor16;
 
@@ -894,7 +894,7 @@ Could not locate {ROM} in any of these locations:
                 return;
             }
 
-            for (ushort x = 0; x < emuState->WindowSize.X; x++)
+            for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
             {
                 graphicsSurfaces.pSurface32[x + (2 * (_modules.Emu.LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor32;
 

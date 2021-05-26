@@ -113,7 +113,7 @@ namespace VCCSharp.Modules
 
                     int frameSkip = _modules.Emu.FrameSkip;
                     string cpuName = CpuName;
-                    double mhz = emuState->CPUCurrentSpeed;
+                    double mhz = _modules.Emu.CpuCurrentSpeed;
                     string status = _modules.Emu.StatusLine;
 
                     string statusBarText = $"Skip:{frameSkip} | FPS:{fps:F} | {cpuName} @ {mhz:0.000}Mhz| {status}";

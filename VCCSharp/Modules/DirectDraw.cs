@@ -120,7 +120,7 @@ namespace VCCSharp.Modules
                 _modules.Callbacks.RefreshDynamicMenu(emuState);
 
                 //TODO: Guess it wants to close other windows/dialogs
-                emuState->ConfigDialog = Zero;
+                //emuState->ConfigDialog = Zero;
 
                 _modules.Audio.PauseAudio(Define.FALSE);
             }
@@ -468,8 +468,7 @@ namespace VCCSharp.Modules
 
             _user32.GetClientRect(emuState->WindowHandle, &windowSize);
 
-            emuState->WindowSize.X = windowSize.right;
-            emuState->WindowSize.Y = (int)(windowSize.bottom - _statusBarHeight);
+            _modules.Emu.WindowSize = new System.Windows.Point(windowSize.right, (int)(windowSize.bottom - _statusBarHeight));
         }
 
         public unsafe byte LockScreen(EmuState* emuState)
@@ -555,7 +554,7 @@ namespace VCCSharp.Modules
                 DDUnregisterClass();
             }
 
-            if (!CreateDirectDrawWindow(emuState->Resources, _modules.Emu.FullScreen))
+            if (!CreateDirectDrawWindow(_modules.Emu.Resources, _modules.Emu.FullScreen))
             {
                 return false;
             }
@@ -579,8 +578,7 @@ namespace VCCSharp.Modules
                     break;
             }
 
-            emuState->WindowSize.X = _windowSize.X;
-            emuState->WindowSize.Y = _windowSize.Y;
+            _modules.Emu.WindowSize = new System.Windows.Point(_windowSize.X, _windowSize.Y);
 
             return true;
         }
