@@ -444,6 +444,22 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
         private IGraphics _graphics => _modules.Graphics;
 
+        private byte VDG_Mode;
+        private byte Dis_Offset;
+
+        private byte MmuTask;	    // $FF91 bit 0
+        private byte MmuEnabled;	// $FF90 bit 6
+        private byte RamVectors;	// $FF90 bit 3
+
+        private byte RomMap;		// $FF90 bit 1-0
+
+        private ushort MmuPrefix;
+
+        private uint[] MemConfig = { 0x20000, 0x80000, 0x200000, 0x800000 };
+        private ushort[] RamMask = { 15, 63, 255, 1023 };
+        private byte[] StateSwitch = { 8, 56, 56, 56 };
+        private uint[] VidMask = { 0x1FFFF, 0x7FFFF, 0x1FFFFF, 0x7FFFFF };
+
         public TC1014(IModules modules)
         {
             _modules = modules;
@@ -461,13 +477,12 @@ namespace VCCSharp.Modules
 
         public void MC6883Reset()
         {
+            VDG_Mode = 0;
+            Dis_Offset = 0;
+
             unsafe
             {
                 TC1014RegistersState* registersState = GetTC1014RegistersState();
-
-                registersState->VDG_Mode = 0;
-                registersState->Dis_Offset = 0;
-                registersState->MPU_Rate = 0;
 
                 registersState->Rom = GetInternalRomPointer();
             }
@@ -533,13 +548,13 @@ Could not locate {ROM} in any of these locations:
             {
                 TC1014MmuState* instance = GetTC1014MmuState();
 
-                instance->MmuTask = 0;
-                instance->MmuEnabled = 0;
-                instance->RamVectors = 0;
+                MmuTask = 0;
+                MmuEnabled = 0;
+                RamVectors = 0;
                 instance->MmuState = 0;
-                instance->RomMap = 0;
+                RomMap = 0;
                 instance->MapType = 0;
-                instance->MmuPrefix = 0;
+                MmuPrefix = 0;
 
                 ushort[,] MmuRegisters = new ushort[4, 8];
 
@@ -547,7 +562,7 @@ Could not locate {ROM} in any of these locations:
                 {
                     for (ushort index2 = 0; index2 < 4; index2++)
                     {
-                        MmuRegisters[index2, index1] = (ushort)(index1 + instance->StateSwitch[instance->CurrentRamConfig]);
+                        MmuRegisters[index2, index1] = (ushort)(index1 + StateSwitch[instance->CurrentRamConfig]);
                     }
                 }
 
@@ -558,7 +573,7 @@ Could not locate {ROM} in any of these locations:
 
                 for (int index = 0; index < 1024; index++)
                 {
-                    byte* offset = instance->Memory + (index & instance->RamMask[instance->CurrentRamConfig]) * 0x2000;
+                    byte* offset = instance->Memory + (index & RamMask[instance->CurrentRamConfig]) * 0x2000;
                     instance->MemPages[index] = (long)offset;
                     instance->MemPageOffsets[index] = 1;
                 }
@@ -579,7 +594,7 @@ Could not locate {ROM} in any of these locations:
             {
                 TC1014MmuState* mmuState = GetTC1014MmuState();
 
-                uint ramSize = mmuState->MemConfig[ramSizeOption];
+                uint ramSize = MemConfig[ramSizeOption];
 
                 mmuState->CurrentRamConfig = ramSizeOption;
 
@@ -598,7 +613,7 @@ Could not locate {ROM} in any of these locations:
                     mmuState->Memory[index] = (byte)((index & 1) == 0 ? 0 : 0xFF);
                 }
 
-                _graphics.SetVidMask(mmuState->VidMask[mmuState->CurrentRamConfig]);
+                _graphics.SetVidMask(VidMask[mmuState->CurrentRamConfig]);
 
                 FreeMemory(mmuState->InternalRomBuffer);
                 mmuState->InternalRomBuffer = AllocateMemory(0x8001); //--TODO: Weird that the extra byte is needed here
@@ -697,8 +712,9 @@ Could not locate {ROM} in any of these locations:
             {
                 TC1014MmuState* instance = GetTC1014MmuState();
 
-                if (instance->RamVectors != 0)
-                { //Address must be $FE00 - $FEFF
+                if (RamVectors != 0)
+                {
+                    //Address must be $FE00 - $FEFF
                     return (instance->Memory[(0x2000 * instance->VectorMask[instance->CurrentRamConfig]) | (address & 0x1FFF)]);
                 }
 
@@ -731,7 +747,7 @@ Could not locate {ROM} in any of these locations:
             {
                 TC1014MmuState* instance = GetTC1014MmuState();
 
-                if (instance->RamVectors != 0)
+                if (RamVectors != 0)
                 { //Address must be $FE00 - $FEFF
                     instance->Memory[(0x2000 * instance->VectorMask[instance->CurrentRamConfig]) | (address & 0x1FFF)] = data;
                 }
@@ -4344,14 +4360,14 @@ Could not locate {ROM} in any of these locations:
                     reg = (byte)((port & 0x0E) >> 1);
                     mask = (byte)(1 << reg);
 
-                    registersState->Dis_Offset = (byte)(registersState->Dis_Offset & (0xFF - mask)); //Shut the bit off
+                    Dis_Offset = (byte)(Dis_Offset & (0xFF - mask)); //Shut the bit off
 
                     if ((port & 1) != 0)
                     {
-                        registersState->Dis_Offset |= mask;
+                        Dis_Offset |= mask;
                     }
 
-                    _graphics.SetGimeVdgOffset(registersState->Dis_Offset);
+                    _graphics.SetGimeVdgOffset(Dis_Offset);
                 }
 
                 if ((port >= 0xC0) && (port <= 0xC5))	//VDG Mode
@@ -4359,14 +4375,14 @@ Could not locate {ROM} in any of these locations:
                     port -= 0xC0;
                     reg = (byte)((port & 0x0E) >> 1);
                     mask = (byte)(1 << reg);
-                    registersState->VDG_Mode = (byte)(registersState->VDG_Mode & (0xFF - mask));
+                    VDG_Mode = (byte)(VDG_Mode & (0xFF - mask));
 
                     if ((port & 1) != 0)
                     {
-                        registersState->VDG_Mode |= mask;
+                        VDG_Mode |= mask;
                     }
 
-                    _graphics.SetGimeVdgMode(registersState->VDG_Mode);
+                    _graphics.SetGimeVdgMode(VDG_Mode);
                 }
             }
 
@@ -4668,12 +4684,7 @@ Could not locate {ROM} in any of these locations:
 
         public void SetRomMap(byte data)
         {
-            unsafe
-            {
-                TC1014MmuState* instance = GetTC1014MmuState();
-
-                instance->RomMap = (byte)(data & 3);
-            }
+            RomMap = (byte)(data & 3);
 
             UpdateMmuArray();
         }
@@ -4699,7 +4710,7 @@ Could not locate {ROM} in any of these locations:
                     return;
                 }
 
-                switch (instance->RomMap)
+                switch (RomMap)
                 {
                     case 0:
                     case 1: //16K Internal 16K External
@@ -4750,8 +4761,8 @@ Could not locate {ROM} in any of these locations:
             {
                 TC1014MmuState* instance = GetTC1014MmuState();
 
-                instance->MmuTask = task;
-                instance->MmuState = (byte)((instance->MmuEnabled == 0 ? 1 : 0) << 1 | instance->MmuTask);
+                MmuTask = task;
+                instance->MmuState = (byte)((MmuEnabled == 0 ? 1 : 0) << 1 | MmuTask);
             }
         }
 
@@ -4765,10 +4776,9 @@ Could not locate {ROM} in any of these locations:
                 TC1014MmuState* instance = GetTC1014MmuState();
 
                 int index = 8 * task + bankRegister;
-                //instance->MmuRegisters[task][bankRegister] = (ushort)(instance->MmuPrefix | (data & instance->RamMask[instance->CurrentRamConfig]));
 
                 //gime.c returns what was written so I can get away with this
-                instance->MmuRegisters[index] = (ushort)(instance->MmuPrefix | (data & instance->RamMask[instance->CurrentRamConfig]));
+                instance->MmuRegisters[index] = (ushort)(MmuPrefix | (data & RamMask[instance->CurrentRamConfig]));
             }
         }
 
@@ -4807,7 +4817,7 @@ Could not locate {ROM} in any of these locations:
             {
                 TC1014MmuState* instance = GetTC1014MmuState();
 
-                instance->MmuPrefix = (ushort)((data & 3) << 8);
+                MmuPrefix = (ushort)((data & 3) << 8);
             }
         }
 
@@ -4827,7 +4837,7 @@ Could not locate {ROM} in any of these locations:
             {
                 TC1014MmuState* instance = GetTC1014MmuState();
 
-                instance->RamVectors = (byte)(data == 0 ? 0 : 1); //Bit 3 of $FF90 MC3
+                RamVectors = (byte)(data == 0 ? 0 : 1); //Bit 3 of $FF90 MC3
             }
         }
 
@@ -4837,8 +4847,8 @@ Could not locate {ROM} in any of these locations:
             {
                 TC1014MmuState* instance = GetTC1014MmuState();
 
-                instance->MmuEnabled = flag;
-                instance->MmuState = (byte)((instance->MmuEnabled == 0 ? 1 : 0) << 1 | instance->MmuTask);
+                MmuEnabled = flag;
+                instance->MmuState = (byte)((MmuEnabled == 0 ? 1 : 0) << 1 | MmuTask);
             }
         }
 

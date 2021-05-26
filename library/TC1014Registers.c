@@ -16,13 +16,8 @@ extern "C" {
 TC1014RegistersState* InitializeInstance(TC1014RegistersState* p) {
   p->EnhancedFIRQFlag = 0;
   p->EnhancedIRQFlag = 0;
-  p->VDG_Mode = 0;
-  p->Dis_Offset = 0;
-  p->MPU_Rate = 0;
   p->LastIrq = 0;
   p->LastFirq = 0;
-  p->VerticalOffsetRegister = 0;
-  p->InterruptTimer = 0;
 
   return p;
 }
