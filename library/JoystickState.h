@@ -4,8 +4,6 @@
 
 typedef struct
 {
-  unsigned short StickValue;
-
   unsigned char LeftStickNumber;
   unsigned char LeftButton1Status;
   unsigned char LeftButton2Status;

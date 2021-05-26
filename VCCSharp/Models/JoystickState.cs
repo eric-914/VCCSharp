@@ -2,8 +2,6 @@
 {
     public struct JoystickState
     {
-        public ushort StickValue;
-
         public byte LeftStickNumber;
         public byte LeftButton1Status;
         public byte LeftButton2Status;

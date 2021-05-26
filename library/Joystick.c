@@ -24,8 +24,6 @@ extern "C" {
 }
 
 JoystickState* InitializeInstance(JoystickState* p) {
-  p->StickValue = 0;
-
   p->LeftStickNumber = 0;
   p->LeftStickX = 32;
   p->LeftStickY = 32;

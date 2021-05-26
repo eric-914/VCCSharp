@@ -14,10 +14,14 @@ namespace VCCSharp.Modules
         void SetButtonStatus(byte side, byte state);
         void SetJoystick(ushort x, ushort y);
         byte SetMouseStatus(byte scanCode, byte phase);
+
+        ushort StickValue { get; set; }
     }
 
     public class Joystick : IJoystick
     {
+        public ushort StickValue { get; set; }
+
         public unsafe JoystickState* GetJoystickState()
         {
             return Library.Joystick.GetJoystickState();
