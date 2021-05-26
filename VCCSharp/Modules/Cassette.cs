@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
@@ -183,7 +184,7 @@ namespace VCCSharp.Modules
         {
             CassetteState* instance = GetCassetteState();
 
-            _kernel.SetFilePointer(instance->TapeHandle, instance->TapeOffset + 44, null, Define.FILE_BEGIN);
+            _kernel.SetFilePointer(instance->TapeHandle, instance->TapeOffset + 44, null, (uint)Define.FILE_BEGIN);
             _kernel.ReadFile(instance->TapeHandle, buffer, Define.TAPEAUDIORATE / 60, bytesMoved, null);
 
             instance->TapeOffset += *bytesMoved;
@@ -376,6 +377,7 @@ namespace VCCSharp.Modules
             }
         }
 
+        //Return 1 on success 0 on fail
         public unsafe int MountTape(byte* filename)
         {
             CassetteState* instance = GetCassetteState();
@@ -405,9 +407,28 @@ namespace VCCSharp.Modules
                 return 0;	//Give up
             }
 
-            return Library.Cassette.MountTape(filename);
+            instance->TotalSize = (uint)_modules.FileOperations.FileSetFilePointer(instance->TapeHandle, Define.FILE_END);
+            instance->TapeOffset = 0;
 
+            var extension = Path.GetExtension(Converter.ToString(filename))?.ToUpper();
 
+            if (extension == ".CAS")
+            {
+                instance->FileType = Define.CAS;
+                instance->LastTrans = 0;
+                instance->Mask = 0;
+                instance->Byte = 0;
+                instance->LastSample = 0;
+                instance->TempIndex = 0;
+
+                Library.Cassette.MountTape();
+
+                if (instance->BytesMoved != instance->TotalSize) {
+                    return 0;
+                }
+            }
+
+            return 1;
         }
     }
 }

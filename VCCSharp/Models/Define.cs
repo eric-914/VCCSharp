@@ -39,8 +39,6 @@ namespace VCCSharp.Models
 
         public const int TAPEAUDIORATE = 44100;
 
-        public const uint FILE_BEGIN = 0;
-
         //--This seems to be use the default window tiling of new windows feature.
         public const int CW_USEDEFAULT = -1 ^ 0x7FFFFFFF; //0x80000000
 
@@ -369,5 +367,10 @@ namespace VCCSharp.Models
         public const long GENERIC_WRITE = (0x40000000L);
         public const long GENERIC_EXECUTE = (0x20000000L);
         public const long GENERIC_ALL = (0x10000000L);
+
+        public const long FILE_BEGIN = 0;
+        public const long FILE_CURRENT = 1;
+        public const long FILE_END = 2;
+
     }
 }

@@ -47,7 +47,7 @@ namespace VCCSharp.Libraries
             public static extern void SyncFileBuffer();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int MountTape(byte* filename);
+            public static extern void MountTape();
 
             [DllImport(LIBRARY)]
             public static extern unsafe void FlushCassetteWAV(byte* buffer, uint length);
@@ -272,6 +272,9 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe HANDLE FileCreateFile(byte* filename, long desiredAccess);
+
+            [DllImport(LIBRARY)]
+            public static extern long FileSetFilePointer(HANDLE handle, long moveMethod);
         }
 
         public static class GDI

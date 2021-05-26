@@ -141,44 +141,19 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl MountTape(char* filename)	//Return 1 on sucess 0 on fail
+  __declspec(dllexport) void __cdecl MountTape()	
   {
     char extension[4] = "";
     unsigned char index = 0;
 
-    instance->TotalSize = FileSetFilePointer(instance->TapeHandle, FILE_END);
-    instance->TapeOffset = 0;
-
-    strcpy(extension, &filename[strlen(filename) - 3]);
-
-    for (index = 0; index < strlen(extension); index++) {
-      extension[index] = toupper(extension[index]);
+    if (instance->CasBuffer != NULL) {
+      free(instance->CasBuffer);
     }
 
-    if (strcmp(extension, "WAV"))
-    {
-      instance->FileType = CAS;
-      instance->LastTrans = 0;
-      instance->Mask = 0;
-      instance->Byte = 0;
-      instance->LastSample = 0;
-      instance->TempIndex = 0;
+    instance->CasBuffer = (unsigned char*)malloc(WRITEBUFFERSIZE);
 
-      if (instance->CasBuffer != NULL) {
-        free(instance->CasBuffer);
-      }
+    FileSetFilePointer(instance->TapeHandle, FILE_BEGIN);
 
-      instance->CasBuffer = (unsigned char*)malloc(WRITEBUFFERSIZE);
-
-      FileSetFilePointer(instance->TapeHandle, FILE_BEGIN);
-
-      FileReadFile(instance->TapeHandle, instance->CasBuffer, instance->TotalSize, &(instance->BytesMoved));	//Read the whole file in for .CAS files
-
-      if (instance->BytesMoved != instance->TotalSize) {
-        return(0);
-      }
-    }
-
-    return(1);
+    FileReadFile(instance->TapeHandle, instance->CasBuffer, instance->TotalSize, &(instance->BytesMoved));	//Read the whole file in for .CAS files
   }
 }
