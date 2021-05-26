@@ -781,11 +781,11 @@ Could not locate {ROM} in any of these locations:
 
             for (ushort x = 0; x < emuState->WindowSize.X; x++)
             {
-                graphicsSurfaces.pSurface8[x + ((emuState->LineCounter * 2) * emuState->SurfacePitch)] = (byte)(_graphics.BorderColor8 | 128);
+                graphicsSurfaces.pSurface8[x + ((_modules.Emu.LineCounter * 2) * _modules.Emu.SurfacePitch)] = (byte)(_graphics.BorderColor8 | 128);
 
-                if (emuState->ScanLines == Define.FALSE)
+                if (_modules.Emu.ScanLines == Define.FALSE)
                 {
-                    graphicsSurfaces.pSurface8[x + ((emuState->LineCounter * 2 + 1) * emuState->SurfacePitch)] = (byte)(_graphics.BorderColor8 | 128);
+                    graphicsSurfaces.pSurface8[x + ((_modules.Emu.LineCounter * 2 + 1) * _modules.Emu.SurfacePitch)] = (byte)(_graphics.BorderColor8 | 128);
                 }
             }
         }
@@ -802,11 +802,11 @@ Could not locate {ROM} in any of these locations:
 
             for (ushort x = 0; x < emuState->WindowSize.X; x++)
             {
-                graphicsSurfaces.pSurface16[x + ((emuState->LineCounter * 2) * emuState->SurfacePitch)] = _graphics.BorderColor16;
+                graphicsSurfaces.pSurface16[x + ((_modules.Emu.LineCounter * 2) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor16;
 
-                if (emuState->ScanLines == Define.FALSE)
+                if (_modules.Emu.ScanLines == Define.FALSE)
                 {
-                    graphicsSurfaces.pSurface16[x + ((emuState->LineCounter * 2 + 1) * emuState->SurfacePitch)] = _graphics.BorderColor16;
+                    graphicsSurfaces.pSurface16[x + ((_modules.Emu.LineCounter * 2 + 1) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor16;
                 }
             }
         }
@@ -828,11 +828,11 @@ Could not locate {ROM} in any of these locations:
 
             for (ushort x = 0; x < emuState->WindowSize.X; x++)
             {
-                graphicsSurfaces.pSurface32[x + ((emuState->LineCounter * 2) * emuState->SurfacePitch)] = _graphics.BorderColor32;
+                graphicsSurfaces.pSurface32[x + ((_modules.Emu.LineCounter * 2) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor32;
 
-                if (emuState->ScanLines == Define.FALSE)
+                if (_modules.Emu.ScanLines == Define.FALSE)
                 {
-                    graphicsSurfaces.pSurface32[x + ((emuState->LineCounter * 2 + 1) * emuState->SurfacePitch)] = _graphics.BorderColor32;
+                    graphicsSurfaces.pSurface32[x + ((_modules.Emu.LineCounter * 2 + 1) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor32;
                 }
             }
         }
@@ -849,11 +849,11 @@ Could not locate {ROM} in any of these locations:
 
             for (ushort x = 0; x < emuState->WindowSize.X; x++)
             {
-                graphicsSurfaces.pSurface8[x + (2 * (emuState->LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * emuState->SurfacePitch)] = (byte)(_graphics.BorderColor8 | 128);
+                graphicsSurfaces.pSurface8[x + (2 * (_modules.Emu.LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = (byte)(_graphics.BorderColor8 | 128);
 
-                if (emuState->ScanLines == Define.FALSE)
+                if (_modules.Emu.ScanLines == Define.FALSE)
                 {
-                    graphicsSurfaces.pSurface8[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * emuState->SurfacePitch)] = (byte)(_graphics.BorderColor8 | 128);
+                    graphicsSurfaces.pSurface8[x + _modules.Emu.SurfacePitch + (2 * (_modules.Emu.LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = (byte)(_graphics.BorderColor8 | 128);
                 }
             }
         }
@@ -870,11 +870,11 @@ Could not locate {ROM} in any of these locations:
 
             for (ushort x = 0; x < emuState->WindowSize.X; x++)
             {
-                graphicsSurfaces.pSurface16[x + (2 * (emuState->LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * emuState->SurfacePitch)] = _graphics.BorderColor16;
+                graphicsSurfaces.pSurface16[x + (2 * (_modules.Emu.LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor16;
 
-                if (emuState->ScanLines == Define.FALSE)
+                if (_modules.Emu.ScanLines == Define.FALSE)
                 {
-                    graphicsSurfaces.pSurface16[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * emuState->SurfacePitch)] = _graphics.BorderColor16;
+                    graphicsSurfaces.pSurface16[x + _modules.Emu.SurfacePitch + (2 * (_modules.Emu.LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor16;
                 }
             }
         }
@@ -896,11 +896,11 @@ Could not locate {ROM} in any of these locations:
 
             for (ushort x = 0; x < emuState->WindowSize.X; x++)
             {
-                graphicsSurfaces.pSurface32[x + (2 * (emuState->LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * emuState->SurfacePitch)] = _graphics.BorderColor32;
+                graphicsSurfaces.pSurface32[x + (2 * (_modules.Emu.LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor32;
 
-                if (emuState->ScanLines == Define.FALSE)
+                if (_modules.Emu.ScanLines == Define.FALSE)
                 {
-                    graphicsSurfaces.pSurface32[x + emuState->SurfacePitch + (2 * (emuState->LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * emuState->SurfacePitch)] = _graphics.BorderColor32;
+                    graphicsSurfaces.pSurface32[x + _modules.Emu.SurfacePitch + (2 * (_modules.Emu.LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor32;
                 }
             }
         }
@@ -914,18 +914,18 @@ Could not locate {ROM} in any of these locations:
             {
                 for (ushort x = 0; x < _graphics.HorizontalCenter; x++)
                 {
-                    graphicsSurfaces.pSurface8[x + (((emuState->LineCounter + _graphics.VerticalCenter) * 2) * emuState->SurfacePitch)] = _graphics.BorderColor8;
+                    graphicsSurfaces.pSurface8[x + (((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor8;
 
-                    if (emuState->ScanLines == Define.FALSE)
+                    if (_modules.Emu.ScanLines == Define.FALSE)
                     {
-                        graphicsSurfaces.pSurface8[x + (((emuState->LineCounter + _graphics.VerticalCenter) * 2 + 1) * emuState->SurfacePitch)] = _graphics.BorderColor8;
+                        graphicsSurfaces.pSurface8[x + (((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2 + 1) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor8;
                     }
 
-                    graphicsSurfaces.pSurface8[x + (_graphics.PixelsPerLine * (_graphics.Stretch + 1)) + _graphics.HorizontalCenter + (((emuState->LineCounter + _graphics.VerticalCenter) * 2) * emuState->SurfacePitch)] = _graphics.BorderColor8;
+                    graphicsSurfaces.pSurface8[x + (_graphics.PixelsPerLine * (_graphics.Stretch + 1)) + _graphics.HorizontalCenter + (((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor8;
 
-                    if (emuState->ScanLines == Define.FALSE)
+                    if (_modules.Emu.ScanLines == Define.FALSE)
                     {
-                        graphicsSurfaces.pSurface8[x + (_graphics.PixelsPerLine * (_graphics.Stretch + 1)) + _graphics.HorizontalCenter + (((emuState->LineCounter + _graphics.VerticalCenter) * 2 + 1) * emuState->SurfacePitch)] = _graphics.BorderColor8;
+                        graphicsSurfaces.pSurface8[x + (_graphics.PixelsPerLine * (_graphics.Stretch + 1)) + _graphics.HorizontalCenter + (((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2 + 1) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor8;
                     }
                 }
             }
@@ -935,14 +935,14 @@ Could not locate {ROM} in any of these locations:
                 _graphics.TagY++;
             }
 
-            if (emuState->LineCounter == Define.FALSE)
+            if (_modules.Emu.LineCounter == Define.FALSE)
             {
                 _graphics.StartOfVidRam = _graphics.NewStartOfVidRam;
-                _graphics.TagY = (ushort)(emuState->LineCounter);
+                _graphics.TagY = (ushort)(_modules.Emu.LineCounter);
             }
 
             uint start = (uint)(_graphics.StartOfVidRam + (_graphics.TagY / _graphics.LinesPerRow) * (_graphics.VPitch * _graphics.ExtendedText));
-            uint yStride = (uint)((((emuState->LineCounter + _graphics.VerticalCenter) * 2) * emuState->SurfacePitch) + (_graphics.HorizontalCenter) - 1);
+            uint yStride = (uint)((((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch) + (_graphics.HorizontalCenter) - 1);
 
             SwitchMasterMode8(emuState, _graphics.MasterMode, start, yStride);
         }
@@ -956,18 +956,18 @@ Could not locate {ROM} in any of these locations:
             {
                 for (ushort x = 0; x < _graphics.HorizontalCenter; x++)
                 {
-                    graphicsSurfaces.pSurface16[x + (((emuState->LineCounter + _graphics.VerticalCenter) * 2) * (emuState->SurfacePitch))] = _graphics.BorderColor16;
+                    graphicsSurfaces.pSurface16[x + (((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2) * (_modules.Emu.SurfacePitch))] = _graphics.BorderColor16;
 
-                    if (emuState->ScanLines == Define.FALSE)
+                    if (_modules.Emu.ScanLines == Define.FALSE)
                     {
-                        graphicsSurfaces.pSurface16[x + (((emuState->LineCounter + _graphics.VerticalCenter) * 2 + 1) * (emuState->SurfacePitch))] = _graphics.BorderColor16;
+                        graphicsSurfaces.pSurface16[x + (((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2 + 1) * (_modules.Emu.SurfacePitch))] = _graphics.BorderColor16;
                     }
 
-                    graphicsSurfaces.pSurface16[x + (_graphics.PixelsPerLine * (_graphics.Stretch + 1)) + _graphics.HorizontalCenter + (((emuState->LineCounter + _graphics.VerticalCenter) * 2) * (emuState->SurfacePitch))] = _graphics.BorderColor16;
+                    graphicsSurfaces.pSurface16[x + (_graphics.PixelsPerLine * (_graphics.Stretch + 1)) + _graphics.HorizontalCenter + (((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2) * (_modules.Emu.SurfacePitch))] = _graphics.BorderColor16;
 
-                    if (emuState->ScanLines == Define.FALSE)
+                    if (_modules.Emu.ScanLines == Define.FALSE)
                     {
-                        graphicsSurfaces.pSurface16[x + (_graphics.PixelsPerLine * (_graphics.Stretch + 1)) + _graphics.HorizontalCenter + (((emuState->LineCounter + _graphics.VerticalCenter) * 2 + 1) * (emuState->SurfacePitch))] = _graphics.BorderColor16;
+                        graphicsSurfaces.pSurface16[x + (_graphics.PixelsPerLine * (_graphics.Stretch + 1)) + _graphics.HorizontalCenter + (((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2 + 1) * (_modules.Emu.SurfacePitch))] = _graphics.BorderColor16;
                     }
                 }
             }
@@ -977,14 +977,14 @@ Could not locate {ROM} in any of these locations:
                 _graphics.TagY++;
             }
 
-            if (emuState->LineCounter == Define.FALSE)
+            if (_modules.Emu.LineCounter == Define.FALSE)
             {
                 _graphics.StartOfVidRam = _graphics.NewStartOfVidRam;
-                _graphics.TagY = (ushort)(emuState->LineCounter);
+                _graphics.TagY = (ushort)(_modules.Emu.LineCounter);
             }
 
             uint start = (uint)(_graphics.StartOfVidRam + (_graphics.TagY / _graphics.LinesPerRow) * (_graphics.VPitch * _graphics.ExtendedText));
-            uint yStride = (uint)((((emuState->LineCounter + _graphics.VerticalCenter) * 2) * emuState->SurfacePitch) + (_graphics.HorizontalCenter * 1) - 1);
+            uint yStride = (uint)((((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch) + (_graphics.HorizontalCenter * 1) - 1);
 
             SwitchMasterMode16(emuState, _graphics.MasterMode, start, yStride);
         }
@@ -1001,8 +1001,8 @@ Could not locate {ROM} in any of these locations:
 
             uint* szSurface32 = graphicsSurfaces.pSurface32;
 
-            ushort y = (ushort)emuState->LineCounter;
-            long Xpitch = emuState->SurfacePitch;
+            ushort y = (ushort)_modules.Emu.LineCounter;
+            long Xpitch = _modules.Emu.SurfacePitch;
 
             if ((_graphics.HorizontalCenter != 0) && (_graphics.BorderChange > 0))
             {
@@ -1010,14 +1010,14 @@ Could not locate {ROM} in any of these locations:
                 {
                     szSurface32[x + (((y + _graphics.VerticalCenter) * 2) * Xpitch)] = _graphics.BorderColor32;
 
-                    if (emuState->ScanLines == Define.FALSE)
+                    if (_modules.Emu.ScanLines == Define.FALSE)
                     {
                         szSurface32[x + (((y + _graphics.VerticalCenter) * 2 + 1) * Xpitch)] = _graphics.BorderColor32;
                     }
 
                     szSurface32[x + (_graphics.PixelsPerLine * (_graphics.Stretch + 1)) + _graphics.HorizontalCenter + (((y + _graphics.VerticalCenter) * 2) * Xpitch)] = _graphics.BorderColor32;
 
-                    if (emuState->ScanLines == Define.FALSE)
+                    if (_modules.Emu.ScanLines == Define.FALSE)
                     {
                         szSurface32[x + (_graphics.PixelsPerLine * (_graphics.Stretch + 1)) + _graphics.HorizontalCenter + (((y + _graphics.VerticalCenter) * 2 + 1) * Xpitch)] = _graphics.BorderColor32;
                     }
@@ -1071,8 +1071,8 @@ Could not locate {ROM} in any of these locations:
 
             uint* szSurface32 = graphicsSurfaces.pSurface32;
 
-            uint Xpitch = (uint)(emuState->SurfacePitch);
-            ushort y = (ushort)(emuState->LineCounter);
+            uint Xpitch = (uint)(_modules.Emu.SurfacePitch);
+            ushort y = (ushort)(_modules.Emu.LineCounter);
 
             switch (masterMode) // (GraphicsMode <<7) | (CompatMode<<6)  | ((Bpp & 3)<<4) | (Stretch & 15);
             {
@@ -1117,7 +1117,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = textPalette[(pixel >> 1) & 1];
                         szSurface32[yStride += 1] = textPalette[pixel & 1];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (8);
                             yStride += Xpitch;
@@ -1181,7 +1181,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = textPalette[(pixel & 1)];
                         szSurface32[yStride += 1] = textPalette[(pixel & 1)];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (16);
                             yStride += Xpitch;
@@ -1430,7 +1430,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = textPalette[(pixel & 1)];
                         szSurface32[yStride += 1] = textPalette[(pixel & 1)];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (16);
                             yStride += Xpitch;
@@ -1481,7 +1481,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 9)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 8)];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (16);
                             yStride += Xpitch;
@@ -1549,7 +1549,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 8)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 8)];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (32);
                             yStride += Xpitch;
@@ -1667,7 +1667,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 8)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 8)];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (64);
                             yStride += Xpitch;
@@ -1884,7 +1884,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 8)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 8)];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (128);
                             yStride += Xpitch;
@@ -2039,7 +2039,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 10)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 8)];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (8);
                             yStride += Xpitch;
@@ -2082,7 +2082,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 8)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 8)];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (16);
                             yStride += Xpitch;
@@ -2152,7 +2152,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 8)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 8)];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (32);
                             yStride += Xpitch;
@@ -2273,7 +2273,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 8)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 8)];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (64);
                             yStride += Xpitch;
@@ -2483,7 +2483,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 8)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 8)];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (128);
                             yStride += Xpitch;
@@ -2633,7 +2633,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 12)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 8)];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (4);
                             yStride += Xpitch;
@@ -2664,7 +2664,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 8)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 8)];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (8);
                             yStride += Xpitch;
@@ -2709,7 +2709,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 8)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 8)];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (16);
                             yStride += Xpitch;
@@ -2782,7 +2782,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 8)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 8)];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (32);
                             yStride += Xpitch;
@@ -2896,7 +2896,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 8)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 8)];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (64);
                             yStride += Xpitch;
@@ -3016,7 +3016,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (16);
                             yStride += Xpitch;
@@ -3079,14 +3079,14 @@ Could not locate {ROM} in any of these locations:
                                         color = 3;
                                         szSurface32[yStride - 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
 
-                                        if (emuState->ScanLines == Define.FALSE)
+                                        if (_modules.Emu.ScanLines == Define.FALSE)
                                         {
                                             szSurface32[yStride + Xpitch - 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
                                         }
 
                                         szSurface32[yStride] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
 
-                                        if (emuState->ScanLines == Define.FALSE)
+                                        if (_modules.Emu.ScanLines == Define.FALSE)
                                         {
                                             szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
                                         }
@@ -3100,14 +3100,14 @@ Could not locate {ROM} in any of these locations:
 
                                 szSurface32[yStride += 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
 
-                                if (emuState->ScanLines == Define.FALSE)
+                                if (_modules.Emu.ScanLines == Define.FALSE)
                                 {
                                     szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
                                 }
 
                                 szSurface32[yStride += 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
 
-                                if (emuState->ScanLines == Define.FALSE)
+                                if (_modules.Emu.ScanLines == Define.FALSE)
                                 {
                                     szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
                                 }
@@ -3141,14 +3141,14 @@ Could not locate {ROM} in any of these locations:
                                         color = 3;
                                         szSurface32[yStride - 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
 
-                                        if (emuState->ScanLines == Define.FALSE)
+                                        if (_modules.Emu.ScanLines == Define.FALSE)
                                         {
                                             szSurface32[yStride + Xpitch - 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
                                         }
 
                                         szSurface32[yStride] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
 
-                                        if (emuState->ScanLines == Define.FALSE)
+                                        if (_modules.Emu.ScanLines == Define.FALSE)
                                         {
                                             szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
                                         }
@@ -3162,14 +3162,14 @@ Could not locate {ROM} in any of these locations:
 
                                 szSurface32[yStride += 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
 
-                                if (emuState->ScanLines == Define.FALSE)
+                                if (_modules.Emu.ScanLines == Define.FALSE)
                                 {
                                     szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
                                 }
 
                                 szSurface32[yStride += 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
 
-                                if (emuState->ScanLines == Define.FALSE)
+                                if (_modules.Emu.ScanLines == Define.FALSE)
                                 {
                                     szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
                                 }
@@ -3213,7 +3213,7 @@ Could not locate {ROM} in any of these locations:
                             szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
                             szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
 
-                            if (emuState->ScanLines == Define.FALSE)
+                            if (_modules.Emu.ScanLines == Define.FALSE)
                             {
                                 yStride -= (32);
                                 yStride += Xpitch;
@@ -3332,7 +3332,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (64);
                             yStride += Xpitch;
@@ -3549,7 +3549,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (128);
                             yStride += Xpitch;
@@ -3704,7 +3704,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (8);
                             yStride += Xpitch;
@@ -3747,7 +3747,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (16);
                             yStride += Xpitch;
@@ -3817,7 +3817,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (32);
                             yStride += Xpitch;
@@ -3938,7 +3938,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (64);
                             yStride += Xpitch;
@@ -4149,7 +4149,7 @@ Could not locate {ROM} in any of these locations:
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
 
-                        if (emuState->ScanLines == Define.FALSE)
+                        if (_modules.Emu.ScanLines == Define.FALSE)
                         {
                             yStride -= (128);
                             yStride += Xpitch;

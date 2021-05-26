@@ -14,24 +14,11 @@ typedef struct
 
   POINT WindowSize;
 
-  unsigned char	BitDepth;
-  unsigned char	CpuType;
   unsigned char	DoubleSpeedFlag;
   unsigned char	DoubleSpeedMultiplier;
   unsigned char	EmulationRunning;
-  unsigned char	FrameSkip;
-  unsigned char	FullScreen;
-  unsigned char	RamSize;
   unsigned char	ResetPending;
-  unsigned char	ScanLines;
   unsigned char	TurboSpeedFlag;
 
-  unsigned short FrameCounter;
-  unsigned short LineCounter;
-
   double CPUCurrentSpeed;
-  
-  long SurfacePitch;
-
-  char StatusLine[256];
 } EmuState;

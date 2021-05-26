@@ -71,8 +71,8 @@ namespace VCCSharp.Modules
         private int IntEnable;
         private int SndEnable = 1;
 
-        public uint[] AudioBuffer = new uint[16384];
-        public byte[] CassBuffer = new byte[8192];
+        private uint[] AudioBuffer = new uint[16384];
+        private byte[] CassetteBuffer = new byte[8192];
 
         public CoCo(IModules modules)
         {
@@ -133,25 +133,25 @@ namespace VCCSharp.Modules
 
             _modules.MC6821.MC6821_irq_fs(PhaseStates.Falling);   //FS low to High transition start of display Blink needs this
 
-            //TODO: I don't think updating emuState->LineCounter = counter is needed.
+            //TODO: I don't think updating _modules.Emu.LineCounter = counter is needed.
 
-            //for (emuState->LineCounter = 0; emuState->LineCounter < 13; emuState->LineCounter++)
+            //for (_modules.Emu.LineCounter = 0; _modules.Emu.LineCounter < 13; _modules.Emu.LineCounter++)
             //Vertical Blanking 13 H lines
             for (short counter = 0; counter < 13; counter++)
             {
-                emuState->LineCounter = counter;
+                _modules.Emu.LineCounter = counter;
                 CpuCycle();
             }
 
-            //for (emuState->LineCounter = 0; emuState->LineCounter < 4; emuState->LineCounter++)
+            //for (_modules.Emu.LineCounter = 0; _modules.Emu.LineCounter < 4; _modules.Emu.LineCounter++)
             //4 non-Rendered top Border lines
             for (short counter = 0; counter < 4; counter++)
             {
-                emuState->LineCounter = counter;
+                _modules.Emu.LineCounter = counter;
                 CpuCycle();
             }
 
-            if (emuState->FrameCounter % emuState->FrameSkip == Define.FALSE)
+            if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == Define.FALSE)
             {
                 if (_modules.DirectDraw.LockScreen(emuState) == Define.TRUE)
                 {
@@ -159,11 +159,11 @@ namespace VCCSharp.Modules
                 }
             }
 
-            //for (emuState->LineCounter = 0; emuState->LineCounter < cocoState->TopBorder - 4; emuState->LineCounter++)
+            //for (_modules.Emu.LineCounter = 0; _modules.Emu.LineCounter < cocoState->TopBorder - 4; _modules.Emu.LineCounter++)
             for (short counter = 0; counter < TopBorder - 4; counter++)
             {
-                emuState->LineCounter = counter;
-                if (emuState->FrameCounter % emuState->FrameSkip == Define.FALSE)
+                _modules.Emu.LineCounter = counter;
+                if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == Define.FALSE)
                 {
                     CoCoDrawTopBorder(emuState);
                 }
@@ -171,14 +171,14 @@ namespace VCCSharp.Modules
                 CpuCycle();
             }
 
-            //for (emuState->LineCounter = 0; emuState->LineCounter < cocoState->LinesPerScreen; emuState->LineCounter++)
+            //for (_modules.Emu.LineCounter = 0; _modules.Emu.LineCounter < cocoState->LinesPerScreen; _modules.Emu.LineCounter++)
             //Active Display area
             for (short counter = 0; counter < LinesperScreen; counter++)
             {
-                emuState->LineCounter = counter;
+                _modules.Emu.LineCounter = counter;
                 CpuCycle();
 
-                if (emuState->FrameCounter % emuState->FrameSkip == Define.FALSE)
+                if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == Define.FALSE)
                 {
                     CoCoUpdateScreen(emuState);
                 }
@@ -191,30 +191,30 @@ namespace VCCSharp.Modules
                 _modules.TC1014.GimeAssertVertInterrupt();
             }
 
-            //for (emuState->LineCounter = 0; emuState->LineCounter < (cocoState->BottomBorder); emuState->LineCounter++)
+            //for (_modules.Emu.LineCounter = 0; _modules.Emu.LineCounter < (cocoState->BottomBorder); _modules.Emu.LineCounter++)
             //Bottom border
             for (short counter = 0; counter < BottomBorder; counter++)
             {
-                emuState->LineCounter = counter;
+                _modules.Emu.LineCounter = counter;
                 CpuCycle();
 
-                if (emuState->FrameCounter % emuState->FrameSkip == Define.FALSE)
+                if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == Define.FALSE)
                 {
                     CoCoDrawBottomBorder(emuState);
                 }
             }
 
-            if (emuState->FrameCounter % emuState->FrameSkip == Define.FALSE)
+            if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == Define.FALSE)
             {
                 _modules.DirectDraw.UnlockScreen(emuState);
                 _modules.Graphics.SetBorderChange();
             }
 
-            //for (emuState->LineCounter = 0; emuState->LineCounter < 6; emuState->LineCounter++)
+            //for (_modules.Emu.LineCounter = 0; _modules.Emu.LineCounter < 6; _modules.Emu.LineCounter++)
             //Vertical Retrace 6 H lines
             for (short counter = 0; counter < 4; counter++)
             {
-                emuState->LineCounter = counter;
+                _modules.Emu.LineCounter = counter;
                 CpuCycle();
             }
 
@@ -225,8 +225,6 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                CoCoState* cocoState = GetCoCoState();
-
                 switch (SoundOutputMode)
                 {
                     case 0:
@@ -237,7 +235,7 @@ namespace VCCSharp.Modules
                         break;
 
                     case 1:
-                        fixed (byte* buffer = CassBuffer)
+                        fixed (byte* buffer = CassetteBuffer)
                         {
                             FlushCassetteBuffer(buffer, AudioIndex);
                         }
@@ -245,7 +243,7 @@ namespace VCCSharp.Modules
                         break;
 
                     case 2:
-                        LoadCassetteBuffer(cocoState);
+                        LoadCassetteBuffer();
                         break;
                 }
 
@@ -580,8 +578,6 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                CoCoState* instance = GetCoCoState();
-
                 //--TODO: Is there a purpose to this variable?
                 ushort primarySoundRate = SoundRate;
 
@@ -591,7 +587,7 @@ namespace VCCSharp.Modules
                         if (_lastMode == 1)
                         {
                             //Send the last bits to be encoded
-                            fixed (byte* buffer = CassBuffer)
+                            fixed (byte* buffer = CassetteBuffer)
                             {
                                 FlushCassetteBuffer(buffer, AudioIndex); /* Cassette.cpp */
                             }
@@ -646,7 +642,7 @@ namespace VCCSharp.Modules
                 {BitDepthStates.BIT_32, () => _modules.TC1014.DrawTopBorder32(emuState)}
             };
 
-            mapping[(BitDepthStates)emuState->BitDepth]();
+            mapping[(BitDepthStates)_modules.Emu.BitDepth]();
         }
 
         private unsafe void CoCoUpdateScreen(EmuState* emuState)
@@ -659,7 +655,7 @@ namespace VCCSharp.Modules
                 {BitDepthStates.BIT_32, () => _modules.TC1014.UpdateScreen32(emuState)}
             };
 
-            mapping[(BitDepthStates)emuState->BitDepth]();
+            mapping[(BitDepthStates)_modules.Emu.BitDepth]();
         }
 
         private unsafe void CoCoDrawBottomBorder(EmuState* emuState)
@@ -672,7 +668,7 @@ namespace VCCSharp.Modules
                 {BitDepthStates.BIT_32, () => _modules.TC1014.DrawBottomBorder32(emuState)}
             };
 
-            mapping[(BitDepthStates)emuState->BitDepth]();
+            mapping[(BitDepthStates)_modules.Emu.BitDepth]();
         }
 
         public void SetInterruptTimer(ushort timer)
@@ -711,27 +707,22 @@ namespace VCCSharp.Modules
         {
             double[] rate = { Define.PICOSECOND / (Define.TARGETFRAMERATE * Define.LINESPERFIELD), Define.PICOSECOND / Define.COLORBURST };
 
-            unsafe
+            if (UnxlatedTickCounter == 0)
             {
-                CoCoState* instance = GetCoCoState();
-
-                if (UnxlatedTickCounter == 0)
-                {
-                    MasterTickCounter = 0;
-                }
-                else
-                {
-                    MasterTickCounter = (UnxlatedTickCounter + 2) * rate[TimerClockRate];
-                }
-
-                if (MasterTickCounter != OldMaster)
-                {
-                    OldMaster = MasterTickCounter;
-                    PicosToInterrupt = MasterTickCounter;
-                }
-
-                IntEnable = MasterTickCounter == 0 ? 0 : 1;
+                MasterTickCounter = 0;
             }
+            else
+            {
+                MasterTickCounter = (UnxlatedTickCounter + 2) * rate[TimerClockRate];
+            }
+
+            if (MasterTickCounter != OldMaster)
+            {
+                OldMaster = MasterTickCounter;
+                PicosToInterrupt = MasterTickCounter;
+            }
+
+            IntEnable = MasterTickCounter == 0 ? 0 : 1;
         }
 
         private unsafe void FlushCassetteBuffer(byte* buffer, uint length)
@@ -741,9 +732,9 @@ namespace VCCSharp.Modules
             UpdateTapeDialog((int)offset);
         }
 
-        private unsafe void LoadCassetteBuffer(CoCoState* cocoState)
+        private unsafe void LoadCassetteBuffer()
         {
-            fixed (byte* buffer = CassBuffer)
+            fixed (byte* buffer = CassetteBuffer)
             {
                 _modules.Cassette.LoadCassetteBuffer(buffer);
             }
@@ -806,7 +797,7 @@ namespace VCCSharp.Modules
         {
             void CassetteOut()
             {
-                CassBuffer[AudioIndex++] = _modules.MC6821.MC6821_GetCasSample();
+                CassetteBuffer[AudioIndex++] = _modules.MC6821.MC6821_GetCasSample();
             }
 
             _audioEvent = CassetteOut;
@@ -818,7 +809,7 @@ namespace VCCSharp.Modules
             {
                 AudioBuffer[AudioIndex] = _modules.MC6821.MC6821_GetDACSample();
 
-                _modules.MC6821.MC6821_SetCassetteSample(CassBuffer[AudioIndex++]);
+                _modules.MC6821.MC6821_SetCassetteSample(CassetteBuffer[AudioIndex++]);
             }
 
             _audioEvent = CassetteIn;

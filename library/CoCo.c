@@ -1,10 +1,5 @@
 #include "CoCo.h"
 
-#include "defines.h"
-
-#include "Graphics.h"
-#include "MC6821.h"
-
 CoCoState* InitializeInstance(CoCoState*);
 
 static CoCoState* instance = InitializeInstance(new CoCoState());

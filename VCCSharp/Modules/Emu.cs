@@ -17,11 +17,39 @@ namespace VCCSharp.Modules
         void SetEmuRunning(bool flag);
         void SetCpuMultiplierFlag(byte doubleSpeed);
         void SetTurboMode(byte data);
+
+        byte BitDepth { get; set; }
+        byte CpuType { get; set; }
+        byte FrameSkip { get; set; }
+        byte FullScreen { get; set; }
+        byte RamSize { get; set; }
+        byte ScanLines { get; set; }
+        short FrameCounter { get; set; }
+        short LineCounter { get; set; }
+        long SurfacePitch { get; set; }
+
+        string StatusLine { get; set; }
     }
 
     public class Emu : IEmu
     {
         private readonly IModules _modules;
+
+        public byte BitDepth { get; set; }
+        public byte CpuType { get; set; }
+
+        public byte FrameSkip { get; set; }
+        public byte FullScreen { get; set; }
+
+        public byte RamSize { get; set; }
+        public byte ScanLines { get; set; }
+
+        public short FrameCounter { get; set; }
+        public short LineCounter { get; set; }
+
+        public long SurfacePitch { get; set; }
+
+        public string StatusLine { get; set; }
 
         public Emu(IModules modules)
         {
@@ -60,14 +88,14 @@ namespace VCCSharp.Modules
 
         public unsafe void HardReset(EmuState* emuState)
         {
-            if (_modules.TC1014.MmuInit(emuState->RamSize) == Define.FALSE)
+            if (_modules.TC1014.MmuInit(RamSize) == Define.FALSE)
             {
                 MessageBox.Show("Can't allocate enough RAM, out of memory", "Error");
 
                 Environment.Exit(0);
             }
 
-            if (emuState->CpuType == (byte)CPUTypes.HD6309)
+            if (CpuType == (byte)CPUTypes.HD6309)
             {
                 _modules.CPU.SetCPUToHD6309();
             }
@@ -106,7 +134,7 @@ namespace VCCSharp.Modules
 
             _modules.Audio.ResetAudio();
         }
-        
+
         public void SetEmuRunning(bool flag)
         {
             unsafe

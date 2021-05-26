@@ -140,14 +140,14 @@ namespace VCCSharp.Modules
                 return;
             }
 
-            switch ((BitDepthStates)(emuState->BitDepth))
+            switch ((BitDepthStates)(_modules.Emu.BitDepth))
             {
                 case BitDepthStates.BIT_8:
                     for (int y = 0; y < 480; y++)
                     {
                         for (int x = 0; x < 640; x++)
                         {
-                            graphicsSurfaces.pSurface8[x + (y * emuState->SurfacePitch)] = (byte)(_color | 128);
+                            graphicsSurfaces.pSurface8[x + (y * _modules.Emu.SurfacePitch)] = (byte)(_color | 128);
                         }
                     }
                     break;
@@ -157,7 +157,7 @@ namespace VCCSharp.Modules
                     {
                         for (int x = 0; x < 640; x++)
                         {
-                            graphicsSurfaces.pSurface16[x + (y * emuState->SurfacePitch)] = (ushort)_color;
+                            graphicsSurfaces.pSurface16[x + (y * _modules.Emu.SurfacePitch)] = (ushort)_color;
                         }
                     }
                     break;
@@ -167,9 +167,9 @@ namespace VCCSharp.Modules
                     {
                         for (int x = 0; x < 640; x++)
                         {
-                            graphicsSurfaces.pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = (byte)((_color & 0xFF0000) >> 16);
-                            graphicsSurfaces.pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = (byte)((_color & 0x00FF00) >> 8);
-                            graphicsSurfaces.pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = (byte)(_color & 0xFF);
+                            graphicsSurfaces.pSurface8[(x * 3) + (y * _modules.Emu.SurfacePitch)] = (byte)((_color & 0xFF0000) >> 16);
+                            graphicsSurfaces.pSurface8[(x * 3) + 1 + (y * _modules.Emu.SurfacePitch)] = (byte)((_color & 0x00FF00) >> 8);
+                            graphicsSurfaces.pSurface8[(x * 3) + 2 + (y * _modules.Emu.SurfacePitch)] = (byte)(_color & 0xFF);
                         }
                     }
                     break;
@@ -179,7 +179,7 @@ namespace VCCSharp.Modules
                     {
                         for (int x = 0; x < 640; x++)
                         {
-                            graphicsSurfaces.pSurface32[x + (y * emuState->SurfacePitch)] = _color;
+                            graphicsSurfaces.pSurface32[x + (y * _modules.Emu.SurfacePitch)] = _color;
                         }
                     }
                     break;
@@ -211,7 +211,7 @@ namespace VCCSharp.Modules
                 return; //TODO: Seems bad to exit w/out unlocking first
             }
 
-            switch ((BitDepthStates)(emuState->BitDepth))
+            switch ((BitDepthStates)(_modules.Emu.BitDepth))
             {
                 case BitDepthStates.BIT_8:
                     byte[] greyScales = { 128, 135, 184, 191 };
@@ -222,8 +222,8 @@ namespace VCCSharp.Modules
                         {
                             byte temp = (byte)(random.Next() & 3);
 
-                            graphicsSurfaces.pSurface32[x + (y * emuState->SurfacePitch >> 2)] = (uint)(greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24));
-                            graphicsSurfaces.pSurface32[x + ((y + 1) * emuState->SurfacePitch >> 2)] = (uint)(greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24));
+                            graphicsSurfaces.pSurface32[x + (y * _modules.Emu.SurfacePitch >> 2)] = (uint)(greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24));
+                            graphicsSurfaces.pSurface32[x + ((y + 1) * _modules.Emu.SurfacePitch >> 2)] = (uint)(greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24));
                         }
                     }
                     break;
@@ -235,8 +235,8 @@ namespace VCCSharp.Modules
                         {
                             byte temp = (byte)(random.Next() & 31);
 
-                            graphicsSurfaces.pSurface32[x + (y * emuState->SurfacePitch >> 1)] = (uint)(temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27));
-                            graphicsSurfaces.pSurface32[x + ((y + 1) * emuState->SurfacePitch >> 1)] = (uint)(temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27));
+                            graphicsSurfaces.pSurface32[x + (y * _modules.Emu.SurfacePitch >> 1)] = (uint)(temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27));
+                            graphicsSurfaces.pSurface32[x + ((y + 1) * _modules.Emu.SurfacePitch >> 1)] = (uint)(temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27));
                         }
                     }
                     break;
@@ -247,9 +247,9 @@ namespace VCCSharp.Modules
                         for (int x = 0; x < 640; x++)
                         {
                             byte temp = (byte)(random.Next() & 255);
-                            graphicsSurfaces.pSurface8[(x * 3) + (y * emuState->SurfacePitch)] = temp;
-                            graphicsSurfaces.pSurface8[(x * 3) + 1 + (y * emuState->SurfacePitch)] = temp;
-                            graphicsSurfaces.pSurface8[(x * 3) + 2 + (y * emuState->SurfacePitch)] = temp;
+                            graphicsSurfaces.pSurface8[(x * 3) + (y * _modules.Emu.SurfacePitch)] = temp;
+                            graphicsSurfaces.pSurface8[(x * 3) + 1 + (y * _modules.Emu.SurfacePitch)] = temp;
+                            graphicsSurfaces.pSurface8[(x * 3) + 2 + (y * _modules.Emu.SurfacePitch)] = temp;
                         }
                     }
                     break;
@@ -261,7 +261,7 @@ namespace VCCSharp.Modules
                         {
                             byte temp = (byte)(random.Next() & 255);
 
-                            graphicsSurfaces.pSurface32[x + (y * emuState->SurfacePitch)] = (uint)(temp | (temp << 8) | (temp << 16));
+                            graphicsSurfaces.pSurface32[x + (y * _modules.Emu.SurfacePitch)] = (uint)(temp | (temp << 8) | (temp << 16));
                         }
                     }
                     break;
@@ -292,7 +292,7 @@ namespace VCCSharp.Modules
 
         public unsafe void UnlockScreen(EmuState* emuState)
         {
-            if (emuState->FullScreen == Define.TRUE && InfoBand == Define.TRUE)
+            if (_modules.Emu.FullScreen == Define.TRUE && InfoBand == Define.TRUE)
             {
                 WriteStatusText(Converter.ToString(StatusText));
             }
@@ -339,7 +339,7 @@ namespace VCCSharp.Modules
 
         public unsafe void SetStatusBarText(string text, EmuState* emuState)
         {
-            if (emuState->FullScreen == Define.FALSE)
+            if (_modules.Emu.FullScreen == Define.FALSE)
             {
                 SetStatusBarText(text);
             }
@@ -366,7 +366,7 @@ namespace VCCSharp.Modules
 
         public unsafe void DisplayFlip(EmuState* emuState)
         {
-            if (emuState->FullScreen == Define.TRUE)
+            if (_modules.Emu.FullScreen == Define.TRUE)
             {	// if we're windowed do the blit, else just Flip
                 DDSurfaceFlip();
             }
@@ -492,14 +492,14 @@ namespace VCCSharp.Modules
             switch (rgbBitCount)
             {
                 case 8:
-                    emuState->SurfacePitch = pitch;
-                    emuState->BitDepth = (byte)BitDepthStates.BIT_8;
+                    _modules.Emu.SurfacePitch = pitch;
+                    _modules.Emu.BitDepth = (byte)BitDepthStates.BIT_8;
                     break;
 
                 case 15:
                 case 16:
-                    emuState->SurfacePitch = pitch / 2;
-                    emuState->BitDepth = (byte)BitDepthStates.BIT_16;
+                    _modules.Emu.SurfacePitch = pitch / 2;
+                    _modules.Emu.BitDepth = (byte)BitDepthStates.BIT_16;
                     break;
 
                 case 24:
@@ -507,13 +507,13 @@ namespace VCCSharp.Modules
 
                     Environment.Exit(0);
 
-                    //emuState->SurfacePitch = pitch;
-                    //emuState->BitDepth = (byte)BitDepthStates.BIT_24;
+                    //_modules.Emu.SurfacePitch = pitch;
+                    //_modules.Emu.BitDepth = (byte)BitDepthStates.BIT_24;
                     break;
 
                 case 32:
-                    emuState->SurfacePitch = pitch / 4;
-                    emuState->BitDepth = (byte)BitDepthStates.BIT_32;
+                    _modules.Emu.SurfacePitch = pitch / 4;
+                    _modules.Emu.BitDepth = (byte)BitDepthStates.BIT_32;
                     break;
 
                 default:
@@ -555,14 +555,14 @@ namespace VCCSharp.Modules
                 DDUnregisterClass();
             }
 
-            if (!CreateDirectDrawWindow(emuState->Resources, emuState->FullScreen))
+            if (!CreateDirectDrawWindow(emuState->Resources, _modules.Emu.FullScreen))
             {
                 return false;
             }
 
             DDSURFACEDESC* ddsd = DDSDCreate();
 
-            switch (emuState->FullScreen)
+            switch (_modules.Emu.FullScreen)
             {
                 case 0: //Windowed Mode
                     if (!CreateDirectDrawWindowedMode(emuState, ddsd))

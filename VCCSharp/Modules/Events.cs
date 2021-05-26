@@ -33,12 +33,12 @@ namespace VCCSharp.Modules
         // or two keys down in the emulation that must be raised.  These routines
         // track the last two key down events so they can be raised when needed.
         //--------------------------------------------------------------------------
-        private byte SC_save1 = 0;
-        private byte SC_save2 = 0;
-        private byte KB_save1 = 0;
-        private byte KB_save2 = 0;
+        private byte SC_save1;
+        private byte SC_save2;
+        private byte KB_save1;
+        private byte KB_save2;
 
-        private bool KeySaveToggle = false;
+        private bool KeySaveToggle;
 
         public Events(IModules modules, IUser32 user32)
         {
@@ -128,15 +128,10 @@ namespace VCCSharp.Modules
 
         public void ToggleFullScreen() //F11
         {
-            unsafe
+            if (_modules.Vcc.RunState == (byte)EmuRunStates.Running)
             {
-                EmuState* emuState = _modules.Emu.GetEmuState();
-
-                if (_modules.Vcc.RunState == (byte)EmuRunStates.Running)
-                {
-                    _modules.Vcc.RunState = (byte)EmuRunStates.ReqWait;
-                    emuState->FullScreen = emuState->FullScreen == Define.TRUE ? Define.FALSE : Define.TRUE;
-                }
+                _modules.Vcc.RunState = (byte)EmuRunStates.ReqWait;
+                _modules.Emu.FullScreen = _modules.Emu.FullScreen == Define.TRUE ? Define.FALSE : Define.TRUE;
             }
         }
 
@@ -260,9 +255,9 @@ namespace VCCSharp.Modules
             // send emulator key up event to the emulator
             // TODO: Key up checks whether the emulation is running, this does not
 
-            byte OEMscan = (byte )((lParam & 0x00FF0000) >> 16);
+            byte oemScan = (byte)((lParam & 0x00FF0000) >> 16);
 
-            _modules.Keyboard.KeyboardHandleKey((byte )wParam, OEMscan, KeyStates.kEventKeyUp);
+            _modules.Keyboard.KeyboardHandleKey((byte)wParam, oemScan, KeyStates.kEventKeyUp);
         }
 
         public void MouseMove(long lParam)
@@ -299,9 +294,9 @@ namespace VCCSharp.Modules
         public void ProcessKeyDownMessage(long wParam, long lParam)
         {
             // get key scan code for emulator control keys
-            byte OEMscan = (byte)((lParam & 0x00FF0000) >> 16); // just get the scan code
+            byte oemScan = (byte)((lParam & 0x00FF0000) >> 16); // just get the scan code
 
-            switch (OEMscan)
+            switch (oemScan)
             {
                 case Define.DIK_F11:
                     ToggleFullScreenState();
@@ -315,31 +310,26 @@ namespace VCCSharp.Modules
 
         public void ToggleFullScreenState()
         {
-            unsafe
+            if (_modules.Vcc.RunState == 0)
             {
-                EmuState* emuState = _modules.Emu.GetEmuState();
-
-                if (_modules.Vcc.RunState == 0)
-                {
-                    _modules.Vcc.RunState = 1;
-                    emuState->FullScreen = emuState->FullScreen != 0 ? Define.FALSE : Define.TRUE;
-                }
+                _modules.Vcc.RunState = 1;
+                _modules.Emu.FullScreen = _modules.Emu.FullScreen != 0 ? Define.FALSE : Define.TRUE;
             }
         }
 
         public void KeyDown(long wParam, long lParam)
         {
-            byte OEMscan = (byte)((lParam & 0x00FF0000) >> 16); // just get the scan code
+            byte oemScan = (byte)((lParam & 0x00FF0000) >> 16); // just get the scan code
 
             unsafe
             {
                 // send other keystrokes to the emulator if it is active
                 if (_modules.Emu.GetEmuState()->EmulationRunning != 0)
                 {
-                    _modules.Keyboard.KeyboardHandleKey((byte)wParam, OEMscan, KeyStates.kEventKeyDown);
+                    _modules.Keyboard.KeyboardHandleKey((byte)wParam, oemScan, KeyStates.kEventKeyDown);
 
                     // Save key down in case focus is lost
-                    SaveLastTwoKeyDownEvents((byte)wParam, OEMscan);
+                    SaveLastTwoKeyDownEvents((byte)wParam, oemScan);
                 }
             }
         }
@@ -399,10 +389,12 @@ namespace VCCSharp.Modules
             {
                 EmuState* emuState = _modules.Emu.GetEmuState();
 
-                if (emuState->FullScreen == 0) {
+                if (_modules.Emu.FullScreen == 0)
+                {
                     _modules.GDI.CreateMainMenuWindowed(hWnd, emuState->Resources);
                 }
-                else {
+                else
+                {
                     _modules.GDI.CreateMainMenuFullScreen(hWnd);
                 }
             }

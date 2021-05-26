@@ -148,12 +148,19 @@ namespace VCCSharp.Modules
 
         public unsafe void GetModuleStatus(EmuState* emuState)
         {
-            if (HasModuleStatus()) {
-                InvokeModuleStatus(emuState->StatusLine);
+            if (HasModuleStatus())
+            {
+                //TODO: Things break here if the status line is empty.
+                string text = (_modules.Emu.StatusLine ?? "") + "...";
+                byte[] status = Converter.ToByteArray(text);
+                fixed (byte* p = status)
+                {
+                    InvokeModuleStatus(p);
+                }
             }
-            else {
-                //sprintf(emuState->StatusLine, "");
-                Converter.ToByteArray("", emuState->StatusLine);
+            else
+            {
+                _modules.Emu.StatusLine = string.Empty;
             }
         }
 

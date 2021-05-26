@@ -33,7 +33,7 @@ namespace VCCSharp.Modules
         void SaveConfig();
         byte GetSoundCardIndex(string soundCardName);
         bool GetRememberSize();
-        
+
         Point GetIniWindowSize();
         string AppTitle { get; }
     }
@@ -137,8 +137,8 @@ namespace VCCSharp.Modules
             _modules.Vcc.AutoStart = model->AutoStart;
             _modules.Vcc.Throttle = model->SpeedThrottle;
 
-            emuState->RamSize = model->RamSize;
-            emuState->FrameSkip = model->FrameSkip;
+            _modules.Emu.RamSize = model->RamSize;
+            _modules.Emu.FrameSkip = model->FrameSkip;
 
             _modules.Graphics.SetPaletteType();
             _modules.DirectDraw.SetAspect(model->ForceAspect);
@@ -275,19 +275,14 @@ namespace VCCSharp.Modules
 
         public void SetCpuType(byte cpuType)
         {
-            unsafe
+            var cpu = new Dictionary<CPUTypes, string>
             {
-                EmuState* emuState = _modules.Emu.GetEmuState();
+                {CPUTypes.MC6809, "MC6809"},
+                {CPUTypes.HD6309, "HD6309"}
+            };
 
-                var cpu = new Dictionary<CPUTypes, string>
-                {
-                    {CPUTypes.MC6809, "MC6809"},
-                    {CPUTypes.HD6309, "HD6309"}
-                };
-
-                emuState->CpuType = cpuType;
-                _modules.Vcc.CpuName = cpu[(CPUTypes) cpuType];
-            }
+            _modules.Emu.CpuType = cpuType;
+            _modules.Vcc.CpuName = cpu[(CPUTypes)cpuType];
         }
 
         public unsafe void ReadIniFile(EmuState* emuState)

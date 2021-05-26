@@ -111,10 +111,10 @@ namespace VCCSharp.Modules
 
                     _modules.PAKInterface.GetModuleStatus(emuState);
 
-                    int frameSkip = emuState->FrameSkip;
+                    int frameSkip = _modules.Emu.FrameSkip;
                     string cpuName = CpuName;
                     double mhz = emuState->CPUCurrentSpeed;
-                    string status = Converter.ToString(emuState->StatusLine);
+                    string status = _modules.Emu.StatusLine;
 
                     string statusBarText = $"Skip:{frameSkip} | FPS:{fps:F} | {cpuName} @ {mhz:0.000}Mhz| {status}";
 
@@ -158,7 +158,7 @@ namespace VCCSharp.Modules
                 }}
             };
 
-            for (int frames = 1; frames <= emuState->FrameSkip; frames++)
+            for (int frames = 1; frames <= _modules.Emu.FrameSkip; frames++)
             {
                 resetActions[emuState->ResetPending]();
 
@@ -174,7 +174,7 @@ namespace VCCSharp.Modules
                 }
             }
 
-            _modules.Throttle.EndRender(emuState->FrameSkip);
+            _modules.Throttle.EndRender(_modules.Emu.FrameSkip);
 
             return fps;
         }
