@@ -7,8 +7,6 @@
 
 const unsigned char rega[4] = { 0,0,0,0 };
 const unsigned char regb[4] = { 0,0,0,0 };
-const unsigned char rega_dd[4] = { 0,0,0,0 };
-const unsigned char regb_dd[4] = { 0,0,0,0 };
 
 MC6821State* InitializeInstance(MC6821State*);
 
@@ -21,23 +19,14 @@ extern "C" {
 }
 
 MC6821State* InitializeInstance(MC6821State* p) {
-  p->LeftChannel = 0;
-  p->RightChannel = 0;
   p->Asample = 0;
   p->Ssample = 0;
   p->Csample = 0;
   p->CartInserted = 0;
   p->CartAutoStart = 1;
-  p->AddLF = 0;
-
-  p->hPrintFile = INVALID_HANDLE_VALUE;
-  p->hOut = NULL;
-  p->MonState = FALSE;
 
   ARRAYCOPY(rega);
   ARRAYCOPY(regb);
-  ARRAYCOPY(rega_dd);
-  ARRAYCOPY(regb_dd);
 
   return p;
 }

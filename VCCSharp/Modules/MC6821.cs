@@ -3,6 +3,7 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using HANDLE = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -33,6 +34,15 @@ namespace VCCSharp.Modules
     {
         private readonly IModules _modules;
         private readonly IKernel _kernel;
+
+        private byte _addLf;
+        private int _monState = Define.FALSE;
+
+        private HANDLE _hPrintFile;
+        private HANDLE _hOut;
+
+        public byte[] rega_dd = { 0, 0, 0, 0 };
+        public byte[] regb_dd = { 0, 0, 0, 0 };
 
         public MC6821(IModules modules, IKernel kernel)
         {
@@ -154,8 +164,8 @@ namespace VCCSharp.Modules
                 {
                     mc6821State->rega[index] = 0;
                     mc6821State->regb[index] = 0;
-                    mc6821State->rega_dd[index] = 0;
-                    mc6821State->regb_dd[index] = 0;
+                    rega_dd[index] = 0;
+                    regb_dd[index] = 0;
                 }
             }
         }
@@ -181,35 +191,25 @@ namespace VCCSharp.Modules
 
         public void MC6821_ClosePrintFile()
         {
-            unsafe
-            {
-                MC6821State* instance = GetMC6821State();
+            _kernel.CloseHandle(_hPrintFile);
 
-                _kernel.CloseHandle(instance->hPrintFile);
+            _hPrintFile = Define.INVALID_HANDLE_VALUE;
 
-                instance->hPrintFile = Define.INVALID_HANDLE_VALUE;
+            _kernel.FreeConsole();
 
-                _kernel.FreeConsole();
-
-                instance->hOut = IntPtr.Zero;
-            }
+            _hOut = IntPtr.Zero;
         }
 
         public void MC6821_SetMonState(int state)
         {
-            unsafe
+            if (_monState == Define.TRUE && state == Define.FALSE)
             {
-                MC6821State* instance = GetMC6821State();
+                _kernel.FreeConsole();
 
-                if (instance->MonState == Define.TRUE && state == Define.FALSE)
-                {
-                    _kernel.FreeConsole();
-
-                    instance->hOut = IntPtr.Zero;
-                }
-
-                instance->MonState = state;
+                _hOut = IntPtr.Zero;
             }
+
+            _monState = state;
         }
 
         public byte MC6821_pia0_read(byte port)
@@ -238,7 +238,7 @@ namespace VCCSharp.Modules
                         }
                         else
                         {
-                            return instance->rega_dd[port];
+                            return rega_dd[port];
                         }
 
                     case 2: //WritePrint 
@@ -246,11 +246,11 @@ namespace VCCSharp.Modules
                         {
                             instance->rega[3] = (byte)(instance->rega[3] & 63);
 
-                            return (byte)(instance->rega[port] & instance->rega_dd[port]);
+                            return (byte)(instance->rega[port] & rega_dd[port]);
                         }
                         else
                         {
-                            return instance->rega_dd[port];
+                            return rega_dd[port];
                         }
                 }
             }
@@ -282,11 +282,11 @@ namespace VCCSharp.Modules
                         {
                             instance->regb[3] = (byte)(instance->regb[3] & 63);
 
-                            return (byte)(instance->regb[port] & instance->regb_dd[port]);
+                            return (byte)(instance->regb[port] & regb_dd[port]);
                         }
                         else
                         {
-                            return instance->regb_dd[port];
+                            return regb_dd[port];
                         }
 
                     case 0:
@@ -299,7 +299,7 @@ namespace VCCSharp.Modules
                         }
                         else
                         {
-                            return instance->regb_dd[port];
+                            return regb_dd[port];
                         }
                 }
             }
@@ -325,7 +325,7 @@ namespace VCCSharp.Modules
                         }
                         else
                         {
-                            instance->rega_dd[port] = data;
+                            rega_dd[port] = data;
                         }
 
                         return;
@@ -337,7 +337,7 @@ namespace VCCSharp.Modules
                         }
                         else
                         {
-                            instance->rega_dd[port] = data;
+                            rega_dd[port] = data;
                         }
 
                         return;
@@ -389,7 +389,7 @@ namespace VCCSharp.Modules
                         }
                         else
                         {
-                            instance->regb_dd[port] = data;
+                            regb_dd[port] = data;
                         }
 
                         return;
@@ -397,7 +397,7 @@ namespace VCCSharp.Modules
                     case 2: //FF22
                         if (ddb != 0)
                         {
-                            instance->regb[port] = (byte)(data & instance->regb_dd[port]);
+                            instance->regb[port] = (byte)(data & regb_dd[port]);
 
                             _modules.Graphics.SetGimeVdgMode2((byte)((instance->regb[2] & 248) >> 3));
 
@@ -405,7 +405,7 @@ namespace VCCSharp.Modules
                         }
                         else
                         {
-                            instance->regb_dd[port] = data;
+                            regb_dd[port] = data;
                         }
 
                         return;
@@ -433,15 +433,15 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                MC6821State* instance = GetMC6821State();
-                
                 byte data = 0;
 
-                if ((long)(instance->hPrintFile) == -1) { //INVALID_HANDLE_VALUE
+                if ((long)(_hPrintFile) == -1)
+                { //INVALID_HANDLE_VALUE
                     return;
                 }
 
-                if ((_startWait & sample) != 0) { //Waiting for start bit
+                if ((_startWait & sample) != 0)
+                { //Waiting for start bit
                     return;
                 }
 
@@ -452,7 +452,8 @@ namespace VCCSharp.Modules
                     return;
                 }
 
-                if (sample != 0) {
+                if (sample != 0)
+                {
                     data |= _bitMask;
                 }
 
@@ -465,11 +466,12 @@ namespace VCCSharp.Modules
 
                     _bytesMoved = WritePrint(data);
 
-                    if (instance->MonState != 0) {
+                    if (_monState != 0)
+                    {
                         MC6821_WritePrintMon(&data);
                     }
 
-                    if ((data == 0x0D) && (instance->AddLF != 0))
+                    if ((data == 0x0D) && (_addLf != 0))
                     {
                         data = 0x0A;
 
@@ -500,7 +502,7 @@ namespace VCCSharp.Modules
                 return (byte)(((instance->rega[1] & 8) >> 3) + ((instance->rega[3] & 8) >> 2));
             }
         }
-        
+
         public unsafe void MC6821_WritePrintMon(byte* data)
         {
             WriteConsole(data);
@@ -542,28 +544,14 @@ namespace VCCSharp.Modules
 
         public int MC6821_OpenPrintFile(string filename)
         {
-            unsafe
-            {
-                MC6821State* instance = GetMC6821State();
+            _hPrintFile = Library.MC6821.MC6821_OpenPrintFile(filename);
 
-                instance->hPrintFile = Library.MC6821.MC6821_OpenPrintFile(filename);
-
-                if (instance->hPrintFile == Define.INVALID_HANDLE_VALUE) {
-                    return 0;
-                }
-
-                return 1;
-            }
+            return _hPrintFile == Define.INVALID_HANDLE_VALUE ? 0 : 1;
         }
 
         public void MC6821_SetSerialParams(byte textMode)
         {
-            unsafe
-            {
-                MC6821State* instance = GetMC6821State();
-
-                instance->AddLF = textMode;
-            }
+            _addLf = textMode;
         }
     }
 }
