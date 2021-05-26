@@ -74,3 +74,9 @@ extern "C" {
     return CloseHandle(handle);
   }
 }
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl FileFlushFileBuffers(HANDLE handle) {
+    return FileFlushFileBuffers(handle);
+  }
+}

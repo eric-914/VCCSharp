@@ -102,7 +102,7 @@ namespace VCCSharp.Modules
                 return;
             }
 
-            if ((instance->TapeOffset > instance->TotalSize) || (instance->TotalSize == 0))	//End of tape return nothing
+            if ((instance->TapeOffset > instance->TotalSize) || (instance->TotalSize == 0)) //End of tape return nothing
             {
                 //memset(buffer, 0, bytesToConvert);
                 for (int index = 0; index < bytesToConvert; index++)
@@ -110,7 +110,7 @@ namespace VCCSharp.Modules
                     buffer[index] = 0;
                 }
 
-                TapeMode = (byte)TapeModes.STOP;	//Stop at end of tape
+                TapeMode = (byte)TapeModes.STOP; //Stop at end of tape
 
                 return;
             }
@@ -161,7 +161,7 @@ namespace VCCSharp.Modules
 
                 instance->TempIndex -= bytesToConvert; //Point to the Next free byte in the temp buffer
             }
-            else	//We ran out of source bytes
+            else //We ran out of source bytes
             {
                 //memcpy(buffer, instance->TempBuffer, instance->TempIndex);						//Partial Fill of return buffer;
                 for (int index = 0; index < instance->TempIndex; index++)
@@ -270,18 +270,14 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void SyncFileBuffer()
-        {
-            Library.Cassette.SyncFileBuffer();
-        }
-
         public void CloseTapeFile()
         {
             unsafe
             {
                 CassetteState* instance = GetCassetteState();
 
-                if (instance->TapeHandle == IntPtr.Zero) {
+                if (instance->TapeHandle == IntPtr.Zero)
+                {
                     return;
                 }
 
@@ -346,7 +342,7 @@ namespace VCCSharp.Modules
                 {
                     var width = index - instance->LastTrans;
 
-                    if ((width < 10) || (width > 50))	//Invalid Sample Skip it
+                    if ((width < 10) || (width > 50)) //Invalid Sample Skip it
                     {
                         instance->LastSample = 0;
                         instance->LastTrans = index;
@@ -406,11 +402,12 @@ namespace VCCSharp.Modules
             }
 
             //_writeProtect = 0;
-            instance->FileType = 0;	//0=wav 1=cas
+            instance->FileType = 0; //0=wav 1=cas
 
-            instance->TapeHandle = _modules.FileOperations.FileCreateFile(filename, Define.GENERIC_READ | Define.GENERIC_WRITE);
+            instance->TapeHandle =
+                _modules.FileOperations.FileCreateFile(filename, Define.GENERIC_READ | Define.GENERIC_WRITE);
 
-            if (instance->TapeHandle == Define.INVALID_HANDLE_VALUE)	//Can't open read/write. try read only
+            if (instance->TapeHandle == Define.INVALID_HANDLE_VALUE) //Can't open read/write. try read only
             {
                 instance->TapeHandle = _modules.FileOperations.FileCreateFile(filename, Define.GENERIC_READ);
                 //_writeProtect = 1;
@@ -420,10 +417,11 @@ namespace VCCSharp.Modules
             {
                 MessageBox.Show("Can't Mount", "Error");
 
-                return 0;	//Give up
+                return 0; //Give up
             }
 
-            instance->TotalSize = (uint)_modules.FileOperations.FileSetFilePointer(instance->TapeHandle, Define.FILE_END);
+            instance->TotalSize =
+                (uint)_modules.FileOperations.FileSetFilePointer(instance->TapeHandle, Define.FILE_END);
             instance->TapeOffset = 0;
 
             var extension = Path.GetExtension(Converter.ToString(filename))?.ToUpper();
@@ -444,7 +442,8 @@ namespace VCCSharp.Modules
                 ulong moved = 0;
 
                 //Read the whole file in for .CAS files
-                _modules.FileOperations.FileReadFile(instance->TapeHandle, instance->CasBuffer, instance->TotalSize, &moved);
+                _modules.FileOperations.FileReadFile(instance->TapeHandle, instance->CasBuffer, instance->TotalSize,
+                    &moved);
 
                 instance->BytesMoved = (uint)moved;
 
@@ -459,7 +458,41 @@ namespace VCCSharp.Modules
 
         public void ResetCassetteBuffer()
         {
-            Library.Cassette.ResetCassetteBuffer(); ;
+            Library.Cassette.ResetCassetteBuffer();
         }
+
+        public void SyncFileBuffer()
+        {
+            unsafe
+            {
+                CassetteState* instance = GetCassetteState();
+
+                _modules.FileOperations.FileSetFilePointer(instance->TapeHandle, Define.FILE_BEGIN);
+
+                switch (instance->FileType)
+                {
+                    case Define.CAS:
+                        SyncFileBufferCas();
+                        break;
+
+                    case Define.WAV:
+                        SyncFileBufferWav();
+                        break;
+                }
+
+                _modules.FileOperations.FileFlushFileBuffers(instance->TapeHandle);
+            }
+        }
+
+        public void SyncFileBufferCas()
+        {
+            Library.Cassette.SyncFileBufferCAS();
+        }
+
+        public void SyncFileBufferWav()
+        {
+            Library.Cassette.SyncFileBufferWAV();
+        }
+
     }
 }
