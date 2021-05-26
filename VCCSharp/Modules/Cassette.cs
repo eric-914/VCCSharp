@@ -311,25 +311,6 @@ namespace VCCSharp.Modules
             return instance->TapeOffset;
         }
 
-        public unsafe void FlushCassetteWav(byte* buffer, uint length)
-        {
-            Library.Cassette.FlushCassetteWAV(buffer, length);
-
-            CassetteState* instance = GetCassetteState();
-
-            if (length != instance->BytesMoved)
-            {
-                return;
-            }
-
-            instance->TapeOffset += length;
-
-            if (instance->TapeOffset > instance->TotalSize)
-            {
-                instance->TotalSize = instance->TapeOffset;
-            }
-        }
-
         public unsafe void FlushCassetteCas(byte* buffer, uint length)
         {
             CassetteState* instance = GetCassetteState();
@@ -456,11 +437,6 @@ namespace VCCSharp.Modules
             return 1;
         }
 
-        public void ResetCassetteBuffer()
-        {
-            Library.Cassette.ResetCassetteBuffer();
-        }
-
         public void SyncFileBuffer()
         {
             unsafe
@@ -486,13 +462,81 @@ namespace VCCSharp.Modules
 
         public void SyncFileBufferCas()
         {
-            Library.Cassette.SyncFileBufferCAS();
+            unsafe
+            {
+                CassetteState* instance = GetCassetteState();
+
+                instance->CasBuffer[instance->TapeOffset] = instance->Byte;	//capture the last byte
+                instance->LastTrans = 0;	//reset all static inter-call variables
+                instance->Mask = 0;
+                instance->Byte = 0;
+                instance->LastSample = 0;
+                instance->TempIndex = 0;
+
+                _modules.FileOperations.FileWriteFile(instance->TapeHandle, instance->CasBuffer, (int)(instance->TapeOffset));
+            }
         }
 
         public void SyncFileBufferWav()
         {
-            Library.Cassette.SyncFileBufferWAV();
+            uint formatSize = 16;		//size of WAVE section chunk
+            ushort waveType = 1;		//WAVE type format
+            ushort channels = 1;		//mono/stereo
+            uint bitRate = Define.TAPEAUDIORATE;		//sample rate
+            ushort bitsperSample = 8;	//Bits/sample
+            uint bytesperSec = (uint)(bitRate * channels * (bitsperSample / 8));		//bytes/sec
+            ushort blockAlign = (ushort)((bitsperSample * channels) / 8);		//Block alignment
+
+            unsafe
+            {
+                CassetteState* instance = GetCassetteState();
+
+                uint fileSize = instance->TotalSize + 40 - 8;
+                uint chunkSize = fileSize;
+
+                _modules.FileOperations.FileWriteFile(instance->TapeHandle, "RIFF");
+                _modules.FileOperations.FileWriteFile(instance->TapeHandle, (byte*)&fileSize, 4);
+
+                _modules.FileOperations.FileWriteFile(instance->TapeHandle, "WAVE");
+
+                _modules.FileOperations.FileWriteFile(instance->TapeHandle, "fmt ");
+                _modules.FileOperations.FileWriteFile(instance->TapeHandle, (byte*)(&formatSize), 4);
+                _modules.FileOperations.FileWriteFile(instance->TapeHandle, (byte*)(&waveType), 2);
+                _modules.FileOperations.FileWriteFile(instance->TapeHandle, (byte*)(&channels), 2);
+                _modules.FileOperations.FileWriteFile(instance->TapeHandle, (byte*)(&bitRate), 4);
+                _modules.FileOperations.FileWriteFile(instance->TapeHandle, (byte*)(&bytesperSec), 4);
+                _modules.FileOperations.FileWriteFile(instance->TapeHandle, (byte*)(&blockAlign), 2);
+                _modules.FileOperations.FileWriteFile(instance->TapeHandle, (byte*)(&bitsperSample), 2);
+
+                _modules.FileOperations.FileWriteFile(instance->TapeHandle, "data");
+                _modules.FileOperations.FileWriteFile(instance->TapeHandle, (byte*)(&chunkSize), 4);
+            }
         }
 
+        public unsafe void FlushCassetteWav(byte* buffer, uint length)
+        {
+            CassetteState* instance = GetCassetteState();
+
+            _modules.FileOperations.FileSetFilePointer(instance->TapeHandle, Define.FILE_BEGIN, instance->TapeOffset + 44);
+
+            _modules.FileOperations.FileWriteFile(instance->TapeHandle, buffer, (int)length);
+
+            if (length != instance->BytesMoved)
+            {
+                return;
+            }
+
+            instance->TapeOffset += length;
+
+            if (instance->TapeOffset > instance->TotalSize)
+            {
+                instance->TotalSize = instance->TapeOffset;
+            }
+        }
+
+        public void ResetCassetteBuffer()
+        {
+            Library.Cassette.ResetCassetteBuffer();
+        }
     }
 }

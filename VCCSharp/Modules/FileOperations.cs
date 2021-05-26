@@ -6,10 +6,12 @@ namespace VCCSharp.Modules
     public interface IFileOperations
     {
         unsafe HANDLE FileCreateFile(byte* filename, long desiredAccess);
-        long FileSetFilePointer(HANDLE handle, long moveMethod);
+        long FileSetFilePointer(HANDLE handle, long moveMethod, long offset = 0);
         unsafe int FileReadFile(HANDLE handle, byte* buffer, ulong size, ulong* moved);
         int FileCloseHandle(HANDLE handle);
         int FileFlushFileBuffers(HANDLE handle);
+        unsafe int FileWriteFile(HANDLE handle, byte* buffer, int size);
+        unsafe int FileWriteFile(HANDLE handle, string text);
     }
 
     public class FileOperations : IFileOperations
@@ -19,9 +21,9 @@ namespace VCCSharp.Modules
             return Library.FileOperations.FileCreateFile(filename, desiredAccess);
         }
 
-        public long FileSetFilePointer(HANDLE handle, long moveMethod)
+        public long FileSetFilePointer(HANDLE handle, long moveMethod, long offset = 0)
         {
-            return Library.FileOperations.FileSetFilePointer(handle, moveMethod);
+            return Library.FileOperations.FileSetFilePointer(handle, moveMethod, offset);
         }
 
         public unsafe int FileReadFile(HANDLE handle, byte* buffer, ulong size, ulong* moved)
@@ -37,6 +39,19 @@ namespace VCCSharp.Modules
         public int FileFlushFileBuffers(HANDLE handle)
         {
             return Library.FileOperations.FileFlushFileBuffers(handle);
+        }
+
+        public unsafe int FileWriteFile(HANDLE handle, byte* buffer, int size)
+        {
+            return Library.FileOperations.FileWriteFile(handle, buffer, size);
+        }
+
+        public unsafe int FileWriteFile(HANDLE handle, string text)
+        {
+            fixed (byte* buffer = Converter.ToByteArray(text))
+            {
+                return Library.FileOperations.FileWriteFile(handle, buffer, text.Length);
+            }
         }
     }
 }

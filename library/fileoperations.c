@@ -58,8 +58,8 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) DWORD __cdecl FileSetFilePointer(HANDLE handle, DWORD moveMethod) {
-    return SetFilePointer(handle, 0, 0, moveMethod);
+  __declspec(dllexport) DWORD __cdecl FileSetFilePointer(HANDLE handle, DWORD moveMethod, long offset) {
+    return SetFilePointer(handle, offset, 0, moveMethod);
   }
 }
 
@@ -77,6 +77,14 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) BOOL __cdecl FileFlushFileBuffers(HANDLE handle) {
-    return FileFlushFileBuffers(handle);
+    return FlushFileBuffers(handle);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl FileWriteFile(HANDLE handle, unsigned char* buffer, int size) {
+    unsigned long bytesMoved = 0;
+
+    return WriteFile(handle, buffer, 4, &bytesMoved, NULL);
   }
 }
