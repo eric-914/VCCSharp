@@ -1,12 +1,13 @@
 #include <ShlObj.h>
 
 #include "Config.h"
-#include "Cassette.h"
 #include "JoyStickModel.h"
 
 #include "fileoperations.h"
 
 using namespace std;
+
+#define STOP	0
 
 ConfigState* InitializeInstance(ConfigState*);
 JoystickModel* InitializeModel(JoystickModel*);

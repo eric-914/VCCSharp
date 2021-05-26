@@ -100,9 +100,6 @@
     <ClInclude Include="ConfigModel.h">
       <Filter>models</Filter>
     </ClInclude>
-    <ClInclude Include="Cassette.h">
-      <Filter>cassette</Filter>
-    </ClInclude>
     <ClInclude Include="CoCo.h">
       <Filter>coco</Filter>
     </ClInclude>
@@ -181,17 +178,11 @@
     <ClInclude Include="DirectDrawInternalState.h">
       <Filter>models</Filter>
     </ClInclude>
-    <ClInclude Include="DirectDrawInternal.h">
-      <Filter>directdraw</Filter>
-    </ClInclude>
     <ClInclude Include="PakInterfaceModule.h">
       <Filter>pakinterface</Filter>
     </ClInclude>
     <ClInclude Include="MC6821State.h">
       <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectDrawSurfaceDesc.h">
-      <Filter>directdraw</Filter>
     </ClInclude>
     <ClInclude Include="TC1014RegistersState.h">
       <Filter>models</Filter>

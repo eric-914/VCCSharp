@@ -191,16 +191,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cartridge.h" />
-    <ClInclude Include="Cassette.h" />
     <ClInclude Include="CassetteState.h" />
     <ClInclude Include="CmdLineArguments.h" />
     <ClInclude Include="CoCo.h" />
     <ClInclude Include="CoCoState.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="ConfigState.h" />
-    <ClInclude Include="DirectDrawInternal.h" />
     <ClInclude Include="DirectDrawInternalState.h" />
-    <ClInclude Include="DirectDrawSurfaceDesc.h" />
     <ClInclude Include="DirectSoundEnumerateCallback.h" />
     <ClInclude Include="DirectSoundState.h" />
     <ClInclude Include="Dmenu.h" />

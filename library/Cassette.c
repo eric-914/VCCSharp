@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 
-#include "Cassette.h"
 #include "CassetteState.h"
 
 #include "defines.h"
@@ -18,6 +17,8 @@ const unsigned char Zero[40] = { 0x80, 0x90, 0xA8, 0xB8, 0xC8, 0xD8, 0xE8, 0xE8,
 #define WRITEBUFFERSIZE	0x1FFFF
 #define CAS	1
 #define WAV 0
+
+#define STOP	0
 
 CassetteState* InitializeInstance(CassetteState*);
 
