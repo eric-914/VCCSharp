@@ -154,9 +154,6 @@
     <ClInclude Include="Emu.h">
       <Filter>emu</Filter>
     </ClInclude>
-    <ClInclude Include="Dmenu.h">
-      <Filter>models</Filter>
-    </ClInclude>
     <ClInclude Include="PakInterfaceState.h">
       <Filter>models</Filter>
     </ClInclude>

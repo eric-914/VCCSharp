@@ -8,7 +8,12 @@
 #include "PakInterfaceModule.h"
 #include "Emu.h"
 #include "Cartridge.h"
-#include "Dmenu.h"
+
+typedef struct {
+  char MenuName[512];
+  int MenuId;
+  int Type;
+} Dmenu;
 
 static Dmenu MenuItem[100];
 

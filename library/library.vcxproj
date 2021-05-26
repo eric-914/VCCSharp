@@ -200,7 +200,6 @@
     <ClInclude Include="DirectDrawInternalState.h" />
     <ClInclude Include="DirectSoundEnumerateCallback.h" />
     <ClInclude Include="DirectSoundState.h" />
-    <ClInclude Include="Dmenu.h" />
     <ClInclude Include="Emu.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsState.h" />

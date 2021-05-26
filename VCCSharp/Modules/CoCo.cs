@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
@@ -20,12 +21,15 @@ namespace VCCSharp.Modules
         void SetHorizontalInterruptState(byte state);
         void SetTimerInterruptState(byte state);
         void SetLinesPerScreen(byte lines);
+        void SetAudioEventAudioOut();
 
         Action<int> UpdateTapeDialog { get; set; }
     }
 
     public class CoCo : ICoCo
     {
+        private Action _audioEvent = () => { };
+
         private readonly IModules _modules;
 
         private static byte _lastMode;
@@ -295,7 +299,7 @@ namespace VCCSharp.Modules
                     _modules.Keyboard.SetPaste(false);
 
                     //Done pasting. Reset throttle to original state
-                    vcc.Throttle = cocoState->Throttle == 2 ? (byte) 0 : (byte) 1;
+                    vcc.Throttle = cocoState->Throttle == 2 ? (byte)0 : (byte)1;
 
                     //...and reset the keymap to the original state
                     ResetKeyMap();
@@ -410,7 +414,7 @@ namespace VCCSharp.Modules
                     cocoState->CycleDrift = cocoState->CyclesThisLine;
                 }
 
-                ExecuteAudioEvent();
+                _audioEvent();
 
                 cocoState->PicosToInterrupt -= cocoState->PicosToSoundSample;
                 cocoState->PicosToSoundSample = cocoState->SoundInterrupt;
@@ -440,7 +444,7 @@ namespace VCCSharp.Modules
                         instance->CycleDrift = instance->CyclesThisLine;
                     }
 
-                    ExecuteAudioEvent();
+                    _audioEvent();
 
                     instance->PicosToInterrupt -= instance->PicosToSoundSample;
                     instance->PicosToSoundSample = instance->SoundInterrupt;
@@ -501,7 +505,7 @@ namespace VCCSharp.Modules
                         instance->CycleDrift = instance->CyclesThisLine;
                     }
 
-                    ExecuteAudioEvent();
+                    _audioEvent();
 
                     instance->PicosToInterrupt -= instance->PicosToSoundSample;
                     instance->PicosToSoundSample = instance->SoundInterrupt;
@@ -526,7 +530,7 @@ namespace VCCSharp.Modules
 
                 _modules.TC1014.GimeAssertTimerInterrupt();
 
-                ExecuteAudioEvent();
+                _audioEvent();
 
                 instance->PicosToInterrupt = instance->MasterTickCounter;
                 instance->PicosToSoundSample = instance->SoundInterrupt;
@@ -540,11 +544,6 @@ namespace VCCSharp.Modules
             int currentKeyMap = _modules.Clipboard.CurrentKeyMap;
 
             _modules.Keyboard.KeyboardBuildRuntimeTable((byte)currentKeyMap);
-        }
-
-        public ushort SetAudioRate(ushort rate)
-        {
-            return Library.CoCo.SetAudioRate(rate);
         }
 
         //0 = Speaker 1= Cassette Out 2=Cassette In
@@ -603,31 +602,6 @@ namespace VCCSharp.Modules
 
                 return instance->SoundOutputMode;
             }
-        }
-
-        public void SetAudioEventAudioOut()
-        {
-            Library.CoCo.SetAudioEventAudioOut();
-        }
-
-        public void SetAudioEventCassetteOut()
-        {
-            Library.CoCo.SetAudioEventCassOut();
-        }
-
-        public void SetAudioEventCassetteIn()
-        {
-            Library.CoCo.SetAudioEventCassIn();
-        }
-
-        public void SetLinesPerScreen(byte lines)
-        {
-            Library.CoCo.SetLinesperScreen(lines);
-        }
-
-        private void ExecuteAudioEvent()
-        {
-            Library.CoCo.ExecuteAudioEvent();
         }
 
         private unsafe void CoCoDrawTopBorder(EmuState* emuState)
@@ -765,5 +739,101 @@ namespace VCCSharp.Modules
             _modules.Cassette.LoadCassetteBuffer(cocoState->CassBuffer);
         }
 
+        public ushort SetAudioRate(ushort rate)
+        {
+            unsafe
+            {
+                CoCoState* instance = GetCoCoState();
+
+                instance->CycleDrift = 0;
+                instance->AudioIndex = 0;
+
+                if (rate != 0)
+                {	//Force Mute or 44100Hz
+                    rate = 44100;
+                }
+
+                if (rate == 0)
+                {
+                    instance->SndEnable = 0;
+                    instance->SoundInterrupt = 0;
+                }
+                else
+                {
+                    instance->SndEnable = 1;
+                    instance->SoundInterrupt = Define.PICOSECOND / rate;
+                    instance->PicosToSoundSample = instance->SoundInterrupt;
+                }
+
+                instance->SoundRate = rate;
+
+                return 0;
+            }
+        }
+
+        public void SetLinesPerScreen(byte lines)
+        {
+            lines &= 3;
+
+            unsafe
+            {
+                CoCoState* instance = GetCoCoState();
+                GraphicsState* graphicsState = _modules.Graphics.GetGraphicsState();
+
+                instance->LinesperScreen = graphicsState->Lpf[lines];
+                instance->TopBorder = graphicsState->VcenterTable[lines];
+
+                //4 lines of top border are un-rendered 244-4=240 rendered scan-lines
+                instance->BottomBorder = (byte)(243 - (instance->TopBorder + instance->LinesperScreen));
+            }
+        }
+
+        public void SetAudioEventAudioOut()
+        {
+            void AudioOut()
+            {
+                unsafe
+                {
+                    CoCoState* instance = GetCoCoState();
+
+                    instance->AudioBuffer[instance->AudioIndex++] = _modules.MC6821.MC6821_GetDACSample();
+                }
+            }
+
+            _audioEvent = AudioOut;
+        }
+
+        public void SetAudioEventCassetteOut()
+        {
+            void CassOut()
+            {
+                unsafe
+                {
+                    CoCoState* instance = GetCoCoState();
+
+                    instance->CassBuffer[instance->AudioIndex++] = _modules.MC6821.MC6821_GetCasSample();
+                }
+            }
+
+            _audioEvent = CassOut;
+        }
+
+        public void SetAudioEventCassetteIn()
+        {
+            void CassIn()
+            {
+                unsafe
+                {
+                    CoCoState* instance = GetCoCoState();
+
+                    instance->AudioBuffer[instance->AudioIndex] = _modules.MC6821.MC6821_GetDACSample();
+
+                    _modules.MC6821.MC6821_SetCassetteSample(instance->CassBuffer[instance->AudioIndex++]);
+                }
+
+            }
+
+            _audioEvent = CassIn;
+        }
     }
 }

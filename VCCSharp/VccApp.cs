@@ -38,11 +38,11 @@ namespace VCCSharp
             unsafe
             {
                 //AudioState* audioState = _modules.Audio.GetAudioState();
+                _modules.CoCo.SetAudioEventAudioOut();
 
                 _hResources = _kernel.LoadLibrary("resources.dll");
-
+                
                 EmuState* emuState = _modules.Emu.GetEmuState();
-                VccState* vccState = _modules.Vcc.GetVccState();
 
                 emuState->Resources = _hResources;
 

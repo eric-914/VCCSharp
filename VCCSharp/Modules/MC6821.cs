@@ -27,6 +27,9 @@ namespace VCCSharp.Modules
 
         byte MC6821_GetMuxState();
         byte MC6821_DACState();
+        uint MC6821_GetDACSample();
+        void MC6821_SetCassetteSample(byte sample);
+        byte MC6821_GetCasSample();
     }
 
     // ReSharper disable once InconsistentNaming
@@ -552,6 +555,21 @@ namespace VCCSharp.Modules
         public void MC6821_SetSerialParams(byte textMode)
         {
             _addLf = textMode;
+        }
+
+        public uint MC6821_GetDACSample()
+        {
+            return Library.MC6821.MC6821_GetDACSample();
+        }
+
+        public void MC6821_SetCassetteSample(byte sample)
+        {
+            Library.MC6821.MC6821_SetCassetteSample(sample);
+        }
+
+        public byte MC6821_GetCasSample()
+        {
+            return Library.MC6821.MC6821_GetCasSample();
         }
     }
 }
