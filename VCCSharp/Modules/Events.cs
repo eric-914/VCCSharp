@@ -68,10 +68,7 @@ namespace VCCSharp.Modules
 
         public void EmuExit()
         {
-            unsafe
-            {
-                _modules.Vcc.GetVccState()->BinaryRunning = Define.FALSE;
-            }
+            _modules.Vcc.BinaryRunning = false;
         }
 
         public void SlowDown() //F3

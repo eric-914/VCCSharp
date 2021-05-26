@@ -31,6 +31,7 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
 
         public byte AutoStart { get; set; } = Define.TRUE;
+        public bool BinaryRunning { get; set; }
 
         //An IRQ of sorts telling the emulator to pause during Full Screen toggle
         public byte RunState { get; set; } = Define.EMU_RUNSTATE_RUNNING;
@@ -92,7 +93,6 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                VccState* vccState = GetVccState();
                 EmuState* emuState = _modules.Emu.GetEmuState();
 
                 while (BinaryRunning)
@@ -208,12 +208,6 @@ namespace VCCSharp.Modules
 
                 _modules.Joystick.SetStickNumbers(left->DiDevice, right->DiDevice);
             }
-        }
-
-        public unsafe bool BinaryRunning
-        {
-            get => GetVccState()->BinaryRunning != Define.FALSE;
-            set => GetVccState()->BinaryRunning = value ? Define.TRUE : Define.FALSE;
         }
 
         private unsafe SoundCardList Lookup(int index)

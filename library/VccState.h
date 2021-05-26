@@ -2,13 +2,8 @@
 
 #include <windows.h>
 
-#include "defines.h"
-
-#include "EmuState.h"
-
 typedef struct
 {
-  unsigned char BinaryRunning;
   unsigned char DialogOpen;
 
   MSG msg;

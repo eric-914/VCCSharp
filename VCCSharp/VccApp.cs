@@ -80,7 +80,7 @@ namespace VCCSharp
 
                 emuState->EmulationRunning = _modules.Vcc.AutoStart;
 
-                vccState->BinaryRunning = Define.TRUE;
+                _modules.Vcc.BinaryRunning = true;
 
                 _modules.Throttle.CalibrateThrottle();
             }
@@ -97,7 +97,7 @@ namespace VCCSharp
             {
                 VccState* vccState = _modules.Vcc.GetVccState();
 
-                while (vccState->BinaryRunning == Define.TRUE)
+                while (_modules.Vcc.BinaryRunning)
                 {
                     _modules.Vcc.CheckScreenModeChange();
 
