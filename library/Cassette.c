@@ -1,14 +1,11 @@
-#include <string>
-
-#include "CassetteState.h"
-
-#include "defines.h"
-
-#include "fileoperations.h"
-
-using namespace std;
+#include <windows.h>
 
 #define WRITEBUFFERSIZE	0x1FFFF
+
+typedef struct
+{
+  unsigned char* CasBuffer;
+} CassetteState;
 
 CassetteState* InitializeInstance(CassetteState*);
 
@@ -21,18 +18,7 @@ extern "C" {
 }
 
 CassetteState* InitializeInstance(CassetteState* p) {
-  p->Byte = 0;
-  p->BytesMoved = 0;
-  p->FileType = 0;
-  p->LastSample = 0;
-  p->LastTrans = 0;
-  p->Mask = 0;
-  p->TapeOffset = 0;
-  p->TempIndex = 0;
-  p->TotalSize = 0;
-
   p->CasBuffer = NULL;
-  p->TapeHandle = NULL;
 
   return p;
 }

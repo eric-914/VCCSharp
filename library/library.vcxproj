@@ -191,7 +191,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cartridge.h" />
-    <ClInclude Include="CassetteState.h" />
     <ClInclude Include="CmdLineArguments.h" />
     <ClInclude Include="CoCo.h" />
     <ClInclude Include="CoCoState.h" />

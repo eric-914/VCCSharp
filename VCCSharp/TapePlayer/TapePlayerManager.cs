@@ -14,8 +14,6 @@ namespace VCCSharp.TapePlayer
         private readonly TapePlayerViewModel _viewModel = new TapePlayerViewModel();
         private TapePlayerWindow _view;
 
-        private static unsafe ConfigState* _configState;
-
         public TapePlayerManager(IModules modules)
         {
             _modules = modules;
@@ -41,7 +39,6 @@ namespace VCCSharp.TapePlayer
 
         public unsafe void ShowDialog(ConfigState* state)
         {
-            _configState = state;
             _viewModel.State = state;
 
             _view ??= new TapePlayerWindow(_viewModel, this);
@@ -126,63 +123,49 @@ namespace VCCSharp.TapePlayer
 
         public void SetTapeMode(byte mode)
         {
-            unsafe
+            _modules.Cassette.TapeMode = mode;
+
+            switch (_modules.Cassette.TapeMode)
             {
-                CassetteState* instance = _modules.Cassette.GetCassetteState();
+                case Define.STOP:
+                    break;
 
-                _modules.Cassette.TapeMode = mode;
+                case Define.PLAY:
+                    if (_modules.Cassette.TapeHandle == IntPtr.Zero)
+                    {
+                        _modules.Cassette.TapeMode = LoadTape() == 0 ? Define.STOP : Define.PLAY;
+                    }
 
-                switch (_modules.Cassette.TapeMode)
-                {
-                    case Define.STOP:
-                        break;
+                    if (_modules.Cassette.MotorState != 0)
+                    {
+                        _modules.Cassette.Motor(1);
+                    }
 
-                    case Define.PLAY:
-                        if (instance->TapeHandle == IntPtr.Zero)
-                        {
-                            if (LoadTape() == 0)
-                            {
-                                _modules.Cassette.TapeMode = Define.STOP;
-                            }
-                            else
-                            {
-                                _modules.Cassette.TapeMode = Define.PLAY;
-                            }
-                        }
+                    break;
 
-                        if (_modules.Cassette.MotorState != 0)
-                        {
-                            _modules.Cassette.Motor(1);
-                        }
+                case Define.REC:
+                    if (_modules.Cassette.TapeHandle == IntPtr.Zero)
+                    {
+                        _modules.Cassette.TapeMode = LoadTape() == 0 ? Define.STOP : Define.REC;
+                    }
+                    break;
 
-                        break;
+                case Define.EJECT:
+                    _modules.Cassette.CloseTapeFile();
+                    _modules.Cassette.TapeFileName = "EMPTY";
 
-                    case Define.REC:
-                        if (instance->TapeHandle == IntPtr.Zero)
-                        {
-                            _modules.Cassette.TapeMode = LoadTape() == 0 ? Define.STOP : Define.REC;
-                        }
-                        break;
-
-                    case Define.EJECT:
-                        _modules.Cassette.CloseTapeFile();
-                        _modules.Cassette.TapeFileName = "EMPTY";
-
-                        break;
-                }
-
-                SetTapeCounter((int)instance->TapeOffset);
-
-                //_viewModel.FilePath = Path.GetFileName(Converter.ToString(instance->TapeFileName));
+                    break;
             }
+
+            SetTapeCounter((int)_modules.Cassette.TapeOffset);
+
+            //_viewModel.FilePath = Path.GetFileName(Converter.ToString(instance->TapeFileName));
         }
 
         public unsafe int LoadTape()
         {
             ConfigState* configState = _modules.Config.GetConfigState();
             ConfigModel* configModel = _modules.Config.GetConfigModel();
-
-            CassetteState* cassetteState = _modules.Cassette.GetCassetteState();
 
             string szFileName = Converter.ToString(configState->TapeFileName);
             string appPath = Converter.ToString(configModel->CassPath) ?? "C:\\";

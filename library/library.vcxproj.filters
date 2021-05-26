@@ -133,9 +133,6 @@
     <ClInclude Include="ConfigState.h">
       <Filter>models</Filter>
     </ClInclude>
-    <ClInclude Include="CassetteState.h">
-      <Filter>models</Filter>
-    </ClInclude>
     <ClInclude Include="CoCoState.h">
       <Filter>models</Filter>
     </ClInclude>
