@@ -1,5 +1,5 @@
 #include "DirectSoundState.h"
-#include "DirectSoundEnumerateCallback.h"
+#include "Config.h"
 
 //--Generally a wrapper around <dsound.h>
 
@@ -42,6 +42,19 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) HRESULT __cdecl DirectSoundUnlock(void* sndPointer1, DWORD sndLength1, void* sndPointer2, DWORD sndLength2) {
     return instance->lpdsbuffer1->Unlock(sndPointer1, sndLength1, sndPointer2, sndLength2);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL CALLBACK DirectSoundEnumerateCallback(LPGUID lpGuid, LPCSTR lpcstrDescription, LPCSTR lpcstrModule, LPVOID lpContext)
+  {
+    ConfigState* configState = GetConfigState();
+
+    strncpy(configState->SoundCards[configState->NumberOfSoundCards].CardName, lpcstrDescription, 63);
+    configState->SoundCards[configState->NumberOfSoundCards].Guid = lpGuid;
+    configState->NumberOfSoundCards++;
+
+    return (configState->NumberOfSoundCards < MAXCARDS);
   }
 }
 

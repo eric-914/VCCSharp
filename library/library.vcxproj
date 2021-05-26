@@ -173,7 +173,6 @@
     <ClCompile Include="DirectDrawSurfaceDesc.c" />
     <ClCompile Include="DirectInput.c" />
     <ClCompile Include="DirectSound.c" />
-    <ClCompile Include="DirectSoundEnumerateCallback.c" />
     <ClCompile Include="Emu.c" />
     <ClCompile Include="fileoperations.c" />
     <ClCompile Include="GDI.c" />
@@ -197,7 +196,6 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="ConfigState.h" />
     <ClInclude Include="DirectDrawInternalState.h" />
-    <ClInclude Include="DirectSoundEnumerateCallback.h" />
     <ClInclude Include="DirectSoundState.h" />
     <ClInclude Include="Emu.h" />
     <ClInclude Include="Graphics.h" />

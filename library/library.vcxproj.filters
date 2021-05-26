@@ -44,9 +44,6 @@
     <ClCompile Include="TC1014MMU.c">
       <Filter>tc1014\mmu</Filter>
     </ClCompile>
-    <ClCompile Include="DirectSoundEnumerateCallback.c">
-      <Filter>callbacks</Filter>
-    </ClCompile>
     <ClCompile Include="Emu.c">
       <Filter>emu</Filter>
     </ClCompile>
@@ -135,9 +132,6 @@
     </ClInclude>
     <ClInclude Include="CoCoState.h">
       <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectSoundEnumerateCallback.h">
-      <Filter>callbacks</Filter>
     </ClInclude>
     <ClInclude Include="EmuState.h">
       <Filter>models</Filter>
