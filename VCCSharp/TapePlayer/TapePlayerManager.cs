@@ -166,7 +166,7 @@ namespace VCCSharp.TapePlayer
 
                     case Define.EJECT:
                         _modules.Cassette.CloseTapeFile();
-                        Converter.ToByteArray("EMPTY", instance->TapeFileName);
+                        _modules.Cassette.TapeFileName = "EMPTY";
 
                         break;
                 }
@@ -204,9 +204,9 @@ namespace VCCSharp.TapePlayer
 
                 _viewModel.FilePath = Path.GetFileName(file);
 
-                Converter.ToByteArray(file, cassetteState->TapeFileName);
+                _modules.Cassette.TapeFileName = file;
 
-                if (_modules.Cassette.MountTape(cassetteState->TapeFileName) == 0)
+                if (_modules.Cassette.MountTape(file) == 0)
                 {
                     MessageBox.Show("Can't open file", "Error");
                 }

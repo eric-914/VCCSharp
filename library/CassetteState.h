@@ -19,11 +19,6 @@ typedef struct
   int LastTrans;
   unsigned int TempIndex;
 
-  char CassPath[MAX_PATH];
-  char TapeFileName[MAX_PATH];
-
-  unsigned char One[21];
-  unsigned char Zero[40];
   unsigned char TempBuffer[8192];
 
   unsigned char* CasBuffer;

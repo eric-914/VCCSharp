@@ -18,13 +18,14 @@ namespace VCCSharp.Modules
         //void SetTapeCounter(uint count);
         //void SetTapeMode(byte mode);
 
-        unsafe int MountTape(byte* filename);
+        int MountTape(string filename);
         void CloseTapeFile();
 
         Action<int> UpdateTapeDialog { get; set; }
 
         byte MotorState { get; set; }
         byte TapeMode { get; set; }
+        string TapeFileName { get; set; }
     }
 
     public class Cassette : ICassette
@@ -34,6 +35,11 @@ namespace VCCSharp.Modules
 
         public byte MotorState { get; set; }
         public byte TapeMode { get; set; } = Define.STOP;
+
+        private readonly byte[] _one = { 0x80, 0xA8, 0xC8, 0xE8, 0xE8, 0xF8, 0xF8, 0xE8, 0xC8, 0xA8, 0x78, 0x50, 0x50, 0x30, 0x10, 0x00, 0x00, 0x10, 0x30, 0x30, 0x50 };
+        private readonly byte[] _zero = { 0x80, 0x90, 0xA8, 0xB8, 0xC8, 0xD8, 0xE8, 0xE8, 0xF0, 0xF8, 0xF8, 0xF8, 0xF0, 0xE8, 0xD8, 0xC8, 0xB8, 0xA8, 0x90, 0x78, 0x78, 0x68, 0x50, 0x40, 0x30, 0x20, 0x10, 0x08, 0x00, 0x00, 0x00, 0x08, 0x10, 0x10, 0x20, 0x30, 0x40, 0x50, 0x68, 0x68 };
+
+        public string TapeFileName { get; set; } //[Define.MAX_PATH];
 
         private byte _quiet = 30;
         //private byte _writeProtect;
@@ -127,7 +133,7 @@ namespace VCCSharp.Modules
                         //memcpy(&(instance->TempBuffer[instance->TempIndex]), instance->Zero, 40);
                         for (int index = 0; index < 40; index++)
                         {
-                            instance->TempBuffer[instance->TempIndex + index] = instance->Zero[index];
+                            instance->TempBuffer[instance->TempIndex + index] = _zero[index];
                         }
 
                         instance->TempIndex += 40;
@@ -137,7 +143,7 @@ namespace VCCSharp.Modules
                         //memcpy(&(instance->TempBuffer[instance->TempIndex]), instance->One, 21);
                         for (int index = 0; index < 21; index++)
                         {
-                            instance->TempBuffer[instance->TempIndex + index] = instance->One[index];
+                            instance->TempBuffer[instance->TempIndex + index] = _one[index];
                         }
 
                         instance->TempIndex += 21;
@@ -371,7 +377,7 @@ namespace VCCSharp.Modules
         }
 
         //Return 1 on success 0 on fail
-        public unsafe int MountTape(byte* filename)
+        public unsafe int MountTape(string filename)
         {
             CassetteState* instance = GetCassetteState();
 
@@ -385,13 +391,17 @@ namespace VCCSharp.Modules
             //_writeProtect = 0;
             instance->FileType = 0; //0=wav 1=cas
 
-            instance->TapeHandle =
-                _modules.FileOperations.FileCreateFile(filename, Define.GENERIC_READ | Define.GENERIC_WRITE);
 
-            if (instance->TapeHandle == Define.INVALID_HANDLE_VALUE) //Can't open read/write. try read only
+            fixed (byte* p = Converter.ToByteArray(filename))
             {
-                instance->TapeHandle = _modules.FileOperations.FileCreateFile(filename, Define.GENERIC_READ);
-                //_writeProtect = 1;
+                instance->TapeHandle =
+                    _modules.FileOperations.FileCreateFile(p, Define.GENERIC_READ | Define.GENERIC_WRITE);
+
+                if (instance->TapeHandle == Define.INVALID_HANDLE_VALUE) //Can't open read/write. try read only
+                {
+                    instance->TapeHandle = _modules.FileOperations.FileCreateFile(p, Define.GENERIC_READ);
+                    //_writeProtect = 1;
+                }
             }
 
             if (instance->TapeHandle == Define.INVALID_HANDLE_VALUE)
@@ -405,7 +415,7 @@ namespace VCCSharp.Modules
                 (uint)_modules.FileOperations.FileSetFilePointer(instance->TapeHandle, Define.FILE_END);
             instance->TapeOffset = 0;
 
-            var extension = Path.GetExtension(Converter.ToString(filename))?.ToUpper();
+            var extension = Path.GetExtension(filename)?.ToUpper();
 
             if (extension == ".CAS")
             {

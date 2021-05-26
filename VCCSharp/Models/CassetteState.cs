@@ -19,11 +19,6 @@ namespace VCCSharp.Models
         public int LastTrans;
         public uint TempIndex;
 
-        public unsafe fixed byte CassPath[Define.MAX_PATH];
-        public unsafe fixed byte TapeFileName[Define.MAX_PATH];
-
-        public unsafe fixed byte One[21];
-        public unsafe fixed byte Zero[40];
         public unsafe fixed byte TempBuffer[8192];
 
         public unsafe byte* CasBuffer;
