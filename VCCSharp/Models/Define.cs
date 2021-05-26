@@ -357,5 +357,7 @@ namespace VCCSharp.Models
 
         public const int KEY_DOWN = 1;
         public const int KEY_UP = 0;
+
+        public const byte EMU_RUNSTATE_RUNNING = 0;
     }
 }

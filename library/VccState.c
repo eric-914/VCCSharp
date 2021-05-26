@@ -1,7 +1,5 @@
 #include "VccState.h"
 
-#define EMU_RUNSTATE_RUNNING	0
-
 VccState* InitializeInstance(VccState*);
 
 static VccState* instance = InitializeInstance(new VccState());
@@ -14,14 +12,6 @@ extern "C" {
 
 VccState* InitializeInstance(VccState* p) {
   p->DialogOpen = false;
-
-  p->AutoStart = true;
-  p->Throttle = 0;
-
-  p->RunState = EMU_RUNSTATE_RUNNING;
-
-  strcpy(p->CpuName, "CPUNAME");
-  strcpy(p->AppName, "");
 
   return p;
 }

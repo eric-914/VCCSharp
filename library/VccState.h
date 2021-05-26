@@ -8,14 +8,8 @@
 
 typedef struct
 {
-  unsigned char AutoStart;
   unsigned char BinaryRunning;
   unsigned char DialogOpen;
-  unsigned char RunState;  //An IRQ of sorts telling the emulator to pause during Full Screen toggle
-  unsigned char Throttle;
-
-  char CpuName[20];
-  char AppName[MAX_LOADSTRING];
 
   MSG msg;
 } VccState;

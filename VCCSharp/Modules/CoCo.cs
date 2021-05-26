@@ -222,7 +222,6 @@ namespace VCCSharp.Modules
             unsafe
             {
                 CoCoState* cocoState = GetCoCoState();
-                VccState* vccState = _modules.Vcc.GetVccState();
 
                 if (cocoState->HorzInterruptEnabled == Define.TRUE)
                 {
@@ -241,12 +240,12 @@ namespace VCCSharp.Modules
 
                 if (!_modules.Clipboard.ClipboardEmpty())
                 {
-                    CpuCycleClipboard(vccState);
+                    CpuCycleClipboard(_modules.Vcc);
                 }
             }
         }
 
-        private unsafe void CpuCycleClipboard(VccState* vccState)
+        private unsafe void CpuCycleClipboard(IVcc vcc)
         {
             const byte shift = 0x36;
             char key;
@@ -257,7 +256,7 @@ namespace VCCSharp.Modules
             //Set it to off. We need speed for this!
             if (cocoState->Throttle == 0)
             {
-                cocoState->Throttle = vccState->Throttle;
+                cocoState->Throttle = vcc.Throttle;
 
                 if (cocoState->Throttle == 0)
                 {
@@ -265,7 +264,7 @@ namespace VCCSharp.Modules
                 }
             }
 
-            vccState->Throttle = 0;
+            vcc.Throttle = 0;
 
             if (cocoState->ClipCycle == 1)
             {
@@ -296,7 +295,7 @@ namespace VCCSharp.Modules
                     _modules.Keyboard.SetPaste(false);
 
                     //Done pasting. Reset throttle to original state
-                    vccState->Throttle = cocoState->Throttle == 2 ? (byte) 0 : (byte) 1;
+                    vcc.Throttle = cocoState->Throttle == 2 ? (byte) 0 : (byte) 1;
 
                     //...and reset the keymap to the original state
                     ResetKeyMap();

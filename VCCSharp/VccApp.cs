@@ -78,7 +78,7 @@ namespace VCCSharp
 
                 emuState->ResetPending = (byte)ResetPendingStates.Hard;
 
-                emuState->EmulationRunning = vccState->AutoStart;
+                emuState->EmulationRunning = _modules.Vcc.AutoStart;
 
                 vccState->BinaryRunning = Define.TRUE;
 

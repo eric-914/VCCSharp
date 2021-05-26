@@ -99,12 +99,7 @@ namespace VCCSharp.Modules
 
         public void ToggleThrottle() //F8
         {
-            unsafe
-            {
-                VccState* vccState = _modules.Vcc.GetVccState();
-
-                vccState->Throttle = vccState->Throttle == Define.TRUE ? Define.FALSE : Define.TRUE;
-            }
+            _modules.Vcc.Throttle = _modules.Vcc.Throttle == Define.TRUE ? Define.FALSE : Define.TRUE;
         }
 
         public void ToggleOnOff() //F9
@@ -138,12 +133,11 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                VccState* vccState = _modules.Vcc.GetVccState();
                 EmuState* emuState = _modules.Emu.GetEmuState();
 
-                if (vccState->RunState == (byte)EmuRunStates.Running)
+                if (_modules.Vcc.RunState == (byte)EmuRunStates.Running)
                 {
-                    vccState->RunState = (byte)EmuRunStates.ReqWait;
+                    _modules.Vcc.RunState = (byte)EmuRunStates.ReqWait;
                     emuState->FullScreen = emuState->FullScreen == Define.TRUE ? Define.FALSE : Define.TRUE;
                 }
             }
@@ -276,8 +270,6 @@ namespace VCCSharp.Modules
 
         public void MouseMove(long lParam)
         {
-            RECT clientSize;
-
             unsafe
             {
                 EmuState* emuState = _modules.Emu.GetEmuState();
@@ -287,6 +279,7 @@ namespace VCCSharp.Modules
                     uint x = (uint)(lParam & 0xFFFF); // LOWORD(lParam);
                     uint y = (uint)((lParam >> 16) & 0xFFFF); // HIWORD(lParam);
 
+                    RECT clientSize;
                     _modules.GDI.GDIGetClientRect(emuState->WindowHandle, &clientSize);
 
                     x /= (uint)((clientSize.right - clientSize.left) >> 6);
@@ -327,12 +320,11 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                VccState* vccState = _modules.Vcc.GetVccState();
                 EmuState* emuState = _modules.Emu.GetEmuState();
 
-                if (vccState->RunState == 0)
+                if (_modules.Vcc.RunState == 0)
                 {
-                    vccState->RunState = 1;
+                    _modules.Vcc.RunState = 1;
                     emuState->FullScreen = emuState->FullScreen != 0 ? Define.FALSE : Define.TRUE;
                 }
             }
@@ -362,7 +354,7 @@ namespace VCCSharp.Modules
         //--------------------------------------------------------------------------
 
         // Save last two key down events
-        public void SaveLastTwoKeyDownEvents(byte kb_char, byte oemScan)
+        public void SaveLastTwoKeyDownEvents(byte kbChar, byte oemScan)
         {
             // Ignore zero scan code
             if (oemScan == 0)
@@ -375,12 +367,12 @@ namespace VCCSharp.Modules
 
             if (KeySaveToggle)
             {
-                KB_save1 = kb_char;
+                KB_save1 = kbChar;
                 SC_save1 = oemScan;
             }
             else
             {
-                KB_save2 = kb_char;
+                KB_save2 = kbChar;
                 SC_save2 = oemScan;
             }
         }

@@ -19,12 +19,25 @@ namespace VCCSharp.Modules
         string GetExecPath();
         void ApplyConfigurationChanges();
 
+        byte AutoStart { get; set; }
         bool BinaryRunning { get; set; }
+        byte RunState { get; set; }
+        byte Throttle { get; set; } 
+        string CpuName { get; set; }
     }
 
     public class Vcc : IVcc
     {
         private readonly IModules _modules;
+
+        public byte AutoStart { get; set; } = Define.TRUE;
+
+        //An IRQ of sorts telling the emulator to pause during Full Screen toggle
+        public byte RunState { get; set; } = Define.EMU_RUNSTATE_RUNNING;
+        public byte Throttle { get; set; } = 0;
+
+        public string CpuName { get; set; } = "(cpu)";
+        public string AppName;
 
         public Vcc(IModules modules)
         {
@@ -38,18 +51,13 @@ namespace VCCSharp.Modules
 
         public void CheckScreenModeChange()
         {
-            unsafe
+            //Need to stop the EMU thread for screen mode change
+            //As it holds the Secondary screen buffer open while running
+            if (RunState == (byte)EmuRunStates.Waiting)
             {
-                VccState* vccState = GetVccState();
+                _modules.DirectDraw.FullScreenToggle();
 
-                //Need to stop the EMU thread for screen mode change
-                //As it holds the Secondary screen buffer open while running
-                if (vccState->RunState == (byte)EmuRunStates.Waiting)
-                {
-                    _modules.DirectDraw.FullScreenToggle();
-
-                    vccState->RunState = (byte)EmuRunStates.Running;
-                }
+                RunState = (byte)EmuRunStates.Running;
             }
         }
 
@@ -77,12 +85,7 @@ namespace VCCSharp.Modules
                 appTitle = $"{binFileName} Running on {appTitle}";
             }
 
-            unsafe
-            {
-                VccState* vccState = GetVccState();
-
-                Converter.ToByteArray(appTitle, vccState->AppName);
-            }
+            AppName = appTitle;
         }
 
         public void EmuLoop()
@@ -92,13 +95,13 @@ namespace VCCSharp.Modules
                 VccState* vccState = GetVccState();
                 EmuState* emuState = _modules.Emu.GetEmuState();
 
-                while (vccState->BinaryRunning == Define.TRUE)
+                while (BinaryRunning)
                 {
-                    if (vccState->RunState == (byte)EmuRunStates.ReqWait)
+                    if (RunState == (byte)EmuRunStates.ReqWait)
                     {
-                        vccState->RunState = (byte)EmuRunStates.Waiting; //Signal Main thread we are waiting
+                        RunState = (byte)EmuRunStates.Waiting; //Signal Main thread we are waiting
 
-                        while (vccState->RunState == (byte)EmuRunStates.Waiting)
+                        while (RunState == (byte)EmuRunStates.Waiting)
                         {
                             Thread.Sleep(1);
                         }
@@ -109,7 +112,7 @@ namespace VCCSharp.Modules
                     _modules.PAKInterface.GetModuleStatus(emuState);
 
                     int frameSkip = emuState->FrameSkip;
-                    string cpuName = Converter.ToString(vccState->CpuName);
+                    string cpuName = CpuName;
                     double mhz = emuState->CPUCurrentSpeed;
                     string status = Converter.ToString(emuState->StatusLine);
 
@@ -117,7 +120,7 @@ namespace VCCSharp.Modules
 
                     _modules.DirectDraw.SetStatusBarText(statusBarText, emuState);
 
-                    if (vccState->Throttle == Define.TRUE)
+                    if (Throttle == Define.TRUE)
                     {
                         //Do nothing until the frame is over returning unused time to OS
                         _modules.Throttle.FrameWait();

@@ -133,10 +133,9 @@ namespace VCCSharp.Modules
         public unsafe void SynchSystemWithConfig(EmuState* emuState)
         {
             ConfigModel* model = GetConfigModel();
-            VccState* vccState = _modules.Vcc.GetVccState();
 
-            vccState->AutoStart = model->AutoStart;
-            vccState->Throttle = model->SpeedThrottle;
+            _modules.Vcc.AutoStart = model->AutoStart;
+            _modules.Vcc.Throttle = model->SpeedThrottle;
 
             emuState->RamSize = model->RamSize;
             emuState->FrameSkip = model->FrameSkip;
@@ -278,7 +277,6 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                VccState* vccState = _modules.Vcc.GetVccState();
                 EmuState* emuState = _modules.Emu.GetEmuState();
 
                 var cpu = new Dictionary<CPUTypes, string>
@@ -288,7 +286,7 @@ namespace VCCSharp.Modules
                 };
 
                 emuState->CpuType = cpuType;
-                Converter.ToByteArray(cpu[(CPUTypes)cpuType], vccState->CpuName);
+                _modules.Vcc.CpuName = cpu[(CPUTypes) cpuType];
             }
         }
 
