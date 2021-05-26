@@ -50,3 +50,21 @@ extern "C" {
     strcpy(path, buffer);
   }
 }
+
+extern "C" {
+  __declspec(dllexport) HANDLE __cdecl FileCreateFile(char* filename, long desiredAccess) {
+    return CreateFile(filename, desiredAccess, 0, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) DWORD __cdecl FileSetFilePointer(HANDLE handle, DWORD moveMethod) {
+    return SetFilePointer(handle, 0, 0, moveMethod);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl FileReadFile(HANDLE handle, unsigned char* buffer, unsigned long size, unsigned long* moved) {
+    return ReadFile(handle, buffer, size, moved, NULL);	//Read the whole file in for .CAS files
+  }
+}

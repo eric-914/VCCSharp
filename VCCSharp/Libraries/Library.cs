@@ -268,6 +268,12 @@ namespace VCCSharp.Libraries
             public static extern unsafe long DirectSoundGetCurrentPosition(ulong* playCursor, ulong* writeCursor);
         }
 
+        public static class FileOperations
+        {
+            [DllImport(LIBRARY)]
+            public static extern unsafe HANDLE FileCreateFile(byte* filename, long desiredAccess);
+        }
+
         public static class GDI
         {
             [DllImport(LIBRARY)]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
@@ -293,6 +294,18 @@ namespace VCCSharp.Modules
         public unsafe void FlushCassetteWav(byte* buffer, uint length)
         {
             Library.Cassette.FlushCassetteWAV(buffer, length);
+
+            CassetteState* instance = GetCassetteState();
+
+            if (length != instance->BytesMoved) {
+                return;
+            }
+
+            instance->TapeOffset += length;
+
+            if (instance->TapeOffset > instance->TotalSize) {
+                instance->TotalSize = instance->TapeOffset;
+            }
         }
 
         public unsafe void FlushCassetteCas(byte* buffer, uint length)
@@ -356,7 +369,36 @@ namespace VCCSharp.Modules
 
         public unsafe int MountTape(byte* filename)
         {
+            CassetteState* instance = GetCassetteState();
+
+            if (instance->TapeHandle != IntPtr.Zero)
+            {
+                instance->TapeMode = Define.STOP;
+
+                CloseTapeFile();
+            }
+
+            instance->WriteProtect = 0;
+            instance->FileType = 0;	//0=wav 1=cas
+
+            instance->TapeHandle = _modules.FileOperations.FileCreateFile(filename, Define.GENERIC_READ | Define.GENERIC_WRITE);
+
+            if (instance->TapeHandle == Define.INVALID_HANDLE_VALUE)	//Can't open read/write. try read only
+            {
+                instance->TapeHandle = _modules.FileOperations.FileCreateFile(filename, Define.GENERIC_READ);
+                instance->WriteProtect = 1;
+            }
+
+            if (instance->TapeHandle == Define.INVALID_HANDLE_VALUE)
+            {
+                MessageBox.Show("Can't Mount", "Error");
+
+                return 0;	//Give up
+            }
+
             return Library.Cassette.MountTape(filename);
+
+
         }
     }
 }

@@ -5,6 +5,8 @@
 #include "defines.h"
 #include "macros.h"
 
+#include "fileoperations.h"
+
 using namespace std;
 
 const unsigned char One[21] = { 0x80, 0xA8, 0xC8, 0xE8, 0xE8, 0xF8, 0xF8, 0xE8, 0xC8, 0xA8, 0x78, 0x50, 0x50, 0x30, 0x10, 0x00, 0x00, 0x10, 0x30, 0x30, 0x50 };
@@ -50,6 +52,14 @@ CassetteState* InitializeInstance(CassetteState* p) {
   ARRAYCOPY(One);
 
   return p;
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl FlushCassetteWAV(unsigned char* buffer, unsigned int length)
+  {
+    SetFilePointer(instance->TapeHandle, instance->TapeOffset + 44, 0, FILE_BEGIN);
+    WriteFile(instance->TapeHandle, buffer, length, &(instance->BytesMoved), NULL);
+  }
 }
 
 extern "C" {
@@ -140,31 +150,7 @@ extern "C" {
     char extension[4] = "";
     unsigned char index = 0;
 
-    if (instance->TapeHandle != NULL)
-    {
-      instance->TapeMode = STOP;
-
-      CloseTapeFile();
-    }
-
-    instance->WriteProtect = 0;
-    instance->FileType = 0;	//0=wav 1=cas
-    instance->TapeHandle = CreateFile(filename, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-
-    if (instance->TapeHandle == INVALID_HANDLE_VALUE)	//Can't open read/write. try read only
-    {
-      instance->TapeHandle = CreateFile(filename, GENERIC_READ, 0, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-      instance->WriteProtect = 1;
-    }
-
-    if (instance->TapeHandle == INVALID_HANDLE_VALUE)
-    {
-      MessageBox(0, "Can't Mount", "Error", 0);
-
-      return(0);	//Give up
-    }
-
-    instance->TotalSize = SetFilePointer(instance->TapeHandle, 0, 0, FILE_END);
+    instance->TotalSize = FileSetFilePointer(instance->TapeHandle, FILE_END);
     instance->TapeOffset = 0;
 
     strcpy(extension, &filename[strlen(filename) - 3]);
@@ -188,9 +174,9 @@ extern "C" {
 
       instance->CasBuffer = (unsigned char*)malloc(WRITEBUFFERSIZE);
 
-      SetFilePointer(instance->TapeHandle, 0, 0, FILE_BEGIN);
+      FileSetFilePointer(instance->TapeHandle, FILE_BEGIN);
 
-      ReadFile(instance->TapeHandle, instance->CasBuffer, instance->TotalSize, &(instance->BytesMoved), NULL);	//Read the whole file in for .CAS files
+      FileReadFile(instance->TapeHandle, instance->CasBuffer, instance->TotalSize, &(instance->BytesMoved));	//Read the whole file in for .CAS files
 
       if (instance->BytesMoved != instance->TotalSize) {
         return(0);
@@ -198,23 +184,5 @@ extern "C" {
     }
 
     return(1);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl FlushCassetteWAV(unsigned char* buffer, unsigned int length)
-  {
-      SetFilePointer(instance->TapeHandle, instance->TapeOffset + 44, 0, FILE_BEGIN);
-      WriteFile(instance->TapeHandle, buffer, length, &(instance->BytesMoved), NULL);
-
-      if (length != instance->BytesMoved) {
-        return;
-      }
-
-      instance->TapeOffset += length;
-
-      if (instance->TapeOffset > instance->TotalSize) {
-        instance->TotalSize = instance->TapeOffset;
-      }
   }
 }

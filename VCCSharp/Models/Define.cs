@@ -364,5 +364,10 @@ namespace VCCSharp.Models
         public const byte WAV = 0;
 
         public const uint WRITEBUFFERSIZE = 0x1FFFF;
+
+        public const long GENERIC_READ = (0x80000000L);
+        public const long GENERIC_WRITE = (0x40000000L);
+        public const long GENERIC_EXECUTE = (0x20000000L);
+        public const long GENERIC_ALL = (0x10000000L);
     }
 }
