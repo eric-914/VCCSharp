@@ -35,13 +35,9 @@ CassetteState* InitializeInstance(CassetteState* p) {
   p->LastSample = 0;
   p->LastTrans = 0;
   p->Mask = 0;
-  p->MotorState = 0;
-  p->Quiet = 30;
-  p->TapeMode = STOP;
   p->TapeOffset = 0;
   p->TempIndex = 0;
   p->TotalSize = 0;
-  p->WriteProtect = 0;
 
   p->CasBuffer = NULL;
   p->TapeHandle = NULL;

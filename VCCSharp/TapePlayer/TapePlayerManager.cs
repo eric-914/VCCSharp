@@ -130,9 +130,9 @@ namespace VCCSharp.TapePlayer
             {
                 CassetteState* instance = _modules.Cassette.GetCassetteState();
 
-                instance->TapeMode = mode;
+                _modules.Cassette.TapeMode = mode;
 
-                switch (instance->TapeMode)
+                switch (_modules.Cassette.TapeMode)
                 {
                     case Define.STOP:
                         break;
@@ -142,15 +142,15 @@ namespace VCCSharp.TapePlayer
                         {
                             if (LoadTape() == 0)
                             {
-                                instance->TapeMode = Define.STOP;
+                                _modules.Cassette.TapeMode = Define.STOP;
                             }
                             else
                             {
-                                instance->TapeMode = Define.PLAY;
+                                _modules.Cassette.TapeMode = Define.PLAY;
                             }
                         }
 
-                        if (instance->MotorState != 0)
+                        if (_modules.Cassette.MotorState != 0)
                         {
                             _modules.Cassette.Motor(1);
                         }
@@ -160,14 +160,7 @@ namespace VCCSharp.TapePlayer
                     case Define.REC:
                         if (instance->TapeHandle == IntPtr.Zero)
                         {
-                            if (LoadTape() == 0)
-                            {
-                                instance->TapeMode = Define.STOP;
-                            }
-                            else
-                            {
-                                instance->TapeMode = Define.REC;
-                            }
+                            _modules.Cassette.TapeMode = LoadTape() == 0 ? Define.STOP : Define.REC;
                         }
                         break;
 

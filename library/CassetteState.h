@@ -9,10 +9,6 @@ typedef struct
   unsigned char Byte;
   unsigned char LastSample;
   unsigned char Mask;
-  unsigned char MotorState;
-  unsigned char Quiet;
-  unsigned char TapeMode;
-  unsigned char WriteProtect;
 
   unsigned long BytesMoved;
   unsigned long TapeOffset;

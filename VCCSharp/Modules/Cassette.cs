@@ -11,22 +11,33 @@ namespace VCCSharp.Modules
     {
         unsafe CassetteState* GetCassetteState();
         unsafe uint FlushCassetteBuffer(byte* buffer, uint length);
-        unsafe void LoadCassetteBuffer(byte* cassBuffer);
+        unsafe void LoadCassetteBuffer(byte* buffer);
         void Motor(byte state);
 
-        void SetTapeCounter(uint count);
+        //void SetTapeCounter(uint count);
         //void SetTapeMode(byte mode);
 
         unsafe int MountTape(byte* filename);
         void CloseTapeFile();
 
         Action<int> UpdateTapeDialog { get; set; }
+
+        byte MotorState { get; set; }
+        byte TapeMode { get; set; }
     }
 
     public class Cassette : ICassette
     {
         private readonly IModules _modules;
         private readonly IKernel _kernel;
+
+        public byte MotorState { get; set; }
+        public byte TapeMode { get; set; } = Define.STOP;
+
+        private byte _quiet = 30;
+        //private byte _writeProtect;
+
+        public int LastTrans;
 
         public Action<int> UpdateTapeDialog { get; set; }
 
@@ -43,13 +54,13 @@ namespace VCCSharp.Modules
             return Library.Cassette.GetCassetteState();
         }
 
-        public unsafe void LoadCassetteBuffer(byte* cassBuffer)
+        public unsafe void LoadCassetteBuffer(byte* buffer)
         {
             CassetteState* instance = GetCassetteState();
 
             uint bytesMoved = 0;
 
-            if (instance->TapeMode != (byte)TapeModes.PLAY)
+            if (TapeMode != (byte)TapeModes.PLAY)
             {
                 return;
             }
@@ -57,32 +68,29 @@ namespace VCCSharp.Modules
             switch ((TapeFileType)(instance->FileType))
             {
                 case TapeFileType.WAV:
-                    LoadCassetteBufferWAV(cassBuffer, &bytesMoved);
+                    LoadCassetteBufferWav(buffer, &bytesMoved);
                     break;
 
                 case TapeFileType.CAS:
-                    LoadCassetteBufferCAS(cassBuffer, &bytesMoved);
+                    LoadCassetteBufferCas(buffer, &bytesMoved);
                     break;
             }
 
             UpdateTapeDialog((int)instance->TapeOffset);
         }
 
-        public unsafe void LoadCassetteBufferCAS(byte* cassBuffer, uint* bytesMoved)
+        public unsafe void LoadCassetteBufferCas(byte* buffer, uint* bytesMoved)
         {
-            CasToWav(cassBuffer, Define.TAPEAUDIORATE / 60, bytesMoved);
+            CasToWav(buffer, Define.TAPEAUDIORATE / 60, bytesMoved);
         }
 
         public unsafe void CasToWav(byte* buffer, ushort bytesToConvert, uint* bytesConverted)
         {
-            byte _byte = 0;
-            byte mask = 0;
-
             CassetteState* instance = GetCassetteState();
 
-            if (instance->Quiet > 0)
+            if (_quiet > 0)
             {
-                instance->Quiet--;
+                _quiet--;
 
                 //memset(buffer, 0, bytesToConvert);
                 for (int index = 0; index < bytesToConvert; index++)
@@ -101,15 +109,16 @@ namespace VCCSharp.Modules
                     buffer[index] = 0;
                 }
 
-                instance->TapeMode = (byte)TapeModes.STOP;	//Stop at end of tape
+                TapeMode = (byte)TapeModes.STOP;	//Stop at end of tape
 
                 return;
             }
 
             while ((instance->TempIndex < bytesToConvert) && (instance->TapeOffset <= instance->TotalSize))
             {
-                _byte = instance->CasBuffer[(instance->TapeOffset++) % instance->TotalSize];
+                var _byte = instance->CasBuffer[(instance->TapeOffset++) % instance->TotalSize];
 
+                byte mask;
                 for (mask = 0; mask <= 7; mask++)
                 {
                     if ((_byte & (1 << mask)) == 0)
@@ -149,7 +158,7 @@ namespace VCCSharp.Modules
                     instance->TempBuffer[index] = instance->TempBuffer[bytesToConvert + index];
                 }
 
-                instance->TempIndex -= bytesToConvert; //Point to the Next free byte in the tempbuffer
+                instance->TempIndex -= bytesToConvert; //Point to the Next free byte in the temp buffer
             }
             else	//We ran out of source bytes
             {
@@ -170,12 +179,12 @@ namespace VCCSharp.Modules
         }
 
         //--TODO: Seems this doesn't work
-        public unsafe void LoadCassetteBufferWAV(byte* cassBuffer, uint* bytesMoved)
+        public unsafe void LoadCassetteBufferWav(byte* buffer, uint* bytesMoved)
         {
             CassetteState* instance = GetCassetteState();
 
             _kernel.SetFilePointer(instance->TapeHandle, instance->TapeOffset + 44, null, Define.FILE_BEGIN);
-            _kernel.ReadFile(instance->TapeHandle, cassBuffer, Define.TAPEAUDIORATE / 60, bytesMoved, null);
+            _kernel.ReadFile(instance->TapeHandle, buffer, Define.TAPEAUDIORATE / 60, bytesMoved, null);
 
             instance->TapeOffset += *bytesMoved;
 
@@ -191,20 +200,20 @@ namespace VCCSharp.Modules
             {
                 CassetteState* instance = GetCassetteState();
 
-                instance->MotorState = state;
+                MotorState = state;
 
-                switch (instance->MotorState)
+                switch (MotorState)
                 {
                     case 0:
                         _modules.CoCo.SetSndOutMode(0);
 
-                        switch (instance->TapeMode)
+                        switch (TapeMode)
                         {
                             case Define.STOP:
                                 break;
 
                             case Define.PLAY:
-                                instance->Quiet = 30;
+                                _quiet = 30;
                                 instance->TempIndex = 0;
                                 break;
 
@@ -219,7 +228,7 @@ namespace VCCSharp.Modules
                         break;
 
                     case 1:
-                        switch (instance->TapeMode)
+                        switch (TapeMode)
                         {
                             case Define.STOP:
                                 _modules.CoCo.SetSndOutMode(0);
@@ -274,7 +283,7 @@ namespace VCCSharp.Modules
         {
             CassetteState* instance = GetCassetteState();
 
-            if (instance->TapeMode == Define.REC)
+            if (TapeMode == Define.REC)
             {
                 switch (instance->FileType)
                 {
@@ -348,7 +357,7 @@ namespace VCCSharp.Modules
                             //Don't blow past the end of the buffer
                             if (instance->TapeOffset >= Define.WRITEBUFFERSIZE)
                             {	
-                                instance->TapeMode = Define.STOP;
+                                TapeMode = Define.STOP;
                             }
                         }
                     }
@@ -373,12 +382,12 @@ namespace VCCSharp.Modules
 
             if (instance->TapeHandle != IntPtr.Zero)
             {
-                instance->TapeMode = Define.STOP;
+                TapeMode = Define.STOP;
 
                 CloseTapeFile();
             }
 
-            instance->WriteProtect = 0;
+            //_writeProtect = 0;
             instance->FileType = 0;	//0=wav 1=cas
 
             instance->TapeHandle = _modules.FileOperations.FileCreateFile(filename, Define.GENERIC_READ | Define.GENERIC_WRITE);
@@ -386,7 +395,7 @@ namespace VCCSharp.Modules
             if (instance->TapeHandle == Define.INVALID_HANDLE_VALUE)	//Can't open read/write. try read only
             {
                 instance->TapeHandle = _modules.FileOperations.FileCreateFile(filename, Define.GENERIC_READ);
-                instance->WriteProtect = 1;
+                //_writeProtect = 1;
             }
 
             if (instance->TapeHandle == Define.INVALID_HANDLE_VALUE)

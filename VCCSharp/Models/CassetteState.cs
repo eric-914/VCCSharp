@@ -9,10 +9,6 @@ namespace VCCSharp.Models
         public byte Byte;
         public byte LastSample;
         public byte Mask;
-        public byte MotorState;
-        public byte Quiet;
-        public byte TapeMode;
-        public byte WriteProtect;
 
         public uint BytesMoved;
         public uint TapeOffset;
