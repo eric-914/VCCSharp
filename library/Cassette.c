@@ -51,6 +51,17 @@ CassetteState* InitializeInstance(CassetteState* p) {
 }
 
 extern "C" {
+  __declspec(dllexport) void __cdecl ResetCassetteBuffer()
+  {
+    if (instance->CasBuffer != NULL) {
+      free(instance->CasBuffer);
+    }
+
+    instance->CasBuffer = (unsigned char*)malloc(WRITEBUFFERSIZE);
+  }
+}
+
+extern "C" {
   __declspec(dllexport) void __cdecl FlushCassetteWAV(unsigned char* buffer, unsigned int length)
   {
     SetFilePointer(instance->TapeHandle, instance->TapeOffset + 44, 0, FILE_BEGIN);
@@ -122,31 +133,5 @@ extern "C" {
     }
 
     FlushFileBuffers(instance->TapeHandle);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl CloseTapeFile()
-  {
-    if (instance->TapeHandle == NULL) {
-      return;
-    }
-
-    SyncFileBuffer();
-    CloseHandle(instance->TapeHandle);
-
-    instance->TapeHandle = NULL;
-    instance->TotalSize = 0;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl ResetCassetteBuffer()
-  {
-    if (instance->CasBuffer != NULL) {
-      free(instance->CasBuffer);
-    }
-
-    instance->CasBuffer = (unsigned char*)malloc(WRITEBUFFERSIZE);
   }
 }

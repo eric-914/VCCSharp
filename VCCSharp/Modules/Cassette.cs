@@ -277,7 +277,21 @@ namespace VCCSharp.Modules
 
         public void CloseTapeFile()
         {
-            Library.Cassette.CloseTapeFile();
+            unsafe
+            {
+                CassetteState* instance = GetCassetteState();
+
+                if (instance->TapeHandle == IntPtr.Zero) {
+                    return;
+                }
+
+                SyncFileBuffer();
+
+                _modules.FileOperations.FileCloseHandle(instance->TapeHandle);
+
+                instance->TapeHandle = IntPtr.Zero;
+                instance->TotalSize = 0;
+            }
         }
 
         public unsafe uint FlushCassetteBuffer(byte* buffer, uint length)

@@ -68,3 +68,9 @@ extern "C" {
     return ReadFile(handle, buffer, size, moved, NULL);	//Read the whole file in for .CAS files
   }
 }
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl FileCloseHandle(HANDLE handle) {
+    return CloseHandle(handle);
+  }
+}

@@ -41,9 +41,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe CassetteState* GetCassetteState();
 
             [DllImport(LIBRARY)]
-            public static extern void CloseTapeFile();
-
-            [DllImport(LIBRARY)]
             public static extern void SyncFileBuffer();
 
             [DllImport(LIBRARY)]
@@ -278,6 +275,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe int FileReadFile(HANDLE handle, byte* buffer, ulong size, ulong* moved);
+
+            [DllImport(LIBRARY)]
+            public static extern int FileCloseHandle(HANDLE handle);
         }
 
         public static class GDI
