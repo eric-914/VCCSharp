@@ -25,11 +25,6 @@ namespace VCCSharp.Models
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct ConfigState
     {
-        public byte NumberOfJoysticks;
-
-        public ushort TapeCounter;
-        public byte TapeMode;
-
         public short NumberOfSoundCards;
         
         //public unsafe fixed SoundCardList SoundCards[Define.MAXCARDS];

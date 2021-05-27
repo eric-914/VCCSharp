@@ -39,6 +39,7 @@ namespace VCCSharp.TapePlayer
 
         public unsafe void ShowDialog(ConfigState* state)
         {
+            _viewModel.Config = _modules.Config;
             _viewModel.State = state;
 
             _view ??= new TapePlayerWindow(_viewModel, this);
@@ -55,12 +56,7 @@ namespace VCCSharp.TapePlayer
         {
             _viewModel.Mode = TapeModes.REC;
 
-            unsafe
-            {
-                ConfigState* configState = _modules.Config.GetConfigState();
-
-                configState->TapeMode = Define.REC;
-            }
+            _modules.Config.TapeMode = Define.REC;
 
             SetTapeMode(Define.REC);
         }
@@ -69,12 +65,7 @@ namespace VCCSharp.TapePlayer
         {
             _viewModel.Mode = TapeModes.PLAY;
 
-            unsafe
-            {
-                ConfigState* configState = _modules.Config.GetConfigState();
-
-                configState->TapeMode = Define.PLAY;
-            }
+            _modules.Config.TapeMode = Define.PLAY;
 
             SetTapeMode(Define.PLAY);
         }
@@ -83,12 +74,7 @@ namespace VCCSharp.TapePlayer
         {
             _viewModel.Mode = TapeModes.STOP;
 
-            unsafe
-            {
-                ConfigState* configState = _modules.Config.GetConfigState();
-
-                configState->TapeMode = Define.STOP;
-            }
+            _modules.Config.TapeMode = Define.STOP;
 
             SetTapeMode(Define.STOP);
         }
@@ -97,12 +83,7 @@ namespace VCCSharp.TapePlayer
         {
             _viewModel.Mode = TapeModes.EJECT;
 
-            unsafe
-            {
-                ConfigState* configState = _modules.Config.GetConfigState();
-
-                configState->TapeMode = Define.EJECT;
-            }
+            _modules.Config.TapeMode = Define.EJECT;
 
             SetTapeMode(Define.EJECT);
         }
@@ -111,14 +92,9 @@ namespace VCCSharp.TapePlayer
         {
             _viewModel.Counter = 0;
 
-            unsafe
-            {
-                ConfigState* configState = _modules.Config.GetConfigState();
+            _modules.Config.TapeCounter = 0;
 
-                configState->TapeCounter = 0;
-
-                SetTapeCounter(0);
-            }
+            SetTapeCounter(0);
         }
 
         public void SetTapeMode(byte mode)
@@ -196,7 +172,7 @@ namespace VCCSharp.TapePlayer
 
                 Converter.ToByteArray(Path.GetDirectoryName(file), configModel->CassPath);
 
-                configState->TapeCounter = 0;
+                _modules.Config.TapeCounter = 0;
 
                 SetTapeCounter(0);
 

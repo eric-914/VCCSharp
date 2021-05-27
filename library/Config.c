@@ -51,9 +51,6 @@ JoystickModel* InitializeModel(JoystickModel* p) {
 
 ConfigState* InitializeInstance(ConfigState* p) {
   p->NumberOfSoundCards = 0;
-  p->NumberOfJoysticks = 0;
-  p->TapeCounter = 0;
-  p->TapeMode = STOP;
 
   p->hDlgBar = NULL;
   p->hDlgTape = NULL;

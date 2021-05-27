@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using VCCSharp.Annotations;
 using VCCSharp.Enums;
 using VCCSharp.Models;
+using VCCSharp.Modules;
 
 namespace VCCSharp.TapePlayer
 {
@@ -12,6 +13,7 @@ namespace VCCSharp.TapePlayer
 
         //TODO: Remove STATIC once safe
         private static unsafe ConfigState* _state;
+        private static IConfig _config;
 
         private string _filePath = "Sample Browse File Text";
         private TapeModes _mode = TapeModes.STOP;
@@ -28,6 +30,17 @@ namespace VCCSharp.TapePlayer
         }
 
         #endregion
+
+        public IConfig Config
+        {
+            get => _config;
+            set
+            {
+                if (_config != null) return;
+
+                _config = value;
+            }
+        }
 
         public unsafe ConfigState* State
         {
@@ -90,10 +103,7 @@ namespace VCCSharp.TapePlayer
                 if (value == _counter) return;
                 _counter = value;
 
-                unsafe
-                {
-                    State->TapeCounter = (ushort)value;
-                }
+                Config.TapeCounter = (ushort)value;
 
                 OnPropertyChanged();
             }

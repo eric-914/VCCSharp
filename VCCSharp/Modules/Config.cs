@@ -38,6 +38,8 @@ namespace VCCSharp.Modules
         string AppTitle { get; }
         byte TextMode { get; set; }
         byte PrintMonitorWindow { get; set; }
+        ushort TapeCounter { get; set; }
+        byte TapeMode { get; set; }
     }
 
     public class Config : IConfig
@@ -50,6 +52,11 @@ namespace VCCSharp.Modules
 
         public byte TextMode { get; set; } = 1;  //--Add LF to CR
         public byte PrintMonitorWindow { get; set; }
+
+        public ushort TapeCounter { get; set; }
+        public byte TapeMode { get; set; } = Define.STOP;
+
+        private byte _numberOfJoysticks;
 
         public Config(IModules modules, IUser32 user32, IKernel kernel)
         {
@@ -204,26 +211,26 @@ namespace VCCSharp.Modules
                 JoystickModel* left = GetLeftJoystick();
                 JoystickModel* right = GetRightJoystick();
 
-                configState->NumberOfJoysticks = (byte)_modules.Joystick.EnumerateJoysticks();
+                _numberOfJoysticks = (byte)_modules.Joystick.EnumerateJoysticks();
 
-                for (byte index = 0; index < configState->NumberOfJoysticks; index++)
+                for (byte index = 0; index < _numberOfJoysticks; index++)
                 {
                     _modules.Joystick.InitJoyStick(index);
                 }
 
-                if (right->DiDevice >= configState->NumberOfJoysticks)
+                if (right->DiDevice >= _numberOfJoysticks)
                 {
                     right->DiDevice = 0;
                 }
 
-                if (left->DiDevice >= configState->NumberOfJoysticks)
+                if (left->DiDevice >= _numberOfJoysticks)
                 {
                     left->DiDevice = 0;
                 }
 
                 _modules.Joystick.SetStickNumbers(left->DiDevice, right->DiDevice);
 
-                if (configState->NumberOfJoysticks == 0)	//Use Mouse input if no Joysticks present
+                if (_numberOfJoysticks == 0)	//Use Mouse input if no Joysticks present
                 {
                     if (left->UseMouse == 3)
                     {

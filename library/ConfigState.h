@@ -10,11 +10,6 @@
 
 typedef struct
 {
-  unsigned char NumberOfJoysticks;
-
-  unsigned short TapeCounter;
-  unsigned char TapeMode;
-
   short NumberOfSoundCards;
 
   SoundCardList SoundCards[MAXCARDS];
