@@ -44,12 +44,6 @@ namespace VCCSharp.Libraries
             public static extern void ResetCassetteBuffer();
         }
 
-        public static class CoCo
-        {
-            [DllImport(LIBRARY)]
-            public static extern unsafe CoCoState* GetCoCoState();
-        }
-
         public static class Config
         {
             [DllImport(LIBRARY)]

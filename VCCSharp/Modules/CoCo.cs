@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
     public interface ICoCo
     {
-        unsafe CoCoState* GetCoCoState();
         unsafe float RenderFrame(EmuState* emuState);
         void CocoReset();
         void SetClockSpeed(ushort cycles);
@@ -24,6 +22,7 @@ namespace VCCSharp.Modules
         void SetAudioEventAudioOut();
 
         Action<int> UpdateTapeDialog { get; set; }
+        int OverClock { get; set; }
     }
 
     public class CoCo : ICoCo
@@ -32,6 +31,7 @@ namespace VCCSharp.Modules
         public const double LinesPerSecond = Define.TARGETFRAMERATE * (double)Define.LINESPERFIELD;
         public const double PicosPerLine = Define.PICOSECOND / LinesPerSecond;
         public const double CyclesPerLine = CyclesPerSecond / LinesPerSecond;
+        private const byte BLINK_PHASE = 1;
 
         private Action _audioEvent = () => { };
 
@@ -41,39 +41,39 @@ namespace VCCSharp.Modules
 
         public Action<int> UpdateTapeDialog { get; set; }
 
-        private double SoundInterrupt;
-        private double PicosToSoundSample;
-        private double CycleDrift;
-        private double CyclesThisLine;
-        private double PicosToInterrupt;
-        private double OldMaster;
-        private double MasterTickCounter;
-        private double UnxlatedTickCounter; //TODO: Unxlated?
-        private double PicosThisLine;
+        private double _soundInterrupt;
+        private double _picosToSoundSample;
+        private double _cycleDrift;
+        private double _cyclesThisLine;
+        private double _picosToInterrupt;
+        private double _oldMaster;
+        private double _masterTickCounter;
+        private double _partialTickCounter; //TODO: Originally named "Un-xl-at-ed"?
+        private double _picosThisLine;
 
-        private byte SoundOutputMode;
-        private byte HorzInterruptEnabled;
-        private byte VertInterruptEnabled;
-        private byte TopBorder;
-        private byte BottomBorder;
-        private byte LinesperScreen;
-        private byte TimerInterruptEnabled;
-        private byte BlinkPhase = 1;
-        private byte Throttle;
+        private byte _soundOutputMode;
+        private byte _horizontalInterruptEnabled;
+        private byte _verticalInterruptEnabled;
+        private byte _topBorder;
+        private byte _bottomBorder;
+        private byte _linesPerScreen;
+        private byte _throttle;
 
-        private ushort TimerClockRate;
-        private ushort SoundRate;
-        private ushort AudioIndex;
+        private ushort _timerClockRate;
+        private ushort _soundRate;
+        private ushort _audioIndex;
 
-        private uint StateSwitch;
+        private uint _stateSwitch;
 
-        private int ClipCycle = 1;
-        private int WaitCycle = 2000;
-        private int IntEnable;
-        private int SndEnable = 1;
+        private int _clipCycle = 1;
+        private int _waitCycle = 2000;
+        private int _intEnable;
+        private int _sndEnable = 1;
 
-        private uint[] AudioBuffer = new uint[16384];
-        private byte[] CassetteBuffer = new byte[8192];
+        private readonly uint[] _audioBuffer = new uint[16384];
+        private readonly byte[] _cassetteBuffer = new byte[8192];
+
+        public int OverClock { get; set; }
 
         public CoCo(IModules modules)
         {
@@ -82,36 +82,27 @@ namespace VCCSharp.Modules
             UpdateTapeDialog = offset => { }; //_modules.Config.UpdateTapeDialog((uint)offset);
         }
 
-        public unsafe CoCoState* GetCoCoState()
-        {
-            return Library.CoCo.GetCoCoState();
-        }
-
         public void CocoReset()
         {
-            HorzInterruptEnabled = 0;
-            VertInterruptEnabled = 0;
-            TimerInterruptEnabled = 0;
-            TimerClockRate = 0;
-            MasterTickCounter = 0;
-            UnxlatedTickCounter = 0;
-            OldMaster = 0;
+            _horizontalInterruptEnabled = 0;
+            _verticalInterruptEnabled = 0;
+            _timerClockRate = 0;
+            _masterTickCounter = 0;
+            _partialTickCounter = 0;
+            _oldMaster = 0;
 
-            SoundInterrupt = 0;
-            PicosToSoundSample = 0;
-            CycleDrift = 0;
-            CyclesThisLine = 0;
-            PicosThisLine = 0;
-            IntEnable = 0;
-            AudioIndex = 0;
+            _soundInterrupt = 0;
+            _picosToSoundSample = 0;
+            _cycleDrift = 0;
+            _cyclesThisLine = 0;
+            _picosThisLine = 0;
+            _intEnable = 0;
+            _audioIndex = 0;
         }
 
         public void SetClockSpeed(ushort cycles)
         {
-            unsafe
-            {
-                GetCoCoState()->OverClock = cycles;
-            }
+            OverClock = cycles;
         }
 
         #region RenderFrame
@@ -130,7 +121,7 @@ namespace VCCSharp.Modules
 
         private unsafe byte RenderVideoFrame(EmuState* emuState)
         {
-            _modules.Graphics.SetBlinkState(BlinkPhase);
+            _modules.Graphics.SetBlinkState(BLINK_PHASE);
 
             _modules.MC6821.irq_fs(PhaseStates.Falling);   //FS low to High transition start of display Blink needs this
 
@@ -161,7 +152,7 @@ namespace VCCSharp.Modules
             }
 
             //for (_modules.Emu.LineCounter = 0; _modules.Emu.LineCounter < cocoState->TopBorder - 4; _modules.Emu.LineCounter++)
-            for (short counter = 0; counter < TopBorder - 4; counter++)
+            for (short counter = 0; counter < _topBorder - 4; counter++)
             {
                 _modules.Emu.LineCounter = counter;
                 if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == Define.FALSE)
@@ -174,7 +165,7 @@ namespace VCCSharp.Modules
 
             //for (_modules.Emu.LineCounter = 0; _modules.Emu.LineCounter < cocoState->LinesPerScreen; _modules.Emu.LineCounter++)
             //Active Display area
-            for (short counter = 0; counter < LinesperScreen; counter++)
+            for (short counter = 0; counter < _linesPerScreen; counter++)
             {
                 _modules.Emu.LineCounter = counter;
                 CpuCycle();
@@ -187,14 +178,14 @@ namespace VCCSharp.Modules
 
             _modules.MC6821.irq_fs(PhaseStates.Rising);  //End of active display FS goes High to Low
 
-            if (VertInterruptEnabled != Define.FALSE)
+            if (_verticalInterruptEnabled != Define.FALSE)
             {
                 _modules.TC1014.GimeAssertVertInterrupt();
             }
 
             //for (_modules.Emu.LineCounter = 0; _modules.Emu.LineCounter < (cocoState->BottomBorder); _modules.Emu.LineCounter++)
             //Bottom border
-            for (short counter = 0; counter < BottomBorder; counter++)
+            for (short counter = 0; counter < _bottomBorder; counter++)
             {
                 _modules.Emu.LineCounter = counter;
                 CpuCycle();
@@ -226,19 +217,19 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                switch (SoundOutputMode)
+                switch (_soundOutputMode)
                 {
                     case 0:
-                        fixed (uint* buffer = AudioBuffer)
+                        fixed (uint* buffer = _audioBuffer)
                         {
-                            _modules.Audio.FlushAudioBuffer(buffer, (ushort)(AudioIndex << 2));
+                            _modules.Audio.FlushAudioBuffer(buffer, (ushort)(_audioIndex << 2));
                         }
                         break;
 
                     case 1:
-                        fixed (byte* buffer = CassetteBuffer)
+                        fixed (byte* buffer = _cassetteBuffer)
                         {
-                            FlushCassetteBuffer(buffer, AudioIndex);
+                            FlushCassetteBuffer(buffer, _audioIndex);
                         }
 
                         break;
@@ -248,7 +239,7 @@ namespace VCCSharp.Modules
                         break;
                 }
 
-                AudioIndex = 0;
+                _audioIndex = 0;
             }
         }
 
@@ -259,7 +250,7 @@ namespace VCCSharp.Modules
 
         private /* _inline */ void CpuCycle()
         {
-            if (HorzInterruptEnabled == Define.TRUE)
+            if (_horizontalInterruptEnabled == Define.TRUE)
             {
                 _modules.TC1014.GimeAssertHorzInterrupt();
             }
@@ -267,9 +258,9 @@ namespace VCCSharp.Modules
             _modules.MC6821.irq_hs(PhaseStates.Any);
             _modules.PAKInterface.PakTimer();
 
-            PicosThisLine += PicosPerLine;
+            _picosThisLine += PicosPerLine;
 
-            while (PicosThisLine > 1)
+            while (_picosThisLine > 1)
             {
                 CpuCyclePicos();
             }
@@ -287,19 +278,19 @@ namespace VCCSharp.Modules
 
             //Remember the original throttle setting.
             //Set it to off. We need speed for this!
-            if (Throttle == 0)
+            if (_throttle == 0)
             {
-                Throttle = vcc.Throttle;
+                _throttle = vcc.Throttle;
 
-                if (Throttle == 0)
+                if (_throttle == 0)
                 {
-                    Throttle = 2; // 2 = No throttle.
+                    _throttle = 2; // 2 = No throttle.
                 }
             }
 
             vcc.Throttle = 0;
 
-            if (ClipCycle == 1)
+            if (_clipCycle == 1)
             {
                 key = _modules.Clipboard.PeekClipboard();
 
@@ -312,9 +303,9 @@ namespace VCCSharp.Modules
 
                 _modules.Keyboard.KeyboardHandleKeyDown((byte)key, (byte)key);
 
-                WaitCycle = key == 0x1c ? 6000 : 2000;
+                _waitCycle = key == 0x1c ? 6000 : 2000;
             }
-            else if (ClipCycle == 500)
+            else if (_clipCycle == 500)
             {
                 key = _modules.Clipboard.PeekClipboard();
 
@@ -328,38 +319,38 @@ namespace VCCSharp.Modules
                     _modules.Keyboard.SetPaste(false);
 
                     //Done pasting. Reset throttle to original state
-                    vcc.Throttle = Throttle == 2 ? (byte)0 : (byte)1;
+                    vcc.Throttle = _throttle == 2 ? (byte)0 : (byte)1;
 
                     //...and reset the keymap to the original state
                     ResetKeyMap();
 
-                    Throttle = 0;
+                    _throttle = 0;
                 }
             }
 
-            ClipCycle++;
+            _clipCycle++;
 
-            if (ClipCycle > WaitCycle)
+            if (_clipCycle > _waitCycle)
             {
-                ClipCycle = 1;
+                _clipCycle = 1;
             }
 
         }
 
         private void CpuCyclePicos()
         {
-            StateSwitch = 0;
+            _stateSwitch = 0;
 
             //Does this iteration need to Timer Interrupt
-            if ((PicosToInterrupt <= PicosThisLine) && IntEnable == Define.TRUE)
+            if ((_picosToInterrupt <= _picosThisLine) && _intEnable == Define.TRUE)
             {
-                StateSwitch = 1;
+                _stateSwitch = 1;
             }
 
             //Does it need to collect an Audio sample
-            if ((PicosToSoundSample <= PicosThisLine) && SndEnable == Define.TRUE)
+            if ((_picosToSoundSample <= _picosThisLine) && _sndEnable == Define.TRUE)
             {
-                StateSwitch += 2;
+                _stateSwitch += 2;
             }
 
             var cases = new Dictionary<uint, Action>
@@ -370,199 +361,174 @@ namespace VCCSharp.Modules
                 {3, CpuCyclePicosCase3 }
             };
 
-            cases[StateSwitch]();
+            cases[_stateSwitch]();
         }
 
         //No interrupts this line
         private void CpuCyclePicosCase0()
         {
-            unsafe
-            {
-                CoCoState* cocoState = GetCoCoState();
+            _cyclesThisLine = _cycleDrift + (_picosThisLine * CyclesPerLine * OverClock / PicosPerLine);
 
-                CyclesThisLine = CycleDrift + (PicosThisLine * CyclesPerLine * cocoState->OverClock / PicosPerLine);
-
-                if (CyclesThisLine >= 1)
-                {   //Avoid un-needed CPU engine calls
-                    CycleDrift = _modules.CPU.CPUExec((int)Math.Floor(CyclesThisLine)) + (CyclesThisLine - Math.Floor(CyclesThisLine));
-                }
-                else
-                {
-                    CycleDrift = CyclesThisLine;
-                }
-
-                PicosToInterrupt -= PicosThisLine;
-                PicosToSoundSample -= PicosThisLine;
-                PicosThisLine = 0;
+            if (_cyclesThisLine >= 1)
+            {   //Avoid un-needed CPU engine calls
+                _cycleDrift = _modules.CPU.CPUExec((int)Math.Floor(_cyclesThisLine)) + (_cyclesThisLine - Math.Floor(_cyclesThisLine));
             }
+            else
+            {
+                _cycleDrift = _cyclesThisLine;
+            }
+
+            _picosToInterrupt -= _picosThisLine;
+            _picosToSoundSample -= _picosThisLine;
+            _picosThisLine = 0;
         }
 
         //Only Interrupting
         private void CpuCyclePicosCase1()
         {
-            unsafe
+            _picosThisLine -= _picosToInterrupt;
+            _cyclesThisLine = _cycleDrift + (_picosToInterrupt * CyclesPerLine * OverClock / PicosPerLine);
+
+            if (_cyclesThisLine >= 1)
             {
-                CoCoState* cocoState = GetCoCoState();
-
-                PicosThisLine -= PicosToInterrupt;
-                CyclesThisLine = CycleDrift + (PicosToInterrupt * CyclesPerLine * cocoState->OverClock / PicosPerLine);
-
-                if (CyclesThisLine >= 1)
-                {
-                    CycleDrift = _modules.CPU.CPUExec((int)Math.Floor(CyclesThisLine)) + (CyclesThisLine - Math.Floor(CyclesThisLine));
-                }
-                else
-                {
-                    CycleDrift = CyclesThisLine;
-                }
-
-                _modules.TC1014.GimeAssertTimerInterrupt();
-
-                PicosToSoundSample -= PicosToInterrupt;
-                PicosToInterrupt = MasterTickCounter;
+                _cycleDrift = _modules.CPU.CPUExec((int)Math.Floor(_cyclesThisLine)) + (_cyclesThisLine - Math.Floor(_cyclesThisLine));
             }
+            else
+            {
+                _cycleDrift = _cyclesThisLine;
+            }
+
+            _modules.TC1014.GimeAssertTimerInterrupt();
+
+            _picosToSoundSample -= _picosToInterrupt;
+            _picosToInterrupt = _masterTickCounter;
         }
 
         //Only Sampling
         private void CpuCyclePicosCase2()
         {
-            unsafe
+            _picosThisLine -= _picosToSoundSample;
+            _cyclesThisLine = _cycleDrift + (_picosToSoundSample * CyclesPerLine * OverClock / PicosPerLine);
+
+            if (_cyclesThisLine >= 1)
             {
-                CoCoState* cocoState = GetCoCoState();
-
-                PicosThisLine -= PicosToSoundSample;
-                CyclesThisLine = CycleDrift + (PicosToSoundSample * CyclesPerLine * cocoState->OverClock / PicosPerLine);
-
-                if (CyclesThisLine >= 1)
-                {
-                    CycleDrift = _modules.CPU.CPUExec((int)Math.Floor(CyclesThisLine)) + (CyclesThisLine - Math.Floor(CyclesThisLine));
-                }
-                else
-                {
-                    CycleDrift = CyclesThisLine;
-                }
-
-                _audioEvent();
-
-                PicosToInterrupt -= PicosToSoundSample;
-                PicosToSoundSample = SoundInterrupt;
+                _cycleDrift = _modules.CPU.CPUExec((int)Math.Floor(_cyclesThisLine)) + (_cyclesThisLine - Math.Floor(_cyclesThisLine));
             }
+            else
+            {
+                _cycleDrift = _cyclesThisLine;
+            }
+
+            _audioEvent();
+
+            _picosToInterrupt -= _picosToSoundSample;
+            _picosToSoundSample = _soundInterrupt;
         }
 
         //Interrupting and Sampling
         private void CpuCyclePicosCase3()
         {
-            unsafe
+            if (_picosToSoundSample < _picosToInterrupt)
             {
-                CoCoState* instance = GetCoCoState();
+                _picosThisLine -= _picosToSoundSample;
+                _cyclesThisLine = _cycleDrift + (_picosToSoundSample * CyclesPerLine * OverClock / PicosPerLine);
 
-                if (PicosToSoundSample < PicosToInterrupt)
+                if (_cyclesThisLine >= 1)
                 {
-                    PicosThisLine -= PicosToSoundSample;
-                    CyclesThisLine = CycleDrift + (PicosToSoundSample *
-                        CyclesPerLine * instance->OverClock / PicosPerLine);
-
-                    if (CyclesThisLine >= 1)
-                    {
-                        CycleDrift = _modules.CPU.CPUExec((int)Math.Floor(CyclesThisLine)) +
-                                               (CyclesThisLine - Math.Floor(CyclesThisLine));
-                    }
-                    else
-                    {
-                        CycleDrift = CyclesThisLine;
-                    }
-
-                    _audioEvent();
-
-                    PicosToInterrupt -= PicosToSoundSample;
-                    PicosToSoundSample = SoundInterrupt;
-                    PicosThisLine -= PicosToInterrupt;
-
-                    CyclesThisLine = CycleDrift + (PicosToInterrupt *
-                        CyclesPerLine * instance->OverClock / PicosPerLine);
-
-                    if (CyclesThisLine >= 1)
-                    {
-                        CycleDrift = _modules.CPU.CPUExec((int)Math.Floor(CyclesThisLine)) +
-                                               (CyclesThisLine - Math.Floor(CyclesThisLine));
-                    }
-                    else
-                    {
-                        CycleDrift = CyclesThisLine;
-                    }
-
-                    _modules.TC1014.GimeAssertTimerInterrupt();
-
-                    PicosToSoundSample -= PicosToInterrupt;
-                    PicosToInterrupt = MasterTickCounter;
-
-                    return;
-                }
-
-                if (PicosToSoundSample > PicosToInterrupt)
-                {
-                    PicosThisLine -= PicosToInterrupt;
-                    CyclesThisLine = CycleDrift + (PicosToInterrupt *
-                        CyclesPerLine * instance->OverClock / PicosPerLine);
-
-                    if (CyclesThisLine >= 1)
-                    {
-                        CycleDrift = _modules.CPU.CPUExec((int)Math.Floor(CyclesThisLine)) +
-                                               (CyclesThisLine - Math.Floor(CyclesThisLine));
-                    }
-                    else
-                    {
-                        CycleDrift = CyclesThisLine;
-                    }
-
-                    _modules.TC1014.GimeAssertTimerInterrupt();
-
-                    PicosToSoundSample -= PicosToInterrupt;
-                    PicosToInterrupt = MasterTickCounter;
-                    PicosThisLine -= PicosToSoundSample;
-                    CyclesThisLine = CycleDrift + (PicosToSoundSample *
-                        CyclesPerLine * instance->OverClock / PicosPerLine);
-
-                    if (CyclesThisLine >= 1)
-                    {
-                        CycleDrift = _modules.CPU.CPUExec((int)Math.Floor(CyclesThisLine)) +
-                                               (CyclesThisLine - Math.Floor(CyclesThisLine));
-                    }
-                    else
-                    {
-                        CycleDrift = CyclesThisLine;
-                    }
-
-                    _audioEvent();
-
-                    PicosToInterrupt -= PicosToSoundSample;
-                    PicosToSoundSample = SoundInterrupt;
-
-                    return;
-                }
-
-                //They are the same (rare)
-                PicosThisLine -= PicosToInterrupt;
-                CyclesThisLine = CycleDrift + (PicosToSoundSample *
-                    CyclesPerLine * instance->OverClock / PicosPerLine);
-
-                if (CyclesThisLine > 1)
-                {
-                    CycleDrift = _modules.CPU.CPUExec((int)Math.Floor(CyclesThisLine)) +
-                                           (CyclesThisLine - Math.Floor(CyclesThisLine));
+                    _cycleDrift = _modules.CPU.CPUExec((int)Math.Floor(_cyclesThisLine)) +
+                                 (_cyclesThisLine - Math.Floor(_cyclesThisLine));
                 }
                 else
                 {
-                    CycleDrift = CyclesThisLine;
+                    _cycleDrift = _cyclesThisLine;
+                }
+
+                _audioEvent();
+
+                _picosToInterrupt -= _picosToSoundSample;
+                _picosToSoundSample = _soundInterrupt;
+                _picosThisLine -= _picosToInterrupt;
+
+                _cyclesThisLine = _cycleDrift + (_picosToInterrupt * CyclesPerLine * OverClock / PicosPerLine);
+
+                if (_cyclesThisLine >= 1)
+                {
+                    _cycleDrift = _modules.CPU.CPUExec((int)Math.Floor(_cyclesThisLine)) +
+                                 (_cyclesThisLine - Math.Floor(_cyclesThisLine));
+                }
+                else
+                {
+                    _cycleDrift = _cyclesThisLine;
                 }
 
                 _modules.TC1014.GimeAssertTimerInterrupt();
 
+                _picosToSoundSample -= _picosToInterrupt;
+                _picosToInterrupt = _masterTickCounter;
+
+                return;
+            }
+
+            if (_picosToSoundSample > _picosToInterrupt)
+            {
+                _picosThisLine -= _picosToInterrupt;
+                _cyclesThisLine = _cycleDrift + (_picosToInterrupt * CyclesPerLine * OverClock / PicosPerLine);
+
+                if (_cyclesThisLine >= 1)
+                {
+                    _cycleDrift = _modules.CPU.CPUExec((int)Math.Floor(_cyclesThisLine)) +
+                                 (_cyclesThisLine - Math.Floor(_cyclesThisLine));
+                }
+                else
+                {
+                    _cycleDrift = _cyclesThisLine;
+                }
+
+                _modules.TC1014.GimeAssertTimerInterrupt();
+
+                _picosToSoundSample -= _picosToInterrupt;
+                _picosToInterrupt = _masterTickCounter;
+                _picosThisLine -= _picosToSoundSample;
+                _cyclesThisLine = _cycleDrift + (_picosToSoundSample * CyclesPerLine * OverClock / PicosPerLine);
+
+                if (_cyclesThisLine >= 1)
+                {
+                    _cycleDrift = _modules.CPU.CPUExec((int)Math.Floor(_cyclesThisLine)) +
+                                 (_cyclesThisLine - Math.Floor(_cyclesThisLine));
+                }
+                else
+                {
+                    _cycleDrift = _cyclesThisLine;
+                }
+
                 _audioEvent();
 
-                PicosToInterrupt = MasterTickCounter;
-                PicosToSoundSample = SoundInterrupt;
+                _picosToInterrupt -= _picosToSoundSample;
+                _picosToSoundSample = _soundInterrupt;
+
+                return;
             }
+
+            //They are the same (rare)
+            _picosThisLine -= _picosToInterrupt;
+            _cyclesThisLine = _cycleDrift + (_picosToSoundSample * CyclesPerLine * OverClock / PicosPerLine);
+
+            if (_cyclesThisLine > 1)
+            {
+                _cycleDrift = _modules.CPU.CPUExec((int)Math.Floor(_cyclesThisLine)) +
+                             (_cyclesThisLine - Math.Floor(_cyclesThisLine));
+            }
+            else
+            {
+                _cycleDrift = _cyclesThisLine;
+            }
+
+            _modules.TC1014.GimeAssertTimerInterrupt();
+
+            _audioEvent();
+
+            _picosToInterrupt = _masterTickCounter;
+            _picosToSoundSample = _soundInterrupt;
         }
 
         #endregion
@@ -574,13 +540,15 @@ namespace VCCSharp.Modules
             _modules.Keyboard.KeyboardBuildRuntimeTable((byte)currentKeyMap);
         }
 
+        //--TODO: what is the purpose to this variable?
+        private ushort _primarySoundRate;
+
         //0 = Speaker 1= Cassette Out 2=Cassette In
         public byte SetSndOutMode(byte mode)
         {
             unsafe
             {
-                //--TODO: Is there a purpose to this variable?
-                ushort primarySoundRate = SoundRate;
+                _primarySoundRate = _soundRate;
 
                 switch (mode)
                 {
@@ -588,21 +556,22 @@ namespace VCCSharp.Modules
                         if (_lastMode == 1)
                         {
                             //Send the last bits to be encoded
-                            fixed (byte* buffer = CassetteBuffer)
+                            fixed (byte* buffer = _cassetteBuffer)
                             {
-                                FlushCassetteBuffer(buffer, AudioIndex); /* Cassette.cpp */
+                                FlushCassetteBuffer(buffer, _audioIndex); /* Cassette.cpp */
                             }
                         }
 
                         SetAudioEventAudioOut();
-                        SetAudioRate(primarySoundRate);
+                        //SetAudioRate(primarySoundRate);
+                        SetAudioRate(_primarySoundRate);
 
                         break;
 
                     case 1:
                         SetAudioEventCassetteOut();
 
-                        primarySoundRate = SoundRate;
+                        _primarySoundRate = _soundRate;
 
                         SetAudioRate(Define.TAPEAUDIORATE);
 
@@ -611,25 +580,25 @@ namespace VCCSharp.Modules
                     case 2:
                         SetAudioEventCassetteIn();
 
-                        primarySoundRate = SoundRate;
+                        _primarySoundRate = _soundRate;
 
                         SetAudioRate(Define.TAPEAUDIORATE);
 
                         break;
 
                     default: //QUERY
-                        return SoundOutputMode;
+                        return _soundOutputMode;
                 }
 
                 if (mode != _lastMode)
                 {
-                    AudioIndex = 0;	//Reset Buffer on true mode switch
+                    _audioIndex = 0;	//Reset Buffer on true mode switch
                     _lastMode = mode;
                 }
 
-                SoundOutputMode = mode;
+                _soundOutputMode = mode;
 
-                return SoundOutputMode;
+                return _soundOutputMode;
             }
         }
 
@@ -674,7 +643,7 @@ namespace VCCSharp.Modules
 
         public void SetInterruptTimer(ushort timer)
         {
-            UnxlatedTickCounter = (timer & 0xFFF);
+            _partialTickCounter = (timer & 0xFFF);
 
             SetMasterTickCounter();
         }
@@ -684,46 +653,45 @@ namespace VCCSharp.Modules
             //1= 279.265nS (1/ColorBurst)
             //0= 63.695uS  (1/60*262)  1 scan line time
 
-            TimerClockRate = (ushort)(clockRate == 0 ? 0 : 1);
+            _timerClockRate = (ushort)(clockRate == 0 ? 0 : 1);
 
             SetMasterTickCounter();
         }
 
         public void SetVerticalInterruptState(byte state)
         {
-            VertInterruptEnabled = (byte)(state == 0 ? 1 : 0);
+            _verticalInterruptEnabled = (byte)(state == 0 ? 1 : 0);
         }
 
         public void SetHorizontalInterruptState(byte state)
         {
-            HorzInterruptEnabled = (byte)(state == 0 ? 1 : 0);
+            _horizontalInterruptEnabled = (byte)(state == 0 ? 1 : 0);
         }
 
         public void SetTimerInterruptState(byte state)
         {
-            TimerInterruptEnabled = state;
         }
 
         public void SetMasterTickCounter()
         {
             double[] rate = { Define.PICOSECOND / (Define.TARGETFRAMERATE * Define.LINESPERFIELD), Define.PICOSECOND / Define.COLORBURST };
 
-            if (UnxlatedTickCounter == 0)
+            if (_partialTickCounter == 0)
             {
-                MasterTickCounter = 0;
+                _masterTickCounter = 0;
             }
             else
             {
-                MasterTickCounter = (UnxlatedTickCounter + 2) * rate[TimerClockRate];
+                _masterTickCounter = (_partialTickCounter + 2) * rate[_timerClockRate];
             }
 
-            if (MasterTickCounter != OldMaster)
+            if (Math.Abs(_masterTickCounter - _oldMaster) > 0.0001)
             {
-                OldMaster = MasterTickCounter;
-                PicosToInterrupt = MasterTickCounter;
+                _oldMaster = _masterTickCounter;
+                _picosToInterrupt = _masterTickCounter;
             }
 
-            IntEnable = MasterTickCounter == 0 ? 0 : 1;
+            _intEnable = _masterTickCounter == 0 ? 0 : 1;
         }
 
         private unsafe void FlushCassetteBuffer(byte* buffer, uint length)
@@ -735,7 +703,7 @@ namespace VCCSharp.Modules
 
         private unsafe void LoadCassetteBuffer()
         {
-            fixed (byte* buffer = CassetteBuffer)
+            fixed (byte* buffer = _cassetteBuffer)
             {
                 _modules.Cassette.LoadCassetteBuffer(buffer);
             }
@@ -743,8 +711,8 @@ namespace VCCSharp.Modules
 
         public ushort SetAudioRate(ushort rate)
         {
-            CycleDrift = 0;
-            AudioIndex = 0;
+            _cycleDrift = 0;
+            _audioIndex = 0;
 
             if (rate != 0)
             {	//Force Mute or 44100Hz
@@ -753,17 +721,17 @@ namespace VCCSharp.Modules
 
             if (rate == 0)
             {
-                SndEnable = 0;
-                SoundInterrupt = 0;
+                _sndEnable = 0;
+                _soundInterrupt = 0;
             }
             else
             {
-                SndEnable = 1;
-                SoundInterrupt = Define.PICOSECOND / rate;
-                PicosToSoundSample = SoundInterrupt;
+                _sndEnable = 1;
+                _soundInterrupt = Define.PICOSECOND / rate;
+                _picosToSoundSample = _soundInterrupt;
             }
 
-            SoundRate = rate;
+            _soundRate = rate;
 
             return 0;
         }
@@ -776,11 +744,11 @@ namespace VCCSharp.Modules
             {
                 GraphicsState* graphicsState = _modules.Graphics.GetGraphicsState();
 
-                LinesperScreen = graphicsState->Lpf[lines];
-                TopBorder = graphicsState->VcenterTable[lines];
+                _linesPerScreen = graphicsState->Lpf[lines];
+                _topBorder = graphicsState->VcenterTable[lines];
 
                 //4 lines of top border are un-rendered 244-4=240 rendered scan-lines
-                BottomBorder = (byte)(243 - (TopBorder + LinesperScreen));
+                _bottomBorder = (byte)(243 - (_topBorder + _linesPerScreen));
             }
         }
 
@@ -788,7 +756,7 @@ namespace VCCSharp.Modules
         {
             void AudioOut()
             {
-                AudioBuffer[AudioIndex++] = _modules.MC6821.GetDACSample();
+                _audioBuffer[_audioIndex++] = _modules.MC6821.GetDACSample();
             }
 
             _audioEvent = AudioOut;
@@ -798,7 +766,7 @@ namespace VCCSharp.Modules
         {
             void CassetteOut()
             {
-                CassetteBuffer[AudioIndex++] = _modules.MC6821.GetCassetteSample();
+                _cassetteBuffer[_audioIndex++] = _modules.MC6821.GetCassetteSample();
             }
 
             _audioEvent = CassetteOut;
@@ -808,9 +776,9 @@ namespace VCCSharp.Modules
         {
             void CassetteIn()
             {
-                AudioBuffer[AudioIndex] = _modules.MC6821.GetDACSample();
+                _audioBuffer[_audioIndex] = _modules.MC6821.GetDACSample();
 
-                _modules.MC6821.SetCassetteSample(CassetteBuffer[AudioIndex++]);
+                _modules.MC6821.SetCassetteSample(_cassetteBuffer[_audioIndex++]);
             }
 
             _audioEvent = CassetteIn;

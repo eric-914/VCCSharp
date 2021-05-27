@@ -164,49 +164,39 @@ namespace VCCSharp.Modules
 
         public void SetCpuMultiplierFlag(byte doubleSpeed)
         {
-            unsafe
+            _modules.CoCo.OverClock = 1;
+
+            DoubleSpeedFlag = doubleSpeed;
+
+            if (DoubleSpeedFlag != 0)
             {
-                CoCoState* cocoState = _modules.CoCo.GetCoCoState();
+                _modules.CoCo.OverClock = DoubleSpeedMultiplier * TurboSpeedFlag;
+            }
 
-                cocoState->OverClock = 1;
+            CpuCurrentSpeed = .894;
 
-                DoubleSpeedFlag = doubleSpeed;
-
-                if (DoubleSpeedFlag != 0)
-                {
-                    cocoState->OverClock = DoubleSpeedMultiplier * TurboSpeedFlag;
-                }
-
-                CpuCurrentSpeed = .894;
-
-                if (DoubleSpeedFlag != 0)
-                {
-                    CpuCurrentSpeed *= (DoubleSpeedMultiplier * (double)TurboSpeedFlag);
-                }
+            if (DoubleSpeedFlag != 0)
+            {
+                CpuCurrentSpeed *= (DoubleSpeedMultiplier * (double)TurboSpeedFlag);
             }
         }
 
         public void SetTurboMode(byte data)
         {
-            unsafe
+            _modules.CoCo.OverClock = 1;
+
+            TurboSpeedFlag = (byte)((data & 1) + 1);
+
+            if (DoubleSpeedFlag != 0)
             {
-                CoCoState* cocoState = _modules.CoCo.GetCoCoState();
+                _modules.CoCo.OverClock = DoubleSpeedMultiplier * TurboSpeedFlag;
+            }
 
-                cocoState->OverClock = 1;
+            CpuCurrentSpeed = .894;
 
-                TurboSpeedFlag = (byte)((data & 1) + 1);
-
-                if (DoubleSpeedFlag != 0)
-                {
-                    cocoState->OverClock = DoubleSpeedMultiplier * TurboSpeedFlag;
-                }
-
-                CpuCurrentSpeed = .894;
-
-                if (DoubleSpeedFlag != 0)
-                {
-                    CpuCurrentSpeed *= (DoubleSpeedMultiplier * (double)TurboSpeedFlag);
-                }
+            if (DoubleSpeedFlag != 0)
+            {
+                CpuCurrentSpeed *= (DoubleSpeedMultiplier * (double)TurboSpeedFlag);
             }
         }
     }

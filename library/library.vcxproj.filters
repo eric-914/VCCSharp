@@ -14,9 +14,6 @@
     <ClCompile Include="Cassette.c">
       <Filter>cassette</Filter>
     </ClCompile>
-    <ClCompile Include="CoCo.c">
-      <Filter>coco</Filter>
-    </ClCompile>
     <ClCompile Include="Config.c">
       <Filter>config</Filter>
     </ClCompile>
@@ -94,9 +91,6 @@
     <ClInclude Include="ConfigModel.h">
       <Filter>models</Filter>
     </ClInclude>
-    <ClInclude Include="CoCo.h">
-      <Filter>coco</Filter>
-    </ClInclude>
     <ClInclude Include="Config.h">
       <Filter>config</Filter>
     </ClInclude>
@@ -119,9 +113,6 @@
       <Filter>models</Filter>
     </ClInclude>
     <ClInclude Include="ConfigState.h">
-      <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="CoCoState.h">
       <Filter>models</Filter>
     </ClInclude>
     <ClInclude Include="EmuState.h">
@@ -197,9 +188,6 @@
     </Filter>
     <Filter Include="resources">
       <UniqueIdentifier>{57f10a27-5161-423d-a617-cc41d9e82196}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="coco">
-      <UniqueIdentifier>{d1fdabc9-8d5d-4cb2-be9e-a7e7e59260ae}</UniqueIdentifier>
     </Filter>
     <Filter Include="directdraw">
       <UniqueIdentifier>{fcd2e4e7-3346-4625-b980-414909633751}</UniqueIdentifier>
