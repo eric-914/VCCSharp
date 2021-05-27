@@ -16,10 +16,24 @@ static char StickName[MAXSTICKS][STRLEN];
 JoystickState* InitializeInstance(JoystickState*);
 
 static JoystickState* instance = InitializeInstance(new JoystickState());
+static JoystickModel* left = new JoystickModel();
+static JoystickModel* right = new JoystickModel();
 
 extern "C" {
   __declspec(dllexport) JoystickState* __cdecl GetJoystickState() {
     return instance;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) JoystickModel* __cdecl GetLeftJoystickModel() {
+    return left;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) JoystickModel* __cdecl GetRightJoystickModel() {
+    return right;
   }
 }
 
@@ -51,7 +65,7 @@ extern "C" {
 
     LPDIENUMDEVICESCALLBACKA callback = [](const DIDEVICEINSTANCE* p, VOID* v) {
       HRESULT hr = di->CreateDevice(p->guidInstance, &Joysticks[joystickIndex], NULL);
-      
+
       SetStickName(joystickIndex, p->tszProductName);
       joystickIndex++;
 
@@ -156,7 +170,7 @@ extern "C"
   {
     DIJOYSTATE2 stick;
 
-    if (instance->Left->UseMouse == 3)
+    if (left->UseMouse == 3)
     {
       JoyStickPoll(&stick, instance->LeftStickNumber);
 
@@ -166,7 +180,7 @@ extern "C"
       instance->LeftButton2Status = stick.rgbButtons[1] >> 7;
     }
 
-    if (instance->Right->UseMouse == 3)
+    if (right->UseMouse == 3)
     {
       JoyStickPoll(&stick, instance->RightStickNumber);
 

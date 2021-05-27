@@ -111,10 +111,8 @@ namespace VCCSharp.Modules
             _modules.DirectSound.DirectSoundEnumerateSoundCards();
 
             //--Synch joysticks to config instance
-            JoystickState* joystickState = _modules.Joystick.GetJoystickState();
-
-            joystickState->Left = GetLeftJoystick();
-            joystickState->Right = GetRightJoystick();
+            _modules.Joystick.SetLeftJoystick(GetLeftJoystick());
+            _modules.Joystick.SetRightJoystick(GetLeftJoystick());
 
             ReadIniFile(emuState);
 

@@ -326,6 +326,12 @@ namespace VCCSharp.Libraries
             public static extern unsafe JoystickState* GetJoystickState();
 
             [DllImport(LIBRARY)]
+            public static extern unsafe JoystickModel* GetLeftJoystickModel();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe JoystickModel* GetRightJoystickModel();
+
+            [DllImport(LIBRARY)]
             public static extern short EnumerateJoysticks();
 
             [DllImport(LIBRARY)]

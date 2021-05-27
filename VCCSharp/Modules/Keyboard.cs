@@ -390,9 +390,10 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                JoystickState* joystickState = _modules.Joystick.GetJoystickState();
+                JoystickModel* left = _modules.Joystick.GetLeftJoystick();
+                JoystickModel* right = _modules.Joystick.GetRightJoystick();
 
-                if ((joystickState->Left->UseMouse == 0) || (joystickState->Right->UseMouse == 0))
+                if ((left->UseMouse == 0) || (right->UseMouse == 0))
                 {
                     scanCode = _modules.Joystick.SetMouseStatus(scanCode, 1);
                 }
@@ -413,9 +414,10 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                JoystickState* joystickState = _modules.Joystick.GetJoystickState();
+                JoystickModel* left = _modules.Joystick.GetLeftJoystick();
+                JoystickModel* right = _modules.Joystick.GetRightJoystick();
 
-                if ((joystickState->Left->UseMouse == 0) || (joystickState->Right->UseMouse == 0))
+                if ((left->UseMouse == 0) || (right->UseMouse == 0))
                 {
                     scanCode = _modules.Joystick.SetMouseStatus(scanCode, 0);
                 }

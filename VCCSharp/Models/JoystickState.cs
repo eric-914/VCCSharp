@@ -13,8 +13,5 @@
         public byte RightButton2Status;
         public ushort RightStickX;
         public ushort RightStickY;
-
-        public unsafe JoystickModel* Left;
-        public unsafe JoystickModel* Right;
     }
 }

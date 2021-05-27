@@ -15,7 +15,4 @@ typedef struct
   unsigned char RightButton2Status;
   unsigned short RightStickX;
   unsigned short RightStickY;
-
-  JoystickModel* Left;
-  JoystickModel* Right;
 } JoystickState;
