@@ -10,8 +10,6 @@
 
 typedef struct
 {
-  char PrintMonitorWindow;
-
   unsigned char NumberOfJoysticks;
 
   unsigned short TapeCounter;

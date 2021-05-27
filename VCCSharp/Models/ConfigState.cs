@@ -25,8 +25,6 @@ namespace VCCSharp.Models
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct ConfigState
     {
-        public byte PrintMonitorWindow;
-
         public byte NumberOfJoysticks;
 
         public ushort TapeCounter;

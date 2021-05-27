@@ -94,22 +94,13 @@ namespace VCCSharp.BitBanger
 
         public bool Print
         {
-            get
-            {
-                unsafe
-                {
-                    return State != null && State->PrintMonitorWindow == Define.TRUE;
-                }
-            }
+            get => Config is {PrintMonitorWindow: Define.TRUE};
             set
             {
-                unsafe
-                {
-                    if (value == (State->PrintMonitorWindow == Define.TRUE)) return;
+                if (value == (Config.PrintMonitorWindow == Define.TRUE)) return;
 
-                    State->PrintMonitorWindow = (value ? Define.TRUE : Define.FALSE);
-                    OnPropertyChanged();
-                }
+                Config.PrintMonitorWindow = (value ? Define.TRUE : Define.FALSE);
+                OnPropertyChanged();
             }
         }
     }

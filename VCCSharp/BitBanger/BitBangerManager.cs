@@ -23,17 +23,11 @@ namespace VCCSharp.BitBanger
                 switch (args.PropertyName)
                 {
                     case "AddLineFeed":
-                        unsafe
-                        {
-                            _modules.MC6821.MC6821_SetSerialParams(_modules.Config.TextMode);
-                        }
+                        _modules.MC6821.MC6821_SetSerialParams(_modules.Config.TextMode);
                         break;
 
                     case "Print":
-                        unsafe
-                        {
-                            _modules.MC6821.MC6821_SetMonState(_configState->PrintMonitorWindow);
-                        }
+                        _modules.MC6821.MC6821_SetMonState(_modules.Config.PrintMonitorWindow);
                         break;
                 }
             };
@@ -84,18 +78,15 @@ namespace VCCSharp.BitBanger
 
         public void Close()
         {
-            unsafe
-            {
-                _modules.MC6821.MC6821_ClosePrintFile();
+            _modules.MC6821.MC6821_ClosePrintFile();
 
-                _viewModel.SerialCaptureFile = null;
+            _viewModel.SerialCaptureFile = null;
 
-                _configState->PrintMonitorWindow = Define.FALSE;
+            _modules.Config.PrintMonitorWindow = Define.FALSE;
 
-                _modules.MC6821.MC6821_SetMonState(_configState->PrintMonitorWindow);
+            _modules.MC6821.MC6821_SetMonState(_modules.Config.PrintMonitorWindow);
 
-                _viewModel.Print = false;
-            }
+            _viewModel.Print = false;
         }
     }
 }

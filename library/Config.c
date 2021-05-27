@@ -52,7 +52,6 @@ JoystickModel* InitializeModel(JoystickModel* p) {
 ConfigState* InitializeInstance(ConfigState* p) {
   p->NumberOfSoundCards = 0;
   p->NumberOfJoysticks = 0;
-  p->PrintMonitorWindow = 0;
   p->TapeCounter = 0;
   p->TapeMode = STOP;
 

@@ -37,6 +37,7 @@ namespace VCCSharp.Modules
         Point GetIniWindowSize();
         string AppTitle { get; }
         byte TextMode { get; set; }
+        byte PrintMonitorWindow { get; set; }
     }
 
     public class Config : IConfig
@@ -48,6 +49,7 @@ namespace VCCSharp.Modules
         public string AppTitle { get; } = Resources.ResourceManager.GetString("AppTitle");
 
         public byte TextMode { get; set; } = 1;  //--Add LF to CR
+        public byte PrintMonitorWindow { get; set; }
 
         public Config(IModules modules, IUser32 user32, IKernel kernel)
         {
