@@ -5,6 +5,7 @@ using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using HINSTANCE = System.IntPtr;
+using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -13,6 +14,7 @@ namespace VCCSharp.Modules
         unsafe EmuState* GetEmuState();
         unsafe void SetEmuState(EmuState* emuState);
 
+        HWND WindowHandle { get; set; }
         HINSTANCE Resources { get; set; }
 
         void SoftReset();
@@ -42,6 +44,7 @@ namespace VCCSharp.Modules
     {
         private readonly IModules _modules;
 
+        public HWND WindowHandle { get; set; }
         public HINSTANCE Resources { get; set; }
 
         public byte BitDepth { get; set; }

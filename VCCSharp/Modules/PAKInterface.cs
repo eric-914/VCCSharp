@@ -9,7 +9,7 @@ namespace VCCSharp.Modules
     public interface IPAKInterface
     {
         unsafe PakInterfaceState* GetPakInterfaceState();
-        unsafe void UnloadDll(EmuState* emuState);
+        void UnloadDll(byte emulationRunning);
         unsafe void GetModuleStatus(EmuState* emuState);
         void ResetBus();
         void UpdateBusPointer();
@@ -21,6 +21,8 @@ namespace VCCSharp.Modules
         byte PakPortRead(byte port);
         void PakPortWrite(byte port, byte data);
         ushort PakAudioSample();
+        int HasConfigModule();
+        void InvokeConfigModule(byte menuItem);
     }
 
     // ReSharper disable once InconsistentNaming
@@ -56,7 +58,7 @@ namespace VCCSharp.Modules
         }
 
         //TODO: Used by LoadROMPack(...), UnloadPack(...), InsertModule(...)
-        public unsafe void UnloadDll(EmuState* emuState)
+        public void UnloadDll(byte emulationRunning)
         {
             //PakInterfaceState* pakInterfaceState = GetPakInterfaceState();
 
@@ -67,7 +69,7 @@ namespace VCCSharp.Modules
             //    return;
             //}
 
-            Library.PAKInterface.UnloadDll(emuState);
+            Library.PAKInterface.UnloadDll(emulationRunning);
 
             //if (pakInterfaceState->hInstLib != null) {
             //    _kernel.FreeLibrary(pakInterfaceState->hInstLib);
@@ -188,6 +190,16 @@ namespace VCCSharp.Modules
         public ushort PakAudioSample()
         {
             return Library.PAKInterface.PakAudioSample();
+        }
+
+        public int HasConfigModule()
+        {
+            return Library.PAKInterface.HasConfigModule();
+        }
+
+        public void InvokeConfigModule(byte menuItem)
+        {
+            Library.PAKInterface.InvokeConfigModule(menuItem);
         }
     }
 }

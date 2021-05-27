@@ -7,8 +7,6 @@
 
 typedef struct
 {
-  HWND WindowHandle;
-
   unsigned char	EmulationRunning;
   unsigned char	ResetPending;
 

@@ -1,13 +1,24 @@
-#include <string>
-
 #include "MenuCallbacks.h"
 
-#include "PakInterfaceState.h"
 #include "PakInterface.h"
-#include "PakInterfaceDelegates.h"
 #include "PakInterfaceModule.h"
-#include "Emu.h"
-#include "Cartridge.h"
+
+//Menu "Actions"
+#define MENU_FLUSH   0
+#define MENU_DONE    1
+#define MENU_REFRESH 2
+
+//Type 0= HEAD TAG 1= Slave Tag 2=StandAlone
+#define	MENU_PARENT     0
+#define MENU_CHILD      1
+#define MENU_STANDALONE 2
+
+#define ID_DYNAMENU_START 5000	//Defines the start and end IDs for the dynamic menus
+
+#define ID_MENU_LOAD_CART  5001
+#define ID_MENU_EJECT_CART 5002
+
+#define ID_MENU_CARTRIDGE  6000
 
 typedef struct {
   char MenuName[512];
@@ -22,8 +33,17 @@ static HMENU hSubMenu[64];
 
 static unsigned char MenuIndex = 0;
 
+static HWND WindowHandle = NULL;
+
 extern "C" {
-  __declspec(dllexport) void __cdecl RefreshDynamicMenu(EmuState* emuState)
+  __declspec(dllexport) void __cdecl SetWindowHandle(HWND hWnd)
+  {
+    WindowHandle = hWnd;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl RefreshDynamicMenu()
   {
     MENUITEMINFO mii;
     char menuTitle[32] = "Cartridge";
@@ -31,14 +51,14 @@ extern "C" {
     static HWND hOld = 0;
     int subMenuIndex = 0;
 
-    if ((hMenu == NULL) || (emuState->WindowHandle != hOld)) {
-      hMenu = GetMenu(emuState->WindowHandle);
+    if ((hMenu == NULL) || (WindowHandle != hOld)) {
+      hMenu = GetMenu(WindowHandle);
     }
     else {
       DeleteMenu(hMenu, 3, MF_BYPOSITION);
     }
 
-    hOld = emuState->WindowHandle;
+    hOld = WindowHandle;
     hSubMenu[subMenuIndex] = CreatePopupMenu();
 
     memset(&mii, 0, sizeof(MENUITEMINFO));
@@ -115,14 +135,14 @@ extern "C" {
       }
     }
 
-    DrawMenuBar(emuState->WindowHandle);
+    DrawMenuBar(WindowHandle);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DynamicMenuCallback(EmuState* emuState, char* menuName, int menuId, int type)
+  __declspec(dllexport) void __cdecl DynamicMenuCallback(char* menuName, int menuId, int type)
   {
-    char temp[256] = "";
+    char temp[256] = "Eject Cart: ";
 
     //MenuId=0 Flush Buffer MenuId=1 Done 
     switch (menuId)
@@ -130,23 +150,22 @@ extern "C" {
     case MENU_FLUSH:
       MenuIndex = 0;
 
-      DynamicMenuCallback(emuState, "Cartridge", ID_MENU_CARTRIDGE, MENU_PARENT);	//Recursion is fun
-      DynamicMenuCallback(emuState, "Load Cart", ID_MENU_LOAD_CART, MENU_CHILD);
+      DynamicMenuCallback("Cartridge", ID_MENU_CARTRIDGE, MENU_PARENT);	//Recursion is fun
+      DynamicMenuCallback("Load Cart", ID_MENU_LOAD_CART, MENU_CHILD);
 
-      sprintf(temp, "Eject Cart: ");
       strcat(temp, GetPakInterfaceState()->Modname);
 
-      DynamicMenuCallback(emuState, temp, ID_MENU_EJECT_CART, MENU_CHILD);
+      DynamicMenuCallback(temp, ID_MENU_EJECT_CART, MENU_CHILD);
 
       break;
 
     case MENU_DONE:
-      RefreshDynamicMenu(emuState);
+      RefreshDynamicMenu();
       break;
 
     case MENU_REFRESH:
-      DynamicMenuCallback(emuState, NULL, MENU_FLUSH, IGNORE);
-      DynamicMenuCallback(emuState, NULL, MENU_DONE, IGNORE);
+      DynamicMenuCallback(NULL, MENU_FLUSH, IGNORE);
+      DynamicMenuCallback(NULL, MENU_DONE, IGNORE);
       break;
 
     default:
@@ -156,38 +175,6 @@ extern "C" {
       MenuItem[MenuIndex].Type = type;
 
       MenuIndex++;
-
-      break;
-    }
-  }
-}
-
-/*
-* TODO: This exists because this is what the different plugins expect, but it requires the EmuState
-*/
-void DynamicMenuCallback(char* menuName, int menuId, int type)
-{
-  DynamicMenuCallback(GetEmuState(), menuName, menuId, type);
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DynamicMenuActivated(EmuState* emuState, int menuItem)
-  {
-    switch (menuItem)
-    {
-    case ID_MENU_LOAD_CART:
-      LoadPack();
-      break;
-
-    case ID_MENU_EJECT_CART:
-      UnloadPack(emuState);
-      break;
-
-    default:
-      if (HasConfigModule()) {
-        //--Original code was passing an unsigned char, though the menu ids are integers
-        InvokeConfigModule((unsigned char)(menuItem - ID_DYNAMENU_START));
-      }
 
       break;
     }

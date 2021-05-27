@@ -1,18 +1,18 @@
 ﻿using VCCSharp.Libraries;
-using VCCSharp.Models;
+using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
     public interface ICallbacks
     {
-        unsafe void RefreshDynamicMenu(EmuState* emuState);
+        void RefreshDynamicMenu(HWND hWnd);
     }
 
     public class Callbacks : ICallbacks
     {
-        public unsafe void RefreshDynamicMenu(EmuState* emuState)
+        public void RefreshDynamicMenu(HWND hWnd)
         {
-            Library.Callbacks.RefreshDynamicMenu(emuState);;
+            Library.Callbacks.RefreshDynamicMenu(hWnd);
         }
     }
 }

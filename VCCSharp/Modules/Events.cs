@@ -1,4 +1,5 @@
-﻿using VCCSharp.Enums;
+﻿using System.Threading.Tasks;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -243,10 +244,22 @@ namespace VCCSharp.Modules
             // Added for Dynamic menu system
             if (wmId >= Define.ID_DYNAMENU_START && wmId <= Define.ID_DYNAMENU_END)
             {
-                unsafe
+                Task.Run(() =>
                 {
-                    _modules.MenuCallbacks.DynamicMenuActivated(_modules.Emu.GetEmuState(), wmId);	//Calls to the loaded DLL so it can do the right thing
-                }
+                    unsafe
+                    {
+                        EmuState* state = _modules.Emu.GetEmuState();
+
+                        int result =
+                            _modules.MenuCallbacks.DynamicMenuActivated(state->EmulationRunning,
+                                wmId); //Calls to the loaded DLL so it can do the right thing
+
+                        if (result != 0)
+                        {
+                            state->ResetPending = Define.RESET_HARD;
+                        }
+                    }
+                });
             }
         }
 
@@ -272,7 +285,7 @@ namespace VCCSharp.Modules
                     uint y = (uint)((lParam >> 16) & 0xFFFF); // HIWORD(lParam);
 
                     RECT clientSize;
-                    _modules.GDI.GDIGetClientRect(emuState->WindowHandle, &clientSize);
+                    _modules.GDI.GDIGetClientRect(_modules.Emu.WindowHandle, &clientSize);
 
                     x /= (uint)((clientSize.right - clientSize.left) >> 6);
                     y /= (uint)(((clientSize.bottom - clientSize.top) - 20) >> 6);

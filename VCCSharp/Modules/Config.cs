@@ -130,7 +130,7 @@ namespace VCCSharp.Modules
             SoundCardList soundCard = SoundCards[soundCardIndex];
             _GUID* guid = soundCard.Guid;
 
-            _modules.Audio.SoundInit(emuState->WindowHandle, guid, ConfigModel.AudioRate);
+            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, guid, ConfigModel.AudioRate);
 
             //  Try to open the config file.  Create it if necessary.  Abort if failure.
             if (File.Exists(iniFile))

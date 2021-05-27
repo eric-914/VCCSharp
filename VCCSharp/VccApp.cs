@@ -54,6 +54,8 @@ namespace VCCSharp
 
                 _modules.CoCo.SetClockSpeed(1);  //Default clock speed .89 MHZ	
 
+                _modules.Vcc.CreatePrimaryWindow();
+
                 if (!string.IsNullOrEmpty(cmdLineArgs.QLoadFile))
                 {
                     if (_modules.QuickLoad.QuickStart(emuState, cmdLineArgs.QLoadFile) == (int)QuickStartStatuses.Ok)
@@ -63,8 +65,6 @@ namespace VCCSharp
 
                     emuState->EmulationRunning = Define.TRUE;
                 }
-
-                _modules.Vcc.CreatePrimaryWindow();
 
                 //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
                 //Loads the default config file Vcc.ini from the exec directory
@@ -119,7 +119,7 @@ namespace VCCSharp
                 VccState* vccState = _modules.Vcc.GetVccState();
                 EmuState* emuState = _modules.Emu.GetEmuState();
 
-                _modules.PAKInterface.UnloadDll(emuState);
+                _modules.PAKInterface.UnloadDll(emuState->EmulationRunning);
                 _modules.Audio.SoundDeInit();
 
                 _modules.Config.WriteIniFile(emuState); //Save any changes to ini File

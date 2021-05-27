@@ -117,7 +117,7 @@ namespace VCCSharp.Modules
                 }
 
                 _modules.Graphics.InvalidateBorder();
-                _modules.Callbacks.RefreshDynamicMenu(emuState);
+                _modules.Callbacks.RefreshDynamicMenu(_modules.Emu.WindowHandle);
 
                 //TODO: Guess it wants to close other windows/dialogs
                 //emuState->ConfigDialog = Zero;
@@ -379,10 +379,10 @@ namespace VCCSharp.Modules
                 // The ClientToScreen function converts the client-area coordinates of a specified point to screen coordinates.
                 // in other word the client rectangle of the main windows 0, 0 (upper-left corner) 
                 // in a screen x,y coords which is put back into p  
-                _user32.ClientToScreen(emuState->WindowHandle, &p);  // find out where on the primary surface our window lives
+                _user32.ClientToScreen(_modules.Emu.WindowHandle, &p);  // find out where on the primary surface our window lives
 
                 // get the actual client rectangle, which is always 0,0 - w,h
-                _user32.GetClientRect(emuState->WindowHandle, &rcDest);
+                _user32.GetClientRect(_modules.Emu.WindowHandle, &rcDest);
 
                 // The OffsetRect function moves the specified rectangle by the specified offsets
                 // add the delta screen point we got above, which gives us the client rect in screen coordinates.
@@ -407,7 +407,7 @@ namespace VCCSharp.Modules
                     //                         because rcDest has already been converted to screen cords, right?   
                     RECT rcClient;
 
-                    _user32.GetClientRect(emuState->WindowHandle, &rcClient);  // x,y is always 0,0 so right, bottom is w,h
+                    _user32.GetClientRect(_modules.Emu.WindowHandle, &rcClient);  // x,y is always 0,0 so right, bottom is w,h
 
                     rcClient.bottom -= (int)_statusBarHeight;
 
@@ -433,11 +433,11 @@ namespace VCCSharp.Modules
 
                     Point pDstLeftTop = new Point { X = (int)dstX, Y = (int)dstY };
 
-                    _user32.ClientToScreen(emuState->WindowHandle, &pDstLeftTop);
+                    _user32.ClientToScreen(_modules.Emu.WindowHandle, &pDstLeftTop);
 
                     Point pDstRightBottom = new Point { X = (int)(dstX + dstWidth), Y = (int)(dstY + dstHeight) };
 
-                    _user32.ClientToScreen(emuState->WindowHandle, &pDstRightBottom);
+                    _user32.ClientToScreen(_modules.Emu.WindowHandle, &pDstRightBottom);
 
                     _user32.SetRect(&rcDest, (short)pDstLeftTop.X, (short)pDstLeftTop.Y, (short)pDstRightBottom.X, (short)pDstRightBottom.Y);
                 }
@@ -466,7 +466,7 @@ namespace VCCSharp.Modules
             //--Store the updated WindowSizeX/Y for configuration, later.
             RECT windowSize;
 
-            _user32.GetClientRect(emuState->WindowHandle, &windowSize);
+            _user32.GetClientRect(_modules.Emu.WindowHandle, &windowSize);
 
             _modules.Emu.WindowSize = new System.Windows.Point(windowSize.right, (int)(windowSize.bottom - _statusBarHeight));
         }
@@ -545,11 +545,11 @@ namespace VCCSharp.Modules
                 _windowSize.Y = 480;
             }
 
-            if (emuState->WindowHandle != null) //If its go a value it must be a mode switch
+            if (_modules.Emu.WindowHandle != null) //If its go a value it must be a mode switch
             {
                 DDRelease();
 
-                _user32.DestroyWindow(emuState->WindowHandle);
+                _user32.DestroyWindow(_modules.Emu.WindowHandle);
 
                 DDUnregisterClass();
             }
@@ -620,20 +620,22 @@ namespace VCCSharp.Modules
                 fixed (byte* titleBarText = TitleBarText)
                 {
                     // We create the Main window 
-                    emuState->WindowHandle = _user32.CreateWindowExA(0, appNameText, titleBarText,
+                    _modules.Emu.WindowHandle = _user32.CreateWindowExA(0, appNameText, titleBarText,
                         Define.WS_OVERLAPPEDWINDOW, Define.CW_USEDEFAULT, 0, width, height,
                         Zero, null, _hInstance, null);
                 }
             }
 
-            if (emuState->WindowHandle == null)
+            if (_modules.Emu.WindowHandle == null)
             {	// Can't create window
                 return false;
             }
 
+            _modules.MenuCallbacks.SetWindowHandle(_modules.Emu.WindowHandle);
+
             _hWndStatusBar = _user32.CreateWindowExA(0, Define.STATUSCLASSNAME, "Ready",
                 Define.SBARS_SIZEGRIP | Define.WS_CHILD | Define.WS_VISIBLE, 0, 0, 0, 0,
-                emuState->WindowHandle, null, _hInstance, null);
+                _modules.Emu.WindowHandle, null, _hInstance, null);
 
             if (_hWndStatusBar == null)
             {	// Can't create Status bar
@@ -648,29 +650,29 @@ namespace VCCSharp.Modules
 
             _statusBarHeight = (uint)(rStatBar.bottom - rStatBar.top); // Calculate its height
 
-            _user32.GetWindowRect(emuState->WindowHandle, &rStatBar);
+            _user32.GetWindowRect(_modules.Emu.WindowHandle, &rStatBar);
 
             width = rStatBar.right - rStatBar.left;
             height = rStatBar.bottom + (int)(_statusBarHeight) - rStatBar.top;
 
             // using MoveWindow to resize 
-            _user32.MoveWindow(emuState->WindowHandle, rStatBar.left, rStatBar.top, width, height, 1);
+            _user32.MoveWindow(_modules.Emu.WindowHandle, rStatBar.left, rStatBar.top, width, height, 1);
 
             RECT size;
 
             _user32.SendMessageA(_hWndStatusBar, Define.WM_SIZE, 0, 0); // Redraw Status bar in new position
 
-            _user32.GetWindowRect(emuState->WindowHandle, &size);	// And save the Final size of the Window 
+            _user32.GetWindowRect(_modules.Emu.WindowHandle, &size);	// And save the Final size of the Window 
 
-            _user32.ShowWindow(emuState->WindowHandle, Define.SW_SHOWDEFAULT);
-            _user32.UpdateWindow(emuState->WindowHandle);
+            _user32.ShowWindow(_modules.Emu.WindowHandle, Define.SW_SHOWDEFAULT);
+            _user32.UpdateWindow(_modules.Emu.WindowHandle);
 
             long hr = DDCreate();
 
             if (hr < 0) return false;
 
             // Initialize the DirectDraw object
-            hr = DDSetCooperativeLevel(emuState->WindowHandle, Define.DDSCL_NORMAL); // Set DDSCL_NORMAL to use windowed mode
+            hr = DDSetCooperativeLevel(_modules.Emu.WindowHandle, Define.DDSCL_NORMAL); // Set DDSCL_NORMAL to use windowed mode
 
             if (hr < 0) return false;
 
@@ -712,7 +714,7 @@ namespace VCCSharp.Modules
 
             if (hr < 0) return false;
 
-            hr = DDClipperSetHWnd(emuState->WindowHandle);	// Assign your window's HWND to the clipper
+            hr = DDClipperSetHWnd(_modules.Emu.WindowHandle);	// Assign your window's HWND to the clipper
 
             if (hr < 0) return false;
 
@@ -736,24 +738,26 @@ namespace VCCSharp.Modules
 
             fixed (byte* appNameText = AppNameText)
             {
-                emuState->WindowHandle = _user32.CreateWindowExA(0, appNameText, null, Define.WS_POPUP | Define.WS_VISIBLE,
+                _modules.Emu.WindowHandle = _user32.CreateWindowExA(0, appNameText, null, Define.WS_POPUP | Define.WS_VISIBLE,
                     0, 0, _windowSize.X, _windowSize.Y, Zero, null, _hInstance, null);
             }
 
-            if (emuState->WindowHandle == null) return false;
+            if (_modules.Emu.WindowHandle == null) return false;
+
+            _modules.MenuCallbacks.SetWindowHandle(_modules.Emu.WindowHandle);
 
             RECT size;
 
-            _user32.GetWindowRect(emuState->WindowHandle, &size);
+            _user32.GetWindowRect(_modules.Emu.WindowHandle, &size);
 
-            _user32.ShowWindow(emuState->WindowHandle, Define.SW_SHOWMAXIMIZED);
-            _user32.UpdateWindow(emuState->WindowHandle);
+            _user32.ShowWindow(_modules.Emu.WindowHandle, Define.SW_SHOWMAXIMIZED);
+            _user32.UpdateWindow(_modules.Emu.WindowHandle);
 
             long hr = DDCreate();		// Initialize DirectDraw
 
             if (hr < 0) return false;
 
-            hr = DDSetCooperativeLevel(emuState->WindowHandle, Define.DDSCL_EXCLUSIVE | Define.DDSCL_FULLSCREEN | Define.DDSCL_NOWINDOWCHANGES);
+            hr = DDSetCooperativeLevel(_modules.Emu.WindowHandle, Define.DDSCL_EXCLUSIVE | Define.DDSCL_FULLSCREEN | Define.DDSCL_NOWINDOWCHANGES);
 
             if (hr < 0) return false;
 

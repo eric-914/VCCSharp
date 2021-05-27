@@ -32,7 +32,7 @@ namespace VCCSharp.Libraries
         public static class Callbacks
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe void RefreshDynamicMenu(EmuState* emuState);
+            public static extern void RefreshDynamicMenu(HWND hWnd);
         }
 
         public static class Cassette
@@ -342,7 +342,13 @@ namespace VCCSharp.Libraries
             public static extern unsafe void DynamicMenuCallback(EmuState* emuState, string menuName, int menuId, int type);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void DynamicMenuActivated(EmuState* emuState, int menuItem);
+            public static extern void SetWindowHandle(HWND hWnd);
+
+            [DllImport(LIBRARY)]
+            public static extern int UnloadPack(byte emulationRunning);
+
+            [DllImport(LIBRARY)]
+            public static extern int InsertModule(byte emulationRunning, string modulePath);
         }
 
         public static class PAKInterface
@@ -351,7 +357,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe PakInterfaceState* GetPakInterfaceState();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void UnloadDll(EmuState* emuState);
+            public static extern void UnloadDll(byte emulationRunning);
 
             [DllImport(LIBRARY)]
             public static extern unsafe int InsertModule(EmuState* emuState, string modulePath);
@@ -397,6 +403,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern ushort PakAudioSample();
+
+            [DllImport(LIBRARY)]
+            public static extern int HasConfigModule();
+
+            [DllImport(LIBRARY)]
+            public static extern void InvokeConfigModule(byte menuItem);
         } //--PAKInterface
 
         public static class TC1014

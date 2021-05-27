@@ -44,9 +44,6 @@
     <ClCompile Include="MenuCallbacks.c">
       <Filter>callbacks</Filter>
     </ClCompile>
-    <ClCompile Include="Cartridge.c">
-      <Filter>cartridge</Filter>
-    </ClCompile>
     <ClCompile Include="DirectSound.c">
       <Filter>audio</Filter>
     </ClCompile>
@@ -133,9 +130,6 @@
     <ClInclude Include="MenuCallbacks.h">
       <Filter>callbacks</Filter>
     </ClInclude>
-    <ClInclude Include="Cartridge.h">
-      <Filter>cartridge</Filter>
-    </ClInclude>
     <ClInclude Include="VccState.h">
       <Filter>vcc</Filter>
     </ClInclude>
@@ -212,9 +206,6 @@
     </Filter>
     <Filter Include="emu">
       <UniqueIdentifier>{5f8f0b1c-f4d2-45c3-aa61-d4c3def83656}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="cartridge">
-      <UniqueIdentifier>{0036c795-d112-4a00-a0f6-2740c5df1c0e}</UniqueIdentifier>
     </Filter>
     <Filter Include="gdi">
       <UniqueIdentifier>{af3d055a-94a9-4c02-8950-bda2fec4d99b}</UniqueIdentifier>

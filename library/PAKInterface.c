@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 
 #include "PAKInterface.h"
@@ -6,15 +5,15 @@
 #include "PakInterfaceModule.h"
 
 #include "Config.h"
-#include "TC1014MMU.h"
-#include "EmuState.h"
-#include "cpudef.h"
 #include "fileoperations.h"
 #include "MenuCallbacks.h"
 
-using namespace std;
-
 #define MAX_LOADSTRING 255
+
+#define NOMODULE	1
+#define NOTVCC	2
+
+#define MENU_REFRESH 2
 
 PakInterfaceState* InitializeInstance(PakInterfaceState*);
 
@@ -52,7 +51,7 @@ extern "C" {
     handle = fopen(filename, "rb");
 
     if (handle == NULL) {
-      return(0);	//File Doesn't exist
+      return 0;	//File Doesn't exist
     }
 
     temp[0] = fgetc(handle);
@@ -61,10 +60,10 @@ extern "C" {
     fclose(handle);
 
     if (strcmp(temp, "MZ") == 0) {
-      return(1);	//DLL File
+      return 1;	//DLL File
     }
 
-    return(2);		//Rom Image 
+    return 2;		//Rom Image 
   }
 }
 
@@ -75,7 +74,7 @@ extern "C" {
       return ModulePortRead(port);
     }
 
-    return(NULL);
+    return NULL;
   }
 }
 
@@ -103,7 +102,7 @@ extern "C" {
       return(instance->ExternalRomBuffer[offset]);
     }
 
-    return(0);
+    return 0;
   }
 }
 
@@ -114,7 +113,7 @@ extern "C" {
       return(ReadModuleAudioSample());
     }
 
-    return(NULL);
+    return NULL;
   }
 }
 
@@ -123,9 +122,9 @@ extern "C" {
 // Used by LoadROMPack(...), UnloadPack(...), InsertModule(...)
 //===============================================================
 extern "C" {
-  __declspec(dllexport) void __cdecl UnloadDll(EmuState* emuState)
+  __declspec(dllexport) void __cdecl UnloadDll(unsigned char emulationRunning)
   {
-    if ((instance->DialogOpen) && (emuState->EmulationRunning))
+    if ((instance->DialogOpen) && (emulationRunning))
     {
       MessageBox(0, "Close Configuration Dialog before unloading", "Ok", 0);
 
@@ -140,7 +139,7 @@ extern "C" {
 
     instance->hInstLib = NULL;
 
-    DynamicMenuCallback(emuState, NULL, MENU_REFRESH, IGNORE);
+    DynamicMenuCallback(NULL, MENU_REFRESH, IGNORE);
   }
 }
 
@@ -157,7 +156,7 @@ Load a ROM pack
 return total bytes loaded, or 0 on failure
 */
 extern "C" {
-  __declspec(dllexport) int __cdecl LoadROMPack(EmuState* emuState, char* filename)
+  __declspec(dllexport) int __cdecl LoadROMPack(unsigned char emulationRunning, char* filename)
   {
     constexpr size_t PAK_MAX_MEM = 0x40000;
 
@@ -188,7 +187,7 @@ extern "C" {
 
     fclose(rom_handle);
 
-    UnloadDll(emuState);
+    UnloadDll(emulationRunning);
 
     instance->BankedCartOffset = 0;
     instance->RomPackLoaded = true;
@@ -198,9 +197,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl UnloadPack(EmuState* emuState)
+  __declspec(dllexport) int __cdecl UnloadPack(unsigned char emulationRunning)
   {
-    UnloadDll(emuState);
+    UnloadDll(emulationRunning);
 
     strcpy(instance->DllPath, "");
     strcpy(instance->Modname, "Blank");
@@ -213,32 +212,32 @@ extern "C" {
 
     instance->ExternalRomBuffer = NULL;
 
-    emuState->ResetPending = RESET_HARD;
+    DynamicMenuCallback(NULL, MENU_REFRESH, IGNORE);
 
-    DynamicMenuCallback(emuState, NULL, MENU_REFRESH, IGNORE);
+    return NOMODULE;
   }
 }
 
 //File doesn't exist
 extern "C" {
   __declspec(dllexport) int __cdecl InsertModuleCase0() {
-    return(NOMODULE);
+    return NOMODULE;
   }
 }
 
 //File is a DLL
 extern "C" {
-  __declspec(dllexport) int __cdecl InsertModuleCase1(EmuState* emuState, char* modulePath) {
+  __declspec(dllexport) int __cdecl InsertModuleCase1(unsigned char emulationRunning, char* modulePath) {
     char catNumber[MAX_LOADSTRING] = "";
     char temp[MAX_LOADSTRING] = "";
     char text[1024] = "";
     char ini[MAX_PATH] = "";
 
-    UnloadDll(emuState);
+    UnloadDll(emulationRunning);
     instance->hInstLib = LoadLibrary(modulePath);
 
     if (instance->hInstLib == NULL) {
-      return(NOMODULE);
+      return NOMODULE;
     }
 
     SetCart(0);
@@ -367,36 +366,32 @@ extern "C" {
 
     strcpy(instance->DllPath, modulePath);
 
-    emuState->ResetPending = RESET_HARD;
-
-    return(0);
+    return 0;
   }
 }
 
 //File is a ROM image
 extern "C" {
-  __declspec(dllexport) int __cdecl InsertModuleCase2(EmuState* emuState, char* modulePath) {
-    UnloadDll(emuState);
+  __declspec(dllexport) int __cdecl InsertModuleCase2(unsigned char emulationRunning, char* modulePath) {
+    UnloadDll(emulationRunning);
 
-    LoadROMPack(emuState, modulePath);
+    LoadROMPack(emulationRunning, modulePath);
 
     strncpy(instance->Modname, modulePath, MAX_PATH);
 
     FilePathStripPath(instance->Modname);
 
-    DynamicMenuCallback(emuState, NULL, MENU_REFRESH, IGNORE);
-
-    emuState->ResetPending = RESET_HARD;
+    DynamicMenuCallback(NULL, MENU_REFRESH, IGNORE);
 
     SetCart(1);
 
-    return(0);
+    return 0;
   }
 }
 
 //--Called from _beginthreadex(...)
 extern "C" {
-  __declspec(dllexport) int __cdecl InsertModule(EmuState* emuState, char* modulePath)
+  __declspec(dllexport) int __cdecl InsertModule(unsigned char emulationRunning, char* modulePath)
   {
     unsigned char fileType = fileType = FileID(modulePath);
 
@@ -406,13 +401,13 @@ extern "C" {
       return InsertModuleCase0();
 
     case 1:		//File is a DLL
-      return InsertModuleCase1(emuState, modulePath);
+      return InsertModuleCase1(emulationRunning, modulePath);
 
     case 2:		//File is a ROM image
-      return InsertModuleCase2(emuState, modulePath);
+      return InsertModuleCase2(emulationRunning, modulePath);
     }
 
-    return(NOMODULE);
+    return NOMODULE;
   }
 }
 
