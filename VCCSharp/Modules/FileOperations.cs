@@ -5,24 +5,25 @@ namespace VCCSharp.Modules
 {
     public interface IFileOperations
     {
-        unsafe HANDLE FileOpenFile(string filename, long desiredAccess);
-        unsafe HANDLE FileCreateFile(string filename, long desiredAccess);
+        HANDLE FileOpenFile(string filename, long desiredAccess);
+        HANDLE FileCreateFile(string filename, long desiredAccess);
         long FileSetFilePointer(HANDLE handle, long moveMethod, long offset = 0);
         unsafe int FileReadFile(HANDLE handle, byte* buffer, ulong size, ulong* moved);
         int FileCloseHandle(HANDLE handle);
         int FileFlushFileBuffers(HANDLE handle);
         unsafe int FileWriteFile(HANDLE handle, byte* buffer, int size);
         int FileWriteFile(HANDLE handle, string text);
+        unsafe void FilePathStripPath(byte* path);
     }
 
     public class FileOperations : IFileOperations
     {
-        public unsafe HANDLE FileOpenFile(string filename, long desiredAccess)
+        public HANDLE FileOpenFile(string filename, long desiredAccess)
         {
             return Library.FileOperations.FileOpenFile(filename, desiredAccess);
         }
 
-        public unsafe HANDLE FileCreateFile(string filename, long desiredAccess)
+        public HANDLE FileCreateFile(string filename, long desiredAccess)
         {
             return Library.FileOperations.FileCreateFile(filename, desiredAccess);
         }
@@ -58,6 +59,11 @@ namespace VCCSharp.Modules
             {
                 return Library.FileOperations.FileWriteFile(handle, buffer, text.Length);
             }
+        }
+
+        public unsafe void FilePathStripPath(byte* path)
+        {
+            Library.FileOperations.FilePathStripPath(path);
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using HINSTANCE = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -23,6 +25,7 @@ namespace VCCSharp.Modules
         ushort PakAudioSample();
         int HasConfigModule();
         void InvokeConfigModule(byte menuItem);
+        int UnloadPack(byte emulationRunning);
     }
 
     // ReSharper disable once InconsistentNaming
@@ -44,7 +47,8 @@ namespace VCCSharp.Modules
 
         public void PakTimer()
         {
-            if (HasHeartBeat() != Define.FALSE) {
+            if (HasHeartBeat() != Define.FALSE)
+            {
                 InvokeHeartBeat();
             }
         }
@@ -86,7 +90,8 @@ namespace VCCSharp.Modules
             {
                 GetPakInterfaceState()->BankedCartOffset = 0;
 
-                if (HasModuleReset() == Define.TRUE) {
+                if (HasModuleReset() == Define.TRUE)
+                {
                     InvokeModuleReset();
                 }
             }
@@ -94,29 +99,221 @@ namespace VCCSharp.Modules
 
         public void UpdateBusPointer()
         {
-            if (HasSetInterruptCallPointer() == Define.TRUE) {
+            if (HasSetInterruptCallPointer() == Define.TRUE)
+            {
                 InvokeSetInterruptCallPointer();
             }
         }
 
         public int InsertModule(byte emulationRunning, string modulePath)
         {
-            return Library.PAKInterface.InsertModule(emulationRunning, modulePath);
+            int fileType = FileID(modulePath);
+
+            switch (fileType)
+            {
+                case 0:		//File doesn't exist
+                    return InsertModuleCase0();
+
+                case 1:		//File is a DLL
+                    return InsertModuleCase1(emulationRunning, modulePath);
+
+                case 2:		//File is a ROM image
+                    return InsertModuleCase2(emulationRunning, modulePath);
+            }
+
+            return Define.NOMODULE;
         }
 
+        //File doesn't exist
         public int InsertModuleCase0()
         {
-            return Library.PAKInterface.InsertModuleCase0();
+            return Define.NOMODULE;
         }
 
-        public unsafe int InsertModuleCase1(byte emulationRunning, byte* modulePath)
+        //File is a DLL
+        public int InsertModuleCase1(byte emulationRunning, string modulePath)
         {
-            return Library.PAKInterface.InsertModuleCase1(emulationRunning, modulePath);
+            string catNumber = "";
+            string temp = "";
+            string text = "";
+            string ini = "";
+
+            UnloadDll(emulationRunning);
+
+            unsafe
+            {
+                PakInterfaceState* instance = GetPakInterfaceState();
+
+                instance->hInstLib = PAKLoadLibrary(modulePath);
+
+                if (instance->hInstLib == HINSTANCE.Zero)
+                {
+                    return Define.NOMODULE;
+                }
+
+                SetCart(0);
+
+                if (SetDelegates(instance->hInstLib) != 0)
+                {
+                    PAKFreeLibrary(instance->hInstLib);
+
+                    instance->hInstLib = HINSTANCE.Zero;
+
+                    return Define.NOTVCC;
+                }
+
+                instance->BankedCartOffset = 0;
+
+                if (HasDmaMemPointer() != 0)
+                {
+                    InvokeDmaMemPointer();
+                }
+
+                if (HasSetInterruptCallPointer() != 0)
+                {
+                    InvokeSetInterruptCallPointer();
+                }
+
+                string modName = Converter.ToString(instance->Modname);
+                InvokeGetModuleName(modName, catNumber);  //Instantiate the menus from HERE!
+
+                //sprintf(temp, "Configure %s", instance->Modname);
+                temp = $"Configure {modName}";
+
+                //strcat(text, "Module Name: ");
+                //strcat(text, instance->Modname);
+                //strcat(text, "\n");
+                text = $"Module Name: {modName}\n";
+
+                if (HasConfigModule() != 0)
+                {
+                    instance->ModualParms |= 1;
+
+                    text += "Has Configurable options\n";
+                }
+
+                if (HasPakPortWrite() != 0)
+                {
+                    instance->ModualParms |= 2;
+
+                    text += "Is IO writable\n";
+                }
+
+                if (HasPakPortRead() != 0)
+                {
+                    instance->ModualParms |= 4;
+
+                    text += "Is IO readable\n";
+                }
+
+                if (HasSetInterruptCallPointer() != 0)
+                {
+                    instance->ModualParms |= 8;
+
+                    text += "Generates Interrupts\n";
+                }
+
+                if (HasDmaMemPointer() != 0)
+                {
+                    instance->ModualParms |= 16;
+
+                    text += "Generates DMA Requests\n";
+                }
+
+                if (HasHeartBeat() != 0)
+                {
+                    instance->ModualParms |= 32;
+
+                    text += "Needs Heartbeat\n";
+                }
+
+                if (HasModuleAudioSample() != 0)
+                {
+                    instance->ModualParms |= 64;
+
+                    text += "Analog Audio Outputs\n";
+                }
+
+                if (HasPakMemWrite8() != 0)
+                {
+                    instance->ModualParms |= 128;
+
+                    text += "Needs ChipSelect Write\n";
+                }
+
+                if (HasPakMemRead8() != 0)
+                {
+                    instance->ModualParms |= 256;
+
+                    text += "Needs ChipSelect Read\n";
+                }
+
+                if (HasModuleStatus())
+                {
+                    instance->ModualParms |= 512;
+
+                    text += "Returns Status\n";
+                }
+
+                if (HasModuleReset() != 0)
+                {
+                    instance->ModualParms |= 1024;
+
+                    text += "Needs Reset Notification\n";
+                }
+
+                if (HasSetIniPath() != 0)
+                {
+                    instance->ModualParms |= 2048;
+
+                    //strcpy(ini, GetConfigState()->IniFilePath);
+                    ini = Converter.ToString(_modules.Config.GetConfigState()->IniFilePath);
+
+                    InvokeSetIniPath(ini);
+                }
+
+                if (HasPakSetCart() != 0)
+                {
+                    instance->ModualParms |= 4096;
+
+                    text += "Can Assert CART\n";
+
+                    InvokePakSetCart();
+                }
+
+                Console.WriteLine(temp);
+                Console.WriteLine(text);
+
+                //strcpy(instance->DllPath, modulePath);
+                Converter.ToByteArray(modulePath, instance->DllPath);
+
+                return 0;
+            }
         }
 
-        public unsafe int InsertModuleCase2(byte emulationRunning, byte* modulePath)
+        //File is a ROM image
+        public int InsertModuleCase2(byte emulationRunning, string modulePath)
         {
-            return Library.PAKInterface.InsertModuleCase2(emulationRunning, modulePath);
+            UnloadDll(emulationRunning);
+
+            LoadROMPack(emulationRunning, modulePath);
+
+            unsafe
+            {
+                PakInterfaceState* instance = GetPakInterfaceState();
+
+                //strncpy(instance->Modname, modulePath, MAX_PATH);
+                Converter.ToByteArray(modulePath, instance->Modname);
+
+                _modules.FileOperations.FilePathStripPath(instance->Modname);
+
+            }
+
+            _modules.MenuCallbacks.DynamicMenuCallback(null, MenuActions.Refresh, Define.IGNORE);
+
+            SetCart(1);
+
+            return 0;
         }
 
         public int HasHeartBeat()
@@ -201,5 +398,126 @@ namespace VCCSharp.Modules
         {
             Library.PAKInterface.InvokeConfigModule(menuItem);
         }
+
+        public int FileID(string filename)
+        {
+            return Library.PAKInterface.FileID(filename);
+        }
+
+        public HINSTANCE PAKLoadLibrary(string modulePath)
+        {
+            return Library.PAKInterface.PAKLoadLibrary(modulePath);
+        }
+
+        public void SetCart(byte cart)
+        {
+            Library.PAKInterface.SetCart(cart);
+        }
+
+        public int SetDelegates(HINSTANCE hInstLib)
+        {
+            return Library.PAKInterface.SetDelegates(hInstLib);
+        }
+
+        public void PAKFreeLibrary(HINSTANCE hInstLib)
+        {
+            Library.PAKInterface.PAKFreeLibrary(hInstLib);
+        }
+
+        public int HasDmaMemPointer()
+        {
+            return Library.PAKInterface.HasDmaMemPointer();
+        }
+
+        public void InvokeDmaMemPointer()
+        {
+            Library.PAKInterface.InvokeDmaMemPointer();
+        }
+
+        public void InvokeGetModuleName(string modName, string catNumber)
+        {
+            Library.PAKInterface.InvokeGetModuleName(modName, catNumber);
+        }
+
+        public int HasPakPortWrite()
+        {
+            return Library.PAKInterface.HasPakPortWrite();
+        }
+
+        public int HasPakPortRead()
+        {
+            return Library.PAKInterface.HasPakPortRead();
+        }
+
+        public int HasModuleAudioSample()
+        {
+            return Library.PAKInterface.HasModuleAudioSample();
+        }
+
+        public int HasPakMemWrite8()
+        {
+            return Library.PAKInterface.HasPakMemWrite8();
+        }
+
+        public int HasPakMemRead8()
+        {
+            return Library.PAKInterface.HasPakMemRead8();
+        }
+
+        public int HasSetIniPath()
+        {
+            return Library.PAKInterface.HasSetIniPath();
+        }
+
+        public int HasPakSetCart()
+        {
+            return Library.PAKInterface.HasPakSetCart();
+        }
+
+        public void InvokeSetIniPath(string ini)
+        {
+            Library.PAKInterface.InvokeSetIniPath(ini);
+        }
+
+        public void InvokePakSetCart()
+        {
+            Library.PAKInterface.InvokePakSetCart();
+        }
+
+        public int LoadROMPack(byte emulationRunning, string filename)
+        {
+            return Library.PAKInterface.LoadROMPack(emulationRunning, filename);
+        }
+
+        public int UnloadPack(byte emulationRunning)
+        {
+            UnloadDll(emulationRunning);
+
+            unsafe
+            {
+                PakInterfaceState* instance = GetPakInterfaceState();
+
+                Converter.ToByteArray("", instance->DllPath);
+                Converter.ToByteArray("Blank", instance->Modname);
+
+                instance->RomPackLoaded = Define.FALSE;
+
+                SetCart(0);
+
+                FreeMemory(instance->ExternalRomBuffer);
+
+                instance->ExternalRomBuffer = null;
+
+                _modules.MenuCallbacks.DynamicMenuCallback(null, MenuActions.Refresh, Define.IGNORE);
+
+                return Define.NOMODULE;
+            }
+        }
+
+        public unsafe void FreeMemory(byte* target)
+        {
+            Library.PAKInterface.FreeMemory(target);
+        }
+
     }
 }

@@ -249,6 +249,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe int FileWriteFile(HANDLE handle, byte* buffer, int size);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void FilePathStripPath(byte* path);
         }
 
         public static class GDI
@@ -334,9 +337,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void SetWindowHandle(HWND hWnd);
-
-            [DllImport(LIBRARY)]
-            public static extern int UnloadPack(byte emulationRunning);
         }
 
         public static class PAKInterface
@@ -346,18 +346,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void UnloadDll(byte emulationRunning);
-
-            [DllImport(LIBRARY)]
-            public static extern int InsertModule(byte emulationRunning, string modulePath);
-
-            [DllImport(LIBRARY)]
-            public static extern int InsertModuleCase0();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int InsertModuleCase1(byte emulationRunning, byte* modulePath);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int InsertModuleCase2(byte emulationRunning, byte* modulePath);
 
             [DllImport(LIBRARY)]
             public static extern int HasHeartBeat();
@@ -397,6 +385,63 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void InvokeConfigModule(byte menuItem);
+
+            [DllImport(LIBRARY)]
+            public static extern int FileID(string filename);
+
+            [DllImport(LIBRARY)]
+            public static extern HINSTANCE PAKLoadLibrary(string modulePath);
+
+            [DllImport(LIBRARY)]
+            public static extern void SetCart(byte cart);
+
+            [DllImport(LIBRARY)]
+            public static extern int SetDelegates(HINSTANCE hInstLib);
+
+            [DllImport(LIBRARY)]
+            public static extern void PAKFreeLibrary(HINSTANCE hInstLib);
+
+            [DllImport(LIBRARY)]
+            public static extern int HasDmaMemPointer();
+
+            [DllImport(LIBRARY)]
+            public static extern void InvokeDmaMemPointer();
+
+            [DllImport(LIBRARY)]
+            public static extern void InvokeGetModuleName(string modName, string catNumber);
+
+            [DllImport(LIBRARY)]
+            public static extern int HasPakPortWrite();
+
+            [DllImport(LIBRARY)]
+            public static extern int HasPakPortRead();
+
+            [DllImport(LIBRARY)]
+            public static extern int HasModuleAudioSample();
+
+            [DllImport(LIBRARY)]
+            public static extern int HasPakMemWrite8();
+
+            [DllImport(LIBRARY)]
+            public static extern int HasPakMemRead8();
+
+            [DllImport(LIBRARY)]
+            public static extern int HasSetIniPath();
+
+            [DllImport(LIBRARY)]
+            public static extern int HasPakSetCart();
+
+            [DllImport(LIBRARY)]
+            public static extern void InvokeSetIniPath(string ini);
+
+            [DllImport(LIBRARY)]
+            public static extern void InvokePakSetCart();
+
+            [DllImport(LIBRARY)]
+            public static extern int LoadROMPack(byte emulationRunning, string filename);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void FreeMemory(byte* target);
         } //--PAKInterface
 
         public static class TC1014

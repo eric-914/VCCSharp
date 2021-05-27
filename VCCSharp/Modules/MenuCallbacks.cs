@@ -23,11 +23,6 @@ namespace VCCSharp.Modules
             _modules = modules;
         }
 
-        public void DynamicMenuCallback(string menuName, MenuActions menuId, int type)
-        {
-            Library.MenuCallbacks.DynamicMenuCallback(menuName, (int)menuId, type);
-        }
-
         public int DynamicMenuActivated(byte emulationRunning, int menuItem)
         {
             switch (menuItem)
@@ -36,7 +31,7 @@ namespace VCCSharp.Modules
                     return LoadPack();
 
                 case Define.ID_MENU_EJECT_CART:
-                    return UnloadPack(emulationRunning);
+                    return _modules.PAKInterface.UnloadPack(emulationRunning);
 
                 default:
                     if (_modules.PAKInterface.HasConfigModule() != 0)
@@ -46,11 +41,6 @@ namespace VCCSharp.Modules
                     }
                     return 0;
             }
-        }
-
-        public void SetWindowHandle(IntPtr intPtr)
-        {
-            Library.MenuCallbacks.SetWindowHandle(intPtr);
         }
 
         private bool _dialogOpen;
@@ -68,11 +58,6 @@ namespace VCCSharp.Modules
             _modules.Emu.EmulationRunning = Define.TRUE;
 
             return result;
-        }
-
-        public int UnloadPack(byte emulationRunning)
-        {
-            return Library.MenuCallbacks.UnloadPack(emulationRunning);
         }
 
         public int OpenLoadCartFileDialog()
@@ -105,6 +90,16 @@ namespace VCCSharp.Modules
             }
 
             return 0;
+        }
+
+        public void DynamicMenuCallback(string menuName, MenuActions menuId, int type)
+        {
+            Library.MenuCallbacks.DynamicMenuCallback(menuName, (int)menuId, type);
+        }
+
+        public void SetWindowHandle(IntPtr intPtr)
+        {
+            Library.MenuCallbacks.SetWindowHandle(intPtr);
         }
     }
 }

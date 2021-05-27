@@ -41,6 +41,32 @@ PakInterfaceState* InitializeInstance(PakInterfaceState* p) {
   return p;
 }
 
+extern "C" {
+  __declspec(dllexport) HINSTANCE __cdecl PAKLoadLibrary(char* modulePath) {
+    return LoadLibrary(modulePath);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl PAKFreeLibrary(HINSTANCE hInstLib) {
+    FreeLibrary(hInstLib);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl FreeMemory(unsigned char* target) {
+    if (target != NULL) {
+      free(target);
+    }
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl SetCart(unsigned char cart)
+  {
+    instance->CartInserted = cart;
+  }
+}
 
 extern "C" {
   __declspec(dllexport) int __cdecl FileID(char* filename)
@@ -143,14 +169,6 @@ extern "C" {
   }
 }
 
-extern "C" {
-  __declspec(dllexport) void __cdecl FreeMemory(unsigned char* target) {
-    if (target != NULL) {
-      free(target);
-    }
-  }
-}
-
 /**
 Load a ROM pack
 return total bytes loaded, or 0 on failure
@@ -193,227 +211,5 @@ extern "C" {
     instance->RomPackLoaded = true;
 
     return index;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) int __cdecl UnloadPack(unsigned char emulationRunning)
-  {
-    UnloadDll(emulationRunning);
-
-    strcpy(instance->DllPath, "");
-    strcpy(instance->Modname, "Blank");
-
-    instance->RomPackLoaded = false;
-
-    SetCart(0);
-
-    FreeMemory(instance->ExternalRomBuffer);
-
-    instance->ExternalRomBuffer = NULL;
-
-    DynamicMenuCallback(NULL, MENU_REFRESH, IGNORE);
-
-    return NOMODULE;
-  }
-}
-
-//File doesn't exist
-extern "C" {
-  __declspec(dllexport) int __cdecl InsertModuleCase0() {
-    return NOMODULE;
-  }
-}
-
-//File is a DLL
-extern "C" {
-  __declspec(dllexport) int __cdecl InsertModuleCase1(unsigned char emulationRunning, char* modulePath) {
-    char catNumber[MAX_LOADSTRING] = "";
-    char temp[MAX_LOADSTRING] = "";
-    char text[1024] = "";
-    char ini[MAX_PATH] = "";
-
-    UnloadDll(emulationRunning);
-    instance->hInstLib = LoadLibrary(modulePath);
-
-    if (instance->hInstLib == NULL) {
-      return NOMODULE;
-    }
-
-    SetCart(0);
-
-    if (SetDelegates(instance->hInstLib))
-    {
-      FreeLibrary(instance->hInstLib);
-
-      instance->hInstLib = NULL;
-
-      return(NOTVCC);
-    };
-
-    instance->BankedCartOffset = 0;
-
-    if (HasDmaMemPointer()) {
-      InvokeDmaMemPointer();
-    }
-
-    if (HasSetInterruptCallPointer()) {
-      InvokeSetInterruptCallPointer();
-    }
-
-    InvokeGetModuleName(instance->Modname, catNumber);  //Instantiate the menus from HERE!
-
-    sprintf(temp, "Configure %s", instance->Modname);
-
-    strcat(text, "Module Name: ");
-    strcat(text, instance->Modname);
-    strcat(text, "\n");
-
-    if (HasConfigModule())
-    {
-      instance->ModualParms |= 1;
-
-      strcat(text, "Has Configurable options\n");
-    }
-
-    if (HasPakPortWrite())
-    {
-      instance->ModualParms |= 2;
-
-      strcat(text, "Is IO writable\n");
-    }
-
-    if (HasPakPortRead())
-    {
-      instance->ModualParms |= 4;
-
-      strcat(text, "Is IO readable\n");
-    }
-
-    if (HasSetInterruptCallPointer())
-    {
-      instance->ModualParms |= 8;
-
-      strcat(text, "Generates Interrupts\n");
-    }
-
-    if (HasDmaMemPointer())
-    {
-      instance->ModualParms |= 16;
-
-      strcat(text, "Generates DMA Requests\n");
-    }
-
-    if (HasHeartBeat())
-    {
-      instance->ModualParms |= 32;
-
-      strcat(text, "Needs Heartbeat\n");
-    }
-
-    if (HasModuleAudioSample())
-    {
-      instance->ModualParms |= 64;
-
-      strcat(text, "Analog Audio Outputs\n");
-    }
-
-    if (HasPakMemWrite8())
-    {
-      instance->ModualParms |= 128;
-
-      strcat(text, "Needs ChipSelect Write\n");
-    }
-
-    if (HasPakMemRead8())
-    {
-      instance->ModualParms |= 256;
-
-      strcat(text, "Needs ChipSelect Read\n");
-    }
-
-    if (HasModuleStatus())
-    {
-      instance->ModualParms |= 512;
-
-      strcat(text, "Returns Status\n");
-    }
-
-    if (HasModuleReset())
-    {
-      instance->ModualParms |= 1024;
-
-      strcat(text, "Needs Reset Notification\n");
-    }
-
-    if (HasSetIniPath())
-    {
-      instance->ModualParms |= 2048;
-
-      strcpy(ini, GetConfigState()->IniFilePath);
-
-      InvokeSetIniPath(ini);
-    }
-
-    if (HasPakSetCart())
-    {
-      instance->ModualParms |= 4096;
-
-      strcat(text, "Can Assert CART\n");
-
-      InvokePakSetCart();
-    }
-
-    strcpy(instance->DllPath, modulePath);
-
-    return 0;
-  }
-}
-
-//File is a ROM image
-extern "C" {
-  __declspec(dllexport) int __cdecl InsertModuleCase2(unsigned char emulationRunning, char* modulePath) {
-    UnloadDll(emulationRunning);
-
-    LoadROMPack(emulationRunning, modulePath);
-
-    strncpy(instance->Modname, modulePath, MAX_PATH);
-
-    FilePathStripPath(instance->Modname);
-
-    DynamicMenuCallback(NULL, MENU_REFRESH, IGNORE);
-
-    SetCart(1);
-
-    return 0;
-  }
-}
-
-//--Called from _beginthreadex(...)
-extern "C" {
-  __declspec(dllexport) int __cdecl InsertModule(unsigned char emulationRunning, char* modulePath)
-  {
-    unsigned char fileType = fileType = FileID(modulePath);
-
-    switch (fileType)
-    {
-    case 0:		//File doesn't exist
-      return InsertModuleCase0();
-
-    case 1:		//File is a DLL
-      return InsertModuleCase1(emulationRunning, modulePath);
-
-    case 2:		//File is a ROM image
-      return InsertModuleCase2(emulationRunning, modulePath);
-    }
-
-    return NOMODULE;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl SetCart(unsigned char cart)
-  {
-    instance->CartInserted = cart;
   }
 }
