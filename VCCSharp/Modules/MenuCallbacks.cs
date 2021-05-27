@@ -53,25 +53,21 @@ namespace VCCSharp.Modules
             Library.MenuCallbacks.SetWindowHandle(intPtr);
         }
 
+        private bool _dialogOpen;
         public int LoadPack()
         {
-            unsafe
+            if (_dialogOpen)
             {
-                VccState* vccState = _modules.Vcc.GetVccState();
-
-                if (vccState->DialogOpen != 0)
-                {
-                    return 0;
-                }
-
-                vccState->DialogOpen = Define.TRUE;
-                int result = OpenLoadCartFileDialog();
-                vccState->DialogOpen = Define.FALSE;
-
-                _modules.Emu.EmulationRunning = Define.TRUE;
-
-                return result;
+                return 0;
             }
+
+            _dialogOpen = true;
+            int result = OpenLoadCartFileDialog();
+            _dialogOpen = false;
+
+            _modules.Emu.EmulationRunning = Define.TRUE;
+
+            return result;
         }
 
         public int UnloadPack(byte emulationRunning)

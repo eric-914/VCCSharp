@@ -4,14 +4,12 @@ using System.Threading;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
     public interface IVcc
     {
-        unsafe VccState* GetVccState();
         void CheckScreenModeChange();
         void CreatePrimaryWindow();
         void SetAppTitle(string binFileName);
@@ -43,11 +41,6 @@ namespace VCCSharp.Modules
         public Vcc(IModules modules)
         {
             _modules = modules;
-        }
-
-        public unsafe VccState* GetVccState()
-        {
-            return Library.Vcc.GetVccState();
         }
 
         public void CheckScreenModeChange()

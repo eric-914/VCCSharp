@@ -20,9 +20,6 @@
     <ClCompile Include="Joystick.c">
       <Filter>joystick</Filter>
     </ClCompile>
-    <ClCompile Include="VccState.c">
-      <Filter>vcc</Filter>
-    </ClCompile>
     <ClCompile Include="Keyboard.c">
       <Filter>keyboard</Filter>
     </ClCompile>
@@ -121,9 +118,6 @@
     <ClInclude Include="MenuCallbacks.h">
       <Filter>callbacks</Filter>
     </ClInclude>
-    <ClInclude Include="VccState.h">
-      <Filter>vcc</Filter>
-    </ClInclude>
     <ClInclude Include="DirectSoundState.h">
       <Filter>models</Filter>
     </ClInclude>
@@ -182,9 +176,6 @@
     </Filter>
     <Filter Include="tc1014\registers">
       <UniqueIdentifier>{4241406f-da4d-467c-a2ca-e09cbdb16573}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="vcc">
-      <UniqueIdentifier>{f9665cb7-8ba3-4c08-8d8c-e698351da699}</UniqueIdentifier>
     </Filter>
     <Filter Include="pakinterface">
       <UniqueIdentifier>{9a6f908d-4e3b-42ee-8d38-c35926c19974}</UniqueIdentifier>

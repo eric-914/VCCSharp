@@ -25,6 +25,8 @@ namespace VCCSharp
 
         private HINSTANCE _hResources;
 
+        public MSG MSG;
+
         public VccApp(IModules modules, IKernel kernel, IUser32 user32)
         {
             _modules = modules;
@@ -86,40 +88,34 @@ namespace VCCSharp
         {
             unsafe
             {
-                VccState* vccState = _modules.Vcc.GetVccState();
-
                 while (_modules.Vcc.BinaryRunning)
                 {
                     _modules.Vcc.CheckScreenModeChange();
 
-                    MSG* msg = &(vccState->msg);
+                    fixed (MSG* msg = &(MSG))
+                    {
+                        _user32.GetMessageA(msg, Zero, 0, 0);   //Seems if the main loop stops polling for Messages the child threads stall
 
-                    _user32.GetMessageA(msg, Zero, 0, 0);   //Seems if the main loop stops polling for Messages the child threads stall
+                        _user32.TranslateMessage(msg);
 
-                    _user32.TranslateMessage(msg);
-
-                    _user32.DispatchMessageA(msg);
+                        _user32.DispatchMessageA(msg);
+                    }
                 }
             }
         }
 
         public int Shutdown()
         {
-            unsafe
-            {
-                VccState* vccState = _modules.Vcc.GetVccState();
+            _modules.PAKInterface.UnloadDll(_modules.Emu.EmulationRunning);
+            _modules.Audio.SoundDeInit();
 
-                _modules.PAKInterface.UnloadDll(_modules.Emu.EmulationRunning);
-                _modules.Audio.SoundDeInit();
+            _modules.Config.WriteIniFile(); //Save any changes to ini File
 
-                _modules.Config.WriteIniFile(); //Save any changes to ini File
+            int code = (int)MSG.wParam;
 
-                int code = (int)vccState->msg.wParam;
+            _kernel.FreeLibrary(_hResources);
 
-                _kernel.FreeLibrary(_hResources);
-
-                return code;
-            }
+            return code;
         }
     }
 }

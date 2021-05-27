@@ -416,11 +416,5 @@ namespace VCCSharp.Libraries
             [DllImport(LIBRARY)]
             public static extern void GimeAssertKeyboardInterrupt();
         }
-
-        public static class Vcc
-        {
-            [DllImport(LIBRARY)]
-            public static extern unsafe VccState* GetVccState();
-        }
     }
 }

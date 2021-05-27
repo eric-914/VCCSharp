@@ -182,7 +182,6 @@
     <ClCompile Include="TC1014MMU.c" />
     <ClCompile Include="PAKInterface.c" />
     <ClCompile Include="TC1014Registers.c" />
-    <ClCompile Include="VccState.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CmdLineArguments.h" />
@@ -211,7 +210,6 @@
     <ClInclude Include="library.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="TC1014RegistersState.h" />
-    <ClInclude Include="VccState.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="library.rc" />
