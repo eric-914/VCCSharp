@@ -202,27 +202,14 @@ namespace VCCSharp.Modules
 
                 string soundCardName = Converter.ToString(configModel->SoundCardName);
                 byte tempSoundCardIndex = _modules.Config.GetSoundCardIndex(soundCardName);
-                _modules.Audio.SoundInit(emuState->WindowHandle, Lookup(tempSoundCardIndex).Guid, configModel->AudioRate);
+                SoundCardList card = _modules.Config.SoundCards[tempSoundCardIndex];
+
+                _modules.Audio.SoundInit(emuState->WindowHandle, card.Guid, configModel->AudioRate);
 
                 _modules.Keyboard.KeyboardBuildRuntimeTable(configModel->KeyMapIndex);
 
                 _modules.Joystick.SetStickNumbers(left.DiDevice, right.DiDevice);
             }
-        }
-
-        private unsafe SoundCardList Lookup(int index)
-        {
-            ConfigState* configState = _modules.Config.GetConfigState();
-
-            switch (index)
-            {
-                case 0: return configState->SoundCards._0;
-                case 1: return configState->SoundCards._1;
-                case 2: return configState->SoundCards._2;
-                    //TODO: Fill in the rest.  Or just figure out how to turn it into an array like it should be.
-            }
-
-            return default;
         }
     }
 }

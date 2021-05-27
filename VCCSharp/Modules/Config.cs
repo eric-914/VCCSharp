@@ -43,6 +43,8 @@ namespace VCCSharp.Modules
         short NumberOfSoundCards { get; set; }
         string TapeFileName { get; set; }
         string SerialCaptureFile { get; set; }
+
+        SoundCardList[] SoundCards { get; } 
     }
 
     public class Config : IConfig
@@ -69,6 +71,8 @@ namespace VCCSharp.Modules
 
         private readonly JoystickModel _left = new JoystickModel();
         private readonly JoystickModel _right = new JoystickModel();
+
+        public SoundCardList[] SoundCards { get; } = new SoundCardList[Define.MAXCARDS];
 
         public Config(IModules modules, IUser32 user32, IKernel kernel)
         {
@@ -108,7 +112,7 @@ namespace VCCSharp.Modules
             Converter.ToByteArray(iniFile, configState->IniFilePath);
 
             //--TODO: Silly way to get C# to look at the SoundCardList array correctly
-            SoundCardList* soundCards = (SoundCardList*)(&configState->SoundCards);
+            //SoundCardList* soundCards = (SoundCardList*)(&configState->SoundCards);
 
             NumberOfSoundCards = 0;
             _modules.DirectSound.DirectSoundEnumerateSoundCards();
@@ -126,8 +130,8 @@ namespace VCCSharp.Modules
             string soundCardName = Converter.ToString(configModel->SoundCardName);
             byte soundCardIndex = GetSoundCardIndex(soundCardName);
 
-            var array = configState->SoundCards.ToArray();
-            SoundCardList soundCard = array[soundCardIndex];
+            //var array = configState->SoundCards.ToArray();
+            SoundCardList soundCard = SoundCards[soundCardIndex];
             _GUID* guid = soundCard.Guid;
 
             _modules.Audio.SoundInit(emuState->WindowHandle, guid, configModel->AudioRate);
@@ -663,10 +667,13 @@ namespace VCCSharp.Modules
 
         public unsafe string GetSoundCardNameAtIndex(byte index)
         {
-            var cards = GetConfigState()->SoundCards.ToArray();
-            var card = cards[index];
+            var card = SoundCards[index];
 
             return Converter.ToString(card.CardName);
+            //var cards = GetConfigState()->SoundCards.ToArray();
+            //var card = cards[index];
+
+            //return Converter.ToString(card.CardName);
         }
 
         public bool GetRememberSize()

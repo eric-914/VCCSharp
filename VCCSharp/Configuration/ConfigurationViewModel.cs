@@ -226,23 +226,9 @@ namespace VCCSharp.Configuration
                 {
                     var items = new List<string>();
 
-                    var cards = _state->SoundCards.ToArray();
-                    //SoundCardList Lookup(int index)
-                    //{
-                    //    switch (index)
-                    //    {
-                    //        case 0: return _state->SoundCards._0;
-                    //        case 1: return _state->SoundCards._1;
-                    //        case 2: return _state->SoundCards._2;
-                    //            //TODO: Fill in the rest.  Or just figure out how to turn it into an array like it should be.
-                    //    }
-
-                    //    return default;
-                    //}
-
                     for (int index = 0; index < Config.NumberOfSoundCards; index++)
                     {
-                        var card = cards[index];
+                        var card = Config.SoundCards[index];
 
                         items.Add(Converter.ToString(card.CardName));
                     }

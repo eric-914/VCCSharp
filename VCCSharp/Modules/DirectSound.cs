@@ -33,7 +33,7 @@ namespace VCCSharp.Modules
     }
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate int DirectSoundEnumerateCallbackTemplate(IntPtr lpGuid, IntPtr lpcstrDescription, IntPtr lpcstrModule, IntPtr lpContext);
+    public delegate int DirectSoundEnumerateCallbackTemplate(IntPtr guid, IntPtr description, IntPtr module, IntPtr context);
 
     public class DirectSound : IDirectSound
     {
@@ -135,23 +135,20 @@ namespace VCCSharp.Modules
             Library.DirectSound.DirectSoundEnumerateSoundCards(fn);
         }
 
-        public int DirectSoundEnumerateCallback(IntPtr lpGuid, IntPtr lpcstrDescription, IntPtr lpcstrModule, IntPtr lpContext)
+        public int DirectSoundEnumerateCallback(IntPtr guid, IntPtr description, IntPtr module, IntPtr context)
         {
             unsafe
             {
-                ConfigState* configState = _modules.Config.GetConfigState();
-
-                var text = Converter.ToString((byte*)lpcstrDescription);
+                var text = Converter.ToString((byte*)description);
                 var index = _modules.Config.NumberOfSoundCards;
 
-                var cards = (configState->SoundCards).ToArray();
+                var cards = _modules.Config.SoundCards;
 
-                //TODO: Most likely "cards" isn't positioned correctly in the state object.
-                //var card = cards[index];
-                SoundCardList* card = Library.DirectSound.DirectSoundEnumerateCallback(configState, index);
-
-                Converter.ToByteArray(text, (*card).CardName);
-                (*card).Guid = (_GUID*)lpGuid;
+                fixed (SoundCardList* card = &(cards[index]))
+                {
+                    Converter.ToByteArray(text, (*card).CardName);
+                    (*card).Guid =(_GUID*)guid;
+                }
 
                 _modules.Config.NumberOfSoundCards++;
 

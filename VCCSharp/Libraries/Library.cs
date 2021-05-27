@@ -246,9 +246,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe long DirectSoundGetCurrentPosition(ulong* playCursor, ulong* writeCursor);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe SoundCardList* DirectSoundEnumerateCallback(ConfigState* configState, int index);
         }
 
         public static class FileOperations

@@ -46,13 +46,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) SoundCardList* DirectSoundEnumerateCallback(ConfigState* configState, int index)
-  {
-    return &(configState->SoundCards[index]);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl DirectSoundEnumerateSoundCards(LPDSENUMCALLBACKA pDSEnumCallback)
   {
     DirectSoundEnumerate(pDSEnumCallback, NULL);
