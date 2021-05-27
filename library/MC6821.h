@@ -1,3 +1,5 @@
 #pragma once
 
-extern "C" __declspec(dllexport) void __cdecl SetCart(unsigned char);
+#include "MC6821State.h"
+
+extern "C" __declspec(dllexport) MC6821State* __cdecl GetMC6821State();

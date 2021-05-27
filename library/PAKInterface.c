@@ -412,3 +412,10 @@ extern "C" {
     return(NOMODULE);
   }
 }
+
+extern "C" {
+  __declspec(dllexport) void __cdecl SetCart(unsigned char cart)
+  {
+    GetMC6821State()->CartInserted = cart;
+  }
+}

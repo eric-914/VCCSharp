@@ -30,3 +30,5 @@ extern "C" __declspec(dllexport) unsigned char __cdecl PakMem8Read(unsigned shor
 extern "C" __declspec(dllexport) unsigned short __cdecl PakAudioSample(void);
 
 extern "C" __declspec(dllexport) void __cdecl UnloadPack(EmuState*);
+
+extern "C" __declspec(dllexport) void __cdecl SetCart(unsigned char);

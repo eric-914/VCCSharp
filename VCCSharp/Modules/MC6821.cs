@@ -501,7 +501,7 @@ namespace VCCSharp.Modules
 
         public int MC6821_OpenPrintFile(string filename)
         {
-            _hPrintFile = Library.MC6821.MC6821_OpenPrintFile(filename);
+            _hPrintFile = Library.FileOperations.FileOpenFile(filename, Define.GENERIC_READ | Define.GENERIC_WRITE);
 
             return _hPrintFile == Define.INVALID_HANDLE_VALUE ? 0 : 1;
         }

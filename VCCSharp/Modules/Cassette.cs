@@ -5,6 +5,7 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using static System.IntPtr;
 using HANDLE = System.IntPtr;
 
 namespace VCCSharp.Modules
@@ -287,7 +288,7 @@ namespace VCCSharp.Modules
 
         public void CloseTapeFile()
         {
-            if (TapeHandle == IntPtr.Zero)
+            if (TapeHandle == Zero)
             {
                 return;
             }
@@ -296,7 +297,7 @@ namespace VCCSharp.Modules
 
             _modules.FileOperations.FileCloseHandle(TapeHandle);
 
-            TapeHandle = IntPtr.Zero;
+            TapeHandle = Zero;
             _totalSize = 0;
         }
 
@@ -383,7 +384,7 @@ namespace VCCSharp.Modules
         {
             CassetteState* instance = GetCassetteState();
 
-            if (TapeHandle != IntPtr.Zero)
+            if (TapeHandle != Zero)
             {
                 TapeMode = Define.STOP;
 
@@ -392,17 +393,14 @@ namespace VCCSharp.Modules
 
             //_writeProtect = 0;
             FileType = 0; //0=wav 1=cas
-            
-            fixed (byte* p = Converter.ToByteArray(filename))
-            {
-                TapeHandle =
-                    _modules.FileOperations.FileCreateFile(p, Define.GENERIC_READ | Define.GENERIC_WRITE);
 
-                if (TapeHandle == Define.INVALID_HANDLE_VALUE) //Can't open read/write. try read only
-                {
-                    TapeHandle = _modules.FileOperations.FileCreateFile(p, Define.GENERIC_READ);
-                    //_writeProtect = 1;
-                }
+            TapeHandle =
+                _modules.FileOperations.FileOpenFile(filename, Define.GENERIC_READ | Define.GENERIC_WRITE);
+
+            if (TapeHandle == Define.INVALID_HANDLE_VALUE) //Can't open read/write. try read only
+            {
+                TapeHandle = _modules.FileOperations.FileOpenFile(filename, Define.GENERIC_READ);
+                //_writeProtect = 1;
             }
 
             if (TapeHandle == Define.INVALID_HANDLE_VALUE)

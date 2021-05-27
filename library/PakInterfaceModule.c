@@ -8,6 +8,8 @@
 #include "MenuCallbacks.h"
 #include "MC6821.h"
 
+#include "PAKInterface.h"
+
 PakInterfaceDelegates* InitializeDelegates(PakInterfaceDelegates*);
 
 static PakInterfaceDelegates* delegates = InitializeDelegates(new PakInterfaceDelegates());

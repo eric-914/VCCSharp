@@ -260,7 +260,10 @@ namespace VCCSharp.Libraries
         public static class FileOperations
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe HANDLE FileCreateFile(byte* filename, long desiredAccess);
+            public static extern HANDLE FileOpenFile(string filename, long desiredAccess);
+
+            [DllImport(LIBRARY)]
+            public static extern HANDLE FileCreateFile(string filename, long desiredAccess);
 
             [DllImport(LIBRARY)]
             public static extern long FileSetFilePointer(HANDLE handle, long moveMethod, long offset);
@@ -376,9 +379,6 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe MC6821State* GetMC6821State();
-
-            [DllImport(LIBRARY)]
-            public static extern HANDLE MC6821_OpenPrintFile(string filename);
         } //--MC6821
 
         public static class PAKInterface

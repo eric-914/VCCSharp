@@ -52,8 +52,14 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) HANDLE __cdecl FileCreateFile(char* filename, long desiredAccess) {
+  __declspec(dllexport) HANDLE __cdecl FileOpenFile(char* filename, long desiredAccess) {
     return CreateFile(filename, desiredAccess, 0, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HANDLE __cdecl FileCreateFile(char* filename, long desiredAccess) {
+    return CreateFile(filename, desiredAccess, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
   }
 }
 
