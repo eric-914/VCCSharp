@@ -58,7 +58,7 @@ namespace VCCSharp.BitBanger
                 {
                     if (State == null) return string.Empty;
 
-                    string file = Converter.ToString(State->SerialCaptureFile, Define.MAX_PATH);
+                    string file = Config.SerialCaptureFile ;
 
                     _serialCaptureFile = string.IsNullOrEmpty(file) ? NO_FILE : file;
 
@@ -71,10 +71,7 @@ namespace VCCSharp.BitBanger
 
                 _serialCaptureFile = value;
 
-                unsafe
-                {
-                    Converter.ToByteArray(value, State->SerialCaptureFile);
-                }
+                Config.SerialCaptureFile = value;
 
                 OnPropertyChanged();
             }

@@ -50,13 +50,7 @@ JoystickModel* InitializeModel(JoystickModel* p) {
 }
 
 ConfigState* InitializeInstance(ConfigState* p) {
-  p->hDlgBar = NULL;
-  p->hDlgTape = NULL;
-
   strcpy(p->IniFilePath, "");
-  strcpy(p->OutBuffer, "");
-  strcpy(p->SerialCaptureFile, "");
-  strcpy(p->TapeFileName, "");
 
   GetModuleFileName(NULL, p->ExecDirectory, MAX_PATH);
   FilePathRemoveFileSpec(p->ExecDirectory);

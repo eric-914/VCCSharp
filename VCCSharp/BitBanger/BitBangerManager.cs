@@ -44,9 +44,9 @@ namespace VCCSharp.BitBanger
             _view.Show();
         }
 
-        public unsafe void Open()
+        public void Open()
         {
-            string szFileName = Converter.ToString(_configState->SerialCaptureFile);
+            string szFileName = _modules.Config.SerialCaptureFile;
             string appPath = Path.GetDirectoryName(szFileName) ?? "C:\\";
 
             var openFileDlg = new Microsoft.Win32.OpenFileDialog
@@ -72,7 +72,7 @@ namespace VCCSharp.BitBanger
 
                 serialCaptureFile = Path.GetFileName(openFileDlg.FileName);
 
-                Converter.ToByteArray(serialCaptureFile, _configState->SerialCaptureFile);
+                _modules.Config.SerialCaptureFile = serialCaptureFile;
             }
         }
 

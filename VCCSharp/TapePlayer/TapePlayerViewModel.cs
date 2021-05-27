@@ -61,7 +61,7 @@ namespace VCCSharp.TapePlayer
                 {
                     if (State == null) return string.Empty;
 
-                    string file = Converter.ToString(State->TapeFileName, Define.MAX_PATH);
+                    string file = Config.TapeFileName;
 
                     _filePath = string.IsNullOrEmpty(file) ? NO_FILE : file;
 
@@ -74,10 +74,7 @@ namespace VCCSharp.TapePlayer
 
                 _filePath = value;
 
-                unsafe
-                {
-                    Converter.ToByteArray(value, State->TapeFileName);
-                }
+                Config.TapeFileName = value;
 
                 OnPropertyChanged();
             }

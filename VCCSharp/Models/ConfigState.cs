@@ -31,13 +31,7 @@ namespace VCCSharp.Models
 
         public unsafe fixed byte AppDataPath[Define.MAX_PATH];
         public unsafe fixed byte IniFilePath[Define.MAX_PATH];
-        public unsafe fixed byte TapeFileName[Define.MAX_PATH];
         public unsafe fixed byte ExecDirectory[Define.MAX_PATH];
-        public unsafe fixed byte SerialCaptureFile[Define.MAX_PATH];
-        public unsafe fixed byte OutBuffer[Define.MAX_PATH];
-
-        public HWND hDlgBar;
-        public HWND hDlgTape;
     }
 
     public static class SoundCardListExtensions

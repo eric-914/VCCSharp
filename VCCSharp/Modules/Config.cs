@@ -41,6 +41,8 @@ namespace VCCSharp.Modules
         ushort TapeCounter { get; set; }
         byte TapeMode { get; set; }
         short NumberOfSoundCards { get; set; }
+        string TapeFileName { get; set; }
+        string SerialCaptureFile { get; set; }
     }
 
     public class Config : IConfig
@@ -58,6 +60,10 @@ namespace VCCSharp.Modules
         public byte TapeMode { get; set; } = Define.STOP;
 
         public short NumberOfSoundCards { get; set; }
+
+        public string TapeFileName { get; set; }
+        public string SerialCaptureFile { get; set; }
+        public string OutBuffer;
 
         private byte _numberOfJoysticks;
 
