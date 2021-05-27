@@ -1,13 +1,7 @@
-#include <ShlObj.h>
+#include <windows.h>
 
 #include "Config.h"
 #include "JoyStickModel.h"
-
-#include "fileoperations.h"
-
-using namespace std;
-
-#define STOP	0
 
 ConfigState* InitializeInstance(ConfigState*);
 JoystickModel* InitializeModel(JoystickModel*);
@@ -51,17 +45,6 @@ JoystickModel* InitializeModel(JoystickModel* p) {
 
 ConfigState* InitializeInstance(ConfigState* p) {
   strcpy(p->IniFilePath, "");
-
-  GetModuleFileName(NULL, p->ExecDirectory, MAX_PATH);
-  FilePathRemoveFileSpec(p->ExecDirectory);
-
-  static TCHAR AppDataPath[MAX_PATH];
-
-  if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, AppDataPath))) {
-    OutputDebugString(AppDataPath);
-  }
-
-  strcpy(p->AppDataPath, AppDataPath);
 
   return p;
 }

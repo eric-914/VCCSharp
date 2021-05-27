@@ -275,7 +275,9 @@ namespace VCCSharp.Modules
             const string vccFolder = "VCC";
             const string iniFileName = "Vcc.ini";
 
-            string appDataPath = Path.Combine(Converter.ToString(configState->AppDataPath), vccFolder);
+            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+            appDataPath = Path.Combine(appDataPath, vccFolder);
 
             if (!Directory.Exists(appDataPath))
             {
