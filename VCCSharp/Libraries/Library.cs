@@ -66,9 +66,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe byte* ExternalBasicImage();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe byte* GetSoundCardNameAtIndex(byte index);
         }
 
         public static class CPU

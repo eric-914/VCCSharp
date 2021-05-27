@@ -48,9 +48,3 @@ ConfigState* InitializeInstance(ConfigState* p) {
 
   return p;
 }
-
-extern "C" {
-  __declspec(dllexport) char* __cdecl GetSoundCardNameAtIndex(byte index) {
-    return instance->SoundCards[index].CardName;
-  }
-}

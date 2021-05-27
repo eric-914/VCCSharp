@@ -651,27 +651,25 @@ namespace VCCSharp.Modules
 
         public byte GetSoundCardIndex(string soundCardName)
         {
-            unsafe
+            for (byte index = 0; index < NumberOfSoundCards; index++)
             {
-                for (byte index = 0; index < NumberOfSoundCards; index++)
+                var item = GetSoundCardNameAtIndex(index);
+
+                if (soundCardName == item)
                 {
-                    byte* item = GetSoundCardNameAtIndex(index);
-
-                    var t = Converter.ToString(item);
-
-                    if (soundCardName == t)
-                    {
-                        return index;
-                    }
+                    return index;
                 }
-
-                return 0;
             }
+
+            return 0;
         }
 
-        public unsafe byte* GetSoundCardNameAtIndex(byte index)
+        public unsafe string GetSoundCardNameAtIndex(byte index)
         {
-            return Library.Config.GetSoundCardNameAtIndex(index);
+            var cards = GetConfigState()->SoundCards.ToArray();
+            var card = cards[index];
+
+            return Converter.ToString(card.CardName);
         }
 
         public bool GetRememberSize()
