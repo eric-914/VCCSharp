@@ -105,7 +105,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned short __cdecl PakAudioSample(void)
+  __declspec(dllexport) unsigned short __cdecl PakAudioSample()
   {
     if (HasModuleAudioSample()) {
       return(ReadModuleAudioSample());

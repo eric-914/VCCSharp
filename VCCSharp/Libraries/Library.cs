@@ -379,15 +379,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern HANDLE MC6821_OpenPrintFile(string filename);
-
-            [DllImport(LIBRARY)]
-            public static extern uint MC6821_GetDACSample();
-
-            [DllImport(LIBRARY)]
-            public static extern void MC6821_SetCassetteSample(byte sample);
-
-            [DllImport(LIBRARY)]
-            public static extern byte MC6821_GetCasSample();
         } //--MC6821
 
         public static class PAKInterface
@@ -442,6 +433,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void InvokeModuleStatus(byte* statusLine);
+
+            [DllImport(LIBRARY)]
+            public static extern ushort PakAudioSample();
         } //--PAKInterface
 
         public static class TC1014

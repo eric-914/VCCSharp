@@ -20,6 +20,7 @@ namespace VCCSharp.Modules
         string GetCurrentModule();
         byte PakPortRead(byte port);
         void PakPortWrite(byte port, byte data);
+        ushort PakAudioSample();
     }
 
     // ReSharper disable once InconsistentNaming
@@ -182,6 +183,11 @@ namespace VCCSharp.Modules
         public unsafe void InvokeModuleStatus(byte* statusLine)
         {
             Library.PAKInterface.InvokeModuleStatus(statusLine);
+        }
+
+        public ushort PakAudioSample()
+        {
+            return Library.PAKInterface.PakAudioSample();
         }
     }
 }
