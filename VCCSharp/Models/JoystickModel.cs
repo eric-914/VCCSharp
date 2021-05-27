@@ -1,9 +1,7 @@
-﻿using System.Runtime.InteropServices;
-
-namespace VCCSharp.Models
+﻿namespace VCCSharp.Models
 {
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    public struct JoystickModel
+    //[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    public class JoystickModel
     {
         // 0 -- Keyboard
         // 1 -- Mouse

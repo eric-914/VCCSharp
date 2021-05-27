@@ -13,8 +13,8 @@ namespace VCCSharp.Configuration
         //TODO: Remove STATIC once safe
         private static unsafe ConfigState* _state;
         private static unsafe ConfigModel* _model;
-        private static unsafe JoystickModel* _left;
-        private static unsafe JoystickModel* _right;
+        private static JoystickModel _left;
+        private static JoystickModel _right;
         private static IConfig _config;
 
         public AudioSpectrum Spectrum { get; }
@@ -38,7 +38,7 @@ namespace VCCSharp.Configuration
             }
         }
 
-        public unsafe JoystickModel* LeftModel
+        public JoystickModel LeftModel
         {
             get => _left;
             set
@@ -49,7 +49,7 @@ namespace VCCSharp.Configuration
             }
         }
 
-        public unsafe JoystickModel* RightModel
+        public JoystickModel RightModel
         {
             get => _right;
             set
@@ -112,7 +112,7 @@ namespace VCCSharp.Configuration
         public string Release { get; set; } = "Release";
 
         //[CPU]
-        public int CPUMultiplier
+        public int CpuMultiplier
         {
             get
             {

@@ -200,7 +200,6 @@
     <ClInclude Include="Emu.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsState.h" />
-    <ClInclude Include="JoystickModel.h" />
     <ClInclude Include="JoystickState.h" />
     <ClInclude Include="macros.h" />
     <ClInclude Include="MC6821.h" />

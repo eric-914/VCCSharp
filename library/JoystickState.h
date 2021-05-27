@@ -1,7 +1,5 @@
 #pragma once
 
-#include "JoystickModel.h"
-
 typedef struct
 {
   unsigned char LeftStickNumber;

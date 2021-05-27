@@ -19,7 +19,7 @@ namespace VCCSharp.Configuration
             _parent = parent;
         }
 
-        public unsafe JoystickModel* Model
+        public JoystickModel Model
         {
             get => _parent == null ? null : Side == JoystickSides.Left ? _parent.LeftModel : _parent.RightModel;
         }
@@ -64,20 +64,8 @@ namespace VCCSharp.Configuration
 
         public int UseMouse
         {
-            get
-            {
-                unsafe
-                {
-                    return Model == null ? 0 : Model->UseMouse;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    Model->UseMouse = (byte) value;
-                }
-            }
+            get => Model?.UseMouse ?? 0;
+            set => Model.UseMouse = (byte) value;
         }
 
         public JoystickEmulations? Emulation
@@ -95,20 +83,8 @@ namespace VCCSharp.Configuration
 
         public int HiRes
         {
-            get
-            {
-                unsafe
-                {
-                    return Model == null ? 0 : Model->HiRes;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    Model->HiRes = (byte)value;
-                }
-            }
+            get => Model?.HiRes ?? 0;
+            set => Model.HiRes = (byte)value;
         }
 
         // Index of which Joystick is selected
@@ -116,127 +92,73 @@ namespace VCCSharp.Configuration
 
         public byte Up
         {
-            get
-            {
-                unsafe
-                {
-                    return Model == null ? (byte)0 : Model->Up;
-                }
-            }
+            get => Model?.Up ?? 0;
             set
             {
-                unsafe
-                {
-                    if (Model->Up == value) return;
+                if (Model.Up == value) return;
 
-                    Model->Up = value;
-                    OnPropertyChanged();
-                }
+                Model.Up = value;
+                OnPropertyChanged();
             }
         }
 
         public byte Down
         {
-            get
-            {
-                unsafe
-                {
-                    return Model == null ? (byte)0 : Model->Down;
-                }
-            }
+            get => Model?.Down ?? 0;
             set
             {
-                unsafe
-                {
-                    if (Model->Down == value) return;
+                if (Model.Down == value) return;
 
-                    Model->Down = value;
-                    OnPropertyChanged();
-                }
+                Model.Down = value;
+                OnPropertyChanged();
             }
         }
 
         public byte Left
         {
-            get
-            {
-                unsafe
-                {
-                    return Model == null ? (byte)0 : Model->Left;
-                }
-            }
+            get => Model?.Left ?? 0;
             set
             {
-                unsafe
-                {
-                    if (Model->Left == value) return;
+                if (Model.Left == value) return;
 
-                    Model->Left = value;
-                    OnPropertyChanged();
-                }
+                Model.Left = value;
+                OnPropertyChanged();
             }
         }
 
         public byte Right
         {
-            get
-            {
-                unsafe
-                {
-                    return Model == null ? (byte)0 : Model->Right;
-                }
-            }
+            get => Model?.Right ?? 0;
             set
             {
-                unsafe
-                {
-                    if (Model->Right == value) return;
+                if (Model.Right == value) return;
 
-                    Model->Right = value;
-                    OnPropertyChanged();
-                }
+                Model.Right = value;
+                OnPropertyChanged();
             }
         }
 
         public byte Fire1
         {
-            get
-            {
-                unsafe
-                {
-                    return Model == null ? (byte)0 : Model->Fire1;
-                }
-            }
+            get => Model?.Fire1 ?? 0;
             set
             {
-                unsafe
-                {
-                    if (Model->Fire1 == value) return;
+                if (Model.Fire1 == value) return;
 
-                    Model->Fire1 = value;
-                    OnPropertyChanged();
-                }
+                Model.Fire1 = value;
+                OnPropertyChanged();
             }
         }
 
         public byte Fire2
         {
-            get
-            {
-                unsafe
-                {
-                    return Model == null ? (byte)0 : Model->Fire2;
-                }
-            }
+            get => Model?.Fire2 ?? 0;
             set
             {
-                unsafe
-                {
-                    if (Model->Fire2 == value) return;
+                if (Model.Fire2 == value) return;
 
-                    Model->Fire2 = value;
-                    OnPropertyChanged();
-                }
+                Model.Fire2 = value;
+                OnPropertyChanged();
             }
         }
 

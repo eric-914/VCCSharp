@@ -121,9 +121,6 @@
     <ClInclude Include="CmdLineArguments.h">
       <Filter>models</Filter>
     </ClInclude>
-    <ClInclude Include="JoystickModel.h">
-      <Filter>models</Filter>
-    </ClInclude>
     <ClInclude Include="JoystickState.h">
       <Filter>models</Filter>
     </ClInclude>

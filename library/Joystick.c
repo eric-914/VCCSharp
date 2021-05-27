@@ -16,24 +16,10 @@ static char StickName[MAXSTICKS][STRLEN];
 JoystickState* InitializeInstance(JoystickState*);
 
 static JoystickState* instance = InitializeInstance(new JoystickState());
-static JoystickModel* left = new JoystickModel();
-static JoystickModel* right = new JoystickModel();
 
 extern "C" {
   __declspec(dllexport) JoystickState* __cdecl GetJoystickState() {
     return instance;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) JoystickModel* __cdecl GetLeftJoystickModel() {
-    return left;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) JoystickModel* __cdecl GetRightJoystickModel() {
-    return right;
   }
 }
 
@@ -166,11 +152,11 @@ extern "C" {
 
 extern "C"
 {
-  __declspec(dllexport) void __cdecl get_pot_value()
+  __declspec(dllexport) void __cdecl get_pot_value(unsigned char useLeft, unsigned char useRight)
   {
     DIJOYSTATE2 stick;
 
-    if (left->UseMouse == 3)
+    if (useLeft)
     {
       JoyStickPoll(&stick, instance->LeftStickNumber);
 
@@ -180,7 +166,7 @@ extern "C"
       instance->LeftButton2Status = stick.rgbButtons[1] >> 7;
     }
 
-    if (right->UseMouse == 3)
+    if (useRight)
     {
       JoyStickPoll(&stick, instance->RightStickNumber);
 

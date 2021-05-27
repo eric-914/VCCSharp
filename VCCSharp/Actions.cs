@@ -99,8 +99,8 @@ namespace VCCSharp
             {
                 ConfigState* configState = _modules.Config.GetConfigState();
                 ConfigModel* configModel = _modules.Config.GetConfigModel();
-                JoystickModel* leftJoystickModel = _modules.Config.GetLeftJoystick();
-                JoystickModel* rightJoystickModel = _modules.Config.GetRightJoystick();
+                JoystickModel leftJoystickModel = _modules.Config.GetLeftJoystick();
+                JoystickModel rightJoystickModel = _modules.Config.GetRightJoystick();
 
                 _options.Configuration.ShowDialog(configState, configModel, leftJoystickModel, rightJoystickModel);
             }

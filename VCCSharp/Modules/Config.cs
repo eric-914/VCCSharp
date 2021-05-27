@@ -18,8 +18,8 @@ namespace VCCSharp.Modules
     {
         unsafe ConfigState* GetConfigState();
         unsafe ConfigModel* GetConfigModel();
-        unsafe JoystickModel* GetLeftJoystick();
-        unsafe JoystickModel* GetRightJoystick();
+        JoystickModel GetLeftJoystick();
+        JoystickModel GetRightJoystick();
 
         unsafe void InitConfig(EmuState* emuState, ref CmdLineArguments cmdLineArgs);
         unsafe void WriteIniFile(EmuState* emuState);
@@ -63,9 +63,12 @@ namespace VCCSharp.Modules
 
         public string TapeFileName { get; set; }
         public string SerialCaptureFile { get; set; }
-        public string OutBuffer;
+        //public string OutBuffer;
 
         private byte _numberOfJoysticks;
+
+        private readonly JoystickModel _left = new JoystickModel();
+        private readonly JoystickModel _right = new JoystickModel();
 
         public Config(IModules modules, IUser32 user32, IKernel kernel)
         {
@@ -84,14 +87,14 @@ namespace VCCSharp.Modules
             return Library.Config.GetConfigModel();
         }
 
-        public unsafe JoystickModel* GetLeftJoystick()
+        public JoystickModel GetLeftJoystick()
         {
-            return Library.Config.GetLeftJoystick();
+            return _left;
         }
 
-        public unsafe JoystickModel* GetRightJoystick()
+        public JoystickModel GetRightJoystick()
         {
-            return Library.Config.GetRightJoystick();
+            return _right;
         }
 
         public unsafe void InitConfig(EmuState* emuState, ref CmdLineArguments cmdLineArgs)
@@ -111,8 +114,8 @@ namespace VCCSharp.Modules
             _modules.DirectSound.DirectSoundEnumerateSoundCards();
 
             //--Synch joysticks to config instance
-            _modules.Joystick.SetLeftJoystick(GetLeftJoystick());
-            _modules.Joystick.SetRightJoystick(GetLeftJoystick());
+            _modules.Joystick.SetLeftJoystick(_left);
+            _modules.Joystick.SetRightJoystick(_right);
 
             ReadIniFile(emuState);
 
@@ -211,43 +214,39 @@ namespace VCCSharp.Modules
 
         public void ConfigureJoysticks()
         {
-            unsafe
+            JoystickModel left = GetLeftJoystick();
+            JoystickModel right = GetRightJoystick();
+
+            _numberOfJoysticks = (byte)_modules.Joystick.EnumerateJoysticks();
+
+            for (byte index = 0; index < _numberOfJoysticks; index++)
             {
-                JoystickModel* left = GetLeftJoystick();
-                JoystickModel* right = GetRightJoystick();
+                _modules.Joystick.InitJoyStick(index);
+            }
 
-                _numberOfJoysticks = (byte)_modules.Joystick.EnumerateJoysticks();
+            if (right.DiDevice >= _numberOfJoysticks)
+            {
+                right.DiDevice = 0;
+            }
 
-                for (byte index = 0; index < _numberOfJoysticks; index++)
+            if (left.DiDevice >= _numberOfJoysticks)
+            {
+                left.DiDevice = 0;
+            }
+
+            _modules.Joystick.SetStickNumbers(left.DiDevice, right.DiDevice);
+
+            if (_numberOfJoysticks == 0)	//Use Mouse input if no Joysticks present
+            {
+                if (left.UseMouse == 3)
                 {
-                    _modules.Joystick.InitJoyStick(index);
+                    left.UseMouse = 1;
                 }
 
-                if (right->DiDevice >= _numberOfJoysticks)
+                if (right.UseMouse == 3)
                 {
-                    right->DiDevice = 0;
+                    right.UseMouse = 1;
                 }
-
-                if (left->DiDevice >= _numberOfJoysticks)
-                {
-                    left->DiDevice = 0;
-                }
-
-                _modules.Joystick.SetStickNumbers(left->DiDevice, right->DiDevice);
-
-                if (_numberOfJoysticks == 0)	//Use Mouse input if no Joysticks present
-                {
-                    if (left->UseMouse == 3)
-                    {
-                        left->UseMouse = 1;
-                    }
-
-                    if (right->UseMouse == 3)
-                    {
-                        right->UseMouse = 1;
-                    }
-                }
-
             }
         }
 
@@ -421,27 +420,27 @@ namespace VCCSharp.Modules
 
             //[LeftJoyStick]
             var left = GetLeftJoystick();
-            left->UseMouse = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "UseMouse", 1, iniFilePath);
-            left->Left = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Left", 75, iniFilePath);
-            left->Right = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Right", 77, iniFilePath);
-            left->Up = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Up", 72, iniFilePath);
-            left->Down = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Down", 80, iniFilePath);
-            left->Fire1 = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Fire1", 59, iniFilePath);
-            left->Fire2 = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Fire2", 60, iniFilePath);
-            left->DiDevice = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "DiDevice", 0, iniFilePath);
-            left->HiRes = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "HiResDevice", 0, iniFilePath);
+            left.UseMouse = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "UseMouse", 1, iniFilePath);
+            left.Left = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Left", 75, iniFilePath);
+            left.Right = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Right", 77, iniFilePath);
+            left.Up = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Up", 72, iniFilePath);
+            left.Down = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Down", 80, iniFilePath);
+            left.Fire1 = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Fire1", 59, iniFilePath);
+            left.Fire2 = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Fire2", 60, iniFilePath);
+            left.DiDevice = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "DiDevice", 0, iniFilePath);
+            left.HiRes = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "HiResDevice", 0, iniFilePath);
 
             //[RightJoyStick]
             var right = GetRightJoystick();
-            right->UseMouse = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "UseMouse", 1, iniFilePath);
-            right->Left = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Left", 75, iniFilePath);
-            right->Right = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Right", 77, iniFilePath);
-            right->Up = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Up", 72, iniFilePath);
-            right->Down = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Down", 80, iniFilePath);
-            right->Fire1 = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Fire1", 59, iniFilePath);
-            right->Fire2 = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Fire2", 60, iniFilePath);
-            right->DiDevice = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "DiDevice", 0, iniFilePath);
-            right->HiRes = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "HiResDevice", 0, iniFilePath);
+            right.UseMouse = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "UseMouse", 1, iniFilePath);
+            right.Left = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Left", 75, iniFilePath);
+            right.Right = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Right", 77, iniFilePath);
+            right.Up = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Up", 72, iniFilePath);
+            right.Down = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Down", 80, iniFilePath);
+            right.Fire1 = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Fire1", 59, iniFilePath);
+            right.Fire2 = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Fire2", 60, iniFilePath);
+            right.DiDevice = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "DiDevice", 0, iniFilePath);
+            right.HiRes = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "HiResDevice", 0, iniFilePath);
 
             //[DefaultPaths]
             _kernel.GetPrivateProfileStringA("DefaultPaths", "CassPath", "", model->CassPath, Define.MAX_PATH, iniFilePath);
@@ -614,27 +613,27 @@ namespace VCCSharp.Modules
 
             //[LeftJoyStick]
             var left = GetLeftJoystick();
-            SaveInt("LeftJoyStick", "UseMouse", left->UseMouse);
-            SaveInt("LeftJoyStick", "Left", left->Left);
-            SaveInt("LeftJoyStick", "Right", left->Right);
-            SaveInt("LeftJoyStick", "Up", left->Up);
-            SaveInt("LeftJoyStick", "Down", left->Down);
-            SaveInt("LeftJoyStick", "Fire1", left->Fire1);
-            SaveInt("LeftJoyStick", "Fire2", left->Fire2);
-            SaveInt("LeftJoyStick", "DiDevice", left->DiDevice);
-            SaveInt("LeftJoyStick", "HiResDevice", left->HiRes);
+            SaveInt("LeftJoyStick", "UseMouse", left.UseMouse);
+            SaveInt("LeftJoyStick", "Left", left.Left);
+            SaveInt("LeftJoyStick", "Right", left.Right);
+            SaveInt("LeftJoyStick", "Up", left.Up);
+            SaveInt("LeftJoyStick", "Down", left.Down);
+            SaveInt("LeftJoyStick", "Fire1", left.Fire1);
+            SaveInt("LeftJoyStick", "Fire2", left.Fire2);
+            SaveInt("LeftJoyStick", "DiDevice", left.DiDevice);
+            SaveInt("LeftJoyStick", "HiResDevice", left.HiRes);
 
             //[RightJoyStick]
             var right = GetRightJoystick();
-            SaveInt("RightJoyStick", "UseMouse", right->UseMouse);
-            SaveInt("RightJoyStick", "Left", right->Left);
-            SaveInt("RightJoyStick", "Right", right->Right);
-            SaveInt("RightJoyStick", "Up", right->Up);
-            SaveInt("RightJoyStick", "Down", right->Down);
-            SaveInt("RightJoyStick", "Fire1", right->Fire1);
-            SaveInt("RightJoyStick", "Fire2", right->Fire2);
-            SaveInt("RightJoyStick", "DiDevice", right->DiDevice);
-            SaveInt("RightJoyStick", "HiResDevice", right->HiRes);
+            SaveInt("RightJoyStick", "UseMouse", right.UseMouse);
+            SaveInt("RightJoyStick", "Left", right.Left);
+            SaveInt("RightJoyStick", "Right", right.Right);
+            SaveInt("RightJoyStick", "Up", right.Up);
+            SaveInt("RightJoyStick", "Down", right.Down);
+            SaveInt("RightJoyStick", "Fire1", right.Fire1);
+            SaveInt("RightJoyStick", "Fire2", right.Fire2);
+            SaveInt("RightJoyStick", "DiDevice", right.DiDevice);
+            SaveInt("RightJoyStick", "HiResDevice", right.HiRes);
 
             //[DefaultPaths]
             SaveText("DefaultPaths", "CassPath", model->CassPath);

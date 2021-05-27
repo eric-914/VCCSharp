@@ -388,19 +388,16 @@ namespace VCCSharp.Modules
 
         public void KeyboardHandleKeyDown(byte key, byte scanCode, KeyStates keyState)
         {
-            unsafe
+            JoystickModel left = _modules.Joystick.GetLeftJoystick();
+            JoystickModel right = _modules.Joystick.GetRightJoystick();
+
+            if ((left.UseMouse == 0) || (right.UseMouse == 0))
             {
-                JoystickModel* left = _modules.Joystick.GetLeftJoystick();
-                JoystickModel* right = _modules.Joystick.GetRightJoystick();
-
-                if ((left->UseMouse == 0) || (right->UseMouse == 0))
-                {
-                    scanCode = _modules.Joystick.SetMouseStatus(scanCode, 1);
-                }
-
-                // track key is down
-                ScanTable[scanCode] = Define.KEY_DOWN;
+                scanCode = _modules.Joystick.SetMouseStatus(scanCode, 1);
             }
+
+            // track key is down
+            ScanTable[scanCode] = Define.KEY_DOWN;
 
             KeyboardUpdateRolloverTable();
 
@@ -412,27 +409,24 @@ namespace VCCSharp.Modules
 
         public void KeyboardHandleKeyUp(byte key, byte scanCode, KeyStates keyState)
         {
-            unsafe
+            JoystickModel left = _modules.Joystick.GetLeftJoystick();
+            JoystickModel right = _modules.Joystick.GetRightJoystick();
+
+            if ((left.UseMouse == 0) || (right.UseMouse == 0))
             {
-                JoystickModel* left = _modules.Joystick.GetLeftJoystick();
-                JoystickModel* right = _modules.Joystick.GetRightJoystick();
+                scanCode = _modules.Joystick.SetMouseStatus(scanCode, 0);
+            }
 
-                if ((left->UseMouse == 0) || (right->UseMouse == 0))
+            // reset key (released)
+            ScanTable[scanCode] = Define.KEY_UP;
+
+            // TODO: verify this is accurate emulation
+            // Clean out rollover table on shift release
+            if (scanCode == Define.DIK_LSHIFT)
+            {
+                for (int index = 0; index < Define.KBTABLE_ENTRY_COUNT; index++)
                 {
-                    scanCode = _modules.Joystick.SetMouseStatus(scanCode, 0);
-                }
-
-                // reset key (released)
-                ScanTable[scanCode] = Define.KEY_UP;
-
-                // TODO: verify this is accurate emulation
-                // Clean out rollover table on shift release
-                if (scanCode == Define.DIK_LSHIFT)
-                {
-                    for (int index = 0; index < Define.KBTABLE_ENTRY_COUNT; index++)
-                    {
-                        ScanTable[index] = Define.KEY_UP;
-                    }
+                    ScanTable[index] = Define.KEY_UP;
                 }
             }
 

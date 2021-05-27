@@ -24,8 +24,8 @@
         <ColumnDefinition Width="20"/>
         <ColumnDefinition Width="120"/>
       </Grid.ColumnDefinitions>
-      <Slider Grid.Column="0" Margin="4" Minimum="2" Maximum="{Binding MaxOverclock}" Value="{Binding CPUMultiplier}" />
-      <Label Grid.Column="2" Content="{Binding CPUMultiplier, Converter={StaticResource Mhz}}" HorizontalContentAlignment="Right"/>
+      <Slider Grid.Column="0" Margin="4" Minimum="2" Maximum="{Binding MaxOverclock}" Value="{Binding CpuMultiplier}" />
+      <Label Grid.Column="2" Content="{Binding CpuMultiplier, Converter={StaticResource Mhz}}" HorizontalContentAlignment="Right"/>
     </Grid>
     <StackPanel Height="20"></StackPanel>
     <Grid>

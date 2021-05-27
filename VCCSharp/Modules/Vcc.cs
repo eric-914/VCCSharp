@@ -191,8 +191,8 @@ namespace VCCSharp.Modules
                 ConfigModel* configModel = _modules.Config.GetConfigModel();
                 EmuState* emuState = _modules.Emu.GetEmuState();
 
-                JoystickModel* left = _modules.Config.GetLeftJoystick();
-                JoystickModel* right = _modules.Config.GetRightJoystick();
+                JoystickModel left = _modules.Config.GetLeftJoystick();
+                JoystickModel right = _modules.Config.GetRightJoystick();
 
                 emuState->ResetPending = (byte)ResetPendingStates.ClsSynch;
 
@@ -206,7 +206,7 @@ namespace VCCSharp.Modules
 
                 _modules.Keyboard.KeyboardBuildRuntimeTable(configModel->KeyMapIndex);
 
-                _modules.Joystick.SetStickNumbers(left->DiDevice, right->DiDevice);
+                _modules.Joystick.SetStickNumbers(left.DiDevice, right.DiDevice);
             }
         }
 
