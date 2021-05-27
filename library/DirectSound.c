@@ -46,22 +46,16 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL CALLBACK DirectSoundEnumerateCallback(LPGUID lpGuid, LPCSTR lpcstrDescription, LPCSTR lpcstrModule, LPVOID lpContext)
+  __declspec(dllexport) SoundCardList* DirectSoundEnumerateCallback(ConfigState* configState, int index)
   {
-    ConfigState* configState = GetConfigState();
-
-    strncpy(configState->SoundCards[configState->NumberOfSoundCards].CardName, lpcstrDescription, 63);
-    configState->SoundCards[configState->NumberOfSoundCards].Guid = lpGuid;
-    configState->NumberOfSoundCards++;
-
-    return (configState->NumberOfSoundCards < MAXCARDS);
+    return &(configState->SoundCards[index]);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DirectSoundEnumerateSoundCards()
+  __declspec(dllexport) void __cdecl DirectSoundEnumerateSoundCards(LPDSENUMCALLBACKA pDSEnumCallback)
   {
-    DirectSoundEnumerate(DirectSoundEnumerateCallback, NULL);
+    DirectSoundEnumerate(pDSEnumCallback, NULL);
   }
 }
 

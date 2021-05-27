@@ -1,4 +1,7 @@
-﻿using VCCSharp.Libraries;
+﻿using System;
+using System.Runtime.InteropServices;
+using VCCSharp.IoC;
+using VCCSharp.Libraries;
 using VCCSharp.Models;
 using HWND = System.IntPtr;
 
@@ -29,8 +32,20 @@ namespace VCCSharp.Modules
         unsafe long DirectSoundGetCurrentPosition(ulong* playCursor, ulong* writeCursor);
     }
 
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate int DirectSoundEnumerateCallbackTemplate(IntPtr lpGuid, IntPtr lpcstrDescription, IntPtr lpcstrModule, IntPtr lpContext);
+
     public class DirectSound : IDirectSound
     {
+        private static DirectSoundEnumerateCallbackTemplate _delegateInstance;
+
+        private readonly IModules _modules;
+
+        public DirectSound(IModules modules)
+        {
+            _modules = modules;
+        }
+
         public int DirectSoundHasBuffer()
         {
             return Library.DirectSound.DirectSoundHasBuffer();
@@ -76,11 +91,6 @@ namespace VCCSharp.Modules
             return Library.DirectSound.DirectSoundSetCooperativeLevel(hWnd);
         }
 
-        public void DirectSoundEnumerateSoundCards()
-        {
-            Library.DirectSound.DirectSoundEnumerateSoundCards();
-        }
-
         public void DirectSoundSetCurrentPosition(ulong position)
         {
             Library.DirectSound.DirectSoundSetCurrentPosition(position);
@@ -114,6 +124,39 @@ namespace VCCSharp.Modules
         public unsafe long DirectSoundGetCurrentPosition(ulong* playCursor, ulong* writeCursor)
         {
             return Library.DirectSound.DirectSoundGetCurrentPosition(playCursor, writeCursor);
+        }
+
+        public unsafe void DirectSoundEnumerateSoundCards()
+        {
+            _delegateInstance = DirectSoundEnumerateCallback;
+
+            void* fn = (void*)Marshal.GetFunctionPointerForDelegate(_delegateInstance);
+
+            Library.DirectSound.DirectSoundEnumerateSoundCards(fn);
+        }
+
+        public int DirectSoundEnumerateCallback(IntPtr lpGuid, IntPtr lpcstrDescription, IntPtr lpcstrModule, IntPtr lpContext)
+        {
+            unsafe
+            {
+                ConfigState* configState = _modules.Config.GetConfigState();
+
+                var text = Converter.ToString((byte*)lpcstrDescription);
+                var index = configState->NumberOfSoundCards;
+
+                var cards = (configState->SoundCards).ToArray();
+
+                //TODO: Most likely "cards" isn't positioned correctly in the state object.
+                //var card = cards[index];
+                SoundCardList* card = Library.DirectSound.DirectSoundEnumerateCallback(configState, index);
+
+                Converter.ToByteArray(text, (*card).CardName);
+                (*card).Guid = (_GUID*)lpGuid;
+
+                configState->NumberOfSoundCards++;
+
+                return (configState->NumberOfSoundCards < Define.MAXCARDS) ? Define.TRUE : Define.FALSE;
+            }
         }
     }
 }

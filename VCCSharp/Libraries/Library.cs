@@ -224,18 +224,16 @@ namespace VCCSharp.Libraries
             public static extern int DirectSoundInterfaceRelease();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundLock(ulong buffOffset, ushort length, void** sndPointer1,
-                uint* sndLength1, void** sndPointer2, uint* sndLength2);
+            public static extern unsafe int DirectSoundLock(ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundUnlock(void* sndPointer1, uint sndLength1, void* sndPointer2,
-                uint sndLength2);
+            public static extern unsafe int DirectSoundUnlock(void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
 
             [DllImport(LIBRARY)]
             public static extern int DirectSoundSetCooperativeLevel(HWND hWnd);
 
             [DllImport(LIBRARY)]
-            public static extern void DirectSoundEnumerateSoundCards();
+            public static extern unsafe void DirectSoundEnumerateSoundCards(void* fn);
 
             [DllImport(LIBRARY)]
             public static extern void DirectSoundSetCurrentPosition(ulong position);
@@ -257,6 +255,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe long DirectSoundGetCurrentPosition(ulong* playCursor, ulong* writeCursor);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe SoundCardList* DirectSoundEnumerateCallback(ConfigState* configState, int index);
         }
 
         public static class FileOperations
