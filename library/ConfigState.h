@@ -10,8 +10,6 @@
 
 typedef struct
 {
-  short NumberOfSoundCards;
-
   SoundCardList SoundCards[MAXCARDS];
 
   char AppDataPath[MAX_PATH];

@@ -16,6 +16,7 @@ namespace VCCSharp.Configuration
         {
             var viewModel = new ConfigurationViewModel
             {
+                Config = _modules.Config,
                 State = state, 
                 Model = model,
                 LeftModel = left, 

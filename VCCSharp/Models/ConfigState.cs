@@ -25,8 +25,6 @@ namespace VCCSharp.Models
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct ConfigState
     {
-        public short NumberOfSoundCards;
-        
         //public unsafe fixed SoundCardList SoundCards[Define.MAXCARDS];
         //TODO: SoundCardList* is really a pointer to an array of SoundCardList items.  Haven't figured how to define it as such yet.
         public SoundCardListArray SoundCards;

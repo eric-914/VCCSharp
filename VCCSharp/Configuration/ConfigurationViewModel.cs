@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using VCCSharp.Annotations;
 using VCCSharp.Enums;
 using VCCSharp.Models;
+using VCCSharp.Modules;
 
 namespace VCCSharp.Configuration
 {
@@ -14,6 +15,7 @@ namespace VCCSharp.Configuration
         private static unsafe ConfigModel* _model;
         private static unsafe JoystickModel* _left;
         private static unsafe JoystickModel* _right;
+        private static IConfig _config;
 
         public AudioSpectrum Spectrum { get; }
 
@@ -55,6 +57,17 @@ namespace VCCSharp.Configuration
                 if (_right != null) return;
 
                 _right = value;
+            }
+        }
+
+        public IConfig Config
+        {
+            get => _config;
+            set
+            {
+                if (_config != null) return;
+
+                _config = value;
             }
         }
 
@@ -213,22 +226,23 @@ namespace VCCSharp.Configuration
                 {
                     var items = new List<string>();
 
-                    SoundCardList Lookup(int index)
-                    {
-                        switch (index)
-                        {
-                            case 0: return _state->SoundCards._0;
-                            case 1: return _state->SoundCards._1;
-                            case 2: return _state->SoundCards._2;
-                                //TODO: Fill in the rest.  Or just figure out how to turn it into an array like it should be.
-                        }
+                    var cards = _state->SoundCards.ToArray();
+                    //SoundCardList Lookup(int index)
+                    //{
+                    //    switch (index)
+                    //    {
+                    //        case 0: return _state->SoundCards._0;
+                    //        case 1: return _state->SoundCards._1;
+                    //        case 2: return _state->SoundCards._2;
+                    //            //TODO: Fill in the rest.  Or just figure out how to turn it into an array like it should be.
+                    //    }
 
-                        return default;
-                    }
+                    //    return default;
+                    //}
 
-                    for (int index = 0; index < _state->NumberOfSoundCards; index++)
+                    for (int index = 0; index < Config.NumberOfSoundCards; index++)
                     {
-                        var card = Lookup(index);
+                        var card = cards[index];
 
                         items.Add(Converter.ToString(card.CardName));
                     }

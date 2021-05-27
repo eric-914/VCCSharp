@@ -40,6 +40,7 @@ namespace VCCSharp.Modules
         byte PrintMonitorWindow { get; set; }
         ushort TapeCounter { get; set; }
         byte TapeMode { get; set; }
+        short NumberOfSoundCards { get; set; }
     }
 
     public class Config : IConfig
@@ -55,6 +56,8 @@ namespace VCCSharp.Modules
 
         public ushort TapeCounter { get; set; }
         public byte TapeMode { get; set; } = Define.STOP;
+
+        public short NumberOfSoundCards { get; set; }
 
         private byte _numberOfJoysticks;
 
@@ -98,7 +101,7 @@ namespace VCCSharp.Modules
             //--TODO: Silly way to get C# to look at the SoundCardList array correctly
             SoundCardList* soundCards = (SoundCardList*)(&configState->SoundCards);
 
-            configState->NumberOfSoundCards = 0;
+            NumberOfSoundCards = 0;
             _modules.DirectSound.DirectSoundEnumerateSoundCards();
 
             //--Synch joysticks to config instance
@@ -206,8 +209,6 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                ConfigState* configState = GetConfigState();
-
                 JoystickModel* left = GetLeftJoystick();
                 JoystickModel* right = GetRightJoystick();
 
@@ -644,9 +645,7 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                ConfigState* instance = GetConfigState();
-
-                for (byte index = 0; index < instance->NumberOfSoundCards; index++)
+                for (byte index = 0; index < NumberOfSoundCards; index++)
                 {
                     byte* item = GetSoundCardNameAtIndex(index);
 

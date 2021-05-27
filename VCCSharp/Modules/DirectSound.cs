@@ -142,7 +142,7 @@ namespace VCCSharp.Modules
                 ConfigState* configState = _modules.Config.GetConfigState();
 
                 var text = Converter.ToString((byte*)lpcstrDescription);
-                var index = configState->NumberOfSoundCards;
+                var index = _modules.Config.NumberOfSoundCards;
 
                 var cards = (configState->SoundCards).ToArray();
 
@@ -153,9 +153,9 @@ namespace VCCSharp.Modules
                 Converter.ToByteArray(text, (*card).CardName);
                 (*card).Guid = (_GUID*)lpGuid;
 
-                configState->NumberOfSoundCards++;
+                _modules.Config.NumberOfSoundCards++;
 
-                return (configState->NumberOfSoundCards < Define.MAXCARDS) ? Define.TRUE : Define.FALSE;
+                return (_modules.Config.NumberOfSoundCards < Define.MAXCARDS) ? Define.TRUE : Define.FALSE;
             }
         }
     }
