@@ -11,4 +11,6 @@ typedef struct
 
   unsigned char	EmulationRunning;
   unsigned char	ResetPending;
+
+  unsigned char PakPath[256];
 } EmuState;

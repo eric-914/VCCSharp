@@ -138,12 +138,12 @@ namespace VCCSharp.TapePlayer
             //_viewModel.FilePath = Path.GetFileName(Converter.ToString(instance->TapeFileName));
         }
 
-        public unsafe int LoadTape()
+        public int LoadTape()
         {
-            ConfigModel* configModel = _modules.Config.GetConfigModel();
+            ConfigModel configModel = _modules.Config.ConfigModel;
 
             string szFileName = _modules.Config.TapeFileName;
-            string appPath = Converter.ToString(configModel->CassPath) ?? "C:\\";
+            string appPath = configModel.CassPath ?? "C:\\";
 
             var openFileDlg = new Microsoft.Win32.OpenFileDialog
             {
@@ -169,7 +169,7 @@ namespace VCCSharp.TapePlayer
                     MessageBox.Show("Can't open file", "Error");
                 }
 
-                Converter.ToByteArray(Path.GetDirectoryName(file), configModel->CassPath);
+                configModel.CassPath = Path.GetDirectoryName(file);
 
                 _modules.Config.TapeCounter = 0;
 

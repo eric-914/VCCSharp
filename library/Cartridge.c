@@ -2,7 +2,6 @@
 #include <string>
 
 #include "Emu.h"
-#include "Config.h"
 #include "PAKInterface.h"
 #include "VccState.h"
 
@@ -11,6 +10,8 @@ extern "C" {
   {
     OPENFILENAME ofn;
     char szFileName[MAX_PATH] = "";
+
+    unsigned char* pakPath = emuState->PakPath;
 
     memset(&ofn, 0, sizeof(ofn));
 
@@ -22,7 +23,7 @@ extern "C" {
     ofn.nMaxFile = MAX_PATH;					          // sizeof lpstrFile
     ofn.lpstrFileTitle = NULL;						      // filename and extension only
     ofn.nMaxFileTitle = MAX_PATH;					      // sizeof lpstrFileTitle
-    ofn.lpstrInitialDir = GetConfigModel()->PakPath;  // initial directory
+    ofn.lpstrInitialDir = (char*)pakPath;       // initial directory
     ofn.lpstrTitle = TEXT("Load Program Pack");	// title bar string
     ofn.Flags = OFN_HIDEREADONLY;
 
@@ -32,7 +33,7 @@ extern "C" {
         size_t idx = tmp.find_last_of("\\");
         tmp = tmp.substr(0, idx);
 
-        strcpy(GetConfigModel()->PakPath, tmp.c_str());
+        strcpy((char*)pakPath, tmp.c_str());
 
         return(0);
       }
@@ -43,7 +44,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned __stdcall CartLoad(void* dummy)
+  __declspec(dllexport) unsigned __stdcall CartLoad(void*)
   {
     EmuState* emuState = GetEmuState();
     VccState* vccState = GetVccState();

@@ -48,18 +48,6 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe ConfigState* GetConfigState();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe ConfigModel* GetConfigModel();
-
-            //[DllImport(LIBRARY)]
-            //public static extern unsafe JoystickModel* GetLeftJoystick();
-
-            //[DllImport(LIBRARY)]
-            //public static extern unsafe JoystickModel* GetRightJoystick();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe byte* ExternalBasicImage();
         }
 
         public static class CPU
@@ -309,21 +297,12 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern unsafe GraphicsState* GetGraphicsState();
-
-            //[DllImport(LIBRARY)]
-            //public static extern unsafe GraphicsSurfaces* GetGraphicsSurfaces();
         }
 
         public static class Joystick
         {
             [DllImport(LIBRARY)]
             public static extern unsafe JoystickState* GetJoystickState();
-
-            //[DllImport(LIBRARY)]
-            //public static extern unsafe JoystickModel* GetLeftJoystickModel();
-
-            //[DllImport(LIBRARY)]
-            //public static extern unsafe JoystickModel* GetRightJoystickModel();
 
             [DllImport(LIBRARY)]
             public static extern short EnumerateJoysticks();
@@ -373,9 +352,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void UnloadDll(EmuState* emuState);
-
-            [DllImport(LIBRARY)]
-            public static extern void ResetBus();
 
             [DllImport(LIBRARY)]
             public static extern unsafe int InsertModule(EmuState* emuState, string modulePath);

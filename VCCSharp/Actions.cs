@@ -98,7 +98,7 @@ namespace VCCSharp
             unsafe
             {
                 ConfigState* configState = _modules.Config.GetConfigState();
-                ConfigModel* configModel = _modules.Config.GetConfigModel();
+                ConfigModel configModel = _modules.Config.ConfigModel;
                 JoystickModel leftJoystickModel = _modules.Config.GetLeftJoystick();
                 JoystickModel rightJoystickModel = _modules.Config.GetRightJoystick();
 

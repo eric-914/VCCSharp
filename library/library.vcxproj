@@ -209,7 +209,6 @@
     <ClInclude Include="SoundCardList.h" />
     <ClInclude Include="di.version.h" />
     <ClInclude Include="nt.version.h" />
-    <ClInclude Include="ConfigModel.h" />
     <ClInclude Include="cpudef.h" />
     <ClInclude Include="defines.h" />
     <ClInclude Include="fileoperations.h" />

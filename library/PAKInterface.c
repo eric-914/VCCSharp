@@ -14,6 +14,8 @@
 
 using namespace std;
 
+#define MAX_LOADSTRING 255
+
 PakInterfaceState* InitializeInstance(PakInterfaceState*);
 
 static PakInterfaceState* instance = InitializeInstance(new PakInterfaceState());

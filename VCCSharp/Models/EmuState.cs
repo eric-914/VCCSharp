@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using HWND = System.IntPtr;
 
 namespace VCCSharp.Models
@@ -11,5 +10,7 @@ namespace VCCSharp.Models
 
         public byte EmulationRunning;
         public byte ResetPending;
+
+        public unsafe fixed byte PakPath[256];
     }
 }

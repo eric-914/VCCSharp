@@ -188,7 +188,7 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                ConfigModel* configModel = _modules.Config.GetConfigModel();
+                ConfigModel configModel = _modules.Config.ConfigModel;
                 EmuState* emuState = _modules.Emu.GetEmuState();
 
                 JoystickModel left = _modules.Config.GetLeftJoystick();
@@ -200,13 +200,13 @@ namespace VCCSharp.Modules
                 //emuState->ResetPending = (byte)ResetPendingStates.Hard;
                 //}
 
-                string soundCardName = Converter.ToString(configModel->SoundCardName);
+                string soundCardName = configModel.SoundCardName;
                 byte tempSoundCardIndex = _modules.Config.GetSoundCardIndex(soundCardName);
                 SoundCardList card = _modules.Config.SoundCards[tempSoundCardIndex];
 
-                _modules.Audio.SoundInit(emuState->WindowHandle, card.Guid, configModel->AudioRate);
+                _modules.Audio.SoundInit(emuState->WindowHandle, card.Guid, configModel.AudioRate);
 
-                _modules.Keyboard.KeyboardBuildRuntimeTable(configModel->KeyMapIndex);
+                _modules.Keyboard.KeyboardBuildRuntimeTable(configModel.KeyMapIndex);
 
                 _modules.Joystick.SetStickNumbers(left.DiDevice, right.DiDevice);
             }

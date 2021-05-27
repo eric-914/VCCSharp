@@ -1,12 +1,9 @@
-﻿using System.Runtime.InteropServices;
-
-namespace VCCSharp.Models
+﻿namespace VCCSharp.Models
 {
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    public struct ConfigModel
+    public class ConfigModel
     {
         //[Version]
-        public unsafe fixed byte Release[Define.MAX_LOADSTRING]; //## WRITE-ONLY ##//
+        public string Release; //## WRITE-ONLY ##//
 
         //[CPU]
         public byte CPUMultiplier;
@@ -17,7 +14,7 @@ namespace VCCSharp.Models
         public ushort MaxOverclock;
 
         //[Audio]
-        public unsafe fixed byte SoundCardName[Define.MAX_LOADSTRING];
+        public string SoundCardName;
         public ushort AudioRate;
 
         //[Video]
@@ -32,7 +29,7 @@ namespace VCCSharp.Models
 
         //[Memory]
         public byte RamSize;
-        public unsafe fixed byte ExternalBasicImage[Define.MAX_PATH]; //## READ-ONLY ##//
+        public string ExternalBasicImage; //## READ-ONLY ##//
 
         //[Misc]
         public byte AutoStart;
@@ -40,14 +37,14 @@ namespace VCCSharp.Models
         public byte KeyMapIndex;
 
         //[Module]
-        public unsafe fixed byte ModulePath[Define.MAX_PATH];
+        public string ModulePath;
 
         //[DefaultPaths]
-        public unsafe fixed byte CassPath[Define.MAX_PATH];
-        public unsafe fixed byte PakPath[Define.MAX_PATH];
-        public unsafe fixed byte FloppyPath[Define.MAX_PATH];
-        public unsafe fixed byte CoCoRomPath[Define.MAX_PATH]; //## READ-ONLY ##//
-        public unsafe fixed byte SerialCaptureFilePath[Define.MAX_PATH];
+        public string CassPath;
+        public string PakPath;
+        public string FloppyPath;
+        public string CoCoRomPath; //## READ-ONLY ##//
+        public string SerialCaptureFilePath;
  
         //[FD-502]  //### MODULE SPECIFIC ###//
         //DiskRom=1

@@ -12,7 +12,7 @@ namespace VCCSharp.Configuration
     {
         //TODO: Remove STATIC once safe
         private static unsafe ConfigState* _state;
-        private static unsafe ConfigModel* _model;
+        private static ConfigModel _model;
         private static JoystickModel _left;
         private static JoystickModel _right;
         private static IConfig _config;
@@ -28,7 +28,7 @@ namespace VCCSharp.Configuration
             Spectrum = new AudioSpectrum();
         }
 
-        public unsafe ConfigModel* Model
+        public ConfigModel Model
         {
             get => _model;
             set
@@ -114,83 +114,44 @@ namespace VCCSharp.Configuration
         //[CPU]
         public int CpuMultiplier
         {
-            get
-            {
-                unsafe
-                {
-                    return Model->CPUMultiplier;
-                }
-            }
+            get => Model.CPUMultiplier;
             set
             {
-                unsafe
-                {
-                    if (value == Model->CPUMultiplier) return;
+                if (value == Model.CPUMultiplier) return;
 
-                    Model->CPUMultiplier = (byte)value;
-                    OnPropertyChanged();
-                }
+                Model.CPUMultiplier = (byte)value;
+                OnPropertyChanged();
             }
         }
 
         public int FrameSkip
         {
-            get
-            {
-                unsafe
-                {
-                    return (Model->FrameSkip);
-                }
-            }
+            get => Model.FrameSkip;
             set
             {
-                unsafe
-                {
-                    if (Model->FrameSkip == (byte)value) return;
+                if (Model.FrameSkip == (byte)value) return;
 
-                    Model->FrameSkip = (byte)value;
-                    OnPropertyChanged();
-                }
+                Model.FrameSkip = (byte)value;
+                OnPropertyChanged();
             }
         }
 
         public bool SpeedThrottle
         {
-            get
-            {
-                unsafe
-                {
-                    return Model->SpeedThrottle != 0;
-                }
-            }
+            get => Model.SpeedThrottle != 0;
             set
             {
-                unsafe
-                {
-                    if (value == (Model->SpeedThrottle != 0)) return;
+                if (value == (Model.SpeedThrottle != 0)) return;
 
-                    Model->SpeedThrottle = (byte)(value ? 1 : 0);
-                    OnPropertyChanged();
-                }
+                Model.SpeedThrottle = (byte)(value ? 1 : 0);
+                OnPropertyChanged();
             }
         }
 
         public int CpuType
         {
-            get
-            {
-                unsafe
-                {
-                    return Model->CpuType;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    Model->CpuType = (byte)value;
-                }
-            }
+            get => Model.CpuType;
+            set => Model.CpuType = (byte)value;
         }
 
         public CPUTypes? Cpu
@@ -206,16 +167,7 @@ namespace VCCSharp.Configuration
             }
         }
 
-        public int MaxOverclock
-        {
-            get
-            {
-                unsafe
-                {
-                    return Model->MaxOverclock;
-                }
-            }
-        }
+        public int MaxOverclock => Model.MaxOverclock;
 
         //[Audio]
         public List<string> SoundCards
@@ -240,143 +192,74 @@ namespace VCCSharp.Configuration
 
         public string SoundCardName
         {
-            get
-            {
-                unsafe
-                {
-                    return Converter.ToString(Model->SoundCardName);
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    Converter.ToByteArray(value, Model->SoundCardName);
-                }
-            }
+            get => Model.SoundCardName;
+            set => Model.SoundCardName = value;
         }
 
         public int AudioRate
         {
-            get
-            {
-                unsafe
-                {
-                    return (int)(AudioRates)Model->AudioRate;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    Model->AudioRate = (ushort)value;
-                }
-            }
+            get => (int)(AudioRates)Model.AudioRate;
+            set => Model.AudioRate = (ushort)value;
         }
 
         //[Video]
         public MonitorTypes? MonitorType
         {
-            get
-            {
-                unsafe
-                {
-                    return (MonitorTypes)(Model->MonitorType);
-                }
-            }
+            get => (MonitorTypes)(Model.MonitorType);
             set
             {
-                unsafe
-                {
-                    if (!value.HasValue || Model->MonitorType == (byte)value.Value) return;
+                if (!value.HasValue || Model.MonitorType == (byte)value.Value) return;
 
-                    Model->MonitorType = (byte)value.Value;
-                    OnPropertyChanged();
-                }
+                Model.MonitorType = (byte)value.Value;
+                OnPropertyChanged();
             }
         }
 
         public PaletteTypes? PaletteType
         {
-            get
-            {
-                unsafe
-                {
-                    return (PaletteTypes)(Model->PaletteType);
-                }
-            }
+            get => (PaletteTypes)(Model.PaletteType);
             set
             {
-                unsafe
-                {
-                    if (!value.HasValue || Model->PaletteType == (byte)value.Value) return;
+                if (!value.HasValue || Model.PaletteType == (byte)value.Value) return;
 
-                    Model->PaletteType = (byte)value.Value;
-                    OnPropertyChanged();
-                }
+                Model.PaletteType = (byte)value.Value;
+                OnPropertyChanged();
             }
         }
 
         public bool ScanLines
         {
-            get
-            {
-                unsafe
-                {
-                    return Model->ScanLines != 0;
-                }
-            }
+            get => Model.ScanLines != 0;
             set
             {
-                unsafe
-                {
-                    if (value == (Model->ScanLines != 0)) return;
+                if (value == (Model.ScanLines != 0)) return;
 
-                    Model->ScanLines = (byte)(value ? 1 : 0);
-                    OnPropertyChanged();
-                }
+                Model.ScanLines = (byte)(value ? 1 : 0);
+                OnPropertyChanged();
             }
         }
 
         public bool ForceAspect
         {
-            get
-            {
-                unsafe
-                {
-                    return Model->ForceAspect != 0;
-                }
-            }
+            get => Model.ForceAspect != 0;
             set
             {
-                unsafe
-                {
-                    if (value == (Model->ForceAspect != 0)) return;
+                if (value == (Model.ForceAspect != 0)) return;
 
-                    Model->ForceAspect = (byte)(value ? 1 : 0);
-                    OnPropertyChanged();
-                }
+                Model.ForceAspect = (byte)(value ? 1 : 0);
+                OnPropertyChanged();
             }
         }
 
         public bool RememberSize
         {
-            get
-            {
-                unsafe
-                {
-                    return Model->RememberSize != 0;
-                }
-            }
+            get => Model.RememberSize != 0;
             set
             {
-                unsafe
-                {
-                    if (value == (Model->RememberSize != 0)) return;
+                if (value == (Model.RememberSize != 0)) return;
 
-                    Model->RememberSize = (byte)(value ? 1 : 0);
-                    OnPropertyChanged();
-                }
+                Model.RememberSize = (byte)(value ? 1 : 0);
+                OnPropertyChanged();
             }
         }
 
@@ -399,20 +282,8 @@ namespace VCCSharp.Configuration
         //[Memory]
         public int RamSize
         {
-            get
-            {
-                unsafe
-                {
-                    return Model->RamSize;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    Model->RamSize = (byte)value;
-                }
-            }
+            get => Model.RamSize;
+            set => Model.RamSize = (byte)value;
         }
 
         public string ExternalBasicImage { get; set; } = "External Basic Image";
@@ -420,56 +291,20 @@ namespace VCCSharp.Configuration
         //[Misc]
         public bool AutoStart
         {
-            get
-            {
-                unsafe
-                {
-                    return Model->AutoStart != 0;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    Model->AutoStart = (byte)(value ? 1 : 0);
-                }
-            }
+            get => Model.AutoStart != 0;
+            set => Model.AutoStart = (byte)(value ? 1 : 0);
         }
 
         public bool CartAutoStart
         {
-            get
-            {
-                unsafe
-                {
-                    return Model->CartAutoStart != 0;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    Model->CartAutoStart = (byte)(value ? 1 : 0);
-                }
-            }
+            get => Model.CartAutoStart != 0;
+            set => Model.CartAutoStart = (byte)(value ? 1 : 0);
         }
 
         public int KeyMapIndex
         {
-            get
-            {
-                unsafe
-                {
-                    return Model->KeyMapIndex;
-                }
-            }
-            set
-            {
-                unsafe
-                {
-                    Model->KeyMapIndex = (byte)value;
-                }
-            }
+            get => Model.KeyMapIndex;
+            set => Model.KeyMapIndex = (byte)value;
         }
 
         //[Module]

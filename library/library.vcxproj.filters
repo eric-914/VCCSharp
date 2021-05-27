@@ -88,9 +88,6 @@
     <ClInclude Include="SoundCardList.h">
       <Filter>models</Filter>
     </ClInclude>
-    <ClInclude Include="ConfigModel.h">
-      <Filter>models</Filter>
-    </ClInclude>
     <ClInclude Include="Config.h">
       <Filter>config</Filter>
     </ClInclude>

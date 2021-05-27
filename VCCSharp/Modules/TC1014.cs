@@ -495,13 +495,12 @@ namespace VCCSharp.Modules
 
             unsafe
             {
-                ConfigState* configState = _modules.Config.GetConfigState();
-                ConfigModel* configModel = _modules.Config.GetConfigModel();
+                ConfigModel configModel = _modules.Config.ConfigModel;
 
                 //--Try loading from Vcc.ini >> CoCoRomPath
-                string cocoRomPath = Converter.ToString(configModel->CoCoRomPath);
+                string cocoRomPath = configModel.CoCoRomPath;
 
-                string path = Path.Combine(Converter.ToString(configModel->CoCoRomPath), ROM);
+                string path = Path.Combine(configModel.CoCoRomPath, ROM);
 
                 if (LoadInternalRom(path) == Define.TRUE)
                 {
