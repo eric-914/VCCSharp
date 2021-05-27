@@ -25,7 +25,7 @@ namespace VCCSharp.BitBanger
                     case "AddLineFeed":
                         unsafe
                         {
-                            _modules.MC6821.MC6821_SetSerialParams(_configState->TextMode);
+                            _modules.MC6821.MC6821_SetSerialParams(_modules.Config.TextMode);
                         }
                         break;
 
@@ -42,6 +42,7 @@ namespace VCCSharp.BitBanger
         public unsafe void ShowDialog(ConfigState* state)
         {
             _configState = state;
+            _viewModel.Config = _modules.Config;
             _viewModel.State = state;
 
             _view ??= new BitBangerWindow(_viewModel, this);

@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using VCCSharp.Annotations;
 using VCCSharp.Models;
+using VCCSharp.Modules;
 
 namespace VCCSharp.BitBanger
 {
@@ -11,6 +12,7 @@ namespace VCCSharp.BitBanger
 
         //TODO: Remove STATIC once safe
         private static unsafe ConfigState* _state;
+        private static IConfig _config;
 
         private string _serialCaptureFile = NO_FILE;
 
@@ -25,6 +27,17 @@ namespace VCCSharp.BitBanger
         }
 
         #endregion
+
+        public IConfig Config
+        {
+            get => _config;
+            set
+            {
+                if (_config != null) return;
+
+                _config = value;
+            }
+        }
 
         public unsafe ConfigState* State
         {
@@ -69,22 +82,13 @@ namespace VCCSharp.BitBanger
 
         public bool AddLineFeed
         {
-            get
-            {
-                unsafe
-                {
-                    return State != null && State->TextMode != Define.FALSE;
-                }
-            }
+            get => Config != null && Config.TextMode != Define.FALSE;
             set
             {
-                unsafe
-                {
-                    if (value == (State->TextMode != Define.FALSE)) return;
+                if (value == (Config.TextMode != Define.FALSE)) return;
 
-                    State->TextMode = (value ? Define.TRUE : Define.FALSE);
-                    OnPropertyChanged();
-                }
+                Config.TextMode = (value ? Define.TRUE : Define.FALSE);
+                OnPropertyChanged();
             }
         }
 

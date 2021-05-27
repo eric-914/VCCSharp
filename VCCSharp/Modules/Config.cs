@@ -36,6 +36,7 @@ namespace VCCSharp.Modules
 
         Point GetIniWindowSize();
         string AppTitle { get; }
+        byte TextMode { get; set; }
     }
 
     public class Config : IConfig
@@ -45,6 +46,8 @@ namespace VCCSharp.Modules
         private readonly IKernel _kernel;
 
         public string AppTitle { get; } = Resources.ResourceManager.GetString("AppTitle");
+
+        public byte TextMode { get; set; } = 1;  //--Add LF to CR
 
         public Config(IModules modules, IUser32 user32, IKernel kernel)
         {

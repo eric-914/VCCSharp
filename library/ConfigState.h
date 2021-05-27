@@ -10,7 +10,6 @@
 
 typedef struct
 {
-  char TextMode;  //--Add LF to CR
   char PrintMonitorWindow;
 
   unsigned char NumberOfJoysticks;

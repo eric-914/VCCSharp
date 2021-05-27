@@ -25,7 +25,6 @@ namespace VCCSharp.Models
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct ConfigState
     {
-        public byte TextMode;  //--Add LF to CR
         public byte PrintMonitorWindow;
 
         public byte NumberOfJoysticks;

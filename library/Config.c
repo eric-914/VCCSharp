@@ -54,7 +54,6 @@ ConfigState* InitializeInstance(ConfigState* p) {
   p->NumberOfJoysticks = 0;
   p->PrintMonitorWindow = 0;
   p->TapeCounter = 0;
-  p->TextMode = 1;
   p->TapeMode = STOP;
 
   p->hDlgBar = NULL;
