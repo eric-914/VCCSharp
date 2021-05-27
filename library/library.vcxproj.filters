@@ -38,9 +38,6 @@
     <ClCompile Include="TC1014MMU.c">
       <Filter>tc1014\mmu</Filter>
     </ClCompile>
-    <ClCompile Include="Emu.c">
-      <Filter>emu</Filter>
-    </ClCompile>
     <ClCompile Include="MenuCallbacks.c">
       <Filter>callbacks</Filter>
     </ClCompile>
@@ -109,17 +106,11 @@
     <ClInclude Include="ConfigState.h">
       <Filter>models</Filter>
     </ClInclude>
-    <ClInclude Include="EmuState.h">
-      <Filter>models</Filter>
-    </ClInclude>
     <ClInclude Include="GraphicsState.h">
       <Filter>models</Filter>
     </ClInclude>
     <ClInclude Include="TC1014MmuState.h">
       <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="Emu.h">
-      <Filter>emu</Filter>
     </ClInclude>
     <ClInclude Include="PakInterfaceState.h">
       <Filter>models</Filter>
@@ -203,9 +194,6 @@
     </Filter>
     <Filter Include="callbacks">
       <UniqueIdentifier>{d7a009e7-f60a-4914-98dc-573a8e0f986e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="emu">
-      <UniqueIdentifier>{5f8f0b1c-f4d2-45c3-aa61-d4c3def83656}</UniqueIdentifier>
     </Filter>
     <Filter Include="gdi">
       <UniqueIdentifier>{af3d055a-94a9-4c02-8950-bda2fec4d99b}</UniqueIdentifier>

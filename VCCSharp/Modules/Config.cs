@@ -21,13 +21,13 @@ namespace VCCSharp.Modules
         JoystickModel GetLeftJoystick();
         JoystickModel GetRightJoystick();
 
-        unsafe void InitConfig(EmuState* emuState, ref CmdLineArguments cmdLineArgs);
-        unsafe void WriteIniFile(EmuState* emuState);
-        unsafe void SynchSystemWithConfig(EmuState* emuState);
+        void InitConfig(ref CmdLineArguments cmdLineArgs);
+        void WriteIniFile();
+        void SynchSystemWithConfig();
         int GetPaletteType();
         string ExternalBasicImage();
-        unsafe void DecreaseOverclockSpeed(EmuState* emuState);
-        unsafe void IncreaseOverclockSpeed(EmuState* emuState);
+        void DecreaseOverclockSpeed();
+        void IncreaseOverclockSpeed();
         void LoadIniFile();
         short GetCurrentKeyboardLayout();
         void SaveConfig();
@@ -98,7 +98,7 @@ namespace VCCSharp.Modules
             return _right;
         }
 
-        public unsafe void InitConfig(EmuState* emuState, ref CmdLineArguments cmdLineArgs)
+        public unsafe void InitConfig(ref CmdLineArguments cmdLineArgs)
         {
             ConfigState* configState = GetConfigState();
 
@@ -117,9 +117,9 @@ namespace VCCSharp.Modules
             _modules.Joystick.SetLeftJoystick(_left);
             _modules.Joystick.SetRightJoystick(_right);
 
-            ReadIniFile(emuState);
+            ReadIniFile();
 
-            SynchSystemWithConfig(emuState);
+            SynchSystemWithConfig();
 
             ConfigureJoysticks();
 
@@ -149,10 +149,10 @@ namespace VCCSharp.Modules
                 Environment.Exit(0);
             }
 
-            WriteIniFile(emuState);
+            WriteIniFile();
         }
 
-        public unsafe void SynchSystemWithConfig(EmuState* emuState)
+        public void SynchSystemWithConfig()
         {
             _modules.Vcc.AutoStart = ConfigModel.AutoStart;
             _modules.Vcc.Throttle = ConfigModel.SpeedThrottle;
@@ -162,7 +162,7 @@ namespace VCCSharp.Modules
 
             _modules.Graphics.SetPaletteType();
             _modules.DirectDraw.SetAspect(ConfigModel.ForceAspect);
-            _modules.Graphics.SetScanLines(emuState, ConfigModel.ScanLines);
+            _modules.Graphics.SetScanLines(ConfigModel.ScanLines);
             _modules.Emu.SetCpuMultiplier(ConfigModel.CPUMultiplier);
 
             SetCpuType(ConfigModel.CpuType);
@@ -177,7 +177,6 @@ namespace VCCSharp.Modules
             unsafe
             {
                 ConfigState* configState = GetConfigState();
-                EmuState* emuState = _modules.Emu.GetEmuState();
 
                 string szFileName = Converter.ToString(configState->IniFilePath);
                 string appPath = Path.GetDirectoryName(szFileName) ?? "C:\\";
@@ -196,16 +195,16 @@ namespace VCCSharp.Modules
                 if (openFileDlg.ShowDialog() == true)
                 {
                     // Flush current profile
-                    WriteIniFile(emuState);
+                    WriteIniFile();
 
                     Converter.ToByteArray(openFileDlg.FileName, configState->IniFilePath);
 
                     // Load it
-                    ReadIniFile(emuState);
+                    ReadIniFile();
 
-                    SynchSystemWithConfig(emuState);
+                    SynchSystemWithConfig();
 
-                    emuState->ResetPending = (byte)ResetPendingStates.Hard;
+                    _modules.Emu.ResetPending = (byte)ResetPendingStates.Hard;
                 }
             }
         }
@@ -298,7 +297,7 @@ namespace VCCSharp.Modules
             _modules.Vcc.CpuName = cpu[(CPUTypes)cpuType];
         }
 
-        public unsafe void ReadIniFile(EmuState* emuState)
+        public unsafe void ReadIniFile()
         {
             ConfigState* configState = GetConfigState();
 
@@ -310,8 +309,8 @@ namespace VCCSharp.Modules
 
             _modules.Keyboard.KeyboardBuildRuntimeTable(ConfigModel.KeyMapIndex);
 
-            Converter.ToByteArray(ConfigModel.PakPath, emuState->PakPath);
-            _modules.PAKInterface.InsertModule(emuState, ConfigModel.ModulePath);   // Should this be here?
+            ConfigModel.PakPath = _modules.Emu.PakPath;
+            _modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, ConfigModel.ModulePath);   // Should this be here?
 
             if (ConfigModel.RememberSize == Define.TRUE)
             {
@@ -327,21 +326,21 @@ namespace VCCSharp.Modules
          * Decrease the overclock speed, as seen after a POKE 65497,0.
          * Setting this value to 0 will make the emulator pause.  Hence the minimum of 2.
          */
-        public unsafe void DecreaseOverclockSpeed(EmuState* emuState)
+        public void DecreaseOverclockSpeed()
         {
-            AdjustOverclockSpeed(emuState, 0xFF); //--Stupid compiler can't figure out (byte)(-1) = 0xFF
+            AdjustOverclockSpeed(0xFF); //--Stupid compiler can't figure out (byte)(-1) = 0xFF
         }
 
         /**
          * Increase the overclock speed, as seen after a POKE 65497,0.
          * Valid values are [2,100].
          */
-        public unsafe void IncreaseOverclockSpeed(EmuState* emuState)
+        public void IncreaseOverclockSpeed()
         {
-            AdjustOverclockSpeed(emuState, 1);
+            AdjustOverclockSpeed(1);
         }
 
-        public unsafe void AdjustOverclockSpeed(EmuState* emuState, byte change)
+        private void AdjustOverclockSpeed(byte change)
         {
             byte cpuMultiplier = (byte)(ConfigModel.CPUMultiplier + change);
 
@@ -361,7 +360,7 @@ namespace VCCSharp.Modules
 
             ConfigModel.CPUMultiplier = cpuMultiplier;
 
-            emuState->ResetPending = (byte)ResetPendingStates.ClsSynch; // Without this, changing the config does nothing.
+            _modules.Emu.ResetPending = (byte)ResetPendingStates.ClsSynch; // Without this, changing the config does nothing.
         }
 
         public void SetWindowSize(short width, short height)
@@ -468,7 +467,6 @@ namespace VCCSharp.Modules
             unsafe
             {
                 ConfigState* configState = GetConfigState();
-                EmuState* emuState = _modules.Emu.GetEmuState();
 
                 // EJJ get current ini file path
                 string curIni = Converter.ToString(configState->IniFilePath);
@@ -488,7 +486,7 @@ namespace VCCSharp.Modules
 
                 if (saveFileDialog.ShowDialog() == true)
                 {
-                    WriteIniFile(emuState); // Flush current config
+                    WriteIniFile(); // Flush current config
 
                     string newIni = saveFileDialog.FileName;
 
@@ -512,7 +510,7 @@ namespace VCCSharp.Modules
             return ConfigModel.KeyMapIndex;
         }
 
-        public unsafe void WriteIniFile(EmuState* emuState)
+        public unsafe void WriteIniFile()
         {
             ConfigState* configState = GetConfigState();
 
@@ -535,7 +533,7 @@ namespace VCCSharp.Modules
             SaveConfiguration(ConfigModel, iniFilePath);
         }
 
-        public unsafe void ValidateModel(ConfigModel model)
+        public void ValidateModel(ConfigModel model)
         {
             if (model.KeyMapIndex > 3)
             {
@@ -570,7 +568,7 @@ namespace VCCSharp.Modules
             return ConfigModel.PaletteType;
         }
 
-        public unsafe void SaveConfiguration(ConfigModel model, string iniFilePath)
+        public void SaveConfiguration(ConfigModel model, string iniFilePath)
         {
             void SaveText(string group, string key, string value)
             {

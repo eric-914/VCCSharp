@@ -8,7 +8,7 @@ namespace VCCSharp.Modules
 {
     public interface ICoCo
     {
-        unsafe float RenderFrame(EmuState* emuState);
+        float RenderFrame();
         void CocoReset();
         void SetClockSpeed(ushort cycles);
         ushort SetAudioRate(ushort rate);
@@ -107,9 +107,9 @@ namespace VCCSharp.Modules
 
         #region RenderFrame
 
-        public unsafe float RenderFrame(EmuState* emuState)
+        public float RenderFrame()
         {
-            if (RenderVideoFrame(emuState) == 1)
+            if (RenderVideoFrame() == 1)
             {
                 return 0;
             }
@@ -119,7 +119,7 @@ namespace VCCSharp.Modules
             return _modules.Throttle.CalculateFPS();
         }
 
-        private unsafe byte RenderVideoFrame(EmuState* emuState)
+        private byte RenderVideoFrame()
         {
             _modules.Graphics.SetBlinkState(BLINK_PHASE);
 
@@ -145,7 +145,7 @@ namespace VCCSharp.Modules
 
             if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == Define.FALSE)
             {
-                if (_modules.DirectDraw.LockScreen(emuState) == Define.TRUE)
+                if (_modules.DirectDraw.LockScreen() == Define.TRUE)
                 {
                     return 1;
                 }
@@ -157,7 +157,7 @@ namespace VCCSharp.Modules
                 _modules.Emu.LineCounter = counter;
                 if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == Define.FALSE)
                 {
-                    CoCoDrawTopBorder(emuState);
+                    CoCoDrawTopBorder();
                 }
 
                 CpuCycle();
@@ -172,7 +172,7 @@ namespace VCCSharp.Modules
 
                 if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == Define.FALSE)
                 {
-                    CoCoUpdateScreen(emuState);
+                    CoCoUpdateScreen();
                 }
             }
 
@@ -192,13 +192,13 @@ namespace VCCSharp.Modules
 
                 if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == Define.FALSE)
                 {
-                    CoCoDrawBottomBorder(emuState);
+                    CoCoDrawBottomBorder();
                 }
             }
 
             if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == Define.FALSE)
             {
-                _modules.DirectDraw.UnlockScreen(emuState);
+                _modules.DirectDraw.UnlockScreen();
                 _modules.Graphics.SetBorderChange();
             }
 
@@ -602,40 +602,40 @@ namespace VCCSharp.Modules
             }
         }
 
-        private unsafe void CoCoDrawTopBorder(EmuState* emuState)
+        private void CoCoDrawTopBorder()
         {
             var mapping = new Dictionary<BitDepthStates, Action>
             {
-                {BitDepthStates.BIT_8, () => _modules.TC1014.DrawTopBorder8(emuState)},
-                {BitDepthStates.BIT_16, () => _modules.TC1014.DrawTopBorder16(emuState)},
-                {BitDepthStates.BIT_24, () => _modules.TC1014.DrawTopBorder24(emuState)},
-                {BitDepthStates.BIT_32, () => _modules.TC1014.DrawTopBorder32(emuState)}
+                {BitDepthStates.BIT_8, () => _modules.TC1014.DrawTopBorder8()},
+                {BitDepthStates.BIT_16, () => _modules.TC1014.DrawTopBorder16()},
+                {BitDepthStates.BIT_24, () => _modules.TC1014.DrawTopBorder24()},
+                {BitDepthStates.BIT_32, () => _modules.TC1014.DrawTopBorder32()}
             };
 
             mapping[(BitDepthStates)_modules.Emu.BitDepth]();
         }
 
-        private unsafe void CoCoUpdateScreen(EmuState* emuState)
+        private void CoCoUpdateScreen()
         {
             var mapping = new Dictionary<BitDepthStates, Action>
             {
-                {BitDepthStates.BIT_8, () => _modules.TC1014.UpdateScreen8(emuState)},
-                {BitDepthStates.BIT_16, () => _modules.TC1014.UpdateScreen16(emuState)},
-                {BitDepthStates.BIT_24, () => _modules.TC1014.UpdateScreen24(emuState)},
-                {BitDepthStates.BIT_32, () => _modules.TC1014.UpdateScreen32(emuState)}
+                {BitDepthStates.BIT_8, () => _modules.TC1014.UpdateScreen8()},
+                {BitDepthStates.BIT_16, () => _modules.TC1014.UpdateScreen16()},
+                {BitDepthStates.BIT_24, () => _modules.TC1014.UpdateScreen24()},
+                {BitDepthStates.BIT_32, () => _modules.TC1014.UpdateScreen32()}
             };
 
             mapping[(BitDepthStates)_modules.Emu.BitDepth]();
         }
 
-        private unsafe void CoCoDrawBottomBorder(EmuState* emuState)
+        private void CoCoDrawBottomBorder()
         {
             var mapping = new Dictionary<BitDepthStates, Action>
             {
-                {BitDepthStates.BIT_8, () => _modules.TC1014.DrawBottomBorder8(emuState)},
-                {BitDepthStates.BIT_16, () => _modules.TC1014.DrawBottomBorder16(emuState)},
-                {BitDepthStates.BIT_24, () => _modules.TC1014.DrawBottomBorder24(emuState)},
-                {BitDepthStates.BIT_32, () => _modules.TC1014.DrawBottomBorder32(emuState)}
+                {BitDepthStates.BIT_8, () => _modules.TC1014.DrawBottomBorder8()},
+                {BitDepthStates.BIT_16, () => _modules.TC1014.DrawBottomBorder16()},
+                {BitDepthStates.BIT_24, () => _modules.TC1014.DrawBottomBorder24()},
+                {BitDepthStates.BIT_32, () => _modules.TC1014.DrawBottomBorder32()}
             };
 
             mapping[(BitDepthStates)_modules.Emu.BitDepth]();

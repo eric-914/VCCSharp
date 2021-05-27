@@ -18,19 +18,18 @@ namespace VCCSharp.Modules
         bool InitDirectDraw(HINSTANCE hInstance, HINSTANCE resources);
         void ClearScreen();
         void FullScreenToggle();
-        unsafe bool CreateDirectDrawWindow(EmuState* emuState);
-        unsafe void SetStatusBarText(string textBuffer, EmuState* emuState);
-        unsafe float Static(EmuState* emuState);
-        unsafe void DoCls(EmuState* emuState);
-        unsafe byte LockScreen(EmuState* emuState);
-        unsafe void UnlockScreen(EmuState* emuState);
+        bool CreateDirectDrawWindow();
+        void SetStatusBarText(string textBuffer);
+        float Static();
+        void DoCls();
+        byte LockScreen();
+        void UnlockScreen();
         void SetAspect(byte forceAspect);
-        unsafe void DisplayFlip(EmuState* emuState);
         byte InfoBand { get; set; }
     }
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate IntPtr WndProcTemplate(IntPtr hWnd, uint msg, long wParam, long lParam);
+    public delegate IntPtr WndProcTemplate(HWND hWnd, uint msg, long wParam, long lParam);
 
     public class DirectDraw : IDirectDraw
     {
@@ -43,7 +42,7 @@ namespace VCCSharp.Modules
         private static byte _counter, _counter1 = 32, _phase = 1;
 
         private HWND _hWndStatusBar;
-        private HINSTANCE _hInstance = Zero;
+        private readonly HINSTANCE _hInstance = Zero;
         private Point _windowSize;
 
         private byte _forceAspect;
@@ -91,39 +90,34 @@ namespace VCCSharp.Modules
 
                 //--Convert WinProc to void*
                 _delegateInstance = WndProc;
-                void* lpfnWndProc = (void*)Marshal.GetFunctionPointerForDelegate(_delegateInstance);
+                void* wndProc = (void*)Marshal.GetFunctionPointerForDelegate(_delegateInstance);
 
                 fixed (byte* appNameText = AppNameText)
                 {
                     //And Rebuilt it from scratch
-                    return Library.DirectDraw.RegisterWcex(_hInstance, lpfnWndProc, appNameText, null, style, hIcon, hCursor, hBrush) != Define.FALSE;
+                    return Library.DirectDraw.RegisterWcex(_hInstance, wndProc, appNameText, null, style, hIcon, hCursor, hBrush) != Define.FALSE;
                 }
             }
         }
 
         public void FullScreenToggle()
         {
-            unsafe
+            _modules.Audio.PauseAudio(Define.TRUE);
+
+            if (!CreateDirectDrawWindow())
             {
-                EmuState* emuState = _modules.Emu.GetEmuState();
+                MessageBox.Show("Can't rebuild primary Window", "Error");
 
-                _modules.Audio.PauseAudio(Define.TRUE);
-
-                if (!CreateDirectDrawWindow(emuState))
-                {
-                    MessageBox.Show("Can't rebuild primary Window", "Error");
-
-                    Environment.Exit(0);
-                }
-
-                _modules.Graphics.InvalidateBorder();
-                _modules.Callbacks.RefreshDynamicMenu(_modules.Emu.WindowHandle);
-
-                //TODO: Guess it wants to close other windows/dialogs
-                //emuState->ConfigDialog = Zero;
-
-                _modules.Audio.PauseAudio(Define.FALSE);
+                Environment.Exit(0);
             }
+
+            _modules.Graphics.InvalidateBorder();
+            _modules.Callbacks.RefreshDynamicMenu(_modules.Emu.WindowHandle);
+
+            //TODO: Guess it wants to close other windows/dialogs
+            //emuState->ConfigDialog = Zero;
+
+            _modules.Audio.PauseAudio(Define.FALSE);
         }
 
         public void SetAspect(byte forceAspect)
@@ -131,11 +125,11 @@ namespace VCCSharp.Modules
             _forceAspect = forceAspect;
         }
 
-        public unsafe void DoCls(EmuState* emuState)
+        public unsafe void DoCls()
         {
             GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
 
-            if (LockScreen(emuState) == Define.TRUE)
+            if (LockScreen() == Define.TRUE)
             {
                 return;
             }
@@ -185,7 +179,7 @@ namespace VCCSharp.Modules
                     break;
             }
 
-            UnlockScreen(emuState);
+            UnlockScreen();
         }
 
         public void ClearScreen()
@@ -193,18 +187,18 @@ namespace VCCSharp.Modules
             _color = 0;
         }
 
-        public unsafe float Static(EmuState* emuState)
+        public float Static()
         {
-            Static(emuState, _modules.Graphics.GetGraphicsSurfaces());
+            Static(_modules.Graphics.GetGraphicsSurfaces());
 
             return _modules.Throttle.CalculateFPS();
         }
 
-        private unsafe void Static(EmuState* emuState, GraphicsSurfaces graphicsSurfaces)
+        private unsafe void Static(GraphicsSurfaces graphicsSurfaces)
         {
             var random = new Random();
 
-            LockScreen(emuState);
+            LockScreen();
 
             if (graphicsSurfaces.pSurface32 == null)
             {
@@ -287,10 +281,10 @@ namespace VCCSharp.Modules
                 _textY = (ushort)(random.Next() % 470);
             }
 
-            UnlockScreen(emuState);
+            UnlockScreen();
         }
 
-        public unsafe void UnlockScreen(EmuState* emuState)
+        public void UnlockScreen()
         {
             if (_modules.Emu.FullScreen == Define.TRUE && InfoBand == Define.TRUE)
             {
@@ -299,7 +293,7 @@ namespace VCCSharp.Modules
 
             UnlockDDBackSurface();
 
-            DisplayFlip(emuState);
+            DisplayFlip();
         }
 
         public void ShowStaticMessage(ushort x, ushort y, uint color)
@@ -337,11 +331,11 @@ namespace VCCSharp.Modules
             }
         }
 
-        public unsafe void SetStatusBarText(string text, EmuState* emuState)
+        public void SetStatusBarText(string text)
         {
             if (_modules.Emu.FullScreen == Define.FALSE)
             {
-                SetStatusBarText(text);
+                SetStatusBarTextA(text);
             }
             else
             {
@@ -349,7 +343,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        private void SetStatusBarText(string text)
+        private void SetStatusBarTextA(string text)
         {
             unsafe
             {
@@ -364,7 +358,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public unsafe void DisplayFlip(EmuState* emuState)
+        public unsafe void DisplayFlip()
         {
             if (_modules.Emu.FullScreen == Define.TRUE)
             {	// if we're windowed do the blit, else just Flip
@@ -471,7 +465,7 @@ namespace VCCSharp.Modules
             _modules.Emu.WindowSize = new System.Windows.Point(windowSize.right, (int)(windowSize.bottom - _statusBarHeight));
         }
 
-        public unsafe byte LockScreen(EmuState* emuState)
+        public unsafe byte LockScreen()
         {
             DDSURFACEDESC* ddsd = DDSDCreate();  // A structure to describe the surfaces we want
 
@@ -530,7 +524,7 @@ namespace VCCSharp.Modules
             return 0;
         }
 
-        public unsafe bool CreateDirectDrawWindow(EmuState* emuState)
+        public unsafe bool CreateDirectDrawWindow()
         {
             if (_modules.Config.GetRememberSize())
             {
@@ -564,14 +558,14 @@ namespace VCCSharp.Modules
             switch (_modules.Emu.FullScreen)
             {
                 case 0: //Windowed Mode
-                    if (!CreateDirectDrawWindowedMode(emuState, ddsd))
+                    if (!CreateDirectDrawWindowedMode(ddsd))
                     {
                         return false;
                     }
                     break;
 
                 case 1:	//Full Screen Mode
-                    if (!CreateDirectDrawWindowFullScreen(emuState, ddsd))
+                    if (!CreateDirectDrawWindowFullScreen(ddsd))
                     {
                         return false;
                     }
@@ -604,7 +598,7 @@ namespace VCCSharp.Modules
             return true;
         }
 
-        public unsafe bool CreateDirectDrawWindowedMode(EmuState* emuState, DDSURFACEDESC* ddsd)
+        public unsafe bool CreateDirectDrawWindowedMode(DDSURFACEDESC* ddsd)
         {
             RECT rc = new RECT { top = 0, left = 0, right = _windowSize.X, bottom = _windowSize.Y };
 
@@ -731,7 +725,7 @@ namespace VCCSharp.Modules
             return hr >= 0;
         }
 
-        public unsafe bool CreateDirectDrawWindowFullScreen(EmuState* emuState, DDSURFACEDESC* ddsd)
+        public unsafe bool CreateDirectDrawWindowFullScreen(DDSURFACEDESC* ddsd)
         {
             DDSDSetPitch(ddsd, 0);
             DDSDSetRGBBitCount(ddsd, 0);

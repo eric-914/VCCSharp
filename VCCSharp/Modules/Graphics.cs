@@ -20,7 +20,7 @@ namespace VCCSharp.Modules
         void SetBorderChange();
         void SetVidMask(uint mask);
         void SetPaletteType();
-        unsafe void SetScanLines(EmuState* emuState, byte lines);
+        void SetScanLines(byte lines);
         void SetMonitorType(byte type);
         void FlipArtifacts();
         void InvalidateBorder();
@@ -210,10 +210,10 @@ namespace VCCSharp.Modules
         }
 
         //TODO: ScanLines never really worked right to begin with...
-        public unsafe void SetScanLines(EmuState* emuState, byte lines)
+        public void SetScanLines(byte lines)
         {
             _modules.Emu.ScanLines = lines;
-            emuState->ResetPending = (byte)ResetPendingStates.Cls;
+            _modules.Emu.ResetPending = (byte)ResetPendingStates.Cls;
 
             _modules.DirectDraw.ClearScreen();
 

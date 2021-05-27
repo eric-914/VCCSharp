@@ -10,10 +10,10 @@ namespace VCCSharp.Modules
     {
         unsafe PakInterfaceState* GetPakInterfaceState();
         void UnloadDll(byte emulationRunning);
-        unsafe void GetModuleStatus(EmuState* emuState);
+        void GetModuleStatus();
         void ResetBus();
         void UpdateBusPointer();
-        unsafe int InsertModule(EmuState* emuState, string modulePath);
+        int InsertModule(byte emulationRunning, string modulePath);
         void PakTimer();
         int HasHeartBeat();
         void InvokeHeartBeat();
@@ -99,9 +99,9 @@ namespace VCCSharp.Modules
             }
         }
 
-        public unsafe int InsertModule(EmuState* emuState, string modulePath)
+        public int InsertModule(byte emulationRunning, string modulePath)
         {
-            return Library.PAKInterface.InsertModule(emuState, modulePath);
+            return Library.PAKInterface.InsertModule(emulationRunning, modulePath);
         }
 
         public int InsertModuleCase0()
@@ -109,14 +109,14 @@ namespace VCCSharp.Modules
             return Library.PAKInterface.InsertModuleCase0();
         }
 
-        public unsafe int InsertModuleCase1(EmuState* emuState, byte* modulePath)
+        public unsafe int InsertModuleCase1(byte emulationRunning, byte* modulePath)
         {
-            return Library.PAKInterface.InsertModuleCase1(emuState, modulePath);
+            return Library.PAKInterface.InsertModuleCase1(emulationRunning, modulePath);
         }
 
-        public unsafe int InsertModuleCase2(EmuState* emuState, byte* modulePath)
+        public unsafe int InsertModuleCase2(byte emulationRunning, byte* modulePath)
         {
-            return Library.PAKInterface.InsertModuleCase2(emuState, modulePath);
+            return Library.PAKInterface.InsertModuleCase2(emulationRunning, modulePath);
         }
 
         public int HasHeartBeat()
@@ -149,7 +149,7 @@ namespace VCCSharp.Modules
             Library.PAKInterface.InvokeModuleReset();
         }
 
-        public unsafe void GetModuleStatus(EmuState* emuState)
+        public unsafe void GetModuleStatus()
         {
             if (HasModuleStatus())
             {

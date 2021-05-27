@@ -1,7 +1,6 @@
 #include <windows.h>
 
 #include "PakInterfaceDelegates.h"
-#include "EmuState.h"
 #include "cpudef.h"
 
 #include "TC1014MMU.h"

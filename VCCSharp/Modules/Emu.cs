@@ -11,14 +11,11 @@ namespace VCCSharp.Modules
 {
     public interface IEmu
     {
-        unsafe EmuState* GetEmuState();
-        unsafe void SetEmuState(EmuState* emuState);
-
         HWND WindowHandle { get; set; }
         HINSTANCE Resources { get; set; }
 
         void SoftReset();
-        unsafe void HardReset(EmuState* emuState);
+        void HardReset();
         void SetCpuMultiplier(byte multiplier);
         void SetEmuRunning(bool flag);
         void SetCpuMultiplierFlag(byte doubleSpeed);
@@ -35,7 +32,12 @@ namespace VCCSharp.Modules
         long SurfacePitch { get; set; }
         double CpuCurrentSpeed { get; set; }
 
+        byte EmulationRunning { get; set; }
+        byte ResetPending { get; set; }
+
         string StatusLine { get; set; }
+
+        string PakPath { get; set; }
 
         Point WindowSize { get; set; }
     }
@@ -71,19 +73,14 @@ namespace VCCSharp.Modules
 
         public Point WindowSize { get; set; }
 
+        public byte EmulationRunning { get; set; }
+        public byte ResetPending { get; set; } = Define.RESET_NONE;
+
+        public string PakPath { get; set; }
+
         public Emu(IModules modules)
         {
             _modules = modules;
-        }
-
-        public unsafe EmuState* GetEmuState()
-        {
-            return Library.Emu.GetEmuState();
-        }
-
-        public unsafe void SetEmuState(EmuState* emuState)
-        {
-            Library.Emu.SetEmuState(emuState);
         }
 
         public void SoftReset()
@@ -101,7 +98,7 @@ namespace VCCSharp.Modules
             TurboSpeedFlag = 1;
         }
 
-        public unsafe void HardReset(EmuState* emuState)
+        public void HardReset()
         {
             if (_modules.TC1014.MmuInit(RamSize) == Define.FALSE)
             {
@@ -152,10 +149,7 @@ namespace VCCSharp.Modules
 
         public void SetEmuRunning(bool flag)
         {
-            unsafe
-            {
-                GetEmuState()->EmulationRunning = flag ? Define.TRUE : Define.FALSE;
-            }
+            EmulationRunning = flag ? Define.TRUE : Define.FALSE;
         }
 
         public void SetCpuMultiplier(byte multiplier)

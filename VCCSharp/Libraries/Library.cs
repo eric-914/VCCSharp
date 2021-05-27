@@ -14,15 +14,6 @@ namespace VCCSharp.Libraries
         // ReSharper disable once InconsistentNaming
         public const string LIBRARY = "library.dll";
 
-        public static class Emu
-        {
-            [DllImport(LIBRARY)]
-            public static extern unsafe EmuState* GetEmuState();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void SetEmuState(EmuState* emuState);
-        }
-
         public static class Audio
         {
             [DllImport(LIBRARY)]
@@ -339,16 +330,13 @@ namespace VCCSharp.Libraries
         public static class MenuCallbacks
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe void DynamicMenuCallback(EmuState* emuState, string menuName, int menuId, int type);
+            public static extern void DynamicMenuCallback(string menuName, int menuId, int type);
 
             [DllImport(LIBRARY)]
             public static extern void SetWindowHandle(HWND hWnd);
 
             [DllImport(LIBRARY)]
             public static extern int UnloadPack(byte emulationRunning);
-
-            [DllImport(LIBRARY)]
-            public static extern int InsertModule(byte emulationRunning, string modulePath);
         }
 
         public static class PAKInterface
@@ -360,16 +348,16 @@ namespace VCCSharp.Libraries
             public static extern void UnloadDll(byte emulationRunning);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int InsertModule(EmuState* emuState, string modulePath);
+            public static extern int InsertModule(byte emulationRunning, string modulePath);
 
             [DllImport(LIBRARY)]
             public static extern int InsertModuleCase0();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int InsertModuleCase1(EmuState* emuState, byte* modulePath);
+            public static extern unsafe int InsertModuleCase1(byte emulationRunning, byte* modulePath);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int InsertModuleCase2(EmuState* emuState, byte* modulePath);
+            public static extern unsafe int InsertModuleCase2(byte emulationRunning, byte* modulePath);
 
             [DllImport(LIBRARY)]
             public static extern int HasHeartBeat();

@@ -171,7 +171,6 @@
     <ClCompile Include="DirectDrawSurfaceDesc.c" />
     <ClCompile Include="DirectInput.c" />
     <ClCompile Include="DirectSound.c" />
-    <ClCompile Include="Emu.c" />
     <ClCompile Include="fileoperations.c" />
     <ClCompile Include="GDI.c" />
     <ClCompile Include="Graphics.c" />
@@ -191,7 +190,6 @@
     <ClInclude Include="ConfigState.h" />
     <ClInclude Include="DirectDrawInternalState.h" />
     <ClInclude Include="DirectSoundState.h" />
-    <ClInclude Include="Emu.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsState.h" />
     <ClInclude Include="JoystickState.h" />
@@ -212,7 +210,6 @@
     <ClInclude Include="fileoperations.h" />
     <ClInclude Include="library.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="EmuState.h" />
     <ClInclude Include="TC1014RegistersState.h" />
     <ClInclude Include="VccState.h" />
   </ItemGroup>

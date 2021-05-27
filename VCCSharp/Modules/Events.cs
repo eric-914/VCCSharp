@@ -56,14 +56,9 @@ namespace VCCSharp.Modules
 
         public void EmuReset(ResetPendingStates state)
         {
-            unsafe
+            if (_modules.Emu.EmulationRunning == Define.TRUE)
             {
-                EmuState* emuState = _modules.Emu.GetEmuState();
-
-                if (emuState->EmulationRunning == Define.TRUE)
-                {
-                    emuState->ResetPending = (byte)state;
-                }
+                _modules.Emu.ResetPending = (byte)state;
             }
         }
 
@@ -74,18 +69,12 @@ namespace VCCSharp.Modules
 
         public void SlowDown() //F3
         {
-            unsafe
-            {
-                _modules.Config.DecreaseOverclockSpeed(_modules.Emu.GetEmuState());
-            }
+            _modules.Config.DecreaseOverclockSpeed();
         }
 
         public void SpeedUp() //F4
         {
-            unsafe
-            {
-                _modules.Config.IncreaseOverclockSpeed(_modules.Emu.GetEmuState());
-            }
+            _modules.Config.IncreaseOverclockSpeed();
         }
 
         public void ToggleMonitorType() //F6
@@ -102,21 +91,15 @@ namespace VCCSharp.Modules
 
         public void ToggleOnOff() //F9
         {
-            unsafe
+            _modules.Emu.EmulationRunning = _modules.Emu.EmulationRunning == Define.TRUE ? Define.FALSE : Define.TRUE;
+
+            if (_modules.Emu.EmulationRunning == Define.TRUE)
             {
-                EmuState* emuState = _modules.Emu.GetEmuState();
-
-                emuState->EmulationRunning = emuState->EmulationRunning == Define.TRUE ? Define.FALSE : Define.TRUE;
-
-                if (emuState->EmulationRunning == Define.TRUE)
-                {
-                    emuState->ResetPending = (byte)ResetPendingStates.Hard;
-                }
-                else
-                {
-                    _modules.DirectDraw.SetStatusBarText("", emuState);
-                }
-
+                _modules.Emu.ResetPending = (byte)ResetPendingStates.Hard;
+            }
+            else
+            {
+                _modules.DirectDraw.SetStatusBarText("");
             }
         }
 
@@ -246,18 +229,12 @@ namespace VCCSharp.Modules
             {
                 Task.Run(() =>
                 {
-                    unsafe
+                    //Calls to the loaded DLL so it can do the right thing
+                    int result = _modules.MenuCallbacks.DynamicMenuActivated(_modules.Emu.EmulationRunning, wmId); 
+
+                    if (result != 0)
                     {
-                        EmuState* state = _modules.Emu.GetEmuState();
-
-                        int result =
-                            _modules.MenuCallbacks.DynamicMenuActivated(state->EmulationRunning,
-                                wmId); //Calls to the loaded DLL so it can do the right thing
-
-                        if (result != 0)
-                        {
-                            state->ResetPending = Define.RESET_HARD;
-                        }
+                        _modules.Emu.ResetPending = Define.RESET_HARD;
                     }
                 });
             }
@@ -277,9 +254,7 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                EmuState* emuState = _modules.Emu.GetEmuState();
-
-                if (emuState->EmulationRunning != 0)
+                if (_modules.Emu.EmulationRunning != 0)
                 {
                     uint x = (uint)(lParam & 0xFFFF); // LOWORD(lParam);
                     uint y = (uint)((lParam >> 16) & 0xFFFF); // HIWORD(lParam);
@@ -334,16 +309,13 @@ namespace VCCSharp.Modules
         {
             byte oemScan = (byte)((lParam & 0x00FF0000) >> 16); // just get the scan code
 
-            unsafe
+            // send other keystrokes to the emulator if it is active
+            if (_modules.Emu.EmulationRunning != 0)
             {
-                // send other keystrokes to the emulator if it is active
-                if (_modules.Emu.GetEmuState()->EmulationRunning != 0)
-                {
-                    _modules.Keyboard.KeyboardHandleKey((byte)wParam, oemScan, KeyStates.kEventKeyDown);
+                _modules.Keyboard.KeyboardHandleKey((byte)wParam, oemScan, KeyStates.kEventKeyDown);
 
-                    // Save key down in case focus is lost
-                    SaveLastTwoKeyDownEvents((byte)wParam, oemScan);
-                }
+                // Save key down in case focus is lost
+                SaveLastTwoKeyDownEvents((byte)wParam, oemScan);
             }
         }
 
@@ -398,18 +370,13 @@ namespace VCCSharp.Modules
 
         public void CreateMainMenu(HWND hWnd)
         {
-            unsafe
+            if (_modules.Emu.FullScreen == 0)
             {
-                EmuState* emuState = _modules.Emu.GetEmuState();
-
-                if (_modules.Emu.FullScreen == 0)
-                {
-                    _modules.GDI.CreateMainMenuWindowed(hWnd, _modules.Emu.Resources);
-                }
-                else
-                {
-                    _modules.GDI.CreateMainMenuFullScreen(hWnd);
-                }
+                _modules.GDI.CreateMainMenuWindowed(hWnd, _modules.Emu.Resources);
+            }
+            else
+            {
+                _modules.GDI.CreateMainMenuFullScreen(hWnd);
             }
         }
 

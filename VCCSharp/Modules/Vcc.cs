@@ -64,16 +64,11 @@ namespace VCCSharp.Modules
 
         public void CreatePrimaryWindow()
         {
-            unsafe
+            if (!_modules.DirectDraw.CreateDirectDrawWindow())
             {
-                EmuState* emuState = _modules.Emu.GetEmuState();
+                MessageBox.Show("Can't create primary window", "Error");
 
-                if (!_modules.DirectDraw.CreateDirectDrawWindow(emuState))
-                {
-                    MessageBox.Show("Can't create primary window", "Error");
-
-                    Environment.Exit(0);
-                }
+                Environment.Exit(0);
             }
         }
 
@@ -91,45 +86,40 @@ namespace VCCSharp.Modules
 
         public void EmuLoop()
         {
-            unsafe
+            while (BinaryRunning)
             {
-                EmuState* emuState = _modules.Emu.GetEmuState();
-
-                while (BinaryRunning)
+                if (RunState == (byte)EmuRunStates.ReqWait)
                 {
-                    if (RunState == (byte)EmuRunStates.ReqWait)
+                    RunState = (byte)EmuRunStates.Waiting; //Signal Main thread we are waiting
+
+                    while (RunState == (byte)EmuRunStates.Waiting)
                     {
-                        RunState = (byte)EmuRunStates.Waiting; //Signal Main thread we are waiting
-
-                        while (RunState == (byte)EmuRunStates.Waiting)
-                        {
-                            Thread.Sleep(1);
-                        }
+                        Thread.Sleep(1);
                     }
+                }
 
-                    float fps = Render(emuState);
+                float fps = Render();
 
-                    _modules.PAKInterface.GetModuleStatus(emuState);
+                _modules.PAKInterface.GetModuleStatus();
 
-                    int frameSkip = _modules.Emu.FrameSkip;
-                    string cpuName = CpuName;
-                    double mhz = _modules.Emu.CpuCurrentSpeed;
-                    string status = _modules.Emu.StatusLine;
+                int frameSkip = _modules.Emu.FrameSkip;
+                string cpuName = CpuName;
+                double mhz = _modules.Emu.CpuCurrentSpeed;
+                string status = _modules.Emu.StatusLine;
 
-                    string statusBarText = $"Skip:{frameSkip} | FPS:{fps:F} | {cpuName} @ {mhz:0.000}Mhz| {status}";
+                string statusBarText = $"Skip:{frameSkip} | FPS:{fps:F} | {cpuName} @ {mhz:0.000}Mhz| {status}";
 
-                    _modules.DirectDraw.SetStatusBarText(statusBarText, emuState);
+                _modules.DirectDraw.SetStatusBarText(statusBarText);
 
-                    if (Throttle == Define.TRUE)
-                    {
-                        //Do nothing until the frame is over returning unused time to OS
-                        _modules.Throttle.FrameWait();
-                    }
+                if (Throttle == Define.TRUE)
+                {
+                    //Do nothing until the frame is over returning unused time to OS
+                    _modules.Throttle.FrameWait();
                 }
             }
         }
 
-        private unsafe float Render(EmuState* emuState)
+        private float Render()
         {
             _modules.Throttle.StartRender();
 
@@ -143,34 +133,34 @@ namespace VCCSharp.Modules
 
                 {(byte) ResetPendingStates.Hard, () =>
                 {
-                    _modules.Config.SynchSystemWithConfig(emuState);
-                    _modules.DirectDraw.DoCls(emuState);
-                    _modules.Emu.HardReset(emuState);
+                    _modules.Config.SynchSystemWithConfig();
+                    _modules.DirectDraw.DoCls();
+                    _modules.Emu.HardReset();
 
                 }},
 
-                {(byte) ResetPendingStates.Cls, () => { _modules.DirectDraw.DoCls(emuState);}},
+                {(byte) ResetPendingStates.Cls, () => { _modules.DirectDraw.DoCls();}},
 
                 {(byte) ResetPendingStates.ClsSynch, () =>
                 {
-                    _modules.Config.SynchSystemWithConfig(emuState);
-                    _modules.DirectDraw.DoCls(emuState);
+                    _modules.Config.SynchSystemWithConfig();
+                    _modules.DirectDraw.DoCls();
                 }}
             };
 
             for (int frames = 1; frames <= _modules.Emu.FrameSkip; frames++)
             {
-                resetActions[emuState->ResetPending]();
+                resetActions[_modules.Emu.ResetPending]();
 
-                emuState->ResetPending = (byte)ResetPendingStates.None;
+                _modules.Emu.ResetPending = (byte)ResetPendingStates.None;
 
-                if (emuState->EmulationRunning == Define.TRUE)
+                if (_modules.Emu.EmulationRunning == Define.TRUE)
                 {
-                    fps += _modules.CoCo.RenderFrame(emuState);
+                    fps += _modules.CoCo.RenderFrame();
                 }
                 else
                 {
-                    fps += _modules.DirectDraw.Static(emuState);
+                    fps += _modules.DirectDraw.Static();
                 }
             }
 
@@ -189,12 +179,11 @@ namespace VCCSharp.Modules
             unsafe
             {
                 ConfigModel configModel = _modules.Config.ConfigModel;
-                EmuState* emuState = _modules.Emu.GetEmuState();
 
                 JoystickModel left = _modules.Config.GetLeftJoystick();
                 JoystickModel right = _modules.Config.GetRightJoystick();
 
-                emuState->ResetPending = (byte)ResetPendingStates.ClsSynch;
+                _modules.Emu.ResetPending = (byte)ResetPendingStates.ClsSynch;
 
                 //if ((configState->Model->RamSize != configModel->RamSize) || (configState->Model->CpuType != configModel->CpuType)) {
                 //emuState->ResetPending = (byte)ResetPendingStates.Hard;

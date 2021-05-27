@@ -24,7 +24,6 @@ namespace VCCSharp
         private readonly IUser32 _user32;
 
         private HINSTANCE _hResources;
-        //private EmuState _emuState;
 
         public VccApp(IModules modules, IKernel kernel, IUser32 user32)
         {
@@ -35,55 +34,47 @@ namespace VCCSharp
 
         public void Startup(HINSTANCE hInstance, CmdLineArguments cmdLineArgs)
         {
-            unsafe
-            {
-                //AudioState* audioState = _modules.Audio.GetAudioState();
-                _modules.CoCo.SetAudioEventAudioOut();
+            //AudioState* audioState = _modules.Audio.GetAudioState();
+            _modules.CoCo.SetAudioEventAudioOut();
 
-                _hResources = _kernel.LoadLibrary("resources.dll");
+            _hResources = _kernel.LoadLibrary("resources.dll");
                 
-                EmuState* emuState = _modules.Emu.GetEmuState();
+            _modules.Emu.Resources = _hResources;
 
-                _modules.Emu.Resources = _hResources;
+            _modules.DirectDraw.InitDirectDraw(hInstance, _hResources);
+            _modules.Keyboard.SetKeyTranslations();
 
-                //TODO: Redundant at the moment
-                _modules.Emu.SetEmuState(emuState);
+            _modules.CoCo.SetClockSpeed(1);  //Default clock speed .89 MHZ	
 
-                _modules.DirectDraw.InitDirectDraw(hInstance, _hResources);
-                _modules.Keyboard.SetKeyTranslations();
+            _modules.Vcc.CreatePrimaryWindow();
 
-                _modules.CoCo.SetClockSpeed(1);  //Default clock speed .89 MHZ	
-
-                _modules.Vcc.CreatePrimaryWindow();
-
-                if (!string.IsNullOrEmpty(cmdLineArgs.QLoadFile))
+            if (!string.IsNullOrEmpty(cmdLineArgs.QLoadFile))
+            {
+                if (_modules.QuickLoad.QuickStart(cmdLineArgs.QLoadFile) == (int)QuickStartStatuses.Ok)
                 {
-                    if (_modules.QuickLoad.QuickStart(emuState, cmdLineArgs.QLoadFile) == (int)QuickStartStatuses.Ok)
-                    {
-                        _modules.Vcc.SetAppTitle(cmdLineArgs.QLoadFile); //TODO: No app title if no quick load
-                    }
-
-                    emuState->EmulationRunning = Define.TRUE;
+                    _modules.Vcc.SetAppTitle(cmdLineArgs.QLoadFile); //TODO: No app title if no quick load
                 }
 
-                //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
-                //Loads the default config file Vcc.ini from the exec directory
-                _modules.Config.InitConfig(emuState, ref cmdLineArgs);
-
-                _modules.DirectDraw.ClearScreen();
-
-                emuState->ResetPending = (byte)ResetPendingStates.Cls;
-
-                _modules.MenuCallbacks.DynamicMenuCallback(emuState, null, MenuActions.Refresh, Define.IGNORE);
-
-                emuState->ResetPending = (byte)ResetPendingStates.Hard;
-
-                emuState->EmulationRunning = _modules.Vcc.AutoStart;
-
-                _modules.Vcc.BinaryRunning = true;
-
-                _modules.Throttle.CalibrateThrottle();
+                _modules.Emu.EmulationRunning = Define.TRUE;
             }
+
+            //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
+            //Loads the default config file Vcc.ini from the exec directory
+            _modules.Config.InitConfig(ref cmdLineArgs);
+
+            _modules.DirectDraw.ClearScreen();
+
+            _modules.Emu.ResetPending = (byte)ResetPendingStates.Cls;
+
+            _modules.MenuCallbacks.DynamicMenuCallback(null, MenuActions.Refresh, Define.IGNORE);
+
+            _modules.Emu.ResetPending = (byte)ResetPendingStates.Hard;
+
+            _modules.Emu.EmulationRunning = _modules.Vcc.AutoStart;
+
+            _modules.Vcc.BinaryRunning = true;
+
+            _modules.Throttle.CalibrateThrottle();
         }
 
         public void Threading()
@@ -117,12 +108,11 @@ namespace VCCSharp
             unsafe
             {
                 VccState* vccState = _modules.Vcc.GetVccState();
-                EmuState* emuState = _modules.Emu.GetEmuState();
 
-                _modules.PAKInterface.UnloadDll(emuState->EmulationRunning);
+                _modules.PAKInterface.UnloadDll(_modules.Emu.EmulationRunning);
                 _modules.Audio.SoundDeInit();
 
-                _modules.Config.WriteIniFile(emuState); //Save any changes to ini File
+                _modules.Config.WriteIniFile(); //Save any changes to ini File
 
                 int code = (int)vccState->msg.wParam;
 

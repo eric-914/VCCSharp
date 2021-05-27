@@ -4,13 +4,12 @@ using System.IO;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
     public interface IQuickLoad
     {
-        unsafe int QuickStart(EmuState* emuState, string binFileName);
+        int QuickStart(string binFileName);
     }
 
     public class QuickLoad : IQuickLoad
@@ -22,7 +21,7 @@ namespace VCCSharp.Modules
             _modules = modules;
         }
 
-        public unsafe int QuickStart(EmuState* emuState, string binFileName)
+        public int QuickStart(string binFileName)
         {
             if (string.IsNullOrEmpty(binFileName))
             {
@@ -53,7 +52,7 @@ namespace VCCSharp.Modules
 
             if (modules.Contains(extension))
             {
-                _modules.PAKInterface.InsertModule(emuState, binFileName);
+                _modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, binFileName);
             }
 
             if (extension == ".bin")

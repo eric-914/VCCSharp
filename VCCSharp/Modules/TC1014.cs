@@ -24,18 +24,18 @@ namespace VCCSharp.Modules
         ushort GetMem(int address);
         void SetMapType(byte type);
         void SetRomMap(byte data);
-        unsafe void DrawBottomBorder16(EmuState* emuState);
-        unsafe void DrawBottomBorder24(EmuState* emuState);
-        unsafe void DrawBottomBorder32(EmuState* emuState);
-        unsafe void DrawBottomBorder8(EmuState* emuState);
-        unsafe void DrawTopBorder16(EmuState* emuState);
-        unsafe void DrawTopBorder24(EmuState* emuState);
-        unsafe void DrawTopBorder32(EmuState* emuState);
-        unsafe void DrawTopBorder8(EmuState* emuState);
-        unsafe void UpdateScreen16(EmuState* emuState);
-        unsafe void UpdateScreen24(EmuState* emuState);
-        unsafe void UpdateScreen32(EmuState* emuState);
-        unsafe void UpdateScreen8(EmuState* emuState);
+        unsafe void DrawBottomBorder16();
+        unsafe void DrawBottomBorder24();
+        unsafe void DrawBottomBorder32();
+        unsafe void DrawBottomBorder8();
+        unsafe void DrawTopBorder16();
+        unsafe void DrawTopBorder24();
+        unsafe void DrawTopBorder32();
+        unsafe void DrawTopBorder8();
+        unsafe void UpdateScreen16();
+        unsafe void UpdateScreen24();
+        unsafe void UpdateScreen32();
+        unsafe void UpdateScreen8();
 
         byte SAMRead(byte port);
         void SAMWrite(byte data, byte port);
@@ -768,7 +768,7 @@ Could not locate {ROM} in any of these locations:
             }
         }
 
-        public unsafe void DrawTopBorder8(EmuState* emuState)
+        public unsafe void DrawTopBorder8()
         {
             GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
@@ -789,7 +789,7 @@ Could not locate {ROM} in any of these locations:
             }
         }
 
-        public unsafe void DrawTopBorder16(EmuState* emuState)
+        public unsafe void DrawTopBorder16()
         {
             GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
@@ -810,12 +810,12 @@ Could not locate {ROM} in any of these locations:
             }
         }
 
-        public unsafe void DrawTopBorder24(EmuState* emuState)
+        public unsafe void DrawTopBorder24()
         {
             //--Not implemented
         }
 
-        public unsafe void DrawTopBorder32(EmuState* emuState)
+        public unsafe void DrawTopBorder32()
         {
             GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
@@ -836,7 +836,7 @@ Could not locate {ROM} in any of these locations:
             }
         }
 
-        public unsafe void DrawBottomBorder8(EmuState* emuState)
+        public unsafe void DrawBottomBorder8()
         {
             GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
@@ -857,7 +857,7 @@ Could not locate {ROM} in any of these locations:
             }
         }
 
-        public unsafe void DrawBottomBorder16(EmuState* emuState)
+        public unsafe void DrawBottomBorder16()
         {
             GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
@@ -878,12 +878,12 @@ Could not locate {ROM} in any of these locations:
             }
         }
 
-        public unsafe void DrawBottomBorder24(EmuState* emuState)
+        public unsafe void DrawBottomBorder24()
         {
             //--Not implemented
         }
 
-        public unsafe void DrawBottomBorder32(EmuState* emuState)
+        public unsafe void DrawBottomBorder32()
         {
             GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
@@ -904,7 +904,7 @@ Could not locate {ROM} in any of these locations:
             }
         }
 
-        public unsafe void UpdateScreen8(EmuState* emuState)
+        public unsafe void UpdateScreen8()
         {
             GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
@@ -943,10 +943,10 @@ Could not locate {ROM} in any of these locations:
             uint start = (uint)(_graphics.StartOfVidRam + (_graphics.TagY / _graphics.LinesPerRow) * (_graphics.VPitch * _graphics.ExtendedText));
             uint yStride = (uint)((((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch) + (_graphics.HorizontalCenter) - 1);
 
-            SwitchMasterMode8(emuState, _graphics.MasterMode, start, yStride);
+            SwitchMasterMode8(_graphics.MasterMode, start, yStride);
         }
 
-        public unsafe void UpdateScreen16(EmuState* emuState)
+        public unsafe void UpdateScreen16()
         {
             GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
@@ -985,15 +985,15 @@ Could not locate {ROM} in any of these locations:
             uint start = (uint)(_graphics.StartOfVidRam + (_graphics.TagY / _graphics.LinesPerRow) * (_graphics.VPitch * _graphics.ExtendedText));
             uint yStride = (uint)((((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch) + (_graphics.HorizontalCenter * 1) - 1);
 
-            SwitchMasterMode16(emuState, _graphics.MasterMode, start, yStride);
+            SwitchMasterMode16(_graphics.MasterMode, start, yStride);
         }
 
-        public unsafe void UpdateScreen24(EmuState* emuState)
+        public unsafe void UpdateScreen24()
         {
             //--Not implemented
         }
 
-        public unsafe void UpdateScreen32(EmuState* emuState)
+        public unsafe void UpdateScreen32()
         {
             GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
@@ -1037,20 +1037,20 @@ Could not locate {ROM} in any of these locations:
             uint start = (uint)(_graphics.StartOfVidRam + (_graphics.TagY / _graphics.LinesPerRow) * (_graphics.VPitch * _graphics.ExtendedText));
             uint yStride = (uint)((((y + _graphics.VerticalCenter) * 2) * Xpitch) + (_graphics.HorizontalCenter * 1) - 1);
 
-            SwitchMasterMode32(emuState, _graphics.MasterMode, start, yStride);
+            SwitchMasterMode32(_graphics.MasterMode, start, yStride);
         }
 
-        public unsafe void SwitchMasterMode8(EmuState* emuState, byte masterMode, uint start, uint yStride)
+        public unsafe void SwitchMasterMode8(byte masterMode, uint start, uint yStride)
         {
             throw new NotImplementedException("No plans to implement");
         }
 
-        public unsafe void SwitchMasterMode16(EmuState* emuState, byte masterMode, uint start, uint yStride)
+        public unsafe void SwitchMasterMode16(byte masterMode, uint start, uint yStride)
         {
             throw new NotImplementedException("No plans to implement");
         }
 
-        public unsafe void SwitchMasterMode32(EmuState* emuState, byte masterMode, uint start, uint yStride)
+        public unsafe void SwitchMasterMode32(byte masterMode, uint start, uint yStride)
         {
             byte pixel = 0;
             byte character = 0, attributes = 0;

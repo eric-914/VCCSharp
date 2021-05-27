@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
-using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
     public interface IMenuCallbacks
     {
-        unsafe void DynamicMenuCallback(EmuState* emuState, string menuName, MenuActions menuId, int type);
+        void DynamicMenuCallback(string menuName, MenuActions menuId, int type);
         int DynamicMenuActivated(byte emulationRunning, int menuItem);
         void SetWindowHandle(IntPtr intPtr);
     }
@@ -27,9 +23,9 @@ namespace VCCSharp.Modules
             _modules = modules;
         }
 
-        public unsafe void DynamicMenuCallback(EmuState* emuState, string menuName, MenuActions menuId, int type)
+        public void DynamicMenuCallback(string menuName, MenuActions menuId, int type)
         {
-            Library.MenuCallbacks.DynamicMenuCallback(emuState, menuName, (int)menuId, type);
+            Library.MenuCallbacks.DynamicMenuCallback(menuName, (int)menuId, type);
         }
 
         public int DynamicMenuActivated(byte emulationRunning, int menuItem)
@@ -62,7 +58,6 @@ namespace VCCSharp.Modules
             unsafe
             {
                 VccState* vccState = _modules.Vcc.GetVccState();
-                EmuState* emuState = _modules.Emu.GetEmuState();
 
                 if (vccState->DialogOpen != 0)
                 {
@@ -70,10 +65,10 @@ namespace VCCSharp.Modules
                 }
 
                 vccState->DialogOpen = Define.TRUE;
-                int result = OpenLoadCartFileDialog(emuState);
+                int result = OpenLoadCartFileDialog();
                 vccState->DialogOpen = Define.FALSE;
 
-                emuState->EmulationRunning = Define.TRUE;
+                _modules.Emu.EmulationRunning = Define.TRUE;
 
                 return result;
             }
@@ -84,18 +79,16 @@ namespace VCCSharp.Modules
             return Library.MenuCallbacks.UnloadPack(emulationRunning);
         }
 
-        public unsafe int OpenLoadCartFileDialog(EmuState* emuState)
+        public int OpenLoadCartFileDialog()
         {
             string filename = "";
-
-            string pakPath = Converter.ToString(emuState->PakPath);
 
             var openFileDlg = new Microsoft.Win32.OpenFileDialog
             {
                 FileName = filename,
                 DefaultExt = ".txt",
                 Filter = "Program Packs|*.ROM;*.ccc;*.DLL;*.pak",
-                InitialDirectory = pakPath,
+                InitialDirectory = _modules.Emu.PakPath,
                 CheckFileExists = true,
                 ShowReadOnly = false,
                 Title = "Load Program Pack"
@@ -105,23 +98,17 @@ namespace VCCSharp.Modules
             {
                 filename = openFileDlg.FileName;
 
-                if (InsertModule(emuState->EmulationRunning, filename) != 0)
+                if (_modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, filename) != 0)
                 {
                     return 0;
                 }
 
-                //TODO: Need to set this back in EmuState
-                Converter.ToByteArray(Path.GetPathRoot(filename), emuState->PakPath);
+                _modules.Emu.PakPath = Path.GetPathRoot(filename);
 
                 return 1;
             }
 
             return 0;
-        }
-
-        public int InsertModule(byte emulationRunning, string modulePath)
-        {
-            return Library.MenuCallbacks.InsertModule(emulationRunning, modulePath);
         }
     }
 }
