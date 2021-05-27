@@ -23,9 +23,6 @@
     <ClCompile Include="Joystick.c">
       <Filter>joystick</Filter>
     </ClCompile>
-    <ClCompile Include="MC6821.c">
-      <Filter>mc6821</Filter>
-    </ClCompile>
     <ClCompile Include="VccState.c">
       <Filter>vcc</Filter>
     </ClCompile>
@@ -103,9 +100,6 @@
     <ClInclude Include="Config.h">
       <Filter>config</Filter>
     </ClInclude>
-    <ClInclude Include="MC6821.h">
-      <Filter>mc6821</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics.h">
       <Filter>graphics</Filter>
     </ClInclude>
@@ -166,9 +160,6 @@
     <ClInclude Include="PakInterfaceModule.h">
       <Filter>pakinterface</Filter>
     </ClInclude>
-    <ClInclude Include="MC6821State.h">
-      <Filter>models</Filter>
-    </ClInclude>
     <ClInclude Include="TC1014RegistersState.h">
       <Filter>models</Filter>
     </ClInclude>
@@ -215,9 +206,6 @@
     </Filter>
     <Filter Include="legal">
       <UniqueIdentifier>{b1110f74-34ea-4882-92c9-833443968697}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="mc6821">
-      <UniqueIdentifier>{2b9a7721-f759-46fe-8cae-76488c5d9ac0}</UniqueIdentifier>
     </Filter>
     <Filter Include="tc1014\mmu">
       <UniqueIdentifier>{cbafe392-f6a3-489e-8d85-1b2f9e4ea199}</UniqueIdentifier>

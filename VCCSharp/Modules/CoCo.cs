@@ -132,7 +132,7 @@ namespace VCCSharp.Modules
         {
             _modules.Graphics.SetBlinkState(BlinkPhase);
 
-            _modules.MC6821.MC6821_irq_fs(PhaseStates.Falling);   //FS low to High transition start of display Blink needs this
+            _modules.MC6821.irq_fs(PhaseStates.Falling);   //FS low to High transition start of display Blink needs this
 
             //TODO: I don't think updating _modules.Emu.LineCounter = counter is needed.
 
@@ -185,7 +185,7 @@ namespace VCCSharp.Modules
                 }
             }
 
-            _modules.MC6821.MC6821_irq_fs(PhaseStates.Rising);  //End of active display FS goes High to Low
+            _modules.MC6821.irq_fs(PhaseStates.Rising);  //End of active display FS goes High to Low
 
             if (VertInterruptEnabled != Define.FALSE)
             {
@@ -264,7 +264,7 @@ namespace VCCSharp.Modules
                 _modules.TC1014.GimeAssertHorzInterrupt();
             }
 
-            _modules.MC6821.MC6821_irq_hs(PhaseStates.Any);
+            _modules.MC6821.irq_hs(PhaseStates.Any);
             _modules.PAKInterface.PakTimer();
 
             PicosThisLine += PicosPerLine;
@@ -788,7 +788,7 @@ namespace VCCSharp.Modules
         {
             void AudioOut()
             {
-                AudioBuffer[AudioIndex++] = _modules.MC6821.MC6821_GetDACSample();
+                AudioBuffer[AudioIndex++] = _modules.MC6821.GetDACSample();
             }
 
             _audioEvent = AudioOut;
@@ -798,7 +798,7 @@ namespace VCCSharp.Modules
         {
             void CassetteOut()
             {
-                CassetteBuffer[AudioIndex++] = _modules.MC6821.MC6821_GetCasSample();
+                CassetteBuffer[AudioIndex++] = _modules.MC6821.GetCassetteSample();
             }
 
             _audioEvent = CassetteOut;
@@ -808,9 +808,9 @@ namespace VCCSharp.Modules
         {
             void CassetteIn()
             {
-                AudioBuffer[AudioIndex] = _modules.MC6821.MC6821_GetDACSample();
+                AudioBuffer[AudioIndex] = _modules.MC6821.GetDACSample();
 
-                _modules.MC6821.MC6821_SetCassetteSample(CassetteBuffer[AudioIndex++]);
+                _modules.MC6821.SetCassetteSample(CassetteBuffer[AudioIndex++]);
             }
 
             _audioEvent = CassetteIn;

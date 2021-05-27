@@ -6,6 +6,8 @@
 typedef struct {
   HINSTANCE hInstLib;
 
+  unsigned char CartInserted;
+
   unsigned char* ExternalRomBuffer;
   BOOL RomPackLoaded;
 

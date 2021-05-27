@@ -5,7 +5,6 @@
 #include "PakInterfaceDelegates.h"
 #include "PakInterfaceModule.h"
 
-#include "MC6821.h"
 #include "Config.h"
 #include "TC1014MMU.h"
 #include "EmuState.h"
@@ -26,6 +25,8 @@ extern "C" {
 }
 
 PakInterfaceState* InitializeInstance(PakInterfaceState* p) {
+  p->CartInserted = 0;
+
   p->BankedCartOffset = 0;
   p->ModualParms = 0;
   p->DialogOpen = false;
@@ -416,6 +417,6 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl SetCart(unsigned char cart)
   {
-    GetMC6821State()->CartInserted = cart;
+    instance->CartInserted = cart;
   }
 }

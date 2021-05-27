@@ -170,7 +170,7 @@ namespace VCCSharp.Modules
             SetCpuType(model->CpuType);
 
             _modules.Graphics.SetMonitorType(model->MonitorType);
-            _modules.MC6821.MC6821_SetCartAutoStart(model->CartAutoStart);
+            _modules.MC6821.SetCartAutoStart(model->CartAutoStart);
         }
 
         // LoadIniFile allows user to browse for an ini file and reloads the config from it.

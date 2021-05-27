@@ -180,7 +180,6 @@
     <ClCompile Include="Joystick.c" />
     <ClCompile Include="Keyboard.c" />
     <ClCompile Include="library.cpp" />
-    <ClCompile Include="MC6821.c" />
     <ClCompile Include="MenuCallbacks.c" />
     <ClCompile Include="PakInterfaceModule.c" />
     <ClCompile Include="TC1014MMU.c" />
@@ -202,8 +201,6 @@
     <ClInclude Include="GraphicsState.h" />
     <ClInclude Include="JoystickState.h" />
     <ClInclude Include="macros.h" />
-    <ClInclude Include="MC6821.h" />
-    <ClInclude Include="MC6821State.h" />
     <ClInclude Include="MenuCallbacks.h" />
     <ClInclude Include="PakInterfaceDelegates.h" />
     <ClInclude Include="PakInterfaceModule.h" />

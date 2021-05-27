@@ -86,7 +86,7 @@ namespace VCCSharp.Modules
         public void SoftReset()
         {
             _modules.TC1014.MC6883Reset();
-            _modules.MC6821.MC6821_PiaReset();
+            _modules.MC6821.PiaReset();
 
             _modules.CPU.CPUReset();
 
@@ -117,7 +117,7 @@ namespace VCCSharp.Modules
             }
 
             _modules.TC1014.MC6883Reset();  //Captures internal rom pointer for CPU Interrupt Vectors
-            _modules.MC6821.MC6821_PiaReset();
+            _modules.MC6821.PiaReset();
 
             _modules.CPU.CPUInit();
             _modules.CPU.CPUReset();    // Zero all CPU Registers and sets the PC to VRESET

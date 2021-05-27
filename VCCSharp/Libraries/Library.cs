@@ -375,12 +375,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe void DynamicMenuActivated(EmuState* emuState, int menuItem);
         }
 
-        public static class MC6821
-        {
-            [DllImport(LIBRARY)]
-            public static extern unsafe MC6821State* GetMC6821State();
-        } //--MC6821
-
         public static class PAKInterface
         {
             [DllImport(LIBRARY)]

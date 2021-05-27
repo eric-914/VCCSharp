@@ -101,11 +101,11 @@ namespace VCCSharp.Modules
                 retVal = (byte)(127 - retVal);
 
                 //Collect CA2 and CB2 from the PIA (1of4 Multiplexer)
-                _modules.Joystick.StickValue = joystick.get_pot_value(mc6821.MC6821_GetMuxState());
+                _modules.Joystick.StickValue = joystick.get_pot_value(mc6821.GetMuxState());
 
                 if (_modules.Joystick.StickValue != 0)		//OS9 joyin routine needs this (koronis rift works now)
                 {
-                    if (_modules.Joystick.StickValue >= mc6821.MC6821_DACState())		// Set bit of stick >= DAC output $FF20 Bits 7-2
+                    if (_modules.Joystick.StickValue >= mc6821.DACState())		// Set bit of stick >= DAC output $FF20 Bits 7-2
                     {
                         retVal |= 0x80;
                     }

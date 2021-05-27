@@ -6,6 +6,8 @@ namespace VCCSharp.Models
     {
         public HINSTANCE hInstLib;
 
+        public byte CartInserted;
+
         // Storage for Pak ROMs
         public unsafe byte* ExternalRomBuffer;
         public int RomPackLoaded;

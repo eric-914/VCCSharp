@@ -23,11 +23,11 @@ namespace VCCSharp.BitBanger
                 switch (args.PropertyName)
                 {
                     case "AddLineFeed":
-                        _modules.MC6821.MC6821_SetSerialParams(_modules.Config.TextMode);
+                        _modules.MC6821.SetSerialParams(_modules.Config.TextMode);
                         break;
 
                     case "Print":
-                        _modules.MC6821.MC6821_SetMonState(_modules.Config.PrintMonitorWindow);
+                        _modules.MC6821.SetMonState(_modules.Config.PrintMonitorWindow);
                         break;
                 }
             };
@@ -63,7 +63,7 @@ namespace VCCSharp.BitBanger
             if (openFileDlg.ShowDialog() == true)
             {
                 string serialCaptureFile = openFileDlg.FileName;
-                if (_modules.MC6821.MC6821_OpenPrintFile(serialCaptureFile) == 0)
+                if (_modules.MC6821.OpenPrintFile(serialCaptureFile) == 0)
                 {
                     MessageBox.Show($"Can't Open File {serialCaptureFile}", "Can't open the file specified.");
                 }
@@ -78,13 +78,13 @@ namespace VCCSharp.BitBanger
 
         public void Close()
         {
-            _modules.MC6821.MC6821_ClosePrintFile();
+            _modules.MC6821.ClosePrintFile();
 
             _viewModel.SerialCaptureFile = null;
 
             _modules.Config.PrintMonitorWindow = Define.FALSE;
 
-            _modules.MC6821.MC6821_SetMonState(_modules.Config.PrintMonitorWindow);
+            _modules.MC6821.SetMonState(_modules.Config.PrintMonitorWindow);
 
             _viewModel.Print = false;
         }
