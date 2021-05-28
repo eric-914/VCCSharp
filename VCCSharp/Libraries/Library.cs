@@ -463,9 +463,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void MemWrite8(byte data, ushort address);
-
-            [DllImport(LIBRARY)]
-            public static extern void GimeAssertKeyboardInterrupt();
         }
     }
 }

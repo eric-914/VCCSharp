@@ -3,8 +3,6 @@
 #include "PAKInterface.h"
 
 #include "macros.h"
-#include "cpudef.h"
-#include "defines.h"
 
 const unsigned char VectorMask[4] = { 15, 63, 63, 63 };
 const unsigned char VectorMaska[4] = { 12, 60, 60, 60 };
@@ -20,11 +18,6 @@ extern "C" {
 }
 
 TC1014State* InitializeInstance(TC1014State* p) {
-  p->EnhancedFIRQFlag = 0;
-  p->EnhancedIRQFlag = 0;
-  p->LastIrq = 0;
-  p->LastFirq = 0;
-
   p->MmuState = 0;
   p->MapType = 0;
   p->CurrentRamConfig = 1;
@@ -33,26 +26,6 @@ TC1014State* InitializeInstance(TC1014State* p) {
   ARRAYCOPY(VectorMaska);
 
   return p;
-}
-
-/***************************************************
-* Used by Keyboard.c
-***************************************************/
-
-extern "C" {
-  __declspec(dllexport) void __cdecl GimeAssertKeyboardInterrupt(void)
-  {
-    if (((instance->GimeRegisters[0x93] & 2) != 0) && (instance->EnhancedFIRQFlag == 1)) {
-      CPUAssertInterrupt(FIRQ, 0);
-
-      instance->LastFirq |= 2;
-    }
-    else if (((instance->GimeRegisters[0x92] & 2) != 0) && (instance->EnhancedIRQFlag == 1)) {
-      CPUAssertInterrupt(IRQ, 0);
-
-      instance->LastIrq |= 2;
-    }
-  }
 }
 
 /******************************************************************************************

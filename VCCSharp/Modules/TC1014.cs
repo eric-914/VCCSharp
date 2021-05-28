@@ -464,6 +464,13 @@ namespace VCCSharp.Modules
         public unsafe byte* Memory;	//Emulated RAM
         public unsafe byte* InternalRomBuffer;
 
+        public byte EnhancedFIRQFlag;
+        public byte EnhancedIRQFlag;
+        public byte LastIrq;
+        public byte LastFirq;
+
+        public byte[] GimeRegisters = new byte[256];
+
         public TC1014(IModules modules)
         {
             _modules = modules;
@@ -653,22 +660,17 @@ Could not locate {ROM} in any of these locations:
 
         public void GimeAssertVertInterrupt()
         {
-            unsafe
+            if (((GimeRegisters[0x93] & 8) != 0) && (EnhancedFIRQFlag == 1))
             {
-                TC1014State* registersState = GetTC1014State();
+                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.FIRQ, 0); //FIRQ
 
-                if (((registersState->GimeRegisters[0x93] & 8) != 0) && (registersState->EnhancedFIRQFlag == 1))
-                {
-                    _modules.CPU.CPUAssertInterrupt(CPUInterrupts.FIRQ, 0); //FIRQ
+                LastFirq |= 8;
+            }
+            else if (((GimeRegisters[0x92] & 8) != 0) && (EnhancedIRQFlag == 1))
+            {
+                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 0); //IRQ moon patrol demo using this
 
-                    registersState->LastFirq |= 8;
-                }
-                else if (((registersState->GimeRegisters[0x92] & 8) != 0) && (registersState->EnhancedIRQFlag == 1))
-                {
-                    _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 0); //IRQ moon patrol demo using this
-
-                    registersState->LastIrq |= 8;
-                }
+                LastIrq |= 8;
             }
         }
 
@@ -4399,141 +4401,131 @@ Could not locate {ROM} in any of these locations:
         {
             byte temp;
 
-            unsafe
+            switch (port)
             {
-                TC1014State* registersState = GetTC1014State();
+                case 0x92:
+                    temp = LastIrq;
+                    LastIrq = 0;
 
-                switch (port)
-                {
-                    case 0x92:
-                        temp = registersState->LastIrq;
-                        registersState->LastIrq = 0;
+                    return temp;
 
-                        return (temp);
+                case 0x93:
+                    temp = LastFirq;
+                    LastFirq = 0;
 
-                    case 0x93:
-                        temp = registersState->LastFirq;
-                        registersState->LastFirq = 0;
+                    return temp;
 
-                        return (temp);
+                case 0x94:
+                case 0x95:
+                    return 126;
 
-                    case 0x94:
-                    case 0x95:
-                        return (126);
-
-                    default:
-                        return (registersState->GimeRegisters[port]);
-                }
+                default:
+                    return GimeRegisters[port];
             }
         }
 
         public void GimeWrite(byte port, byte data)
         {
-            unsafe
+            GimeRegisters[port] = data;
+
+            switch (port)
             {
-                TC1014State* registersState = GetTC1014State();
+                case 0x90:
+                    SetInit0(data);
+                    break;
 
-                registersState->GimeRegisters[port] = data;
+                case 0x91:
+                    SetInit1(data);
+                    break;
 
-                switch (port)
-                {
-                    case 0x90:
-                        SetInit0(data);
-                        break;
+                case 0x92:
+                    SetGimeIRQSteering(data);
+                    break;
 
-                    case 0x91:
-                        SetInit1(data);
-                        break;
+                case 0x93:
+                    SetGimeFIRQSteering(data);
+                    break;
 
-                    case 0x92:
-                        SetGimeIRQSteering(data);
-                        break;
+                case 0x94:
+                    SetTimerMSB(data);
+                    break;
 
-                    case 0x93:
-                        SetGimeFIRQSteering(data);
-                        break;
+                case 0x95:
+                    SetTimerLSB(data);
+                    break;
 
-                    case 0x94:
-                        SetTimerMSB(data);
-                        break;
+                case 0x96:
+                    _modules.Emu.SetTurboMode((byte)(data & 1));
+                    break;
 
-                    case 0x95:
-                        SetTimerLSB(data);
-                        break;
+                case 0x97:
+                    break;
 
-                    case 0x96:
-                        _modules.Emu.SetTurboMode((byte)(data & 1));
-                        break;
+                case 0x98:
+                    _graphics.SetGimeVmode(data);
+                    break;
 
-                    case 0x97:
-                        break;
+                case 0x99:
+                    _graphics.SetGimeVres(data);
+                    break;
 
-                    case 0x98:
-                        _graphics.SetGimeVmode(data);
-                        break;
+                case 0x9A:
+                    _graphics.SetGimeBorderColor(data);
+                    break;
 
-                    case 0x99:
-                        _graphics.SetGimeVres(data);
-                        break;
+                case 0x9B:
+                    SetDistoRamBank(data);
+                    break;
 
-                    case 0x9A:
-                        _graphics.SetGimeBorderColor(data);
-                        break;
+                case 0x9C:
+                    break;
 
-                    case 0x9B:
-                        SetDistoRamBank(data);
-                        break;
+                case 0x9D:
+                case 0x9E:
+                    _graphics.SetVerticalOffsetRegister((ushort)((GimeRegisters[0x9D] << 8) | GimeRegisters[0x9E]));
+                    break;
 
-                    case 0x9C:
-                        break;
+                case 0x9F:
+                    _graphics.SetGimeHorizontalOffset(data);
+                    break;
 
-                    case 0x9D:
-                    case 0x9E:
-                        _graphics.SetVerticalOffsetRegister((ushort)((registersState->GimeRegisters[0x9D] << 8) | registersState->GimeRegisters[0x9E]));
-                        break;
+                case 0xA0:
+                case 0xA1:
+                case 0xA2:
+                case 0xA3:
+                case 0xA4:
+                case 0xA5:
+                case 0xA6:
+                case 0xA7:
+                case 0xA8:
+                case 0xA9:
+                case 0xAA:
+                case 0xAB:
+                case 0xAC:
+                case 0xAD:
+                case 0xAE:
+                case 0xAF:
+                    SetMmuRegister(port, data);
+                    break;
 
-                    case 0x9F:
-                        _graphics.SetGimeHorizontalOffset(data);
-                        break;
-
-                    case 0xA0:
-                    case 0xA1:
-                    case 0xA2:
-                    case 0xA3:
-                    case 0xA4:
-                    case 0xA5:
-                    case 0xA6:
-                    case 0xA7:
-                    case 0xA8:
-                    case 0xA9:
-                    case 0xAA:
-                    case 0xAB:
-                    case 0xAC:
-                    case 0xAD:
-                    case 0xAE:
-                    case 0xAF:
-                        SetMmuRegister(port, data);
-                        break;
-
-                    case 0xB0:
-                    case 0xB1:
-                    case 0xB2:
-                    case 0xB3:
-                    case 0xB4:
-                    case 0xB5:
-                    case 0xB6:
-                    case 0xB7:
-                    case 0xB8:
-                    case 0xB9:
-                    case 0xBA:
-                    case 0xBB:
-                    case 0xBC:
-                    case 0xBD:
-                    case 0xBE:
-                    case 0xBF:
-                        _graphics.SetGimePalette((byte)(port - 0xB0), (byte)(data & 63));
-                        break;
-                }
+                case 0xB0:
+                case 0xB1:
+                case 0xB2:
+                case 0xB3:
+                case 0xB4:
+                case 0xB5:
+                case 0xB6:
+                case 0xB7:
+                case 0xB8:
+                case 0xB9:
+                case 0xBA:
+                case 0xBB:
+                case 0xBC:
+                case 0xBD:
+                case 0xBE:
+                case 0xBF:
+                    _graphics.SetGimePalette((byte)(port - 0xB0), (byte)(data & 63));
+                    break;
             }
         }
 
@@ -4548,8 +4540,8 @@ Could not locate {ROM} in any of these locations:
                 SetRomMap((byte)(data & 3)); //MC0-MC1
                 SetVectors((byte)(data & 8)); //MC3
 
-                registersState->EnhancedFIRQFlag = (byte)((data & 16) >> 4);
-                registersState->EnhancedIRQFlag = (byte)((data & 32) >> 5);
+                EnhancedFIRQFlag = (byte)((data & 16) >> 4);
+                EnhancedIRQFlag = (byte)((data & 32) >> 5);
             }
         }
 
@@ -4561,105 +4553,70 @@ Could not locate {ROM} in any of these locations:
 
         public void SetTimerMSB(byte data)
         {
-            ushort temp;
-
-            unsafe
-            {
-                TC1014State* registersState = GetTC1014State();
-
-                temp = (ushort)(((registersState->GimeRegisters[0x94] << 8) + registersState->GimeRegisters[0x95]) & 4095);
-            }
+            ushort temp = (ushort)(((GimeRegisters[0x94] << 8) + GimeRegisters[0x95]) & 4095);
 
             _modules.CoCo.SetInterruptTimer(temp);
-
         }
 
         public void SetTimerLSB(byte data)
         {
-            ushort temp;
-
-            unsafe
-            {
-                TC1014State* registersState = GetTC1014State();
-
-                temp = (ushort)(((registersState->GimeRegisters[0x94] << 8) + registersState->GimeRegisters[0x95]) & 4095);
-            }
+            ushort temp = (ushort)(((GimeRegisters[0x94] << 8) + GimeRegisters[0x95]) & 4095);
 
             _modules.CoCo.SetInterruptTimer(temp);
         }
 
         public void SetGimeIRQSteering(byte data)
         {
-            unsafe
-            {
-                TC1014State* registersState = GetTC1014State();
+            bool TestMask(int address, int mask) => (GimeRegisters[address] & mask) != 0;
+            byte Test(int mask) => TestMask(0x92, mask) | TestMask(0x93, mask) ? (byte)1 : (byte)0;
 
-                bool TestMask(int address, int mask) => (registersState->GimeRegisters[address] & mask) != 0;
-                byte Test(int mask) => TestMask(0x92, mask) | TestMask(0x93, mask) ? (byte)1 : (byte)0;
-
-                _modules.Keyboard.GimeSetKeyboardInterruptState(Test(2));
-                _modules.CoCo.SetVerticalInterruptState(Test(8));
-                _modules.CoCo.SetHorizontalInterruptState(Test(16));
-                _modules.CoCo.SetTimerInterruptState(Test(32));
-            }
+            _modules.Keyboard.GimeSetKeyboardInterruptState(Test(2));
+            _modules.CoCo.SetVerticalInterruptState(Test(8));
+            _modules.CoCo.SetHorizontalInterruptState(Test(16));
+            _modules.CoCo.SetTimerInterruptState(Test(32));
         }
 
         //--TODO: Not sure why this is the same as IRQ above
         public void SetGimeFIRQSteering(byte data)
         {
-            unsafe
-            {
-                TC1014State* registersState = GetTC1014State();
+            bool TestMask(int address, int mask) => (GimeRegisters[address] & mask) != 0;
+            byte Test(int mask) => TestMask(0x92, mask) | TestMask(0x93, mask) ? (byte)1 : (byte)0;
 
-                bool TestMask(int address, int mask) => (registersState->GimeRegisters[address] & mask) != 0;
-                byte Test(int mask) => TestMask(0x92, mask) | TestMask(0x93, mask) ? (byte)1 : (byte)0;
-
-                _modules.Keyboard.GimeSetKeyboardInterruptState(Test(2));
-                _modules.CoCo.SetVerticalInterruptState(Test(8));
-                _modules.CoCo.SetHorizontalInterruptState(Test(16));
-                _modules.CoCo.SetTimerInterruptState(Test(32));
-            }
+            _modules.Keyboard.GimeSetKeyboardInterruptState(Test(2));
+            _modules.CoCo.SetVerticalInterruptState(Test(8));
+            _modules.CoCo.SetHorizontalInterruptState(Test(16));
+            _modules.CoCo.SetTimerInterruptState(Test(32));
         }
 
         public void GimeAssertHorzInterrupt()
         {
-            unsafe
+            if (((GimeRegisters[0x93] & 16) != 0) && (EnhancedFIRQFlag == 1))
             {
-                TC1014State* registersState = GetTC1014State();
+                _modules.CPU.CPUAssertInterrupt(Define.FIRQ, 0);
 
-                if (((registersState->GimeRegisters[0x93] & 16) != 0) && (registersState->EnhancedFIRQFlag == 1))
-                {
-                    _modules.CPU.CPUAssertInterrupt(Define.FIRQ, 0);
+                LastFirq |= 16;
+            }
+            else if (((GimeRegisters[0x92] & 16) != 0) && (EnhancedIRQFlag == 1))
+            {
+                _modules.CPU.CPUAssertInterrupt(Define.IRQ, 0);
 
-                    registersState->LastFirq |= 16;
-                }
-                else if (((registersState->GimeRegisters[0x92] & 16) != 0) && (registersState->EnhancedIRQFlag == 1))
-                {
-                    _modules.CPU.CPUAssertInterrupt(Define.IRQ, 0);
-
-                    registersState->LastIrq |= 16;
-                }
+                LastIrq |= 16;
             }
         }
 
         public void GimeAssertTimerInterrupt()
         {
-            unsafe
+            if (((GimeRegisters[0x93] & 32) != 0) && (EnhancedFIRQFlag == 1))
             {
-                TC1014State* registersState = GetTC1014State();
+                _modules.CPU.CPUAssertInterrupt(Define.FIRQ, 0);
 
-                if (((registersState->GimeRegisters[0x93] & 32) != 0) && (registersState->EnhancedFIRQFlag == 1))
-                {
-                    _modules.CPU.CPUAssertInterrupt(Define.FIRQ, 0);
+                LastFirq |= 32;
+            }
+            else if (((GimeRegisters[0x92] & 32) != 0) && (EnhancedIRQFlag == 1))
+            {
+                _modules.CPU.CPUAssertInterrupt(Define.IRQ, 0);
 
-                    registersState->LastFirq |= 32;
-                }
-                else if (((registersState->GimeRegisters[0x92] & 32) != 0) && (registersState->EnhancedIRQFlag == 1))
-                {
-                    _modules.CPU.CPUAssertInterrupt(Define.IRQ, 0);
-
-                    registersState->LastIrq |= 32;
-                }
+                LastIrq |= 32;
             }
         }
 
@@ -4837,7 +4794,18 @@ Could not locate {ROM} in any of these locations:
 
         public void GimeAssertKeyboardInterrupt()
         {
-            Library.TC1014.GimeAssertKeyboardInterrupt();
+            if (((GimeRegisters[0x93] & 2) != 0) && (EnhancedFIRQFlag == 1))
+            {
+                _modules.CPU.CPUAssertInterrupt(Define.FIRQ, 0);
+
+                LastFirq |= 2;
+            }
+            else if (((GimeRegisters[0x92] & 2) != 0) && (EnhancedIRQFlag == 1))
+            {
+                _modules.CPU.CPUAssertInterrupt(Define.IRQ, 0);
+
+                LastIrq |= 2;
+            }
         }
     }
 }

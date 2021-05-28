@@ -2,13 +2,6 @@
 {
     public struct TC1014State
     {
-        public byte EnhancedFIRQFlag;
-        public byte EnhancedIRQFlag;
-        public byte LastIrq;
-        public byte LastFirq;
-
-        public unsafe fixed byte GimeRegisters[256];
-
         public byte MmuState;	// Composite variable handles MmuTask and MmuEnabled
         public unsafe fixed ushort MemPageOffsets[1024];
 
