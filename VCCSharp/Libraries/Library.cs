@@ -333,10 +333,19 @@ namespace VCCSharp.Libraries
         public static class MenuCallbacks
         {
             [DllImport(LIBRARY)]
-            public static extern void DynamicMenuCallback(string menuName, int menuId, int type);
+            public static extern void SetMenuItem(string menuName, int menuId, int type);
 
             [DllImport(LIBRARY)]
             public static extern void SetWindowHandle(HWND hWnd);
+
+            [DllImport(LIBRARY)]
+            public static extern void RefreshDynamicMenu();
+
+            [DllImport(LIBRARY)]
+            public static extern void SetMenuIndex(byte value);
+
+            [DllImport(LIBRARY)]
+            public static extern byte GetMenuIndex();
         }
 
         public static class PAKInterface

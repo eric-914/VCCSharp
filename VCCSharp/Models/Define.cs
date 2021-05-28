@@ -380,5 +380,10 @@ namespace VCCSharp.Models
 
         public const int NOMODULE = 1;
         public const int NOTVCC = 2;
+
+        public const int MENU_PARENT = 0;
+        public const int MENU_CHILD = 1;
+        public const int MENU_STANDALONE = 2;
+
     }
 }

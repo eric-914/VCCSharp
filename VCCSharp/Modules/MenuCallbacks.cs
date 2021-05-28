@@ -94,12 +94,67 @@ namespace VCCSharp.Modules
 
         public void DynamicMenuCallback(string menuName, MenuActions menuId, int type)
         {
-            Library.MenuCallbacks.DynamicMenuCallback(menuName, (int)menuId, type);
+            string temp = "Eject Cart: ";
+
+            //MenuId=0 Flush Buffer MenuId=1 Done 
+            switch (menuId)
+            {
+                case MenuActions.Flush:
+                    SetMenuIndex(0);
+
+                    DynamicMenuCallback("Cartridge", MenuActions.Cartridge, Define.MENU_PARENT);	//Recursion is fun
+                    DynamicMenuCallback("Load Cart", MenuActions.Load, Define.MENU_CHILD);
+
+                    unsafe
+                    {
+                        temp += Converter.ToString(_modules.PAKInterface.GetPakInterfaceState()->Modname);
+                    }
+
+                    DynamicMenuCallback(temp, MenuActions.Eject, Define.MENU_CHILD);
+
+                    break;
+
+                case MenuActions.Done:
+                    RefreshDynamicMenu();
+                    break;
+
+                case MenuActions.Refresh:
+                    DynamicMenuCallback(null, MenuActions.Flush, Define.IGNORE);
+                    DynamicMenuCallback(null, MenuActions.Done, Define.IGNORE);
+                    break;
+
+                default:
+                    SetMenuItem(menuName, (int)menuId, type);
+
+                    SetMenuIndex((byte)(GetMenuIndex() + 1));
+
+                    break;
+            }
         }
 
         public void SetWindowHandle(IntPtr intPtr)
         {
             Library.MenuCallbacks.SetWindowHandle(intPtr);
+        }
+
+        public void RefreshDynamicMenu()
+        {
+            Library.MenuCallbacks.RefreshDynamicMenu();
+        }
+
+        public void SetMenuIndex(byte value)
+        {
+            Library.MenuCallbacks.SetMenuIndex(value);
+        }
+
+        public byte GetMenuIndex()
+        {
+            return Library.MenuCallbacks.GetMenuIndex();
+        }
+
+        public void SetMenuItem(string menuName, int menuId, int type)
+        {
+            Library.MenuCallbacks.SetMenuItem(menuName, menuId, type);
         }
     }
 }

@@ -36,6 +36,18 @@ static unsigned char MenuIndex = 0;
 static HWND WindowHandle = NULL;
 
 extern "C" {
+  __declspec(dllexport) void __cdecl SetMenuIndex(unsigned char value) {
+    MenuIndex = value;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) unsigned char __cdecl GetMenuIndex() {
+    return MenuIndex;
+  }
+}
+
+extern "C" {
   __declspec(dllexport) void __cdecl SetWindowHandle(HWND hWnd)
   {
     WindowHandle = hWnd;
@@ -140,11 +152,22 @@ extern "C" {
 }
 
 extern "C" {
+  __declspec(dllexport) void __cdecl SetMenuItem(char* menuName, int menuId, int type) {
+    strcpy(MenuItem[MenuIndex].MenuName, menuName);
+
+    MenuItem[MenuIndex].MenuId = menuId;
+    MenuItem[MenuIndex].Type = type;
+  }
+}
+
+/**********************************************************************
+* Ported, but still used in PakInterfaceModule.InvokeGetModuleName(...)
+**********************************************************************/
+extern "C" {
   __declspec(dllexport) void __cdecl DynamicMenuCallback(char* menuName, int menuId, int type)
   {
     char temp[256] = "Eject Cart: ";
 
-    //MenuId=0 Flush Buffer MenuId=1 Done 
     switch (menuId)
     {
     case MENU_FLUSH:
