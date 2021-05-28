@@ -1,6 +1,6 @@
 ﻿using HINSTANCE = System.IntPtr;
 
-namespace VCCSharp.Models
+namespace VCCSharp.Models.Pak
 {
     public struct PakInterfaceState
     {

@@ -2,6 +2,7 @@
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using VCCSharp.Models.Pak;
 using HANDLE = System.IntPtr;
 
 namespace VCCSharp.Modules

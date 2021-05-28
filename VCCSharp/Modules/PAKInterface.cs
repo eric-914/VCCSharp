@@ -5,6 +5,7 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using VCCSharp.Models.Pak;
 using HINSTANCE = System.IntPtr;
 
 namespace VCCSharp.Modules

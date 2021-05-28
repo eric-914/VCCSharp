@@ -18,7 +18,7 @@ extern "C" {
 
 PakInterfaceDelegates* InitializeDelegates(PakInterfaceDelegates* p) {
   p->ConfigModule = NULL;
-  p->DmaMemPointer = NULL;
+  p->DmaMemPointers = NULL;
   p->GetModuleName = NULL;
   p->HeartBeat = NULL;
   p->ModuleAudioSample = NULL;
@@ -37,20 +37,20 @@ PakInterfaceDelegates* InitializeDelegates(PakInterfaceDelegates* p) {
 
 extern "C" {
   __declspec(dllexport) BOOL __cdecl SetDelegates(HINSTANCE hInstLib) {
-    delegates->GetModuleName = (GETNAME)GetProcAddress(hInstLib, "ModuleName");
-    delegates->ConfigModule = (CONFIGIT)GetProcAddress(hInstLib, "ModuleConfig");
-    delegates->PakPortWrite = (PACKPORTWRITE)GetProcAddress(hInstLib, "PackPortWrite");
-    delegates->PakPortRead = (PACKPORTREAD)GetProcAddress(hInstLib, "PackPortRead");
+    delegates->GetModuleName = (GETMODULENAME)GetProcAddress(hInstLib, "ModuleName");
+    delegates->ConfigModule = (CONFIGMODULE)GetProcAddress(hInstLib, "ModuleConfig");
+    delegates->PakPortWrite = (PAKPORTWRITE)GetProcAddress(hInstLib, "PackPortWrite");
+    delegates->PakPortRead = (PAKPORTREAD)GetProcAddress(hInstLib, "PackPortRead");
     delegates->SetInterruptCallPointer = (SETINTERRUPTCALLPOINTER)GetProcAddress(hInstLib, "AssertInterrupt");
-    delegates->DmaMemPointer = (DMAMEMPOINTERS)GetProcAddress(hInstLib, "MemPointers");
+    delegates->DmaMemPointers = (DMAMEMPOINTERS)GetProcAddress(hInstLib, "MemPointers");
     delegates->HeartBeat = (HEARTBEAT)GetProcAddress(hInstLib, "HeartBeat");
-    delegates->PakMemWrite8 = (MEMWRITE8)GetProcAddress(hInstLib, "PakMemWrite8");
-    delegates->PakMemRead8 = (MEMREAD8)GetProcAddress(hInstLib, "PakMemRead8");
+    delegates->PakMemWrite8 = (PAKMEMWRITE8)GetProcAddress(hInstLib, "PakMemWrite8");
+    delegates->PakMemRead8 = (PAKMEMREAD8)GetProcAddress(hInstLib, "PakMemRead8");
     delegates->ModuleStatus = (MODULESTATUS)GetProcAddress(hInstLib, "ModuleStatus");
     delegates->ModuleAudioSample = (MODULEAUDIOSAMPLE)GetProcAddress(hInstLib, "ModuleAudioSample");
     delegates->ModuleReset = (MODULERESET)GetProcAddress(hInstLib, "ModuleReset");
     delegates->SetIniPath = (SETINIPATH)GetProcAddress(hInstLib, "SetIniPath");
-    delegates->PakSetCart = (SETCARTPOINTER)GetProcAddress(hInstLib, "SetCart");
+    delegates->PakSetCart = (PAKSETCART)GetProcAddress(hInstLib, "SetCart");
 
     return delegates->GetModuleName == NULL;
   }
@@ -59,7 +59,7 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) void __cdecl UnloadModule() {
     delegates->ConfigModule = NULL;
-    delegates->DmaMemPointer = NULL;
+    delegates->DmaMemPointers = NULL;
     delegates->GetModuleName = NULL;
     delegates->HeartBeat = NULL;
     delegates->ModuleAudioSample = NULL;
@@ -101,13 +101,13 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) BOOL __cdecl HasDmaMemPointer() {
-    return delegates->DmaMemPointer != NULL;
+    return delegates->DmaMemPointers != NULL;
   }
 }
 
 extern "C" {
   __declspec(dllexport) void __cdecl InvokeDmaMemPointer() {
-    delegates->DmaMemPointer(MemRead8, MemWrite8);
+    delegates->DmaMemPointers(MemRead8, MemWrite8);
   }
 }
 
