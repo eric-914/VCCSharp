@@ -3,8 +3,6 @@
 typedef struct {
   unsigned char MmuState;
   unsigned short MemPageOffsets[1024];
-  unsigned char* Memory;
-  unsigned char* InternalRomBuffer;
 
   unsigned char MapType;
 

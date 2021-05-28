@@ -4,8 +4,6 @@
     {
         public byte MmuState;	// Composite variable handles MmuTask and MmuEnabled
         public unsafe fixed ushort MemPageOffsets[1024];
-        public unsafe byte* Memory;	//Emulated RAM
-        public unsafe byte* InternalRomBuffer;
 
         public byte MapType;	// $FFDE/FFDF toggle Map type 0 = ram/rom
 

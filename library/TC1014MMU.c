@@ -23,9 +23,6 @@ TC1014MmuState* InitializeInstance(TC1014MmuState* p) {
   p->MapType = 0;
   p->CurrentRamConfig = 1;
 
-  p->Memory = NULL;
-  p->InternalRomBuffer = NULL;
-
   ARRAYCOPY(VectorMask);
   ARRAYCOPY(VectorMaska);
 

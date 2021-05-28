@@ -8,6 +8,5 @@
         public byte LastFirq;
 
         public unsafe fixed byte GimeRegisters[256];
-        public unsafe byte* Rom;
     }
 }
