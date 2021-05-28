@@ -57,33 +57,14 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl UnloadModule() {
-    delegates->ConfigModule = NULL;
-    delegates->DmaMemPointers = NULL;
-    delegates->GetModuleName = NULL;
-    delegates->HeartBeat = NULL;
-    delegates->ModuleAudioSample = NULL;
-    delegates->ModuleReset = NULL;
-    delegates->ModuleStatus = NULL;
-    delegates->PakMemRead8 = NULL;
-    delegates->PakMemWrite8 = NULL;
-    delegates->PakPortRead = NULL;
-    delegates->PakPortWrite = NULL;
-    delegates->SetInterruptCallPointer = NULL;
+  __declspec(dllexport) unsigned char __cdecl ModulePortRead(unsigned char port) {
+    return(delegates->PakPortRead(port));
   }
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasModuleReset()
-  {
-    return delegates->ModuleReset != NULL;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl InvokeModuleReset()
-  {
-    delegates->ModuleReset();
+  __declspec(dllexport) unsigned char __cdecl ModuleMem8Read(unsigned short address) {
+    return(delegates->PakMemRead8(address & 32767));
   }
 }
 
@@ -100,20 +81,8 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasDmaMemPointer() {
-    return delegates->DmaMemPointers != NULL;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl InvokeDmaMemPointer() {
     delegates->DmaMemPointers(MemRead8, MemWrite8);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasSetInterruptCallPointer() {
-    return delegates->SetInterruptCallPointer != NULL;
   }
 }
 
@@ -124,127 +93,25 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasModuleAudioSample() {
-    return delegates->ModuleAudioSample != NULL;
+  __declspec(dllexport) void __cdecl InvokePakSetCart() {
+    delegates->PakSetCart(SetCart);
   }
 }
 
-extern "C" {
-  __declspec(dllexport) unsigned short __cdecl ReadModuleAudioSample() {
-    return delegates->ModuleAudioSample();
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasModuleStatus() {
-    return delegates->ModuleStatus != NULL;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl InvokeModuleStatus(char* statusLine) {
-    delegates->ModuleStatus(statusLine);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasModulePortRead() {
-    return delegates->PakPortRead != NULL;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl ModulePortRead(unsigned char port) {
-    return(delegates->PakPortRead(port));
-  }
-}
-
+/*******************************************************
+* Used by PAKInterface.PakMem8Read(...)
+********************************************************/
 extern "C" {
   __declspec(dllexport) BOOL __cdecl HasModuleMem8Read() {
     return delegates->PakMemRead8 != NULL;
   }
 }
 
+/*******************************************************
+* Used by PAKInterface.PakPortRead(...)
+********************************************************/
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl ModuleMem8Read(unsigned short address) {
-    return(delegates->PakMemRead8(address & 32767));
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl InvokeGetModuleName(char* modName, char* catNumber) {
-    delegates->GetModuleName(modName, catNumber, DynamicMenuCallback);  //Instantiate the menus from HERE!
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasConfigModule() {
-    return delegates->ConfigModule != NULL;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasPakPortWrite() {
-    return delegates->PakPortWrite != NULL;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasPakPortRead() {
+  __declspec(dllexport) BOOL __cdecl HasModulePortRead() {
     return delegates->PakPortRead != NULL;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasHeartBeat() {
-    return delegates->HeartBeat != NULL;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl InvokeHeartBeat() {
-    delegates->HeartBeat();
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasPakMemWrite8() {
-    return delegates->PakMemWrite8 != NULL;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasPakMemRead8() {
-    return delegates->PakMemRead8 != NULL;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasPakSetCart() {
-    return delegates->PakSetCart != NULL;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl InvokePakSetCart() {
-    delegates->PakSetCart(SetCart);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasSetIniPath() {
-    return delegates->SetIniPath != NULL;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl InvokeSetIniPath(char* ini) {
-    delegates->SetIniPath(ini);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl InvokeConfigModule(unsigned char menuItem) {
-    delegates->ConfigModule(menuItem);
   }
 }

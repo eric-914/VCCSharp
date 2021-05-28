@@ -9,6 +9,7 @@ namespace VCCSharp.Modules
 {
     public interface IMenuCallbacks
     {
+        void DynamicMenuCallback(string menuName, int menuId, int type);
         void DynamicMenuCallback(string menuName, MenuActions menuId, int type);
         int DynamicMenuActivated(byte emulationRunning, int menuItem);
         void SetWindowHandle(IntPtr intPtr);
@@ -90,6 +91,12 @@ namespace VCCSharp.Modules
             }
 
             return 0;
+        }
+
+        //--Used by PAK plugins
+        public void DynamicMenuCallback(string menuName, int menuId, int type)
+        {
+            DynamicMenuCallback(menuName, (MenuActions) menuId, type);
         }
 
         public void DynamicMenuCallback(string menuName, MenuActions menuId, int type)

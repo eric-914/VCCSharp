@@ -355,40 +355,16 @@ namespace VCCSharp.Libraries
             public static extern unsafe PakInterfaceState* GetPakInterfaceState();
 
             [DllImport(LIBRARY)]
-            public static extern int HasHeartBeat();
-
-            [DllImport(LIBRARY)]
-            public static extern void InvokeHeartBeat();
-
-            [DllImport(LIBRARY)]
-            public static extern int HasSetInterruptCallPointer();
+            public static extern unsafe PakInterfaceDelegates* GetPakInterfaceDelegates();
 
             [DllImport(LIBRARY)]
             public static extern void InvokeSetInterruptCallPointer();
-
-            [DllImport(LIBRARY)]
-            public static extern int HasModuleReset();
-
-            [DllImport(LIBRARY)]
-            public static extern void InvokeModuleReset();
 
             [DllImport(LIBRARY)]
             public static extern byte PakPortRead(byte port);
 
             [DllImport(LIBRARY)]
             public static extern void PakPortWrite(byte port, byte data);
-
-            [DllImport(LIBRARY)]
-            public static extern int HasModuleStatus();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void InvokeModuleStatus(byte* statusLine);
-
-            [DllImport(LIBRARY)]
-            public static extern int HasConfigModule();
-
-            [DllImport(LIBRARY)]
-            public static extern void InvokeConfigModule(byte menuItem);
 
             [DllImport(LIBRARY)]
             public static extern int FileID(string filename);
@@ -406,46 +382,13 @@ namespace VCCSharp.Libraries
             public static extern void PAKFreeLibrary(HINSTANCE hInstLib);
 
             [DllImport(LIBRARY)]
-            public static extern int HasDmaMemPointer();
-
-            [DllImport(LIBRARY)]
             public static extern void InvokeDmaMemPointer();
-
-            [DllImport(LIBRARY)]
-            public static extern void InvokeGetModuleName(string modName, string catNumber);
-
-            [DllImport(LIBRARY)]
-            public static extern int HasPakPortWrite();
-
-            [DllImport(LIBRARY)]
-            public static extern int HasPakPortRead();
-
-            [DllImport(LIBRARY)]
-            public static extern int HasModuleAudioSample();
-
-            [DllImport(LIBRARY)]
-            public static extern int HasPakMemWrite8();
-
-            [DllImport(LIBRARY)]
-            public static extern int HasPakMemRead8();
-
-            [DllImport(LIBRARY)]
-            public static extern int HasSetIniPath();
-
-            [DllImport(LIBRARY)]
-            public static extern int HasPakSetCart();
-
-            [DllImport(LIBRARY)]
-            public static extern void InvokeSetIniPath(string ini);
 
             [DllImport(LIBRARY)]
             public static extern void InvokePakSetCart();
 
             [DllImport(LIBRARY)]
             public static extern unsafe void FreeMemory(byte* target);
-
-            [DllImport(LIBRARY)]
-            public static extern ushort ReadModuleAudioSample();
 
             [DllImport(LIBRARY)]
             public static extern void UnloadModule();

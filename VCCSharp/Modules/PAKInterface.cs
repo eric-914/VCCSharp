@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
@@ -48,6 +49,11 @@ namespace VCCSharp.Modules
         public unsafe PakInterfaceState* GetPakInterfaceState()
         {
             return Library.PAKInterface.GetPakInterfaceState();
+        }
+
+        public unsafe PakInterfaceDelegates* GetPakInterfaceDelegates()
+        {
+            return Library.PAKInterface.GetPakInterfaceDelegates();
         }
 
         public void PakTimer()
@@ -308,36 +314,6 @@ namespace VCCSharp.Modules
             return 0;
         }
 
-        public int HasHeartBeat()
-        {
-            return Library.PAKInterface.HasHeartBeat();
-        }
-
-        public void InvokeHeartBeat()
-        {
-            Library.PAKInterface.InvokeHeartBeat();
-        }
-
-        public int HasSetInterruptCallPointer()
-        {
-            return Library.PAKInterface.HasSetInterruptCallPointer();
-        }
-
-        public void InvokeSetInterruptCallPointer()
-        {
-            Library.PAKInterface.InvokeSetInterruptCallPointer();
-        }
-
-        public int HasModuleReset()
-        {
-            return Library.PAKInterface.HasModuleReset();
-        }
-
-        public void InvokeModuleReset()
-        {
-            Library.PAKInterface.InvokeModuleReset();
-        }
-
         public unsafe void GetModuleStatus()
         {
             if (HasModuleStatus())
@@ -366,16 +342,6 @@ namespace VCCSharp.Modules
             Library.PAKInterface.PakPortWrite(port, data);
         }
 
-        public bool HasModuleStatus()
-        {
-            return Library.PAKInterface.HasModuleStatus() != 0;
-        }
-
-        public unsafe void InvokeModuleStatus(byte* statusLine)
-        {
-            Library.PAKInterface.InvokeModuleStatus(statusLine);
-        }
-
         public ushort PakAudioSample()
         {
             if (HasModuleAudioSample() != 0)
@@ -384,16 +350,6 @@ namespace VCCSharp.Modules
             }
 
             return 0;
-        }
-
-        public int HasConfigModule()
-        {
-            return Library.PAKInterface.HasConfigModule();
-        }
-
-        public void InvokeConfigModule(byte menuItem)
-        {
-            Library.PAKInterface.InvokeConfigModule(menuItem);
         }
 
         public int FileId(string filename)
@@ -419,66 +375,6 @@ namespace VCCSharp.Modules
         public void PakFreeLibrary(HINSTANCE hInstLib)
         {
             Library.PAKInterface.PAKFreeLibrary(hInstLib);
-        }
-
-        public int HasDmaMemPointer()
-        {
-            return Library.PAKInterface.HasDmaMemPointer();
-        }
-
-        public void InvokeDmaMemPointer()
-        {
-            Library.PAKInterface.InvokeDmaMemPointer();
-        }
-
-        public void InvokeGetModuleName(string modName, string catNumber)
-        {
-            Library.PAKInterface.InvokeGetModuleName(modName, catNumber);
-        }
-
-        public int HasPakPortWrite()
-        {
-            return Library.PAKInterface.HasPakPortWrite();
-        }
-
-        public int HasPakPortRead()
-        {
-            return Library.PAKInterface.HasPakPortRead();
-        }
-
-        public int HasModuleAudioSample()
-        {
-            return Library.PAKInterface.HasModuleAudioSample();
-        }
-
-        public int HasPakMemWrite8()
-        {
-            return Library.PAKInterface.HasPakMemWrite8();
-        }
-
-        public int HasPakMemRead8()
-        {
-            return Library.PAKInterface.HasPakMemRead8();
-        }
-
-        public int HasSetIniPath()
-        {
-            return Library.PAKInterface.HasSetIniPath();
-        }
-
-        public int HasPakSetCart()
-        {
-            return Library.PAKInterface.HasPakSetCart();
-        }
-
-        public void InvokeSetIniPath(string ini)
-        {
-            Library.PAKInterface.InvokeSetIniPath(ini);
-        }
-
-        public void InvokePakSetCart()
-        {
-            Library.PAKInterface.InvokePakSetCart();
         }
 
         /**
@@ -522,7 +418,7 @@ namespace VCCSharp.Modules
                 PakInterfaceState* instance = GetPakInterfaceState();
 
                 _dllPath = "";
-                Converter.ToByteArray("Blank", instance->Modname);
+                Converter.ToByteArray("Blank\0", instance->Modname);
 
                 instance->RomPackLoaded = Define.FALSE;
 
@@ -543,14 +439,25 @@ namespace VCCSharp.Modules
             Library.PAKInterface.FreeMemory(target);
         }
 
-        public ushort ReadModuleAudioSample()
-        {
-            return Library.PAKInterface.ReadModuleAudioSample();
-        }
-
         public void UnloadModule()
         {
-            Library.PAKInterface.UnloadModule();
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                d->ConfigModule = null;
+                d->DmaMemPointers = null;
+                d->GetModuleName = null;
+                d->HeartBeat = null;
+                d->ModuleAudioSample = null;
+                d->ModuleReset = null;
+                d->ModuleStatus = null;
+                d->PakMemRead8 = null;
+                d->PakMemWrite8 = null;
+                d->PakPortRead = null;
+                d->PakPortWrite = null;
+                d->SetInterruptCallPointer = null;
+            }
         }
 
         public unsafe int ResetRomBuffer(byte* buffer)
@@ -560,7 +467,8 @@ namespace VCCSharp.Modules
             PakInterfaceState* instance = GetPakInterfaceState();
 
             // If memory was unable to be allocated, fail
-            if (instance->ExternalRomBuffer == null) {
+            if (instance->ExternalRomBuffer == null)
+            {
                 MessageBox.Show("cant allocate ram", "Ok");
 
                 return 0;
@@ -568,5 +476,255 @@ namespace VCCSharp.Modules
 
             return 1;
         }
+
+        public int HasSetInterruptCallPointer()
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                return d->SetInterruptCallPointer == null ? Define.FALSE : Define.TRUE;
+            }
+        }
+
+        public int HasModuleReset()
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                return d->ModuleReset == null ? Define.FALSE : Define.TRUE;
+            }
+        }
+
+        public bool HasModuleStatus()
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                return d->ModuleStatus != null;
+            }
+        }
+
+        public int HasDmaMemPointer()
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                return d->DmaMemPointers == null ? Define.FALSE : Define.TRUE;
+            }
+        }
+
+        public int HasModuleAudioSample()
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                return d->ModuleAudioSample == null ? Define.FALSE : Define.TRUE;
+            }
+        }
+
+        public int HasPakMemWrite8()
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                return d->PakMemWrite8 == null ? Define.FALSE : Define.TRUE;
+            }
+        }
+
+        public int HasPakMemRead8()
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                return d->PakMemRead8 == null ? Define.FALSE : Define.TRUE;
+            }
+        }
+
+        public int HasSetIniPath()
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                return d->SetIniPath == null ? Define.FALSE : Define.TRUE;
+            }
+        }
+
+        public int HasPakSetCart()
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                return d->PakSetCart == null ? Define.FALSE : Define.TRUE;
+            }
+        }
+
+        public int HasPakPortWrite()
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                return d->PakPortWrite == null ? Define.FALSE : Define.TRUE;
+            }
+        }
+
+        public int HasPakPortRead()
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                return d->PakPortRead == null ? Define.FALSE : Define.TRUE;
+            }
+        }
+
+        public int HasHeartBeat()
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                return d->HeartBeat == null ? Define.FALSE : Define.TRUE;
+            }
+        }
+
+        public int HasConfigModule()
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                return d->ConfigModule == null ? Define.FALSE : Define.TRUE;
+            }
+        }
+
+        public void InvokeHeartBeat()
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                IntPtr p = (IntPtr)(d->HeartBeat);
+
+                HEARTBEAT fn = Marshal.GetDelegateForFunctionPointer<HEARTBEAT>(p);
+
+                fn();
+            }
+        }
+
+        public void InvokeModuleReset()
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                IntPtr p = (IntPtr)(d->ModuleReset);
+
+                MODULERESET fn = Marshal.GetDelegateForFunctionPointer<MODULERESET>(p);
+
+                fn();
+            }
+        }
+
+        public unsafe void InvokeModuleStatus(byte* statusLine)
+        {
+            PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+            IntPtr p = (IntPtr)(d->ModuleStatus);
+
+            MODULESTATUS fn = Marshal.GetDelegateForFunctionPointer<MODULESTATUS>(p);
+
+            fn(statusLine);
+        }
+
+        public void InvokeSetIniPath(string ini)
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                IntPtr p = (IntPtr)(d->SetIniPath);
+
+                SETINIPATH fn = Marshal.GetDelegateForFunctionPointer<SETINIPATH>(p);
+
+                fn(ini);
+            }
+        }
+
+        private static DYNAMICMENUCALLBACK _dynamicMenuCallback;
+
+        public void InvokeGetModuleName(string modName, string catNumber)
+        {
+            //Instantiate the menus from HERE!
+            unsafe
+            {
+                _dynamicMenuCallback = _modules.MenuCallbacks.DynamicMenuCallback;
+                IntPtr callback = Marshal.GetFunctionPointerForDelegate(_dynamicMenuCallback);
+
+                DYNAMICMENUCALLBACK fnx = Marshal.GetDelegateForFunctionPointer<DYNAMICMENUCALLBACK>(callback);
+
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                IntPtr p = (IntPtr)(d->GetModuleName);
+
+                GETMODULENAME fn = Marshal.GetDelegateForFunctionPointer<GETMODULENAME>(p);
+
+                //DynamicMenuCallback
+                fn(modName, catNumber, fnx);
+            }
+        }
+
+        public void InvokeConfigModule(byte menuItem)
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                IntPtr p = (IntPtr)(d->ConfigModule);
+
+                CONFIGMODULE fn = Marshal.GetDelegateForFunctionPointer<CONFIGMODULE>(p);
+
+                fn(menuItem);
+            }
+        }
+
+        public void InvokeSetInterruptCallPointer()
+        {
+            Library.PAKInterface.InvokeSetInterruptCallPointer();
+        }
+
+        public void InvokeDmaMemPointer()
+        {
+            Library.PAKInterface.InvokeDmaMemPointer();
+        }
+
+        public void InvokePakSetCart()
+        {
+            Library.PAKInterface.InvokePakSetCart();
+        }
+
+        public ushort ReadModuleAudioSample()
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                IntPtr p = (IntPtr)(d->ModuleAudioSample);
+
+                MODULEAUDIOSAMPLE fn = Marshal.GetDelegateForFunctionPointer<MODULEAUDIOSAMPLE>(p);
+
+                return fn();
+            }
+        }
+
     }
 }
