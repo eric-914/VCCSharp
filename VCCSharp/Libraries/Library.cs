@@ -456,10 +456,7 @@ namespace VCCSharp.Libraries
         public static class TC1014
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe TC1014MmuState* GetTC1014MmuState();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe TC1014RegistersState* GetTC1014RegistersState();
+            public static extern unsafe TC1014State* GetTC1014State();
 
             [DllImport(LIBRARY)]
             public static extern byte MemRead8(ushort address);

@@ -29,12 +29,6 @@
     <ClCompile Include="PAKInterface.c">
       <Filter>pakinterface</Filter>
     </ClCompile>
-    <ClCompile Include="TC1014Registers.c">
-      <Filter>tc1014\registers</Filter>
-    </ClCompile>
-    <ClCompile Include="TC1014MMU.c">
-      <Filter>tc1014\mmu</Filter>
-    </ClCompile>
     <ClCompile Include="MenuCallbacks.c">
       <Filter>callbacks</Filter>
     </ClCompile>
@@ -55,6 +49,9 @@
     </ClCompile>
     <ClCompile Include="DirectDrawSurfaceDesc.c">
       <Filter>directdraw</Filter>
+    </ClCompile>
+    <ClCompile Include="TC1014.c">
+      <Filter>tc1014</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -88,12 +85,6 @@
     <ClInclude Include="PAKInterface.h">
       <Filter>pakinterface</Filter>
     </ClInclude>
-    <ClInclude Include="TC1014Registers.h">
-      <Filter>tc1014\registers</Filter>
-    </ClInclude>
-    <ClInclude Include="TC1014MMU.h">
-      <Filter>tc1014\mmu</Filter>
-    </ClInclude>
     <ClInclude Include="CmdLineArguments.h">
       <Filter>models</Filter>
     </ClInclude>
@@ -104,9 +95,6 @@
       <Filter>models</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsState.h">
-      <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="TC1014MmuState.h">
       <Filter>models</Filter>
     </ClInclude>
     <ClInclude Include="PakInterfaceState.h">
@@ -127,8 +115,8 @@
     <ClInclude Include="PakInterfaceModule.h">
       <Filter>pakinterface</Filter>
     </ClInclude>
-    <ClInclude Include="TC1014RegistersState.h">
-      <Filter>models</Filter>
+    <ClInclude Include="TC1014.h">
+      <Filter>tc1014</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -170,12 +158,6 @@
     </Filter>
     <Filter Include="legal">
       <UniqueIdentifier>{b1110f74-34ea-4882-92c9-833443968697}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="tc1014\mmu">
-      <UniqueIdentifier>{cbafe392-f6a3-489e-8d85-1b2f9e4ea199}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="tc1014\registers">
-      <UniqueIdentifier>{4241406f-da4d-467c-a2ca-e09cbdb16573}</UniqueIdentifier>
     </Filter>
     <Filter Include="pakinterface">
       <UniqueIdentifier>{9a6f908d-4e3b-42ee-8d38-c35926c19974}</UniqueIdentifier>

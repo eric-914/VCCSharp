@@ -179,9 +179,8 @@
     <ClCompile Include="library.cpp" />
     <ClCompile Include="MenuCallbacks.c" />
     <ClCompile Include="PakInterfaceModule.c" />
-    <ClCompile Include="TC1014MMU.c" />
+    <ClCompile Include="TC1014.c" />
     <ClCompile Include="PAKInterface.c" />
-    <ClCompile Include="TC1014Registers.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CmdLineArguments.h" />
@@ -197,10 +196,8 @@
     <ClInclude Include="PakInterfaceDelegates.h" />
     <ClInclude Include="PakInterfaceModule.h" />
     <ClInclude Include="PakInterfaceState.h" />
-    <ClInclude Include="TC1014MMU.h" />
+    <ClInclude Include="TC1014.h" />
     <ClInclude Include="PAKInterface.h" />
-    <ClInclude Include="TC1014MmuState.h" />
-    <ClInclude Include="TC1014Registers.h" />
     <ClInclude Include="SoundCardList.h" />
     <ClInclude Include="di.version.h" />
     <ClInclude Include="nt.version.h" />
@@ -209,7 +206,6 @@
     <ClInclude Include="fileoperations.h" />
     <ClInclude Include="library.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="TC1014RegistersState.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="library.rc" />

@@ -3,7 +3,7 @@
 #include "PakInterfaceDelegates.h"
 #include "cpudef.h"
 
-#include "TC1014MMU.h"
+#include "TC1014.h"
 #include "MenuCallbacks.h"
 
 #include "PAKInterface.h"

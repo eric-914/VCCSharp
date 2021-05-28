@@ -469,14 +469,9 @@ namespace VCCSharp.Modules
             _modules = modules;
         }
 
-        public unsafe TC1014MmuState* GetTC1014MmuState()
+        public unsafe TC1014State* GetTC1014State()
         {
-            return Library.TC1014.GetTC1014MmuState();
-        }
-
-        public unsafe TC1014RegistersState* GetTC1014RegistersState()
-        {
-            return Library.TC1014.GetTC1014RegistersState();
+            return Library.TC1014.GetTC1014State();
         }
 
         public void MC6883Reset()
@@ -547,7 +542,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014MmuState* instance = GetTC1014MmuState();
+                TC1014State* instance = GetTC1014State();
 
                 MmuTask = 0;
                 MmuEnabled = 0;
@@ -593,7 +588,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014MmuState* mmuState = GetTC1014MmuState();
+                TC1014State* mmuState = GetTC1014State();
 
                 uint ramSize = MemConfig[ramSizeOption];
 
@@ -660,7 +655,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014RegistersState* registersState = GetTC1014RegistersState();
+                TC1014State* registersState = GetTC1014State();
 
                 if (((registersState->GimeRegisters[0x93] & 8) != 0) && (registersState->EnhancedFIRQFlag == 1))
                 {
@@ -709,7 +704,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014MmuState* instance = GetTC1014MmuState();
+                TC1014State* instance = GetTC1014State();
 
                 if (RamVectors != 0)
                 {
@@ -744,7 +739,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014MmuState* instance = GetTC1014MmuState();
+                TC1014State* instance = GetTC1014State();
 
                 if (RamVectors != 0)
                 {
@@ -4331,7 +4326,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014RegistersState* registersState = GetTC1014RegistersState();
+                TC1014State* registersState = GetTC1014State();
 
                 if ((port >= 0xF0) && (port <= 0xFF))
                 {
@@ -4350,7 +4345,7 @@ Could not locate {ROM} in any of these locations:
 
             unsafe
             {
-                TC1014RegistersState* registersState = GetTC1014RegistersState();
+                TC1014State* registersState = GetTC1014State();
 
                 if ((port >= 0xC6) && (port <= 0xD3))	//VDG Display offset Section
                 {
@@ -4406,7 +4401,7 @@ Could not locate {ROM} in any of these locations:
 
             unsafe
             {
-                TC1014RegistersState* registersState = GetTC1014RegistersState();
+                TC1014State* registersState = GetTC1014State();
 
                 switch (port)
                 {
@@ -4436,7 +4431,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014RegistersState* registersState = GetTC1014RegistersState();
+                TC1014State* registersState = GetTC1014State();
 
                 registersState->GimeRegisters[port] = data;
 
@@ -4546,7 +4541,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014RegistersState* registersState = GetTC1014RegistersState();
+                TC1014State* registersState = GetTC1014State();
 
                 _graphics.SetCompatMode((byte)((data & 128) == 0 ? 0 : 1));
                 SetMmuEnabled((byte)((data & 64) == 0 ? 0 : 1)); //MMUEN
@@ -4570,7 +4565,7 @@ Could not locate {ROM} in any of these locations:
 
             unsafe
             {
-                TC1014RegistersState* registersState = GetTC1014RegistersState();
+                TC1014State* registersState = GetTC1014State();
 
                 temp = (ushort)(((registersState->GimeRegisters[0x94] << 8) + registersState->GimeRegisters[0x95]) & 4095);
             }
@@ -4585,7 +4580,7 @@ Could not locate {ROM} in any of these locations:
 
             unsafe
             {
-                TC1014RegistersState* registersState = GetTC1014RegistersState();
+                TC1014State* registersState = GetTC1014State();
 
                 temp = (ushort)(((registersState->GimeRegisters[0x94] << 8) + registersState->GimeRegisters[0x95]) & 4095);
             }
@@ -4597,7 +4592,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014RegistersState* registersState = GetTC1014RegistersState();
+                TC1014State* registersState = GetTC1014State();
 
                 bool TestMask(int address, int mask) => (registersState->GimeRegisters[address] & mask) != 0;
                 byte Test(int mask) => TestMask(0x92, mask) | TestMask(0x93, mask) ? (byte)1 : (byte)0;
@@ -4614,7 +4609,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014RegistersState* registersState = GetTC1014RegistersState();
+                TC1014State* registersState = GetTC1014State();
 
                 bool TestMask(int address, int mask) => (registersState->GimeRegisters[address] & mask) != 0;
                 byte Test(int mask) => TestMask(0x92, mask) | TestMask(0x93, mask) ? (byte)1 : (byte)0;
@@ -4630,7 +4625,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014RegistersState* registersState = GetTC1014RegistersState();
+                TC1014State* registersState = GetTC1014State();
 
                 if (((registersState->GimeRegisters[0x93] & 16) != 0) && (registersState->EnhancedFIRQFlag == 1))
                 {
@@ -4651,7 +4646,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014RegistersState* registersState = GetTC1014RegistersState();
+                TC1014State* registersState = GetTC1014State();
 
                 if (((registersState->GimeRegisters[0x93] & 32) != 0) && (registersState->EnhancedFIRQFlag == 1))
                 {
@@ -4672,7 +4667,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014MmuState* instance = GetTC1014MmuState();
+                TC1014State* instance = GetTC1014State();
 
                 instance->MapType = type;
             }
@@ -4691,7 +4686,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014MmuState* instance = GetTC1014MmuState();
+                TC1014State* instance = GetTC1014State();
 
                 if (instance->MapType != 0)
                 {
@@ -4757,7 +4752,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014MmuState* instance = GetTC1014MmuState();
+                TC1014State* instance = GetTC1014State();
 
                 MmuTask = task;
                 instance->MmuState = (byte)((MmuEnabled == 0 ? 1 : 0) << 1 | MmuTask);
@@ -4771,7 +4766,7 @@ Could not locate {ROM} in any of these locations:
 
             unsafe
             {
-                TC1014MmuState* instance = GetTC1014MmuState();
+                TC1014State* instance = GetTC1014State();
 
                 int index = 8 * task + bankRegister;
 
@@ -4784,7 +4779,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014MmuState* instance = GetTC1014MmuState();
+                TC1014State* instance = GetTC1014State();
 
                 switch (instance->CurrentRamConfig)
                 {
@@ -4813,7 +4808,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014MmuState* instance = GetTC1014MmuState();
+                TC1014State* instance = GetTC1014State();
 
                 MmuPrefix = (ushort)((data & 3) << 8);
             }
@@ -4833,7 +4828,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014MmuState* instance = GetTC1014MmuState();
+                TC1014State* instance = GetTC1014State();
 
                 MmuEnabled = flag;
                 instance->MmuState = (byte)((MmuEnabled == 0 ? 1 : 0) << 1 | MmuTask);

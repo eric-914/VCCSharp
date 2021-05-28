@@ -1,24 +1,30 @@
-#include "TC1014MMU.h"
+#include "TC1014.h"
+
 #include "PAKInterface.h"
 
-#include "TC1014MmuState.h"
-
 #include "macros.h"
+#include "cpudef.h"
+#include "defines.h"
 
 const unsigned char VectorMask[4] = { 15, 63, 63, 63 };
 const unsigned char VectorMaska[4] = { 12, 60, 60, 60 };
 
-TC1014MmuState* InitializeInstance(TC1014MmuState*);
+TC1014State* InitializeInstance(TC1014State*);
 
-static TC1014MmuState* instance = InitializeInstance(new TC1014MmuState());
+static TC1014State* instance = InitializeInstance(new TC1014State());
 
 extern "C" {
-  __declspec(dllexport) TC1014MmuState* __cdecl GetTC1014MmuState() {
+  __declspec(dllexport) TC1014State* __cdecl GetTC1014State() {
     return instance;
   }
 }
 
-TC1014MmuState* InitializeInstance(TC1014MmuState* p) {
+TC1014State* InitializeInstance(TC1014State* p) {
+  p->EnhancedFIRQFlag = 0;
+  p->EnhancedIRQFlag = 0;
+  p->LastIrq = 0;
+  p->LastFirq = 0;
+
   p->MmuState = 0;
   p->MapType = 0;
   p->CurrentRamConfig = 1;
@@ -27,6 +33,26 @@ TC1014MmuState* InitializeInstance(TC1014MmuState* p) {
   ARRAYCOPY(VectorMaska);
 
   return p;
+}
+
+/***************************************************
+* Used by Keyboard.c
+***************************************************/
+
+extern "C" {
+  __declspec(dllexport) void __cdecl GimeAssertKeyboardInterrupt(void)
+  {
+    if (((instance->GimeRegisters[0x93] & 2) != 0) && (instance->EnhancedFIRQFlag == 1)) {
+      CPUAssertInterrupt(FIRQ, 0);
+
+      instance->LastFirq |= 2;
+    }
+    else if (((instance->GimeRegisters[0x92] & 2) != 0) && (instance->EnhancedIRQFlag == 1)) {
+      CPUAssertInterrupt(IRQ, 0);
+
+      instance->LastIrq |= 2;
+    }
+  }
 }
 
 /******************************************************************************************
