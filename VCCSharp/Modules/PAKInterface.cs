@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
@@ -34,6 +36,8 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
         private readonly IKernel _kernel;
 
+        private string _dllPath;
+
         public PAKInterface(IModules modules, IKernel kernel)
         {
             _modules = modules;
@@ -55,33 +59,31 @@ namespace VCCSharp.Modules
 
         public string GetCurrentModule()
         {
-            unsafe
-            {
-                return Converter.ToString(GetPakInterfaceState()->DllPath);
-            }
+            return _dllPath;
         }
 
         //TODO: Used by LoadROMPack(...), UnloadPack(...), InsertModule(...)
-        public void UnloadDll(byte emulationRunning)
+        public unsafe void UnloadDll(byte emulationRunning)
         {
-            //PakInterfaceState* pakInterfaceState = GetPakInterfaceState();
+            PakInterfaceState* instance = GetPakInterfaceState();
 
-            //if ((pakInterfaceState->DialogOpen == Define.TRUE) && (emuState->EmulationRunning == Define.TRUE))
-            //{
-            //    MessageBox.Show("Close Configuration Dialog before unloading", "Ok");
+            if ((instance->DialogOpen == Define.TRUE) && (emulationRunning == Define.TRUE))
+            {
+                MessageBox.Show("Close Configuration Dialog before unloading", "Ok");
 
-            //    return;
-            //}
+                return;
+            }
 
-            Library.PAKInterface.UnloadDll(emulationRunning);
+            UnloadModule();
 
-            //if (pakInterfaceState->hInstLib != null) {
-            //    _kernel.FreeLibrary(pakInterfaceState->hInstLib);
-            //}
+            if (instance->hInstLib != IntPtr.Zero)
+            {
+                PakFreeLibrary(instance->hInstLib);
+            }
 
-            //pakInterfaceState->hInstLib = Zero;
+            instance->hInstLib = IntPtr.Zero;
 
-            //_modules.MenuCallbacks.DynamicMenuCallback(emuState, null, MenuActions.Refresh, Define.IGNORE);
+            _modules.MenuCallbacks.DynamicMenuCallback(null, MenuActions.Refresh, Define.IGNORE);
         }
 
         public void ResetBus()
@@ -107,7 +109,7 @@ namespace VCCSharp.Modules
 
         public int InsertModule(byte emulationRunning, string modulePath)
         {
-            int fileType = FileID(modulePath);
+            int fileType = FileId(modulePath);
 
             switch (fileType)
             {
@@ -133,10 +135,8 @@ namespace VCCSharp.Modules
         //File is a DLL
         public int InsertModuleCase1(byte emulationRunning, string modulePath)
         {
+            ushort moduleParams = 0;
             string catNumber = "";
-            string temp = "";
-            string text = "";
-            string ini = "";
 
             UnloadDll(emulationRunning);
 
@@ -144,7 +144,7 @@ namespace VCCSharp.Modules
             {
                 PakInterfaceState* instance = GetPakInterfaceState();
 
-                instance->hInstLib = PAKLoadLibrary(modulePath);
+                instance->hInstLib = PakLoadLibrary(modulePath);
 
                 if (instance->hInstLib == HINSTANCE.Zero)
                 {
@@ -155,7 +155,7 @@ namespace VCCSharp.Modules
 
                 if (SetDelegates(instance->hInstLib) != 0)
                 {
-                    PAKFreeLibrary(instance->hInstLib);
+                    PakFreeLibrary(instance->hInstLib);
 
                     instance->hInstLib = HINSTANCE.Zero;
 
@@ -177,104 +177,98 @@ namespace VCCSharp.Modules
                 string modName = Converter.ToString(instance->Modname);
                 InvokeGetModuleName(modName, catNumber);  //Instantiate the menus from HERE!
 
-                //sprintf(temp, "Configure %s", instance->Modname);
-                temp = $"Configure {modName}";
-
-                //strcat(text, "Module Name: ");
-                //strcat(text, instance->Modname);
-                //strcat(text, "\n");
-                text = $"Module Name: {modName}\n";
+                var temp = $"Configure {modName}";
+                var text = $"Module Name: {modName}\n";
 
                 if (HasConfigModule() != 0)
                 {
-                    instance->ModualParms |= 1;
+                    moduleParams |= 1;
 
                     text += "Has Configurable options\n";
                 }
 
                 if (HasPakPortWrite() != 0)
                 {
-                    instance->ModualParms |= 2;
+                    moduleParams |= 2;
 
                     text += "Is IO writable\n";
                 }
 
                 if (HasPakPortRead() != 0)
                 {
-                    instance->ModualParms |= 4;
+                    moduleParams |= 4;
 
                     text += "Is IO readable\n";
                 }
 
                 if (HasSetInterruptCallPointer() != 0)
                 {
-                    instance->ModualParms |= 8;
+                    moduleParams |= 8;
 
                     text += "Generates Interrupts\n";
                 }
 
                 if (HasDmaMemPointer() != 0)
                 {
-                    instance->ModualParms |= 16;
+                    moduleParams |= 16;
 
                     text += "Generates DMA Requests\n";
                 }
 
                 if (HasHeartBeat() != 0)
                 {
-                    instance->ModualParms |= 32;
+                    moduleParams |= 32;
 
                     text += "Needs Heartbeat\n";
                 }
 
                 if (HasModuleAudioSample() != 0)
                 {
-                    instance->ModualParms |= 64;
+                    moduleParams |= 64;
 
                     text += "Analog Audio Outputs\n";
                 }
 
                 if (HasPakMemWrite8() != 0)
                 {
-                    instance->ModualParms |= 128;
+                    moduleParams |= 128;
 
                     text += "Needs ChipSelect Write\n";
                 }
 
                 if (HasPakMemRead8() != 0)
                 {
-                    instance->ModualParms |= 256;
+                    moduleParams |= 256;
 
                     text += "Needs ChipSelect Read\n";
                 }
 
                 if (HasModuleStatus())
                 {
-                    instance->ModualParms |= 512;
+                    moduleParams |= 512;
 
                     text += "Returns Status\n";
                 }
 
                 if (HasModuleReset() != 0)
                 {
-                    instance->ModualParms |= 1024;
+                    moduleParams |= 1024;
 
                     text += "Needs Reset Notification\n";
                 }
 
                 if (HasSetIniPath() != 0)
                 {
-                    instance->ModualParms |= 2048;
+                    moduleParams |= 2048;
 
-                    //strcpy(ini, GetConfigState()->IniFilePath);
-                    ini = Converter.ToString(_modules.Config.GetConfigState()->IniFilePath);
+                    var ini = Converter.ToString(_modules.Config.GetConfigState()->IniFilePath);
 
                     InvokeSetIniPath(ini);
                 }
 
                 if (HasPakSetCart() != 0)
                 {
-                    instance->ModualParms |= 4096;
+                    moduleParams |= 4096;
 
                     text += "Can Assert CART\n";
 
@@ -284,8 +278,7 @@ namespace VCCSharp.Modules
                 Console.WriteLine(temp);
                 Console.WriteLine(text);
 
-                //strcpy(instance->DllPath, modulePath);
-                Converter.ToByteArray(modulePath, instance->DllPath);
+                _dllPath = modulePath;
 
                 return 0;
             }
@@ -296,17 +289,15 @@ namespace VCCSharp.Modules
         {
             UnloadDll(emulationRunning);
 
-            LoadROMPack(emulationRunning, modulePath);
+            LoadRomPack(emulationRunning, modulePath);
 
             unsafe
             {
                 PakInterfaceState* instance = GetPakInterfaceState();
 
-                //strncpy(instance->Modname, modulePath, MAX_PATH);
                 Converter.ToByteArray(modulePath, instance->Modname);
 
                 _modules.FileOperations.FilePathStripPath(instance->Modname);
-
             }
 
             _modules.MenuCallbacks.DynamicMenuCallback(null, MenuActions.Refresh, Define.IGNORE);
@@ -386,7 +377,12 @@ namespace VCCSharp.Modules
 
         public ushort PakAudioSample()
         {
-            return Library.PAKInterface.PakAudioSample();
+            if (HasModuleAudioSample() != 0)
+            {
+                return (ReadModuleAudioSample());
+            }
+
+            return 0;
         }
 
         public int HasConfigModule()
@@ -399,12 +395,12 @@ namespace VCCSharp.Modules
             Library.PAKInterface.InvokeConfigModule(menuItem);
         }
 
-        public int FileID(string filename)
+        public int FileId(string filename)
         {
             return Library.PAKInterface.FileID(filename);
         }
 
-        public HINSTANCE PAKLoadLibrary(string modulePath)
+        public HINSTANCE PakLoadLibrary(string modulePath)
         {
             return Library.PAKInterface.PAKLoadLibrary(modulePath);
         }
@@ -419,7 +415,7 @@ namespace VCCSharp.Modules
             return Library.PAKInterface.SetDelegates(hInstLib);
         }
 
-        public void PAKFreeLibrary(HINSTANCE hInstLib)
+        public void PakFreeLibrary(HINSTANCE hInstLib)
         {
             Library.PAKInterface.PAKFreeLibrary(hInstLib);
         }
@@ -484,9 +480,36 @@ namespace VCCSharp.Modules
             Library.PAKInterface.InvokePakSetCart();
         }
 
-        public int LoadROMPack(byte emulationRunning, string filename)
+        /**
+            Load a ROM pack
+            return total bytes loaded, or 0 on failure
+        */
+        public int LoadRomPack(byte emulationRunning, string filename)
         {
-            return Library.PAKInterface.LoadROMPack(emulationRunning, filename);
+            unsafe
+            {
+                PakInterfaceState* instance = GetPakInterfaceState();
+
+                if (ResetRomBuffer(instance->ExternalRomBuffer) == 0)
+                {
+                    return 0;
+                }
+
+                var rom = File.ReadAllBytes(filename);
+
+                for (int i = 0; i < rom.Length; i++)
+                {
+                    instance->ExternalRomBuffer[i] = rom[i];
+                }
+
+                UnloadDll(emulationRunning);
+
+                instance->BankedCartOffset = 0;
+                instance->RomPackLoaded = Define.TRUE;
+
+                return rom.Length;
+            }
+
         }
 
         public int UnloadPack(byte emulationRunning)
@@ -497,7 +520,7 @@ namespace VCCSharp.Modules
             {
                 PakInterfaceState* instance = GetPakInterfaceState();
 
-                Converter.ToByteArray("", instance->DllPath);
+                _dllPath = "";
                 Converter.ToByteArray("Blank", instance->Modname);
 
                 instance->RomPackLoaded = Define.FALSE;
@@ -519,5 +542,30 @@ namespace VCCSharp.Modules
             Library.PAKInterface.FreeMemory(target);
         }
 
+        public ushort ReadModuleAudioSample()
+        {
+            return Library.PAKInterface.ReadModuleAudioSample();
+        }
+
+        public void UnloadModule()
+        {
+            Library.PAKInterface.UnloadModule();
+        }
+
+        public unsafe int ResetRomBuffer(byte* buffer)
+        {
+            Library.PAKInterface.ResetRomBuffer(buffer);
+
+            PakInterfaceState* instance = GetPakInterfaceState();
+
+            // If memory was unable to be allocated, fail
+            if (instance->ExternalRomBuffer == null) {
+                MessageBox.Show("cant allocate ram", "Ok");
+
+                return 0;
+            }
+
+            return 1;
+        }
     }
 }

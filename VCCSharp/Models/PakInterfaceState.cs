@@ -13,8 +13,6 @@ namespace VCCSharp.Models
         public int RomPackLoaded;
 
         public uint BankedCartOffset;
-        public unsafe fixed byte DllPath[256];
-        public ushort ModualParms;
         public int DialogOpen;
 
         public unsafe fixed byte Modname[Define.MAX_PATH];

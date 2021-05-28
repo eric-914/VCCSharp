@@ -4,10 +4,6 @@
 #include "PakInterfaceDelegates.h"
 #include "PakInterfaceModule.h"
 
-#include "Config.h"
-#include "fileoperations.h"
-#include "MenuCallbacks.h"
-
 #define MAX_LOADSTRING 255
 
 #define NOMODULE	1
@@ -29,11 +25,9 @@ PakInterfaceState* InitializeInstance(PakInterfaceState* p) {
   p->CartInserted = 0;
 
   p->BankedCartOffset = 0;
-  p->ModualParms = 0;
   p->DialogOpen = false;
   p->RomPackLoaded = false;
 
-  strcpy(p->DllPath, "");
   strcpy(p->Modname, "Blank");
 
   p->ExternalRomBuffer = nullptr;
@@ -65,6 +59,19 @@ extern "C" {
   __declspec(dllexport) void __cdecl SetCart(unsigned char cart)
   {
     instance->CartInserted = cart;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl ResetRomBuffer(unsigned char* buffer)
+  {
+    constexpr size_t PAK_MAX_MEM = 0x40000;
+
+    // If there is an existing ROM, ditch it
+    FreeMemory(instance->ExternalRomBuffer);
+
+    // Allocate memory for the ROM
+    instance->ExternalRomBuffer = (uint8_t*)malloc(PAK_MAX_MEM);
   }
 }
 
@@ -123,93 +130,12 @@ extern "C" {
     }
 
     int offset = (address & 32767) + instance->BankedCartOffset;
+
     if (instance->ExternalRomBuffer != NULL) {
       //TODO: Threading makes it possible to reach here where ExternalRomBuffer = NULL despite check.
       return(instance->ExternalRomBuffer[offset]);
     }
 
     return 0;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned short __cdecl PakAudioSample()
-  {
-    if (HasModuleAudioSample()) {
-      return(ReadModuleAudioSample());
-    }
-
-    return NULL;
-  }
-}
-
-//===============================================================
-//TODO: Partially ported to C#
-// Used by LoadROMPack(...), UnloadPack(...), InsertModule(...)
-//===============================================================
-extern "C" {
-  __declspec(dllexport) void __cdecl UnloadDll(unsigned char emulationRunning)
-  {
-    if ((instance->DialogOpen) && (emulationRunning))
-    {
-      MessageBox(0, "Close Configuration Dialog before unloading", "Ok", 0);
-
-      return;
-    }
-
-    UnloadModule();
-
-    if (instance->hInstLib != NULL) {
-      FreeLibrary(instance->hInstLib);
-    }
-
-    instance->hInstLib = NULL;
-
-    DynamicMenuCallback(NULL, MENU_REFRESH, IGNORE);
-  }
-}
-
-/**
-Load a ROM pack
-return total bytes loaded, or 0 on failure
-*/
-extern "C" {
-  __declspec(dllexport) int __cdecl LoadROMPack(unsigned char emulationRunning, char* filename)
-  {
-    constexpr size_t PAK_MAX_MEM = 0x40000;
-
-    // If there is an existing ROM, ditch it
-    FreeMemory(instance->ExternalRomBuffer);
-
-    // Allocate memory for the ROM
-    instance->ExternalRomBuffer = (uint8_t*)malloc(PAK_MAX_MEM);
-
-    // If memory was unable to be allocated, fail
-    if (instance->ExternalRomBuffer == nullptr) {
-      MessageBox(0, "cant allocate ram", "Ok", 0);
-
-      return 0;
-    }
-
-    // Open the ROM file, fail if unable to
-    FILE* rom_handle = fopen(filename, "rb");
-
-    if (rom_handle == nullptr) return 0;
-
-    // Load the file, one byte at a time.. (TODO: Get size and read entire block)
-    int index = 0;
-
-    while ((feof(rom_handle) == 0) && (index < PAK_MAX_MEM)) {
-      instance->ExternalRomBuffer[index++] = fgetc(rom_handle);
-    }
-
-    fclose(rom_handle);
-
-    UnloadDll(emulationRunning);
-
-    instance->BankedCartOffset = 0;
-    instance->RomPackLoaded = true;
-
-    return index;
   }
 }

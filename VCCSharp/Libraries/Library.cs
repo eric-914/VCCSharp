@@ -345,9 +345,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe PakInterfaceState* GetPakInterfaceState();
 
             [DllImport(LIBRARY)]
-            public static extern void UnloadDll(byte emulationRunning);
-
-            [DllImport(LIBRARY)]
             public static extern int HasHeartBeat();
 
             [DllImport(LIBRARY)]
@@ -376,9 +373,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void InvokeModuleStatus(byte* statusLine);
-
-            [DllImport(LIBRARY)]
-            public static extern ushort PakAudioSample();
 
             [DllImport(LIBRARY)]
             public static extern int HasConfigModule();
@@ -438,10 +432,16 @@ namespace VCCSharp.Libraries
             public static extern void InvokePakSetCart();
 
             [DllImport(LIBRARY)]
-            public static extern int LoadROMPack(byte emulationRunning, string filename);
+            public static extern unsafe void FreeMemory(byte* target);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void FreeMemory(byte* target);
+            public static extern ushort ReadModuleAudioSample();
+
+            [DllImport(LIBRARY)]
+            public static extern void UnloadModule();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void ResetRomBuffer(byte* buffer);
         } //--PAKInterface
 
         public static class TC1014
