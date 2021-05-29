@@ -2,7 +2,7 @@
 
 // ReSharper disable CommentTypo
 // ReSharper disable InconsistentNaming
-namespace VCCSharp.Models.Pak
+namespace VCCSharp.Models
 {
     #region PAKMEMREAD8
 

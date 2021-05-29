@@ -35,7 +35,7 @@ namespace VCCSharp.Modules
                     return _modules.PAKInterface.UnloadPack(emulationRunning);
 
                 default:
-                    if (_modules.PAKInterface.HasConfigModule() != 0)
+                    if (_modules.PAKInterface.HasConfigModule())
                     {
                         //--Original code was passing an unsigned char, though the menu ids are integers
                         _modules.PAKInterface.InvokeConfigModule((byte)(menuItem - Define.ID_DYNAMENU_START));

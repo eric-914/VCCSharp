@@ -6,7 +6,6 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
-using VCCSharp.Models.Pak;
 using HINSTANCE = System.IntPtr;
 using HMODULE = System.IntPtr;
 
@@ -25,7 +24,7 @@ namespace VCCSharp.Modules
         byte PakPortRead(byte port);
         void PakPortWrite(byte port, byte data);
         ushort PakAudioSample();
-        int HasConfigModule();
+        bool HasConfigModule();
         void InvokeConfigModule(byte menuItem);
         int UnloadPack(byte emulationRunning);
         byte CartInserted { get; set; }
@@ -52,7 +51,7 @@ namespace VCCSharp.Modules
         // ReSharper disable once InconsistentNaming
         public HINSTANCE hInstLib;
 
-        private PakInterfaceDelegates _d = new PakInterfaceDelegates();
+        private readonly PakInterfaceDelegates _d = new PakInterfaceDelegates();
 
         public PAKInterface(IModules modules)
         {
@@ -66,7 +65,7 @@ namespace VCCSharp.Modules
 
         public void PakTimer()
         {
-            if (HasHeartBeat() != Define.FALSE)
+            if (HasHeartBeat())
             {
                 InvokeHeartBeat();
             }
@@ -103,7 +102,7 @@ namespace VCCSharp.Modules
         {
             BankedCartOffset = 0;
 
-            if (HasModuleReset() == Define.TRUE)
+            if (HasModuleReset())
             {
                 InvokeModuleReset();
             }
@@ -111,7 +110,7 @@ namespace VCCSharp.Modules
 
         public void UpdateBusPointer()
         {
-            if (HasSetInterruptCallPointer() == Define.TRUE)
+            if (HasSetInterruptCallPointer())
             {
                 InvokeSetInterruptCallPointer();
             }
@@ -170,12 +169,12 @@ namespace VCCSharp.Modules
 
             BankedCartOffset = 0;
 
-            if (HasDmaMemPointer() != 0)
+            if (HasDmaMemPointer())
             {
                 InvokeDmaMemPointer();
             }
 
-            if (HasSetInterruptCallPointer() != 0)
+            if (HasSetInterruptCallPointer())
             {
                 InvokeSetInterruptCallPointer();
             }
@@ -186,63 +185,63 @@ namespace VCCSharp.Modules
             var temp = $"Configure {modName}";
             var text = $"Module Name: {modName}\n";
 
-            if (HasConfigModule() != 0)
+            if (HasConfigModule())
             {
                 moduleParams |= 1;
 
                 text += "Has Configurable options\n";
             }
 
-            if (HasPakPortWrite() != 0)
+            if (HasPakPortWrite())
             {
                 moduleParams |= 2;
 
                 text += "Is IO writable\n";
             }
 
-            if (HasPakPortRead() != 0)
+            if (HasPakPortRead())
             {
                 moduleParams |= 4;
 
                 text += "Is IO readable\n";
             }
 
-            if (HasSetInterruptCallPointer() != 0)
+            if (HasSetInterruptCallPointer())
             {
                 moduleParams |= 8;
 
                 text += "Generates Interrupts\n";
             }
 
-            if (HasDmaMemPointer() != 0)
+            if (HasDmaMemPointer())
             {
                 moduleParams |= 16;
 
                 text += "Generates DMA Requests\n";
             }
 
-            if (HasHeartBeat() != 0)
+            if (HasHeartBeat())
             {
                 moduleParams |= 32;
 
                 text += "Needs Heartbeat\n";
             }
 
-            if (HasModuleAudioSample() != 0)
+            if (HasModuleAudioSample())
             {
                 moduleParams |= 64;
 
                 text += "Analog Audio Outputs\n";
             }
 
-            if (HasPakMemWrite8() != 0)
+            if (HasPakMemWrite8())
             {
                 moduleParams |= 128;
 
                 text += "Needs ChipSelect Write\n";
             }
 
-            if (HasPakMemRead8() != 0)
+            if (HasPakMemRead8())
             {
                 moduleParams |= 256;
 
@@ -256,21 +255,21 @@ namespace VCCSharp.Modules
                 text += "Returns Status\n";
             }
 
-            if (HasModuleReset() != 0)
+            if (HasModuleReset())
             {
                 moduleParams |= 1024;
 
                 text += "Needs Reset Notification\n";
             }
 
-            if (HasSetIniPath() != 0)
+            if (HasSetIniPath())
             {
                 moduleParams |= 2048;
 
                 InvokeSetIniPath(_modules.Config.IniFilePath);
             }
 
-            if (HasPakSetCart() != 0)
+            if (HasPakSetCart())
             {
                 moduleParams |= 4096;
 
@@ -324,12 +323,7 @@ namespace VCCSharp.Modules
 
         public byte PakPortRead(byte port)
         {
-            if (HasModulePortRead() != 0)
-            {
-                return ModulePortRead(port);
-            }
-
-            return 0;
+            return HasModulePortRead() ? ModulePortRead(port) : (byte) 0;
         }
 
         public void PakPortWrite(byte port, byte data)
@@ -345,7 +339,7 @@ namespace VCCSharp.Modules
 
         public ushort PakAudioSample()
         {
-            if (HasModuleAudioSample() != 0)
+            if (HasModuleAudioSample())
             {
                 return (ReadModuleAudioSample());
             }
@@ -430,19 +424,19 @@ namespace VCCSharp.Modules
             }
         }
 
-        public int HasSetInterruptCallPointer()
+        public bool HasSetInterruptCallPointer()
         {
             unsafe
             {
-                return _d.SetInterruptCallPointer == null ? Define.FALSE : Define.TRUE;
+                return _d.SetInterruptCallPointer != null;
             }
         }
 
-        public int HasModuleReset()
+        public bool HasModuleReset()
         {
             unsafe
             {
-                return _d.ModuleReset == null ? Define.FALSE : Define.TRUE;
+                return _d.ModuleReset != null;
             }
         }
 
@@ -454,84 +448,84 @@ namespace VCCSharp.Modules
             }
         }
 
-        public int HasDmaMemPointer()
+        public bool HasDmaMemPointer()
         {
             unsafe
             {
-                return _d.DmaMemPointers == null ? Define.FALSE : Define.TRUE;
+                return _d.DmaMemPointers != null;
             }
         }
 
-        public int HasModuleAudioSample()
+        public bool HasModuleAudioSample()
         {
             unsafe
             {
-                return _d.ModuleAudioSample == null ? Define.FALSE : Define.TRUE;
+                return _d.ModuleAudioSample != null;
             }
         }
 
-        public int HasPakMemWrite8()
+        public bool HasPakMemWrite8()
         {
             unsafe
             {
-                return _d.PakMemWrite8 == null ? Define.FALSE : Define.TRUE;
+                return _d.PakMemWrite8 != null;
             }
         }
 
-        public int HasPakMemRead8()
+        public bool HasPakMemRead8()
         {
             unsafe
             {
 
-                return _d.PakMemRead8 == null ? Define.FALSE : Define.TRUE;
+                return _d.PakMemRead8 != null;
             }
         }
 
-        public int HasSetIniPath()
+        public bool HasSetIniPath()
         {
             unsafe
             {
-                return _d.SetIniPath == null ? Define.FALSE : Define.TRUE;
+                return _d.SetIniPath != null;
             }
         }
 
-        public int HasPakSetCart()
+        public bool HasPakSetCart()
         {
             unsafe
             {
-                return _d.PakSetCart == null ? Define.FALSE : Define.TRUE;
+                return _d.PakSetCart != null;
             }
         }
 
-        public int HasPakPortWrite()
+        public bool HasPakPortWrite()
         {
             unsafe
             {
-                return _d.PakPortWrite == null ? Define.FALSE : Define.TRUE;
+                return _d.PakPortWrite != null;
             }
         }
 
-        public int HasPakPortRead()
+        public bool HasPakPortRead()
         {
             unsafe
             {
-                return _d.PakPortRead == null ? Define.FALSE : Define.TRUE;
+                return _d.PakPortRead != null;
             }
         }
 
-        public int HasHeartBeat()
+        public bool HasHeartBeat()
         {
             unsafe
             {
-                return _d.HeartBeat == null ? Define.FALSE : Define.TRUE;
+                return _d.HeartBeat != null;
             }
         }
 
-        public int HasConfigModule()
+        public bool HasConfigModule()
         {
             unsafe
             {
-                return _d.ConfigModule == null ? Define.FALSE : Define.TRUE;
+                return _d.ConfigModule != null;
             }
         }
 
@@ -623,7 +617,7 @@ namespace VCCSharp.Modules
         {
             void CpuAssertInterrupt(byte irq, byte flag)
             {
-                _modules.CPU.CPUAssertInterrupt((CPUInterrupts) irq, flag);
+                _modules.CPU.CPUAssertInterrupt((CPUInterrupts)irq, flag);
             }
 
             unsafe
@@ -759,7 +753,8 @@ namespace VCCSharp.Modules
 
         public byte PakMem8Read(ushort address)
         {
-            if (HasModuleMem8Read() != 0) {
+            if (HasModuleMem8Read())
+            {
                 return ModuleMem8Read(address);
             }
 
@@ -772,7 +767,7 @@ namespace VCCSharp.Modules
                 {
                     if (ExternalRomBuffer != null)
                     {
-                        return(ExternalRomBuffer[offset]);
+                        return (ExternalRomBuffer[offset]);
                     }
                 }
             }
@@ -780,11 +775,11 @@ namespace VCCSharp.Modules
             return 0;
         }
 
-        public int HasModulePortRead()
+        public bool HasModulePortRead()
         {
             unsafe
             {
-                return _d.PakPortRead == null ? Define.FALSE : Define.TRUE;
+                return _d.PakPortRead != null;
             }
         }
 
@@ -800,11 +795,11 @@ namespace VCCSharp.Modules
             }
         }
 
-        public int HasModuleMem8Read()
+        public bool HasModuleMem8Read()
         {
             unsafe
             {
-                return _d.PakMemRead8 == null ? Define.FALSE : Define.TRUE;
+                return _d.PakMemRead8 != null;
             }
         }
 

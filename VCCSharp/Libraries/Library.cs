@@ -2,7 +2,6 @@
 using System.Runtime.InteropServices;
 using System.Security;
 using VCCSharp.Models;
-using VCCSharp.Models.Pak;
 using HANDLE = System.IntPtr;
 using HINSTANCE = System.IntPtr;
 using HWND = System.IntPtr;
