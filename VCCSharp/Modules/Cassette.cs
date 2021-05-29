@@ -65,6 +65,8 @@ namespace VCCSharp.Modules
         public uint TempIndex;
         public byte[] TempBuffer = new byte[8192];
 
+        public byte[] CasBuffer = new byte[Define.WRITEBUFFERSIZE];
+
         public Action<int> UpdateTapeDialog { get; set; }
 
         public Cassette(IModules modules, IKernel kernel)
@@ -73,11 +75,6 @@ namespace VCCSharp.Modules
             _kernel = kernel;
 
             UpdateTapeDialog = offset => { }; //_modules.Config.UpdateTapeDialog((uint) offset);
-        }
-
-        public unsafe CassetteState* GetCassetteState()
-        {
-            return Library.Cassette.GetCassetteState();
         }
 
         public unsafe void LoadCassetteBuffer(byte* buffer)
@@ -110,8 +107,6 @@ namespace VCCSharp.Modules
 
         public unsafe void CasToWav(byte* buffer, ushort bytesToConvert, uint* bytesConverted)
         {
-            CassetteState* instance = GetCassetteState();
-
             if (_quiet > 0)
             {
                 _quiet--;
@@ -140,7 +135,7 @@ namespace VCCSharp.Modules
 
             while ((TempIndex < bytesToConvert) && (TapeOffset <= _totalSize))
             {
-                var b = instance->CasBuffer[(TapeOffset++) % _totalSize];
+                var b = CasBuffer[(TapeOffset++) % _totalSize];
 
                 byte mask;
                 for (mask = 0; mask <= 7; mask++)
@@ -322,8 +317,6 @@ namespace VCCSharp.Modules
 
         public unsafe void FlushCassetteCas(byte* buffer, uint length)
         {
-            CassetteState* instance = GetCassetteState();
-
             for (int index = 0; index < length; index++)
             {
                 var sample = buffer[index];
@@ -354,7 +347,7 @@ namespace VCCSharp.Modules
 
                         if (_mask == 0)
                         {
-                            instance->CasBuffer[TapeOffset++] = _byte;
+                            CasBuffer[TapeOffset++] = _byte;
                             _byte = 0;
 
                             //Don't blow past the end of the buffer
@@ -382,8 +375,6 @@ namespace VCCSharp.Modules
         //Return 1 on success 0 on fail
         public unsafe int MountTape(string filename)
         {
-            CassetteState* instance = GetCassetteState();
-
             if (TapeHandle != Zero)
             {
                 TapeMode = Define.STOP;
@@ -431,7 +422,10 @@ namespace VCCSharp.Modules
                 ulong moved = 0;
 
                 //Read the whole file in for .CAS files
-                _modules.FileOperations.FileReadFile(TapeHandle, instance->CasBuffer, _totalSize, &moved);
+                fixed (byte* p = CasBuffer)
+                {
+                    _modules.FileOperations.FileReadFile(TapeHandle, p, _totalSize, &moved);
+                }
 
                 _bytesMoved = (uint)moved;
 
@@ -466,16 +460,17 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                CassetteState* instance = GetCassetteState();
-
-                instance->CasBuffer[TapeOffset] = _byte;	//capture the last byte
+                CasBuffer[TapeOffset] = _byte;	//capture the last byte
                 LastTrans = 0;	//reset all static inter-call variables
                 _mask = 0;
                 _byte = 0;
                 _lastSample = 0;
                 TempIndex = 0;
 
-                _modules.FileOperations.FileWriteFile(TapeHandle, instance->CasBuffer, (int)(TapeOffset));
+                fixed (byte* p = CasBuffer)
+                {
+                    _modules.FileOperations.FileWriteFile(TapeHandle, p, (int) (TapeOffset));
+                }
             }
         }
 
@@ -534,17 +529,7 @@ namespace VCCSharp.Modules
 
         public void ResetCassetteBuffer()
         {
-            unsafe
-            {
-                CassetteState* instance = GetCassetteState();
-
-                if (instance->CasBuffer != null)
-                {
-                    _modules.PAKInterface.FreeMemory(instance->CasBuffer);
-                }
-            }
-
-            Library.Cassette.ResetCassetteBuffer();
+            CasBuffer = new byte[Define.WRITEBUFFERSIZE];
         }
     }
 }

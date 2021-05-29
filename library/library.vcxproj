@@ -163,7 +163,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Cassette.c" />
     <ClCompile Include="DirectDrawInternal.c" />
     <ClCompile Include="DirectDrawSurfaceDesc.c" />
     <ClCompile Include="DirectInput.c" />

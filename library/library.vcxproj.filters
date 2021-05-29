@@ -4,7 +4,6 @@
     <ClCompile Include="library.cpp" />
     <ClCompile Include="DirectSound.c" />
     <ClCompile Include="MenuCallbacks.c" />
-    <ClCompile Include="Cassette.c" />
     <ClCompile Include="DirectDrawInternal.c" />
     <ClCompile Include="DirectDrawSurfaceDesc.c" />
     <ClCompile Include="fileoperations.c" />

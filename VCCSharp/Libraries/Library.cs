@@ -22,15 +22,6 @@ namespace VCCSharp.Libraries
             public static extern void RefreshDynamicMenu(HWND hWnd);
         }
 
-        public static class Cassette
-        {
-            [DllImport(LIBRARY)]
-            public static extern unsafe CassetteState* GetCassetteState();
-
-            [DllImport(LIBRARY)]
-            public static extern void ResetCassetteBuffer();
-        }
-
         public static class DirectDraw
         {
             [DllImport(LIBRARY)]
