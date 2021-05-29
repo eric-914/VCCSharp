@@ -163,16 +163,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DirectDrawInternal.c" />
-    <ClCompile Include="DirectDrawSurfaceDesc.c" />
-    <ClCompile Include="DirectInput.c" />
-    <ClCompile Include="DirectSound.c" />
+    <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="library.cpp" />
     <ClCompile Include="MenuCallbacks.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="di.version.h" />
-    <ClInclude Include="DirectInput.h" />
     <ClInclude Include="library.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

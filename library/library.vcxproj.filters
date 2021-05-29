@@ -2,17 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="library.cpp" />
-    <ClCompile Include="DirectSound.c" />
     <ClCompile Include="MenuCallbacks.c" />
-    <ClCompile Include="DirectDrawInternal.c" />
-    <ClCompile Include="DirectDrawSurfaceDesc.c" />
-    <ClCompile Include="DirectInput.c" />
+    <ClCompile Include="DirectX.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="library.h" />
-    <ClInclude Include="di.version.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="DirectInput.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="legal">
