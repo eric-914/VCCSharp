@@ -2,32 +2,6 @@
 #include <stdio.h>
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl FilePathRemoveFileSpec(char* path) {
-    size_t index = strlen(path), length = index;
-
-    if ((index == 0) || (index > MAX_PATH)) {
-      return(false);
-    }
-
-    while ((index > 0) && (path[index] != '\\')) {
-      index--;
-    }
-
-    while ((index > 0) && (path[index] == '\\')) {
-      index--;
-    }
-
-    if (index == 0) {
-      return(false);
-    }
-
-    path[index + 2] = 0;
-
-    return(!(strlen(path) == length));
-  }
-}
-
-extern "C" {
   __declspec(dllexport) HANDLE __cdecl FileOpenFile(char* filename, long desiredAccess) {
     return CreateFile(filename, desiredAccess, 0, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
   }
