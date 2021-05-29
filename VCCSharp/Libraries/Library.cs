@@ -322,7 +322,10 @@ namespace VCCSharp.Libraries
             public static extern byte ModulePortRead(byte port);
 
             [DllImport(LIBRARY)]
-            public static extern byte PakMem8Read(ushort address);
+            public static extern int HasModuleMem8Read();
+
+            [DllImport(LIBRARY)]
+            public static extern byte ModuleMem8Read(ushort address);
         } //--PAKInterface
 
         public static class TC1014

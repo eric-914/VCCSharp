@@ -882,9 +882,46 @@ namespace VCCSharp.Modules
             }
         }
 
+        private static object _lock = new object();
+
         public byte PakMem8Read(ushort address)
         {
-            return Library.PAKInterface.PakMem8Read(address);
+            if (HasModuleMem8Read() != 0) {
+                return ModuleMem8Read(address);
+            }
+
+            unsafe
+            {
+                PakInterfaceState* instance = GetPakInterfaceState();
+
+                int offset = (int)((address & 32767) + instance->BankedCartOffset);
+
+                if (instance->ExternalRomBuffer != null)
+                {
+                    //Threading makes it possible to reach here where ExternalRomBuffer = NULL despite check.
+                    lock (_lock)
+                    {
+                        if (instance->ExternalRomBuffer != null)
+                        {
+                            return(instance->ExternalRomBuffer[offset]);
+                        }
+                    }
+                }
+
+                return 0;
+
+            }
         }
+
+        public int HasModuleMem8Read()
+        {
+            return Library.PAKInterface.HasModuleMem8Read();
+        }
+
+        public byte ModuleMem8Read(ushort address)
+        {
+            return Library.PAKInterface.ModuleMem8Read(address);
+        }
+
     }
 }

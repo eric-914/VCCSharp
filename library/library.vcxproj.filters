@@ -16,7 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="library.h" />
-    <ClInclude Include="PakInterfaceModule.h" />
     <ClInclude Include="di.version.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

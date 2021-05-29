@@ -1,6 +1,5 @@
+#include <windows.h>
 #include <string>
-
-#include "PakInterfaceModule.h"
 
 typedef struct {
   HINSTANCE hInstLib;
@@ -64,23 +63,5 @@ extern "C" {
 
     // Allocate memory for the ROM
     instance->ExternalRomBuffer = (uint8_t*)malloc(PAK_MAX_MEM);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned char __cdecl PakMem8Read(unsigned short address)
-  {
-    if (HasModuleMem8Read()) {
-      return ModuleMem8Read(address);
-    }
-
-    int offset = (address & 32767) + instance->BankedCartOffset;
-
-    if (instance->ExternalRomBuffer != NULL) {
-      //TODO: Threading makes it possible to reach here where ExternalRomBuffer = NULL despite check.
-      return(instance->ExternalRomBuffer[offset]);
-    }
-
-    return 0;
   }
 }

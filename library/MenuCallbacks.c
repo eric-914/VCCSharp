@@ -1,7 +1,5 @@
 #include <windows.h>
 
-#include "PakInterfaceModule.h"
-
 //Menu "Actions"
 #define MENU_FLUSH   0
 #define MENU_DONE    1
