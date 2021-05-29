@@ -740,16 +740,11 @@ namespace VCCSharp.Modules
         {
             lines &= 3;
 
-            unsafe
-            {
-                GraphicsState* graphicsState = _modules.Graphics.GetGraphicsState();
+            _linesPerScreen = _modules.Graphics.Lpf[lines];
+            _topBorder = _modules.Graphics.VcenterTable[lines];
 
-                _linesPerScreen = graphicsState->Lpf[lines];
-                _topBorder = graphicsState->VcenterTable[lines];
-
-                //4 lines of top border are un-rendered 244-4=240 rendered scan-lines
-                _bottomBorder = (byte)(243 - (_topBorder + _linesPerScreen));
-            }
+            //4 lines of top border are un-rendered 244-4=240 rendered scan-lines
+            _bottomBorder = (byte)(243 - (_topBorder + _linesPerScreen));
         }
 
         public void SetAudioEventAudioOut()

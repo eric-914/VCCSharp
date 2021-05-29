@@ -259,12 +259,6 @@ namespace VCCSharp.Libraries
             public static extern void CreateMainMenuWindowed(HWND hWnd, HINSTANCE resources);
         }
 
-        public static class Graphics
-        {
-            [DllImport(LIBRARY)]
-            public static extern unsafe GraphicsState* GetGraphicsState();
-        }
-
         public static class Joystick
         {
             [DllImport(LIBRARY)]

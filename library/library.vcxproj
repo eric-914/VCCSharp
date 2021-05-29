@@ -169,7 +169,6 @@
     <ClCompile Include="DirectSound.c" />
     <ClCompile Include="fileoperations.c" />
     <ClCompile Include="GDI.c" />
-    <ClCompile Include="Graphics.c" />
     <ClCompile Include="Joystick.c" />
     <ClCompile Include="Keyboard.c" />
     <ClCompile Include="library.cpp" />

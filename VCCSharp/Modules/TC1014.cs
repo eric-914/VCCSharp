@@ -766,7 +766,6 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void DrawTopBorder8()
         {
-            GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
             if (_graphics.BorderChange == 0)
@@ -787,7 +786,6 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void DrawTopBorder16()
         {
-            GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
             if (_graphics.BorderChange == 0)
@@ -813,7 +811,6 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void DrawTopBorder32()
         {
-            GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
             if (_graphics.BorderChange == 0)
@@ -834,7 +831,6 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void DrawBottomBorder8()
         {
-            GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
             if (_graphics.BorderChange == 0)
@@ -855,7 +851,6 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void DrawBottomBorder16()
         {
-            GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
             if (_graphics.BorderChange == 0)
@@ -881,7 +876,6 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void DrawBottomBorder32()
         {
-            GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
             if (_graphics.BorderChange == 0)
@@ -902,7 +896,6 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void UpdateScreen8()
         {
-            GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
             if ((_graphics.HorizontalCenter != 0) && (_graphics.BorderChange > 0))
@@ -944,7 +937,6 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void UpdateScreen16()
         {
-            GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
             if ((_graphics.HorizontalCenter != 0) && (_graphics.BorderChange > 0))
@@ -991,7 +983,6 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void UpdateScreen32()
         {
-            GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
 
             uint* szSurface32 = graphicsSurfaces.pSurface32;
@@ -1056,7 +1047,6 @@ Could not locate {ROM} in any of these locations:
             byte carry1 = 1, carry2 = 0;
             byte color = 0;
 
-            GraphicsState* gs = _graphics.GetGraphicsState();
             GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
             GraphicsColors graphicsColors = _graphics.GetGraphicsColors();
 

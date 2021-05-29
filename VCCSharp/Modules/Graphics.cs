@@ -9,7 +9,6 @@ namespace VCCSharp.Modules
 {
     public interface IGraphics
     {
-        unsafe GraphicsState* GetGraphicsState();
         GraphicsSurfaces GetGraphicsSurfaces();
         GraphicsColors GetGraphicsColors();
 
@@ -65,6 +64,9 @@ namespace VCCSharp.Modules
         byte BorderColor8 { get; set; }
         ushort BorderColor16 { get; set; }
         uint BorderColor32 { get; set; }
+
+        byte[] Lpf { get; }
+        byte[] VcenterTable { get; }
     }
 
     public class Graphics : IGraphics
@@ -153,14 +155,12 @@ namespace VCCSharp.Modules
         public ushort BorderColor16 { get; set; }
         public uint BorderColor32 { get; set; }
 
+        public byte[] Lpf { get; } = { 192, 199, 225, 225 }; // #2 is really undefined but I gotta put something here.
+        public byte[] VcenterTable { get; } = { 29, 23, 12, 12 };
+
         public Graphics(IModules modules)
         {
             _modules = modules;
-        }
-
-        public unsafe GraphicsState* GetGraphicsState()
-        {
-            return Library.Graphics.GetGraphicsState();
         }
 
         public GraphicsSurfaces GetGraphicsSurfaces() => Surfaces;
@@ -513,133 +513,128 @@ namespace VCCSharp.Modules
 
         public void SetupDisplay()
         {
-            unsafe
+            ExtendedText = 1;
+
+            switch (CompatMode)
             {
-                GraphicsState* instance = GetGraphicsState();
+                case 0:     //Color Computer 3 Mode
+                    NewStartOfVidRam = (uint)(VerticalOffsetRegister * 8);
+                    GraphicsMode = (byte)((CC3Vmode & 128) >> 7);
+                    VresIndex = (byte)((CC3Vres & 96) >> 5);
+                    CoCo3LinesPerRow[7] = LinesPerScreen;   // For 1 pixel high modes
+                    Bpp = (byte)(CC3Vres & 3);
+                    LinesPerRow = CoCo3LinesPerRow[CC3Vmode & 7];
+                    BytesPerRow = CoCo3BytesPerRow[(CC3Vres & 28) >> 2];
+                    PaletteIndex = 0;
 
-                ExtendedText = 1;
-
-                switch (CompatMode)
-                {
-                    case 0:     //Color Computer 3 Mode
-                        NewStartOfVidRam = (uint)(VerticalOffsetRegister * 8);
-                        GraphicsMode = (byte)((CC3Vmode & 128) >> 7);
-                        VresIndex = (byte)((CC3Vres & 96) >> 5);
-                        CoCo3LinesPerRow[7] = LinesPerScreen;   // For 1 pixel high modes
-                        Bpp = (byte)(CC3Vres & 3);
-                        LinesPerRow = CoCo3LinesPerRow[CC3Vmode & 7];
-                        BytesPerRow = CoCo3BytesPerRow[(CC3Vres & 28) >> 2];
-                        PaletteIndex = 0;
-
-                        if (GraphicsMode != 0)
+                    if (GraphicsMode != 0)
+                    {
+                        if ((CC3Vres & 1) != 0)
                         {
-                            if ((CC3Vres & 1) != 0)
-                            {
-                                ExtendedText = 2;
-                            }
-
-                            Bpp = 0;
-                            BytesPerRow = CoCo3BytesPerTextRow[(CC3Vres & 28) >> 2];
+                            ExtendedText = 2;
                         }
 
-                        break;
+                        Bpp = 0;
+                        BytesPerRow = CoCo3BytesPerTextRow[(CC3Vres & 28) >> 2];
+                    }
 
-                    case 1:
-                        //Color Computer 2 Mode
-                        CC3BorderColor = 0;   //Black for text modes
+                    break;
+
+                case 1:
+                    //Color Computer 2 Mode
+                    CC3BorderColor = 0;   //Black for text modes
+                    BorderChange = 3;
+                    NewStartOfVidRam = (uint)((512 * CC2Offset) + (VerticalOffsetRegister & 0xE0FF) * 8);
+                    GraphicsMode = (byte)((CC2VDGPiaMode & 16) >> 4); //PIA Set on graphics clear on text
+                    VresIndex = 0;
+                    LinesPerRow = CoCo2LinesPerRow[CC2VDGMode];
+
+                    byte colorSet;
+                    byte tmpByte;
+
+                    if (GraphicsMode != 0)
+                    {
+                        colorSet = (byte)(CC2VDGPiaMode & 1);
+
+                        CC3BorderColor = colorSet == 0 ? (byte)18 : (byte)63;
+
                         BorderChange = 3;
-                        NewStartOfVidRam = (uint)((512 * CC2Offset) + (VerticalOffsetRegister & 0xE0FF) * 8);
-                        GraphicsMode = (byte)((CC2VDGPiaMode & 16) >> 4); //PIA Set on graphics clear on text
-                        VresIndex = 0;
-                        LinesPerRow = CoCo2LinesPerRow[CC2VDGMode];
+                        Bpp = CoCo2Bpp[(CC2VDGPiaMode & 15) >> 1];
+                        BytesPerRow = CoCo2BytesPerRow[(CC2VDGPiaMode & 15) >> 1];
+                        tmpByte = (byte)((CC2VDGPiaMode & 1) << 1 | (Bpp & 1));
+                        PaletteIndex = CoCo2PaletteSet[tmpByte];
+                    }
+                    else
+                    {   //Setup for 32x16 text Mode
+                        Bpp = 0;
+                        BytesPerRow = 32;
+                        InvertAll = (byte)((CC2VDGPiaMode & 4) >> 2);
+                        LowerCase = (byte)((CC2VDGPiaMode & 2) >> 1);
+                        colorSet = (byte)(CC2VDGPiaMode & 1);
+                        tmpByte = (byte)((colorSet << 1) | InvertAll);
 
-                        byte colorSet;
-                        byte tmpByte;
-
-                        if (GraphicsMode != 0)
+                        switch (tmpByte)
                         {
-                            colorSet = (byte)(CC2VDGPiaMode & 1);
+                            case 0:
+                                TextFgPalette = 12;
+                                TextBgPalette = 13;
+                                break;
 
-                            CC3BorderColor = colorSet == 0 ? (byte)18 : (byte)63;
+                            case 1:
+                                TextFgPalette = 13;
+                                TextBgPalette = 12;
+                                break;
 
-                            BorderChange = 3;
-                            Bpp = CoCo2Bpp[(CC2VDGPiaMode & 15) >> 1];
-                            BytesPerRow = CoCo2BytesPerRow[(CC2VDGPiaMode & 15) >> 1];
-                            tmpByte = (byte)((CC2VDGPiaMode & 1) << 1 | (Bpp & 1));
-                            PaletteIndex = CoCo2PaletteSet[tmpByte];
+                            case 2:
+                                TextFgPalette = 14;
+                                TextBgPalette = 15;
+                                break;
+
+                            case 3:
+                                TextFgPalette = 15;
+                                TextBgPalette = 14;
+                                break;
                         }
-                        else
-                        {   //Setup for 32x16 text Mode
-                            Bpp = 0;
-                            BytesPerRow = 32;
-                            InvertAll = (byte)((CC2VDGPiaMode & 4) >> 2);
-                            LowerCase = (byte)((CC2VDGPiaMode & 2) >> 1);
-                            colorSet = (byte)(CC2VDGPiaMode & 1);
-                            tmpByte = (byte)((colorSet << 1) | InvertAll);
+                    }
 
-                            switch (tmpByte)
-                            {
-                                case 0:
-                                    TextFgPalette = 12;
-                                    TextBgPalette = 13;
-                                    break;
-
-                                case 1:
-                                    TextFgPalette = 13;
-                                    TextBgPalette = 12;
-                                    break;
-
-                                case 2:
-                                    TextFgPalette = 14;
-                                    TextBgPalette = 15;
-                                    break;
-
-                                case 3:
-                                    TextFgPalette = 15;
-                                    TextBgPalette = 14;
-                                    break;
-                            }
-                        }
-
-                        break;
-                }
-
-                //gs->ColorInvert = (gs->CC3Vmode & 32) >> 5;
-                LinesPerScreen = instance->Lpf[VresIndex];
-
-                _modules.CoCo.SetLinesPerScreen(VresIndex);
-
-                VerticalCenter = (byte)(instance->VcenterTable[VresIndex] - 4); //4 un-rendered top lines
-                PixelsPerLine = (ushort)(BytesPerRow * PixelsPerByte[Bpp]);
-
-                if ((PixelsPerLine % 40) != 0)
-                {
-                    Stretch = (byte)((512 / PixelsPerLine) - 1);
-                    HorizontalCenter = 64;
-                }
-                else
-                {
-                    Stretch = (byte)((640 / PixelsPerLine) - 1);
-                    HorizontalCenter = 0;
-                }
-
-                VPitch = BytesPerRow;
-
-                if ((HorizontalOffsetReg & 128) != 0)
-                {
-                    VPitch = 256;
-                }
-
-                byte offset = (byte)(CC3BorderColor & 63);
-                int index = MonType * 64 + offset;
-
-                BorderColor8 = (byte)(offset | 128);
-                BorderColor16 = _colors.PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonType][instance->CC3BorderColor & 63];
-                BorderColor32 = _colors.PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][instance->CC3BorderColor & 63];
-
-                NewStartOfVidRam = (NewStartOfVidRam & VidMask) + DistoOffset; //Dist Offset for 2M configuration
-                MasterMode = (byte)((GraphicsMode << 7) | (CompatMode << 6) | ((Bpp & 3) << 4) | (Stretch & 15));
+                    break;
             }
+
+            //gs->ColorInvert = (gs->CC3Vmode & 32) >> 5;
+            LinesPerScreen = Lpf[VresIndex];
+
+            _modules.CoCo.SetLinesPerScreen(VresIndex);
+
+            VerticalCenter = (byte)(VcenterTable[VresIndex] - 4); //4 un-rendered top lines
+            PixelsPerLine = (ushort)(BytesPerRow * PixelsPerByte[Bpp]);
+
+            if ((PixelsPerLine % 40) != 0)
+            {
+                Stretch = (byte)((512 / PixelsPerLine) - 1);
+                HorizontalCenter = 64;
+            }
+            else
+            {
+                Stretch = (byte)((640 / PixelsPerLine) - 1);
+                HorizontalCenter = 0;
+            }
+
+            VPitch = BytesPerRow;
+
+            if ((HorizontalOffsetReg & 128) != 0)
+            {
+                VPitch = 256;
+            }
+
+            byte offset = (byte)(CC3BorderColor & 63);
+            int index = MonType * 64 + offset;
+
+            BorderColor8 = (byte)(offset | 128);
+            BorderColor16 = _colors.PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonType][instance->CC3BorderColor & 63];
+            BorderColor32 = _colors.PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][instance->CC3BorderColor & 63];
+
+            NewStartOfVidRam = (NewStartOfVidRam & VidMask) + DistoOffset; //Dist Offset for 2M configuration
+            MasterMode = (byte)((GraphicsMode << 7) | (CompatMode << 6) | ((Bpp & 3) << 4) | (Stretch & 15));
         }
     }
 }
