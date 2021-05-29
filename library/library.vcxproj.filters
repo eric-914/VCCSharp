@@ -11,7 +11,6 @@
     <ClCompile Include="DirectInput.c" />
     <ClCompile Include="Joystick.c" />
     <ClCompile Include="PAKInterface.c" />
-    <ClCompile Include="PakInterfaceModule.c" />
     <ClCompile Include="TC1014.c" />
   </ItemGroup>
   <ItemGroup>

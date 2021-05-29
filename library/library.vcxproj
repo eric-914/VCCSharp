@@ -172,7 +172,6 @@
     <ClCompile Include="Joystick.c" />
     <ClCompile Include="library.cpp" />
     <ClCompile Include="MenuCallbacks.c" />
-    <ClCompile Include="PakInterfaceModule.c" />
     <ClCompile Include="TC1014.c" />
     <ClCompile Include="PAKInterface.c" />
   </ItemGroup>

@@ -307,25 +307,7 @@ namespace VCCSharp.Libraries
             public static extern void PAKFreeLibrary(HINSTANCE hInstLib);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void FreeMemory(byte* target);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void ResetRomBuffer(byte* buffer);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe void* GetFunction(HMODULE hModule, string lpProcName);
-
-            [DllImport(LIBRARY)]
-            public static extern int HasModulePortRead();
-
-            [DllImport(LIBRARY)]
-            public static extern byte ModulePortRead(byte port);
-
-            [DllImport(LIBRARY)]
-            public static extern int HasModuleMem8Read();
-
-            [DllImport(LIBRARY)]
-            public static extern byte ModuleMem8Read(ushort address);
         } //--PAKInterface
 
         public static class TC1014

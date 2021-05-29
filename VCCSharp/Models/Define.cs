@@ -384,5 +384,7 @@ namespace VCCSharp.Models
         public const int MENU_PARENT = 0;
         public const int MENU_CHILD = 1;
         public const int MENU_STANDALONE = 2;
+
+        public const int PAK_MAX_MEM = 0x40000;
     }
 }
