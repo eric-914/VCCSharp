@@ -163,7 +163,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Audio.c" />
     <ClCompile Include="Cassette.c" />
     <ClCompile Include="Config.c" />
     <ClCompile Include="cpudef.c" />

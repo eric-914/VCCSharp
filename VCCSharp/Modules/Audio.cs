@@ -7,7 +7,6 @@ namespace VCCSharp.Modules
 {
     public interface IAudio
     {
-        unsafe AudioState* GetAudioState();
         short SoundDeInit();
         void ResetAudio();
         unsafe void FlushAudioBuffer(uint* buffer, ushort length);
@@ -24,34 +23,39 @@ namespace VCCSharp.Modules
     {
         private readonly IModules _modules;
 
-        public byte InitPassed;
-        public byte AudioPause;
-
-        public ushort CurrentRate { get; set; }
-        public ushort BitRate;
-        public ushort BlockSize;
-
-        public ushort[] iRateList = { 0, 11025, 22050, 44100 };
-
-        public int hr;
-
         public AudioSpectrum Spectrum { get; set; }
+        public ushort CurrentRate { get; set; }
+
+        private byte _initPassed;
+        private byte _audioPause;
+
+        private ushort _bitRate;
+        private ushort _blockSize;
+
+        private readonly ushort[] iRateList = { 0, 11025, 22050, 44100 };
+
+        private int _hr;
+
+        private byte _auxBufferPointer;
+
+        private uint _sndLength1;
+        private uint _sndLength2;
+        private uint _sndBuffLength;
+        private uint _buffOffset;
+
+        public unsafe void* SndPointer1;
+        public unsafe void* SndPointer2;
 
         public Audio(IModules modules)
         {
             _modules = modules;
         }
 
-        public unsafe AudioState* GetAudioState()
-        {
-            return Library.Audio.GetAudioState();
-        }
-
         public short SoundDeInit()
         {
-            if (InitPassed != Define.FALSE)
+            if (_initPassed != Define.FALSE)
             {
-                InitPassed = 0;
+                _initPassed = 0;
 
                 _modules.DirectSound.DirectSoundStopAndRelease();
             }
@@ -61,26 +65,56 @@ namespace VCCSharp.Modules
 
         public void ResetAudio()
         {
-            unsafe
+            _modules.CoCo.SetAudioRate(iRateList[CurrentRate]);
+
+            if (_initPassed == Define.TRUE)
             {
-                AudioState* audioState = GetAudioState();
-
-                _modules.CoCo.SetAudioRate(iRateList[CurrentRate]);
-
-                if (InitPassed == Define.TRUE)
-                {
-                    _modules.DirectSound.DirectSoundSetCurrentPosition(0);
-                }
-
-                audioState->BuffOffset = 0;
-                audioState->AuxBufferPointer = 0;
+                _modules.DirectSound.DirectSoundSetCurrentPosition(0);
             }
+
+            _buffOffset = 0;
+            _auxBufferPointer = 0;
+        }
+
+        private unsafe int DirectSoundLock(ushort length)
+        {
+            int Invoke(void** sp1, uint* sl1, void** sp2, uint* sl2)
+            {
+                return _modules.DirectSound.DirectSoundLock(_buffOffset, length, sp1, sl1, sp2, sl2);
+            }
+
+            fixed (uint* sl1 = &_sndLength1)
+            {
+                fixed (uint* sl2 = &_sndLength2)
+                {
+                    void* s1 = SndPointer1;
+                    void* s2 = SndPointer2;
+
+                    var result = Invoke(&s1, sl1, &s2, sl2);
+
+                    SndPointer1 = s1;
+                    SndPointer2 = s2;
+
+                    return result;
+                }
+            }
+        }
+
+        private unsafe int DirectSoundUnlock()
+        {
+            void* s1 = SndPointer1;
+            void* s2 = SndPointer2;
+
+            var result = _modules.DirectSound.DirectSoundUnlock(s1, _sndLength1, s2, _sndLength2);
+
+            SndPointer1 = s1;
+            SndPointer2 = s2;
+
+            return result;
         }
 
         public unsafe void FlushAudioBuffer(uint* buffer, ushort length)
         {
-            AudioState* audioState = GetAudioState();
-
             byte* byteBuffer = (byte*)buffer;
 
             ushort leftAverage = (ushort)(buffer[0] >> 16);
@@ -88,7 +122,7 @@ namespace VCCSharp.Modules
 
             _modules.Audio.UpdateSoundBar(leftAverage, rightAverage);
 
-            if ((InitPassed == Define.FALSE) || (AudioPause != Define.FALSE))
+            if ((_initPassed == Define.FALSE) || (_audioPause != Define.FALSE))
             {
                 return;
             }
@@ -100,40 +134,38 @@ namespace VCCSharp.Modules
                 return;
             }
 
-            hr = _modules.DirectSound.DirectSoundLock(audioState->BuffOffset, length, &(audioState->SndPointer1), &(audioState->SndLength1), &(audioState->SndPointer2), &(audioState->SndLength2));
+            //_hr = _modules.DirectSound.DirectSoundLock(audioState->BuffOffset, length, &(audioState->SndPointer1), &(SndLength1), &(audioState->SndPointer2), &(SndLength2));
+            _hr = DirectSoundLock(length);
 
-            if (hr != Define.DS_OK)
+            if (_hr != Define.DS_OK)
             {
                 return;
             }
 
             //memcpy(instance->SndPointer1, byteBuffer, instance->SndLength1);	// copy first section of circular buffer
-            byte* sourceBuffer = (byte*)audioState->SndPointer1;
-            for (int index = 0; index < audioState->SndLength1; index++)
+            byte* sourceBuffer = (byte*)SndPointer1;
+            for (int index = 0; index < _sndLength1; index++)
             {
                 sourceBuffer[index] = byteBuffer[index];
             }
 
-            if (audioState->SndPointer2 != null)
+            if (SndPointer2 != null)
             { // copy last section of circular buffer if wrapped
               //memcpy(audioState->SndPointer2, byteBuffer + audioState->SndLength1, audioState->SndLength2);
-                sourceBuffer = (byte*)audioState->SndPointer2;
-                for (int index = 0; index < audioState->SndLength2; index++)
+                sourceBuffer = (byte*)SndPointer2;
+                for (int index = 0; index < _sndLength2; index++)
                 {
-                    sourceBuffer[index] = byteBuffer[index + audioState->SndLength1];
+                    sourceBuffer[index] = byteBuffer[index + _sndLength1];
                 }
             }
 
-            hr = _modules.DirectSound.DirectSoundUnlock(audioState->SndPointer1, audioState->SndLength1, audioState->SndPointer2, audioState->SndLength2);// unlock the buffer
+            _hr = DirectSoundUnlock();// unlock the buffer
 
-            audioState->BuffOffset = (audioState->BuffOffset + length) % audioState->SndBuffLength; //Where to write next
-
+            _buffOffset = (_buffOffset + length) % _sndBuffLength; //Where to write next
         }
 
         public unsafe void HandleSlowAudio(byte* buffer, ushort length)
         {
-            AudioState* instance = GetAudioState();
-
             //memcpy(void* _Dst, void const* _Src, size_t _Size);
             //memcpy(audioState->AuxBuffer[audioState->AuxBufferPointer], buffer, length);	
 
@@ -147,9 +179,9 @@ namespace VCCSharp.Modules
 
             //HandleSlowAudio was this:
             //memcpy(instance->AuxBuffer[index], buffer, length);	//Saving buffer to aux stack
-            
-            instance->AuxBufferPointer++;		//and chase your own tail
-            instance->AuxBufferPointer %= 5;	//At this point we are so far behind we may as well drop the buffer
+
+            _auxBufferPointer++;		//and chase your own tail
+            _auxBufferPointer %= 5;	//At this point we are so far behind we may as well drop the buffer
         }
 
         public int GetFreeBlockCount()
@@ -159,31 +191,29 @@ namespace VCCSharp.Modules
                 ulong playCursor = 0, writeCursor = 0;
                 long maxSize;
 
-                AudioState* instance = GetAudioState();
-
-                if (InitPassed == Define.FALSE || AudioPause == Define.TRUE)
+                if (_initPassed == Define.FALSE || _audioPause == Define.TRUE)
                 {
                     return Define.AUDIOBUFFERS;
                 }
 
                 _modules.DirectSound.DirectSoundGetCurrentPosition(&playCursor, &writeCursor);
 
-                if (instance->BuffOffset <= playCursor)
+                if (_buffOffset <= playCursor)
                 {
-                    maxSize = (long)(playCursor - instance->BuffOffset);
+                    maxSize = (long)(playCursor - _buffOffset);
                 }
                 else
                 {
-                    maxSize = (long)(instance->SndBuffLength - instance->BuffOffset + playCursor);
+                    maxSize = (long)(_sndBuffLength - _buffOffset + playCursor);
                 }
 
-                return (int)(maxSize / BlockSize);
+                return (int)(maxSize / _blockSize);
             }
         }
 
         public void PurgeAuxBuffer()
         {
-            if (InitPassed == Define.FALSE || AudioPause == Define.TRUE)
+            if (_initPassed == Define.FALSE || _audioPause == Define.TRUE)
             {
                 return;
             }
@@ -226,95 +256,94 @@ namespace VCCSharp.Modules
                 rate = 3;
             }
 
-            AudioState* instance = GetAudioState();
-
             CurrentRate = rate;
 
-            if (InitPassed == Define.TRUE)
+            if (_initPassed == Define.TRUE)
             {
-                InitPassed = 0;
+                _initPassed = 0;
                 _modules.DirectSound.DirectSoundStop();
 
                 if (_modules.DirectSound.DirectSoundHasBuffer() == Define.TRUE)
                 {
-                    hr = _modules.DirectSound.DirectSoundBufferRelease();
+                    _hr = _modules.DirectSound.DirectSoundBufferRelease();
                 }
 
                 if (_modules.DirectSound.DirectSoundHasInterface() == Define.TRUE)
                 {
-                    hr = _modules.DirectSound.DirectSoundInterfaceRelease();
+                    _hr = _modules.DirectSound.DirectSoundInterfaceRelease();
                 }
             }
 
-            instance->SndLength1 = 0;
-            instance->SndLength2 = 0;
-            instance->BuffOffset = 0;
-            instance->AuxBufferPointer = 0;
-            BitRate = iRateList[rate];
-            BlockSize = (ushort)(BitRate * 4 / Define.TARGETFRAMERATE);
-            instance->SndBuffLength = (ushort)(BlockSize * Define.AUDIOBUFFERS);
+            _sndLength1 = 0;
+            _sndLength2 = 0;
+            _buffOffset = 0;
+            _auxBufferPointer = 0;
+            _bitRate = iRateList[rate];
+            _blockSize = (ushort)(_bitRate * 4 / Define.TARGETFRAMERATE);
+            _sndBuffLength = (ushort)(_blockSize * Define.AUDIOBUFFERS);
 
             int result = 0;
 
             if (rate != 0)
             {
-                hr = _modules.DirectSound.DirectSoundInitialize(guid);    // create a direct sound object
+                _hr = _modules.DirectSound.DirectSoundInitialize(guid);    // create a direct sound object
 
-                if (hr != Define.DS_OK)
+                if (_hr != Define.DS_OK)
                 {
-                    return (1);
+                    return 1;
                 }
 
-                hr = _modules.DirectSound.DirectSoundSetCooperativeLevel(hWnd);
+                _hr = _modules.DirectSound.DirectSoundSetCooperativeLevel(hWnd);
 
-                if (hr != Define.DS_OK)
+                if (_hr != Define.DS_OK)
                 {
-                    return (1);
+                    return 1;
                 }
 
-                _modules.DirectSound.DirectSoundSetupFormatDataStructure(BitRate);
+                _modules.DirectSound.DirectSoundSetupFormatDataStructure(_bitRate);
 
-                _modules.DirectSound.DirectSoundSetupSecondaryBuffer(instance->SndBuffLength);
+                _modules.DirectSound.DirectSoundSetupSecondaryBuffer(_sndBuffLength);
 
-                hr = _modules.DirectSound.DirectSoundCreateSoundBuffer();
+                _hr = _modules.DirectSound.DirectSoundCreateSoundBuffer();
 
-                if (hr != Define.DS_OK)
+                if (_hr != Define.DS_OK)
                 {
-                    return (1);
+                    return 1;
                 }
 
                 // Clear out sound buffers
-                hr = _modules.DirectSound.DirectSoundLock(0, (ushort)instance->SndBuffLength, &(instance->SndPointer1), &(instance->SndLength1), &(instance->SndPointer2), &(instance->SndLength2));
+                //_hr = _modules.DirectSound.DirectSoundLock(0, (ushort)instance->SndBuffLength, &(instance->SndPointer1), &(SndLength1), &(instance->SndPointer2), &(SndLength2));
+                _hr = DirectSoundLock((ushort)_sndBuffLength);
 
-                if (hr != Define.DS_OK)
+                if (_hr != Define.DS_OK)
                 {
-                    return (1);
+                    return 1;
                 }
 
                 //memset(instance->SndPointer1, 0, instance->SndBuffLength);
-                for (int index = 0; index < instance->SndBuffLength; index++)
+                for (int index = 0; index < _sndBuffLength; index++)
                 {
-                    ((byte*)(instance->SndPointer1))[index] = 0;
+                    ((byte*)(SndPointer1))[index] = 0;
                 }
 
-                hr = _modules.DirectSound.DirectSoundUnlock(instance->SndPointer1, instance->SndLength1, instance->SndPointer2, instance->SndLength2);
+                _hr = DirectSoundUnlock();
 
-                if (hr != Define.DS_OK)
+                if (_hr != Define.DS_OK)
                 {
-                    return (1);
+                    return 1;
                 }
 
                 _modules.DirectSound.DirectSoundSetCurrentPosition(0);
 
-                hr = _modules.DirectSound.DirectSoundPlay();
+                _hr = _modules.DirectSound.DirectSoundPlay();
 
-                if (hr != Define.DS_OK)
+                if (_hr != Define.DS_OK)
                 {
-                    return (1);
+                    return 1;
                 }
 
-                InitPassed = 1;
-                AudioPause = 0;
+                _initPassed = 1;
+                _audioPause = 0;
 
                 _modules.CoCo.SetAudioRate(iRateList[rate]);
             }
@@ -329,16 +358,16 @@ namespace VCCSharp.Modules
 
         public byte PauseAudio(byte pause)
         {
-            AudioPause = pause;
+            _audioPause = pause;
 
-            if (InitPassed == Define.TRUE)
+            if (_initPassed == Define.TRUE)
             {
-                hr = AudioPause == Define.TRUE 
-                    ? _modules.DirectSound.DirectSoundStop() 
+                _hr = _audioPause == Define.TRUE
+                    ? _modules.DirectSound.DirectSoundStop()
                     : _modules.DirectSound.DirectSoundPlay();
             }
 
-            return AudioPause;
+            return _audioPause;
         }
 
         #region This is what was in Audio.c

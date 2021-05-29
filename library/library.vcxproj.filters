@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClCompile Include="library.cpp" />
     <ClCompile Include="DirectSound.c" />
-    <ClCompile Include="Audio.c" />
     <ClCompile Include="MenuCallbacks.c" />
     <ClCompile Include="Cassette.c" />
     <ClCompile Include="Config.c" />

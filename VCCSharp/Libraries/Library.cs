@@ -16,12 +16,6 @@ namespace VCCSharp.Libraries
         // ReSharper disable once InconsistentNaming
         public const string LIBRARY = "library.dll";
 
-        public static class Audio
-        {
-            [DllImport(LIBRARY)]
-            public static extern unsafe AudioState* GetAudioState();
-        }
-
         public static class Callbacks
         {
             [DllImport(LIBRARY)]

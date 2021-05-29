@@ -84,50 +84,46 @@ namespace VCCSharp.Modules
 
         public void FrameWait()
         {
-            unsafe
+            IAudio audio = _modules.Audio;
+
+            UpdateCurrentTime();
+
+            //If we have more that 2Ms till the end of the frame
+            while (_targetTime.QuadPart - _currentTime.QuadPart > (_oneMs.QuadPart * 2))
             {
-                IAudio audio = _modules.Audio;
-                AudioState* audioState = audio.GetAudioState();
+                //TODO: I suspect this doesn't really return us back in 1ms.
+                //--LARGE_INTEGER SleepRes;
+                Thread.Sleep(1);	//Give about 1Ms back to the system
 
                 UpdateCurrentTime();
+            }
 
-                //If we have more that 2Ms till the end of the frame
-                while (_targetTime.QuadPart - _currentTime.QuadPart > (_oneMs.QuadPart * 2))
+            if (audio.CurrentRate == Define.TRUE)
+            {
+                _modules.Audio.PurgeAuxBuffer();
+
+                if (FrameSkip == 1)
                 {
-                    //TODO: I suspect this doesn't really return us back in 1ms.
-                    //--LARGE_INTEGER SleepRes;
-                    Thread.Sleep(1);	//Give about 1Ms back to the system
+                    int half = Define.AUDIOBUFFERS / 2;
 
-                    UpdateCurrentTime();
-                }
-
-                if (audio.CurrentRate == Define.TRUE)
-                {
-                    _modules.Audio.PurgeAuxBuffer();
-
-                    if (FrameSkip == 1)
+                    //Don't let the buffer get less than half full
+                    if (_modules.Audio.GetFreeBlockCount() > half)
                     {
-                        int half = Define.AUDIOBUFFERS / 2;
+                        return;
+                    }
 
-                        //Don't let the buffer get less than half full
-                        if (_modules.Audio.GetFreeBlockCount() > half)
-                        {
-                            return;
-                        }
-
-                        // Don't let it fill up either;
-                        while (_modules.Audio.GetFreeBlockCount() < 1)
-                        {
-                            //--wait
-                        }
+                    // Don't let it fill up either;
+                    while (_modules.Audio.GetFreeBlockCount() < 1)
+                    {
+                        //--wait
                     }
                 }
+            }
 
-                //Poll Until frame end.
-                while (_currentTime.QuadPart < _targetTime.QuadPart)
-                {	
-                    UpdateCurrentTime();
-                }
+            //Poll Until frame end.
+            while (_currentTime.QuadPart < _targetTime.QuadPart)
+            {	
+                UpdateCurrentTime();
             }
         }
 
