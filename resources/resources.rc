@@ -68,52 +68,6 @@ IDI_COCO3               ICON                    "resources\\coco.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Dialog
-//
-
-IDD_TCONFIG DIALOGEX 0, 0, 397, 213
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Vcc Options"
-FONT 8, "MS Sans Serif", 0, 0, 0x0
-BEGIN
-    PUSHBUTTON      "Cancel",IDCANCEL,6,191,36,14
-    CONTROL         "Tab1",IDC_CONFIGTAB,"SysTabControl32",0x0,7,7,383,180
-END
-
-IDD_CASSETTE DIALOGEX 0, 0, 257, 93
-STYLE DS_SETFONT | WS_CHILD
-FONT 8, "MS Sans Serif", 0, 0, 0x1
-BEGIN
-    LTEXT           "Counter",IDC_STATIC,10,14,26,8
-    RTEXT           "",IDC_TCOUNT,54,11,62,15,WS_BORDER
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO
-BEGIN
-    IDD_TCONFIG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 390
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 206
-    END
-
-    IDD_CASSETTE, DIALOG
-    BEGIN
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // Version
 //
 
@@ -165,28 +119,11 @@ IDC_NONE                CURSOR                  "resources\\cursor1.cur"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// AFX_DIALOG_LAYOUT
-//
-
-IDD_TCONFIG AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_CASSETTE AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // String Table
 //
 
 STRINGTABLE
 BEGIN
-    IDS_APP_TITLE           "VCC 2.1.0c Tandy Color Computer 3 Emulator"
     IDS_CATNUMBER           "26-3334"
 END
 

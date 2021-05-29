@@ -25,45 +25,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resources\icon1.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\binfile.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\progpack.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\moto.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\hitachi.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\rgb.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\composite.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\ico00004.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\Keyboard.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\joystick.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\mouse.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\speaker1.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\speaker2.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="resources\coco.ico">
       <Filter>Resource Files</Filter>
     </Image>
