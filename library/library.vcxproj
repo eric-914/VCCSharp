@@ -170,7 +170,6 @@
     <ClCompile Include="fileoperations.c" />
     <ClCompile Include="GDI.c" />
     <ClCompile Include="Joystick.c" />
-    <ClCompile Include="Keyboard.c" />
     <ClCompile Include="library.cpp" />
     <ClCompile Include="MenuCallbacks.c" />
     <ClCompile Include="PakInterfaceModule.c" />

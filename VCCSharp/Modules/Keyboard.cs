@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Libraries;
 using VCCSharp.Models;
 using VCCSharp.Models.Keyboard;
 
@@ -43,14 +43,11 @@ namespace VCCSharp.Modules
         private KeyTranslationEntry[] _keyTranslationsCompact = new KeyTranslationEntry[MAX_COMPACT + 1];
         private KeyTranslationEntry[] _keyTranslationsCustom = new KeyTranslationEntry[MAX_CUSTOM + 1];
 
+        private KeyTranslationEntry[] _keyTransTable = new KeyTranslationEntry[Define.KBTABLE_ENTRY_COUNT];
+
         public Keyboard(IModules modules)
         {
             _modules = modules;
-        }
-
-        public unsafe KeyboardState* GetKeyboardState()
-        {
-            return Library.Keyboard.GetKeyBoardState();
         }
 
         public void KeyboardHandleKeyDown(byte key, byte scanCode)
@@ -182,110 +179,113 @@ namespace VCCSharp.Modules
         */
         public void KeyboardBuildRuntimeTable(byte keyMapIndex)
         {
-            unsafe
+            //int index1 = 0;
+            //int index2 = 0;
+            KeyTranslationEntry[] keyTranslationTable = null;
+            KeyboardLayouts keyBoardLayout = (KeyboardLayouts)keyMapIndex;
+
+            switch (keyBoardLayout)
             {
-                //int index1 = 0;
-                //int index2 = 0;
-                KeyTranslationEntry[] keyTranslationTable = null;
-                KeyboardLayouts keyBoardLayout = (KeyboardLayouts)keyMapIndex;
+                case KeyboardLayouts.kKBLayoutCoCo:
+                    keyTranslationTable = _keyTranslationsCoCo;
+                    break;
 
-                switch (keyBoardLayout)
+                case KeyboardLayouts.kKBLayoutNatural:
+                    keyTranslationTable = _keyTranslationsNatural;
+                    break;
+
+                case KeyboardLayouts.kKBLayoutCompact:
+                    keyTranslationTable = _keyTranslationsCompact;
+                    break;
+
+                case KeyboardLayouts.kKBLayoutCustom:
+                    keyTranslationTable = _keyTranslationsCustom;
+                    break;
+            }
+
+            //XTRACE("Building run-time key table for layout # : %d - %s\n", keyBoardLayout, k_keyboardLayoutNames[keyBoardLayout]);
+
+            KeyboardClear();
+
+            KeyTranslationEntry keyTransEntry = new KeyTranslationEntry();
+
+            int index2 = 0;
+            for (var index1 = 0; ; index1++)
+            {
+                if (keyTranslationTable == null)
                 {
-                    case KeyboardLayouts.kKBLayoutCoCo:
-                        keyTranslationTable = _keyTranslationsCoCo;
-                        break;
-
-                    case KeyboardLayouts.kKBLayoutNatural:
-                        keyTranslationTable = _keyTranslationsNatural;
-                        break;
-
-                    case KeyboardLayouts.kKBLayoutCompact:
-                        keyTranslationTable = _keyTranslationsCompact;
-                        break;
-
-                    case KeyboardLayouts.kKBLayoutCustom:
-                        keyTranslationTable = _keyTranslationsCustom;
-                        break;
+                    throw new NullReferenceException("Missing Key Translation Table");
                 }
 
-                //XTRACE("Building run-time key table for layout # : %d - %s\n", keyBoardLayout, k_keyboardLayoutNames[keyBoardLayout]);
+                keyTransEntry.Col1 = keyTranslationTable[index1].Col1;
+                keyTransEntry.Col2 = keyTranslationTable[index1].Col2;
+                keyTransEntry.Row1 = keyTranslationTable[index1].Row1;
+                keyTransEntry.Row2 = keyTranslationTable[index1].Row2;
+                keyTransEntry.ScanCode1 = keyTranslationTable[index1].ScanCode1;
+                keyTransEntry.ScanCode2 = keyTranslationTable[index1].ScanCode2;
 
-                KeyboardClear();
+                //
+                // Change entries to what the code expects
+                //
+                // Make sure ScanCode1 is never 0
+                // If the key combo uses SHIFT, put it in ScanCode1
+                // Completely clear unused entries (ScanCode1+2 are 0)
+                //
 
-                KeyTranslationEntry keyTransEntry = new KeyTranslationEntry();
-
-                int index2 = 0;
-                for (var index1 = 0; ; index1++)
+                //
+                // swaps ScanCode1 with ScanCode2 if ScanCode2 == DIK_LSHIFT
+                //
+                if (keyTransEntry.ScanCode2 == Define.DIK_LSHIFT)
                 {
-                    if (keyTranslationTable == null)
-                    {
-                        throw new NullReferenceException("Missing Key Translation Table");
-                    }
-
-                    fixed (KeyTranslationEntry* keyLayoutTable = keyTranslationTable)
-                    {
-                        KeyboardCopyKeyTranslationEntry(&keyTransEntry, &keyLayoutTable[index1]);
-                    }
-
-                    //
-                    // Change entries to what the code expects
-                    //
-                    // Make sure ScanCode1 is never 0
-                    // If the key combo uses SHIFT, put it in ScanCode1
-                    // Completely clear unused entries (ScanCode1+2 are 0)
-                    //
-
-                    //
-                    // swaps ScanCode1 with ScanCode2 if ScanCode2 == DIK_LSHIFT
-                    //
-                    if (keyTransEntry.ScanCode2 == Define.DIK_LSHIFT)
-                    {
-                        keyTransEntry.ScanCode2 = keyTransEntry.ScanCode1;
-                        keyTransEntry.ScanCode1 = Define.DIK_LSHIFT;
-                    }
-
-                    //
-                    // swaps ScanCode1 with ScanCode2 if ScanCode1 is zero
-                    //
-                    if ((keyTransEntry.ScanCode1 == 0) && (keyTransEntry.ScanCode2 != 0))
-                    {
-                        keyTransEntry.ScanCode1 = keyTransEntry.ScanCode2;
-                        keyTransEntry.ScanCode2 = 0;
-                    }
-
-                    // check for terminating entry
-                    if (keyTransEntry.ScanCode1 == 0 && keyTransEntry.ScanCode2 == 0)
-                    {
-                        break;
-                    }
-
-                    KeyboardCopy(&keyTransEntry, index2);
-                    //KeyboardCopyKeyTranslationEntry(&(instance->KeyTransTable[index2]), &keyTransEntry);
-
-                    index2++;
+                    keyTransEntry.ScanCode2 = keyTransEntry.ScanCode1;
+                    keyTransEntry.ScanCode1 = Define.DIK_LSHIFT;
                 }
 
-                KeyboardSort();
+                //
+                // swaps ScanCode1 with ScanCode2 if ScanCode1 is zero
+                //
+                if ((keyTransEntry.ScanCode1 == 0) && (keyTransEntry.ScanCode2 != 0))
+                {
+                    keyTransEntry.ScanCode1 = keyTransEntry.ScanCode2;
+                    keyTransEntry.ScanCode2 = 0;
+                }
 
-                #region DEBUG
+                // check for terminating entry
+                if (keyTransEntry.ScanCode1 == 0 && keyTransEntry.ScanCode2 == 0)
+                {
+                    break;
+                }
+
+                _keyTransTable[index2].Col1 = keyTransEntry.Col1;
+                _keyTransTable[index2].Col2 = keyTransEntry.Col2;
+                _keyTransTable[index2].Row1 = keyTransEntry.Row1;
+                _keyTransTable[index2].Row2 = keyTransEntry.Row2;
+                _keyTransTable[index2].ScanCode1 = keyTransEntry.ScanCode1;
+                _keyTransTable[index2].ScanCode2 = keyTransEntry.ScanCode2;
+
+                index2++;
+            }
+
+            KeyboardSort();
+
+            #region DEBUG
 
 #if DEBUG
-                ////
-                //// Debug dump the table
-                ////
-                //for (int index1 = 0; index1 < Define.KBTABLE_ENTRY_COUNT; index1++)
-                //{
-                //    // check for null entry
-                //    if (instance->KeyTransTable[index1].ScanCode1 == 0 && instance->KeyTransTable[index1].ScanCode2 == 0)
-                //    {
-                //        // done
-                //        break;
-                //    }
-                //}
+            ////
+            //// Debug dump the table
+            ////
+            //for (int index1 = 0; index1 < Define.KBTABLE_ENTRY_COUNT; index1++)
+            //{
+            //    // check for null entry
+            //    if (instance->KeyTransTable[index1].ScanCode1 == 0 && instance->KeyTransTable[index1].ScanCode2 == 0)
+            //    {
+            //        // done
+            //        break;
+            //    }
+            //}
 #endif
 
-                #endregion
-            }
+            #endregion
 
             //XTRACE("Key: %3d - 0x%02X (%3d) 0x%02X (%3d) - %2d %2d  %2d %2d\n",
             //  Index1,
@@ -302,8 +302,7 @@ namespace VCCSharp.Modules
 
         public void KeyboardClear()
         {
-            // copy the selected keyboard layout to the run-time table
-            Library.Keyboard.vccKeyboardClear();
+            _keyTransTable = new KeyTranslationEntry[Define.KBTABLE_ENTRY_COUNT];
         }
 
         public void KeyboardSort()
@@ -316,17 +315,9 @@ namespace VCCSharp.Modules
             // order.
             //
 
-            Library.Keyboard.vccKeyboardSort();
-        }
+            IComparer<KeyTranslationEntry> comparer = new KeyTranslationEntryIComparer();
 
-        public unsafe void KeyboardCopyKeyTranslationEntry(KeyTranslationEntry* target, KeyTranslationEntry* source)
-        {
-            Library.Keyboard.vccKeyboardCopyKeyTranslationEntry(target, source);
-        }
-
-        public unsafe void KeyboardCopy(KeyTranslationEntry* keyTransEntry, int index)
-        {
-            Library.Keyboard.vccKeyboardCopy(keyTransEntry, index);
+            Array.Sort(_keyTransTable, comparer);
         }
 
         /*
@@ -446,7 +437,7 @@ namespace VCCSharp.Modules
             // set rollover table based on ScanTable key status
             for (int index = 0; index < Define.KBTABLE_ENTRY_COUNT; index++)
             {
-                KeyTranslationEntry entry = KeyTranslationEntry(index);
+                KeyTranslationEntry entry = _keyTransTable[index];
                 byte scanCode1 = entry.ScanCode1;
                 byte scanCode2 = entry.ScanCode2;
 
@@ -505,10 +496,41 @@ namespace VCCSharp.Modules
                 }
             }
         }
+    }
 
-        public KeyTranslationEntry KeyTranslationEntry(int index)
+    public class KeyTranslationEntryIComparer : IComparer<KeyTranslationEntry>
+    {
+        public int Compare(KeyTranslationEntry entry1, KeyTranslationEntry entry2)
         {
-            return Library.Keyboard.vccKeyTranslationEntry(index);
+            int result = 0;
+
+            // empty listing push to end
+            if (entry1.ScanCode1 == 0 && entry1.ScanCode2 == 0 && entry2.ScanCode1 != 0) return 1;
+            if (entry2.ScanCode1 == 0 && entry2.ScanCode2 == 0 && entry1.ScanCode1 != 0) return -1;
+
+            // push shift/alt/control by themselves to the end
+            if (entry1.ScanCode2 == 0 && (entry1.ScanCode1 == Define.DIK_LSHIFT || entry1.ScanCode1 == Define.DIK_LMENU || entry1.ScanCode1 == Define.DIK_LCONTROL)) return 1;
+            // push shift/alt/control by themselves to the end
+            if (entry2.ScanCode2 == 0 && (entry2.ScanCode1 == Define.DIK_LSHIFT || entry2.ScanCode1 == Define.DIK_LMENU || entry2.ScanCode1 == Define.DIK_LCONTROL)) return -1;
+
+            // move double key combos in front of single ones
+            if (entry1.ScanCode2 == 0 && entry2.ScanCode2 != 0) return 1;
+
+            // move double key combos in front of single ones
+            if (entry2.ScanCode2 == 0 && entry1.ScanCode2 != 0) return -1;
+
+            result = entry1.ScanCode1 - entry2.ScanCode1;
+
+            if (result == 0) result = entry1.Row1 - entry2.Row1;
+
+            if (result == 0) result = entry1.Col1 - entry2.Col1;
+
+            if (result == 0) result = entry1.Row2 - entry2.Row2;
+
+            if (result == 0) result = entry1.Col2 - entry2.Col2;
+
+            return result;
         }
     }
+
 }

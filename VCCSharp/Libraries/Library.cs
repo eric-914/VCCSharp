@@ -274,28 +274,6 @@ namespace VCCSharp.Libraries
             public static extern void get_pot_value(byte useLeft, byte useRight);
         }
 
-        public static class Keyboard
-        {
-            [DllImport(LIBRARY)]
-            public static extern unsafe KeyboardState* GetKeyBoardState();
-            //--Spelled funny because there's a GetKeyboardState() in User32.dll
-
-            [DllImport(LIBRARY)]
-            public static extern void vccKeyboardClear();
-
-            [DllImport(LIBRARY)]
-            public static extern void vccKeyboardSort();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void vccKeyboardCopyKeyTranslationEntry(KeyTranslationEntry* target, KeyTranslationEntry* source);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void vccKeyboardCopy(KeyTranslationEntry* keyTransEntry, int index);
-
-            [DllImport(LIBRARY)]
-            public static extern KeyTranslationEntry vccKeyTranslationEntry(int index);
-        }
-
         public static class MenuCallbacks
         {
             [DllImport(LIBRARY)]
