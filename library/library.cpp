@@ -16,6 +16,9 @@ This file is part of VCC (Virtual Color Computer).
     along with VCC (Virtual Color Computer).  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <windows.h>
+#include <stdio.h>
+
+#include "../resources/resource.h"
 
 static HINSTANCE g_hinstDLL = NULL;
 
@@ -37,4 +40,138 @@ BOOL WINAPI DllMain(
   }
 
   return TRUE;
+}
+
+extern "C" {
+  __declspec(dllexport) void* GetFunction(HMODULE hModule, LPCSTR  lpProcName) {
+    return GetProcAddress(hModule, lpProcName);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HINSTANCE __cdecl PAKLoadLibrary(char* modulePath) {
+    return LoadLibrary(modulePath);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl PAKFreeLibrary(HINSTANCE hInstLib) {
+    FreeLibrary(hInstLib);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HANDLE __cdecl FileOpenFile(char* filename, long desiredAccess) {
+    return CreateFile(filename, desiredAccess, 0, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HANDLE __cdecl FileCreateFile(char* filename, long desiredAccess) {
+    return CreateFile(filename, desiredAccess, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) DWORD __cdecl FileSetFilePointer(HANDLE handle, DWORD moveMethod, long offset) {
+    return SetFilePointer(handle, offset, 0, moveMethod);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl FileReadFile(HANDLE handle, unsigned char* buffer, unsigned long size, unsigned long* moved) {
+    return ReadFile(handle, buffer, size, moved, NULL);	//Read the whole file in for .CAS files
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl FileCloseHandle(HANDLE handle) {
+    return CloseHandle(handle);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl FileFlushFileBuffers(HANDLE handle) {
+    return FlushFileBuffers(handle);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl FileWriteFile(HANDLE handle, unsigned char* buffer, int size) {
+    unsigned long bytesMoved = 0;
+
+    return WriteFile(handle, buffer, 4, &bytesMoved, NULL);
+  }
+}
+
+//--Stuff from wingdi.h
+
+extern "C" {
+  __declspec(dllexport) void __cdecl GDIWriteTextOut(HDC hdc, unsigned short x, unsigned short y, const char* message)
+  {
+    TextOut(hdc, x, y, message, (int)strlen(message));
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl GDISetBkColor(HDC hdc, COLORREF color)
+  {
+    SetBkColor(hdc, color);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl GDISetTextColor(HDC hdc, COLORREF color)
+  {
+    SetTextColor(hdc, color);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl GDITextOut(HDC hdc, int x, int y, char* text, int textLength)
+  {
+    TextOut(hdc, x, y, text, textLength);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) LRESULT CALLBACK __cdecl WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+  {
+    return DefWindowProc(hWnd, message, wParam, lParam);
+  }
+}
+extern "C" {
+  __declspec(dllexport) HBRUSH __cdecl GDIGetBrush() {
+    return (HBRUSH)GetStockObject(BLACK_BRUSH);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HCURSOR __cdecl GDIGetCursor(unsigned char fullscreen) {
+    return fullscreen ? LoadCursor(NULL, MAKEINTRESOURCE(IDC_NONE)) : LoadCursor(NULL, IDC_ARROW);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HICON __cdecl GDIGetIcon(HINSTANCE resources) {
+    return LoadIcon(resources, (LPCTSTR)IDI_COCO3);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl GDIGetClientRect(HWND hwnd, RECT* clientSize) {
+    GetClientRect(hwnd, clientSize);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl CreateMainMenuFullScreen(HWND hWnd) {
+    SetMenu(hWnd, NULL);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl CreateMainMenuWindowed(HWND hWnd, HINSTANCE resources) {
+    SetMenu(hWnd, LoadMenu(resources, MAKEINTRESOURCE(IDR_MENU)));
+  }
 }

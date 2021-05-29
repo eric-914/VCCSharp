@@ -167,11 +167,8 @@
     <ClCompile Include="DirectDrawSurfaceDesc.c" />
     <ClCompile Include="DirectInput.c" />
     <ClCompile Include="DirectSound.c" />
-    <ClCompile Include="fileoperations.c" />
-    <ClCompile Include="GDI.c" />
     <ClCompile Include="library.cpp" />
     <ClCompile Include="MenuCallbacks.c" />
-    <ClCompile Include="PAKInterface.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="di.version.h" />

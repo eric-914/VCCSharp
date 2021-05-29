@@ -6,10 +6,7 @@
     <ClCompile Include="MenuCallbacks.c" />
     <ClCompile Include="DirectDrawInternal.c" />
     <ClCompile Include="DirectDrawSurfaceDesc.c" />
-    <ClCompile Include="fileoperations.c" />
-    <ClCompile Include="GDI.c" />
     <ClCompile Include="DirectInput.c" />
-    <ClCompile Include="PAKInterface.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="library.h" />
