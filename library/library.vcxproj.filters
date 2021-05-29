@@ -15,13 +15,9 @@
     <ClCompile Include="TC1014.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="defines.h" />
     <ClInclude Include="library.h" />
-    <ClInclude Include="macros.h" />
-    <ClInclude Include="PAKInterface.h" />
     <ClInclude Include="PakInterfaceModule.h" />
     <ClInclude Include="di.version.h" />
-    <ClInclude Include="nt.version.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

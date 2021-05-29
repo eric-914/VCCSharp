@@ -1,6 +1,5 @@
 #include <string>
 
-#include "PAKInterface.h"
 #include "PakInterfaceModule.h"
 
 typedef struct {

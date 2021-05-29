@@ -1,6 +1,5 @@
 #include <windows.h>
 
-#include "PakInterface.h"
 #include "PakInterfaceModule.h"
 
 //Menu "Actions"

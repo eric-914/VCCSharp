@@ -177,12 +177,8 @@
     <ClCompile Include="PAKInterface.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="macros.h" />
     <ClInclude Include="PakInterfaceModule.h" />
-    <ClInclude Include="PAKInterface.h" />
     <ClInclude Include="di.version.h" />
-    <ClInclude Include="nt.version.h" />
-    <ClInclude Include="defines.h" />
     <ClInclude Include="library.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
