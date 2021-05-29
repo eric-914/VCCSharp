@@ -43,6 +43,7 @@ namespace VCCSharp.Modules
         short NumberOfSoundCards { get; set; }
         string TapeFileName { get; set; }
         string SerialCaptureFile { get; set; }
+        string IniFilePath { get; set; }
 
         SoundCardList[] SoundCards { get; }
     }
@@ -76,6 +77,8 @@ namespace VCCSharp.Modules
 
         public ConfigModel ConfigModel { get; set; } = new ConfigModel();
 
+        public string IniFilePath { get; set; }
+
         public Config(IModules modules, IUser32 user32, IKernel kernel)
         {
             _modules = modules;
@@ -100,12 +103,10 @@ namespace VCCSharp.Modules
 
         public unsafe void InitConfig(ref CmdLineArguments cmdLineArgs)
         {
-            ConfigState* configState = GetConfigState();
-
             string iniFile = GetIniFilePath(cmdLineArgs.IniFile);
 
             ConfigModel.Release = AppTitle; //--A kind of "version" I guess
-            Converter.ToByteArray(iniFile, configState->IniFilePath);
+            IniFilePath = iniFile;
 
             //--TODO: Silly way to get C# to look at the SoundCardList array correctly
             //SoundCardList* soundCards = (SoundCardList*)(&configState->SoundCards);
@@ -174,38 +175,33 @@ namespace VCCSharp.Modules
         // LoadIniFile allows user to browse for an ini file and reloads the config from it.
         public void LoadIniFile()
         {
-            unsafe
+            string szFileName = IniFilePath;
+            string appPath = Path.GetDirectoryName(szFileName) ?? "C:\\";
+
+            var openFileDlg = new Microsoft.Win32.OpenFileDialog
             {
-                ConfigState* configState = GetConfigState();
+                FileName = szFileName,
+                DefaultExt = ".ini",
+                Filter = "INI files (.ini)|*.ini",
+                InitialDirectory = appPath,
+                CheckFileExists = true,
+                ShowReadOnly = false,
+                Title = "Load Vcc Config File"
+            };
 
-                string szFileName = Converter.ToString(configState->IniFilePath);
-                string appPath = Path.GetDirectoryName(szFileName) ?? "C:\\";
+            if (openFileDlg.ShowDialog() == true)
+            {
+                // Flush current profile
+                WriteIniFile();
 
-                var openFileDlg = new Microsoft.Win32.OpenFileDialog
-                {
-                    FileName = szFileName,
-                    DefaultExt = ".ini",
-                    Filter = "INI files (.ini)|*.ini",
-                    InitialDirectory = appPath,
-                    CheckFileExists = true,
-                    ShowReadOnly = false,
-                    Title = "Load Vcc Config File"
-                };
+                IniFilePath = openFileDlg.FileName;
 
-                if (openFileDlg.ShowDialog() == true)
-                {
-                    // Flush current profile
-                    WriteIniFile();
+                // Load it
+                ReadIniFile();
 
-                    Converter.ToByteArray(openFileDlg.FileName, configState->IniFilePath);
+                SynchSystemWithConfig();
 
-                    // Load it
-                    ReadIniFile();
-
-                    SynchSystemWithConfig();
-
-                    _modules.Emu.ResetPending = (byte)ResetPendingStates.Hard;
-                }
+                _modules.Emu.ResetPending = (byte)ResetPendingStates.Hard;
             }
         }
 
@@ -252,13 +248,11 @@ namespace VCCSharp.Modules
             return ConfigModel.ExternalBasicImage;
         }
 
-        public unsafe string GetIniFilePath(string argIniFile)
+        public string GetIniFilePath(string argIniFile)
         {
-            ConfigState* configState = GetConfigState();
-
             if (!string.IsNullOrEmpty(argIniFile))
             {
-                Converter.ToByteArray(argIniFile, configState->IniFilePath);
+                IniFilePath = argIniFile;
 
                 return argIniFile;
             }
@@ -297,11 +291,9 @@ namespace VCCSharp.Modules
             _modules.Vcc.CpuName = cpu[(CPUTypes)cpuType];
         }
 
-        public unsafe void ReadIniFile()
+        public void ReadIniFile()
         {
-            ConfigState* configState = GetConfigState();
-
-            string iniFilePath = Converter.ToString(configState->IniFilePath);
+            string iniFilePath = IniFilePath;
 
             LoadConfiguration(ConfigModel, iniFilePath);
 
@@ -464,42 +456,37 @@ namespace VCCSharp.Modules
 
         public void SaveConfig()
         {
-            unsafe
+            // EJJ get current ini file path
+            string curIni = IniFilePath;
+
+            // Let SaveFileDialog suggest it
+            var saveFileDialog = new Microsoft.Win32.SaveFileDialog
             {
-                ConfigState* configState = GetConfigState();
+                FileName = curIni,
+                DefaultExt = ".ini",
+                Filter = "INI files (.ini)|*.ini",
+                FilterIndex = 1,
+                InitialDirectory = curIni,
+                CheckPathExists = true,
+                Title = "Save Vcc Config File",
+                AddExtension = true
+            };
 
-                // EJJ get current ini file path
-                string curIni = Converter.ToString(configState->IniFilePath);
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                WriteIniFile(); // Flush current config
 
-                // Let SaveFileDialog suggest it
-                var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                string newIni = saveFileDialog.FileName;
+
+                if (newIni != curIni)
                 {
-                    FileName = curIni,
-                    DefaultExt = ".ini",
-                    Filter = "INI files (.ini)|*.ini",
-                    FilterIndex = 1,
-                    InitialDirectory = curIni,
-                    CheckPathExists = true,
-                    Title = "Save Vcc Config File",
-                    AddExtension = true
-                };
-
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    WriteIniFile(); // Flush current config
-
-                    string newIni = saveFileDialog.FileName;
-
-                    if (newIni != curIni)
+                    try
                     {
-                        try
-                        {
-                            File.Copy(curIni, newIni, true);
-                        }
-                        catch (Exception)
-                        {
-                            MessageBox.Show("Copy config failed", "error");
-                        }
+                        File.Copy(curIni, newIni, true);
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("Copy config failed", "error");
                     }
                 }
             }
@@ -510,10 +497,8 @@ namespace VCCSharp.Modules
             return ConfigModel.KeyMapIndex;
         }
 
-        public unsafe void WriteIniFile()
+        public void WriteIniFile()
         {
-            ConfigState* configState = GetConfigState();
-
             ConfigModel.WindowSizeX = (short)_modules.Emu.WindowSize.X;
             ConfigModel.WindowSizeY = (short)_modules.Emu.WindowSize.Y;
 
@@ -528,7 +513,7 @@ namespace VCCSharp.Modules
 
             ValidateModel(ConfigModel);
 
-            string iniFilePath = Converter.ToString(configState->IniFilePath);
+            string iniFilePath = IniFilePath;
 
             SaveConfiguration(ConfigModel, iniFilePath);
         }

@@ -276,9 +276,7 @@ namespace VCCSharp.Modules
                 {
                     moduleParams |= 2048;
 
-                    var ini = Converter.ToString(_modules.Config.GetConfigState()->IniFilePath);
-
-                    InvokeSetIniPath(ini);
+                    InvokeSetIniPath(_modules.Config.IniFilePath);
                 }
 
                 if (HasPakSetCart() != 0)
