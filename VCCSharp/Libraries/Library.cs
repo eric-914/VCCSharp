@@ -295,12 +295,6 @@ namespace VCCSharp.Libraries
         public static class PAKInterface
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe PakInterfaceState* GetPakInterfaceState();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe PakInterfaceDelegates* GetPakInterfaceDelegates();
-
-            [DllImport(LIBRARY)]
             public static extern HINSTANCE PAKLoadLibrary(string modulePath);
 
             [DllImport(LIBRARY)]

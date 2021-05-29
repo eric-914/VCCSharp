@@ -128,8 +128,8 @@ namespace VCCSharp.Models.Pak
 
     #endregion
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    public struct PakInterfaceDelegates
+    //[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    public class PakInterfaceDelegates
     {
         //unsigned char (*PakMemRead8)(unsigned short);
         //public PAKMEMREAD8* PakMemRead8;
