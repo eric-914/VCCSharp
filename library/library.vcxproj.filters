@@ -10,7 +10,6 @@
     <ClCompile Include="GDI.c" />
     <ClCompile Include="DirectInput.c" />
     <ClCompile Include="PAKInterface.c" />
-    <ClCompile Include="TC1014.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="library.h" />

@@ -171,7 +171,6 @@
     <ClCompile Include="GDI.c" />
     <ClCompile Include="library.cpp" />
     <ClCompile Include="MenuCallbacks.c" />
-    <ClCompile Include="TC1014.c" />
     <ClCompile Include="PAKInterface.c" />
   </ItemGroup>
   <ItemGroup>

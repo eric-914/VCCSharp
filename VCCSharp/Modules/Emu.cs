@@ -24,7 +24,7 @@ namespace VCCSharp.Modules
         byte FrameSkip { get; set; }
         byte FullScreen { get; set; }
         byte RamSize { get; set; }
-        byte ScanLines { get; set; }
+        bool ScanLines { get; set; }
         short FrameCounter { get; set; }
         short LineCounter { get; set; }
         long SurfacePitch { get; set; }
@@ -54,7 +54,7 @@ namespace VCCSharp.Modules
         public byte FullScreen { get; set; }
 
         public byte RamSize { get; set; }
-        public byte ScanLines { get; set; }
+        public bool ScanLines { get; set; }
 
         public short FrameCounter { get; set; }
         public short LineCounter { get; set; }

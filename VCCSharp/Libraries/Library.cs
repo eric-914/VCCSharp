@@ -313,16 +313,10 @@ namespace VCCSharp.Libraries
             public static extern unsafe void* GetFunction(HMODULE hModule, string lpProcName);
         } //--PAKInterface
 
-        public static class TC1014
-        {
-            [DllImport(LIBRARY)]
-            public static extern unsafe TC1014State* GetTC1014State();
-
-            [DllImport(LIBRARY)]
-            public static extern byte MemRead8(ushort mmu, ushort mask);
-
-            [DllImport(LIBRARY)]
-            public static extern void MemWrite8(byte data, ushort mmu, ushort mask);
-        }
+        //public static class TC1014
+        //{
+        //    [DllImport(LIBRARY)]
+        //    public static extern unsafe TC1014State* GetTC1014State();
+        //}
     }
 }

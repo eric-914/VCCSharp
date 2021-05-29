@@ -212,7 +212,7 @@ namespace VCCSharp.Modules
         //TODO: ScanLines never really worked right to begin with...
         public void SetScanLines(byte lines)
         {
-            _modules.Emu.ScanLines = lines;
+            _modules.Emu.ScanLines = lines != Define.FALSE;
             _modules.Emu.ResetPending = (byte)ResetPendingStates.Cls;
 
             _modules.DirectDraw.ClearScreen();
