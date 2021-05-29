@@ -31,6 +31,8 @@ namespace VCCSharp.Modules
         int HasConfigModule();
         void InvokeConfigModule(byte menuItem);
         int UnloadPack(byte emulationRunning);
+        byte CartInserted { get; set; }
+        string ModuleName { get; set; } 
     }
 
     // ReSharper disable once InconsistentNaming
@@ -40,6 +42,11 @@ namespace VCCSharp.Modules
         private readonly IKernel _kernel;
 
         private string _dllPath;
+
+        public byte CartInserted { get; set; }
+        public string ModuleName { get; set; } = "Blank";
+        public int DialogOpen;
+        public int RomPackLoaded;
 
         public PAKInterface(IModules modules, IKernel kernel)
         {
@@ -75,7 +82,7 @@ namespace VCCSharp.Modules
         {
             PakInterfaceState* instance = GetPakInterfaceState();
 
-            if ((instance->DialogOpen == Define.TRUE) && (emulationRunning == Define.TRUE))
+            if ((DialogOpen == Define.TRUE) && (emulationRunning == Define.TRUE))
             {
                 MessageBox.Show("Close Configuration Dialog before unloading", "Ok");
 
@@ -182,8 +189,8 @@ namespace VCCSharp.Modules
                     InvokeSetInterruptCallPointer();
                 }
 
-                string modName = Converter.ToString(instance->Modname);
-                InvokeGetModuleName(modName, catNumber);  //Instantiate the menus from HERE!
+                ModuleName = InvokeGetModuleName(catNumber);  //Instantiate the menus from HERE!
+                string modName = ModuleName;
 
                 var temp = $"Configure {modName}";
                 var text = $"Module Name: {modName}\n";
@@ -299,14 +306,7 @@ namespace VCCSharp.Modules
 
             LoadRomPack(emulationRunning, modulePath);
 
-            unsafe
-            {
-                PakInterfaceState* instance = GetPakInterfaceState();
-
-                Converter.ToByteArray(modulePath, instance->Modname);
-
-                _modules.FileOperations.FilePathStripPath(instance->Modname);
-            }
+            ModuleName = Path.GetFileName(modulePath);
 
             _modules.MenuCallbacks.DynamicMenuCallback(null, MenuActions.Refresh, Define.IGNORE);
 
@@ -335,12 +335,28 @@ namespace VCCSharp.Modules
 
         public byte PakPortRead(byte port)
         {
-            return Library.PAKInterface.PakPortRead(port);
+            if (HasModulePortRead() != 0)
+            {
+                return ModulePortRead(port);
+            }
+
+            return 0;
         }
 
         public void PakPortWrite(byte port, byte data)
         {
-            Library.PAKInterface.PakPortWrite(port, data);
+            unsafe
+            {
+                PakInterfaceState* instance = GetPakInterfaceState();
+
+                if (ModulePortWrite(port, data) == 1)
+                {
+                    if ((port == 0x40) && (RomPackLoaded) != 0)
+                    {
+                        instance->BankedCartOffset = (uint)((data & 15) << 14);
+                    }
+                }
+            }
         }
 
         public ushort PakAudioSample()
@@ -355,7 +371,12 @@ namespace VCCSharp.Modules
 
         public int FileId(string filename)
         {
-            return Library.PAKInterface.FileID(filename);
+            if (!File.Exists(filename)) return 0;   //File Doesn't exist
+
+            var file = File.ReadAllBytes(filename);
+            if (file[0] == 'M' && file[1] == 'Z') return 1; //DLL File
+
+            return 2; //Rom Image 
         }
 
         public HINSTANCE PakLoadLibrary(string modulePath)
@@ -365,7 +386,7 @@ namespace VCCSharp.Modules
 
         public void SetCart(byte cart)
         {
-            Library.PAKInterface.SetCart(cart);
+            CartInserted = cart;
         }
 
         public void PakFreeLibrary(HINSTANCE hInstLib)
@@ -398,7 +419,7 @@ namespace VCCSharp.Modules
                 UnloadDll(emulationRunning);
 
                 instance->BankedCartOffset = 0;
-                instance->RomPackLoaded = Define.TRUE;
+                RomPackLoaded = Define.TRUE;
 
                 return rom.Length;
             }
@@ -414,9 +435,9 @@ namespace VCCSharp.Modules
                 PakInterfaceState* instance = GetPakInterfaceState();
 
                 _dllPath = "";
-                Converter.ToByteArray("Blank\0", instance->Modname);
+                ModuleName = "Blank\0";
 
-                instance->RomPackLoaded = Define.FALSE;
+                RomPackLoaded = Define.FALSE;
 
                 SetCart(0);
 
@@ -658,7 +679,7 @@ namespace VCCSharp.Modules
 
         private static DYNAMICMENUCALLBACK _dynamicMenuCallback;
 
-        public void InvokeGetModuleName(string modName, string catNumber)
+        public string InvokeGetModuleName(string catNumber)
         {
             //Instantiate the menus from HERE!
             unsafe
@@ -674,7 +695,12 @@ namespace VCCSharp.Modules
 
                 GETMODULENAME fn = Marshal.GetDelegateForFunctionPointer<GETMODULENAME>(p);
 
-                fn(modName, catNumber, fnx);
+                fixed (byte* b = new byte[256])
+                {
+                    fn(b, catNumber, fnx);
+
+                    return Converter.ToString(b);
+                }
             }
         }
 
@@ -818,6 +844,37 @@ namespace VCCSharp.Modules
         public unsafe void* GetFunction(HMODULE hModule, string lpProcName)
         {
             return Library.PAKInterface.GetFunction(hModule, lpProcName);
+        }
+
+        public int HasModulePortRead()
+        {
+            return Library.PAKInterface.HasModulePortRead();
+        }
+
+        public byte ModulePortRead(byte port)
+        {
+            return Library.PAKInterface.ModulePortRead(port);
+        }
+
+        public int ModulePortWrite(byte port, byte data)
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                if (d->PakPortWrite != null)
+                {
+                    IntPtr p = (IntPtr)(d->PakPortWrite);
+
+                    PAKPORTWRITE fn = Marshal.GetDelegateForFunctionPointer<PAKPORTWRITE>(p);
+
+                    fn(port, data);
+
+                    return 0;
+                }
+
+                return 1;
+            }
         }
     }
 }

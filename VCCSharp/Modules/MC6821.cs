@@ -2,7 +2,6 @@
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
-using VCCSharp.Models.Pak;
 using HANDLE = System.IntPtr;
 
 namespace VCCSharp.Modules
@@ -117,38 +116,33 @@ namespace VCCSharp.Modules
 
         public void irq_fs(PhaseStates phase) //60HZ Vertical sync pulse 16.667 mS
         {
-            unsafe
+            if (_modules.PAKInterface.CartInserted == 1 && CartAutoStart == 1)
             {
-                PakInterfaceState* pakInterfaceState = _modules.PAKInterface.GetPakInterfaceState();
+                MC6821_AssertCart();
+            }
 
-                if (pakInterfaceState->CartInserted == 1 && CartAutoStart == 1)
-                {
-                    MC6821_AssertCart();
-                }
+            switch (phase)
+            {
+                case PhaseStates.Falling:	//FS went High to low
+                    if ((_rega[3] & 2) == 0) //IRQ on High to low transition
+                    {
+                        _rega[3] = (byte)(_rega[3] | 128);
+                    }
 
-                switch (phase)
-                {
-                    case PhaseStates.Falling:	//FS went High to low
-                        if ((_rega[3] & 2) == 0) //IRQ on High to low transition
-                        {
-                            _rega[3] = (byte)(_rega[3] | 128);
-                        }
+                    break;
 
-                        break;
+                case PhaseStates.Rising:	//FS went Low to High
+                    if ((_rega[3] & 2) != 0) //IRQ  Low to High transition
+                    {
+                        _rega[3] = (byte)(_rega[3] | 128);
+                    }
 
-                    case PhaseStates.Rising:	//FS went Low to High
-                        if ((_rega[3] & 2) != 0) //IRQ  Low to High transition
-                        {
-                            _rega[3] = (byte)(_rega[3] | 128);
-                        }
+                    break;
+            }
 
-                        break;
-                }
-
-                if ((_rega[3] & 1) != 0)
-                {
-                    _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 1);
-                }
+            if ((_rega[3] & 1) != 0)
+            {
+                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 1);
             }
         }
 
@@ -501,7 +495,7 @@ namespace VCCSharp.Modules
 
         public int OpenPrintFile(string filename)
         {
-            _hPrintFile = Library.FileOperations.FileOpenFile(filename, Define.GENERIC_READ | Define.GENERIC_WRITE);
+            _hPrintFile = _modules.FileOperations.FileCreateFile(filename, Define.GENERIC_READ | Define.GENERIC_WRITE);
 
             return _hPrintFile == Define.INVALID_HANDLE_VALUE ? 0 : 1;
         }

@@ -251,9 +251,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe int FileWriteFile(HANDLE handle, byte* buffer, int size);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void FilePathStripPath(byte* path);
         }
 
         public static class GDI
@@ -359,19 +356,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe PakInterfaceDelegates* GetPakInterfaceDelegates();
 
             [DllImport(LIBRARY)]
-            public static extern byte PakPortRead(byte port);
-
-            [DllImport(LIBRARY)]
-            public static extern void PakPortWrite(byte port, byte data);
-
-            [DllImport(LIBRARY)]
-            public static extern int FileID(string filename);
-
-            [DllImport(LIBRARY)]
             public static extern HINSTANCE PAKLoadLibrary(string modulePath);
-
-            [DllImport(LIBRARY)]
-            public static extern void SetCart(byte cart);
 
             [DllImport(LIBRARY)]
             public static extern void PAKFreeLibrary(HINSTANCE hInstLib);
@@ -384,6 +369,12 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void* GetFunction(HMODULE hModule, string lpProcName);
+
+            [DllImport(LIBRARY)]
+            public static extern int HasModulePortRead();
+
+            [DllImport(LIBRARY)]
+            public static extern byte ModulePortRead(byte port);
         } //--PAKInterface
 
         public static class TC1014

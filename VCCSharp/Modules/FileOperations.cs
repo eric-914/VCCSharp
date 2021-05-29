@@ -13,7 +13,6 @@ namespace VCCSharp.Modules
         int FileFlushFileBuffers(HANDLE handle);
         unsafe int FileWriteFile(HANDLE handle, byte* buffer, int size);
         int FileWriteFile(HANDLE handle, string text);
-        unsafe void FilePathStripPath(byte* path);
     }
 
     public class FileOperations : IFileOperations
@@ -59,11 +58,6 @@ namespace VCCSharp.Modules
             {
                 return Library.FileOperations.FileWriteFile(handle, buffer, text.Length);
             }
-        }
-
-        public unsafe void FilePathStripPath(byte* path)
-        {
-            Library.FileOperations.FilePathStripPath(path);
         }
     }
 }

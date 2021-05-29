@@ -1,3 +1,5 @@
+#include <windows.h>
+
 #include "MenuCallbacks.h"
 
 #include "PakInterface.h"
@@ -157,49 +159,5 @@ extern "C" {
 
     MenuItem[MenuIndex].MenuId = menuId;
     MenuItem[MenuIndex].Type = type;
-  }
-}
-
-/**********************************************************************
-* Ported, but still used in PakInterfaceModule.InvokeGetModuleName(...)
-**********************************************************************/
-extern "C" {
-  __declspec(dllexport) void __cdecl DynamicMenuCallback(char* menuName, int menuId, int type)
-  {
-    char temp[256] = "Eject Cart: ";
-
-    switch (menuId)
-    {
-    case MENU_FLUSH:
-      MenuIndex = 0;
-
-      DynamicMenuCallback("Cartridge", ID_MENU_CARTRIDGE, MENU_PARENT);	//Recursion is fun
-      DynamicMenuCallback("Load Cart", ID_MENU_LOAD_CART, MENU_CHILD);
-
-      strcat(temp, GetPakInterfaceState()->Modname);
-
-      DynamicMenuCallback(temp, ID_MENU_EJECT_CART, MENU_CHILD);
-
-      break;
-
-    case MENU_DONE:
-      RefreshDynamicMenu();
-      break;
-
-    case MENU_REFRESH:
-      DynamicMenuCallback(NULL, MENU_FLUSH, IGNORE);
-      DynamicMenuCallback(NULL, MENU_DONE, IGNORE);
-      break;
-
-    default:
-      strcpy(MenuItem[MenuIndex].MenuName, menuName);
-
-      MenuItem[MenuIndex].MenuId = menuId;
-      MenuItem[MenuIndex].Type = type;
-
-      MenuIndex++;
-
-      break;
-    }
   }
 }

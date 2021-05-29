@@ -28,30 +28,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl FilePathStripPath(char* path) {
-    char buffer[MAX_PATH] = "";
-    short index = (short)strlen(path);
-
-    if ((index > MAX_PATH) || (index == 0)) { //Test for overflow
-      return;
-    }
-
-    for (; index >= 0; index--) {
-      if (path[index] == '\\') {
-        break;
-      }
-    }
-
-    if (index < 0) {	//delimiter not found
-      return;
-    }
-
-    strcpy(buffer, &path[index + 1]);
-    strcpy(path, buffer);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) HANDLE __cdecl FileOpenFile(char* filename, long desiredAccess) {
     return CreateFile(filename, desiredAccess, 0, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
   }

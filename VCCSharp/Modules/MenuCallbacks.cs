@@ -112,10 +112,7 @@ namespace VCCSharp.Modules
                     DynamicMenuCallback("Cartridge", MenuActions.Cartridge, Define.MENU_PARENT);	//Recursion is fun
                     DynamicMenuCallback("Load Cart", MenuActions.Load, Define.MENU_CHILD);
 
-                    unsafe
-                    {
-                        temp += Converter.ToString(_modules.PAKInterface.GetPakInterfaceState()->Modname);
-                    }
+                    temp += _modules.PAKInterface.ModuleName;
 
                     DynamicMenuCallback(temp, MenuActions.Eject, Define.MENU_CHILD);
 

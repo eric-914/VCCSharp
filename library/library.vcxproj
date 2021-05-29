@@ -193,9 +193,7 @@
     <ClInclude Include="JoystickState.h" />
     <ClInclude Include="macros.h" />
     <ClInclude Include="MenuCallbacks.h" />
-    <ClInclude Include="PakInterfaceDelegates.h" />
     <ClInclude Include="PakInterfaceModule.h" />
-    <ClInclude Include="PakInterfaceState.h" />
     <ClInclude Include="TC1014.h" />
     <ClInclude Include="PAKInterface.h" />
     <ClInclude Include="SoundCardList.h" />
@@ -203,7 +201,6 @@
     <ClInclude Include="nt.version.h" />
     <ClInclude Include="cpudef.h" />
     <ClInclude Include="defines.h" />
-    <ClInclude Include="fileoperations.h" />
     <ClInclude Include="library.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
