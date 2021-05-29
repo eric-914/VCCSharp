@@ -89,7 +89,8 @@ namespace VCCSharp.Modules
 
                 case PhaseStates.Rising:	//HS went Low to High
                     if ((_rega[1] & 2) == 0)
-                    { //IRQ  High to low transition
+                    { 
+                        //IRQ  High to low transition
                         return;
                     }
 

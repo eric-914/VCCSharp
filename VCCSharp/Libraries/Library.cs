@@ -31,12 +31,6 @@ namespace VCCSharp.Libraries
             public static extern void ResetCassetteBuffer();
         }
 
-        public static class CPU
-        {
-            [DllImport(LIBRARY)]
-            public static extern void CPUAssertInterrupt(byte irq, byte flag);
-        }
-
         public static class DirectDraw
         {
             [DllImport(LIBRARY)]

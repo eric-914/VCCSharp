@@ -5,7 +5,6 @@
     <ClCompile Include="DirectSound.c" />
     <ClCompile Include="MenuCallbacks.c" />
     <ClCompile Include="Cassette.c" />
-    <ClCompile Include="cpudef.c" />
     <ClCompile Include="DirectDrawInternal.c" />
     <ClCompile Include="DirectDrawSurfaceDesc.c" />
     <ClCompile Include="fileoperations.c" />

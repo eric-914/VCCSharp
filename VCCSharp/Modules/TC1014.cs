@@ -4592,13 +4592,13 @@ Could not locate {ROM} in any of these locations:
         {
             if (((GimeRegisters[0x93] & 16) != 0) && (EnhancedFIRQFlag == 1))
             {
-                _modules.CPU.CPUAssertInterrupt(Define.FIRQ, 0);
+                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.FIRQ, 0);
 
                 LastFirq |= 16;
             }
             else if (((GimeRegisters[0x92] & 16) != 0) && (EnhancedIRQFlag == 1))
             {
-                _modules.CPU.CPUAssertInterrupt(Define.IRQ, 0);
+                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 0);
 
                 LastIrq |= 16;
             }
@@ -4608,13 +4608,13 @@ Could not locate {ROM} in any of these locations:
         {
             if (((GimeRegisters[0x93] & 32) != 0) && (EnhancedFIRQFlag == 1))
             {
-                _modules.CPU.CPUAssertInterrupt(Define.FIRQ, 0);
+                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.FIRQ, 0);
 
                 LastFirq |= 32;
             }
             else if (((GimeRegisters[0x92] & 32) != 0) && (EnhancedIRQFlag == 1))
             {
-                _modules.CPU.CPUAssertInterrupt(Define.IRQ, 0);
+                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 0);
 
                 LastIrq |= 32;
             }
@@ -4796,13 +4796,13 @@ Could not locate {ROM} in any of these locations:
         {
             if (((GimeRegisters[0x93] & 2) != 0) && (EnhancedFIRQFlag == 1))
             {
-                _modules.CPU.CPUAssertInterrupt(Define.FIRQ, 0);
+                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.FIRQ, 0);
 
                 LastFirq |= 2;
             }
             else if (((GimeRegisters[0x92] & 2) != 0) && (EnhancedIRQFlag == 1))
             {
-                _modules.CPU.CPUAssertInterrupt(Define.IRQ, 0);
+                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 0);
 
                 LastIrq |= 2;
             }

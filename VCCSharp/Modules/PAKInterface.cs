@@ -720,9 +720,14 @@ namespace VCCSharp.Modules
 
         public void InvokeSetInterruptCallPointer()
         {
+            void CPUAssertInterrupt(byte irq, byte flag)
+            {
+                _modules.CPU.CPUAssertInterrupt((CPUInterrupts) irq, flag);
+            }
+
             unsafe
             {
-                _assertInterruptCallback = _modules.CPU.CPUAssertInterrupt;
+                _assertInterruptCallback = CPUAssertInterrupt;
 
                 IntPtr callback = Marshal.GetFunctionPointerForDelegate(_assertInterruptCallback);
 
