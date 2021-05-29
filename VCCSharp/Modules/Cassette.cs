@@ -534,6 +534,16 @@ namespace VCCSharp.Modules
 
         public void ResetCassetteBuffer()
         {
+            unsafe
+            {
+                CassetteState* instance = GetCassetteState();
+
+                if (instance->CasBuffer != null)
+                {
+                    _modules.PAKInterface.FreeMemory(instance->CasBuffer);
+                }
+            }
+
             Library.Cassette.ResetCassetteBuffer();
         }
     }

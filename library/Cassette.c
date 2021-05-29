@@ -26,10 +26,6 @@ CassetteState* InitializeInstance(CassetteState* p) {
 extern "C" {
   __declspec(dllexport) void __cdecl ResetCassetteBuffer()
   {
-    if (instance->CasBuffer != NULL) {
-      free(instance->CasBuffer);
-    }
-
     instance->CasBuffer = (unsigned char*)malloc(WRITEBUFFERSIZE);
   }
 }

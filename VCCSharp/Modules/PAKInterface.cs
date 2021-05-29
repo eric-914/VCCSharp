@@ -32,7 +32,8 @@ namespace VCCSharp.Modules
         void InvokeConfigModule(byte menuItem);
         int UnloadPack(byte emulationRunning);
         byte CartInserted { get; set; }
-        string ModuleName { get; set; } 
+        string ModuleName { get; set; }
+        unsafe void FreeMemory(byte* target);
     }
 
     // ReSharper disable once InconsistentNaming
