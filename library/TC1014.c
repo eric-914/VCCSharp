@@ -1,8 +1,21 @@
-#include "TC1014.h"
-
 #include "PAKInterface.h"
 
 #include "macros.h"
+
+typedef struct {
+  unsigned char MmuState;
+  unsigned short MemPageOffsets[1024];
+
+  unsigned char MapType;
+
+  unsigned char CurrentRamConfig;
+
+  unsigned char VectorMask[4];
+  unsigned char VectorMaska[4];
+
+  unsigned char* MemPages[1024];
+  unsigned short MmuRegisters[4][8];
+} TC1014State;
 
 const unsigned char VectorMask[4] = { 15, 63, 63, 63 };
 const unsigned char VectorMaska[4] = { 12, 60, 60, 60 };

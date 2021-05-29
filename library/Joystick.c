@@ -1,10 +1,23 @@
 #include "di.version.h"
 #include <dinput.h>
 
-#include "JoystickState.h"
-
 #define MAXSTICKS 10
 #define STRLEN 64
+
+typedef struct
+{
+  unsigned char LeftStickNumber;
+  unsigned char LeftButton1Status;
+  unsigned char LeftButton2Status;
+  unsigned short LeftStickX;
+  unsigned short LeftStickY;
+
+  unsigned char RightStickNumber;
+  unsigned char RightButton1Status;
+  unsigned char RightButton2Status;
+  unsigned short RightStickX;
+  unsigned short RightStickY;
+} JoystickState;
 
 static LPDIRECTINPUT8 di;
 static LPDIRECTINPUTDEVICE8 Joysticks[MAXSTICKS];

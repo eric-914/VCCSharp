@@ -183,23 +183,11 @@
     <ClCompile Include="PAKInterface.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CmdLineArguments.h" />
-    <ClInclude Include="Config.h" />
-    <ClInclude Include="ConfigState.h" />
-    <ClInclude Include="DirectDrawInternalState.h" />
-    <ClInclude Include="DirectSoundState.h" />
-    <ClInclude Include="Graphics.h" />
-    <ClInclude Include="GraphicsState.h" />
-    <ClInclude Include="JoystickState.h" />
     <ClInclude Include="macros.h" />
-    <ClInclude Include="MenuCallbacks.h" />
     <ClInclude Include="PakInterfaceModule.h" />
-    <ClInclude Include="TC1014.h" />
     <ClInclude Include="PAKInterface.h" />
-    <ClInclude Include="SoundCardList.h" />
     <ClInclude Include="di.version.h" />
     <ClInclude Include="nt.version.h" />
-    <ClInclude Include="cpudef.h" />
     <ClInclude Include="defines.h" />
     <ClInclude Include="library.h" />
     <ClInclude Include="resource.h" />

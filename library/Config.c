@@ -1,6 +1,9 @@
 #include <windows.h>
 
-#include "Config.h"
+typedef struct
+{
+  char IniFilePath[MAX_PATH];
+} ConfigState;
 
 ConfigState* InitializeInstance(ConfigState*);
 

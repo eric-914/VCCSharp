@@ -2,165 +2,37 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="library.cpp" />
-    <ClCompile Include="cpudef.c">
-      <Filter>cpu</Filter>
-    </ClCompile>
-    <ClCompile Include="fileoperations.c">
-      <Filter>file</Filter>
-    </ClCompile>
-    <ClCompile Include="Audio.c">
-      <Filter>audio</Filter>
-    </ClCompile>
-    <ClCompile Include="Cassette.c">
-      <Filter>cassette</Filter>
-    </ClCompile>
-    <ClCompile Include="Config.c">
-      <Filter>config</Filter>
-    </ClCompile>
-    <ClCompile Include="Joystick.c">
-      <Filter>joystick</Filter>
-    </ClCompile>
-    <ClCompile Include="Keyboard.c">
-      <Filter>keyboard</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics.c">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="PAKInterface.c">
-      <Filter>pakinterface</Filter>
-    </ClCompile>
-    <ClCompile Include="MenuCallbacks.c">
-      <Filter>callbacks</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectSound.c">
-      <Filter>audio</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectDrawInternal.c">
-      <Filter>directdraw</Filter>
-    </ClCompile>
-    <ClCompile Include="PakInterfaceModule.c">
-      <Filter>pakinterface</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectInput.c">
-      <Filter>joystick</Filter>
-    </ClCompile>
-    <ClCompile Include="GDI.c">
-      <Filter>gdi</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectDrawSurfaceDesc.c">
-      <Filter>directdraw</Filter>
-    </ClCompile>
-    <ClCompile Include="TC1014.c">
-      <Filter>tc1014</Filter>
-    </ClCompile>
+    <ClCompile Include="DirectSound.c" />
+    <ClCompile Include="Audio.c" />
+    <ClCompile Include="MenuCallbacks.c" />
+    <ClCompile Include="Cassette.c" />
+    <ClCompile Include="Config.c" />
+    <ClCompile Include="cpudef.c" />
+    <ClCompile Include="DirectDrawInternal.c" />
+    <ClCompile Include="DirectDrawSurfaceDesc.c" />
+    <ClCompile Include="fileoperations.c" />
+    <ClCompile Include="GDI.c" />
+    <ClCompile Include="Graphics.c" />
+    <ClCompile Include="DirectInput.c" />
+    <ClCompile Include="Joystick.c" />
+    <ClCompile Include="Keyboard.c" />
+    <ClCompile Include="PAKInterface.c" />
+    <ClCompile Include="PakInterfaceModule.c" />
+    <ClCompile Include="TC1014.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h" />
     <ClInclude Include="library.h" />
-    <ClInclude Include="cpudef.h">
-      <Filter>cpu</Filter>
-    </ClInclude>
-    <ClInclude Include="di.version.h">
-      <Filter>version</Filter>
-    </ClInclude>
-    <ClInclude Include="nt.version.h">
-      <Filter>version</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>resources</Filter>
-    </ClInclude>
     <ClInclude Include="macros.h" />
-    <ClInclude Include="SoundCardList.h">
-      <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="Config.h">
-      <Filter>config</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="PAKInterface.h">
-      <Filter>pakinterface</Filter>
-    </ClInclude>
-    <ClInclude Include="CmdLineArguments.h">
-      <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="JoystickState.h">
-      <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="ConfigState.h">
-      <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicsState.h">
-      <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuCallbacks.h">
-      <Filter>callbacks</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectSoundState.h">
-      <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectDrawInternalState.h">
-      <Filter>models</Filter>
-    </ClInclude>
-    <ClInclude Include="PakInterfaceModule.h">
-      <Filter>pakinterface</Filter>
-    </ClInclude>
-    <ClInclude Include="TC1014.h">
-      <Filter>tc1014</Filter>
-    </ClInclude>
+    <ClInclude Include="PAKInterface.h" />
+    <ClInclude Include="PakInterfaceModule.h" />
+    <ClInclude Include="di.version.h" />
+    <ClInclude Include="nt.version.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="audio">
-      <UniqueIdentifier>{a1e197a3-96b7-4a32-8423-046b68586ec0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="cassette">
-      <UniqueIdentifier>{b15549f3-bd40-41f7-924d-8588cdc3aff9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="cpu">
-      <UniqueIdentifier>{95cddd9b-7966-459b-b71a-4df974a5336a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="version">
-      <UniqueIdentifier>{24231aa7-6706-4af9-988d-e5c4f9399e79}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="file">
-      <UniqueIdentifier>{16510640-f61a-43b2-bdcd-fa3485b3a597}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="graphics">
-      <UniqueIdentifier>{f67d6558-beea-4086-991d-9c4a1019c9bf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="joystick">
-      <UniqueIdentifier>{7ebfd3af-a17e-426b-8615-80a1562e5210}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="keyboard">
-      <UniqueIdentifier>{c4db8b51-810a-40c8-81d5-0024e052a93e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="tc1014">
-      <UniqueIdentifier>{49389fe2-6b27-43b4-be8e-da55b700686d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="config">
-      <UniqueIdentifier>{f0e5d00c-8e47-4546-a76f-152ddb13e354}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources">
-      <UniqueIdentifier>{57f10a27-5161-423d-a617-cc41d9e82196}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="directdraw">
-      <UniqueIdentifier>{fcd2e4e7-3346-4625-b980-414909633751}</UniqueIdentifier>
-    </Filter>
     <Filter Include="legal">
       <UniqueIdentifier>{b1110f74-34ea-4882-92c9-833443968697}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="pakinterface">
-      <UniqueIdentifier>{9a6f908d-4e3b-42ee-8d38-c35926c19974}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="models">
-      <UniqueIdentifier>{380d0ff3-f76b-440a-9ca7-537e14468c80}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="callbacks">
-      <UniqueIdentifier>{d7a009e7-f60a-4914-98dc-573a8e0f986e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="gdi">
-      <UniqueIdentifier>{af3d055a-94a9-4c02-8950-bda2fec4d99b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

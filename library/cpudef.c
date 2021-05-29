@@ -1,6 +1,9 @@
 #include <windows.h>
 
-#include "cpudef.h"
+typedef struct
+{
+  void (*CPUAssertInterrupt)(unsigned char, unsigned char);
+} CPU;
 
 CPU* InitializeInstance(CPU*);
 
