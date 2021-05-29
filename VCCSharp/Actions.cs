@@ -75,35 +75,21 @@ namespace VCCSharp
 
         public void TapeRecorder()
         {
-            unsafe
-            {
-                ConfigState* configState = _modules.Config.GetConfigState();
-
-                _options.TapePlayer.ShowDialog(configState);
-            }
+            _options.TapePlayer.ShowDialog(_modules.Config);
         }
 
         public void BitBanger()
         {
-            unsafe
-            {
-                ConfigState* configState = _modules.Config.GetConfigState();
-
-                _options.BitBanger.ShowDialog(configState);
-            }
+            _options.BitBanger.ShowDialog(_modules.Config);
         }
 
         public void OpenConfiguration()
         {
-            unsafe
-            {
-                ConfigState* configState = _modules.Config.GetConfigState();
-                ConfigModel configModel = _modules.Config.ConfigModel;
-                JoystickModel leftJoystickModel = _modules.Config.GetLeftJoystick();
-                JoystickModel rightJoystickModel = _modules.Config.GetRightJoystick();
+            ConfigModel configModel = _modules.Config.ConfigModel;
+            JoystickModel leftJoystickModel = _modules.Config.GetLeftJoystick();
+            JoystickModel rightJoystickModel = _modules.Config.GetRightJoystick();
 
-                _options.Configuration.ShowDialog(configState, configModel, leftJoystickModel, rightJoystickModel);
-            }
+            _options.Configuration.ShowDialog(_modules.Config, configModel, leftJoystickModel, rightJoystickModel);
         }
 
         public void LoadCartridge()

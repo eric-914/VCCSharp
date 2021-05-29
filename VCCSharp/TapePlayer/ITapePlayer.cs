@@ -1,10 +1,10 @@
-﻿using VCCSharp.Models;
+﻿using VCCSharp.Modules;
 
 namespace VCCSharp.TapePlayer
 {
     public interface ITapePlayer
     {
-        unsafe void ShowDialog(ConfigState* state);
+        void ShowDialog(IConfig state);
 
         void Browse();
         void Record();

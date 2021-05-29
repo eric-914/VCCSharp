@@ -1,10 +1,10 @@
-﻿using VCCSharp.Models;
+﻿using VCCSharp.Modules;
 
 namespace VCCSharp.BitBanger
 {
     public interface IBitBanger
     {
-        unsafe void ShowDialog(ConfigState* state);
+        void ShowDialog(IConfig state);
 
         void Open();
         void Close();

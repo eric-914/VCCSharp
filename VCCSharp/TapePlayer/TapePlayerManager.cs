@@ -4,6 +4,7 @@ using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
+using VCCSharp.Modules;
 
 namespace VCCSharp.TapePlayer
 {
@@ -37,10 +38,9 @@ namespace VCCSharp.TapePlayer
             _modules.Cassette.UpdateTapeDialog = SetTapeCounter;
         }
 
-        public unsafe void ShowDialog(ConfigState* state)
+        public void ShowDialog(IConfig state)
         {
             _viewModel.Config = _modules.Config;
-            _viewModel.State = state;
 
             _view ??= new TapePlayerWindow(_viewModel, this);
 

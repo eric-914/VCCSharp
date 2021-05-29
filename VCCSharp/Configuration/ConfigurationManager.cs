@@ -1,5 +1,6 @@
 ﻿using VCCSharp.IoC;
 using VCCSharp.Models;
+using VCCSharp.Modules;
 
 namespace VCCSharp.Configuration
 {
@@ -12,7 +13,7 @@ namespace VCCSharp.Configuration
             _modules = modules;
         }
 
-        public unsafe void ShowDialog(ConfigState* state, ConfigModel model, JoystickModel left, JoystickModel right)
+        public void ShowDialog(IConfig state, ConfigModel model, JoystickModel left, JoystickModel right)
         {
             var viewModel = new ConfigurationViewModel
             {

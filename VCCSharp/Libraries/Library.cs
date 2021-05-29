@@ -31,12 +31,6 @@ namespace VCCSharp.Libraries
             public static extern void ResetCassetteBuffer();
         }
 
-        public static class Config
-        {
-            [DllImport(LIBRARY)]
-            public static extern unsafe ConfigState* GetConfigState();
-        }
-
         public static class CPU
         {
             [DllImport(LIBRARY)]

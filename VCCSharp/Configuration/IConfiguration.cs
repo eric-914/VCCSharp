@@ -1,9 +1,10 @@
 ﻿using VCCSharp.Models;
+using VCCSharp.Modules;
 
 namespace VCCSharp.Configuration
 {
     public interface IConfiguration
     {
-        unsafe void ShowDialog(ConfigState* state, ConfigModel model, JoystickModel left, JoystickModel right);
+        void ShowDialog(IConfig state, ConfigModel model, JoystickModel left, JoystickModel right);
     }
 }

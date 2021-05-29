@@ -2,7 +2,6 @@
 using System.Runtime.CompilerServices;
 using VCCSharp.Annotations;
 using VCCSharp.Enums;
-using VCCSharp.Models;
 using VCCSharp.Modules;
 
 namespace VCCSharp.TapePlayer
@@ -12,7 +11,6 @@ namespace VCCSharp.TapePlayer
         private const string NO_FILE = "EMPTY";
 
         //TODO: Remove STATIC once safe
-        private static unsafe ConfigState* _state;
         private static IConfig _config;
 
         private string _filePath = "Sample Browse File Text";
@@ -42,31 +40,17 @@ namespace VCCSharp.TapePlayer
             }
         }
 
-        public unsafe ConfigState* State
-        {
-            get => _state;
-            set
-            {
-                if (_state != null) return;
-
-                _state = value;
-            }
-        }
-
         public string FilePath
         {
             get
             {
-                unsafe
-                {
-                    if (State == null) return string.Empty;
+                if (Config == null) return string.Empty;
 
-                    string file = Config.TapeFileName;
+                string file = Config.TapeFileName;
 
-                    _filePath = string.IsNullOrEmpty(file) ? NO_FILE : file;
+                _filePath = string.IsNullOrEmpty(file) ? NO_FILE : file;
 
-                    return _filePath;
-                }
+                return _filePath;
             }
             set
             {

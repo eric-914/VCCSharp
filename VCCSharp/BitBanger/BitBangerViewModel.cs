@@ -11,7 +11,6 @@ namespace VCCSharp.BitBanger
         private const string NO_FILE = "No Capture File";
 
         //TODO: Remove STATIC once safe
-        private static unsafe ConfigState* _state;
         private static IConfig _config;
 
         private string _serialCaptureFile = NO_FILE;
@@ -39,31 +38,17 @@ namespace VCCSharp.BitBanger
             }
         }
 
-        public unsafe ConfigState* State
-        {
-            get => _state;
-            set
-            {
-                if (_state != null) return;
-
-                _state = value;
-            }
-        }
-
         public string SerialCaptureFile
         {
             get
             {
-                unsafe
-                {
-                    if (State == null) return string.Empty;
+                if (Config == null) return string.Empty;
 
-                    string file = Config.SerialCaptureFile ;
+                string file = Config.SerialCaptureFile ;
 
-                    _serialCaptureFile = string.IsNullOrEmpty(file) ? NO_FILE : file;
+                _serialCaptureFile = string.IsNullOrEmpty(file) ? NO_FILE : file;
 
-                    return _serialCaptureFile;
-                }
+                return _serialCaptureFile;
             }
             set
             {

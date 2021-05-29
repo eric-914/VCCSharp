@@ -16,7 +16,6 @@ namespace VCCSharp.Modules
 {
     public interface IConfig
     {
-        unsafe ConfigState* GetConfigState();
         ConfigModel ConfigModel { get; }
         JoystickModel GetLeftJoystick();
         JoystickModel GetRightJoystick();
@@ -84,11 +83,6 @@ namespace VCCSharp.Modules
             _modules = modules;
             _user32 = user32;
             _kernel = kernel;
-        }
-
-        public unsafe ConfigState* GetConfigState()
-        {
-            return Library.Config.GetConfigState();
         }
 
         public JoystickModel GetLeftJoystick()

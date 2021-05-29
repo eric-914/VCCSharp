@@ -2,6 +2,7 @@
 using System.Windows;
 using VCCSharp.IoC;
 using VCCSharp.Models;
+using VCCSharp.Modules;
 
 namespace VCCSharp.BitBanger
 {
@@ -12,7 +13,7 @@ namespace VCCSharp.BitBanger
         private readonly BitBangerViewModel _viewModel = new BitBangerViewModel();
         private BitBangerWindow _view;
 
-        private static unsafe ConfigState* _configState;
+        private static IConfig _configState;
 
         public BitBangerManager(IModules modules)
         {
@@ -33,11 +34,10 @@ namespace VCCSharp.BitBanger
             };
         }
 
-        public unsafe void ShowDialog(ConfigState* state)
+        public void ShowDialog(IConfig state)
         {
             _configState = state;
             _viewModel.Config = _modules.Config;
-            _viewModel.State = state;
 
             _view ??= new BitBangerWindow(_viewModel, this);
 
