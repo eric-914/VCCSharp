@@ -1,10 +1,6 @@
+#include <windows.h>
+
 #include "PakInterfaceDelegates.h"
-#include "cpudef.h"
-
-#include "TC1014.h"
-#include "MenuCallbacks.h"
-
-#include "PAKInterface.h"
 
 PakInterfaceDelegates* InitializeDelegates(PakInterfaceDelegates*);
 
@@ -77,24 +73,6 @@ extern "C" {
     }
 
     return 1;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl InvokeDmaMemPointer() {
-    delegates->DmaMemPointers(MemRead8, MemWrite8);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl InvokeSetInterruptCallPointer() {
-    delegates->SetInterruptCallPointer(CPUAssertInterrupt);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl InvokePakSetCart() {
-    delegates->PakSetCart(SetCart);
   }
 }
 

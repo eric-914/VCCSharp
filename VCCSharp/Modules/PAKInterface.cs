@@ -678,7 +678,6 @@ namespace VCCSharp.Modules
 
                 GETMODULENAME fn = Marshal.GetDelegateForFunctionPointer<GETMODULENAME>(p);
 
-                //DynamicMenuCallback
                 fn(modName, catNumber, fnx);
             }
         }
@@ -697,19 +696,73 @@ namespace VCCSharp.Modules
             }
         }
 
+        private static ASSERTINTERRUPT _assertInterruptCallback;
+
         public void InvokeSetInterruptCallPointer()
         {
-            Library.PAKInterface.InvokeSetInterruptCallPointer();
+            unsafe
+            {
+                _assertInterruptCallback = _modules.CPU.CPUAssertInterrupt;
+
+                IntPtr callback = Marshal.GetFunctionPointerForDelegate(_assertInterruptCallback);
+
+                ASSERTINTERRUPT fnx = Marshal.GetDelegateForFunctionPointer<ASSERTINTERRUPT>(callback);
+
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                IntPtr p = (IntPtr)(d->SetInterruptCallPointer);
+
+                SETINTERRUPTCALLPOINTER fn = Marshal.GetDelegateForFunctionPointer<SETINTERRUPTCALLPOINTER>(p);
+
+                fn(fnx);
+            }
         }
+
+        private static PAKMEMREAD8 _readCallback;
+        private static PAKMEMWRITE8 _writeCallback;
 
         public void InvokeDmaMemPointer()
         {
-            Library.PAKInterface.InvokeDmaMemPointer();
+            unsafe
+            {
+                _readCallback = _modules.TC1014.MemRead8;
+                _writeCallback = _modules.TC1014.MemWrite8;
+
+                IntPtr callbackRead = Marshal.GetFunctionPointerForDelegate(_readCallback);
+                IntPtr callbackWrite = Marshal.GetFunctionPointerForDelegate(_writeCallback);
+
+                PAKMEMREAD8 fnRead = Marshal.GetDelegateForFunctionPointer<PAKMEMREAD8>(callbackRead);
+                PAKMEMWRITE8 fnWrite = Marshal.GetDelegateForFunctionPointer<PAKMEMWRITE8>(callbackWrite);
+
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                IntPtr p = (IntPtr)(d->DmaMemPointers);
+
+                DMAMEMPOINTERS fn = Marshal.GetDelegateForFunctionPointer<DMAMEMPOINTERS>(p);
+
+                fn(fnRead, fnWrite);
+            }
         }
+
+        private static SETCART _setCartCallback;
 
         public void InvokePakSetCart()
         {
-            Library.PAKInterface.InvokePakSetCart();
+            unsafe
+            {
+                _setCartCallback = SetCart;
+                IntPtr callback = Marshal.GetFunctionPointerForDelegate(_setCartCallback);
+
+                SETCART fnx = Marshal.GetDelegateForFunctionPointer<SETCART>(callback);
+
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                IntPtr p = (IntPtr)(d->PakSetCart);
+
+                PAKSETCART fn = Marshal.GetDelegateForFunctionPointer<PAKSETCART>(p);
+
+                fn(fnx);
+            }
         }
 
         public ushort ReadModuleAudioSample()

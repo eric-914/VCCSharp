@@ -358,9 +358,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe PakInterfaceDelegates* GetPakInterfaceDelegates();
 
             [DllImport(LIBRARY)]
-            public static extern void InvokeSetInterruptCallPointer();
-
-            [DllImport(LIBRARY)]
             public static extern byte PakPortRead(byte port);
 
             [DllImport(LIBRARY)]
@@ -382,16 +379,7 @@ namespace VCCSharp.Libraries
             public static extern void PAKFreeLibrary(HINSTANCE hInstLib);
 
             [DllImport(LIBRARY)]
-            public static extern void InvokeDmaMemPointer();
-
-            [DllImport(LIBRARY)]
-            public static extern void InvokePakSetCart();
-
-            [DllImport(LIBRARY)]
             public static extern unsafe void FreeMemory(byte* target);
-
-            [DllImport(LIBRARY)]
-            public static extern void UnloadModule();
 
             [DllImport(LIBRARY)]
             public static extern unsafe void ResetRomBuffer(byte* buffer);
