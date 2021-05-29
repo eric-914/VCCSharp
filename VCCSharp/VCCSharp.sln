@@ -7,7 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VCCSharp", "VCCSharp.csproj
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Legal", "Legal", "{EA3FD808-677B-4345-B57C-83B43651AD3B}"
 	ProjectSection(SolutionItems) = preProject
+		..\COPYING = ..\COPYING
 		..\LICENSE = ..\LICENSE
+		..\license.txt = ..\license.txt
+		..\README-Original.md = ..\README-Original.md
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject

@@ -28,17 +28,4 @@
   <ItemGroup>
     <ResourceCompile Include="library.rc" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="COPYING">
-      <Filter>legal</Filter>
-    </None>
-    <None Include="README.md">
-      <Filter>legal</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="license.txt">
-      <Filter>legal</Filter>
-    </Text>
-  </ItemGroup>
 </Project>
