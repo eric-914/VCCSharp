@@ -9,7 +9,6 @@
     <ClCompile Include="fileoperations.c" />
     <ClCompile Include="GDI.c" />
     <ClCompile Include="DirectInput.c" />
-    <ClCompile Include="Joystick.c" />
     <ClCompile Include="PAKInterface.c" />
     <ClCompile Include="TC1014.c" />
   </ItemGroup>
@@ -17,6 +16,7 @@
     <ClInclude Include="library.h" />
     <ClInclude Include="di.version.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="DirectInput.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="legal">

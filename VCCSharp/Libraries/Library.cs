@@ -6,6 +6,7 @@ using HANDLE = System.IntPtr;
 using HINSTANCE = System.IntPtr;
 using HWND = System.IntPtr;
 using HMODULE = System.IntPtr;
+using HRESULT = System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
@@ -261,16 +262,25 @@ namespace VCCSharp.Libraries
         public static class Joystick
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe JoystickState* GetJoystickState();
-
-            [DllImport(LIBRARY)]
             public static extern short EnumerateJoysticks();
 
             [DllImport(LIBRARY)]
             public static extern int InitJoyStick(byte stickNumber);
 
             [DllImport(LIBRARY)]
-            public static extern void get_pot_value(byte useLeft, byte useRight);
+            public static extern unsafe void* GetPollStick();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe HRESULT JoyStickPoll(void* js, byte stickNumber);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe ushort StickX(void* stick);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe ushort StickY(void* stick);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe byte Button(void* stick, int index);
         }
 
         public static class MenuCallbacks

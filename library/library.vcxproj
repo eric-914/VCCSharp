@@ -169,7 +169,6 @@
     <ClCompile Include="DirectSound.c" />
     <ClCompile Include="fileoperations.c" />
     <ClCompile Include="GDI.c" />
-    <ClCompile Include="Joystick.c" />
     <ClCompile Include="library.cpp" />
     <ClCompile Include="MenuCallbacks.c" />
     <ClCompile Include="TC1014.c" />
@@ -177,6 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="di.version.h" />
+    <ClInclude Include="DirectInput.h" />
     <ClInclude Include="library.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

@@ -2,12 +2,12 @@
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using JoystickState = VCCSharp.Models.JoystickState;
+using HRESULT = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
     public interface IJoystick
     {
-        unsafe JoystickState* GetJoystickState();
         JoystickModel GetLeftJoystick();
         JoystickModel GetRightJoystick();
 
@@ -23,19 +23,18 @@ namespace VCCSharp.Modules
         byte SetMouseStatus(byte scanCode, byte phase);
 
         ushort StickValue { get; set; }
+        JoystickState State { get; set; }
     }
 
     public class Joystick : IJoystick
     {
         public ushort StickValue { get; set; }
 
+        public JoystickState State { get; set; } = new JoystickState();
         private JoystickModel _left = new JoystickModel();
         private JoystickModel _right = new JoystickModel();
 
-        public unsafe JoystickState* GetJoystickState()
-        {
-            return Library.Joystick.GetJoystickState();
-        }
+        private readonly unsafe void* _pollStick = GetPollStick();
 
         public JoystickModel GetLeftJoystick()
         {
@@ -73,40 +72,50 @@ namespace VCCSharp.Modules
 
         public void SetStickNumbers(byte leftStickNumber, byte rightStickNumber)
         {
-            unsafe
-            {
-                JoystickState* instance = GetJoystickState();
-
-                instance->LeftStickNumber = leftStickNumber;
-                instance->RightStickNumber = rightStickNumber;
-            }
+            State.LeftStickNumber = leftStickNumber;
+            State.RightStickNumber = rightStickNumber;
         }
 
         public ushort get_pot_value(byte pot)
         {
-
             unsafe
             {
-                byte useLeft = _left.UseMouse == 3 ? Define.TRUE : Define.FALSE;
-                byte useRight = _right.UseMouse == 3 ? Define.TRUE : Define.FALSE;
+                bool useLeft = _left.UseMouse == 3;
+                bool useRight = _right.UseMouse == 3;
 
-                Library.Joystick.get_pot_value(useLeft, useRight);
+                if (useLeft)
+                {
+                    JoyStickPoll(_pollStick, State.LeftStickNumber);
 
-                JoystickState* instance = GetJoystickState();
+                    State.LeftStickX = (ushort)(Library.Joystick.StickX(_pollStick) >> 10);
+                    State.LeftStickY = (ushort)(Library.Joystick.StickY(_pollStick) >> 10);
+                    State.LeftButton1Status = (byte)(Library.Joystick.Button(_pollStick, 0) >> 7);
+                    State.LeftButton2Status = (byte)(Library.Joystick.Button(_pollStick, 1) >> 7);
+                }
+
+                if (useRight)
+                {
+                    JoyStickPoll(_pollStick, State.RightStickNumber);
+
+                    State.RightStickX = (ushort)(Library.Joystick.StickX(_pollStick) >> 10);
+                    State.RightStickY = (ushort)(Library.Joystick.StickY(_pollStick) >> 10);
+                    State.RightButton1Status = (byte)(Library.Joystick.Button(_pollStick, 0) >> 7);
+                    State.RightButton2Status = (byte)(Library.Joystick.Button(_pollStick, 1) >> 7);
+                }
 
                 switch (pot)
                 {
                     case 0:
-                        return instance->RightStickX;
+                        return State.RightStickX;
 
                     case 1:
-                        return instance->RightStickY;
+                        return State.RightStickY;
 
                     case 2:
-                        return instance->LeftStickX;
+                        return State.LeftStickX;
 
                     case 3:
-                        return instance->LeftStickY;
+                        return State.LeftStickY;
                 }
 
                 return 0;
@@ -118,87 +127,79 @@ namespace VCCSharp.Modules
         {
             byte buttonStatus = (byte)((side << 1) | state);
 
-            unsafe
+            JoystickModel left = GetLeftJoystick();
+            JoystickModel right = GetRightJoystick();
+
+            if (left.UseMouse == 1)
             {
-                JoystickState* instance = GetJoystickState();
-                JoystickModel left = GetLeftJoystick();
-                JoystickModel right = GetRightJoystick();
-
-                if (left.UseMouse == 1)
+                switch (buttonStatus)
                 {
-                    switch (buttonStatus)
-                    {
-                        case 0:
-                            instance->LeftButton1Status = 0;
-                            break;
+                    case 0:
+                        State.LeftButton1Status = 0;
+                        break;
 
-                        case 1:
-                            instance->LeftButton1Status = 1;
-                            break;
+                    case 1:
+                        State.LeftButton1Status = 1;
+                        break;
 
-                        case 2:
-                            instance->LeftButton2Status = 0;
-                            break;
+                    case 2:
+                        State.LeftButton2Status = 0;
+                        break;
 
-                        case 3:
-                            instance->LeftButton2Status = 1;
-                            break;
-                    }
+                    case 3:
+                        State.LeftButton2Status = 1;
+                        break;
                 }
+            }
 
-                if (right.UseMouse == 1)
+            if (right.UseMouse == 1)
+            {
+                switch (buttonStatus)
                 {
-                    switch (buttonStatus)
-                    {
-                        case 0:
-                            instance->RightButton1Status = 0;
-                            break;
+                    case 0:
+                        State.RightButton1Status = 0;
+                        break;
 
-                        case 1:
-                            instance->RightButton1Status = 1;
-                            break;
+                    case 1:
+                        State.RightButton1Status = 1;
+                        break;
 
-                        case 2:
-                            instance->RightButton2Status = 0;
-                            break;
+                    case 2:
+                        State.RightButton2Status = 0;
+                        break;
 
-                        case 3:
-                            instance->RightButton2Status = 1;
-                            break;
-                    }
+                    case 3:
+                        State.RightButton2Status = 1;
+                        break;
                 }
             }
         }
 
         public void SetJoystick(ushort x, ushort y)
         {
-            unsafe
+            JoystickModel left = GetLeftJoystick();
+            JoystickModel right = GetRightJoystick();
+
+            if (x > 63)
             {
-                JoystickState* instance = GetJoystickState();
-                JoystickModel left = GetLeftJoystick();
-                JoystickModel right = GetRightJoystick();
+                x = 63;
+            }
 
-                if (x > 63)
-                {
-                    x = 63;
-                }
+            if (y > 63)
+            {
+                y = 63;
+            }
 
-                if (y > 63)
-                {
-                    y = 63;
-                }
+            if (left.UseMouse == 1)
+            {
+                State.LeftStickX = x;
+                State.LeftStickY = y;
+            }
 
-                if (left.UseMouse == 1)
-                {
-                    instance->LeftStickX = x;
-                    instance->LeftStickY = y;
-                }
-
-                if (right.UseMouse == 1)
-                {
-                    instance->RightStickX = x;
-                    instance->RightStickY = y;
-                }
+            if (right.UseMouse == 1)
+            {
+                State.RightStickX = x;
+                State.RightStickY = y;
             }
         }
 
@@ -208,7 +209,6 @@ namespace VCCSharp.Modules
 
             unsafe
             {
-                JoystickState* instance = GetJoystickState();
                 JoystickModel left = GetLeftJoystick();
                 JoystickModel right = GetRightJoystick();
 
@@ -219,37 +219,37 @@ namespace VCCSharp.Modules
                         {
                             if (scanCode == left.Left)
                             {
-                                instance->LeftStickX = 32;
+                                State.LeftStickX = 32;
                                 retValue = 0;
                             }
 
                             if (scanCode == left.Right)
                             {
-                                instance->LeftStickX = 32;
+                                State.LeftStickX = 32;
                                 retValue = 0;
                             }
 
                             if (scanCode == left.Up)
                             {
-                                instance->LeftStickY = 32;
+                                State.LeftStickY = 32;
                                 retValue = 0;
                             }
 
                             if (scanCode == left.Down)
                             {
-                                instance->LeftStickY = 32;
+                                State.LeftStickY = 32;
                                 retValue = 0;
                             }
 
                             if (scanCode == left.Fire1)
                             {
-                                instance->LeftButton1Status = 0;
+                                State.LeftButton1Status = 0;
                                 retValue = 0;
                             }
 
                             if (scanCode == left.Fire2)
                             {
-                                instance->LeftButton2Status = 0;
+                                State.LeftButton2Status = 0;
                                 retValue = 0;
                             }
                         }
@@ -258,37 +258,37 @@ namespace VCCSharp.Modules
                         {
                             if (scanCode == right.Left)
                             {
-                                instance->RightStickX = 32;
+                                State.RightStickX = 32;
                                 retValue = 0;
                             }
 
                             if (scanCode == right.Right)
                             {
-                                instance->RightStickX = 32;
+                                State.RightStickX = 32;
                                 retValue = 0;
                             }
 
                             if (scanCode == right.Up)
                             {
-                                instance->RightStickY = 32;
+                                State.RightStickY = 32;
                                 retValue = 0;
                             }
 
                             if (scanCode == right.Down)
                             {
-                                instance->RightStickY = 32;
+                                State.RightStickY = 32;
                                 retValue = 0;
                             }
 
                             if (scanCode == right.Fire1)
                             {
-                                instance->RightButton1Status = 0;
+                                State.RightButton1Status = 0;
                                 retValue = 0;
                             }
 
                             if (scanCode == right.Fire2)
                             {
-                                instance->RightButton2Status = 0;
+                                State.RightButton2Status = 0;
                                 retValue = 0;
                             }
                         }
@@ -299,37 +299,37 @@ namespace VCCSharp.Modules
                         {
                             if (scanCode == left.Left)
                             {
-                                instance->LeftStickX = 0;
+                                State.LeftStickX = 0;
                                 retValue = 0;
                             }
 
                             if (scanCode == left.Right)
                             {
-                                instance->LeftStickX = 63;
+                                State.LeftStickX = 63;
                                 retValue = 0;
                             }
 
                             if (scanCode == left.Up)
                             {
-                                instance->LeftStickY = 0;
+                                State.LeftStickY = 0;
                                 retValue = 0;
                             }
 
                             if (scanCode == left.Down)
                             {
-                                instance->LeftStickY = 63;
+                                State.LeftStickY = 63;
                                 retValue = 0;
                             }
 
                             if (scanCode == left.Fire1)
                             {
-                                instance->LeftButton1Status = 1;
+                                State.LeftButton1Status = 1;
                                 retValue = 0;
                             }
 
                             if (scanCode == left.Fire2)
                             {
-                                instance->LeftButton2Status = 1;
+                                State.LeftButton2Status = 1;
                                 retValue = 0;
                             }
                         }
@@ -339,36 +339,36 @@ namespace VCCSharp.Modules
                             if (scanCode == right.Left)
                             {
                                 retValue = 0;
-                                instance->RightStickX = 0;
+                                State.RightStickX = 0;
                             }
 
                             if (scanCode == right.Right)
                             {
-                                instance->RightStickX = 63;
+                                State.RightStickX = 63;
                                 retValue = 0;
                             }
 
                             if (scanCode == right.Up)
                             {
-                                instance->RightStickY = 0;
+                                State.RightStickY = 0;
                                 retValue = 0;
                             }
 
                             if (scanCode == right.Down)
                             {
-                                instance->RightStickY = 63;
+                                State.RightStickY = 63;
                                 retValue = 0;
                             }
 
                             if (scanCode == right.Fire1)
                             {
-                                instance->RightButton1Status = 1;
+                                State.RightButton1Status = 1;
                                 retValue = 0;
                             }
 
                             if (scanCode == right.Fire2)
                             {
-                                instance->RightButton2Status = 1;
+                                State.RightButton2Status = 1;
                                 retValue = 0;
                             }
                         }
@@ -377,6 +377,16 @@ namespace VCCSharp.Modules
             }
 
             return retValue;
+        }
+
+        public static unsafe void* GetPollStick()
+        {
+            return Library.Joystick.GetPollStick();
+        }
+
+        public unsafe HRESULT JoyStickPoll(void* js, byte stickNumber)
+        {
+            return Library.Joystick.JoyStickPoll(js, stickNumber);
         }
     }
 }
