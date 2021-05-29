@@ -8,6 +8,7 @@ using VCCSharp.Libraries;
 using VCCSharp.Models;
 using VCCSharp.Models.Pak;
 using HINSTANCE = System.IntPtr;
+using HMODULE = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -365,11 +366,6 @@ namespace VCCSharp.Modules
         public void SetCart(byte cart)
         {
             Library.PAKInterface.SetCart(cart);
-        }
-
-        public int SetDelegates(HINSTANCE hInstLib)
-        {
-            return Library.PAKInterface.SetDelegates(hInstLib);
         }
 
         public void PakFreeLibrary(HINSTANCE hInstLib)
@@ -779,5 +775,49 @@ namespace VCCSharp.Modules
             }
         }
 
+        public int SetDelegates(HINSTANCE hInstLib)
+        {
+            unsafe
+            {
+                PakInterfaceDelegates* d = GetPakInterfaceDelegates();
+
+                //delegates->GetModuleName = (GETMODULENAME)GetFunction(hInstLib, "ModuleName");
+                //delegates->ConfigModule = (CONFIGMODULE)GetFunction(hInstLib, "ModuleConfig");
+                //delegates->PakPortWrite = (PAKPORTWRITE)GetFunction(hInstLib, "PackPortWrite");
+                //delegates->PakPortRead = (PAKPORTREAD)GetFunction(hInstLib, "PackPortRead");
+                //delegates->SetInterruptCallPointer = (SETINTERRUPTCALLPOINTER)GetFunction(hInstLib, "AssertInterrupt");
+                //delegates->DmaMemPointers = (DMAMEMPOINTERS)GetFunction(hInstLib, "MemPointers");
+                //delegates->HeartBeat = (HEARTBEAT)GetFunction(hInstLib, "HeartBeat");
+                //delegates->PakMemWrite8 = (PAKMEMWRITE8)GetFunction(hInstLib, "PakMemWrite8");
+                //delegates->PakMemRead8 = (PAKMEMREAD8)GetFunction(hInstLib, "PakMemRead8");
+                //delegates->ModuleStatus = (MODULESTATUS)GetFunction(hInstLib, "ModuleStatus");
+                //delegates->ModuleAudioSample = (MODULEAUDIOSAMPLE)GetFunction(hInstLib, "ModuleAudioSample");
+                //delegates->ModuleReset = (MODULERESET)GetFunction(hInstLib, "ModuleReset");
+                //delegates->SetIniPath = (SETINIPATH)GetFunction(hInstLib, "SetIniPath");
+                //delegates->PakSetCart = (PAKSETCART)GetFunction(hInstLib, "SetCart");
+
+                d->GetModuleName = GetFunction(hInstLib, "ModuleName");
+                d->ConfigModule = GetFunction(hInstLib, "ModuleConfig");
+                d->PakPortWrite = GetFunction(hInstLib, "PackPortWrite");
+                d->PakPortRead = GetFunction(hInstLib, "PackPortRead");
+                d->SetInterruptCallPointer = GetFunction(hInstLib, "AssertInterrupt");
+                d->DmaMemPointers = GetFunction(hInstLib, "MemPointers");
+                d->HeartBeat = GetFunction(hInstLib, "HeartBeat");
+                d->PakMemWrite8 = GetFunction(hInstLib, "PakMemWrite8");
+                d->PakMemRead8 = GetFunction(hInstLib, "PakMemRead8");
+                d->ModuleStatus = GetFunction(hInstLib, "ModuleStatus");
+                d->ModuleAudioSample = GetFunction(hInstLib, "ModuleAudioSample");
+                d->ModuleReset = GetFunction(hInstLib, "ModuleReset");
+                d->SetIniPath = GetFunction(hInstLib, "SetIniPath");
+                d->PakSetCart = GetFunction(hInstLib, "SetCart");
+
+                return d->GetModuleName == null ? Define.TRUE : Define.FALSE;
+            }
+        }
+
+        public unsafe void* GetFunction(HMODULE hModule, string lpProcName)
+        {
+            return Library.PAKInterface.GetFunction(hModule, lpProcName);
+        }
     }
 }

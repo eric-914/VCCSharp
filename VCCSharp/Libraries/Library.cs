@@ -6,6 +6,7 @@ using VCCSharp.Models.Pak;
 using HANDLE = System.IntPtr;
 using HINSTANCE = System.IntPtr;
 using HWND = System.IntPtr;
+using HMODULE = System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
@@ -373,9 +374,6 @@ namespace VCCSharp.Libraries
             public static extern void SetCart(byte cart);
 
             [DllImport(LIBRARY)]
-            public static extern int SetDelegates(HINSTANCE hInstLib);
-
-            [DllImport(LIBRARY)]
             public static extern void PAKFreeLibrary(HINSTANCE hInstLib);
 
             [DllImport(LIBRARY)]
@@ -383,6 +381,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void ResetRomBuffer(byte* buffer);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void* GetFunction(HMODULE hModule, string lpProcName);
         } //--PAKInterface
 
         public static class TC1014

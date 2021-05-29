@@ -36,6 +36,12 @@ PakInterfaceState* InitializeInstance(PakInterfaceState* p) {
 }
 
 extern "C" {
+  __declspec(dllexport) void* GetFunction(HMODULE hModule, LPCSTR  lpProcName) {
+    return GetProcAddress(hModule, lpProcName);
+  }
+}
+
+extern "C" {
   __declspec(dllexport) HINSTANCE __cdecl PAKLoadLibrary(char* modulePath) {
     return LoadLibrary(modulePath);
   }
