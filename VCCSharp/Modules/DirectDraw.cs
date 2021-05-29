@@ -941,7 +941,8 @@ namespace VCCSharp.Modules
 
         public unsafe int LockSurface(DDSURFACEDESC* ddsd)
         {
-            return Library.DirectDraw.LockDDBackSurface(ddsd);
+            long flags = Define.DDLOCK_WAIT | Define.DDLOCK_SURFACEMEMORYPTR;
+            return Library.DirectDraw.LockDDBackSurface(ddsd, (uint)flags);
         }
 
         public int DDSetDisplayMode(uint x, uint y, uint depth)

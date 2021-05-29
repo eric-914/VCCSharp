@@ -88,7 +88,7 @@ namespace VCCSharp.Modules
 
         public int DirectSoundSetCooperativeLevel(HWND hWnd)
         {
-            return Library.DirectSound.DirectSoundSetCooperativeLevel(hWnd);
+            return Library.DirectSound.DirectSoundSetCooperativeLevel(hWnd, Define.DSSCL_NORMAL);
         }
 
         public void DirectSoundSetCurrentPosition(ulong position)
@@ -103,7 +103,8 @@ namespace VCCSharp.Modules
 
         public void DirectSoundSetupSecondaryBuffer(uint sndBuffLength)
         {
-            Library.DirectSound.DirectSoundSetupSecondaryBuffer(sndBuffLength);
+            int flags = Define.DSBCAPS_GETCURRENTPOSITION2 | Define.DSBCAPS_LOCSOFTWARE | Define.DSBCAPS_STATIC | Define.DSBCAPS_GLOBALFOCUS;
+            Library.DirectSound.DirectSoundSetupSecondaryBuffer(sndBuffLength, (uint)flags);
         }
 
         public int DirectSoundStop()

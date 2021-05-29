@@ -291,6 +291,7 @@ namespace VCCSharp.Modules
                     return 1;
                 }
 
+                // set cooperation level normal DSSCL_EXCLUSIVE
                 _hr = _modules.DirectSound.DirectSoundSetCooperativeLevel(hWnd);
 
                 if (_hr != Define.DS_OK)

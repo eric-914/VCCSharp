@@ -81,8 +81,8 @@ DirectSoundState* InitializeDirectSoundState(DirectSoundState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl LockDDBackSurface(DDSURFACEDESC* ddsd) {
-    return _internal->DDBackSurface->Lock(NULL, ddsd, DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR, NULL);
+  __declspec(dllexport) HRESULT __cdecl LockDDBackSurface(DDSURFACEDESC* ddsd, DWORD flags) {
+    return _internal->DDBackSurface->Lock(NULL, ddsd, flags, NULL);
   }
 }
 
@@ -626,8 +626,8 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundSetCooperativeLevel(HWND hWnd) {
-    return _sound->lpds->SetCooperativeLevel(hWnd, DSSCL_NORMAL); // set cooperation level normal DSSCL_EXCLUSIVE
+  __declspec(dllexport) HRESULT __cdecl DirectSoundSetCooperativeLevel(HWND hWnd, DWORD flag) {
+    return _sound->lpds->SetCooperativeLevel(hWnd, flag); 
   }
 }
 
@@ -645,10 +645,10 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DirectSoundSetupSecondaryBuffer(DWORD sndBuffLength) {
+  __declspec(dllexport) void __cdecl DirectSoundSetupSecondaryBuffer(DWORD sndBuffLength, DWORD flags) {
     memset(&(_sound->dsbd), 0, sizeof(DSBUFFERDESC));
     _sound->dsbd.dwSize = sizeof(DSBUFFERDESC);
-    _sound->dsbd.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_LOCSOFTWARE | DSBCAPS_STATIC | DSBCAPS_GLOBALFOCUS;
+    _sound->dsbd.dwFlags = flags;
     _sound->dsbd.dwBufferBytes = sndBuffLength;
     _sound->dsbd.lpwfxFormat = &(_sound->pcmwf);
   }

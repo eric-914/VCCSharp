@@ -386,5 +386,15 @@ namespace VCCSharp.Models
         public const int MENU_STANDALONE = 2;
 
         public const int PAK_MAX_MEM = 0x40000;
+
+        public const int DSBCAPS_STATIC = 0x00000002;
+        public const int DSBCAPS_LOCSOFTWARE = 0x00000008;
+        public const int DSBCAPS_GLOBALFOCUS = 0x00008000;
+        public const int DSBCAPS_GETCURRENTPOSITION2 = 0x00010000;
+
+        public const int DSSCL_NORMAL = 0x00000001;
+
+        public const long DDLOCK_SURFACEMEMORYPTR = 0x00000000L;     // default
+        public const long DDLOCK_WAIT = 0x00000001L;
     }
 }

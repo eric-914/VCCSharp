@@ -64,7 +64,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe void* DDSDGetSurface(DDSURFACEDESC* ddsd);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int LockDDBackSurface(DDSURFACEDESC* ddsd);
+            public static extern unsafe int LockDDBackSurface(DDSURFACEDESC* ddsd, uint flags);
 
             [DllImport(LIBRARY)]
             public static extern void DDRelease();
@@ -175,7 +175,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe int DirectSoundUnlock(void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
 
             [DllImport(LIBRARY)]
-            public static extern int DirectSoundSetCooperativeLevel(HWND hWnd);
+            public static extern int DirectSoundSetCooperativeLevel(HWND hWnd, uint flag);
 
             [DllImport(LIBRARY)]
             public static extern unsafe void DirectSoundEnumerateSoundCards(void* fn);
@@ -187,7 +187,7 @@ namespace VCCSharp.Libraries
             public static extern void DirectSoundSetupFormatDataStructure(ushort bitRate);
 
             [DllImport(LIBRARY)]
-            public static extern void DirectSoundSetupSecondaryBuffer(uint sndBuffLength);
+            public static extern void DirectSoundSetupSecondaryBuffer(uint sndBuffLength, uint flags);
 
             [DllImport(LIBRARY)]
             public static extern void DirectSoundStopAndRelease();
