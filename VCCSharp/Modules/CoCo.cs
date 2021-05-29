@@ -10,7 +10,6 @@ namespace VCCSharp.Modules
     {
         float RenderFrame();
         void CocoReset();
-        void SetClockSpeed(ushort cycles);
         ushort SetAudioRate(ushort rate);
         byte SetSndOutMode(byte mode);
         void SetInterruptTimer(ushort timer);
@@ -98,11 +97,6 @@ namespace VCCSharp.Modules
             _picosThisLine = 0;
             _intEnable = 0;
             _audioIndex = 0;
-        }
-
-        public void SetClockSpeed(ushort cycles)
-        {
-            OverClock = cycles;
         }
 
         #region RenderFrame
@@ -342,13 +336,13 @@ namespace VCCSharp.Modules
             _stateSwitch = 0;
 
             //Does this iteration need to Timer Interrupt
-            if ((_picosToInterrupt <= _picosThisLine) && _intEnable == Define.TRUE)
+            if (_picosToInterrupt <= _picosThisLine && _intEnable == Define.TRUE)
             {
                 _stateSwitch = 1;
             }
 
             //Does it need to collect an Audio sample
-            if ((_picosToSoundSample <= _picosThisLine) && _sndEnable == Define.TRUE)
+            if (_picosToSoundSample <= _picosThisLine && _sndEnable == Define.TRUE)
             {
                 _stateSwitch += 2;
             }

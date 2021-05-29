@@ -527,7 +527,7 @@ namespace VCCSharp.Modules
                 }
 
                 //--Try loading from Vcc.inin >> ExternalBasicImage
-                string externalBasicImage = _modules.Config.ExternalBasicImage();
+                string externalBasicImage = _modules.Config.ConfigModel.ExternalBasicImage;
 
                 if (!string.IsNullOrEmpty(externalBasicImage) && LoadInternalRom(externalBasicImage) == Define.TRUE)
                 {

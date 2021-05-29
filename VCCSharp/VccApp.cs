@@ -46,7 +46,7 @@ namespace VCCSharp
             _modules.DirectDraw.InitDirectDraw(hInstance, _hResources);
             _modules.Keyboard.SetKeyTranslations();
 
-            _modules.CoCo.SetClockSpeed(1);  //Default clock speed .89 MHZ	
+            _modules.CoCo.OverClock = 1;  //Default clock speed .89 MHZ	
 
             _modules.Vcc.CreatePrimaryWindow();
 

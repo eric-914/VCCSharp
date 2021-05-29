@@ -49,7 +49,7 @@ namespace VCCSharp.Modules
 
         public void EmuRun()
         {
-            _modules.Emu.SetEmuRunning(true);
+            _modules.Emu.EmulationRunning = Define.TRUE;
 
             Graphics.InvalidateBorder();
         }

@@ -2,7 +2,6 @@
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Libraries;
 using VCCSharp.Models;
 using HINSTANCE = System.IntPtr;
 using HWND = System.IntPtr;
@@ -17,7 +16,6 @@ namespace VCCSharp.Modules
         void SoftReset();
         void HardReset();
         void SetCpuMultiplier(byte multiplier);
-        void SetEmuRunning(bool flag);
         void SetCpuMultiplierFlag(byte doubleSpeed);
         void SetTurboMode(byte data);
 
@@ -130,7 +128,7 @@ namespace VCCSharp.Modules
 
             _modules.PAKInterface.ResetBus();
 
-            _modules.CoCo.SetClockSpeed(1);
+            _modules.CoCo.OverClock = 1;
         }
 
         private void GimeReset()
@@ -145,11 +143,6 @@ namespace VCCSharp.Modules
             _modules.CoCo.CocoReset();
 
             _modules.Audio.ResetAudio();
-        }
-
-        public void SetEmuRunning(bool flag)
-        {
-            EmulationRunning = flag ? Define.TRUE : Define.FALSE;
         }
 
         public void SetCpuMultiplier(byte multiplier)

@@ -415,7 +415,7 @@ namespace VCCSharp.Modules
                 _lastSample = 0;
                 TempIndex = 0;
 
-                ResetCassetteBuffer();
+                CasBuffer = new byte[Define.WRITEBUFFERSIZE];
 
                 _modules.FileOperations.FileSetFilePointer(TapeHandle, Define.FILE_BEGIN);
 
@@ -525,11 +525,6 @@ namespace VCCSharp.Modules
             {
                 _totalSize = TapeOffset;
             }
-        }
-
-        public void ResetCassetteBuffer()
-        {
-            CasBuffer = new byte[Define.WRITEBUFFERSIZE];
         }
     }
 }

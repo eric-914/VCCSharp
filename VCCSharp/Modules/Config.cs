@@ -24,7 +24,6 @@ namespace VCCSharp.Modules
         void WriteIniFile();
         void SynchSystemWithConfig();
         int GetPaletteType();
-        string ExternalBasicImage();
         void DecreaseOverclockSpeed();
         void IncreaseOverclockSpeed();
         void LoadIniFile();
@@ -235,11 +234,6 @@ namespace VCCSharp.Modules
                     right.UseMouse = 1;
                 }
             }
-        }
-
-        public string ExternalBasicImage()
-        {
-            return ConfigModel.ExternalBasicImage;
         }
 
         public string GetIniFilePath(string argIniFile)

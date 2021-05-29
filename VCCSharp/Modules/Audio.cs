@@ -1,5 +1,4 @@
 ﻿using VCCSharp.IoC;
-using VCCSharp.Libraries;
 using VCCSharp.Models;
 using HWND = System.IntPtr;
 
@@ -14,7 +13,6 @@ namespace VCCSharp.Modules
         void PurgeAuxBuffer();
         int GetFreeBlockCount();
         AudioSpectrum Spectrum { get; set; }
-        void UpdateSoundBar(ushort left, ushort right);
         byte PauseAudio(byte pause);
         ushort CurrentRate { get; set; }
     }
@@ -120,7 +118,7 @@ namespace VCCSharp.Modules
             ushort leftAverage = (ushort)(buffer[0] >> 16);
             ushort rightAverage = (ushort)(buffer[0] & 0xFFFF);
 
-            _modules.Audio.UpdateSoundBar(leftAverage, rightAverage);
+            _modules.Audio.Spectrum?.UpdateSoundBar(leftAverage, rightAverage);
 
             if ((_initPassed == Define.FALSE) || (_audioPause != Define.FALSE))
             {
@@ -349,11 +347,6 @@ namespace VCCSharp.Modules
             }
 
             return result;
-        }
-
-        public void UpdateSoundBar(ushort left, ushort right)
-        {
-            Spectrum?.UpdateSoundBar(left, right);
         }
 
         public byte PauseAudio(byte pause)
