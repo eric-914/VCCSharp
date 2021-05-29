@@ -471,6 +471,20 @@ namespace VCCSharp.Modules
 
         public byte[] GimeRegisters = new byte[256];
 
+        public byte MmuState;	// Composite variable handles MmuTask and MmuEnabled
+        public byte MapType;	// $FFDE/FFDF toggle Map type 0 = ram/rom
+
+        public byte CurrentRamConfig = 1;
+
+        public byte[] VectorMask = { 15, 63, 63, 63 };
+        public byte[] VectorMaska = { 12, 60, 60, 60 };
+
+        public ushort[] MemPageOffsets = new ushort[1024];
+
+        //--TODO: This is really ushort MmuRegisters[4][8]
+        public ushort[,] MmuRegisters = new ushort[4, 8];	//[4][8] // $FFA0 - FFAF
+        //unsigned short MmuRegisters[4][8];
+
         public TC1014(IModules modules)
         {
             _modules = modules;
@@ -554,31 +568,31 @@ Could not locate {ROM} in any of these locations:
                 MmuTask = 0;
                 MmuEnabled = 0;
                 RamVectors = 0;
-                instance->MmuState = 0;
+                MmuState = 0;
                 RomMap = 0;
-                instance->MapType = 0;
+                MapType = 0;
                 MmuPrefix = 0;
 
-                ushort[,] MmuRegisters = new ushort[4, 8];
+                //ushort[,] MmuRegisters = new ushort[4, 8];
 
                 for (ushort index1 = 0; index1 < 8; index1++)
                 {
                     for (ushort index2 = 0; index2 < 4; index2++)
                     {
-                        MmuRegisters[index2, index1] = (ushort)(index1 + StateSwitch[instance->CurrentRamConfig]);
+                        MmuRegisters[index2, index1] = (ushort)(index1 + StateSwitch[CurrentRamConfig]);
                     }
                 }
 
-                for (int index = 0; index < 32; index++)
-                {
-                    instance->MmuRegisters[index] = MmuRegisters[index >> 3, index & 7];
-                }
+                //for (int index = 0; index < 32; index++)
+                //{
+                //    instance->MmuRegisters[index] = MmuRegisters[index >> 3, index & 7];
+                //}
 
                 for (int index = 0; index < 1024; index++)
                 {
-                    byte* offset = Memory + (index & RamMask[instance->CurrentRamConfig]) * 0x2000;
+                    byte* offset = Memory + (index & RamMask[CurrentRamConfig]) * 0x2000;
                     instance->MemPages[index] = (long)offset;
-                    instance->MemPageOffsets[index] = 1;
+                    MemPageOffsets[index] = 1;
                 }
 
                 SetRomMap(0);
@@ -599,7 +613,7 @@ Could not locate {ROM} in any of these locations:
 
                 uint ramSize = MemConfig[ramSizeOption];
 
-                mmuState->CurrentRamConfig = ramSizeOption;
+                CurrentRamConfig = ramSizeOption;
 
                 FreeMemory(Memory);
 
@@ -616,7 +630,7 @@ Could not locate {ROM} in any of these locations:
                     Memory[index] = (byte)((index & 1) == 0 ? 0 : 0xFF);
                 }
 
-                _graphics.SetVidMask(VidMask[mmuState->CurrentRamConfig]);
+                _graphics.SetVidMask(VidMask[CurrentRamConfig]);
 
                 FreeMemory(InternalRomBuffer);
                 InternalRomBuffer = AllocateMemory(0x8001); //--TODO: Weird that the extra byte is needed here
@@ -691,7 +705,19 @@ Could not locate {ROM} in any of these locations:
         {
             if (address < 0xFE00)
             {
-                return Library.TC1014.MemRead8(address);
+                ushort index = (ushort)(address >> 13);
+                ushort mask = (ushort)(address & 0x1FFF);
+
+                ushort mmu = MmuRegisters[MmuState, index];
+
+                if (MemPageOffsets[mmu] == 1)
+                {
+                    return Library.TC1014.MemRead8(mmu, mask);
+                }
+                else
+                {
+                    return _modules.PAKInterface.PakMem8Read((ushort)(MemPageOffsets[mmu] + mask));
+                }
             }
 
             if (address > 0xFEFF)
@@ -711,7 +737,7 @@ Could not locate {ROM} in any of these locations:
                 if (RamVectors != 0)
                 {
                     //Address must be $FE00 - $FEFF
-                    return (Memory[(0x2000 * instance->VectorMask[instance->CurrentRamConfig]) | (address & 0x1FFF)]);
+                    return (Memory[(0x2000 * VectorMask[CurrentRamConfig]) | (address & 0x1FFF)]);
                 }
 
                 return MemRead8(address);
@@ -722,7 +748,18 @@ Could not locate {ROM} in any of these locations:
         {
             if (address < 0xFE00)
             {
-                Library.TC1014.MemWrite8(data, address);
+                ushort index = (ushort)(address >> 13);
+                ushort mask = (ushort)(address & 0x1FFF);
+
+                ushort mmu = MmuRegisters[MmuState, index];
+
+                byte maska = VectorMaska[CurrentRamConfig];
+                byte maskb = VectorMask[CurrentRamConfig];
+
+                if ((MapType != 0) || (mmu < maska) || (mmu > maskb))
+                {
+                    Library.TC1014.MemWrite8(data, mmu, mask);
+                }
 
                 return;
             }
@@ -741,12 +778,10 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014State* instance = GetTC1014State();
-
                 if (RamVectors != 0)
                 {
                     //Address must be $FE00 - $FEFF
-                    Memory[(0x2000 * instance->VectorMask[instance->CurrentRamConfig]) | (address & 0x1FFF)] = data;
+                    Memory[(0x2000 * VectorMask[CurrentRamConfig]) | (address & 0x1FFF)] = data;
                 }
                 else
                 {
@@ -4318,8 +4353,6 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                TC1014State* registersState = GetTC1014State();
-
                 if ((port >= 0xF0) && (port <= 0xFF))
                 {
                     //IRQ vectors from rom
@@ -4335,40 +4368,35 @@ Could not locate {ROM} in any of these locations:
             byte mask = 0;
             byte reg = 0;
 
-            unsafe
+            if ((port >= 0xC6) && (port <= 0xD3))   //VDG Display offset Section
             {
-                TC1014State* registersState = GetTC1014State();
+                port -= 0xC6;
+                reg = (byte)((port & 0x0E) >> 1);
+                mask = (byte)(1 << reg);
 
-                if ((port >= 0xC6) && (port <= 0xD3))	//VDG Display offset Section
+                Dis_Offset = (byte)(Dis_Offset & (0xFF - mask)); //Shut the bit off
+
+                if ((port & 1) != 0)
                 {
-                    port -= 0xC6;
-                    reg = (byte)((port & 0x0E) >> 1);
-                    mask = (byte)(1 << reg);
-
-                    Dis_Offset = (byte)(Dis_Offset & (0xFF - mask)); //Shut the bit off
-
-                    if ((port & 1) != 0)
-                    {
-                        Dis_Offset |= mask;
-                    }
-
-                    _graphics.SetGimeVdgOffset(Dis_Offset);
+                    Dis_Offset |= mask;
                 }
 
-                if ((port >= 0xC0) && (port <= 0xC5))	//VDG Mode
+                _graphics.SetGimeVdgOffset(Dis_Offset);
+            }
+
+            if ((port >= 0xC0) && (port <= 0xC5))   //VDG Mode
+            {
+                port -= 0xC0;
+                reg = (byte)((port & 0x0E) >> 1);
+                mask = (byte)(1 << reg);
+                VDG_Mode = (byte)(VDG_Mode & (0xFF - mask));
+
+                if ((port & 1) != 0)
                 {
-                    port -= 0xC0;
-                    reg = (byte)((port & 0x0E) >> 1);
-                    mask = (byte)(1 << reg);
-                    VDG_Mode = (byte)(VDG_Mode & (0xFF - mask));
-
-                    if ((port & 1) != 0)
-                    {
-                        VDG_Mode |= mask;
-                    }
-
-                    _graphics.SetGimeVdgMode(VDG_Mode);
+                    VDG_Mode |= mask;
                 }
+
+                _graphics.SetGimeVdgMode(VDG_Mode);
             }
 
             if ((port == 0xDE) || (port == 0xDF))
@@ -4521,18 +4549,13 @@ Could not locate {ROM} in any of these locations:
 
         public void SetInit0(byte data)
         {
-            unsafe
-            {
-                TC1014State* registersState = GetTC1014State();
+            _graphics.SetCompatMode((byte)((data & 128) == 0 ? 0 : 1));
+            SetMmuEnabled((byte)((data & 64) == 0 ? 0 : 1)); //MMUEN
+            SetRomMap((byte)(data & 3)); //MC0-MC1
+            SetVectors((byte)(data & 8)); //MC3
 
-                _graphics.SetCompatMode((byte)((data & 128) == 0 ? 0 : 1));
-                SetMmuEnabled((byte)((data & 64) == 0 ? 0 : 1)); //MMUEN
-                SetRomMap((byte)(data & 3)); //MC0-MC1
-                SetVectors((byte)(data & 8)); //MC3
-
-                EnhancedFIRQFlag = (byte)((data & 16) >> 4);
-                EnhancedIRQFlag = (byte)((data & 32) >> 5);
-            }
+            EnhancedFIRQFlag = (byte)((data & 16) >> 4);
+            EnhancedIRQFlag = (byte)((data & 32) >> 5);
         }
 
         public void SetInit1(byte data)
@@ -4612,12 +4635,7 @@ Could not locate {ROM} in any of these locations:
 
         public void SetMapType(byte type)
         {
-            unsafe
-            {
-                TC1014State* instance = GetTC1014State();
-
-                instance->MapType = type;
-            }
+            MapType = type;
 
             UpdateMmuArray();
         }
@@ -4635,17 +4653,17 @@ Could not locate {ROM} in any of these locations:
             {
                 TC1014State* instance = GetTC1014State();
 
-                if (instance->MapType != 0)
+                if (MapType != 0)
                 {
-                    instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 3] = (long)(Memory + (0x2000 * (instance->VectorMask[instance->CurrentRamConfig] - 3)));
-                    instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 2] = (long)(Memory + (0x2000 * (instance->VectorMask[instance->CurrentRamConfig] - 2)));
-                    instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 1] = (long)(Memory + (0x2000 * (instance->VectorMask[instance->CurrentRamConfig] - 1)));
-                    instance->MemPages[instance->VectorMask[instance->CurrentRamConfig]] = (long)(Memory + (0x2000 * instance->VectorMask[instance->CurrentRamConfig]));
+                    instance->MemPages[VectorMask[CurrentRamConfig] - 3] = (long)(Memory + (0x2000 * (VectorMask[CurrentRamConfig] - 3)));
+                    instance->MemPages[VectorMask[CurrentRamConfig] - 2] = (long)(Memory + (0x2000 * (VectorMask[CurrentRamConfig] - 2)));
+                    instance->MemPages[VectorMask[CurrentRamConfig] - 1] = (long)(Memory + (0x2000 * (VectorMask[CurrentRamConfig] - 1)));
+                    instance->MemPages[VectorMask[CurrentRamConfig]] = (long)(Memory + (0x2000 * VectorMask[CurrentRamConfig]));
 
-                    instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 3] = 1;
-                    instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 2] = 1;
-                    instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 1] = 1;
-                    instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig]] = 1;
+                    MemPageOffsets[VectorMask[CurrentRamConfig] - 3] = 1;
+                    MemPageOffsets[VectorMask[CurrentRamConfig] - 2] = 1;
+                    MemPageOffsets[VectorMask[CurrentRamConfig] - 1] = 1;
+                    MemPageOffsets[VectorMask[CurrentRamConfig]] = 1;
 
                     return;
                 }
@@ -4654,41 +4672,41 @@ Could not locate {ROM} in any of these locations:
                 {
                     case 0:
                     case 1: //16K Internal 16K External
-                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 3] = (long)(InternalRomBuffer);
-                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 2] = (long)(InternalRomBuffer + 0x2000);
-                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 1] = (long)(IntPtr.Zero);
-                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig]] = (long)(IntPtr.Zero);
+                        instance->MemPages[VectorMask[CurrentRamConfig] - 3] = (long)(InternalRomBuffer);
+                        instance->MemPages[VectorMask[CurrentRamConfig] - 2] = (long)(InternalRomBuffer + 0x2000);
+                        instance->MemPages[VectorMask[CurrentRamConfig] - 1] = (long)(IntPtr.Zero);
+                        instance->MemPages[VectorMask[CurrentRamConfig]] = (long)(IntPtr.Zero);
 
-                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 3] = 1;
-                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 2] = 1;
-                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 1] = 0;
-                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig]] = 0x2000;
+                        MemPageOffsets[VectorMask[CurrentRamConfig] - 3] = 1;
+                        MemPageOffsets[VectorMask[CurrentRamConfig] - 2] = 1;
+                        MemPageOffsets[VectorMask[CurrentRamConfig] - 1] = 0;
+                        MemPageOffsets[VectorMask[CurrentRamConfig]] = 0x2000;
 
                         return;
 
                     case 2: // 32K Internal
-                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 3] = (long)(InternalRomBuffer);
-                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 2] = (long)(InternalRomBuffer + 0x2000);
-                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 1] = (long)(InternalRomBuffer + 0x4000);
-                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig]] = (long)(InternalRomBuffer + 0x6000);
+                        instance->MemPages[VectorMask[CurrentRamConfig] - 3] = (long)(InternalRomBuffer);
+                        instance->MemPages[VectorMask[CurrentRamConfig] - 2] = (long)(InternalRomBuffer + 0x2000);
+                        instance->MemPages[VectorMask[CurrentRamConfig] - 1] = (long)(InternalRomBuffer + 0x4000);
+                        instance->MemPages[VectorMask[CurrentRamConfig]] = (long)(InternalRomBuffer + 0x6000);
 
-                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 3] = 1;
-                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 2] = 1;
-                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 1] = 1;
-                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig]] = 1;
+                        MemPageOffsets[VectorMask[CurrentRamConfig] - 3] = 1;
+                        MemPageOffsets[VectorMask[CurrentRamConfig] - 2] = 1;
+                        MemPageOffsets[VectorMask[CurrentRamConfig] - 1] = 1;
+                        MemPageOffsets[VectorMask[CurrentRamConfig]] = 1;
 
                         return;
 
                     case 3: //32K External
-                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 1] = (long)IntPtr.Zero;
-                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig]] = (long)IntPtr.Zero;
-                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 3] = (long)IntPtr.Zero;
-                        instance->MemPages[instance->VectorMask[instance->CurrentRamConfig] - 2] = (long)IntPtr.Zero;
+                        instance->MemPages[VectorMask[CurrentRamConfig] - 1] = (long)IntPtr.Zero;
+                        instance->MemPages[VectorMask[CurrentRamConfig]] = (long)IntPtr.Zero;
+                        instance->MemPages[VectorMask[CurrentRamConfig] - 3] = (long)IntPtr.Zero;
+                        instance->MemPages[VectorMask[CurrentRamConfig] - 2] = (long)IntPtr.Zero;
 
-                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 1] = 0;
-                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig]] = 0x2000;
-                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 3] = 0x4000;
-                        instance->MemPageOffsets[instance->VectorMask[instance->CurrentRamConfig] - 2] = 0x6000;
+                        MemPageOffsets[VectorMask[CurrentRamConfig] - 1] = 0;
+                        MemPageOffsets[VectorMask[CurrentRamConfig]] = 0x2000;
+                        MemPageOffsets[VectorMask[CurrentRamConfig] - 3] = 0x4000;
+                        MemPageOffsets[VectorMask[CurrentRamConfig] - 2] = 0x6000;
 
                         return;
                 }
@@ -4697,13 +4715,8 @@ Could not locate {ROM} in any of these locations:
 
         public void SetMmuTask(byte task)
         {
-            unsafe
-            {
-                TC1014State* instance = GetTC1014State();
-
-                MmuTask = task;
-                instance->MmuState = (byte)((MmuEnabled == 0 ? 1 : 0) << 1 | MmuTask);
-            }
+            MmuTask = task;
+            MmuState = (byte)((MmuEnabled == 0 ? 1 : 0) << 1 | MmuTask);
         }
 
         public void SetMmuRegister(byte register, byte data)
@@ -4711,54 +4724,37 @@ Could not locate {ROM} in any of these locations:
             byte bankRegister = (byte)(register & 7);
             byte task = (byte)((register & 8) == 0 ? 0 : 1);
 
-            unsafe
-            {
-                TC1014State* instance = GetTC1014State();
-
-                int index = 8 * task + bankRegister;
-
-                //gime.c returns what was written so I can get away with this
-                instance->MmuRegisters[index] = (ushort)(MmuPrefix | (data & RamMask[instance->CurrentRamConfig]));
-            }
+            //gime.c returns what was written so I can get away with this
+            MmuRegisters[task, bankRegister] = (ushort)(MmuPrefix | (data & RamMask[CurrentRamConfig]));
         }
 
         public void SetDistoRamBank(byte data)
         {
-            unsafe
+            switch (CurrentRamConfig)
             {
-                TC1014State* instance = GetTC1014State();
+                case 0: // 128K
+                    return;
 
-                switch (instance->CurrentRamConfig)
-                {
-                    case 0:	// 128K
-                        return;
+                case 1: //512K
+                    return;
 
-                    case 1:	//512K
-                        return;
+                case 2: //2048K
+                    _graphics.SetVideoBank((byte)(data & 3));
+                    SetMmuPrefix(0);
 
-                    case 2:	//2048K
-                        _graphics.SetVideoBank((byte)(data & 3));
-                        SetMmuPrefix(0);
+                    return;
 
-                        return;
+                case 3: //8192K	//No Can 3 
+                    _graphics.SetVideoBank((byte)(data & 0x0F));
+                    SetMmuPrefix((byte)((data & 0x30) >> 4));
 
-                    case 3:	//8192K	//No Can 3 
-                        _graphics.SetVideoBank((byte)(data & 0x0F));
-                        SetMmuPrefix((byte)((data & 0x30) >> 4));
-
-                        return;
-                }
+                    return;
             }
         }
 
         public void SetMmuPrefix(byte data)
         {
-            unsafe
-            {
-                TC1014State* instance = GetTC1014State();
-
-                MmuPrefix = (ushort)((data & 3) << 8);
-            }
+            MmuPrefix = (ushort)((data & 3) << 8);
         }
 
         public unsafe byte* GetInternalRomPointer()
@@ -4773,13 +4769,8 @@ Could not locate {ROM} in any of these locations:
 
         public void SetMmuEnabled(byte flag)
         {
-            unsafe
-            {
-                TC1014State* instance = GetTC1014State();
-
-                MmuEnabled = flag;
-                instance->MmuState = (byte)((MmuEnabled == 0 ? 1 : 0) << 1 | MmuTask);
-            }
+            MmuEnabled = flag;
+            MmuState = (byte)((MmuEnabled == 0 ? 1 : 0) << 1 | MmuTask);
         }
 
         public void GimeAssertKeyboardInterrupt()

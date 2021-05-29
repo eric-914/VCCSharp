@@ -320,6 +320,9 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern byte ModulePortRead(byte port);
+
+            [DllImport(LIBRARY)]
+            public static extern byte PakMem8Read(ushort address);
         } //--PAKInterface
 
         public static class TC1014
@@ -328,10 +331,10 @@ namespace VCCSharp.Libraries
             public static extern unsafe TC1014State* GetTC1014State();
 
             [DllImport(LIBRARY)]
-            public static extern byte MemRead8(ushort address);
+            public static extern byte MemRead8(ushort mmu, ushort mask);
 
             [DllImport(LIBRARY)]
-            public static extern void MemWrite8(byte data, ushort address);
+            public static extern void MemWrite8(byte data, ushort mmu, ushort mask);
         }
     }
 }

@@ -34,6 +34,7 @@ namespace VCCSharp.Modules
         byte CartInserted { get; set; }
         string ModuleName { get; set; }
         unsafe void FreeMemory(byte* target);
+        byte PakMem8Read(ushort address);
     }
 
     // ReSharper disable once InconsistentNaming
@@ -879,6 +880,11 @@ namespace VCCSharp.Modules
 
                 return 1;
             }
+        }
+
+        public byte PakMem8Read(ushort address)
+        {
+            return Library.PAKInterface.PakMem8Read(address);
         }
     }
 }
