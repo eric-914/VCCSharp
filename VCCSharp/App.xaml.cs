@@ -24,7 +24,6 @@ namespace VCCSharp
                 //--Modules
                 .Singleton<IAudio, Audio>()
                 .Singleton<ICPU, CPU>()
-                .Singleton<ICallbacks, Callbacks>()
                 .Singleton<ICassette, Cassette>()
                 .Singleton<IClipboard, Modules.Clipboard>()
                 .Singleton<ICoCo, CoCo>()

@@ -112,7 +112,7 @@ namespace VCCSharp.Modules
             }
 
             _modules.Graphics.InvalidateBorder();
-            _modules.Callbacks.RefreshDynamicMenu(_modules.Emu.WindowHandle);
+            //_modules.MenuCallbacks.RefreshDynamicMenu(_modules.Emu.WindowHandle);
 
             //TODO: Guess it wants to close other windows/dialogs
             //emuState->ConfigDialog = Zero;
@@ -625,8 +625,6 @@ namespace VCCSharp.Modules
                 return false;
             }
 
-            _modules.MenuCallbacks.SetWindowHandle(_modules.Emu.WindowHandle);
-
             _hWndStatusBar = _user32.CreateWindowExA(0, Define.STATUSCLASSNAME, "Ready",
                 Define.SBARS_SIZEGRIP | Define.WS_CHILD | Define.WS_VISIBLE, 0, 0, 0, 0,
                 _modules.Emu.WindowHandle, null, _hInstance, null);
@@ -737,8 +735,6 @@ namespace VCCSharp.Modules
             }
 
             if (_modules.Emu.WindowHandle == null) return false;
-
-            _modules.MenuCallbacks.SetWindowHandle(_modules.Emu.WindowHandle);
 
             RECT size;
 

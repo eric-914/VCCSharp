@@ -396,5 +396,15 @@ namespace VCCSharp.Models
 
         public const long DDLOCK_SURFACEMEMORYPTR = 0x00000000L;     // default
         public const long DDLOCK_WAIT = 0x00000001L;
+
+        public const long MF_BYPOSITION = 0x00000400L;
+        public const long MF_SEPARATOR = 0x00000800L;
+
+        public const long MF_STRING = 0x00000000L;
+        public const long MFT_STRING = MF_STRING;
+
+        public const uint MIIM_ID = 0x00000002;
+        public const uint MIIM_SUBMENU = 0x00000004;
+        public const uint MIIM_TYPE = 0x00000010;
     }
 }

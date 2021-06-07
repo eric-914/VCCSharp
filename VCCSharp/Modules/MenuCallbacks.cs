@@ -1,9 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using HWND = System.IntPtr;
+using HMENU = System.IntPtr;
+using static System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -12,12 +14,19 @@ namespace VCCSharp.Modules
         void DynamicMenuCallback(string menuName, int menuId, int type);
         void DynamicMenuCallback(string menuName, MenuActions menuId, int type);
         int DynamicMenuActivated(byte emulationRunning, int menuItem);
-        void SetWindowHandle(IntPtr intPtr);
     }
 
     public class MenuCallbacks : IMenuCallbacks
     {
         private readonly IModules _modules;
+
+        private byte _menuIndex;
+
+        private readonly DMenu[] _menuItem = new DMenu[100];
+        private readonly HMENU[] _hSubMenu = new HMENU[64];
+
+        private HWND _hOld = Zero;
+        private HMENU _hMenu = Zero;
 
         public MenuCallbacks(IModules modules)
         {
@@ -96,7 +105,7 @@ namespace VCCSharp.Modules
         //--Used by PAK plugins
         public void DynamicMenuCallback(string menuName, int menuId, int type)
         {
-            DynamicMenuCallback(menuName, (MenuActions) menuId, type);
+            DynamicMenuCallback(menuName, (MenuActions)menuId, type);
         }
 
         public void DynamicMenuCallback(string menuName, MenuActions menuId, int type)
@@ -107,7 +116,7 @@ namespace VCCSharp.Modules
             switch (menuId)
             {
                 case MenuActions.Flush:
-                    SetMenuIndex(0);
+                    _menuIndex = 0;
 
                     DynamicMenuCallback("Cartridge", MenuActions.Cartridge, Define.MENU_PARENT);	//Recursion is fun
                     DynamicMenuCallback("Load Cart", MenuActions.Load, Define.MENU_CHILD);
@@ -119,7 +128,7 @@ namespace VCCSharp.Modules
                     break;
 
                 case MenuActions.Done:
-                    RefreshDynamicMenu();
+                    RefreshDynamicMenu(_modules.Emu.WindowHandle, _menuIndex);
                     break;
 
                 case MenuActions.Refresh:
@@ -128,37 +137,160 @@ namespace VCCSharp.Modules
                     break;
 
                 default:
-                    SetMenuItem(menuName, (int)menuId, type);
+                    SetMenuItem(_menuIndex, menuName, (int)menuId, type);
 
-                    SetMenuIndex((byte)(GetMenuIndex() + 1));
+                    _menuIndex++;
 
                     break;
             }
         }
 
-        public void SetWindowHandle(IntPtr intPtr)
+        public void RefreshDynamicMenu(HWND hWnd, byte menuIndex)
         {
-            Library.MenuCallbacks.SetWindowHandle(intPtr);
+            if (_hMenu == Zero || hWnd != _hOld)
+            {
+                _hMenu = MenuGetMenu(hWnd);
+            }
+            else
+            {
+                MenuDeleteMenu(_hMenu, 3, (uint)Define.MF_BYPOSITION);
+            }
+
+            _hOld = hWnd;
+
+            SetMenuRoot(_hMenu);
+
+            int subMenuIndex = 1;
+
+            for (int tempIndex = 0; tempIndex < menuIndex; tempIndex++)
+            {
+                string menuName = _menuItem[tempIndex].MenuName;
+
+                if (string.IsNullOrEmpty(menuName))
+                {
+                    _menuItem[tempIndex].Type = Define.MENU_STANDALONE;
+                }
+
+                //Create Menu item in title bar if no exist already
+                switch (_menuItem[tempIndex].Type)
+                {
+                    case Define.MENU_PARENT:
+                        SetMenuParent(_menuItem[tempIndex], ++subMenuIndex);
+                        break;
+
+                    case Define.MENU_CHILD:
+                        SetMenuChild(_menuItem[tempIndex], subMenuIndex);
+                        break;
+
+                    case Define.MENU_STANDALONE:
+                        SetMenuStandalone(_menuItem[tempIndex]);
+                        break;
+                }
+            }
+
+            MenuDrawMenuBar(hWnd);
         }
 
-        public void RefreshDynamicMenu()
+        public void SetMenuRoot(HMENU hMenu)
         {
-            Library.MenuCallbacks.RefreshDynamicMenu();
+            const string menuTitle = "Cartridge";
+
+            HMENU menu = MenuCreatePopupMenu();
+
+            _hSubMenu[0] = menu;
+
+            MENUITEMINFO mii = SetMenuText(menuTitle);
+            mii.fMask = Define.MIIM_TYPE | Define.MIIM_SUBMENU | Define.MIIM_ID;
+            mii.wID = 4999;
+            mii.hSubMenu = menu;
+
+            MenuInsertMenuItem(hMenu, mii, 3, Define.TRUE);
         }
 
-        public void SetMenuIndex(byte value)
+        public void SetMenuParent(DMenu menuItem, int subMenuIndex)
         {
-            Library.MenuCallbacks.SetMenuIndex(value);
+            HMENU menu = MenuCreatePopupMenu();
+
+            _hSubMenu[subMenuIndex] = menu;
+
+            MENUITEMINFO mii = SetMenuText(menuItem.MenuName);
+            mii.fMask = Define.MIIM_TYPE | Define.MIIM_SUBMENU | Define.MIIM_ID;
+            mii.wID = (uint)menuItem.MenuId;
+            mii.hSubMenu = menu;
+
+            HMENU root = _hSubMenu[0];
+
+            MenuInsertMenuItem(root, mii, 0, Define.FALSE);
         }
 
-        public byte GetMenuIndex()
+        public void SetMenuChild(DMenu menuItem, int subMenuIndex)
         {
-            return Library.MenuCallbacks.GetMenuIndex();
+            HMENU menu = _hSubMenu[subMenuIndex];
+
+            MENUITEMINFO mii = SetMenuText(menuItem.MenuName);
+            mii.fMask = Define.MIIM_TYPE | Define.MIIM_ID;
+            mii.wID = (uint)menuItem.MenuId;
+            mii.hSubMenu = menu;
+
+            MenuInsertMenuItem(menu, mii, 0, Define.FALSE);
         }
 
-        public void SetMenuItem(string menuName, int menuId, int type)
+        public void SetMenuStandalone(DMenu menuItem)
         {
-            Library.MenuCallbacks.SetMenuItem(menuName, menuId, type);
+            HMENU menu = _hSubMenu[0];
+
+            MENUITEMINFO mii = SetMenuText(menuItem.MenuName);
+            mii.fMask = Define.MIIM_TYPE | Define.MIIM_ID;
+            mii.wID = (uint)menuItem.MenuId;
+            mii.hSubMenu = _hMenu;
+
+            MenuInsertMenuItem(menu, mii, 0, Define.FALSE);
+        }
+
+        public unsafe MENUITEMINFO SetMenuText(string text)
+        {
+            fixed (byte* p = Converter.ToByteArray(text))
+            {
+                return new MENUITEMINFO
+                {
+                    cbSize = (uint)sizeof(MENUITEMINFO),
+                    fType = (uint)(string.IsNullOrEmpty(text) ? Define.MF_SEPARATOR : Define.MFT_STRING),
+                    cch = (uint)(text?.Length ?? 0),
+                    dwTypeData = p
+                };
+            }
+        }
+
+        public void SetMenuItem(byte menuIndex, string menuName, int menuId, int type)
+        {
+            _menuItem[menuIndex].MenuName = menuName;
+            _menuItem[menuIndex].MenuId = menuId;
+            _menuItem[menuIndex].Type = type;
+        }
+
+        public HMENU MenuGetMenu(HWND hWnd)
+        {
+            return Library.MenuCallbacks.MenuGetMenu(hWnd);
+        }
+
+        public uint MenuDeleteMenu(HMENU hMenu, uint uPosition, uint uFlags)
+        {
+            return Library.MenuCallbacks.MenuDeleteMenu(hMenu, uPosition, uFlags);
+        }
+
+        public HMENU MenuCreatePopupMenu()
+        {
+            return Library.MenuCallbacks.MenuCreatePopupMenu();
+        }
+
+        public uint MenuDrawMenuBar(HWND hWnd)
+        {
+            return Library.MenuCallbacks.MenuDrawMenuBar(hWnd);
+        }
+
+        public unsafe void MenuInsertMenuItem(HMENU hMenu, MENUITEMINFO mii, uint item, int fByPosition)
+        {
+            Library.MenuCallbacks.MenuInsertMenuItem(hMenu, &mii, item, fByPosition);
         }
     }
 }

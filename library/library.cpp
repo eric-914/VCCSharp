@@ -175,3 +175,34 @@ extern "C" {
     SetMenu(hWnd, LoadMenu(resources, MAKEINTRESOURCE(IDR_MENU)));
   }
 }
+
+extern "C" {
+  __declspec(dllexport) HMENU __cdecl MenuGetMenu(HWND hWnd) {
+    return GetMenu(hWnd);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl MenuDeleteMenu(HMENU hMenu, unsigned int uPosition, unsigned int uFlags) {
+    return DeleteMenu(hMenu, uPosition, uFlags);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HMENU __cdecl MenuCreatePopupMenu() {
+    return CreatePopupMenu();
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl MenuInsertMenuItem(HMENU hMenu, MENUITEMINFO* mii, unsigned int item, BOOL fByPosition) {
+    InsertMenuItem(hMenu, item, fByPosition, mii);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl MenuDrawMenuBar(HWND hWnd) {
+    return DrawMenuBar(hWnd);
+  }
+}
+

@@ -7,6 +7,7 @@ using HINSTANCE = System.IntPtr;
 using HWND = System.IntPtr;
 using HMODULE = System.IntPtr;
 using HRESULT = System.IntPtr;
+using HMENU = System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
@@ -15,12 +16,6 @@ namespace VCCSharp.Libraries
     {
         // ReSharper disable once InconsistentNaming
         public const string LIBRARY = "library.dll";
-
-        public static class Callbacks
-        {
-            [DllImport(LIBRARY)]
-            public static extern void RefreshDynamicMenu(HWND hWnd);
-        }
 
         public static class DirectDraw
         {
@@ -286,19 +281,19 @@ namespace VCCSharp.Libraries
         public static class MenuCallbacks
         {
             [DllImport(LIBRARY)]
-            public static extern void SetMenuItem(string menuName, int menuId, int type);
-
+            public static extern HMENU MenuGetMenu(HWND hWnd);
+            
             [DllImport(LIBRARY)]
-            public static extern void SetWindowHandle(HWND hWnd);
-
+            public static extern uint MenuDeleteMenu(HMENU hMenu, uint uPosition, uint uFlags);
+            
             [DllImport(LIBRARY)]
-            public static extern void RefreshDynamicMenu();
-
+            public static extern HMENU MenuCreatePopupMenu();
+            
             [DllImport(LIBRARY)]
-            public static extern void SetMenuIndex(byte value);
-
+            public static extern uint MenuDrawMenuBar(HWND hWnd);
+            
             [DllImport(LIBRARY)]
-            public static extern byte GetMenuIndex();
+            public static extern unsafe void MenuInsertMenuItem(HMENU hMenu, MENUITEMINFO* mii, uint item, int fByPosition);
         }
 
         public static class PAKInterface
@@ -312,11 +307,5 @@ namespace VCCSharp.Libraries
             [DllImport(LIBRARY)]
             public static extern unsafe void* GetFunction(HMODULE hModule, string lpProcName);
         } //--PAKInterface
-
-        //public static class TC1014
-        //{
-        //    [DllImport(LIBRARY)]
-        //    public static extern unsafe TC1014State* GetTC1014State();
-        //}
     }
 }

@@ -165,7 +165,6 @@
   <ItemGroup>
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="library.cpp" />
-    <ClCompile Include="MenuCallbacks.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="library.h" />
