@@ -68,7 +68,7 @@ namespace VCCSharp
 
             _modules.Emu.ResetPending = (byte)ResetPendingStates.Cls;
 
-            _modules.MenuCallbacks.DynamicMenuCallback(null, MenuActions.Refresh, Define.IGNORE);
+            _modules.MenuCallbacks.RefreshDynamicMenu();
 
             _modules.Emu.ResetPending = (byte)ResetPendingStates.Hard;
 
@@ -106,7 +106,7 @@ namespace VCCSharp
 
         public int Shutdown()
         {
-            _modules.PAKInterface.UnloadDll(_modules.Emu.EmulationRunning);
+            _modules.PAKInterface.UnloadDll(_modules.Emu.EmulationRunning != Define.FALSE);
             _modules.Audio.SoundDeInit();
 
             _modules.Config.WriteIniFile(); //Save any changes to ini File

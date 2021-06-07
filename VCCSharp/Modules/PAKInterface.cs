@@ -14,7 +14,7 @@ namespace VCCSharp.Modules
     // ReSharper disable once InconsistentNaming
     public interface IPAKInterface
     {
-        void UnloadDll(byte emulationRunning);
+        void UnloadDll(bool emulationRunning);
         void GetModuleStatus();
         void ResetBus();
         void UpdateBusPointer();
@@ -26,7 +26,7 @@ namespace VCCSharp.Modules
         ushort PakAudioSample();
         bool HasConfigModule();
         void InvokeConfigModule(byte menuItem);
-        int UnloadPack(byte emulationRunning);
+        int UnloadPack(bool emulationRunning);
         byte CartInserted { get; set; }
         string ModuleName { get; set; }
         byte PakMem8Read(ushort address);
@@ -77,9 +77,9 @@ namespace VCCSharp.Modules
         }
 
         //TODO: Used by LoadROMPack(...), UnloadPack(...), InsertModule(...)
-        public void UnloadDll(byte emulationRunning)
+        public void UnloadDll(bool emulationRunning)
         {
-            if ((DialogOpen == Define.TRUE) && (emulationRunning == Define.TRUE))
+            if ((DialogOpen == Define.TRUE) && emulationRunning)
             {
                 MessageBox.Show("Close Configuration Dialog before unloading", "Ok");
 
@@ -95,7 +95,7 @@ namespace VCCSharp.Modules
 
             hInstLib = IntPtr.Zero;
 
-            _modules.MenuCallbacks.DynamicMenuCallback(null, MenuActions.Refresh, Define.IGNORE);
+            _modules.MenuCallbacks.RefreshDynamicMenu();
         }
 
         public void ResetBus()
@@ -147,7 +147,7 @@ namespace VCCSharp.Modules
             ushort moduleParams = 0;
             string catNumber = "";
 
-            UnloadDll(emulationRunning);
+            UnloadDll(emulationRunning != Define.FALSE);
 
             hInstLib = PakLoadLibrary(modulePath);
 
@@ -290,13 +290,13 @@ namespace VCCSharp.Modules
         //File is a ROM image
         public int InsertModuleCase2(byte emulationRunning, string modulePath)
         {
-            UnloadDll(emulationRunning);
+            UnloadDll(emulationRunning != Define.FALSE);
 
             LoadRomPack(emulationRunning, modulePath);
 
             ModuleName = Path.GetFileName(modulePath);
 
-            _modules.MenuCallbacks.DynamicMenuCallback(null, MenuActions.Refresh, Define.IGNORE);
+            _modules.MenuCallbacks.RefreshDynamicMenu();
 
             SetCart(1);
 
@@ -377,7 +377,7 @@ namespace VCCSharp.Modules
                 ExternalRomBuffer[i] = rom[i];
             }
 
-            UnloadDll(emulationRunning);
+            UnloadDll(emulationRunning != Define.FALSE);
 
             BankedCartOffset = 0;
             RomPackLoaded = Define.TRUE;
@@ -385,7 +385,7 @@ namespace VCCSharp.Modules
             return rom.Length;
         }
 
-        public int UnloadPack(byte emulationRunning)
+        public int UnloadPack(bool emulationRunning)
         {
             UnloadDll(emulationRunning);
 
@@ -400,7 +400,7 @@ namespace VCCSharp.Modules
 
             ExternalRomBuffer = null;
 
-            _modules.MenuCallbacks.DynamicMenuCallback(null, MenuActions.Refresh, Define.IGNORE);
+            _modules.MenuCallbacks.RefreshDynamicMenu();
 
             return Define.NOMODULE;
         }
@@ -581,7 +581,7 @@ namespace VCCSharp.Modules
             //Instantiate the menus from HERE!
             unsafe
             {
-                _dynamicMenuCallback = _modules.MenuCallbacks.DynamicMenuCallback;
+                _dynamicMenuCallback = _modules.MenuCallbacks.BuildCartridgeMenu;
                 IntPtr callback = Marshal.GetFunctionPointerForDelegate(_dynamicMenuCallback);
 
                 DYNAMICMENUCALLBACK fnx = Marshal.GetDelegateForFunctionPointer<DYNAMICMENUCALLBACK>(callback);

@@ -11,8 +11,9 @@ namespace VCCSharp.Modules
 {
     public interface IMenuCallbacks
     {
-        void DynamicMenuCallback(string menuName, int menuId, int type);
-        void DynamicMenuCallback(string menuName, MenuActions menuId, int type);
+        void RefreshDynamicMenu();
+        void BuildCartridgeMenu(string menuName, int menuId, int type);
+        void BuildCartridgeMenu(string menuName, MenuActions menuId, int type);
         int DynamicMenuActivated(byte emulationRunning, int menuItem);
     }
 
@@ -35,13 +36,18 @@ namespace VCCSharp.Modules
 
         public int DynamicMenuActivated(byte emulationRunning, int menuItem)
         {
+            return DynamicMenuActivated(emulationRunning, (MenuActions) menuItem);
+        }
+
+        public int DynamicMenuActivated(byte emulationRunning, MenuActions menuItem)
+        {
             switch (menuItem)
             {
-                case Define.ID_MENU_LOAD_CART:
+                case MenuActions.Load:
                     return LoadPack();
 
-                case Define.ID_MENU_EJECT_CART:
-                    return _modules.PAKInterface.UnloadPack(emulationRunning);
+                case MenuActions.Eject: 
+                    return _modules.PAKInterface.UnloadPack(emulationRunning != Define.FALSE);
 
                 default:
                     if (_modules.PAKInterface.HasConfigModule())
@@ -54,7 +60,7 @@ namespace VCCSharp.Modules
         }
 
         private bool _dialogOpen;
-        public int LoadPack()
+        private int LoadPack()
         {
             if (_dialogOpen)
             {
@@ -70,7 +76,7 @@ namespace VCCSharp.Modules
             return result;
         }
 
-        public int OpenLoadCartFileDialog()
+        private int OpenLoadCartFileDialog()
         {
             string filename = "";
 
@@ -103,50 +109,44 @@ namespace VCCSharp.Modules
         }
 
         //--Used by PAK plugins
-        public void DynamicMenuCallback(string menuName, int menuId, int type)
+        public void BuildCartridgeMenu(string menuName, int menuId, int type)
         {
-            DynamicMenuCallback(menuName, (MenuActions)menuId, type);
+            BuildCartridgeMenu(menuName, (MenuActions)menuId, type);
         }
 
-        public void DynamicMenuCallback(string menuName, MenuActions menuId, int type)
+        public void BuildCartridgeMenu(string menuName, MenuActions menuId, int type)
         {
-            string temp = "Eject Cart: ";
-
-            //MenuId=0 Flush Buffer MenuId=1 Done 
             switch (menuId)
             {
                 case MenuActions.Flush:
                     _menuIndex = 0;
-
-                    DynamicMenuCallback("Cartridge", MenuActions.Cartridge, Define.MENU_PARENT);	//Recursion is fun
-                    DynamicMenuCallback("Load Cart", MenuActions.Load, Define.MENU_CHILD);
-
-                    temp += _modules.PAKInterface.ModuleName;
-
-                    DynamicMenuCallback(temp, MenuActions.Eject, Define.MENU_CHILD);
+                    BuildCartridgeMenu("Cartridge", MenuActions.Cartridge, Define.MENU_PARENT);	//Recursion is fun
+                    BuildCartridgeMenu("Load Cart", MenuActions.Load, Define.MENU_CHILD);
+                    BuildCartridgeMenu($"Eject Cart: {_modules.PAKInterface.ModuleName}", MenuActions.Eject, Define.MENU_CHILD);
 
                     break;
 
                 case MenuActions.Done:
-                    RefreshDynamicMenu(_modules.Emu.WindowHandle, _menuIndex);
+                    DrawDynamicMenu();
                     break;
 
-                case MenuActions.Refresh:
-                    DynamicMenuCallback(null, MenuActions.Flush, Define.IGNORE);
-                    DynamicMenuCallback(null, MenuActions.Done, Define.IGNORE);
-                    break;
-
+                //--Used by plug-ins to add whatever they want
                 default:
-                    SetMenuItem(_menuIndex, menuName, (int)menuId, type);
-
-                    _menuIndex++;
-
+                    SetMenuItem(_menuIndex++, menuName, (int)menuId, type);
                     break;
             }
         }
 
-        public void RefreshDynamicMenu(HWND hWnd, byte menuIndex)
+        public void RefreshDynamicMenu()
         {
+            BuildCartridgeMenu(null, MenuActions.Flush, Define.IGNORE);
+            BuildCartridgeMenu(null, MenuActions.Done, Define.IGNORE);
+        }
+
+        private void DrawDynamicMenu()
+        {
+            HWND hWnd = _modules.Emu.WindowHandle;
+
             if (_hMenu == Zero || hWnd != _hOld)
             {
                 _hMenu = MenuGetMenu(hWnd);
@@ -162,7 +162,7 @@ namespace VCCSharp.Modules
 
             int subMenuIndex = 1;
 
-            for (int tempIndex = 0; tempIndex < menuIndex; tempIndex++)
+            for (int tempIndex = 0; tempIndex < _menuIndex; tempIndex++)
             {
                 string menuName = _menuItem[tempIndex].MenuName;
 
@@ -191,7 +191,7 @@ namespace VCCSharp.Modules
             MenuDrawMenuBar(hWnd);
         }
 
-        public void SetMenuRoot(HMENU hMenu)
+        private void SetMenuRoot(HMENU hMenu)
         {
             const string menuTitle = "Cartridge";
 
@@ -207,7 +207,7 @@ namespace VCCSharp.Modules
             MenuInsertMenuItem(hMenu, mii, 3, Define.TRUE);
         }
 
-        public void SetMenuParent(DMenu menuItem, int subMenuIndex)
+        private void SetMenuParent(DMenu menuItem, int subMenuIndex)
         {
             HMENU menu = MenuCreatePopupMenu();
 
@@ -223,7 +223,7 @@ namespace VCCSharp.Modules
             MenuInsertMenuItem(root, mii, 0, Define.FALSE);
         }
 
-        public void SetMenuChild(DMenu menuItem, int subMenuIndex)
+        private void SetMenuChild(DMenu menuItem, int subMenuIndex)
         {
             HMENU menu = _hSubMenu[subMenuIndex];
 
@@ -235,7 +235,7 @@ namespace VCCSharp.Modules
             MenuInsertMenuItem(menu, mii, 0, Define.FALSE);
         }
 
-        public void SetMenuStandalone(DMenu menuItem)
+        private void SetMenuStandalone(DMenu menuItem)
         {
             HMENU menu = _hSubMenu[0];
 
@@ -247,7 +247,7 @@ namespace VCCSharp.Modules
             MenuInsertMenuItem(menu, mii, 0, Define.FALSE);
         }
 
-        public unsafe MENUITEMINFO SetMenuText(string text)
+        private static unsafe MENUITEMINFO SetMenuText(string text)
         {
             fixed (byte* p = Converter.ToByteArray(text))
             {
@@ -261,34 +261,34 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void SetMenuItem(byte menuIndex, string menuName, int menuId, int type)
+        private void SetMenuItem(byte menuIndex, string menuName, int menuId, int type)
         {
             _menuItem[menuIndex].MenuName = menuName;
             _menuItem[menuIndex].MenuId = menuId;
             _menuItem[menuIndex].Type = type;
         }
 
-        public HMENU MenuGetMenu(HWND hWnd)
+        private static HMENU MenuGetMenu(HWND hWnd)
         {
             return Library.MenuCallbacks.MenuGetMenu(hWnd);
         }
 
-        public uint MenuDeleteMenu(HMENU hMenu, uint uPosition, uint uFlags)
+        private static void MenuDeleteMenu(HWND hMenu, uint uPosition, uint uFlags)
         {
-            return Library.MenuCallbacks.MenuDeleteMenu(hMenu, uPosition, uFlags);
+            Library.MenuCallbacks.MenuDeleteMenu(hMenu, uPosition, uFlags);
         }
 
-        public HMENU MenuCreatePopupMenu()
+        private static HMENU MenuCreatePopupMenu()
         {
             return Library.MenuCallbacks.MenuCreatePopupMenu();
         }
 
-        public uint MenuDrawMenuBar(HWND hWnd)
+        private static void MenuDrawMenuBar(HWND hWnd)
         {
-            return Library.MenuCallbacks.MenuDrawMenuBar(hWnd);
+            Library.MenuCallbacks.MenuDrawMenuBar(hWnd);
         }
 
-        public unsafe void MenuInsertMenuItem(HMENU hMenu, MENUITEMINFO mii, uint item, int fByPosition)
+        private static unsafe void MenuInsertMenuItem(HMENU hMenu, MENUITEMINFO mii, uint item, int fByPosition)
         {
             Library.MenuCallbacks.MenuInsertMenuItem(hMenu, &mii, item, fByPosition);
         }

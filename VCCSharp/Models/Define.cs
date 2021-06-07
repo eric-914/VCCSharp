@@ -375,9 +375,6 @@ namespace VCCSharp.Models
         public const byte RESET_NONE = 0;
         public const byte RESET_HARD = 2;
 
-        public const int ID_MENU_LOAD_CART = 5001;
-        public const int ID_MENU_EJECT_CART = 5002;
-
         public const int NOMODULE = 1;
         public const int NOTVCC = 2;
 
