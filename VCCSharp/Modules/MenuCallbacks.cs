@@ -153,7 +153,7 @@ namespace VCCSharp.Modules
             }
             else
             {
-                MenuDeleteMenu(_hMenu, 3, (uint)Define.MF_BYPOSITION);
+                MenuDeleteMenu(_hMenu, 1, (uint)Define.MF_BYPOSITION);
             }
 
             _hOld = hWnd;
