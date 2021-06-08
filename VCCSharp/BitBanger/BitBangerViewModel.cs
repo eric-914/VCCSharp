@@ -76,12 +76,12 @@ namespace VCCSharp.BitBanger
 
         public bool Print
         {
-            get => Config is {PrintMonitorWindow: Define.TRUE};
+            get => Config is {PrintMonitorWindow: true};
             set
             {
-                if (value == (Config.PrintMonitorWindow == Define.TRUE)) return;
+                if (value == Config.PrintMonitorWindow) return;
 
-                Config.PrintMonitorWindow = (value ? Define.TRUE : Define.FALSE);
+                Config.PrintMonitorWindow = value;
                 OnPropertyChanged();
             }
         }

@@ -9,8 +9,8 @@ namespace VCCSharp.Modules
 {
     public interface IDirectSound
     {
-        int DirectSoundHasBuffer();
-        int DirectSoundHasInterface();
+        bool DirectSoundHasBuffer();
+        bool DirectSoundHasInterface();
 
         int DirectSoundBufferRelease();
         int DirectSoundCreateSoundBuffer();
@@ -46,14 +46,14 @@ namespace VCCSharp.Modules
             _modules = modules;
         }
 
-        public int DirectSoundHasBuffer()
+        public bool DirectSoundHasBuffer()
         {
-            return Library.DirectSound.DirectSoundHasBuffer();
+            return Library.DirectSound.DirectSoundHasBuffer() != 0;
         }
 
-        public int DirectSoundHasInterface()
+        public bool DirectSoundHasInterface()
         {
-            return Library.DirectSound.DirectSoundHasInterface();
+            return Library.DirectSound.DirectSoundHasInterface() != 0;
         }
 
         public int DirectSoundBufferRelease()

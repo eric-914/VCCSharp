@@ -519,7 +519,7 @@ namespace VCCSharp.Modules
 
                 string path = Path.Combine(configModel.CoCoRomPath, ROM);
 
-                if (LoadInternalRom(path) == Define.TRUE)
+                if (LoadInternalRom(path))
                 {
                     Debug.WriteLine($"Found {ROM} in CoCoRomPath");
                     return;
@@ -528,7 +528,7 @@ namespace VCCSharp.Modules
                 //--Try loading from Vcc.inin >> ExternalBasicImage
                 string externalBasicImage = _modules.Config.ConfigModel.ExternalBasicImage;
 
-                if (!string.IsNullOrEmpty(externalBasicImage) && LoadInternalRom(externalBasicImage) == Define.TRUE)
+                if (!string.IsNullOrEmpty(externalBasicImage) && LoadInternalRom(externalBasicImage))
                 {
                     Debug.WriteLine($"Found {ROM} in ExternalBasicImage");
                     return;
@@ -538,7 +538,7 @@ namespace VCCSharp.Modules
                 string exePath = Path.GetDirectoryName(_modules.Vcc.GetExecPath());
                 string exeFile = Path.Combine(exePath, ROM);
 
-                if (LoadInternalRom(exeFile) != Define.FALSE)
+                if (LoadInternalRom(exeFile))
                 {
                     Debug.WriteLine($"Found {ROM} in executable folder");
                     return;
@@ -648,11 +648,11 @@ Could not locate {ROM} in any of these locations:
             }
         }
 
-        public ushort LoadInternalRom(string filename)
+        public bool LoadInternalRom(string filename)
         {
             Debug.WriteLine($"LoadInternalRom: {filename}");
 
-            if (!File.Exists(filename)) return 0;
+            if (!File.Exists(filename)) return false;
 
             byte[] bytes = File.ReadAllBytes(filename);
 
@@ -664,7 +664,7 @@ Could not locate {ROM} in any of these locations:
                 }
             }
 
-            return (ushort)bytes.Length;
+            return true; //(ushort)bytes.Length;
         }
 
         public void GimeAssertVertInterrupt()
@@ -958,7 +958,7 @@ Could not locate {ROM} in any of these locations:
                 Graphics.TagY++;
             }
 
-            if (_modules.Emu.LineCounter == Define.FALSE)
+            if (_modules.Emu.LineCounter == 0)
             {
                 Graphics.StartOfVidRam = Graphics.NewStartOfVidRam;
                 Graphics.TagY = (ushort)(_modules.Emu.LineCounter);
@@ -999,7 +999,7 @@ Could not locate {ROM} in any of these locations:
                 Graphics.TagY++;
             }
 
-            if (_modules.Emu.LineCounter == Define.FALSE)
+            if (_modules.Emu.LineCounter == 0)
             {
                 Graphics.StartOfVidRam = Graphics.NewStartOfVidRam;
                 Graphics.TagY = (ushort)(_modules.Emu.LineCounter);
@@ -3096,18 +3096,21 @@ Could not locate {ROM} in any of these locations:
 
                                     case 3:
                                         color = 3;
-                                        szSurface32[yStride - 1] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + 3];
+
+                                        int colorInvert3 = Graphics.ColorInvert ? 7 : 3;// * 4 + 3;
+
+                                        szSurface32[yStride - 1] = graphicsColors.Afacts32[colorInvert3];
 
                                         if (!_modules.Emu.ScanLines)
                                         {
-                                            szSurface32[yStride + Xpitch - 1] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + 3];
+                                            szSurface32[yStride + Xpitch - 1] = graphicsColors.Afacts32[colorInvert3];
                                         }
 
-                                        szSurface32[yStride] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + 3];
+                                        szSurface32[yStride] = graphicsColors.Afacts32[colorInvert3];
 
                                         if (!_modules.Emu.ScanLines)
                                         {
-                                            szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + 3];
+                                            szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[colorInvert3];
                                         }
 
                                         break;
@@ -3117,18 +3120,20 @@ Could not locate {ROM} in any of these locations:
                                         break;
                                 }
 
-                                szSurface32[yStride += 1] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + color];
+                                int colorInvert = (Graphics.ColorInvert ? 4 : 0) + color;
+
+                                szSurface32[yStride += 1] = graphicsColors.Afacts32[colorInvert];
 
                                 if (!_modules.Emu.ScanLines)
                                 {
-                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + color];
+                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[colorInvert];
                                 }
 
-                                szSurface32[yStride += 1] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + color];
+                                szSurface32[yStride += 1] = graphicsColors.Afacts32[colorInvert];
 
                                 if (!_modules.Emu.ScanLines)
                                 {
-                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + color];
+                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[colorInvert];
                                 }
 
                                 carry2 = carry1;
@@ -3158,18 +3163,21 @@ Could not locate {ROM} in any of these locations:
 
                                     case 3:
                                         color = 3;
-                                        szSurface32[yStride - 1] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + 3];
+
+                                        int colorInvert3 = Graphics.ColorInvert ? 7 : 3; //* 4 + 3;
+
+                                        szSurface32[yStride - 1] = graphicsColors.Afacts32[colorInvert3];
 
                                         if (!_modules.Emu.ScanLines)
                                         {
-                                            szSurface32[yStride + Xpitch - 1] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + 3];
+                                            szSurface32[yStride + Xpitch - 1] = graphicsColors.Afacts32[colorInvert3];
                                         }
 
-                                        szSurface32[yStride] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + 3];
+                                        szSurface32[yStride] = graphicsColors.Afacts32[colorInvert3];
 
                                         if (!_modules.Emu.ScanLines)
                                         {
-                                            szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + 3];
+                                            szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[colorInvert3];
                                         }
 
                                         break;
@@ -3179,18 +3187,20 @@ Could not locate {ROM} in any of these locations:
                                         break;
                                 }
 
-                                szSurface32[yStride += 1] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + color];
+                                int colorInvert = (Graphics.ColorInvert ? 4 : 0) + color;
+
+                                szSurface32[yStride += 1] = graphicsColors.Afacts32[colorInvert];
 
                                 if (!_modules.Emu.ScanLines)
                                 {
-                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + color];
+                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[colorInvert];
                                 }
 
-                                szSurface32[yStride += 1] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + color];
+                                szSurface32[yStride += 1] = graphicsColors.Afacts32[colorInvert];
 
                                 if (!_modules.Emu.ScanLines)
                                 {
-                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + color];
+                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[colorInvert];
                                 }
 
                                 carry2 = carry1;

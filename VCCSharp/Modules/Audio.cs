@@ -13,7 +13,7 @@ namespace VCCSharp.Modules
         void PurgeAuxBuffer();
         int GetFreeBlockCount();
         AudioSpectrum Spectrum { get; set; }
-        byte PauseAudio(byte pause);
+        bool PauseAudio(bool pause);
         ushort CurrentRate { get; set; }
     }
 
@@ -24,13 +24,13 @@ namespace VCCSharp.Modules
         public AudioSpectrum Spectrum { get; set; }
         public ushort CurrentRate { get; set; }
 
-        private byte _initPassed;
-        private byte _audioPause;
+        private bool _initPassed;
+        private bool _audioPause;
 
         private ushort _bitRate;
         private ushort _blockSize;
 
-        private readonly ushort[] iRateList = { 0, 11025, 22050, 44100 };
+        private readonly ushort[] _rateList = { 0, 11025, 22050, 44100 };
 
         private int _hr;
 
@@ -51,9 +51,9 @@ namespace VCCSharp.Modules
 
         public short SoundDeInit()
         {
-            if (_initPassed != Define.FALSE)
+            if (_initPassed)
             {
-                _initPassed = 0;
+                _initPassed = false;
 
                 _modules.DirectSound.DirectSoundStopAndRelease();
             }
@@ -63,9 +63,9 @@ namespace VCCSharp.Modules
 
         public void ResetAudio()
         {
-            _modules.CoCo.SetAudioRate(iRateList[CurrentRate]);
+            _modules.CoCo.SetAudioRate(_rateList[CurrentRate]);
 
-            if (_initPassed == Define.TRUE)
+            if (_initPassed)
             {
                 _modules.DirectSound.DirectSoundSetCurrentPosition(0);
             }
@@ -120,7 +120,7 @@ namespace VCCSharp.Modules
 
             _modules.Audio.Spectrum?.UpdateSoundBar(leftAverage, rightAverage);
 
-            if ((_initPassed == Define.FALSE) || (_audioPause != Define.FALSE))
+            if (!_initPassed || _audioPause)
             {
                 return;
             }
@@ -189,7 +189,7 @@ namespace VCCSharp.Modules
                 ulong playCursor = 0, writeCursor = 0;
                 long maxSize;
 
-                if (_initPassed == Define.FALSE || _audioPause == Define.TRUE)
+                if (!_initPassed || _audioPause)
                 {
                     return Define.AUDIOBUFFERS;
                 }
@@ -211,7 +211,7 @@ namespace VCCSharp.Modules
 
         public void PurgeAuxBuffer()
         {
-            if (_initPassed == Define.FALSE || _audioPause == Define.TRUE)
+            if (!_initPassed || _audioPause)
             {
                 return;
             }
@@ -256,17 +256,17 @@ namespace VCCSharp.Modules
 
             CurrentRate = rate;
 
-            if (_initPassed == Define.TRUE)
+            if (_initPassed)
             {
-                _initPassed = 0;
+                _initPassed = false;
                 _modules.DirectSound.DirectSoundStop();
 
-                if (_modules.DirectSound.DirectSoundHasBuffer() == Define.TRUE)
+                if (_modules.DirectSound.DirectSoundHasBuffer())
                 {
                     _hr = _modules.DirectSound.DirectSoundBufferRelease();
                 }
 
-                if (_modules.DirectSound.DirectSoundHasInterface() == Define.TRUE)
+                if (_modules.DirectSound.DirectSoundHasInterface())
                 {
                     _hr = _modules.DirectSound.DirectSoundInterfaceRelease();
                 }
@@ -276,7 +276,7 @@ namespace VCCSharp.Modules
             _sndLength2 = 0;
             _buffOffset = 0;
             _auxBufferPointer = 0;
-            _bitRate = iRateList[rate];
+            _bitRate = _rateList[rate];
             _blockSize = (ushort)(_bitRate * 4 / Define.TARGETFRAMERATE);
             _sndBuffLength = (ushort)(_blockSize * Define.AUDIOBUFFERS);
 
@@ -291,7 +291,7 @@ namespace VCCSharp.Modules
                     return 1;
                 }
 
-                // set cooperation level normal DSSCL_EXCLUSIVE
+                // set cooperation level normal
                 _hr = _modules.DirectSound.DirectSoundSetCooperativeLevel(hWnd);
 
                 if (_hr != Define.DS_OK)
@@ -341,22 +341,22 @@ namespace VCCSharp.Modules
                     return 1;
                 }
 
-                _initPassed = 1;
-                _audioPause = 0;
+                _initPassed = true;
+                _audioPause = false;
 
-                _modules.CoCo.SetAudioRate(iRateList[rate]);
+                _modules.CoCo.SetAudioRate(_rateList[rate]);
             }
 
             return result;
         }
 
-        public byte PauseAudio(byte pause)
+        public bool PauseAudio(bool pause)
         {
             _audioPause = pause;
 
-            if (_initPassed == Define.TRUE)
+            if (_initPassed)
             {
-                _hr = _audioPause == Define.TRUE
+                _hr = _audioPause
                     ? _modules.DirectSound.DirectSoundStop()
                     : _modules.DirectSound.DirectSoundPlay();
             }

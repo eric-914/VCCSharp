@@ -20,7 +20,7 @@ namespace VCCSharp.Modules
         bool AutoStart { get; set; }
         bool BinaryRunning { get; set; }
         byte RunState { get; set; }
-        byte Throttle { get; set; } 
+        bool Throttle { get; set; } 
         string CpuName { get; set; }
     }
 
@@ -34,7 +34,7 @@ namespace VCCSharp.Modules
 
         //An IRQ of sorts telling the emulator to pause during Full Screen toggle
         public byte RunState { get; set; } = Define.EMU_RUNSTATE_RUNNING;
-        public byte Throttle { get; set; } = 0;
+        public bool Throttle { get; set; } = false;
 
         public string CpuName { get; set; } = "(cpu)";
         public string AppName;
@@ -107,7 +107,7 @@ namespace VCCSharp.Modules
 
                 //_modules.DirectDraw.SetStatusBarText(statusBarText);
 
-                if (Throttle == Define.TRUE)
+                if (Throttle)
                 {
                     //Do nothing until the frame is over returning unused time to OS
                     _modules.Throttle.FrameWait();

@@ -78,7 +78,7 @@ namespace VCCSharp.BitBanger
 
             _viewModel.SerialCaptureFile = null;
 
-            _modules.Config.PrintMonitorWindow = Define.FALSE;
+            _modules.Config.PrintMonitorWindow = false;
 
             _modules.MC6821.SetMonState(_modules.Config.PrintMonitorWindow);
 

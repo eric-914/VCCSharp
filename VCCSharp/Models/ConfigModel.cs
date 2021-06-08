@@ -21,8 +21,8 @@
         public byte MonitorType;
         public byte PaletteType;
         public byte ScanLines;
-        public byte ForceAspect;
-        public ushort RememberSize;
+        public bool ForceAspect;
+        public bool RememberSize;
 
         public short WindowSizeX;
         public short WindowSizeY;

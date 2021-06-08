@@ -11,14 +11,14 @@ namespace VCCSharp.Modules
         void FrameWait();
         void StartRender();
         void EndRender(byte skip);
-        float CalculateFPS();
+        float CalculateFps();
     }
 
     public class Throttle : IThrottle
     {
         private readonly IModules _modules;
         private readonly IKernel _kernel;
-        private readonly IWinmm _winmm;
+        private readonly IWinmm _win_mm;
 
         private LARGE_INTEGER _currentTime;
         private LARGE_INTEGER _startTime;
@@ -31,13 +31,13 @@ namespace VCCSharp.Modules
         private static ushort _frameCount;
         private static float _fps, _fNow, _fLast;
         private float _fMasterClock;
-        private byte FrameSkip;
+        private byte _frameSkip;
 
-        public Throttle(IModules modules, IKernel kernel, IWinmm winmm)
+        public Throttle(IModules modules, IKernel kernel, IWinmm winMm)
         {
             _modules = modules;
             _kernel = kernel;
-            _winmm = winmm;
+            _win_mm = winMm;
         }
 
         public void CalibrateThrottle()
@@ -45,12 +45,12 @@ namespace VCCSharp.Modules
             unsafe
             {
                 //Needed to get max resolution from the timer normally its 10Ms
-                _winmm.TimeBeginPeriod(1);	
+                _win_mm.TimeBeginPeriod(1);	
                 fixed (LARGE_INTEGER* p = &_masterClock)
                 {
                     _kernel.QueryPerformanceFrequency(p);
                 }
-                _winmm.TimeEndPeriod(1);
+                _win_mm.TimeEndPeriod(1);
 
                 _oneFrame.QuadPart = _masterClock.QuadPart / (Define.TARGETFRAMERATE);
                 _oneMs.QuadPart = _masterClock.QuadPart / 1000;
@@ -58,7 +58,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public float CalculateFPS()
+        public float CalculateFps()
         {
             unsafe
             {
@@ -98,11 +98,11 @@ namespace VCCSharp.Modules
                 UpdateCurrentTime();
             }
 
-            if (audio.CurrentRate == Define.TRUE)
+            if (audio.CurrentRate != 0)
             {
                 _modules.Audio.PurgeAuxBuffer();
 
-                if (FrameSkip == 1)
+                if (_frameSkip == 1)
                 {
                     int half = Define.AUDIOBUFFERS / 2;
 
@@ -151,8 +151,8 @@ namespace VCCSharp.Modules
 
         public void EndRender(byte skip)
         {
-            FrameSkip = skip;
-            _targetTime.QuadPart = _startTime.QuadPart + _oneFrame.QuadPart * FrameSkip;
+            _frameSkip = skip;
+            _targetTime.QuadPart = _startTime.QuadPart + _oneFrame.QuadPart * _frameSkip;
         }
     }
 }

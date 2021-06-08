@@ -9,6 +9,7 @@ using HINSTANCE = System.IntPtr;
 using HMODULE = System.IntPtr;
 using HRESULT = System.IntPtr;
 using HWND = System.IntPtr;
+using HMENU = System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
@@ -141,7 +142,7 @@ namespace VCCSharp.Libraries
             public static extern HINSTANCE WndProc(HWND hWnd, uint msg, long wParam, long lParam);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DDRegisterClass(HINSTANCE hInstance, void* lpWndProc, string lpszClassName, byte* lpszMenuName, uint style, HICON hIcon, HCURSOR hCursor, HBRUSH hbrBackground);
+            public static extern int DDRegisterClass(HINSTANCE hInstance, HINSTANCE lpWndProc, string lpszClassName, HMENU lpszMenuName, uint style, HICON hIcon, HCURSOR hCursor, HBRUSH hbrBackground);
         }
 
         public static class DirectSound

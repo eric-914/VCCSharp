@@ -39,7 +39,7 @@ namespace VCCSharp.Modules
 
         byte BorderChange { get; set; }
         byte BytesPerRow { get; set; }
-        byte ColorInvert { get; set; }
+        bool ColorInvert { get; set; }
         byte ExtendedText { get; set; }
         byte GraphicsMode { get; set; }
         byte HorizontalOffset { get; set; }
@@ -119,7 +119,7 @@ namespace VCCSharp.Modules
         public byte CC3BorderColor { get; set; }
         public byte CC3Vmode { get; set; }
         public byte CC3Vres { get; set; }
-        public byte ColorInvert { get; set; } = 1;
+        public bool ColorInvert { get; set; } = true;
         public byte CompatMode { get; set; }
         public byte ExtendedText { get; set; } = 1;
         public byte GraphicsMode { get; set; }
@@ -206,7 +206,7 @@ namespace VCCSharp.Modules
 
         public void FlipArtifacts()
         {
-            ColorInvert = ColorInvert == Define.FALSE ? Define.TRUE : Define.FALSE;
+            ColorInvert = !ColorInvert;
         }
 
         //TODO: ScanLines never really worked right to begin with...

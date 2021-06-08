@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Text;
 using System.Windows;
 using VCCSharp.IoC;
-using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
@@ -58,8 +57,8 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
         private IGraphics _graphics => _modules.Graphics;
 
-        public int CodePaste;
-        public int PasteWithNew;
+        public bool CodePaste;
+        public bool PasteWithNew;
         public int CurrentKeyMap { get; set; }
 
         public Clipboard(IModules modules)
@@ -69,11 +68,11 @@ namespace VCCSharp.Modules
 
         public void PasteBasic()
         {
-            CodePaste = Define.TRUE;
+            CodePaste = true;
 
             PasteClipboard();
 
-            CodePaste = Define.FALSE;
+            CodePaste = false;
         }
 
         public void PasteBasicWithNew()
@@ -88,13 +87,13 @@ namespace VCCSharp.Modules
                 return;
             }
 
-            CodePaste = Define.TRUE;
-            PasteWithNew = Define.TRUE;
+            CodePaste = true;
+            PasteWithNew = true;
 
             PasteClipboard();
 
-            CodePaste = Define.FALSE;
-            PasteWithNew = Define.FALSE;
+            CodePaste = false;
+            PasteWithNew = false;
         }
 
         public void PasteClipboard()
@@ -138,12 +137,12 @@ namespace VCCSharp.Modules
 
         public void PasteText(string text)
         {
-            if (PasteWithNew == Define.TRUE)
+            if (PasteWithNew)
             {
                 text = $"NEW\n{text}";
             }
 
-            text = ParseText(text, CodePaste == Define.TRUE);
+            text = ParseText(text, CodePaste);
 
             string codes = ConvertScanCodes(text);
 

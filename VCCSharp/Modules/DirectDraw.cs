@@ -7,12 +7,12 @@ using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using static System.IntPtr;
-using HINSTANCE = System.IntPtr;
-using Point = System.Drawing.Point;
-using HWND = System.IntPtr;
-using HICON = System.IntPtr;
-using HCURSOR = System.IntPtr;
 using HBRUSH = System.IntPtr;
+using HCURSOR = System.IntPtr;
+using HICON = System.IntPtr;
+using HINSTANCE = System.IntPtr;
+using HWND = System.IntPtr;
+using Point = System.Drawing.Point;
 
 namespace VCCSharp.Modules
 {
@@ -25,10 +25,10 @@ namespace VCCSharp.Modules
         void SetStatusBarText(string textBuffer);
         float Static();
         void DoCls();
-        byte LockScreen();
+        bool LockScreen();
         void UnlockScreen();
-        void SetAspect(byte forceAspect);
-        byte InfoBand { get; set; }
+        void SetAspect(bool forceAspect);
+        bool InfoBand { get; set; }
     }
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -47,11 +47,11 @@ namespace VCCSharp.Modules
         private readonly HINSTANCE _hInstance = Zero;
         private Point _windowSize;
 
-        private byte _forceAspect;
+        private bool _forceAspect;
 
         private uint _color;
 
-        public byte InfoBand { get; set; }
+        public bool InfoBand { get; set; }
 
         public string AppNameText;
         public string TitleBarText;
@@ -86,21 +86,18 @@ namespace VCCSharp.Modules
             //--Convert WinProc to void*
             _wndProcTemplate = WndProc;
 
-            unsafe
-            {
-                HCURSOR hCursor = gdi.GetCursor(fullscreen);
-                HBRUSH hBrush = gdi.GetBrush();
+            HCURSOR hCursor = gdi.GetCursor(fullscreen);
+            HBRUSH hBrush = gdi.GetBrush();
 
-                void* wndProc = (void*)Marshal.GetFunctionPointerForDelegate(_wndProcTemplate);
+            HINSTANCE wndProc = Marshal.GetFunctionPointerForDelegate(_wndProcTemplate);
 
-                //And Rebuilt it from scratch
-                return Library.DirectDraw.DDRegisterClass(_hInstance, wndProc, AppNameText, null, style, hIcon, hCursor, hBrush) != Define.FALSE;
-            }
+            //And Rebuilt it from scratch
+            return Library.DirectDraw.DDRegisterClass(_hInstance, wndProc, AppNameText, Zero, style, hIcon, hCursor, hBrush) != Define.FALSE;
         }
 
         public void FullScreenToggle()
         {
-            _modules.Audio.PauseAudio(Define.TRUE);
+            _modules.Audio.PauseAudio(true);
 
             if (!CreateDirectDrawWindow())
             {
@@ -111,10 +108,10 @@ namespace VCCSharp.Modules
 
             _modules.Graphics.InvalidateBorder();
 
-            _modules.Audio.PauseAudio(Define.FALSE);
+            _modules.Audio.PauseAudio(false);
         }
 
-        public void SetAspect(byte forceAspect)
+        public void SetAspect(bool forceAspect)
         {
             _forceAspect = forceAspect;
         }
@@ -123,12 +120,12 @@ namespace VCCSharp.Modules
         {
             GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
 
-            if (LockScreen() == Define.TRUE)
+            if (LockScreen())
             {
                 return;
             }
 
-            switch ((BitDepthStates)(_modules.Emu.BitDepth))
+            switch ((BitDepthStates)_modules.Emu.BitDepth)
             {
                 case BitDepthStates.BIT_8:
                     for (int y = 0; y < 480; y++)
@@ -185,7 +182,7 @@ namespace VCCSharp.Modules
         {
             Static(_modules.Graphics.GetGraphicsSurfaces());
 
-            return _modules.Throttle.CalculateFPS();
+            return _modules.Throttle.CalculateFps();
         }
 
         private unsafe void Static(GraphicsSurfaces graphicsSurfaces)
@@ -280,7 +277,7 @@ namespace VCCSharp.Modules
 
         public void UnlockScreen()
         {
-            if (_modules.Emu.FullScreen && InfoBand == Define.TRUE)
+            if (_modules.Emu.FullScreen && InfoBand)
             {
                 WriteStatusText(StatusText);
             }
@@ -357,13 +354,7 @@ namespace VCCSharp.Modules
                 // our destination rectangle is going to be 
                 _user32.SetRect(&rcSrc, 0, 0, (short)_windowSize.X, (short)_windowSize.Y);
 
-                //if (instance->Resizeable)
-                //if (true) //--Currently, this is fixed at always resizable
-                //{
-
-                //rcDest.bottom -= (int)_statusBarHeight;
-
-                if (_forceAspect == Define.TRUE) // Adjust the Aspect Ratio if window is resized
+                if (_forceAspect) // Adjust the Aspect Ratio if window is resized
                 {
                     float srcWidth = _windowSize.X;
                     float srcHeight = _windowSize.Y;
@@ -374,8 +365,6 @@ namespace VCCSharp.Modules
                     RECT rcClient;
 
                     _user32.GetClientRect(_modules.Emu.WindowHandle, &rcClient);  // x,y is always 0,0 so right, bottom is w,h
-
-                    //rcClient.bottom -= (int)_statusBarHeight;
 
                     float clientWidth = rcClient.right;
                     float clientHeight = rcClient.bottom;
@@ -437,7 +426,7 @@ namespace VCCSharp.Modules
             _modules.Emu.WindowSize = new System.Windows.Point(windowSize.right, windowSize.bottom);
         }
 
-        public unsafe byte LockScreen()
+        public unsafe bool LockScreen()
         {
             DDSURFACEDESC* ddsd = CreateSurface();  // A structure to describe the surfaces we want
 
@@ -448,7 +437,7 @@ namespace VCCSharp.Modules
 
             if (hr < 0)
             {
-                return (1);
+                return true;
             }
 
             uint rgbBitCount = GetRgbBitCount(ddsd);
@@ -483,7 +472,7 @@ namespace VCCSharp.Modules
 
                 default:
                     MessageBox.Show("Unsupported Color Depth!", "Error");
-                    return 1;
+                    return true;
             }
 
             if (!HasSurface(ddsd))
@@ -493,7 +482,7 @@ namespace VCCSharp.Modules
 
             SetSurfaces(ddsd);
 
-            return 0;
+            return false;
         }
 
         public unsafe bool CreateDirectDrawWindow()

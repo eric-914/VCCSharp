@@ -35,7 +35,7 @@ namespace VCCSharp.Modules
         Point GetIniWindowSize();
         string AppTitle { get; }
         byte TextMode { get; set; }
-        byte PrintMonitorWindow { get; set; }
+        bool PrintMonitorWindow { get; set; }
         ushort TapeCounter { get; set; }
         byte TapeMode { get; set; }
         short NumberOfSoundCards { get; set; }
@@ -55,7 +55,7 @@ namespace VCCSharp.Modules
         public string AppTitle { get; } = Resources.ResourceManager.GetString("AppTitle");
 
         public byte TextMode { get; set; } = 1;  //--Add LF to CR
-        public byte PrintMonitorWindow { get; set; }
+        public bool PrintMonitorWindow { get; set; }
 
         public ushort TapeCounter { get; set; }
         public byte TapeMode { get; set; } = Define.STOP;
@@ -149,7 +149,7 @@ namespace VCCSharp.Modules
         public void SynchSystemWithConfig()
         {
             _modules.Vcc.AutoStart = ConfigModel.AutoStart;
-            _modules.Vcc.Throttle = ConfigModel.SpeedThrottle;
+            _modules.Vcc.Throttle = ConfigModel.SpeedThrottle != Define.FALSE;
 
             _modules.Emu.RamSize = ConfigModel.RamSize;
             _modules.Emu.FrameSkip = ConfigModel.FrameSkip;
@@ -292,7 +292,7 @@ namespace VCCSharp.Modules
             ConfigModel.PakPath = _modules.Emu.PakPath;
             _modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, ConfigModel.ModulePath);   // Should this be here?
 
-            if (ConfigModel.RememberSize == Define.TRUE)
+            if (ConfigModel.RememberSize)
             {
                 SetWindowSize(ConfigModel.WindowSizeX, ConfigModel.WindowSizeY);
             }
@@ -378,8 +378,8 @@ namespace VCCSharp.Modules
                 model.MonitorType = (byte)_kernel.GetPrivateProfileIntA("Video", "MonitorType", 1, iniFilePath);
                 model.PaletteType = (byte)_kernel.GetPrivateProfileIntA("Video", "PaletteType", 1, iniFilePath);
                 model.ScanLines = (byte)_kernel.GetPrivateProfileIntA("Video", "ScanLines", 0, iniFilePath);
-                model.ForceAspect = (byte)_kernel.GetPrivateProfileIntA("Video", "ForceAspect", 0, iniFilePath);
-                model.RememberSize = _kernel.GetPrivateProfileIntA("Video", "RememberSize", 0, iniFilePath);
+                model.ForceAspect = (byte)_kernel.GetPrivateProfileIntA("Video", "ForceAspect", 0, iniFilePath) != 0;
+                model.RememberSize = _kernel.GetPrivateProfileIntA("Video", "RememberSize", 0, iniFilePath) != 0;
                 model.WindowSizeX = (short)_kernel.GetPrivateProfileIntA("Video", "WindowSizeX", 640, iniFilePath);
                 model.WindowSizeY = (short)_kernel.GetPrivateProfileIntA("Video", "WindowSizeY", 480, iniFilePath);
 
@@ -515,6 +515,11 @@ namespace VCCSharp.Modules
 
             string exePath = Path.GetDirectoryName(_modules.Vcc.GetExecPath());
 
+            if (string.IsNullOrEmpty(exePath))
+            {
+                throw new Exception("Invalid exePath");
+            }
+
             string modulePath = model.ModulePath;
             string externalBasicImage = model.ExternalBasicImage;
 
@@ -571,8 +576,8 @@ namespace VCCSharp.Modules
             SaveInt("Video", "MonitorType", model.MonitorType);
             SaveInt("Video", "PaletteType", model.PaletteType);
             SaveInt("Video", "ScanLines", model.ScanLines);
-            SaveInt("Video", "ForceAspect", model.ForceAspect);
-            SaveInt("Video", "RememberSize", model.RememberSize);
+            SaveInt("Video", "ForceAspect", model.ForceAspect ? 1 : 0);
+            SaveInt("Video", "RememberSize", model.RememberSize ? 1 : 0);
             SaveInt("Video", "WindowSizeX", model.WindowSizeX);
             SaveInt("Video", "WindowSizeY", model.WindowSizeY);
 
@@ -644,14 +649,14 @@ namespace VCCSharp.Modules
 
             return Converter.ToString(card.CardName);
             //var cards = GetConfigState()->SoundCards.ToArray();
-            //var card = cards[index];
+            //var card = cards[index]; 
 
             //return Converter.ToString(card.CardName);
         }
 
         public bool GetRememberSize()
         {
-            return ConfigModel.RememberSize != 0;
+            return ConfigModel.RememberSize;
         }
 
         public Point GetIniWindowSize()

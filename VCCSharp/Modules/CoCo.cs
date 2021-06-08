@@ -30,7 +30,8 @@ namespace VCCSharp.Modules
         public const double LinesPerSecond = Define.TARGETFRAMERATE * (double)Define.LINESPERFIELD;
         public const double PicosPerLine = Define.PICOSECOND / LinesPerSecond;
         public const double CyclesPerLine = CyclesPerSecond / LinesPerSecond;
-        private const byte BLINK_PHASE = 1;
+
+        private const byte BlinkPhase = 1;
 
         private Action _audioEvent = () => { };
 
@@ -51,8 +52,8 @@ namespace VCCSharp.Modules
         private double _picosThisLine;
 
         private byte _soundOutputMode;
-        private byte _horizontalInterruptEnabled;
-        private byte _verticalInterruptEnabled;
+        private bool _horizontalInterruptEnabled;
+        private bool _verticalInterruptEnabled;
         private byte _topBorder;
         private byte _bottomBorder;
         private byte _linesPerScreen;
@@ -66,8 +67,8 @@ namespace VCCSharp.Modules
 
         private int _clipCycle = 1;
         private int _waitCycle = 2000;
-        private int _intEnable;
-        private int _sndEnable = 1;
+        private bool _intEnable;
+        private bool _sndEnable = true;
 
         private readonly uint[] _audioBuffer = new uint[16384];
         private readonly byte[] _cassetteBuffer = new byte[8192];
@@ -83,8 +84,8 @@ namespace VCCSharp.Modules
 
         public void CocoReset()
         {
-            _horizontalInterruptEnabled = 0;
-            _verticalInterruptEnabled = 0;
+            _horizontalInterruptEnabled = false;
+            _verticalInterruptEnabled = false;
             _timerClockRate = 0;
             _masterTickCounter = 0;
             _partialTickCounter = 0;
@@ -95,7 +96,7 @@ namespace VCCSharp.Modules
             _cycleDrift = 0;
             _cyclesThisLine = 0;
             _picosThisLine = 0;
-            _intEnable = 0;
+            _intEnable = false;
             _audioIndex = 0;
         }
 
@@ -110,12 +111,12 @@ namespace VCCSharp.Modules
 
             RenderAudioFrame();
 
-            return _modules.Throttle.CalculateFPS();
+            return _modules.Throttle.CalculateFps();
         }
 
         private byte RenderVideoFrame()
         {
-            _modules.Graphics.SetBlinkState(BLINK_PHASE);
+            _modules.Graphics.SetBlinkState(BlinkPhase);
 
             _modules.MC6821.IrqFs(PhaseStates.Falling);   //FS low to High transition start of display Blink needs this
 
@@ -137,9 +138,9 @@ namespace VCCSharp.Modules
                 CpuCycle();
             }
 
-            if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == Define.FALSE)
+            if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == 0)
             {
-                if (_modules.DirectDraw.LockScreen() == Define.TRUE)
+                if (_modules.DirectDraw.LockScreen())
                 {
                     return 1;
                 }
@@ -149,7 +150,7 @@ namespace VCCSharp.Modules
             for (short counter = 0; counter < _topBorder - 4; counter++)
             {
                 _modules.Emu.LineCounter = counter;
-                if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == Define.FALSE)
+                if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == 0)
                 {
                     CoCoDrawTopBorder();
                 }
@@ -164,7 +165,7 @@ namespace VCCSharp.Modules
                 _modules.Emu.LineCounter = counter;
                 CpuCycle();
 
-                if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == Define.FALSE)
+                if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == 0)
                 {
                     CoCoUpdateScreen();
                 }
@@ -172,7 +173,7 @@ namespace VCCSharp.Modules
 
             _modules.MC6821.IrqFs(PhaseStates.Rising);  //End of active display FS goes High to Low
 
-            if (_verticalInterruptEnabled != Define.FALSE)
+            if (_verticalInterruptEnabled)
             {
                 _modules.TC1014.GimeAssertVertInterrupt();
             }
@@ -184,13 +185,13 @@ namespace VCCSharp.Modules
                 _modules.Emu.LineCounter = counter;
                 CpuCycle();
 
-                if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == Define.FALSE)
+                if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == 0)
                 {
                     CoCoDrawBottomBorder();
                 }
             }
 
-            if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == Define.FALSE)
+            if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == 0)
             {
                 _modules.DirectDraw.UnlockScreen();
                 _modules.Graphics.SetBorderChange();
@@ -244,7 +245,7 @@ namespace VCCSharp.Modules
 
         private /* _inline */ void CpuCycle()
         {
-            if (_horizontalInterruptEnabled == Define.TRUE)
+            if (_horizontalInterruptEnabled)
             {
                 _modules.TC1014.GimeAssertHorzInterrupt();
             }
@@ -274,7 +275,7 @@ namespace VCCSharp.Modules
             //Set it to off. We need speed for this!
             if (_throttle == 0)
             {
-                _throttle = vcc.Throttle;
+                _throttle = vcc.Throttle ? Define.TRUE : Define.FALSE;
 
                 if (_throttle == 0)
                 {
@@ -282,7 +283,7 @@ namespace VCCSharp.Modules
                 }
             }
 
-            vcc.Throttle = 0;
+            vcc.Throttle = false;
 
             if (_clipCycle == 1)
             {
@@ -313,7 +314,7 @@ namespace VCCSharp.Modules
                     _modules.Keyboard.SetPaste(false);
 
                     //Done pasting. Reset throttle to original state
-                    vcc.Throttle = _throttle == 2 ? (byte)0 : (byte)1;
+                    vcc.Throttle = _throttle != 2;
 
                     //...and reset the keymap to the original state
                     ResetKeyMap();
@@ -336,13 +337,13 @@ namespace VCCSharp.Modules
             _stateSwitch = 0;
 
             //Does this iteration need to Timer Interrupt
-            if (_picosToInterrupt <= _picosThisLine && _intEnable == Define.TRUE)
+            if (_picosToInterrupt <= _picosThisLine && _intEnable )
             {
                 _stateSwitch = 1;
             }
 
             //Does it need to collect an Audio sample
-            if (_picosToSoundSample <= _picosThisLine && _sndEnable == Define.TRUE)
+            if (_picosToSoundSample <= _picosThisLine && _sndEnable)
             {
                 _stateSwitch += 2;
             }
@@ -654,12 +655,12 @@ namespace VCCSharp.Modules
 
         public void SetVerticalInterruptState(byte state)
         {
-            _verticalInterruptEnabled = (byte)(state == 0 ? 1 : 0);
+            _verticalInterruptEnabled = state == 0;
         }
 
         public void SetHorizontalInterruptState(byte state)
         {
-            _horizontalInterruptEnabled = (byte)(state == 0 ? 1 : 0);
+            _horizontalInterruptEnabled = state == 0;
         }
 
         public void SetTimerInterruptState(byte state)
@@ -685,7 +686,7 @@ namespace VCCSharp.Modules
                 _picosToInterrupt = _masterTickCounter;
             }
 
-            _intEnable = _masterTickCounter == 0 ? 0 : 1;
+            _intEnable = _masterTickCounter != 0;
         }
 
         private unsafe void FlushCassetteBuffer(byte* buffer, uint length)
@@ -715,12 +716,12 @@ namespace VCCSharp.Modules
 
             if (rate == 0)
             {
-                _sndEnable = 0;
+                _sndEnable = false;
                 _soundInterrupt = 0;
             }
             else
             {
-                _sndEnable = 1;
+                _sndEnable = true;
                 _soundInterrupt = Define.PICOSECOND / rate;
                 _picosToSoundSample = _soundInterrupt;
             }

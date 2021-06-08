@@ -14,7 +14,7 @@ namespace VCCSharp.Modules
         void IrqHs(PhaseStates phase);
         void SetCartAutoStart(byte autoStart);
         void ClosePrintFile();
-        void SetMonState(int state);
+        void SetMonState(bool state);
         void SetSerialParams(byte textMode);
         int OpenPrintFile(string filename);
 
@@ -37,7 +37,7 @@ namespace VCCSharp.Modules
         private readonly IKernel _kernel;
 
         private byte _addLf;
-        private int _monState = Define.FALSE;
+        private bool _monState;
 
         private HANDLE _hPrintFile;
         //private HANDLE _hOut;
@@ -89,7 +89,7 @@ namespace VCCSharp.Modules
 
                 case PhaseStates.Rising:	//HS went Low to High
                     if ((_rega[1] & 2) == 0)
-                    { 
+                    {
                         //IRQ  High to low transition
                         return;
                     }
@@ -184,9 +184,9 @@ namespace VCCSharp.Modules
             //_hOut = IntPtr.Zero;
         }
 
-        public void SetMonState(int state)
+        public void SetMonState(bool state)
         {
-            if (_monState == Define.TRUE && state == Define.FALSE)
+            if (_monState && state)
             {
                 _kernel.FreeConsole();
 
@@ -428,7 +428,7 @@ namespace VCCSharp.Modules
 
                     //WritePrint(data);
 
-                    if (_monState != 0)
+                    if (_monState)
                     {
                         MC6821_WritePrintMon(&data);
                     }

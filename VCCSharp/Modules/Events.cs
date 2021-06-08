@@ -86,7 +86,7 @@ namespace VCCSharp.Modules
 
         public void ToggleThrottle() //F8
         {
-            _modules.Vcc.Throttle = _modules.Vcc.Throttle == Define.TRUE ? Define.FALSE : Define.TRUE;
+            _modules.Vcc.Throttle = !_modules.Vcc.Throttle;
         }
 
         public void ToggleOnOff() //F9
@@ -105,7 +105,7 @@ namespace VCCSharp.Modules
 
         public void ToggleInfoBand() //F10
         {
-            _modules.DirectDraw.InfoBand = _modules.DirectDraw.InfoBand == Define.TRUE ? Define.FALSE : Define.TRUE;
+            _modules.DirectDraw.InfoBand = !_modules.DirectDraw.InfoBand;
 
             _modules.Graphics.InvalidateBorder();
         }

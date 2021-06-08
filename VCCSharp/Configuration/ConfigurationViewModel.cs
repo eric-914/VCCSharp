@@ -241,30 +241,27 @@ namespace VCCSharp.Configuration
 
         public bool ForceAspect
         {
-            get => Model.ForceAspect != 0;
+            get => Model.ForceAspect ;
             set
             {
-                if (value == (Model.ForceAspect != 0)) return;
+                if (value == Model.ForceAspect) return;
 
-                Model.ForceAspect = (byte)(value ? 1 : 0);
+                Model.ForceAspect = value;
                 OnPropertyChanged();
             }
         }
 
         public bool RememberSize
         {
-            get => Model.RememberSize != 0;
+            get => Model.RememberSize;
             set
             {
-                if (value == (Model.RememberSize != 0)) return;
+                if (value == Model.RememberSize) return;
 
-                Model.RememberSize = (byte)(value ? 1 : 0);
+                Model.RememberSize = value;
                 OnPropertyChanged();
             }
         }
-
-        public int WindowSizeX { get; set; } = 1111;
-        public int WindowSizeY { get; set; } = 2222;
 
         public MemorySizes? Memory
         {
