@@ -141,7 +141,7 @@ namespace VCCSharp.Libraries
             public static extern HINSTANCE WndProc(HWND hWnd, uint msg, long wParam, long lParam);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DDRegisterClass(HINSTANCE hInstance, void* lpWndProc, byte* lpszClassName, byte* lpszMenuName, uint style, HICON hIcon, HCURSOR hCursor, void* hbrBackground);
+            public static extern unsafe int DDRegisterClass(HINSTANCE hInstance, void* lpWndProc, string lpszClassName, byte* lpszMenuName, uint style, HICON hIcon, HCURSOR hCursor, void* hbrBackground);
         }
 
         public static class DirectSound

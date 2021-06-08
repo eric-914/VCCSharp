@@ -254,8 +254,11 @@ namespace VCCSharp.Modules
                     RECT clientSize;
                     _modules.GDI.GetClientRect(_modules.Emu.WindowHandle, &clientSize);
 
-                    x /= (uint)((clientSize.right - clientSize.left) >> 6);
-                    y /= (uint)(((clientSize.bottom - clientSize.top) - 20) >> 6);
+                    uint dx = (uint) ((clientSize.right - clientSize.left) >> 6);
+                    uint dy = (uint)(((clientSize.bottom - clientSize.top) - 20) >> 6);
+
+                    if (dx > 0) x /= dx;
+                    if (dy > 0) y /= dy;
 
                     _modules.Joystick.SetJoystick((ushort)x, (ushort)y);
                 }

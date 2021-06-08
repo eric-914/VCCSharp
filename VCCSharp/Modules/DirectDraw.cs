@@ -43,20 +43,18 @@ namespace VCCSharp.Modules
         private static int _textX, _textY;
         private static byte _counter, _counter1 = 32, _phase = 1;
 
-        private HWND _hWndStatusBar = Zero;
         private readonly HINSTANCE _hInstance = Zero;
         private Point _windowSize;
 
         private byte _forceAspect;
 
-        private uint _statusBarHeight;
         private uint _color;
 
         public byte InfoBand { get; set; }
 
-        public byte[] AppNameText = new byte[Define.MAX_LOADSTRING];	// The title bar text
-        public byte[] TitleBarText = new byte[Define.MAX_LOADSTRING];	// The title bar text
-        public byte[] StatusText = new byte[255];
+        public string AppNameText;
+        public string TitleBarText;
+        public string StatusText;
 
         public DirectDraw(IModules modules, IUser32 user32)
         {
@@ -94,11 +92,8 @@ namespace VCCSharp.Modules
 
                 void* wndProc = (void*)Marshal.GetFunctionPointerForDelegate(_wndProcTemplate);
 
-                fixed (byte* appNameText = AppNameText)
-                {
-                    //And Rebuilt it from scratch
-                    return Library.DirectDraw.DDRegisterClass(_hInstance, wndProc, appNameText, null, style, hIcon, hCursor, hBrush) != Define.FALSE;
-                }
+                //And Rebuilt it from scratch
+                return Library.DirectDraw.DDRegisterClass(_hInstance, wndProc, AppNameText, null, style, hIcon, hCursor, hBrush) != Define.FALSE;
             }
         }
 
@@ -286,7 +281,7 @@ namespace VCCSharp.Modules
         {
             if (_modules.Emu.FullScreen && InfoBand == Define.TRUE)
             {
-                WriteStatusText(Converter.ToString(StatusText));
+                WriteStatusText(StatusText);
             }
 
             UnlockBackSurface();
@@ -331,29 +326,7 @@ namespace VCCSharp.Modules
 
         public void SetStatusBarText(string text)
         {
-            if (!_modules.Emu.FullScreen)
-            {
-                SetStatusBarTextA(text);
-            }
-            else
-            {
-                StatusText = Converter.ToByteArray(text);
-            }
-        }
-
-        private void SetStatusBarTextA(string text)
-        {
-            unsafe
-            {
-                byte[] buffer = Converter.ToByteArray(text);
-
-                fixed (byte* p = buffer)
-                {
-                    _user32.SendMessageA(_hWndStatusBar, Define.WM_SETTEXT, (ulong)text.Length, (long)p);
-                }
-
-                _user32.SendMessageA(_hWndStatusBar, Define.WM_SIZE, 0, 0);
-            }
+            StatusText = text;
         }
 
         private unsafe void DisplayFlip()
@@ -387,7 +360,7 @@ namespace VCCSharp.Modules
                 //if (true) //--Currently, this is fixed at always resizable
                 //{
 
-                rcDest.bottom -= (int)_statusBarHeight;
+                //rcDest.bottom -= (int)_statusBarHeight;
 
                 if (_forceAspect == Define.TRUE) // Adjust the Aspect Ratio if window is resized
                 {
@@ -401,7 +374,7 @@ namespace VCCSharp.Modules
 
                     _user32.GetClientRect(_modules.Emu.WindowHandle, &rcClient);  // x,y is always 0,0 so right, bottom is w,h
 
-                    rcClient.bottom -= (int)_statusBarHeight;
+                    //rcClient.bottom -= (int)_statusBarHeight;
 
                     float clientWidth = rcClient.right;
                     float clientHeight = rcClient.bottom;
@@ -460,7 +433,7 @@ namespace VCCSharp.Modules
 
             _user32.GetClientRect(_modules.Emu.WindowHandle, &windowSize);
 
-            _modules.Emu.WindowSize = new System.Windows.Point(windowSize.right, (int)(windowSize.bottom - _statusBarHeight));
+            _modules.Emu.WindowSize = new System.Windows.Point(windowSize.right, windowSize.bottom);
         }
 
         public unsafe byte LockScreen()
@@ -590,8 +563,8 @@ namespace VCCSharp.Modules
 
         public void InitDirectDraw()
         {
-            TitleBarText = Converter.ToByteArray(_modules.Config.AppTitle);
-            AppNameText = Converter.ToByteArray(_modules.Config.AppTitle);
+            TitleBarText = _modules.Config.AppTitle;
+            AppNameText = _modules.Config.AppTitle;
         }
 
         private unsafe bool CreateDirectDrawWindowedMode(DDSURFACEDESC* ddsd)
@@ -609,39 +582,22 @@ namespace VCCSharp.Modules
             CreateWindowExA(Define.CW_USEDEFAULT, 0, width, height, Define.WS_OVERLAPPEDWINDOW);
 
             if (_modules.Emu.WindowHandle == Zero)
-            {	
+            {
                 // Can't create window
                 return false;
             }
 
-            //_hWndStatusBar = _user32.CreateWindowExA(0, Define.STATUSCLASSNAME, "Ready",
-            //    Define.SBARS_SIZEGRIP | Define.WS_CHILD | Define.WS_VISIBLE, 0, 0, 0, 0,
-            //    _modules.Emu.WindowHandle, null, _hInstance, null);
-
-            //if (_hWndStatusBar == Zero)
-            //{	// Can't create Status bar
-            //    return false;
-            //}
-
             var rStatBar = new RECT();
 
-            // Retrieves the dimensions of the bounding rectangle of the specified window
-            // The dimensions are given in screen coordinates that are relative to the upper-left corner of the screen.
-            //_user32.GetWindowRect(_hWndStatusBar, &rStatBar); // Get the size of the Status bar
-
-            _statusBarHeight = 0; //(uint)(rStatBar.bottom - rStatBar.top); // Calculate its height
-
-            //_user32.GetWindowRect(_modules.Emu.WindowHandle, &rStatBar);
-
             width = rStatBar.right - rStatBar.left;
-            height = rStatBar.bottom + (int)(_statusBarHeight) - rStatBar.top;
+            height = rStatBar.bottom - rStatBar.top;
 
             // using MoveWindow to resize 
             _user32.MoveWindow(_modules.Emu.WindowHandle, rStatBar.left, rStatBar.top, width, height, 1);
 
             RECT size;
 
-            _user32.SendMessageA(_hWndStatusBar, Define.WM_SIZE, 0, 0); // Redraw Status bar in new position
+            //_user32.SendMessageA(_hWndStatusBar, Define.WM_SIZE, 0, 0); // Redraw Status bar in new position
 
             _user32.GetWindowRect(_modules.Emu.WindowHandle, &size);	// And save the Final size of the Window 
 
@@ -769,10 +725,7 @@ namespace VCCSharp.Modules
 
         private unsafe void CreateWindowExA(int x, int y, int width, int height, uint style)
         {
-            string appNameText = Converter.ToString(AppNameText);
-            string titleBarText = Converter.ToString(TitleBarText);
-
-            _modules.Emu.WindowHandle = _user32.CreateWindowExA(0, appNameText, titleBarText,
+            _modules.Emu.WindowHandle = _user32.CreateWindowExA(0, AppNameText, TitleBarText,
                 style, x, y, width, height,
                 Zero, null, _hInstance, null);
         }
