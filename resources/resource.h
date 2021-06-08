@@ -3,11 +3,8 @@
 // Used by resources.rc
 //
 #define IDS_CATNUMBER                   2
-#define IDR_MENU                        101
 #define IDI_COCO3                       103
 #define IDC_NONE                        113
-
-#define ID_PLACEHOLDER                  40031
 
 // Next default values for new objects
 // 

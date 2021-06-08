@@ -246,12 +246,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void GDIGetClientRect(HWND hWnd, RECT* clientSize);
-
-            [DllImport(LIBRARY)]
-            public static extern void CreateMainMenuFullScreen(HWND hWnd);
-
-            [DllImport(LIBRARY)]
-            public static extern void CreateMainMenuWindowed(HWND hWnd, HINSTANCE resources);
         }
 
         public static class Joystick

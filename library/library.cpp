@@ -163,15 +163,3 @@ extern "C" {
     GetClientRect(hwnd, clientSize);
   }
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl CreateMainMenuFullScreen(HWND hWnd) {
-    SetMenu(hWnd, NULL);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl CreateMainMenuWindowed(HWND hWnd, HINSTANCE resources) {
-    SetMenu(hWnd, LoadMenu(resources, MAKEINTRESOURCE(IDR_MENU)));
-  }
-}

@@ -149,7 +149,6 @@ namespace VCCSharp.Modules
                     break;
 
                 case Define.WM_CREATE:
-                    CreateMainMenu(hWnd);
                     break;
 
                 case Define.WM_KEYDOWN:
@@ -361,18 +360,5 @@ namespace VCCSharp.Modules
             SC_save1 = 0;
             SC_save2 = 0;
         }
-
-        public void CreateMainMenu(HWND hWnd)
-        {
-            if (_modules.Emu.FullScreen == 0)
-            {
-                _modules.GDI.CreateMainMenuWindowed(hWnd, _modules.Emu.Resources);
-            }
-            else
-            {
-                _modules.GDI.CreateMainMenuFullScreen(hWnd);
-            }
-        }
-
     }
 }
