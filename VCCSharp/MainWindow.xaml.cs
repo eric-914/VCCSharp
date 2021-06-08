@@ -16,7 +16,7 @@ namespace VCCSharp
 
             var bindings = _factory.MainWindowCommands;
 
-            MenuItems = bindings.MenuItems;
+            MenuItems = (MenuItems)bindings.MenuItems;
             CommandBindings.AddRange(bindings.CommandBindings);
             InputBindings.AddRange(bindings.InputBindings);
 

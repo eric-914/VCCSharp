@@ -2,6 +2,7 @@
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
+using VCCSharp.Menu;
 using VCCSharp.Models;
 using HWND = System.IntPtr;
 using HMENU = System.IntPtr;
@@ -19,6 +20,7 @@ namespace VCCSharp.Modules
     public class MenuCallbacks : IMenuCallbacks
     {
         private readonly IModules _modules;
+        private readonly ICartridge _cartridge;
 
         private byte _menuIndex;
 
@@ -30,17 +32,18 @@ namespace VCCSharp.Modules
 
         private bool _loadPakDialogOpen;
 
-        public MenuCallbacks(IModules modules)
+        public MenuCallbacks(IModules modules, ICartridge cartridge)
         {
             _modules = modules;
+            _cartridge = cartridge;
         }
 
         public bool CartridgeMenuItemClicked(int menuItem)
         {
-            return DynamicMenuActivated((MenuActions) menuItem);
+            return CartridgeMenuItemClicked((MenuActions) menuItem);
         }
 
-        private bool DynamicMenuActivated(MenuActions menuItem)
+        private bool CartridgeMenuItemClicked(MenuActions menuItem)
         {
             switch (menuItem)
             {
@@ -60,54 +63,6 @@ namespace VCCSharp.Modules
             }
         }
 
-        private bool LoadPak()
-        {
-            if (_loadPakDialogOpen)
-            {
-                return false;
-            }
-
-            _loadPakDialogOpen = true;
-            int result = OpenLoadCartFileDialog();
-            _loadPakDialogOpen = false;
-
-            _modules.Emu.EmulationRunning = true;
-
-            return result != 0;
-        }
-
-        private int OpenLoadCartFileDialog()
-        {
-            string filename = "";
-
-            var openFileDlg = new Microsoft.Win32.OpenFileDialog
-            {
-                FileName = filename,
-                DefaultExt = ".txt",
-                Filter = "Program Packs|*.ROM;*.ccc;*.DLL;*.pak",
-                InitialDirectory = _modules.Emu.PakPath,
-                CheckFileExists = true,
-                ShowReadOnly = false,
-                Title = "Load Program Pack"
-            };
-
-            if (openFileDlg.ShowDialog() == true)
-            {
-                filename = openFileDlg.FileName;
-
-                if (_modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, filename) != 0)
-                {
-                    return 0;
-                }
-
-                _modules.Emu.PakPath = Path.GetPathRoot(filename);
-
-                return 1;
-            }
-
-            return 0;
-        }
-
         //--Used by PAK plugins
         public void BuildCartridgeMenu(string menuName, int menuId, int type)
         {
@@ -119,20 +74,39 @@ namespace VCCSharp.Modules
             switch (menuId)
             {
                 case MenuActions.Flush:
-                    _menuIndex = 0;
-                    BuildCartridgeMenu("Cartridge", MenuActions.Cartridge, Define.MENU_PARENT);	//Recursion is fun
-                    BuildCartridgeMenu("Load Cart", MenuActions.Load, Define.MENU_CHILD);
-                    BuildCartridgeMenu($"Eject Cart: {_modules.PAKInterface.ModuleName}", MenuActions.Eject, Define.MENU_CHILD);
+                    //Recursion is fun
+                    BuildCartridgeMenu(null, MenuActions.Cartridge, 0);	
+                    BuildCartridgeMenu(null, MenuActions.Load, 0);
+                    BuildCartridgeMenu(null, MenuActions.Eject, 0);
 
+                    _menuIndex = 3;
+                    
                     break;
 
                 case MenuActions.Done:
                     DrawDynamicMenu();
                     break;
 
+                case MenuActions.Cartridge:
+                    SetMenuItem(0, "Cartridge", (int)MenuActions.Cartridge, Define.MENU_PARENT);
+                    break;
+
+                case MenuActions.Load:
+                    SetMenuItem(1, "Load Cart", (int)MenuActions.Load, Define.MENU_CHILD);
+                    break;
+
+                case MenuActions.Eject:
+                    SetMenuItem(2, $"Eject Cart: {_modules.PAKInterface.ModuleName}", (int)MenuActions.Eject, Define.MENU_CHILD);
+                    _cartridge.SetCartridgeTitle(_modules.PAKInterface.ModuleName);
+                    break;
+
                 //--Used by plug-ins to add whatever they want
                 default:
-                    SetMenuItem(_menuIndex++, menuName, (int)menuId, type);
+                    SetMenuItem(_menuIndex, menuName, (int)menuId, type);
+
+                    _cartridge.SetMenuItem(_menuIndex, menuName, (int)menuId, type);
+
+                    _menuIndex++;
                     break;
             }
         }
@@ -266,6 +240,54 @@ namespace VCCSharp.Modules
             _menuItem[menuIndex].MenuName = menuName;
             _menuItem[menuIndex].MenuId = menuId;
             _menuItem[menuIndex].Type = type;
+        }
+
+        private int OpenLoadCartFileDialog()
+        {
+            string filename = "";
+
+            var openFileDlg = new Microsoft.Win32.OpenFileDialog
+            {
+                FileName = filename,
+                DefaultExt = ".txt",
+                Filter = "Program Packs|*.ROM;*.ccc;*.DLL;*.pak",
+                InitialDirectory = _modules.Emu.PakPath,
+                CheckFileExists = true,
+                ShowReadOnly = false,
+                Title = "Load Program Pack"
+            };
+
+            if (openFileDlg.ShowDialog() == true)
+            {
+                filename = openFileDlg.FileName;
+
+                if (_modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, filename) != 0)
+                {
+                    return 0;
+                }
+
+                _modules.Emu.PakPath = Path.GetPathRoot(filename);
+
+                return 1;
+            }
+
+            return 0;
+        }
+
+        private bool LoadPak()
+        {
+            if (_loadPakDialogOpen)
+            {
+                return false;
+            }
+
+            _loadPakDialogOpen = true;
+            int result = OpenLoadCartFileDialog();
+            _loadPakDialogOpen = false;
+
+            _modules.Emu.EmulationRunning = true;
+
+            return result != 0;
         }
 
         private static HMENU MenuGetMenu(HWND hWnd)

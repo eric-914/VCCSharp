@@ -3,6 +3,7 @@ using VCCSharp.BitBanger;
 using VCCSharp.Configuration;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
+using VCCSharp.Menu;
 using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
 using VCCSharp.Modules;
@@ -62,7 +63,11 @@ namespace VCCSharp
                 .Bind<IVccApp, VccApp>()
                 .Bind<IVccThread, VccThread>()
 
+                //--Menu
+                .Singleton<IMainMenu, MainMenu>()
+
                 //--Options
+                .Bind<ICartridge, MenuManager>()
                 .Bind<IConfiguration, ConfigurationManager>()
                 .Bind<ITapePlayer, TapePlayerManager>()
                 .Bind<IBitBanger, BitBangerManager>()

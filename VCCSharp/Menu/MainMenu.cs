@@ -1,15 +1,32 @@
-﻿namespace VCCSharp.Menu
+﻿using Ninject;
+using VCCSharp.Enums;
+using VCCSharp.IoC;
+
+namespace VCCSharp.Menu
 {
-    public class MainMenu : MenuItems
+    public interface IMainMenu
+    {
+        public MenuItemViewModel Plugins { get; }
+    }
+
+    public class MainMenu : MenuItems, IMainMenu
     {
         private static readonly MenuItemViewModel Separator = new SeparatorItemViewModel();
 
+        public MenuItemViewModel Plugins { get; }
+
+        //--Here for XAML template purposes only
+        public MainMenu() { }
+
+        [Inject]
         public MainMenu(Actions actions)
         {
+            Plugins = Cartridge(actions);
+
             Add(File(actions));
             Add(Edit(actions));
             Add(Configuration(actions));
-            Add(Cartridge(actions));
+            Add(Plugins);
             Add(Help(actions));
         }
 
@@ -55,21 +72,35 @@
             }
         };
 
-        private static MenuItemViewModel Cartridge(Actions actions) => new MenuItemViewModel
-        {
-            Header = "Cartridge",
-            MenuItems = new MenuItems
+        private static MenuItems CartridgeShared(Actions actions) =>
+            new MenuItems
             {
                 new MenuItemViewModel
                 {
+                    Id = MenuActions.Cartridge,
                     Header = "Cartridge",
                     MenuItems = new MenuItems
                     {
-                        new MenuItemViewModel {Header = "Load Cart", Action = actions.LoadCartridge},
-                        new MenuItemViewModel {Header = "Eject Cart: Mega-Bug (1982) (26-3076) (Tandy).ccc", Action = actions.EjectCartridge}
+                        new MenuItemViewModel
+                        {
+                            Id=MenuActions.Load,
+                            Header = "Load Cart",
+                            Action = actions.LoadCartridge
+                        },
+                        new MenuItemViewModel
+                        {
+                            Id=MenuActions.Eject,
+                            Header = "Eject Cart",
+                            Action = actions.EjectCartridge
+                        }
                     }
                 }
-            }
+            };
+
+        private static MenuItemViewModel Cartridge(Actions actions) => new MenuItemViewModel
+        {
+            Header = "Cartridge",
+            MenuItems = CartridgeShared(actions)
         };
 
         private static MenuItemViewModel Help(Actions actions) => new MenuItemViewModel

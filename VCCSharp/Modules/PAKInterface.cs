@@ -389,7 +389,7 @@ namespace VCCSharp.Modules
             UnloadDll(emulationRunning);
 
             _dllPath = "";
-            ModuleName = "Blank\0";
+            ModuleName = "Blank";
 
             RomPackLoaded = Define.FALSE;
 

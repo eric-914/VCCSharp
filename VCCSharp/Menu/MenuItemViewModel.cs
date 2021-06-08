@@ -1,12 +1,30 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using VCCSharp.Annotations;
+using VCCSharp.Enums;
 
 namespace VCCSharp.Menu
 {
-    public class MenuItemViewModel
+    public class MenuItemViewModel : INotifyPropertyChanged
     {
-        public string Header { get; set; }
+        public MenuActions Id { get; set; }
+
+        private string _header;
+        public string Header
+        {
+            get => _header;
+            set
+            {
+                if (_header == value) return;
+
+                _header = value; 
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand Command { get; set; } = new CommandViewModel(() => { });
         public bool IsCheckable { get; set; } = false;
 
@@ -25,6 +43,13 @@ namespace VCCSharp.Menu
         }
 
         public ObservableCollection<MenuItemViewModel> MenuItems { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
     public class SeparatorItemViewModel : MenuItemViewModel
