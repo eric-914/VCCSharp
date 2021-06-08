@@ -585,7 +585,7 @@ namespace VCCSharp.Modules
 
                 DYNAMICMENUCALLBACK fnx = Marshal.GetDelegateForFunctionPointer<DYNAMICMENUCALLBACK>(callback);
 
-                IntPtr p = (IntPtr)(_d.GetModuleName);
+                IntPtr p = (IntPtr)_d.GetModuleName;
 
                 GETMODULENAME fn = Marshal.GetDelegateForFunctionPointer<GETMODULENAME>(p);
 

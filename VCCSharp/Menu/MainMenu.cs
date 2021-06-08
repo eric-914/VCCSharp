@@ -1,6 +1,6 @@
-﻿using Ninject;
+﻿using System.Collections.ObjectModel;
+using Ninject;
 using VCCSharp.Enums;
-using VCCSharp.IoC;
 
 namespace VCCSharp.Menu
 {
@@ -11,7 +11,7 @@ namespace VCCSharp.Menu
 
     public class MainMenu : MenuItems, IMainMenu
     {
-        private static readonly MenuItemViewModel Separator = new SeparatorItemViewModel();
+        public static readonly MenuItemViewModel Separator = new SeparatorItemViewModel();
 
         public MenuItemViewModel Plugins { get; }
 
@@ -21,6 +21,7 @@ namespace VCCSharp.Menu
         [Inject]
         public MainMenu(Actions actions)
         {
+            //--The "plug-ins" menu is dynamic that plug-ins can customize it
             Plugins = Cartridge(actions);
 
             Add(File(actions));
@@ -72,35 +73,10 @@ namespace VCCSharp.Menu
             }
         };
 
-        private static MenuItems CartridgeShared(Actions actions) =>
-            new MenuItems
-            {
-                new MenuItemViewModel
-                {
-                    Id = MenuActions.Cartridge,
-                    Header = "Cartridge",
-                    MenuItems = new MenuItems
-                    {
-                        new MenuItemViewModel
-                        {
-                            Id=MenuActions.Load,
-                            Header = "Load Cart",
-                            Action = actions.LoadCartridge
-                        },
-                        new MenuItemViewModel
-                        {
-                            Id=MenuActions.Eject,
-                            Header = "Eject Cart",
-                            Action = actions.EjectCartridge
-                        }
-                    }
-                }
-            };
-
         private static MenuItemViewModel Cartridge(Actions actions) => new MenuItemViewModel
         {
             Header = "Cartridge",
-            MenuItems = CartridgeShared(actions)
+            MenuItems = new ObservableCollection<MenuItemViewModel>()
         };
 
         private static MenuItemViewModel Help(Actions actions) => new MenuItemViewModel

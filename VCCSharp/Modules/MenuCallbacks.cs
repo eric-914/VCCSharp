@@ -74,12 +74,19 @@ namespace VCCSharp.Modules
             switch (menuId)
             {
                 case MenuActions.Flush:
-                    //Recursion is fun
-                    BuildCartridgeMenu(null, MenuActions.Cartridge, 0);	
-                    BuildCartridgeMenu(null, MenuActions.Load, 0);
-                    BuildCartridgeMenu(null, MenuActions.Eject, 0);
+                    _menuIndex = 0;
 
-                    _menuIndex = 3;
+                    _cartridge.Reset();
+
+                    //Recursion is fun
+                    BuildCartridgeMenu("Cartridge", MenuActions.Cartridge, Define.MENU_PARENT);	
+                    BuildCartridgeMenu("Load Cart", MenuActions.Load, Define.MENU_CHILD);
+                    BuildCartridgeMenu($"Eject Cart: {_modules.PAKInterface.ModuleName}", MenuActions.Eject, Define.MENU_CHILD);
+
+                    //BuildCartridgeMenu(null, MenuActions.Cartridge, 0);	
+                    //BuildCartridgeMenu(null, MenuActions.Load, 0);
+                    //BuildCartridgeMenu(null, MenuActions.Eject, 0);
+
                     
                     break;
 
@@ -87,26 +94,25 @@ namespace VCCSharp.Modules
                     DrawDynamicMenu();
                     break;
 
-                case MenuActions.Cartridge:
-                    SetMenuItem(0, "Cartridge", (int)MenuActions.Cartridge, Define.MENU_PARENT);
-                    break;
+                //case MenuActions.Cartridge:
+                //    SetMenuItem(0, "Cartridge", (int)MenuActions.Cartridge, Define.MENU_PARENT);
+                //    break;
 
-                case MenuActions.Load:
-                    SetMenuItem(1, "Load Cart", (int)MenuActions.Load, Define.MENU_CHILD);
-                    break;
+                //case MenuActions.Load:
+                //    SetMenuItem(1, "Load Cart", (int)MenuActions.Load, Define.MENU_CHILD);
+                //    break;
 
-                case MenuActions.Eject:
-                    SetMenuItem(2, $"Eject Cart: {_modules.PAKInterface.ModuleName}", (int)MenuActions.Eject, Define.MENU_CHILD);
-                    _cartridge.SetCartridgeTitle(_modules.PAKInterface.ModuleName);
-                    break;
+                //case MenuActions.Eject:
+                //    SetMenuItem(2, $"Eject Cart: {_modules.PAKInterface.ModuleName}", (int)MenuActions.Eject, Define.MENU_CHILD);
+                //    _cartridge.SetCartridgeTitle(_modules.PAKInterface.ModuleName);
+                //    break;
 
                 //--Used by plug-ins to add whatever they want
                 default:
-                    SetMenuItem(_menuIndex, menuName, (int)menuId, type);
+                    SetMenuItem(_menuIndex++, menuName, (int)menuId, type);
 
-                    _cartridge.SetMenuItem(_menuIndex, menuName, (int)menuId, type);
+                    _cartridge.SetMenuItem(menuName, menuId, type);
 
-                    _menuIndex++;
                     break;
             }
         }

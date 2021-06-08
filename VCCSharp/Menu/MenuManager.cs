@@ -1,7 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
+using VCCSharp.Models;
 
 namespace VCCSharp.Menu
 {
@@ -9,9 +10,12 @@ namespace VCCSharp.Menu
     {
         void Load();
         void Eject();
-        void SetCartridgeTitle(string text);
-        void SetMenuItem(int menuIndex, string menuName, int menuId, int type);
+        void SetMenuItem(string menuName, MenuActions menuId, int type);
+        void Reset();
     }
+
+    delegate void AddMenuItem(MenuItemViewModel item);
+    delegate void ClearMenuItems();
 
     public class MenuManager : ICartridge
     {
@@ -34,18 +38,51 @@ namespace VCCSharp.Menu
             MessageBox.Show("MenuManager:Eject");
         }
 
-        public void SetCartridgeTitle(string text)
-        {
-            var eject = Cartridge.MenuItems.First(x => x.Id == MenuActions.Eject);
+        private MenuItemViewModel _parent;
 
-            eject.Header = $"Eject Cart: {text}";
+        public void SetMenuItem(string menuName, MenuActions menuId, int type)
+        {
+            if (string.IsNullOrEmpty(menuName))
+            {
+                AddMenuItem separatorAdd = _menuItems.Plugins.MenuItems.Add;
+                Application.Current.Dispatcher.BeginInvoke(separatorAdd, MainMenu.Separator);
+                return;
+            }
+
+            var item = new MenuItemViewModel
+            {
+                Id = menuId,
+                Header = menuName,
+                Action = () => MessageBox.Show($"{menuName} Click"),
+                MenuItems = new ObservableCollection<MenuItemViewModel>()
+            };
+
+            switch (type)
+            {
+                case Define.MENU_PARENT: //--Children expected
+                    _parent = item;
+                    AddMenuItem parentAdd = _menuItems.Plugins.MenuItems.Add;
+                    Application.Current.Dispatcher.BeginInvoke(parentAdd, item);
+                    break;
+
+                case Define.MENU_CHILD: //--Attach to last parent
+                    AddMenuItem childAdd = _parent.MenuItems.Add;
+                    Application.Current.Dispatcher.BeginInvoke(childAdd, item);
+                    break;
+
+                case Define.MENU_STANDALONE: //--No children
+                    AddMenuItem menuAdd = _menuItems.Plugins.MenuItems.Add;
+                    Application.Current.Dispatcher.BeginInvoke(menuAdd, item);
+                    break;
+            }
         }
 
-        public void SetMenuItem(int menuIndex, string menuName, int menuId, int type)
+        /// <summary>
+        /// Seems the plugins are completely responsible for rebuilding the cartridge menu system.
+        /// </summary>
+        public void Reset()
         {
-            MessageBox.Show($"MenuManager:SetMenuItem({menuIndex},{menuName},{menuId},{type})");
+            Application.Current.Dispatcher.BeginInvoke((ClearMenuItems) _menuItems.Plugins.MenuItems.Clear);
         }
-
-        private MenuItemViewModel Cartridge => _menuItems.Plugins.MenuItems.First();
     }
 }
