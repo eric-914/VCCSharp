@@ -229,13 +229,7 @@ namespace VCCSharp.Modules
             {
                 Task.Run(() =>
                 {
-                    //Calls to the loaded DLL so it can do the right thing
-                    bool reset = _modules.MenuCallbacks.CartridgeMenuItemClicked(wmId); 
-
-                    if (reset)
-                    {
-                        _modules.Emu.ResetPending = Define.RESET_HARD;
-                    }
+                    _modules.MenuCallbacks.CartridgeMenuItemClicked(wmId); 
                 });
             }
         }

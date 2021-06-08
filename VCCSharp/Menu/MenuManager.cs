@@ -53,7 +53,8 @@ namespace VCCSharp.Menu
             {
                 Id = menuId,
                 Header = menuName,
-                Action = () => MessageBox.Show($"{menuName} Click"),
+                Action = () => _modules.MenuCallbacks.CartridgeMenuItemClicked((int)menuId),
+                    //MessageBox.Show($"{menuName} Click"),
                 MenuItems = new ObservableCollection<MenuItemViewModel>()
             };
 

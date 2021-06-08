@@ -14,7 +14,7 @@ namespace VCCSharp.Modules
     {
         void RefreshCartridgeMenu();
         void BuildCartridgeMenu(string menuName, int menuId, int type);
-        bool CartridgeMenuItemClicked(int menuItem);
+        void CartridgeMenuItemClicked(int menuItem);
     }
 
     public class MenuCallbacks : IMenuCallbacks
@@ -38,9 +38,13 @@ namespace VCCSharp.Modules
             _cartridge = cartridge;
         }
 
-        public bool CartridgeMenuItemClicked(int menuItem)
+        public void CartridgeMenuItemClicked(int menuItem)
         {
-            return CartridgeMenuItemClicked((MenuActions) menuItem);
+            //Calls to the loaded DLL so it can do the right thing
+            if (CartridgeMenuItemClicked((MenuActions) menuItem))
+            {
+                _modules.Emu.ResetPending = Define.RESET_HARD;
+            };
         }
 
         private bool CartridgeMenuItemClicked(MenuActions menuItem)
