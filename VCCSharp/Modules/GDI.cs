@@ -15,7 +15,7 @@ namespace VCCSharp.Modules
         unsafe void SetTextColor(void* hdc, uint color);
         unsafe void TextOut(void* hdc, int x, int y, string text, int textLength);
         HICON GetIcon(HINSTANCE resources);
-        HCURSOR GetCursor(byte fullscreen);
+        HCURSOR GetCursor(bool fullscreen);
         unsafe void* GetBrush();
         unsafe void GetClientRect(HWND hWnd, RECT* clientSize);
     }
@@ -48,9 +48,9 @@ namespace VCCSharp.Modules
             return Library.GDI.GDIGetIcon(resources);
         }
 
-        public HCURSOR GetCursor(byte fullscreen)
+        public HCURSOR GetCursor(bool fullscreen)
         {
-            return Library.GDI.GDIGetCursor(fullscreen);
+            return Library.GDI.GDIGetCursor(fullscreen ? Define.TRUE : Define.FALSE);
         }
 
         public unsafe void* GetBrush()

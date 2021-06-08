@@ -14,7 +14,7 @@ namespace VCCSharp
         void Startup(CmdLineArguments cmdLineArgs);
         void Threading();
         void Run();
-        int Shutdown();
+        void Shutdown();
     }
 
     public class VccApp : IVccApp
@@ -40,7 +40,7 @@ namespace VCCSharp
             _modules.CoCo.SetAudioEventAudioOut();
 
             _hResources = _kernel.LoadLibrary("resources.dll");
-                
+
             _modules.Emu.Resources = _hResources;
 
             _modules.DirectDraw.InitDirectDraw();
@@ -86,12 +86,12 @@ namespace VCCSharp
 
         public void Run()
         {
-            unsafe
+            while (_modules.Vcc.BinaryRunning)
             {
-                while (_modules.Vcc.BinaryRunning)
-                {
-                    _modules.Vcc.CheckScreenModeChange();
+                _modules.Vcc.CheckScreenModeChange();
 
+                unsafe
+                {
                     fixed (MSG* msg = &(Msg))
                     {
                         _user32.GetMessageA(msg, Zero, 0, 0);   //Seems if the main loop stops polling for Messages the child threads stall
@@ -104,18 +104,14 @@ namespace VCCSharp
             }
         }
 
-        public int Shutdown()
+        public void Shutdown()
         {
-            _modules.PAKInterface.UnloadDll(_modules.Emu.EmulationRunning);
+            _modules.PAKInterface.UnloadDll(false);
             _modules.Audio.SoundDeInit();
 
             _modules.Config.WriteIniFile(); //Save any changes to ini File
 
-            int code = (int)Msg.wParam;
-
             _kernel.FreeLibrary(_hResources);
-
-            return code;
         }
     }
 }

@@ -115,7 +115,7 @@ namespace VCCSharp.Modules
             if (_modules.Vcc.RunState == (byte)EmuRunStates.Running)
             {
                 _modules.Vcc.RunState = (byte)EmuRunStates.ReqWait;
-                _modules.Emu.FullScreen = _modules.Emu.FullScreen == Define.TRUE ? Define.FALSE : Define.TRUE;
+                _modules.Emu.FullScreen = !_modules.Emu.FullScreen;
             }
         }
 
@@ -293,7 +293,7 @@ namespace VCCSharp.Modules
             if (_modules.Vcc.RunState == 0)
             {
                 _modules.Vcc.RunState = 1;
-                _modules.Emu.FullScreen = _modules.Emu.FullScreen != 0 ? Define.FALSE : Define.TRUE;
+                _modules.Emu.FullScreen = !_modules.Emu.FullScreen;
             }
         }
 

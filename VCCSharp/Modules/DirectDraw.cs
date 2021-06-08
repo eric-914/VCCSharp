@@ -17,7 +17,7 @@ namespace VCCSharp.Modules
 {
     public interface IDirectDraw
     {
-        bool InitDirectDraw();
+        void InitDirectDraw();
         void ClearScreen();
         void FullScreenToggle();
         bool CreateDirectDrawWindow();
@@ -76,14 +76,12 @@ namespace VCCSharp.Modules
             return Library.DirectDraw.WndProc(hWnd, msg, wParam, lParam);
         }
 
-        private bool CreateDirectDrawWindow(HINSTANCE resources, byte fullscreen)
+        private bool CreateDirectDrawWindow(HINSTANCE resources, bool fullscreen)
         {
             uint style = Define.CS_HREDRAW | Define.CS_VREDRAW;
 
             IGDI gdi = _modules.GDI;
 
-            //HINSTANCE hInstance = instance->hInstance;
-            //byte* lpszClassName = Converter.ToByteArray() instance->AppNameText;
             HICON hIcon = gdi.GetIcon(resources);
 
             //--Convert WinProc to void*
@@ -116,10 +114,6 @@ namespace VCCSharp.Modules
             }
 
             _modules.Graphics.InvalidateBorder();
-            //_modules.MenuCallbacks.RefreshCartridgeMenu(_modules.Emu.WindowHandle);
-
-            //TODO: Guess it wants to close other windows/dialogs
-            //emuState->ConfigDialog = Zero;
 
             _modules.Audio.PauseAudio(Define.FALSE);
         }
@@ -290,7 +284,7 @@ namespace VCCSharp.Modules
 
         public void UnlockScreen()
         {
-            if (_modules.Emu.FullScreen == Define.TRUE && InfoBand == Define.TRUE)
+            if (_modules.Emu.FullScreen && InfoBand == Define.TRUE)
             {
                 WriteStatusText(Converter.ToString(StatusText));
             }
@@ -337,7 +331,7 @@ namespace VCCSharp.Modules
 
         public void SetStatusBarText(string text)
         {
-            if (_modules.Emu.FullScreen == Define.FALSE)
+            if (!_modules.Emu.FullScreen)
             {
                 SetStatusBarTextA(text);
             }
@@ -364,7 +358,7 @@ namespace VCCSharp.Modules
 
         private unsafe void DisplayFlip()
         {
-            if (_modules.Emu.FullScreen == Define.TRUE)
+            if (_modules.Emu.FullScreen)
             {	// if we're windowed do the blit, else just Flip
                 SurfaceFlip();
             }
@@ -561,14 +555,14 @@ namespace VCCSharp.Modules
 
             switch (_modules.Emu.FullScreen)
             {
-                case 0: //Windowed Mode
+                case false: //Windowed Mode
                     if (!CreateDirectDrawWindowedMode(ddsd))
                     {
                         return false;
                     }
                     break;
 
-                case 1:	//Full Screen Mode
+                case true:	//Full Screen Mode
                     if (!CreateDirectDrawWindowFullScreen(ddsd))
                     {
                         return false;
@@ -594,12 +588,10 @@ namespace VCCSharp.Modules
             //graphicsSurfaces.pSurface32 = (uint*)surface;
         }
 
-        public bool InitDirectDraw()
+        public void InitDirectDraw()
         {
             TitleBarText = Converter.ToByteArray(_modules.Config.AppTitle);
             AppNameText = Converter.ToByteArray(_modules.Config.AppTitle);
-
-            return true;
         }
 
         private unsafe bool CreateDirectDrawWindowedMode(DDSURFACEDESC* ddsd)

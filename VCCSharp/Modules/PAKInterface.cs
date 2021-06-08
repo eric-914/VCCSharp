@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using static System.IntPtr;
 using HINSTANCE = System.IntPtr;
 using HMODULE = System.IntPtr;
 
@@ -44,7 +44,6 @@ namespace VCCSharp.Modules
 
         public byte CartInserted { get; set; }
         public string ModuleName { get; set; } = "Blank";
-        public int DialogOpen;
         public int RomPackLoaded;
         public uint BankedCartOffset;
 
@@ -81,21 +80,14 @@ namespace VCCSharp.Modules
 
         public void UnloadDll(bool emulationRunning)
         {
-            if ((DialogOpen == Define.TRUE) && emulationRunning)
-            {
-                MessageBox.Show("Close Configuration Dialog before unloading", "Ok");
-
-                return;
-            }
-
             UnloadModule();
 
-            if (hInstLib != IntPtr.Zero)
+            if (hInstLib != Zero)
             {
                 PakFreeLibrary(hInstLib);
             }
 
-            hInstLib = IntPtr.Zero;
+            hInstLib = Zero;
 
             _modules.MenuCallbacks.RefreshCartridgeMenu();
         }
@@ -144,13 +136,13 @@ namespace VCCSharp.Modules
         public int InsertModuleCase1(bool emulationRunning, string modulePath)
         {
             ushort moduleParams = 0;
-            string catNumber = "";
+            //string catNumber = "";
 
             UnloadDll(emulationRunning);
 
             hInstLib = PakLoadLibrary(modulePath);
 
-            if (hInstLib == HINSTANCE.Zero)
+            if (hInstLib == Zero)
             {
                 return Define.NOMODULE;
             }
@@ -161,7 +153,7 @@ namespace VCCSharp.Modules
             {
                 PakFreeLibrary(hInstLib);
 
-                hInstLib = HINSTANCE.Zero;
+                hInstLib = Zero;
 
                 return Define.NOTVCC;
             }
@@ -178,7 +170,7 @@ namespace VCCSharp.Modules
                 InvokeSetInterruptCallPointer();
             }
 
-            ModuleName = InvokeGetModuleName(catNumber);  //Instantiate the menus from HERE!
+            ModuleName = InvokeGetModuleName();  //Instantiate the menus from HERE!
             string modName = ModuleName;
 
             var temp = $"Configure {modName}";
@@ -322,7 +314,7 @@ namespace VCCSharp.Modules
 
         public byte PakPortRead(byte port)
         {
-            return HasModulePortRead() ? ModulePortRead(port) : (byte) 0;
+            return HasModulePortRead() ? ModulePortRead(port) : (byte)0;
         }
 
         public void PakPortWrite(byte port, byte data)
@@ -575,7 +567,7 @@ namespace VCCSharp.Modules
 
         private static DYNAMICMENUCALLBACK _dynamicMenuCallback;
 
-        public string InvokeGetModuleName(string catNumber)
+        public string InvokeGetModuleName()
         {
             //Instantiate the menus from HERE!
             unsafe
@@ -591,7 +583,8 @@ namespace VCCSharp.Modules
 
                 fixed (byte* b = new byte[256])
                 {
-                    fn(b, catNumber, fnx);
+                    //TODO: Does catNumber serve a purpose
+                    fn(b, "", fnx);
 
                     return Converter.ToString(b);
                 }
@@ -749,7 +742,7 @@ namespace VCCSharp.Modules
                 {
                     if (ExternalRomBuffer != null)
                     {
-                        return (ExternalRomBuffer[offset]);
+                        return ExternalRomBuffer[offset];
                     }
                 }
             }

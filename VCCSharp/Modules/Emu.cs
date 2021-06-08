@@ -22,7 +22,7 @@ namespace VCCSharp.Modules
         byte BitDepth { get; set; }
         byte CpuType { get; set; }
         byte FrameSkip { get; set; }
-        byte FullScreen { get; set; }
+        bool FullScreen { get; set; }
         byte RamSize { get; set; }
         bool ScanLines { get; set; }
         short FrameCounter { get; set; }
@@ -51,7 +51,7 @@ namespace VCCSharp.Modules
         public byte CpuType { get; set; }
 
         public byte FrameSkip { get; set; }
-        public byte FullScreen { get; set; }
+        public bool FullScreen { get; set; }
 
         public byte RamSize { get; set; }
         public bool ScanLines { get; set; }

@@ -62,11 +62,9 @@ namespace VCCSharp.Models
 
     #region GETMODULENAME
 
-    //typedef void (*DYNAMICMENUCALLBACK)(char*, int, int);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void DYNAMICMENUCALLBACK(string menuName, int menuId, int type);
 
-    //typedef void (*GETMODULENAME)(char*, char*, DYNAMICMENUCALLBACK);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public unsafe delegate void GETMODULENAME(byte* buffer, string catNumber, DYNAMICMENUCALLBACK callback);
 
