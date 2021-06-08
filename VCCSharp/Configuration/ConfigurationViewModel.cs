@@ -291,8 +291,8 @@ namespace VCCSharp.Configuration
         //[Misc]
         public bool AutoStart
         {
-            get => Model.AutoStart != 0;
-            set => Model.AutoStart = (byte)(value ? 1 : 0);
+            get => Model.AutoStart;
+            set => Model.AutoStart = value;
         }
 
         public bool CartAutoStart

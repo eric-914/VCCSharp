@@ -18,7 +18,7 @@ namespace VCCSharp.Modules
         void GetModuleStatus();
         void ResetBus();
         void UpdateBusPointer();
-        int InsertModule(byte emulationRunning, string modulePath);
+        int InsertModule(bool emulationRunning, string modulePath);
         void PakTimer();
         string GetCurrentModule();
         byte PakPortRead(byte port);
@@ -26,7 +26,7 @@ namespace VCCSharp.Modules
         ushort PakAudioSample();
         bool HasConfigModule();
         void InvokeConfigModule(byte menuItem);
-        int UnloadPack(bool emulationRunning);
+        bool UnloadPack(bool emulationRunning);
         byte CartInserted { get; set; }
         string ModuleName { get; set; }
         byte PakMem8Read(ushort address);
@@ -76,7 +76,6 @@ namespace VCCSharp.Modules
             return _dllPath;
         }
 
-        //TODO: Used by LoadROMPack(...), UnloadPack(...), InsertModule(...)
         public void UnloadDll(bool emulationRunning)
         {
             if ((DialogOpen == Define.TRUE) && emulationRunning)
@@ -95,7 +94,7 @@ namespace VCCSharp.Modules
 
             hInstLib = IntPtr.Zero;
 
-            _modules.MenuCallbacks.RefreshDynamicMenu();
+            _modules.MenuCallbacks.RefreshCartridgeMenu();
         }
 
         public void ResetBus()
@@ -116,7 +115,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public int InsertModule(byte emulationRunning, string modulePath)
+        public int InsertModule(bool emulationRunning, string modulePath)
         {
             int fileType = FileId(modulePath);
 
@@ -142,12 +141,12 @@ namespace VCCSharp.Modules
         }
 
         //File is a DLL
-        public int InsertModuleCase1(byte emulationRunning, string modulePath)
+        public int InsertModuleCase1(bool emulationRunning, string modulePath)
         {
             ushort moduleParams = 0;
             string catNumber = "";
 
-            UnloadDll(emulationRunning != Define.FALSE);
+            UnloadDll(emulationRunning);
 
             hInstLib = PakLoadLibrary(modulePath);
 
@@ -288,15 +287,15 @@ namespace VCCSharp.Modules
         }
 
         //File is a ROM image
-        public int InsertModuleCase2(byte emulationRunning, string modulePath)
+        public int InsertModuleCase2(bool emulationRunning, string modulePath)
         {
-            UnloadDll(emulationRunning != Define.FALSE);
+            UnloadDll(emulationRunning);
 
             LoadRomPack(emulationRunning, modulePath);
 
             ModuleName = Path.GetFileName(modulePath);
 
-            _modules.MenuCallbacks.RefreshDynamicMenu();
+            _modules.MenuCallbacks.RefreshCartridgeMenu();
 
             SetCart(1);
 
@@ -366,7 +365,7 @@ namespace VCCSharp.Modules
             Load a ROM pack
             return total bytes loaded, or 0 on failure
         */
-        public int LoadRomPack(byte emulationRunning, string filename)
+        public int LoadRomPack(bool emulationRunning, string filename)
         {
             ExternalRomBuffer = new byte[Define.PAK_MAX_MEM];
 
@@ -377,7 +376,7 @@ namespace VCCSharp.Modules
                 ExternalRomBuffer[i] = rom[i];
             }
 
-            UnloadDll(emulationRunning != Define.FALSE);
+            UnloadDll(emulationRunning);
 
             BankedCartOffset = 0;
             RomPackLoaded = Define.TRUE;
@@ -385,7 +384,7 @@ namespace VCCSharp.Modules
             return rom.Length;
         }
 
-        public int UnloadPack(bool emulationRunning)
+        public bool UnloadPack(bool emulationRunning)
         {
             UnloadDll(emulationRunning);
 
@@ -400,9 +399,9 @@ namespace VCCSharp.Modules
 
             ExternalRomBuffer = null;
 
-            _modules.MenuCallbacks.RefreshDynamicMenu();
+            _modules.MenuCallbacks.RefreshCartridgeMenu();
 
-            return Define.NOMODULE;
+            return true;
         }
 
         public void UnloadModule()

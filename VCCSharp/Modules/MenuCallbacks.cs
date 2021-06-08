@@ -11,10 +11,9 @@ namespace VCCSharp.Modules
 {
     public interface IMenuCallbacks
     {
-        void RefreshDynamicMenu();
+        void RefreshCartridgeMenu();
         void BuildCartridgeMenu(string menuName, int menuId, int type);
-        void BuildCartridgeMenu(string menuName, MenuActions menuId, int type);
-        int DynamicMenuActivated(byte emulationRunning, int menuItem);
+        bool CartridgeMenuItemClicked(int menuItem);
     }
 
     public class MenuCallbacks : IMenuCallbacks
@@ -29,25 +28,27 @@ namespace VCCSharp.Modules
         private HWND _hOld = Zero;
         private HMENU _hMenu = Zero;
 
+        private bool _loadPakDialogOpen;
+
         public MenuCallbacks(IModules modules)
         {
             _modules = modules;
         }
 
-        public int DynamicMenuActivated(byte emulationRunning, int menuItem)
+        public bool CartridgeMenuItemClicked(int menuItem)
         {
-            return DynamicMenuActivated(emulationRunning, (MenuActions) menuItem);
+            return DynamicMenuActivated((MenuActions) menuItem);
         }
 
-        public int DynamicMenuActivated(byte emulationRunning, MenuActions menuItem)
+        private bool DynamicMenuActivated(MenuActions menuItem)
         {
             switch (menuItem)
             {
                 case MenuActions.Load:
-                    return LoadPack();
+                    return LoadPak();
 
                 case MenuActions.Eject: 
-                    return _modules.PAKInterface.UnloadPack(emulationRunning != Define.FALSE);
+                    return _modules.PAKInterface.UnloadPack(_modules.Emu.EmulationRunning);
 
                 default:
                     if (_modules.PAKInterface.HasConfigModule())
@@ -55,25 +56,24 @@ namespace VCCSharp.Modules
                         //--Original code was passing an unsigned char, though the menu ids are integers
                         _modules.PAKInterface.InvokeConfigModule((byte)(menuItem - Define.ID_DYNAMENU_START));
                     }
-                    return 0;
+                    return false;
             }
         }
 
-        private bool _dialogOpen;
-        private int LoadPack()
+        private bool LoadPak()
         {
-            if (_dialogOpen)
+            if (_loadPakDialogOpen)
             {
-                return 0;
+                return false;
             }
 
-            _dialogOpen = true;
+            _loadPakDialogOpen = true;
             int result = OpenLoadCartFileDialog();
-            _dialogOpen = false;
+            _loadPakDialogOpen = false;
 
-            _modules.Emu.EmulationRunning = Define.TRUE;
+            _modules.Emu.EmulationRunning = true;
 
-            return result;
+            return result != 0;
         }
 
         private int OpenLoadCartFileDialog()
@@ -114,7 +114,7 @@ namespace VCCSharp.Modules
             BuildCartridgeMenu(menuName, (MenuActions)menuId, type);
         }
 
-        public void BuildCartridgeMenu(string menuName, MenuActions menuId, int type)
+        private void BuildCartridgeMenu(string menuName, MenuActions menuId, int type)
         {
             switch (menuId)
             {
@@ -137,7 +137,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void RefreshDynamicMenu()
+        public void RefreshCartridgeMenu()
         {
             BuildCartridgeMenu(null, MenuActions.Flush, Define.IGNORE);
             BuildCartridgeMenu(null, MenuActions.Done, Define.IGNORE);

@@ -49,14 +49,14 @@ namespace VCCSharp.Modules
 
         public void EmuRun()
         {
-            _modules.Emu.EmulationRunning = Define.TRUE;
+            _modules.Emu.EmulationRunning = true;
 
             Graphics.InvalidateBorder();
         }
 
         public void EmuReset(ResetPendingStates state)
         {
-            if (_modules.Emu.EmulationRunning == Define.TRUE)
+            if (_modules.Emu.EmulationRunning)
             {
                 _modules.Emu.ResetPending = (byte)state;
             }
@@ -91,9 +91,9 @@ namespace VCCSharp.Modules
 
         public void ToggleOnOff() //F9
         {
-            _modules.Emu.EmulationRunning = _modules.Emu.EmulationRunning == Define.TRUE ? Define.FALSE : Define.TRUE;
+            _modules.Emu.EmulationRunning = !_modules.Emu.EmulationRunning;
 
-            if (_modules.Emu.EmulationRunning == Define.TRUE)
+            if (_modules.Emu.EmulationRunning)
             {
                 _modules.Emu.ResetPending = (byte)ResetPendingStates.Hard;
             }
@@ -230,9 +230,9 @@ namespace VCCSharp.Modules
                 Task.Run(() =>
                 {
                     //Calls to the loaded DLL so it can do the right thing
-                    int result = _modules.MenuCallbacks.DynamicMenuActivated(_modules.Emu.EmulationRunning, wmId); 
+                    bool reset = _modules.MenuCallbacks.CartridgeMenuItemClicked(wmId); 
 
-                    if (result != 0)
+                    if (reset)
                     {
                         _modules.Emu.ResetPending = Define.RESET_HARD;
                     }
@@ -254,7 +254,7 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                if (_modules.Emu.EmulationRunning != 0)
+                if (_modules.Emu.EmulationRunning)
                 {
                     uint x = (uint)(lParam & 0xFFFF); // LOWORD(lParam);
                     uint y = (uint)((lParam >> 16) & 0xFFFF); // HIWORD(lParam);
@@ -310,7 +310,7 @@ namespace VCCSharp.Modules
             byte oemScan = (byte)((lParam & 0x00FF0000) >> 16); // just get the scan code
 
             // send other keystrokes to the emulator if it is active
-            if (_modules.Emu.EmulationRunning != 0)
+            if (_modules.Emu.EmulationRunning)
             {
                 _modules.Keyboard.KeyboardHandleKey((byte)wParam, oemScan, KeyStates.kEventKeyDown);
 

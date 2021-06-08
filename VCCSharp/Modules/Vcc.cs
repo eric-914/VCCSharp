@@ -17,7 +17,7 @@ namespace VCCSharp.Modules
         string GetExecPath();
         void ApplyConfigurationChanges();
 
-        byte AutoStart { get; set; }
+        bool AutoStart { get; set; }
         bool BinaryRunning { get; set; }
         byte RunState { get; set; }
         byte Throttle { get; set; } 
@@ -28,7 +28,7 @@ namespace VCCSharp.Modules
     {
         private readonly IModules _modules;
 
-        public byte AutoStart { get; set; } = Define.TRUE;
+        public bool AutoStart { get; set; } = true;
         public bool BinaryRunning { get; set; }
 
         //An IRQ of sorts telling the emulator to pause during Full Screen toggle
@@ -147,7 +147,7 @@ namespace VCCSharp.Modules
 
                 _modules.Emu.ResetPending = (byte)ResetPendingStates.None;
 
-                if (_modules.Emu.EmulationRunning == Define.TRUE)
+                if (_modules.Emu.EmulationRunning)
                 {
                     fps += _modules.CoCo.RenderFrame();
                 }

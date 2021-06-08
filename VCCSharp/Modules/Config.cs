@@ -390,7 +390,7 @@ namespace VCCSharp.Modules
                 model.ExternalBasicImage = Convert.ToString(buffer);
 
                 //[Misc]
-                model.AutoStart = (byte)_kernel.GetPrivateProfileIntA("Misc", "AutoStart", 1, iniFilePath);
+                model.AutoStart = _kernel.GetPrivateProfileIntA("Misc", "AutoStart", 1, iniFilePath) != 0;
                 model.CartAutoStart = (byte)_kernel.GetPrivateProfileIntA("Misc", "CartAutoStart", 1, iniFilePath);
                 model.KeyMapIndex = (byte)_kernel.GetPrivateProfileIntA("Misc", "KeyMapIndex", 0, iniFilePath);
 
@@ -581,7 +581,7 @@ namespace VCCSharp.Modules
             //_kernel.WritePrivateProfileStringA("Memory", "ExternalBasicImage", model.ExternalBasicImage, iniFilePath); //## READ-ONLY ##//
 
             //[Misc]
-            SaveInt("Misc", "AutoStart", model.AutoStart);
+            SaveInt("Misc", "AutoStart", model.AutoStart ? 1 : 0);
             SaveInt("Misc", "CartAutoStart", model.CartAutoStart);
             SaveInt("Misc", "KeyMapIndex", model.KeyMapIndex);
 

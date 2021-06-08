@@ -32,7 +32,7 @@
         public string ExternalBasicImage; //## READ-ONLY ##//
 
         //[Misc]
-        public byte AutoStart;
+        public bool AutoStart;
         public byte CartAutoStart;
         public byte KeyMapIndex;
 

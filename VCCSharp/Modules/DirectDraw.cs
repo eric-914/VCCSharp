@@ -112,7 +112,7 @@ namespace VCCSharp.Modules
             }
 
             _modules.Graphics.InvalidateBorder();
-            //_modules.MenuCallbacks.RefreshDynamicMenu(_modules.Emu.WindowHandle);
+            //_modules.MenuCallbacks.RefreshCartridgeMenu(_modules.Emu.WindowHandle);
 
             //TODO: Guess it wants to close other windows/dialogs
             //emuState->ConfigDialog = Zero;

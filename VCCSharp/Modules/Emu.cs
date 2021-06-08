@@ -30,7 +30,7 @@ namespace VCCSharp.Modules
         long SurfacePitch { get; set; }
         double CpuCurrentSpeed { get; set; }
 
-        byte EmulationRunning { get; set; }
+        bool EmulationRunning { get; set; }
         byte ResetPending { get; set; }
 
         string StatusLine { get; set; }
@@ -71,7 +71,7 @@ namespace VCCSharp.Modules
 
         public Point WindowSize { get; set; }
 
-        public byte EmulationRunning { get; set; }
+        public bool EmulationRunning { get; set; }
         public byte ResetPending { get; set; } = Define.RESET_NONE;
 
         public string PakPath { get; set; }

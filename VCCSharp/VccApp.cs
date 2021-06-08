@@ -57,7 +57,7 @@ namespace VCCSharp
                     _modules.Vcc.SetAppTitle(cmdLineArgs.QLoadFile); //TODO: No app title if no quick load
                 }
 
-                _modules.Emu.EmulationRunning = Define.TRUE;
+                _modules.Emu.EmulationRunning = true;
             }
 
             //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
@@ -68,7 +68,7 @@ namespace VCCSharp
 
             _modules.Emu.ResetPending = (byte)ResetPendingStates.Cls;
 
-            _modules.MenuCallbacks.RefreshDynamicMenu();
+            _modules.MenuCallbacks.RefreshCartridgeMenu();
 
             _modules.Emu.ResetPending = (byte)ResetPendingStates.Hard;
 
@@ -106,7 +106,7 @@ namespace VCCSharp
 
         public int Shutdown()
         {
-            _modules.PAKInterface.UnloadDll(_modules.Emu.EmulationRunning != Define.FALSE);
+            _modules.PAKInterface.UnloadDll(_modules.Emu.EmulationRunning);
             _modules.Audio.SoundDeInit();
 
             _modules.Config.WriteIniFile(); //Save any changes to ini File
