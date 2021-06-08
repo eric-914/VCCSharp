@@ -27,6 +27,7 @@ namespace VCCSharp.Modules
     public class Vcc : IVcc
     {
         private readonly IModules _modules;
+        private readonly IStatus _status;
 
         public bool AutoStart { get; set; } = true;
         public bool BinaryRunning { get; set; }
@@ -38,9 +39,10 @@ namespace VCCSharp.Modules
         public string CpuName { get; set; } = "(cpu)";
         public string AppName;
 
-        public Vcc(IModules modules)
+        public Vcc(IModules modules, IStatus status)
         {
             _modules = modules;
+            _status = status;
         }
 
         public void CheckScreenModeChange()
@@ -95,12 +97,13 @@ namespace VCCSharp.Modules
 
                 _modules.PAKInterface.GetModuleStatus();
 
-                int frameSkip = _modules.Emu.FrameSkip;
-                string cpuName = CpuName;
-                double mhz = _modules.Emu.CpuCurrentSpeed;
-                string status = _modules.Emu.StatusLine;
+                _status.Fps = fps;
+                _status.FrameSkip = _modules.Emu.FrameSkip;
+                _status.CpuName = CpuName;
+                _status.Mhz = _modules.Emu.CpuCurrentSpeed;
+                _status.Status = _modules.Emu.StatusLine;
 
-                string statusBarText = $"Skip:{frameSkip} | FPS:{fps:F} | {cpuName} @ {mhz:0.000}Mhz| {status}";
+                string statusBarText = $"Skip:{_status.FrameSkip} | FPS:{fps:F} | {_status.CpuName} @ {_status.Mhz:0.000}Mhz| {_status.Status}";
 
                 _modules.DirectDraw.SetStatusBarText(statusBarText);
 

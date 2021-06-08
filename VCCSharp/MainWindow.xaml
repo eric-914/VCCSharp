@@ -4,13 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:menu="clr-namespace:VCCSharp.Menu"
+        xmlns:converters="clr-namespace:VCCSharp.Converters"
+        xmlns:vccSharp="clr-namespace:VCCSharp"
         mc:Ignorable="d"
         Title="VCCSharp" Height="519" Width="821">
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    <converters:FrameSkipConverter x:Key="FrameSkipConverter"/>
+    <converters:FpsConverter x:Key="FpsConverter"/>
+    <converters:CpuMhzConverter x:Key="CpuMhzConverter"/>
   </Window.Resources>
   <Window.DataContext>
-    <menu:MainMenu/>
+    <vccSharp:MainWindowViewModel/>
   </Window.DataContext>
   <DockPanel>
     <Menu DockPanel.Dock="Top" ItemsSource="{Binding MenuItems}">
@@ -29,6 +34,27 @@
         </HierarchicalDataTemplate>
       </Menu.ItemTemplate>
     </Menu>
+    <DockPanel DockPanel.Dock="Bottom" DataContext="{Binding Status}" Height="30">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="2*"/>
+          <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Column="0" Content="{Binding FrameSkip, Converter={StaticResource FrameSkipConverter}}" />
+        <Label Grid.Column="1" Content="{Binding Fps, Converter={StaticResource FpsConverter}}"/>
+        <Label Grid.Column="2">
+          <Label.Content>
+            <MultiBinding Converter="{StaticResource CpuMhzConverter}">  
+              <Binding Path="CpuName" />  
+              <Binding Path="Mhz" />  
+            </MultiBinding>
+          </Label.Content>
+        </Label>
+        <Label Grid.Column="3" Content="{Binding Status}"/>
+      </Grid>
+    </DockPanel>
     <Grid Background="{DynamicResource {x:Static SystemColors.ActiveCaptionTextBrushKey}}">
       <Image Margin="36,4,36,10" Stretch="Fill" Source="/Resources/Television.png"/>
     </Grid>

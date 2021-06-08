@@ -72,6 +72,9 @@ namespace VCCSharp
                 .Bind<ITapePlayer, TapePlayerManager>()
                 .Bind<IBitBanger, BitBangerManager>()
 
+                //--Status Bar
+                .Singleton<IStatus, StatusManager>()
+
                 //--Options container/accessor
                 .Singleton<IOptions, Options>()
 

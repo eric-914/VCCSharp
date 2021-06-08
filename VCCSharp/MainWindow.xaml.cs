@@ -4,9 +4,15 @@ using VCCSharp.Menu;
 
 namespace VCCSharp
 {
+    public class MainWindowViewModel
+    {
+        public MenuItems MenuItems { get; set; }
+        public IStatus Status { get; set; }
+    }
+
     public partial class MainWindow
     {
-        public MenuItems MenuItems { get; }
+        private MainWindowViewModel ViewModel { get; } = new MainWindowViewModel();
 
         private readonly IFactory _factory = Factory.Instance;
 
@@ -16,11 +22,13 @@ namespace VCCSharp
 
             var bindings = _factory.MainWindowCommands;
 
-            MenuItems = (MenuItems)bindings.MenuItems;
+            ViewModel.MenuItems = (MenuItems)bindings.MenuItems;
             CommandBindings.AddRange(bindings.CommandBindings);
             InputBindings.AddRange(bindings.InputBindings);
 
-            DataContext = this;
+            ViewModel.Status = _factory.Get<IStatus>();
+
+            DataContext = ViewModel;
 
             //Window window = GetWindow(this);
             //IntPtr hWnd = new WindowInteropHelper(window).EnsureHandle();
