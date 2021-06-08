@@ -605,19 +605,12 @@ namespace VCCSharp.Modules
             int width = rc.right - rc.left;
             int height = rc.bottom - rc.top;
 
-            fixed (byte* appNameText = AppNameText)
-            {
-                fixed (byte* titleBarText = TitleBarText)
-                {
-                    // We create the Main window 
-                    _modules.Emu.WindowHandle = _user32.CreateWindowExA(0, appNameText, titleBarText,
-                        Define.WS_OVERLAPPEDWINDOW, Define.CW_USEDEFAULT, 0, width, height,
-                        Zero, null, _hInstance, null);
-                }
-            }
+            // We create the Main window 
+            CreateWindowExA(Define.CW_USEDEFAULT, 0, width, height, Define.WS_OVERLAPPEDWINDOW);
 
-            if (_modules.Emu.WindowHandle == null)
-            {	// Can't create window
+            if (_modules.Emu.WindowHandle == Zero)
+            {	
+                // Can't create window
                 return false;
             }
 
@@ -719,18 +712,18 @@ namespace VCCSharp.Modules
             return hr >= 0;
         }
 
+
         private unsafe bool CreateDirectDrawWindowFullScreen(DDSURFACEDESC* ddsd)
         {
             SetPitch(ddsd, 0);
             SetRgbBitCount(ddsd, 0);
 
-            fixed (byte* appNameText = AppNameText)
-            {
-                _modules.Emu.WindowHandle = _user32.CreateWindowExA(0, appNameText, null, Define.WS_POPUP | Define.WS_VISIBLE,
-                    0, 0, _windowSize.X, _windowSize.Y, Zero, null, _hInstance, null);
-            }
+            CreateWindowExA(_windowSize.X, _windowSize.Y, 0, 0, Define.WS_POPUP | Define.WS_VISIBLE);
 
-            if (_modules.Emu.WindowHandle == null) return false;
+            if (_modules.Emu.WindowHandle == Zero)
+            {
+                return false;
+            }
 
             RECT size;
 
@@ -774,8 +767,21 @@ namespace VCCSharp.Modules
             return true;
         }
 
+        private unsafe void CreateWindowExA(int x, int y, int width, int height, uint style)
+        {
+            fixed (byte* appNameText = AppNameText)
+            {
+                fixed (byte* titleBarText = TitleBarText)
+                {
+                    _modules.Emu.WindowHandle = _user32.CreateWindowExA(0, appNameText, titleBarText,
+                        style, x, y, width, height,
+                        Zero, null, _hInstance, null);
+                }
+            }
+        }
+
         // Checks if the memory associated with surfaces is lost and restores if necessary.
-        private void CheckSurfaces()
+        private static void CheckSurfaces()
         {
             if (HasSurface())
             {	// Check the primary surface
