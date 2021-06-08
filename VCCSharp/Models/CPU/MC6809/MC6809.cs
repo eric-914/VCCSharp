@@ -35,7 +35,7 @@ namespace VCCSharp.Models.CPU.MC6809
         {
         }
 
-        public void ForcePC(ushort address)
+        public void ForcePc(ushort address)
         {
             _cpu.pc.Reg = address;
 
@@ -98,12 +98,12 @@ namespace VCCSharp.Models.CPU.MC6809
                 {
                     if ((_pendingInterrupts & 4) != 0)
                     {
-                        cpu_nmi();
+                        Cpu_Nmi();
                     }
 
                     if ((_pendingInterrupts & 2) != 0)
                     {
-                        cpu_firq();
+                        Cpu_Firq();
                     }
 
                     if ((_pendingInterrupts & 1) != 0)
@@ -112,7 +112,7 @@ namespace VCCSharp.Models.CPU.MC6809
                         {
                             // This is needed to fix a subtle timing problem
                             // It allows the CPU to see $FF03 bit 7 high before...
-                            cpu_irq();
+                            Cpu_Irq();
                         }
                         else
                         {
@@ -139,7 +139,7 @@ namespace VCCSharp.Models.CPU.MC6809
             return cycleFor - _cycleCounter;
         }
 
-        public void cpu_nmi()
+        public void Cpu_Nmi()
         {
             _cpu.cc[(int)CCFlagMasks.E] = 1;
 
@@ -156,7 +156,7 @@ namespace VCCSharp.Models.CPU.MC6809
             _modules.TC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg);
             _modules.TC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg);
 
-            _modules.TC1014.MemWrite8(getcc(), --_cpu.s.Reg);
+            _modules.TC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
 
             _cpu.cc[(int)CCFlagMasks.I] = 1;
             _cpu.cc[(int)CCFlagMasks.F] = 1;
@@ -166,7 +166,7 @@ namespace VCCSharp.Models.CPU.MC6809
             _pendingInterrupts &= 251;
         }
 
-        public void cpu_firq()
+        public void Cpu_Firq()
         {
             if (_cpu.cc[(int)CCFlagMasks.F] == 0)
             {
@@ -177,7 +177,7 @@ namespace VCCSharp.Models.CPU.MC6809
                 _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
                 _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
 
-                _modules.TC1014.MemWrite8(getcc(), --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
 
                 _cpu.cc[(int)CCFlagMasks.I] = 1;
                 _cpu.cc[(int)CCFlagMasks.F] = 1;
@@ -188,7 +188,7 @@ namespace VCCSharp.Models.CPU.MC6809
             _pendingInterrupts &= 253;
         }
 
-        public void cpu_irq()
+        public void Cpu_Irq()
         {
             if (_inInterrupt == 1)
             {
@@ -212,7 +212,7 @@ namespace VCCSharp.Models.CPU.MC6809
                 _modules.TC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg);
                 _modules.TC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg);
 
-                _modules.TC1014.MemWrite8(getcc(), --_cpu.s.Reg);
+                _modules.TC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
 
                 _cpu.pc.Reg = MemRead16(Define.VIRQ);
                 _cpu.cc[(int)CCFlagMasks.I] = 1;
@@ -221,7 +221,7 @@ namespace VCCSharp.Models.CPU.MC6809
             _pendingInterrupts &= 254;
         }
 
-        public byte getcc()
+        public byte GetCC()
         {
             int cc = 0;
 
@@ -242,7 +242,7 @@ namespace VCCSharp.Models.CPU.MC6809
             return (byte)cc;
         }
 
-        public void setcc(byte cc)
+        public void SetCC(byte cc)
         {
             _cpu.ccbits = cc;
 

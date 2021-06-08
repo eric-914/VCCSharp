@@ -8,7 +8,7 @@ namespace VCCSharp.TapePlayer
 {
     public class TapePlayerViewModel : INotifyPropertyChanged
     {
-        private const string NO_FILE = "EMPTY";
+        private const string NoFile = "EMPTY";
 
         //TODO: Remove STATIC once safe
         private static IConfig _config;
@@ -48,7 +48,7 @@ namespace VCCSharp.TapePlayer
 
                 string file = Config.TapeFileName;
 
-                _filePath = string.IsNullOrEmpty(file) ? NO_FILE : file;
+                _filePath = string.IsNullOrEmpty(file) ? NoFile : file;
 
                 return _filePath;
             }

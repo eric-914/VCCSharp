@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
@@ -48,7 +47,7 @@ namespace VCCSharp.Modules
     {
         #region CC2 Font
 
-        private static byte[] ntsc_round_fontdata8x12 =
+        private static readonly byte[] _ntsc_round_fontdata8x12 =
         {
             0x00, 0x00, 0x38, 0x44, 0x04, 0x34, 0x4C, 0x4C, 0x38, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x10, 0x28, 0x44, 0x44, 0x7C, 0x44, 0x44, 0x00, 0x00, 0x00,
@@ -172,7 +171,7 @@ namespace VCCSharp.Modules
 
         #region CC3 Font
 
-        private static byte[] cc3Fontdata8x12 =
+        private static readonly byte[] _cc3Fontdata8x12 =
         {
             /* Junk padding fix me chrs 0-31 */
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -442,23 +441,23 @@ namespace VCCSharp.Modules
         #endregion
 
         private readonly IModules _modules;
-        private IGraphics _graphics => _modules.Graphics;
+        private IGraphics Graphics => _modules.Graphics;
 
-        private byte VDG_Mode;
-        private byte Dis_Offset;
+        private byte _vdgMode;
+        private byte _disOffset;
 
-        private byte MmuTask;	    // $FF91 bit 0
-        private byte MmuEnabled;	// $FF90 bit 6
-        private byte RamVectors;	// $FF90 bit 3
+        private byte _mmuTask;	    // $FF91 bit 0
+        private byte _mmuEnabled;	// $FF90 bit 6
+        private byte _ramVectors;	// $FF90 bit 3
 
-        private byte RomMap;		// $FF90 bit 1-0
+        private byte _romMap;		// $FF90 bit 1-0
 
-        private ushort MmuPrefix;
+        private ushort _mmuPrefix;
 
-        private uint[] MemConfig = { 0x20000, 0x80000, 0x200000, 0x800000 };
-        private ushort[] RamMask = { 15, 63, 255, 1023 };
-        private byte[] StateSwitch = { 8, 56, 56, 56 };
-        private uint[] VidMask = { 0x1FFFF, 0x7FFFF, 0x1FFFFF, 0x7FFFFF };
+        private readonly uint[] _memConfig = { 0x20000, 0x80000, 0x200000, 0x800000 };
+        private readonly ushort[] _ramMask = { 15, 63, 255, 1023 };
+        private readonly byte[] _stateSwitch = { 8, 56, 56, 56 };
+        private readonly uint[] _vidMask = { 0x1FFFF, 0x7FFFF, 0x1FFFFF, 0x7FFFFF };
 
         public unsafe byte* Rom;
         public unsafe byte* Memory;	//Emulated RAM
@@ -497,8 +496,8 @@ namespace VCCSharp.Modules
 
         public void MC6883Reset()
         {
-            VDG_Mode = 0;
-            Dis_Offset = 0;
+            _vdgMode = 0;
+            _disOffset = 0;
 
             unsafe
             {
@@ -563,13 +562,13 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                MmuTask = 0;
-                MmuEnabled = 0;
-                RamVectors = 0;
+                _mmuTask = 0;
+                _mmuEnabled = 0;
+                _ramVectors = 0;
                 MmuState = 0;
-                RomMap = 0;
+                _romMap = 0;
                 MapType = 0;
-                MmuPrefix = 0;
+                _mmuPrefix = 0;
 
                 //ushort[,] MmuRegisters = new ushort[4, 8];
 
@@ -577,7 +576,7 @@ Could not locate {ROM} in any of these locations:
                 {
                     for (ushort index2 = 0; index2 < 4; index2++)
                     {
-                        MmuRegisters[index2, index1] = (ushort)(index1 + StateSwitch[CurrentRamConfig]);
+                        MmuRegisters[index2, index1] = (ushort)(index1 + _stateSwitch[CurrentRamConfig]);
                     }
                 }
 
@@ -588,7 +587,7 @@ Could not locate {ROM} in any of these locations:
 
                 for (int index = 0; index < 1024; index++)
                 {
-                    byte* offset = Memory + (index & RamMask[CurrentRamConfig]) * 0x2000;
+                    byte* offset = Memory + (index & _ramMask[CurrentRamConfig]) * 0x2000;
                     MemPages[index] = offset;
                     MemPageOffsets[index] = 1;
                 }
@@ -607,7 +606,7 @@ Could not locate {ROM} in any of these locations:
         {
             unsafe
             {
-                uint ramSize = MemConfig[ramSizeOption];
+                uint ramSize = _memConfig[ramSizeOption];
 
                 CurrentRamConfig = ramSizeOption;
 
@@ -626,7 +625,7 @@ Could not locate {ROM} in any of these locations:
                     Memory[index] = (byte)((index & 1) == 0 ? 0 : 0xFF);
                 }
 
-                _graphics.SetVidMask(VidMask[CurrentRamConfig]);
+                Graphics.SetVidMask(_vidMask[CurrentRamConfig]);
 
                 FreeMemory(InternalRomBuffer);
                 InternalRomBuffer = AllocateMemory(0x8001); //--TODO: Weird that the extra byte is needed here
@@ -672,13 +671,13 @@ Could not locate {ROM} in any of these locations:
         {
             if (((GimeRegisters[0x93] & 8) != 0) && (EnhancedFIRQFlag == 1))
             {
-                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.FIRQ, 0); //FIRQ
+                _modules.CPU.AssertInterrupt(CPUInterrupts.FIRQ, 0); //FIRQ
 
                 LastFirq |= 8;
             }
             else if (((GimeRegisters[0x92] & 8) != 0) && (EnhancedIRQFlag == 1))
             {
-                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 0); //IRQ moon patrol demo using this
+                _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 0); //IRQ moon patrol demo using this
 
                 LastIrq |= 8;
             }
@@ -729,7 +728,7 @@ Could not locate {ROM} in any of these locations:
 
         public byte VectorMemRead8(ushort address)
         {
-            if (RamVectors != 0)
+            if (_ramVectors != 0)
             {
                 unsafe
                 {
@@ -776,7 +775,7 @@ Could not locate {ROM} in any of these locations:
 
         public void VectorMemWrite8(byte data, ushort address)
         {
-            if (RamVectors != 0)
+            if (_ramVectors != 0)
             {
                 unsafe
                 {
@@ -801,40 +800,40 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void DrawTopBorder8()
         {
-            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
 
-            if (_graphics.BorderChange == 0)
+            if (Graphics.BorderChange == 0)
             {
                 return;
             }
 
             for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
             {
-                graphicsSurfaces.pSurface8[x + ((_modules.Emu.LineCounter * 2) * _modules.Emu.SurfacePitch)] = (byte)(_graphics.BorderColor8 | 128);
+                graphicsSurfaces.pSurface8[x + ((_modules.Emu.LineCounter * 2) * _modules.Emu.SurfacePitch)] = (byte)(Graphics.BorderColor8 | 128);
 
                 if (!_modules.Emu.ScanLines)
                 {
-                    graphicsSurfaces.pSurface8[x + ((_modules.Emu.LineCounter * 2 + 1) * _modules.Emu.SurfacePitch)] = (byte)(_graphics.BorderColor8 | 128);
+                    graphicsSurfaces.pSurface8[x + ((_modules.Emu.LineCounter * 2 + 1) * _modules.Emu.SurfacePitch)] = (byte)(Graphics.BorderColor8 | 128);
                 }
             }
         }
 
         public unsafe void DrawTopBorder16()
         {
-            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
 
-            if (_graphics.BorderChange == 0)
+            if (Graphics.BorderChange == 0)
             {
                 return;
             }
 
             for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
             {
-                graphicsSurfaces.pSurface16[x + ((_modules.Emu.LineCounter * 2) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor16;
+                graphicsSurfaces.pSurface16[x + ((_modules.Emu.LineCounter * 2) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor16;
 
                 if (!_modules.Emu.ScanLines)
                 {
-                    graphicsSurfaces.pSurface16[x + ((_modules.Emu.LineCounter * 2 + 1) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor16;
+                    graphicsSurfaces.pSurface16[x + ((_modules.Emu.LineCounter * 2 + 1) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor16;
                 }
             }
         }
@@ -846,61 +845,61 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void DrawTopBorder32()
         {
-            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
 
-            if (_graphics.BorderChange == 0)
+            if (Graphics.BorderChange == 0)
             {
                 return;
             }
 
             for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
             {
-                graphicsSurfaces.pSurface32[x + ((_modules.Emu.LineCounter * 2) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor32;
+                graphicsSurfaces.pSurface32[x + ((_modules.Emu.LineCounter * 2) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor32;
 
                 if (!_modules.Emu.ScanLines
                 )
                 {
-                    graphicsSurfaces.pSurface32[x + ((_modules.Emu.LineCounter * 2 + 1) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor32;
+                    graphicsSurfaces.pSurface32[x + ((_modules.Emu.LineCounter * 2 + 1) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor32;
                 }
             }
         }
 
         public unsafe void DrawBottomBorder8()
         {
-            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
 
-            if (_graphics.BorderChange == 0)
+            if (Graphics.BorderChange == 0)
             {
                 return;
             }
 
             for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
             {
-                graphicsSurfaces.pSurface8[x + (2 * (_modules.Emu.LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = (byte)(_graphics.BorderColor8 | 128);
+                graphicsSurfaces.pSurface8[x + (2 * (_modules.Emu.LineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = (byte)(Graphics.BorderColor8 | 128);
 
                 if (!_modules.Emu.ScanLines)
                 {
-                    graphicsSurfaces.pSurface8[x + _modules.Emu.SurfacePitch + (2 * (_modules.Emu.LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = (byte)(_graphics.BorderColor8 | 128);
+                    graphicsSurfaces.pSurface8[x + _modules.Emu.SurfacePitch + (2 * (_modules.Emu.LineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = (byte)(Graphics.BorderColor8 | 128);
                 }
             }
         }
 
         public unsafe void DrawBottomBorder16()
         {
-            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
 
-            if (_graphics.BorderChange == 0)
+            if (Graphics.BorderChange == 0)
             {
                 return;
             }
 
             for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
             {
-                graphicsSurfaces.pSurface16[x + (2 * (_modules.Emu.LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor16;
+                graphicsSurfaces.pSurface16[x + (2 * (_modules.Emu.LineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor16;
 
                 if (!_modules.Emu.ScanLines)
                 {
-                    graphicsSurfaces.pSurface16[x + _modules.Emu.SurfacePitch + (2 * (_modules.Emu.LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor16;
+                    graphicsSurfaces.pSurface16[x + _modules.Emu.SurfacePitch + (2 * (_modules.Emu.LineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor16;
                 }
             }
         }
@@ -912,104 +911,104 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void DrawBottomBorder32()
         {
-            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
 
-            if (_graphics.BorderChange == 0)
+            if (Graphics.BorderChange == 0)
             {
                 return;
             }
 
             for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
             {
-                graphicsSurfaces.pSurface32[x + (2 * (_modules.Emu.LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor32;
+                graphicsSurfaces.pSurface32[x + (2 * (_modules.Emu.LineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor32;
 
                 if (!_modules.Emu.ScanLines)
                 {
-                    graphicsSurfaces.pSurface32[x + _modules.Emu.SurfacePitch + (2 * (_modules.Emu.LineCounter + _graphics.LinesPerScreen + _graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor32;
+                    graphicsSurfaces.pSurface32[x + _modules.Emu.SurfacePitch + (2 * (_modules.Emu.LineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor32;
                 }
             }
         }
 
         public unsafe void UpdateScreen8()
         {
-            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
 
-            if ((_graphics.HorizontalCenter != 0) && (_graphics.BorderChange > 0))
+            if ((Graphics.HorizontalCenter != 0) && (Graphics.BorderChange > 0))
             {
-                for (ushort x = 0; x < _graphics.HorizontalCenter; x++)
+                for (ushort x = 0; x < Graphics.HorizontalCenter; x++)
                 {
-                    graphicsSurfaces.pSurface8[x + (((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor8;
+                    graphicsSurfaces.pSurface8[x + (((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor8;
 
                     if (!_modules.Emu.ScanLines)
                     {
-                        graphicsSurfaces.pSurface8[x + (((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2 + 1) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor8;
+                        graphicsSurfaces.pSurface8[x + (((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2 + 1) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor8;
                     }
 
-                    graphicsSurfaces.pSurface8[x + (_graphics.PixelsPerLine * (_graphics.Stretch + 1)) + _graphics.HorizontalCenter + (((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor8;
+                    graphicsSurfaces.pSurface8[x + (Graphics.PixelsPerLine * (Graphics.Stretch + 1)) + Graphics.HorizontalCenter + (((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor8;
 
                     if (!_modules.Emu.ScanLines)
                     {
-                        graphicsSurfaces.pSurface8[x + (_graphics.PixelsPerLine * (_graphics.Stretch + 1)) + _graphics.HorizontalCenter + (((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2 + 1) * _modules.Emu.SurfacePitch)] = _graphics.BorderColor8;
+                        graphicsSurfaces.pSurface8[x + (Graphics.PixelsPerLine * (Graphics.Stretch + 1)) + Graphics.HorizontalCenter + (((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2 + 1) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor8;
                     }
                 }
             }
 
-            if (_graphics.LinesPerRow < 13)
+            if (Graphics.LinesPerRow < 13)
             {
-                _graphics.TagY++;
+                Graphics.TagY++;
             }
 
             if (_modules.Emu.LineCounter == Define.FALSE)
             {
-                _graphics.StartOfVidRam = _graphics.NewStartOfVidRam;
-                _graphics.TagY = (ushort)(_modules.Emu.LineCounter);
+                Graphics.StartOfVidRam = Graphics.NewStartOfVidRam;
+                Graphics.TagY = (ushort)(_modules.Emu.LineCounter);
             }
 
-            uint start = (uint)(_graphics.StartOfVidRam + (_graphics.TagY / _graphics.LinesPerRow) * (_graphics.VPitch * _graphics.ExtendedText));
-            uint yStride = (uint)((((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch) + (_graphics.HorizontalCenter) - 1);
+            uint start = (uint)(Graphics.StartOfVidRam + (Graphics.TagY / Graphics.LinesPerRow) * (Graphics.VPitch * Graphics.ExtendedText));
+            uint yStride = (uint)((((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch) + (Graphics.HorizontalCenter) - 1);
 
-            SwitchMasterMode8(_graphics.MasterMode, start, yStride);
+            SwitchMasterMode8(Graphics.MasterMode, start, yStride);
         }
 
         public unsafe void UpdateScreen16()
         {
-            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
 
-            if ((_graphics.HorizontalCenter != 0) && (_graphics.BorderChange > 0))
+            if ((Graphics.HorizontalCenter != 0) && (Graphics.BorderChange > 0))
             {
-                for (ushort x = 0; x < _graphics.HorizontalCenter; x++)
+                for (ushort x = 0; x < Graphics.HorizontalCenter; x++)
                 {
-                    graphicsSurfaces.pSurface16[x + (((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2) * (_modules.Emu.SurfacePitch))] = _graphics.BorderColor16;
+                    graphicsSurfaces.pSurface16[x + (((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2) * (_modules.Emu.SurfacePitch))] = Graphics.BorderColor16;
 
                     if (!_modules.Emu.ScanLines)
                     {
-                        graphicsSurfaces.pSurface16[x + (((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2 + 1) * (_modules.Emu.SurfacePitch))] = _graphics.BorderColor16;
+                        graphicsSurfaces.pSurface16[x + (((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2 + 1) * (_modules.Emu.SurfacePitch))] = Graphics.BorderColor16;
                     }
 
-                    graphicsSurfaces.pSurface16[x + (_graphics.PixelsPerLine * (_graphics.Stretch + 1)) + _graphics.HorizontalCenter + (((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2) * (_modules.Emu.SurfacePitch))] = _graphics.BorderColor16;
+                    graphicsSurfaces.pSurface16[x + (Graphics.PixelsPerLine * (Graphics.Stretch + 1)) + Graphics.HorizontalCenter + (((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2) * (_modules.Emu.SurfacePitch))] = Graphics.BorderColor16;
 
                     if (!_modules.Emu.ScanLines)
                     {
-                        graphicsSurfaces.pSurface16[x + (_graphics.PixelsPerLine * (_graphics.Stretch + 1)) + _graphics.HorizontalCenter + (((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2 + 1) * (_modules.Emu.SurfacePitch))] = _graphics.BorderColor16;
+                        graphicsSurfaces.pSurface16[x + (Graphics.PixelsPerLine * (Graphics.Stretch + 1)) + Graphics.HorizontalCenter + (((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2 + 1) * (_modules.Emu.SurfacePitch))] = Graphics.BorderColor16;
                     }
                 }
             }
 
-            if (_graphics.LinesPerRow < 13)
+            if (Graphics.LinesPerRow < 13)
             {
-                _graphics.TagY++;
+                Graphics.TagY++;
             }
 
             if (_modules.Emu.LineCounter == Define.FALSE)
             {
-                _graphics.StartOfVidRam = _graphics.NewStartOfVidRam;
-                _graphics.TagY = (ushort)(_modules.Emu.LineCounter);
+                Graphics.StartOfVidRam = Graphics.NewStartOfVidRam;
+                Graphics.TagY = (ushort)(_modules.Emu.LineCounter);
             }
 
-            uint start = (uint)(_graphics.StartOfVidRam + (_graphics.TagY / _graphics.LinesPerRow) * (_graphics.VPitch * _graphics.ExtendedText));
-            uint yStride = (uint)((((_modules.Emu.LineCounter + _graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch) + (_graphics.HorizontalCenter * 1) - 1);
+            uint start = (uint)(Graphics.StartOfVidRam + (Graphics.TagY / Graphics.LinesPerRow) * (Graphics.VPitch * Graphics.ExtendedText));
+            uint yStride = (uint)((((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch) + (Graphics.HorizontalCenter * 1) - 1);
 
-            SwitchMasterMode16(_graphics.MasterMode, start, yStride);
+            SwitchMasterMode16(Graphics.MasterMode, start, yStride);
         }
 
         public unsafe void UpdateScreen24()
@@ -1019,48 +1018,48 @@ Could not locate {ROM} in any of these locations:
 
         public unsafe void UpdateScreen32()
         {
-            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
+            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
 
             uint* szSurface32 = graphicsSurfaces.pSurface32;
 
             ushort y = (ushort)_modules.Emu.LineCounter;
             long Xpitch = _modules.Emu.SurfacePitch;
 
-            if ((_graphics.HorizontalCenter != 0) && (_graphics.BorderChange > 0))
+            if ((Graphics.HorizontalCenter != 0) && (Graphics.BorderChange > 0))
             {
-                for (ushort x = 0; x < _graphics.HorizontalCenter; x++)
+                for (ushort x = 0; x < Graphics.HorizontalCenter; x++)
                 {
-                    szSurface32[x + (((y + _graphics.VerticalCenter) * 2) * Xpitch)] = _graphics.BorderColor32;
+                    szSurface32[x + (((y + Graphics.VerticalCenter) * 2) * Xpitch)] = Graphics.BorderColor32;
 
                     if (!_modules.Emu.ScanLines)
                     {
-                        szSurface32[x + (((y + _graphics.VerticalCenter) * 2 + 1) * Xpitch)] = _graphics.BorderColor32;
+                        szSurface32[x + (((y + Graphics.VerticalCenter) * 2 + 1) * Xpitch)] = Graphics.BorderColor32;
                     }
 
-                    szSurface32[x + (_graphics.PixelsPerLine * (_graphics.Stretch + 1)) + _graphics.HorizontalCenter + (((y + _graphics.VerticalCenter) * 2) * Xpitch)] = _graphics.BorderColor32;
+                    szSurface32[x + (Graphics.PixelsPerLine * (Graphics.Stretch + 1)) + Graphics.HorizontalCenter + (((y + Graphics.VerticalCenter) * 2) * Xpitch)] = Graphics.BorderColor32;
 
                     if (!_modules.Emu.ScanLines)
                     {
-                        szSurface32[x + (_graphics.PixelsPerLine * (_graphics.Stretch + 1)) + _graphics.HorizontalCenter + (((y + _graphics.VerticalCenter) * 2 + 1) * Xpitch)] = _graphics.BorderColor32;
+                        szSurface32[x + (Graphics.PixelsPerLine * (Graphics.Stretch + 1)) + Graphics.HorizontalCenter + (((y + Graphics.VerticalCenter) * 2 + 1) * Xpitch)] = Graphics.BorderColor32;
                     }
                 }
             }
 
-            if (_graphics.LinesPerRow < 13)
+            if (Graphics.LinesPerRow < 13)
             {
-                _graphics.TagY++;
+                Graphics.TagY++;
             }
 
             if (y == Define.FALSE)
             {
-                _graphics.StartOfVidRam = _graphics.NewStartOfVidRam;
-                _graphics.TagY = y;
+                Graphics.StartOfVidRam = Graphics.NewStartOfVidRam;
+                Graphics.TagY = y;
             }
 
-            uint start = (uint)(_graphics.StartOfVidRam + (_graphics.TagY / _graphics.LinesPerRow) * (_graphics.VPitch * _graphics.ExtendedText));
-            uint yStride = (uint)((((y + _graphics.VerticalCenter) * 2) * Xpitch) + (_graphics.HorizontalCenter * 1) - 1);
+            uint start = (uint)(Graphics.StartOfVidRam + (Graphics.TagY / Graphics.LinesPerRow) * (Graphics.VPitch * Graphics.ExtendedText));
+            uint yStride = (uint)((((y + Graphics.VerticalCenter) * 2) * Xpitch) + (Graphics.HorizontalCenter * 1) - 1);
 
-            SwitchMasterMode32(_graphics.MasterMode, start, yStride);
+            SwitchMasterMode32(Graphics.MasterMode, start, yStride);
         }
 
         public unsafe void SwitchMasterMode8(byte masterMode, uint start, uint yStride)
@@ -1083,8 +1082,8 @@ Could not locate {ROM} in any of these locations:
             byte carry1 = 1, carry2 = 0;
             byte color = 0;
 
-            GraphicsSurfaces graphicsSurfaces = _graphics.GetGraphicsSurfaces();
-            GraphicsColors graphicsColors = _graphics.GetGraphicsColors();
+            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
+            GraphicsColors graphicsColors = Graphics.GetGraphicsColors();
 
             byte* ramBuffer = Memory;
             ushort* wRamBuffer = (ushort*)ramBuffer;
@@ -1101,26 +1100,26 @@ Could not locate {ROM} in any of these locations:
                 case 0: //Width 80
                     attributes = 0;
 
-                    if ((_graphics.HorizontalOffsetReg & 128) != 0)
+                    if ((Graphics.HorizontalOffsetReg & 128) != 0)
                     {
-                        start = (uint)(_graphics.StartOfVidRam + (_graphics.TagY / _graphics.LinesPerRow) * (_graphics.VPitch)); //Fix for Horizontal Offset Register in text mode.
+                        start = (uint)(Graphics.StartOfVidRam + (Graphics.TagY / Graphics.LinesPerRow) * (Graphics.VPitch)); //Fix for Horizontal Offset Register in text mode.
                     }
 
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow * _graphics.ExtendedText; beam += _graphics.ExtendedText)
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow * Graphics.ExtendedText; beam += Graphics.ExtendedText)
                     {
-                        character = ramBuffer[start + (byte)(beam + _graphics.HorizontalOffset)];
-                        pixel = cc3Fontdata8x12[character * 12 + (y % _graphics.LinesPerRow)];
+                        character = ramBuffer[start + (byte)(beam + Graphics.HorizontalOffset)];
+                        pixel = _cc3Fontdata8x12[character * 12 + (y % Graphics.LinesPerRow)];
 
-                        if (_graphics.ExtendedText == 2)
+                        if (Graphics.ExtendedText == 2)
                         {
-                            attributes = ramBuffer[start + (byte)(beam + _graphics.HorizontalOffset) + 1];
+                            attributes = ramBuffer[start + (byte)(beam + Graphics.HorizontalOffset) + 1];
 
-                            if (((attributes & 64) != 0) && (y % _graphics.LinesPerRow == (_graphics.LinesPerRow - 1)))
+                            if (((attributes & 64) != 0) && (y % Graphics.LinesPerRow == (Graphics.LinesPerRow - 1)))
                             {   //UnderLine
                                 pixel = 255;
                             }
 
-                            if (_graphics.CheckState(attributes))
+                            if (Graphics.CheckState(attributes))
                             {
                                 pixel = 0;
                             }
@@ -1162,21 +1161,21 @@ Could not locate {ROM} in any of these locations:
                 case 2: //Width 40
                     attributes = 0;
 
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow * _graphics.ExtendedText; beam += _graphics.ExtendedText)
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow * Graphics.ExtendedText; beam += Graphics.ExtendedText)
                     {
-                        character = ramBuffer[start + (byte)(beam + _graphics.HorizontalOffset)];
-                        pixel = cc3Fontdata8x12[character * 12 + (y % _graphics.LinesPerRow)];
+                        character = ramBuffer[start + (byte)(beam + Graphics.HorizontalOffset)];
+                        pixel = _cc3Fontdata8x12[character * 12 + (y % Graphics.LinesPerRow)];
 
-                        if (_graphics.ExtendedText == 2)
+                        if (Graphics.ExtendedText == 2)
                         {
-                            attributes = ramBuffer[start + (byte)(beam + _graphics.HorizontalOffset) + 1];
+                            attributes = ramBuffer[start + (byte)(beam + Graphics.HorizontalOffset) + 1];
 
-                            if (((attributes & 64) != 0) && (y % _graphics.LinesPerRow == (_graphics.LinesPerRow - 1)))
+                            if (((attributes & 64) != 0) && (y % Graphics.LinesPerRow == (Graphics.LinesPerRow - 1)))
                             {   //UnderLine
                                 pixel = 255;
                             }
 
-                            if (_graphics.CheckState(attributes))
+                            if (Graphics.CheckState(attributes))
                             {
                                 pixel = 0;
                             }
@@ -1293,27 +1292,27 @@ Could not locate {ROM} in any of these locations:
                 case 63:
                     return; //TODO: Why?
 
-                //for (ushort beam = 0; beam < _graphics.BytesPerRow * gs->ExtendedText; beam += gs->ExtendedText)
+                //for (ushort beam = 0; beam < Graphics.BytesPerRow * gs->ExtendedText; beam += gs->ExtendedText)
                 //{
-                //    character = ramBuffer[start + (byte)(beam + _graphics.HorizontalOffset)];
+                //    character = ramBuffer[start + (byte)(beam + Graphics.HorizontalOffset)];
 
                 //    if (gs->ExtendedText == 2)
                 //    {
-                //        attributes = ramBuffer[start + (byte)(beam + _graphics.HorizontalOffset) + 1];
+                //        attributes = ramBuffer[start + (byte)(beam + Graphics.HorizontalOffset) + 1];
                 //    }
                 //    else
                 //    {
                 //        attributes = 0;
                 //    }
 
-                //    pixel = cc3Fontdata8x12[(character & 127) * 8 + (y % 8)];
+                //    pixel = _cc3Fontdata8x12[(character & 127) * 8 + (y % 8)];
 
                 //    if (((attributes & 64) != 0) && (y % 8 == 7))
                 //    {   //UnderLine
                 //        pixel = 255;
                 //    }
 
-                //    if (_graphics.CheckState(attributes))
+                //    if (Graphics.CheckState(attributes))
                 //    {
                 //        pixel = 0;
                 //    }
@@ -1400,28 +1399,28 @@ Could not locate {ROM} in any of these locations:
                 case 125:
                 case 126:
                 case 127:
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam++)
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam++)
                     {
-                        character = ramBuffer[start + (byte)(beam + _graphics.HorizontalOffset)];
+                        character = ramBuffer[start + (byte)(beam + Graphics.HorizontalOffset)];
 
                         switch ((character & 192) >> 6)
                         {
                             case 0:
                                 character &= 63;
-                                textPalette[0] = graphicsColors.Palette32Bit[_graphics.TextBgPalette];
-                                textPalette[1] = graphicsColors.Palette32Bit[_graphics.TextFgPalette];
+                                textPalette[0] = graphicsColors.Palette32Bit[Graphics.TextBgPalette];
+                                textPalette[1] = graphicsColors.Palette32Bit[Graphics.TextFgPalette];
 
-                                if ((_graphics.LowerCase != 0) && (character < 32))
-                                    pixel = ntsc_round_fontdata8x12[(character + 80) * 12 + (y % 12)];
+                                if ((Graphics.LowerCase != 0) && (character < 32))
+                                    pixel = _ntsc_round_fontdata8x12[(character + 80) * 12 + (y % 12)];
                                 else
-                                    pixel = (byte)~ntsc_round_fontdata8x12[(character) * 12 + (y % 12)];
+                                    pixel = (byte)~_ntsc_round_fontdata8x12[(character) * 12 + (y % 12)];
                                 break;
 
                             case 1:
                                 character &= 63;
-                                textPalette[0] = graphicsColors.Palette32Bit[_graphics.TextBgPalette];
-                                textPalette[1] = graphicsColors.Palette32Bit[_graphics.TextFgPalette];
-                                pixel = ntsc_round_fontdata8x12[(character) * 12 + (y % 12)];
+                                textPalette[0] = graphicsColors.Palette32Bit[Graphics.TextBgPalette];
+                                textPalette[1] = graphicsColors.Palette32Bit[Graphics.TextFgPalette];
+                                pixel = _ntsc_round_fontdata8x12[(character) * 12 + (y % 12)];
                                 break;
 
                             case 2:
@@ -1429,7 +1428,7 @@ Could not locate {ROM} in any of these locations:
                                 textPalette[1] = graphicsColors.Palette32Bit[(character & 112) >> 4];
                                 textPalette[0] = graphicsColors.Palette32Bit[8];
                                 character = (byte)(64 + (character & 0xF));
-                                pixel = ntsc_round_fontdata8x12[(character) * 12 + (y % 12)];
+                                pixel = _ntsc_round_fontdata8x12[(character) * 12 + (y % 12)];
                                 break;
                         }
 
@@ -1481,9 +1480,9 @@ Could not locate {ROM} in any of these locations:
                 #region case 128 + 0 //Bpp=0 Sr=0 1BPP Stretch=1
 
                 case 128 + 0:
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=1
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //1bbp Stretch=1
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 5)];
@@ -1532,9 +1531,9 @@ Could not locate {ROM} in any of these locations:
 
                 case 128 + 1: //Bpp=0 Sr=1 1BPP Stretch=2
                 case 128 + 2:   //Bpp=0 Sr=2 
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=2
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //1bbp Stretch=2
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
 
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
@@ -1618,9 +1617,9 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 4: //Bpp=0 Sr=4
                 case 128 + 5: //Bpp=0 Sr=5
                 case 128 + 6: //Bpp=0 Sr=6
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=4
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //1bbp Stretch=4
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
 
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
@@ -1772,9 +1771,9 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 12: //Bpp=0 Sr=12
                 case 128 + 13: //Bpp=0 Sr=13
                 case 128 + 14: //Bpp=0 Sr=14
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=8
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //1bbp Stretch=8
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[1 & (widePixel >> 7)];
@@ -2047,9 +2046,9 @@ Could not locate {ROM} in any of these locations:
 
                 case 128 + 15: //Bpp=0 Sr=15 1BPP Stretch=16
                 case 128 + 16: //BPP=1 Sr=0  2BPP Stretch=1
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=1
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //2bbp Stretch=1
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 2)];
@@ -2082,9 +2081,9 @@ Could not locate {ROM} in any of these locations:
 
                 case 128 + 17: //Bpp=1 Sr=1  2BPP Stretch=2
                 case 128 + 18: //Bpp=1 Sr=2
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=2
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //2bbp Stretch=2
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 4)];
@@ -2136,9 +2135,9 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 20: //Bpp=1 Sr=4
                 case 128 + 21: //Bpp=1 Sr=5
                 case 128 + 22: //Bpp=1 Sr=6
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=4
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //2bbp Stretch=4
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
@@ -2225,9 +2224,9 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 28: //Bpp=1 Sr=12 
                 case 128 + 29: //Bpp=1 Sr=13 
                 case 128 + 30: //Bpp=1 Sr=14
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=8
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //2bbp Stretch=8
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
@@ -2371,9 +2370,9 @@ Could not locate {ROM} in any of these locations:
                 #region case 128 + 31 //Bpp=1 Sr=15 2BPP Stretch=16 
 
                 case 128 + 31: //Bpp=1 Sr=15 2BPP Stretch=16 
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=16
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //2bbp Stretch=16
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[3 & (widePixel >> 6)];
@@ -2645,9 +2644,9 @@ Could not locate {ROM} in any of these locations:
                 #region case 128 + 32 //Bpp=2 Sr=0 4BPP Stretch=1
 
                 case 128 + 32: //Bpp=2 Sr=0 4BPP Stretch=1
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //4bbp Stretch=1
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //4bbp Stretch=1
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & widePixel];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 12)];
@@ -2672,9 +2671,9 @@ Could not locate {ROM} in any of these locations:
 
                 case 128 + 33: //Bpp=2 Sr=1 4BPP Stretch=2 
                 case 128 + 34: //Bpp=2 Sr=2
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //4bbp Stretch=2
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //4bbp Stretch=2
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & widePixel];
@@ -2709,9 +2708,9 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 36: //Bpp=2 Sr=4 
                 case 128 + 37: //Bpp=2 Sr=5 
                 case 128 + 38: //Bpp=2 Sr=6 
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //4bbp Stretch=4
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //4bbp Stretch=4
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
@@ -2766,9 +2765,9 @@ Could not locate {ROM} in any of these locations:
                 case 128 + 44: //Bpp=2 Sr=12 
                 case 128 + 45: //Bpp=2 Sr=13 
                 case 128 + 46: //Bpp=2 Sr=14 
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //4bbp Stretch=8
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //4bbp Stretch=8
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
@@ -2848,9 +2847,9 @@ Could not locate {ROM} in any of these locations:
                 #region case 128 + 47: //Bpp=2 Sr=15 4BPP Stretch=16
 
                 case 128 + 47: //Bpp=2 Sr=15 4BPP Stretch=16
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //4bbp Stretch=16
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //4bbp Stretch=16
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
                         szSurface32[yStride += 1] = graphicsColors.Palette32Bit[15 & (widePixel >> 4)];
@@ -3016,46 +3015,46 @@ Could not locate {ROM} in any of these locations:
                 #region case 192 + 0: //Bpp=0 Sr=0 1BPP Stretch=1
 
                 case 192 + 0: //Bpp=0 Sr=0 1BPP Stretch=1
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=1
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //1bbp Stretch=1
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
 
                         if (!_modules.Emu.ScanLines)
                         {
                             yStride -= (16);
                             yStride += Xpitch;
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
                             yStride -= Xpitch;
                         }
                     }
@@ -3067,11 +3066,11 @@ Could not locate {ROM} in any of these locations:
 
                 case 192 + 1: //Bpp=0 Sr=1 1BPP Stretch=2
                 case 192 + 2:   //Bpp=0 Sr=2 
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=2
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //1bbp Stretch=2
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
 
-                        if (_graphics.MonType == 0)
+                        if (Graphics.MonType == 0)
                         { //Pcolor
                             for (byte xbit = 8; xbit > 0; xbit--)
                             {
@@ -3097,18 +3096,18 @@ Could not locate {ROM} in any of these locations:
 
                                     case 3:
                                         color = 3;
-                                        szSurface32[yStride - 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
+                                        szSurface32[yStride - 1] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + 3];
 
                                         if (!_modules.Emu.ScanLines)
                                         {
-                                            szSurface32[yStride + Xpitch - 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
+                                            szSurface32[yStride + Xpitch - 1] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + 3];
                                         }
 
-                                        szSurface32[yStride] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
+                                        szSurface32[yStride] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + 3];
 
                                         if (!_modules.Emu.ScanLines)
                                         {
-                                            szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
+                                            szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + 3];
                                         }
 
                                         break;
@@ -3118,18 +3117,18 @@ Could not locate {ROM} in any of these locations:
                                         break;
                                 }
 
-                                szSurface32[yStride += 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
+                                szSurface32[yStride += 1] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + color];
 
                                 if (!_modules.Emu.ScanLines)
                                 {
-                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
+                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + color];
                                 }
 
-                                szSurface32[yStride += 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
+                                szSurface32[yStride += 1] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + color];
 
                                 if (!_modules.Emu.ScanLines)
                                 {
-                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
+                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + color];
                                 }
 
                                 carry2 = carry1;
@@ -3159,18 +3158,18 @@ Could not locate {ROM} in any of these locations:
 
                                     case 3:
                                         color = 3;
-                                        szSurface32[yStride - 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
+                                        szSurface32[yStride - 1] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + 3];
 
                                         if (!_modules.Emu.ScanLines)
                                         {
-                                            szSurface32[yStride + Xpitch - 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
+                                            szSurface32[yStride + Xpitch - 1] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + 3];
                                         }
 
-                                        szSurface32[yStride] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
+                                        szSurface32[yStride] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + 3];
 
                                         if (!_modules.Emu.ScanLines)
                                         {
-                                            szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + 3];
+                                            szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + 3];
                                         }
 
                                         break;
@@ -3180,18 +3179,18 @@ Could not locate {ROM} in any of these locations:
                                         break;
                                 }
 
-                                szSurface32[yStride += 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
+                                szSurface32[yStride += 1] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + color];
 
                                 if (!_modules.Emu.ScanLines)
                                 {
-                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
+                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + color];
                                 }
 
-                                szSurface32[yStride += 1] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
+                                szSurface32[yStride += 1] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + color];
 
                                 if (!_modules.Emu.ScanLines)
                                 {
-                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[_graphics.ColorInvert * 4 + color];
+                                    szSurface32[yStride + Xpitch] = graphicsColors.Afacts32[Graphics.ColorInvert * 4 + color];
                                 }
 
                                 carry2 = carry1;
@@ -3200,75 +3199,75 @@ Could not locate {ROM} in any of these locations:
                         }
                         else
                         {
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
 
                             if (!_modules.Emu.ScanLines)
                             {
                                 yStride -= (32);
                                 yStride += Xpitch;
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                                szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
                                 yStride -= Xpitch;
                             }
                         }
@@ -3283,143 +3282,143 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 4: //Bpp=0 Sr=4
                 case 192 + 5: //Bpp=0 Sr=5
                 case 192 + 6: //Bpp=0 Sr=6
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=4
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //1bbp Stretch=4
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
 
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
 
                         if (!_modules.Emu.ScanLines)
                         {
                             yStride -= (64);
                             yStride += Xpitch;
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
                             yStride -= Xpitch;
                         }
                     }
@@ -3437,270 +3436,270 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 12: //Bpp=0 Sr=12
                 case 192 + 13: //Bpp=0 Sr=13
                 case 192 + 14: //Bpp=0 Sr=14
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //1bbp Stretch=8
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //1bbp Stretch=8
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
 
                         if (!_modules.Emu.ScanLines)
                         {
                             yStride -= (128);
                             yStride += Xpitch;
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 7))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 5))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 3))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 1))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 15))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 13))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 11))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 9))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 7))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 5))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 3))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 1))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 15))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 13))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 11))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 9))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (1 & (widePixel >> 8))];
                             yStride -= Xpitch;
                         }
                     }
@@ -3712,30 +3711,30 @@ Could not locate {ROM} in any of these locations:
 
                 case 192 + 15: //Bpp=0 Sr=15 1BPP Stretch=16
                 case 192 + 16: //BPP=1 Sr=0  2BPP Stretch=1
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=1
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //2bbp Stretch=1
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
 
                         if (!_modules.Emu.ScanLines)
                         {
                             yStride -= (8);
                             yStride += Xpitch;
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
                             yStride -= Xpitch;
                         }
                     }
@@ -3747,46 +3746,46 @@ Could not locate {ROM} in any of these locations:
 
                 case 192 + 17: //Bpp=1 Sr=1  2BPP Stretch=2
                 case 192 + 18: //Bpp=1 Sr=2
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=2
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //2bbp Stretch=2
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
 
                         if (!_modules.Emu.ScanLines)
                         {
                             yStride -= (16);
                             yStride += Xpitch;
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
                             yStride -= Xpitch;
                         }
                     }
@@ -3801,78 +3800,78 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 20: //Bpp=1 Sr=4
                 case 192 + 21: //Bpp=1 Sr=5
                 case 192 + 22: //Bpp=1 Sr=6
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=4
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //2bbp Stretch=4
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
 
                         if (!_modules.Emu.ScanLines)
                         {
                             yStride -= (32);
                             yStride += Xpitch;
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
                             yStride -= Xpitch;
                         }
                     }
@@ -3890,142 +3889,142 @@ Could not locate {ROM} in any of these locations:
                 case 192 + 28: //Bpp=1 Sr=12 
                 case 192 + 29: //Bpp=1 Sr=13 
                 case 192 + 30: //Bpp=1 Sr=14
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=8
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //2bbp Stretch=8
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
 
                         if (!_modules.Emu.ScanLines)
                         {
                             yStride -= (64);
                             yStride += Xpitch;
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
                             yStride -= Xpitch;
                         }
                     }
@@ -4037,270 +4036,270 @@ Could not locate {ROM} in any of these locations:
                 #region case 192 + 31: //Bpp=1 Sr=15 2BPP Stretch=16 
 
                 case 192 + 31: //Bpp=1 Sr=15 2BPP Stretch=16 
-                    for (ushort beam = 0; beam < _graphics.BytesPerRow; beam += 2) //2bbp Stretch=16
+                    for (ushort beam = 0; beam < Graphics.BytesPerRow; beam += 2) //2bbp Stretch=16
                     {
-                        widePixel = wRamBuffer[(_graphics.VidMask & (start + (byte)(_graphics.HorizontalOffset + beam))) >> 1];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                        szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
 
                         if (!_modules.Emu.ScanLines)
                         {
                             yStride -= (128);
                             yStride += Xpitch;
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 6))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 4))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 2))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & widePixel)];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 14))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 12))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 10))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
-                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[_graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 6))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 4))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 2))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & widePixel)];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 14))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 12))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 10))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
+                            szSurface32[yStride += 1] = graphicsColors.Palette32Bit[Graphics.PaletteIndex + (3 & (widePixel >> 8))];
                             yStride -= Xpitch;
                         }
                     }
@@ -4366,8 +4365,8 @@ Could not locate {ROM} in any of these locations:
 
         public void SAMWrite(byte data, byte port)
         {
-            byte mask = 0;
-            byte reg = 0;
+            byte mask;
+            byte reg;
 
             if ((port >= 0xC6) && (port <= 0xD3))   //VDG Display offset Section
             {
@@ -4375,14 +4374,14 @@ Could not locate {ROM} in any of these locations:
                 reg = (byte)((port & 0x0E) >> 1);
                 mask = (byte)(1 << reg);
 
-                Dis_Offset = (byte)(Dis_Offset & (0xFF - mask)); //Shut the bit off
+                _disOffset = (byte)(_disOffset & (0xFF - mask)); //Shut the bit off
 
                 if ((port & 1) != 0)
                 {
-                    Dis_Offset |= mask;
+                    _disOffset |= mask;
                 }
 
-                _graphics.SetGimeVdgOffset(Dis_Offset);
+                Graphics.SetGimeVdgOffset(_disOffset);
             }
 
             if ((port >= 0xC0) && (port <= 0xC5))   //VDG Mode
@@ -4390,14 +4389,14 @@ Could not locate {ROM} in any of these locations:
                 port -= 0xC0;
                 reg = (byte)((port & 0x0E) >> 1);
                 mask = (byte)(1 << reg);
-                VDG_Mode = (byte)(VDG_Mode & (0xFF - mask));
+                _vdgMode = (byte)(_vdgMode & (0xFF - mask));
 
                 if ((port & 1) != 0)
                 {
-                    VDG_Mode |= mask;
+                    _vdgMode |= mask;
                 }
 
-                _graphics.SetGimeVdgMode(VDG_Mode);
+                Graphics.SetGimeVdgMode(_vdgMode);
             }
 
             if ((port == 0xDE) || (port == 0xDF))
@@ -4458,19 +4457,19 @@ Could not locate {ROM} in any of these locations:
                     break;
 
                 case 0x92:
-                    SetGimeIRQSteering(data);
+                    SetGimeIRQSteering();
                     break;
 
                 case 0x93:
-                    SetGimeFIRQSteering(data);
+                    SetGimeFIRQSteering();
                     break;
 
                 case 0x94:
-                    SetTimerMSB(data);
+                    SetTimerMSB();
                     break;
 
                 case 0x95:
-                    SetTimerLSB(data);
+                    SetTimerLSB();
                     break;
 
                 case 0x96:
@@ -4481,15 +4480,15 @@ Could not locate {ROM} in any of these locations:
                     break;
 
                 case 0x98:
-                    _graphics.SetGimeVmode(data);
+                    Graphics.SetGimeVmode(data);
                     break;
 
                 case 0x99:
-                    _graphics.SetGimeVres(data);
+                    Graphics.SetGimeVres(data);
                     break;
 
                 case 0x9A:
-                    _graphics.SetGimeBorderColor(data);
+                    Graphics.SetGimeBorderColor(data);
                     break;
 
                 case 0x9B:
@@ -4501,11 +4500,11 @@ Could not locate {ROM} in any of these locations:
 
                 case 0x9D:
                 case 0x9E:
-                    _graphics.SetVerticalOffsetRegister((ushort)((GimeRegisters[0x9D] << 8) | GimeRegisters[0x9E]));
+                    Graphics.SetVerticalOffsetRegister((ushort)((GimeRegisters[0x9D] << 8) | GimeRegisters[0x9E]));
                     break;
 
                 case 0x9F:
-                    _graphics.SetGimeHorizontalOffset(data);
+                    Graphics.SetGimeHorizontalOffset(data);
                     break;
 
                 case 0xA0:
@@ -4543,14 +4542,14 @@ Could not locate {ROM} in any of these locations:
                 case 0xBD:
                 case 0xBE:
                 case 0xBF:
-                    _graphics.SetGimePalette((byte)(port - 0xB0), (byte)(data & 63));
+                    Graphics.SetGimePalette((byte)(port - 0xB0), (byte)(data & 63));
                     break;
             }
         }
 
         public void SetInit0(byte data)
         {
-            _graphics.SetCompatMode((byte)((data & 128) == 0 ? 0 : 1));
+            Graphics.SetCompatMode((byte)((data & 128) == 0 ? 0 : 1));
             SetMmuEnabled((byte)((data & 64) == 0 ? 0 : 1)); //MMUEN
             SetRomMap((byte)(data & 3)); //MC0-MC1
             SetVectors((byte)(data & 8)); //MC3
@@ -4565,21 +4564,21 @@ Could not locate {ROM} in any of these locations:
             _modules.CoCo.SetTimerClockRate((byte)(data & 32));	//TINS
         }
 
-        public void SetTimerMSB(byte data)
+        public void SetTimerMSB()
         {
             ushort temp = (ushort)(((GimeRegisters[0x94] << 8) + GimeRegisters[0x95]) & 4095);
 
             _modules.CoCo.SetInterruptTimer(temp);
         }
 
-        public void SetTimerLSB(byte data)
+        public void SetTimerLSB()
         {
             ushort temp = (ushort)(((GimeRegisters[0x94] << 8) + GimeRegisters[0x95]) & 4095);
 
             _modules.CoCo.SetInterruptTimer(temp);
         }
 
-        public void SetGimeIRQSteering(byte data)
+        public void SetGimeIRQSteering()
         {
             bool TestMask(int address, int mask) => (GimeRegisters[address] & mask) != 0;
             byte Test(int mask) => TestMask(0x92, mask) | TestMask(0x93, mask) ? (byte)1 : (byte)0;
@@ -4591,7 +4590,7 @@ Could not locate {ROM} in any of these locations:
         }
 
         //--TODO: Not sure why this is the same as IRQ above
-        public void SetGimeFIRQSteering(byte data)
+        public void SetGimeFIRQSteering()
         {
             bool TestMask(int address, int mask) => (GimeRegisters[address] & mask) != 0;
             byte Test(int mask) => TestMask(0x92, mask) | TestMask(0x93, mask) ? (byte)1 : (byte)0;
@@ -4606,13 +4605,13 @@ Could not locate {ROM} in any of these locations:
         {
             if (((GimeRegisters[0x93] & 16) != 0) && (EnhancedFIRQFlag == 1))
             {
-                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.FIRQ, 0);
+                _modules.CPU.AssertInterrupt(CPUInterrupts.FIRQ, 0);
 
                 LastFirq |= 16;
             }
             else if (((GimeRegisters[0x92] & 16) != 0) && (EnhancedIRQFlag == 1))
             {
-                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 0);
+                _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 0);
 
                 LastIrq |= 16;
             }
@@ -4622,13 +4621,13 @@ Could not locate {ROM} in any of these locations:
         {
             if (((GimeRegisters[0x93] & 32) != 0) && (EnhancedFIRQFlag == 1))
             {
-                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.FIRQ, 0);
+                _modules.CPU.AssertInterrupt(CPUInterrupts.FIRQ, 0);
 
                 LastFirq |= 32;
             }
             else if (((GimeRegisters[0x92] & 32) != 0) && (EnhancedIRQFlag == 1))
             {
-                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 0);
+                _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 0);
 
                 LastIrq |= 32;
             }
@@ -4643,7 +4642,7 @@ Could not locate {ROM} in any of these locations:
 
         public void SetRomMap(byte data)
         {
-            RomMap = (byte)(data & 3);
+            _romMap = (byte)(data & 3);
 
             UpdateMmuArray();
         }
@@ -4665,7 +4664,7 @@ Could not locate {ROM} in any of these locations:
                 return;
             }
 
-            switch (RomMap)
+            switch (_romMap)
             {
                 case 0:
                 case 1: //16K Internal 16K External
@@ -4711,8 +4710,8 @@ Could not locate {ROM} in any of these locations:
 
         public void SetMmuTask(byte task)
         {
-            MmuTask = task;
-            MmuState = (byte)((MmuEnabled == 0 ? 1 : 0) << 1 | MmuTask);
+            _mmuTask = task;
+            MmuState = (byte)((_mmuEnabled == 0 ? 1 : 0) << 1 | _mmuTask);
         }
 
         public void SetMmuRegister(byte register, byte data)
@@ -4721,7 +4720,7 @@ Could not locate {ROM} in any of these locations:
             byte task = (byte)((register & 8) == 0 ? 0 : 1);
 
             //gime.c returns what was written so I can get away with this
-            MmuRegisters[task, bankRegister] = (ushort)(MmuPrefix | (data & RamMask[CurrentRamConfig]));
+            MmuRegisters[task, bankRegister] = (ushort)(_mmuPrefix | (data & _ramMask[CurrentRamConfig]));
         }
 
         public void SetDistoRamBank(byte data)
@@ -4735,13 +4734,13 @@ Could not locate {ROM} in any of these locations:
                     return;
 
                 case 2: //2048K
-                    _graphics.SetVideoBank((byte)(data & 3));
+                    Graphics.SetVideoBank((byte)(data & 3));
                     SetMmuPrefix(0);
 
                     return;
 
                 case 3: //8192K	//No Can 3 
-                    _graphics.SetVideoBank((byte)(data & 0x0F));
+                    Graphics.SetVideoBank((byte)(data & 0x0F));
                     SetMmuPrefix((byte)((data & 0x30) >> 4));
 
                     return;
@@ -4750,7 +4749,7 @@ Could not locate {ROM} in any of these locations:
 
         public void SetMmuPrefix(byte data)
         {
-            MmuPrefix = (ushort)((data & 3) << 8);
+            _mmuPrefix = (ushort)((data & 3) << 8);
         }
 
         public unsafe byte* GetInternalRomPointer()
@@ -4760,26 +4759,26 @@ Could not locate {ROM} in any of these locations:
 
         public void SetVectors(byte data)
         {
-            RamVectors = (byte)(data == 0 ? 0 : 1); //Bit 3 of $FF90 MC3
+            _ramVectors = (byte)(data == 0 ? 0 : 1); //Bit 3 of $FF90 MC3
         }
 
         public void SetMmuEnabled(byte flag)
         {
-            MmuEnabled = flag;
-            MmuState = (byte)((MmuEnabled == 0 ? 1 : 0) << 1 | MmuTask);
+            _mmuEnabled = flag;
+            MmuState = (byte)((_mmuEnabled == 0 ? 1 : 0) << 1 | _mmuTask);
         }
 
         public void GimeAssertKeyboardInterrupt()
         {
             if (((GimeRegisters[0x93] & 2) != 0) && (EnhancedFIRQFlag == 1))
             {
-                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.FIRQ, 0);
+                _modules.CPU.AssertInterrupt(CPUInterrupts.FIRQ, 0);
 
                 LastFirq |= 2;
             }
             else if (((GimeRegisters[0x92] & 2) != 0) && (EnhancedIRQFlag == 1))
             {
-                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 0);
+                _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 0);
 
                 LastIrq |= 2;
             }

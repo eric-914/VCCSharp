@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 namespace VCCSharp.Models
 {
     [StructLayout(LayoutKind.Explicit, Size=8)]
+    // ReSharper disable once InconsistentNaming
     public struct LARGE_INTEGER
     {
         [FieldOffset(0)]public Int64 QuadPart;

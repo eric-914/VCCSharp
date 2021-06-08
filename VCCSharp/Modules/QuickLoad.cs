@@ -108,7 +108,7 @@ namespace VCCSharp.Modules
                         return (int)QuickStartStatuses.InvalidTransfer;
                     }
 
-                    _modules.CPU.CPUForcePC(startAddress);
+                    _modules.CPU.ForcePC(startAddress);
                 }
             }
         }

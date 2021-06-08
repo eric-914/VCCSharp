@@ -4,6 +4,7 @@ using VCCSharp.Modules;
 
 namespace VCCSharp.IoC
 {
+    // ReSharper disable InconsistentNaming
     public interface IModules
     {
         IAudio Audio { get; }
@@ -33,6 +34,7 @@ namespace VCCSharp.IoC
         IHD6309 HD6309 { get; }
         IMC6809 MC6809 { get; }
     }
+    // ReSharper restore InconsistentNaming
 
     public class Modules : IModules
     {

@@ -1,26 +1,22 @@
-﻿using System.Runtime.InteropServices;
-using VCCSharp.Enums;
+﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
-    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void CPUASSERTINTERRUPT(byte irq, byte flag);
-
-    // ReSharper disable once InconsistentNaming
+    // ReSharper disable InconsistentNaming
     public interface ICPU
     {
-        void CPUReset();
-        void CPUInit();
-        void CPUForcePC(ushort address);
-        int CPUExec(int cycle);
-        void CPUAssertInterrupt(CPUInterrupts irq, byte flag);
-        void CPUDeAssertInterrupt(CPUInterrupts irq);
-        void SetCPUToHD6309();
-        void SetCPUToMC6809();
+        void Reset();
+        void Init();
+        void ForcePC(ushort address);
+        int Exec(int cycle);
+        void AssertInterrupt(CPUInterrupts irq, byte flag);
+        void DeAssertInterrupt(CPUInterrupts irq);
+        void SetHD6309();
+        void SetMC6809();
     }
+    // ReSharper restore InconsistentNaming
 
     // ReSharper disable once InconsistentNaming
     public class CPU : ICPU
@@ -34,42 +30,42 @@ namespace VCCSharp.Modules
             _modules = modules;
         }
 
-        public void CPUReset()
+        public void Reset()
         {
             _processor.Reset();
         }
 
-        public void CPUInit()
+        public void Init()
         {
             _processor.Init();
         }
 
-        public void CPUForcePC(ushort xferAddress)
+        public void ForcePC(ushort address)
         {
-            _processor.ForcePC(xferAddress);
+            _processor.ForcePc(address);
         }
 
-        public int CPUExec(int cycle)
+        public int Exec(int cycle)
         {
             return _processor.Exec(cycle);
         }
 
-        public void CPUAssertInterrupt(CPUInterrupts irq, byte flag)
+        public void AssertInterrupt(CPUInterrupts irq, byte flag)
         {
             _processor.AssertInterrupt((byte)irq, flag);
         }
 
-        public void CPUDeAssertInterrupt(CPUInterrupts irq)
+        public void DeAssertInterrupt(CPUInterrupts irq)
         {
             _processor.DeAssertInterrupt((byte)irq);
         }
 
-        public void SetCPUToHD6309()
+        public void SetHD6309()
         {
             _processor = _modules.HD6309;
         }
 
-        public void SetCPUToMC6809()
+        public void SetMC6809()
         {
             _processor = _modules.MC6809;
         }

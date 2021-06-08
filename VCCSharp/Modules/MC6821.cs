@@ -10,18 +10,18 @@ namespace VCCSharp.Modules
     public interface IMC6821
     {
         void PiaReset();
-        void irq_fs(PhaseStates phase);
-        void irq_hs(PhaseStates phase);
+        void IrqFs(PhaseStates phase);
+        void IrqHs(PhaseStates phase);
         void SetCartAutoStart(byte autoStart);
         void ClosePrintFile();
         void SetMonState(int state);
         void SetSerialParams(byte textMode);
         int OpenPrintFile(string filename);
 
-        byte pia0_read(byte port);
-        byte pia1_read(byte port);
-        void pia0_write(byte data, byte port);
-        void pia1_write(byte data, byte port);
+        byte Pia0_Read(byte port);
+        byte Pia1_Read(byte port);
+        void Pia0_Write(byte data, byte port);
+        void Pia1_Write(byte data, byte port);
 
         byte GetMuxState();
         byte DACState();
@@ -68,7 +68,7 @@ namespace VCCSharp.Modules
             CartAutoStart = autoStart;
         }
 
-        public void irq_hs(PhaseStates phase) //63.5 uS
+        public void IrqHs(PhaseStates phase) //63.5 uS
         {
             switch (phase)
             {
@@ -82,7 +82,7 @@ namespace VCCSharp.Modules
 
                     if ((_rega[1] & 1) != 0)
                     {
-                        _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 1);
+                        _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 1);
                     }
 
                     break;
@@ -98,7 +98,7 @@ namespace VCCSharp.Modules
 
                     if ((_rega[1] & 1) != 0)
                     {
-                        _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 1);
+                        _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 1);
                     }
 
                     break;
@@ -108,14 +108,14 @@ namespace VCCSharp.Modules
 
                     if ((_rega[1] & 1) != 0)
                     {
-                        _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 1);
+                        _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 1);
                     }
 
                     break;
             }
         }
 
-        public void irq_fs(PhaseStates phase) //60HZ Vertical sync pulse 16.667 mS
+        public void IrqFs(PhaseStates phase) //60HZ Vertical sync pulse 16.667 mS
         {
             if (_modules.PAKInterface.CartInserted == 1 && CartAutoStart == 1)
             {
@@ -143,7 +143,7 @@ namespace VCCSharp.Modules
 
             if ((_rega[3] & 1) != 0)
             {
-                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.IRQ, 1);
+                _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 1);
             }
         }
 
@@ -165,11 +165,11 @@ namespace VCCSharp.Modules
 
             if ((_regb[3] & 1) != 0)
             {
-                _modules.CPU.CPUAssertInterrupt(CPUInterrupts.FIRQ, 0);
+                _modules.CPU.AssertInterrupt(CPUInterrupts.FIRQ, 0);
             }
             else
             {
-                _modules.CPU.CPUDeAssertInterrupt(CPUInterrupts.FIRQ); //Kludge but working
+                _modules.CPU.DeAssertInterrupt(CPUInterrupts.FIRQ); //Kludge but working
             }
         }
 
@@ -196,7 +196,7 @@ namespace VCCSharp.Modules
             _monState = state;
         }
 
-        public byte pia0_read(byte port)
+        public byte Pia0_Read(byte port)
         {
             var dda = (byte)(_rega[1] & 4);
             var ddb = (byte)(_rega[3] & 4);
@@ -237,7 +237,7 @@ namespace VCCSharp.Modules
             return 0;
         }
 
-        public byte pia1_read(byte port)
+        public byte Pia1_Read(byte port)
         {
             port -= 0x20;
 
@@ -281,7 +281,7 @@ namespace VCCSharp.Modules
             return 0;
         }
 
-        public void pia0_write(byte data, byte port)
+        public void Pia0_Write(byte data, byte port)
         {
             var dda = (byte)(_rega[1] & 4);
             var ddb = (byte)(_rega[3] & 4);
@@ -324,7 +324,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void pia1_write(byte data, byte port)
+        public void Pia1_Write(byte data, byte port)
         {
             port -= 0x20;
 
@@ -426,7 +426,7 @@ namespace VCCSharp.Modules
                     _bitMask = 1;
                     _startWait = 1;
 
-                    WritePrint(data);
+                    //WritePrint(data);
 
                     if (_monState != 0)
                     {
@@ -435,24 +435,22 @@ namespace VCCSharp.Modules
 
                     if ((data == 0x0D) && (_addLf != 0))
                     {
-                        data = 0x0A;
+                        //data = 0x0A;
 
-                        WritePrint(data);
+                        //WritePrint(data);
                     }
-
-                    data = 0;
                 }
             }
         }
 
-        // ReSharper disable once UnusedParameter.Local
-        private void WritePrint(byte data)
-        {
-            //ulong bytesMoved = 0;
+        //// ReSharper disable once UnusedParameter.Local
+        //private void WritePrint(byte data)
+        //{
+        //    //ulong bytesMoved = 0;
 
-            //TODO: Writing to a print file?
-            //WriteFile(instance->hPrintFile, &data, 1, &bytesMoved, NULL);
-        }
+        //    //TODO: Writing to a print file?
+        //    //WriteFile(instance->hPrintFile, &data, 1, &bytesMoved, NULL);
+        //}
 
         public byte GetMuxState()
         {
@@ -461,33 +459,33 @@ namespace VCCSharp.Modules
 
         public unsafe void MC6821_WritePrintMon(byte* data)
         {
-            WriteConsole(data);
+            //WriteConsole(data);
 
             if (data[0] == 0x0D)
             {
                 data[0] = 0x0A;
 
-                WriteConsole(data);
+                //WriteConsole(data);
             }
         }
 
-        // ReSharper disable once UnusedParameter.Local
-        private unsafe void WriteConsole(byte* data)
-        {
-            //ulong dummy = 0;
+        //// ReSharper disable once UnusedParameter.Local
+        //private unsafe void WriteConsole(byte* data)
+        //{
+        //    //ulong dummy = 0;
 
-            //if (instance->hOut == IntPtr.Zero)
-            {
-                //AllocConsole();
+        //    //if (instance->hOut == IntPtr.Zero)
+        //    {
+        //        //AllocConsole();
 
-                //instance->hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+        //        //instance->hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
-                //SetConsoleTitle("Printer Monitor");
-            }
+        //        //SetConsoleTitle("Printer Monitor");
+        //    }
 
-            //TODO: Writing to a console?
-            //WriteConsole(instance->hOut, data, 1, &dummy, 0);
-        }
+        //    //TODO: Writing to a console?
+        //    //WriteConsole(instance->hOut, data, 1, &dummy, 0);
+        //}
 
         public byte DACState()
         {
@@ -513,8 +511,8 @@ namespace VCCSharp.Modules
             var sampleLeft = (pakSample >> 8) + _aSample + _sSample;
             var sampleRight = (pakSample & 0xFF) + _aSample + _sSample;
 
-            sampleLeft = sampleLeft << 6;   //Convert to 16 bit values
-            sampleRight = sampleRight << 6; //For Max volume
+            sampleLeft <<= 6;   //Convert to 16 bit values
+            sampleRight <<= 6; //For Max volume
 
             if (sampleLeft == _lastLeft) //Simulate a slow high pass filter
             {

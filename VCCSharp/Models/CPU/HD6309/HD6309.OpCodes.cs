@@ -820,7 +820,7 @@ namespace VCCSharp.Models.CPU.HD6309
         public void InvalidInsHandler()
         {
             MD_ILLEGAL = true;
-            _cpu.mdbits = getmd();
+            _cpu.mdbits = GetMD();
 
             ErrorVector();
         }
@@ -849,7 +849,7 @@ namespace VCCSharp.Models.CPU.HD6309
 
             MemWrite8(B_REG, --S_REG);
             MemWrite8(A_REG, --S_REG);
-            MemWrite8(getcc(), --S_REG);
+            MemWrite8(GetCC(), --S_REG);
 
             PC_REG = MemRead16(Define.VTRAP);
 
@@ -860,7 +860,7 @@ namespace VCCSharp.Models.CPU.HD6309
         {
             MD_ZERODIV = true; //1;
 
-            _cpu.mdbits = getmd();
+            _cpu.mdbits = GetMD();
 
             ErrorVector();
         }

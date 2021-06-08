@@ -1,5 +1,7 @@
 ﻿using VCCSharp.Libraries;
 using VCCSharp.Models;
+using HCURSOR = System.IntPtr;
+using HICON = System.IntPtr;
 using HINSTANCE = System.IntPtr;
 using HWND = System.IntPtr;
 
@@ -8,45 +10,45 @@ namespace VCCSharp.Modules
     // ReSharper disable once InconsistentNaming
     public interface IGDI
     {
-        unsafe void GDIWriteTextOut(void* hdc, ushort x, ushort y, string message);
-        unsafe void GDISetBkColor(void* hdc, uint color);
-        unsafe void GDISetTextColor(void* hdc, uint color);
-        unsafe void GDITextOut(void* hdc, int x, int y, string text, int textLength);
-        unsafe void* GetIcon(HINSTANCE resources);
-        unsafe void* GetCursor(byte fullscreen);
+        unsafe void WriteTextOut(void* hdc, ushort x, ushort y, string message);
+        unsafe void SetBkColor(void* hdc, uint color);
+        unsafe void SetTextColor(void* hdc, uint color);
+        unsafe void TextOut(void* hdc, int x, int y, string text, int textLength);
+        HICON GetIcon(HINSTANCE resources);
+        HCURSOR GetCursor(byte fullscreen);
         unsafe void* GetBrush();
-        unsafe void GDIGetClientRect(HWND hWnd, RECT* clientSize);
+        unsafe void GetClientRect(HWND hWnd, RECT* clientSize);
     }
 
     // ReSharper disable once InconsistentNaming
     public class GDI : IGDI
     {
-        public unsafe void GDIWriteTextOut(void* hdc, ushort x, ushort y, string message)
+        public unsafe void WriteTextOut(void* hdc, ushort x, ushort y, string message)
         {
             Library.GDI.GDIWriteTextOut(hdc, x, y, message);
         }
 
-        public unsafe void GDISetBkColor(void* hdc, uint color)
+        public unsafe void SetBkColor(void* hdc, uint color)
         {
             Library.GDI.GDISetBkColor(hdc, color);
         }
 
-        public unsafe void GDISetTextColor(void* hdc, uint color)
+        public unsafe void SetTextColor(void* hdc, uint color)
         {
             Library.GDI.GDISetTextColor(hdc, color);
         }
 
-        public unsafe void GDITextOut(void* hdc, int x, int y, string text, int textLength)
+        public unsafe void TextOut(void* hdc, int x, int y, string text, int textLength)
         {
             Library.GDI.GDITextOut(hdc, x, y, text, textLength);
         }
 
-        public unsafe void* GetIcon(HINSTANCE resources)
+        public HICON GetIcon(HINSTANCE resources)
         {
             return Library.GDI.GDIGetIcon(resources);
         }
 
-        public unsafe void* GetCursor(byte fullscreen)
+        public HCURSOR GetCursor(byte fullscreen)
         {
             return Library.GDI.GDIGetCursor(fullscreen);
         }
@@ -56,7 +58,7 @@ namespace VCCSharp.Modules
             return Library.GDI.GDIGetBrush();
         }
 
-        public unsafe void GDIGetClientRect(HWND hWnd, RECT* clientSize)
+        public unsafe void GetClientRect(HWND hWnd, RECT* clientSize)
         {
             Library.GDI.GDIGetClientRect(hWnd, clientSize);
         }

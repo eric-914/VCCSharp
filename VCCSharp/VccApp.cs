@@ -11,7 +11,7 @@ namespace VCCSharp
 {
     public interface IVccApp
     {
-        void Startup(HINSTANCE hInstance, CmdLineArguments cmdLineArgs);
+        void Startup(CmdLineArguments cmdLineArgs);
         void Threading();
         void Run();
         int Shutdown();
@@ -25,7 +25,7 @@ namespace VCCSharp
 
         private HINSTANCE _hResources;
 
-        public MSG MSG;
+        public MSG Msg;
 
         public VccApp(IModules modules, IKernel kernel, IUser32 user32)
         {
@@ -34,7 +34,7 @@ namespace VCCSharp
             _user32 = user32;
         }
 
-        public void Startup(HINSTANCE hInstance, CmdLineArguments cmdLineArgs)
+        public void Startup(CmdLineArguments cmdLineArgs)
         {
             //AudioState* audioState = _modules.Audio.GetAudioState();
             _modules.CoCo.SetAudioEventAudioOut();
@@ -43,7 +43,7 @@ namespace VCCSharp
                 
             _modules.Emu.Resources = _hResources;
 
-            _modules.DirectDraw.InitDirectDraw(hInstance, _hResources);
+            _modules.DirectDraw.InitDirectDraw();
             _modules.Keyboard.SetKeyTranslations();
 
             _modules.CoCo.OverClock = 1;  //Default clock speed .89 MHZ	
@@ -92,7 +92,7 @@ namespace VCCSharp
                 {
                     _modules.Vcc.CheckScreenModeChange();
 
-                    fixed (MSG* msg = &(MSG))
+                    fixed (MSG* msg = &(Msg))
                     {
                         _user32.GetMessageA(msg, Zero, 0, 0);   //Seems if the main loop stops polling for Messages the child threads stall
 
@@ -111,7 +111,7 @@ namespace VCCSharp
 
             _modules.Config.WriteIniFile(); //Save any changes to ini File
 
-            int code = (int)MSG.wParam;
+            int code = (int)Msg.wParam;
 
             _kernel.FreeLibrary(_hResources);
 

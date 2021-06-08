@@ -86,7 +86,7 @@ namespace VCCSharp.Modules
             _modules.TC1014.MC6883Reset();
             _modules.MC6821.PiaReset();
 
-            _modules.CPU.CPUReset();
+            _modules.CPU.Reset();
 
             GimeReset();
             _modules.TC1014.MmuReset();
@@ -107,18 +107,18 @@ namespace VCCSharp.Modules
 
             if (CpuType == (byte)CPUTypes.HD6309)
             {
-                _modules.CPU.SetCPUToHD6309();
+                _modules.CPU.SetHD6309();
             }
             else
             {
-                _modules.CPU.SetCPUToMC6809();
+                _modules.CPU.SetMC6809();
             }
 
             _modules.TC1014.MC6883Reset();  //Captures internal rom pointer for CPU Interrupt Vectors
             _modules.MC6821.PiaReset();
 
-            _modules.CPU.CPUInit();
-            _modules.CPU.CPUReset();    // Zero all CPU Registers and sets the PC to VRESET
+            _modules.CPU.Init();
+            _modules.CPU.Reset();    // Zero all CPU Registers and sets the PC to VRESET
 
             GimeReset();
 

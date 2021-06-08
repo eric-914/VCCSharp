@@ -3,6 +3,7 @@
 namespace VCCSharp.Models
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    // ReSharper disable once InconsistentNaming
     public struct _GUID
     {
         public uint Data1;

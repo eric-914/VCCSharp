@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace VCCSharp.Models.Keyboard
+﻿namespace VCCSharp.Models.Keyboard
 {
     /**
       Original VCC key translation table for DECB

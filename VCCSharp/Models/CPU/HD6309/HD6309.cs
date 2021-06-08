@@ -35,7 +35,7 @@ namespace VCCSharp.Models.CPU.HD6309
             //--The classes initialize themselves now.
         }
 
-        public void ForcePC(ushort address)
+        public void ForcePc(ushort address)
         {
             _cpu.pc.Reg = address;
 
@@ -87,7 +87,7 @@ namespace VCCSharp.Models.CPU.HD6309
             MD_ILLEGAL = false;
             MD_ZERODIV = false;
 
-            _cpu.mdbits = getmd();
+            _cpu.mdbits = GetMD();
 
             _syncWaiting = 0;
 
@@ -107,12 +107,12 @@ namespace VCCSharp.Models.CPU.HD6309
                 {
                     if ((_pendingInterrupts & 4) != 0)
                     {
-                        cpu_nmi();
+                        Cpu_Nmi();
                     }
 
                     if ((_pendingInterrupts & 2) != 0)
                     {
-                        cpu_firq();
+                        Cpu_Firq();
                     }
 
                     if ((_pendingInterrupts & 1) != 0)
@@ -121,7 +121,7 @@ namespace VCCSharp.Models.CPU.HD6309
                         {
                             // This is needed to fix a subtle timing problem
                             // It allows the CPU to see $FF03 bit 7 high before...
-                            cpu_irq();
+                            Cpu_Irq();
                         }
                         else
                         {
@@ -148,7 +148,7 @@ namespace VCCSharp.Models.CPU.HD6309
             return cycleFor - _cycleCounter;
         }
 
-        public void cpu_nmi()
+        public void Cpu_Nmi()
         {
             _cpu.cc[(int)CCFlagMasks.E] = 1;
 
@@ -171,7 +171,7 @@ namespace VCCSharp.Models.CPU.HD6309
             MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg);
             MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg);
 
-            MemWrite8(getcc(), --_cpu.s.Reg);
+            MemWrite8(GetCC(), --_cpu.s.Reg);
 
             _cpu.cc[(int)CCFlagMasks.I] = 1;
             _cpu.cc[(int)CCFlagMasks.F] = 1;
@@ -181,7 +181,7 @@ namespace VCCSharp.Models.CPU.HD6309
             _pendingInterrupts &= 251;
         }
 
-        public void cpu_firq()
+        public void Cpu_Firq()
         {
             if (_cpu.cc[(int)CCFlagMasks.F] == 0)
             {
@@ -195,7 +195,7 @@ namespace VCCSharp.Models.CPU.HD6309
                         MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
                         MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
 
-                        MemWrite8(getcc(), --_cpu.s.Reg);
+                        MemWrite8(GetCC(), --_cpu.s.Reg);
 
                         _cpu.cc[(int)CCFlagMasks.I] = 1;
                         _cpu.cc[(int)CCFlagMasks.F] = 1;
@@ -226,7 +226,7 @@ namespace VCCSharp.Models.CPU.HD6309
                         MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg);
                         MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg);
 
-                        MemWrite8(getcc(), --_cpu.s.Reg);
+                        MemWrite8(GetCC(), --_cpu.s.Reg);
 
                         _cpu.cc[(int)CCFlagMasks.I] = 1;
                         _cpu.cc[(int)CCFlagMasks.F] = 1;
@@ -240,7 +240,7 @@ namespace VCCSharp.Models.CPU.HD6309
             _pendingInterrupts &= 253;
         }
 
-        public void cpu_irq()
+        public void Cpu_Irq()
         {
             if (_inInterrupt == 1)
             {
@@ -271,7 +271,7 @@ namespace VCCSharp.Models.CPU.HD6309
                 MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg);
                 MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg);
 
-                MemWrite8(getcc(), --_cpu.s.Reg);
+                MemWrite8(GetCC(), --_cpu.s.Reg);
 
                 _cpu.cc[(int)CCFlagMasks.I] = 1;
 
@@ -281,7 +281,7 @@ namespace VCCSharp.Models.CPU.HD6309
             _pendingInterrupts &= 254;
         }
 
-        public byte getcc()
+        public byte GetCC()
         {
             int cc = 0;
 
@@ -302,7 +302,7 @@ namespace VCCSharp.Models.CPU.HD6309
             return (byte)cc;
         }
 
-        public void setcc(byte cc)
+        public void SetCC(byte cc)
         {
             _cpu.ccbits = cc;
 
@@ -321,7 +321,7 @@ namespace VCCSharp.Models.CPU.HD6309
             CC_C = Test(CCFlagMasks.C);
         }
 
-        public byte getmd()
+        public byte GetMD()
         {
             int md = 0;
 
@@ -342,7 +342,7 @@ namespace VCCSharp.Models.CPU.HD6309
             return (byte)md;
         }
 
-        public void setmd(byte md)
+        public void SetMD(byte md)
         {
             bool Test(MDFlagMasks mask)
             {

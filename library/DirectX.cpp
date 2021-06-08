@@ -247,7 +247,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl RegisterWcex(HINSTANCE hInstance, WNDPROC lpfnWndProc, LPCSTR lpszClassName, LPCSTR lpszMenuName, UINT style, HICON hIcon, HCURSOR hCursor, HBRUSH hbrBackground)
+  __declspec(dllexport) BOOL __cdecl DDRegisterClass(HINSTANCE hInstance, WNDPROC lpfnWndProc, LPCSTR lpszClassName, LPCSTR lpszMenuName, UINT style, HICON hIcon, HCURSOR hCursor, HBRUSH hbrBackground)
   {
     _wcex.cbSize = sizeof(WNDCLASSEX);	//And Rebuilt it from scratch
     _wcex.hInstance = hInstance;

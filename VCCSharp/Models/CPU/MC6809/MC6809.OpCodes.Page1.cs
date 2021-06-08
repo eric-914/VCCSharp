@@ -282,10 +282,10 @@
         public void Orcc_M() // 1A
         {
             _postByte = MemRead8(PC_REG++);
-            _temp8 = getcc();
+            _temp8 = GetCC();
             _temp8 = (byte)(_temp8 | _postByte);
 
-            setcc(_temp8);
+            SetCC(_temp8);
 
             _cycleCounter += 3;
         }
@@ -295,10 +295,10 @@
         public void Andcc_M() // 1C
         {
             _postByte = MemRead8(PC_REG++);
-            _temp8 = getcc();
+            _temp8 = GetCC();
             _temp8 = (byte)(_temp8 & _postByte);
 
-            setcc(_temp8);
+            SetCC(_temp8);
 
             _cycleCounter += 3;
         }
@@ -316,7 +316,7 @@
         {
             _postByte = MemRead8(PC_REG++);
 
-            _cpu.ccbits = getcc();
+            _cpu.ccbits = GetCC();
 
             if (((_postByte & 0x80) >> 4) == (_postByte & 0x08)) //Verify like size registers
             {
@@ -334,7 +334,7 @@
                 }
             }
 
-            setcc(_cpu.ccbits);
+            SetCC(_cpu.ccbits);
             _cycleCounter += 8;
         }
 
@@ -374,7 +374,7 @@
                 case 11:
                 case 14:
                 case 15:
-                    _cpu.ccbits = getcc();
+                    _cpu.ccbits = GetCC();
 
                     PUR(dest & 7, 0xFF);
 
@@ -387,7 +387,7 @@
                         PUR(dest & 7, PUR(source & 7));
                     }
 
-                    setcc(_cpu.ccbits);
+                    SetCC(_cpu.ccbits);
 
                     break;
             }
@@ -678,7 +678,7 @@
 
             if ((_postByte & 0x01) != 0)
             {
-                MemWrite8(getcc(), --S_REG);
+                MemWrite8(GetCC(), --S_REG);
 
                 _cycleCounter += 1;
             }
@@ -692,7 +692,7 @@
 
             if ((_postByte & 0x01) != 0)
             {
-                setcc(MemRead8(S_REG++));
+                SetCC(MemRead8(S_REG++));
 
                 _cycleCounter += 1;
             }
@@ -812,7 +812,7 @@
 
             if ((_postByte & 0x01) != 0)
             {
-                MemWrite8(getcc(), --U_REG);
+                MemWrite8(GetCC(), --U_REG);
 
                 _cycleCounter += 1;
             }
@@ -826,7 +826,7 @@
 
             if ((_postByte & 0x01) != 0)
             {
-                setcc(MemRead8(U_REG++));
+                SetCC(MemRead8(U_REG++));
 
                 _cycleCounter += 1;
             }
@@ -906,7 +906,7 @@
 
         public void Rti_I() // 3B
         {
-            setcc(MemRead8(S_REG++));
+            SetCC(MemRead8(S_REG++));
 
             _cycleCounter += 6;
             _inInterrupt = 0;
@@ -934,10 +934,10 @@
         {
             _postByte = MemRead8(PC_REG++);
 
-            _cpu.ccbits = getcc();
+            _cpu.ccbits = GetCC();
             _cpu.ccbits &= _postByte;
 
-            setcc(_cpu.ccbits);
+            SetCC(_cpu.ccbits);
 
             _cycleCounter = _gCycleFor;
             _syncWaiting = 1;
@@ -970,7 +970,7 @@
             MemWrite8(B_REG, --S_REG);
             MemWrite8(A_REG, --S_REG);
 
-            MemWrite8(getcc(), --S_REG);
+            MemWrite8(GetCC(), --S_REG);
 
             PC_REG = MemRead16(Define.VSWI);
 

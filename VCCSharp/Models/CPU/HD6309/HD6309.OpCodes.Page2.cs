@@ -198,7 +198,7 @@
             { // 8 bit dest
                 _dest &= 7;
 
-                byte dest8 = _dest == 2 ? getcc() : PUR(_dest);
+                byte dest8 = _dest == 2 ? GetCC() : PUR(_dest);
 
                 byte source8;
                 if (_source > 7)
@@ -206,7 +206,7 @@
                     // 8 bit source
                     _source &= 7;
 
-                    source8 = _source == 2 ? getcc() : PUR(_source);
+                    source8 = _source == 2 ? GetCC() : PUR(_source);
                 }
                 else // 16 bit source - demote to 8 bit
                 {
@@ -218,7 +218,7 @@
 
                 switch (_dest)
                 {
-                    case 2: setcc((byte)_temp16); break;
+                    case 2: SetCC((byte)_temp16); break;
                     case 4: case 5: break; // never assign to zero reg
                     default: PUR(_dest, (byte)_temp16); break;
                 }
@@ -243,7 +243,7 @@
                     switch (_source)
                     {
                         case 0: case 1: source16 = D_REG; break; // A & B Reg
-                        case 2: source16 = getcc(); break; // CC
+                        case 2: source16 = GetCC(); break; // CC
                         case 3: source16 = DP_REG; break; // DP
                         case 4: case 5: source16 = 0; break; // Zero Reg
                         case 6: case 7: source16 = W_REG; break; // E & F Reg
@@ -272,7 +272,7 @@
             {
                 _dest &= 7;
 
-                var dest8 = _dest == 2 ? getcc() : PUR(_dest);
+                var dest8 = _dest == 2 ? GetCC() : PUR(_dest);
 
                 byte source8;
                 if (_source > 7)
@@ -280,7 +280,7 @@
                     // 8 bit source
                     _source &= 7;
 
-                    source8 = _source == 2 ? getcc() : PUR(_source);
+                    source8 = _source == 2 ? GetCC() : PUR(_source);
                 }
                 else // 16 bit source - demote to 8 bit
                 {
@@ -293,7 +293,7 @@
                 switch (_dest)
                 {
                     case 2:
-                        setcc((byte)_temp16);
+                        SetCC((byte)_temp16);
                         break;
 
                     case 4:
@@ -330,7 +330,7 @@
                             break; // A & B Reg
 
                         case 2:
-                            source16 = getcc();
+                            source16 = GetCC();
                             break; // CC
 
                         case 3:
@@ -371,7 +371,7 @@
             {
                 _dest &= 7;
 
-                var dest8 = _dest == 2 ? getcc() : PUR(_dest);
+                var dest8 = _dest == 2 ? GetCC() : PUR(_dest);
 
                 byte source8;
                 if (_source > 7)
@@ -379,7 +379,7 @@
                     // 8 bit source
                     _source &= 7;
 
-                    source8 = _source == 2 ? getcc() : PUR(_source);
+                    source8 = _source == 2 ? GetCC() : PUR(_source);
                 }
                 else
                 { // 16 bit source - demote to 8 bit
@@ -392,7 +392,7 @@
                 switch (_dest)
                 {
                     case 2:
-                        setcc((byte)_temp16);
+                        SetCC((byte)_temp16);
                         break;
 
                     case 4:
@@ -429,7 +429,7 @@
                             break; // A & B Reg
 
                         case 2:
-                            source16 = getcc();
+                            source16 = GetCC();
                             break; // CC
 
                         case 3:
@@ -470,14 +470,14 @@
             {
                 _dest &= 7;
 
-                var dest8 = _dest == 2 ? getcc() : PUR(_dest);
+                var dest8 = _dest == 2 ? GetCC() : PUR(_dest);
 
                 byte source8;
                 if (_source > 7) // 8 bit source
                 {
                     _source &= 7;
 
-                    source8 = _source == 2 ? getcc() : PUR(_source);
+                    source8 = _source == 2 ? GetCC() : PUR(_source);
                 }
                 else // 16 bit source - demote to 8 bit
                 {
@@ -490,7 +490,7 @@
                 switch (_dest)
                 {
                     case 2:
-                        setcc((byte)_temp16);
+                        SetCC((byte)_temp16);
                         break;
 
                     case 4:
@@ -527,7 +527,7 @@
                             break; // A & B Reg
 
                         case 2:
-                            source16 = getcc();
+                            source16 = GetCC();
                             break; // CC
 
                         case 3:
@@ -568,14 +568,14 @@
             {
                 _dest &= 7;
 
-                var dest8 = _dest == 2 ? getcc() : PUR(_dest);
+                var dest8 = _dest == 2 ? GetCC() : PUR(_dest);
 
                 byte source8;
                 if (_source > 7) // 8 bit source
                 {
                     _source &= 7;
 
-                    source8 = _source == 2 ? getcc() : PUR(_source);
+                    source8 = _source == 2 ? GetCC() : PUR(_source);
                 }
                 else // 16 bit source - demote to 8 bit
                 {
@@ -588,7 +588,7 @@
                 switch (_dest)
                 {
                     case 2:
-                        setcc(_temp8);
+                        SetCC(_temp8);
                         break;
 
                     case 4:
@@ -622,7 +622,7 @@
                             break; // A & B Reg
 
                         case 2:
-                            source16 = getcc();
+                            source16 = GetCC();
                             break; // CC
 
                         case 3:
@@ -662,14 +662,14 @@
             {
                 _dest &= 7;
 
-                var dest8 = _dest == 2 ? getcc() : PUR(_dest);
+                var dest8 = _dest == 2 ? GetCC() : PUR(_dest);
 
                 byte source8;
                 if (_source > 7) // 8 bit source
                 {
                     _source &= 7;
 
-                    source8 = _source == 2 ? getcc() : PUR(_source);
+                    source8 = _source == 2 ? GetCC() : PUR(_source);
                 }
                 else // 16 bit source - demote to 8 bit
                 {
@@ -682,7 +682,7 @@
                 switch (_dest)
                 {
                     case 2:
-                        setcc(_temp8);
+                        SetCC(_temp8);
                         break;
 
                     case 4:
@@ -717,7 +717,7 @@
                             break; // A & B Reg
 
                         case 2:
-                            source16 = getcc();
+                            source16 = GetCC();
                             break; // CC
 
                         case 3:
@@ -757,14 +757,14 @@
             {
                 _dest &= 7;
 
-                var dest8 = _dest == 2 ? getcc() : PUR(_dest);
+                var dest8 = _dest == 2 ? GetCC() : PUR(_dest);
 
                 byte source8;
                 if (_source > 7) // 8 bit source
                 {
                     _source &= 7;
 
-                    source8 = _source == 2 ? getcc() : PUR(_source);
+                    source8 = _source == 2 ? GetCC() : PUR(_source);
                 }
                 else // 16 bit source - demote to 8 bit
                 {
@@ -777,7 +777,7 @@
                 switch (_dest)
                 {
                     case 2:
-                        setcc(_temp8);
+                        SetCC(_temp8);
                         break;
 
                     case 4:
@@ -812,7 +812,7 @@
                             break; // A & B Reg
 
                         case 2:
-                            source16 = getcc();
+                            source16 = GetCC();
                             break; // CC
 
                         case 3:
@@ -852,7 +852,7 @@
             {
                 _dest &= 7;
 
-                var dest8 = _dest == 2 ? getcc() : PUR(_dest);
+                var dest8 = _dest == 2 ? GetCC() : PUR(_dest);
 
                 byte source8;
                 if (_source > 7) // 8 bit source
@@ -861,7 +861,7 @@
 
                     if (_source == 2)
                     {
-                        source8 = getcc();
+                        source8 = GetCC();
                     }
                     else
                     {
@@ -901,7 +901,7 @@
                             break; // A & B Reg
 
                         case 2:
-                            source16 = getcc();
+                            source16 = GetCC();
                             break; // CC
 
                         case 3:
@@ -980,7 +980,7 @@
 
             MemWrite8(B_REG, --S_REG);
             MemWrite8(A_REG, --S_REG);
-            MemWrite8(getcc(), --S_REG);
+            MemWrite8(GetCC(), --S_REG);
             PC_REG = MemRead16(Define.VSWI2);
             _cycleCounter += 20;
         }

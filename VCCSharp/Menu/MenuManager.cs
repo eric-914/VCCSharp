@@ -8,8 +8,6 @@ namespace VCCSharp.Menu
 {
     public interface ICartridge
     {
-        void Load();
-        void Eject();
         void SetMenuItem(string menuName, MenuActions menuId, int type);
         void Reset();
     }
@@ -28,16 +26,6 @@ namespace VCCSharp.Menu
             _menuItems = menuItems;
         }
 
-        public void Load()
-        {
-            MessageBox.Show("MenuManager:Load");
-        }
-
-        public void Eject()
-        {
-            MessageBox.Show("MenuManager:Eject");
-        }
-
         private MenuItemViewModel _parent;
 
         public void SetMenuItem(string menuName, MenuActions menuId, int type)
@@ -54,7 +42,6 @@ namespace VCCSharp.Menu
                 Id = menuId,
                 Header = menuName,
                 Action = () => _modules.MenuCallbacks.CartridgeMenuItemClicked((int)menuId),
-                    //MessageBox.Show($"{menuName} Click"),
                 MenuItems = new ObservableCollection<MenuItemViewModel>()
             };
 

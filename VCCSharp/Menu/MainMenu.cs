@@ -1,6 +1,5 @@
-﻿using System.Collections.ObjectModel;
-using Ninject;
-using VCCSharp.Enums;
+﻿using Ninject;
+using System.Collections.ObjectModel;
 
 namespace VCCSharp.Menu
 {
@@ -22,7 +21,7 @@ namespace VCCSharp.Menu
         public MainMenu(Actions actions)
         {
             //--The "plug-ins" menu is dynamic that plug-ins can customize it
-            Plugins = Cartridge(actions);
+            Plugins = Cartridge();
 
             Add(File(actions));
             Add(Edit(actions));
@@ -73,7 +72,7 @@ namespace VCCSharp.Menu
             }
         };
 
-        private static MenuItemViewModel Cartridge(Actions actions) => new MenuItemViewModel
+        private static MenuItemViewModel Cartridge() => new MenuItemViewModel
         {
             Header = "Cartridge",
             MenuItems = new ObservableCollection<MenuItemViewModel>()

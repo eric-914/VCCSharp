@@ -33,7 +33,7 @@
                         break;
 
                     case 2: // CC Reg
-                        setcc((byte)(getcc() & ~(1 << _dest)));
+                        SetCC((byte)(GetCC() & ~(1 << _dest)));
                         break;
                 }
             }
@@ -66,7 +66,7 @@
                         break;
 
                     case 2: // CC Reg
-                        setcc((byte)(getcc() & ~(1 << _dest)));
+                        SetCC((byte)(GetCC() & ~(1 << _dest)));
                         break;
                 }
             }
@@ -99,7 +99,7 @@
                         break;
 
                     case 2: // CC Reg
-                        setcc((byte)(getcc() | (1 << _dest)));
+                        SetCC((byte)(GetCC() | (1 << _dest)));
                         break;
                 }
             }
@@ -132,7 +132,7 @@
                         break;
 
                     case 2: // CC Reg
-                        setcc((byte)(getcc() | (1 << _dest)));
+                        SetCC((byte)(GetCC() | (1 << _dest)));
                         break;
                 }
             }
@@ -165,7 +165,7 @@
                         break;
 
                     case 2: // CC Reg
-                        setcc((byte)(getcc() ^ (1 << _dest)));
+                        SetCC((byte)(GetCC() ^ (1 << _dest)));
                         break;
                 }
             }
@@ -197,7 +197,7 @@
                         break;
 
                     case 2: // CC Reg
-                        setcc((byte)(getcc() ^ (1 << _dest)));
+                        SetCC((byte)(GetCC() ^ (1 << _dest)));
                         break;
                 }
             }
@@ -230,7 +230,7 @@
                         break;
 
                     case 2: // CC Reg
-                        setcc((byte)(getcc() | (1 << _dest)));
+                        SetCC((byte)(GetCC() | (1 << _dest)));
                         break;
                 }
             }
@@ -244,7 +244,7 @@
                         break;
 
                     case 2: // CC Reg
-                        setcc((byte)(getcc() & ~(1 << _dest)));
+                        SetCC((byte)(GetCC() & ~(1 << _dest)));
                         break;
                 }
             }
@@ -275,7 +275,7 @@
                     break;
 
                 case 2: // CC Reg
-                    _postByte = getcc();
+                    _postByte = GetCC();
                     break;
             }
 
@@ -405,7 +405,7 @@
         public void Bitmd_M() // 3C 
         {
             _postByte = (byte)(MemRead8(PC_REG++) & 0xC0);
-            _temp8 = (byte)(getmd() & _postByte);
+            _temp8 = (byte)(GetMD() & _postByte);
             CC_Z = ZTEST(_temp8);
 
             if ((_temp8 & 0x80) != 0) MD_ZERODIV = false;
@@ -417,7 +417,7 @@
         public void Ldmd_M() // 3D 
         {
             _cpu.mdbits = (byte)(MemRead8(PC_REG++) & 0x03);
-            setmd(_cpu.mdbits);
+            SetMD(_cpu.mdbits);
             _cycleCounter += 5;
         }
 
@@ -443,7 +443,7 @@
 
             MemWrite8(B_REG, --S_REG);
             MemWrite8(A_REG, --S_REG);
-            MemWrite8(getcc(), --S_REG);
+            MemWrite8(GetCC(), --S_REG);
             PC_REG = MemRead16(Define.VSWI3);
             _cycleCounter += 20;
         }

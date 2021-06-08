@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace VCCSharp.Models.Keyboard
+﻿namespace VCCSharp.Models.Keyboard
 {
 
     /**

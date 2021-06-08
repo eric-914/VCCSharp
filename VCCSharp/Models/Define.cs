@@ -13,14 +13,9 @@ namespace VCCSharp.Models
 
         public const int IGNORE = 0;
 
-        public const uint INFINITE = 0xFFFFFFFF;
-        public const short THREAD_PRIORITY_NORMAL = 0;
-
         public const int MAX_LOADSTRING = 100;
 
         public const int MAX_PATH = 260;
-
-        public const int TABS = 8;
 
         public const long S_OK = 0;
         public const long DS_OK = S_OK;
@@ -86,31 +81,6 @@ namespace VCCSharp.Models
         public const byte PC_NOCOLLAPSE = 0x04;
 
         public const string STATUSCLASSNAME = "msctls_statusbar32";
-
-        public const int M65 = 0;
-        public const int M64 = 1;
-        public const int M32 = 2;
-        public const int M21 = 3;
-        public const int M54 = 4;
-        public const int M97 = 5;
-        public const int M85 = 6;
-        public const int M51 = 7;
-        public const int M31 = 8;
-        public const int M1110 = 9;
-        public const int M76 = 10;
-        public const int M75 = 11;
-        public const int M43 = 12;
-        public const int M87 = 13;
-        public const int M86 = 14;
-        public const int M98 = 15;
-        public const int M2726 = 16;
-        public const int M3635 = 17;
-        public const int M3029 = 18;
-        public const int M2827 = 19;
-        public const int M3726 = 20;
-        public const int M3130 = 21;
-        public const int M42 = 22;
-        public const int M53 = 23;
 
         // MC6809 Vector table
         public const ushort VTRAP = 0xFFF0;
@@ -321,15 +291,6 @@ namespace VCCSharp.Models
          */
         public const uint CS_VREDRAW = 0x0001;
         public const uint CS_HREDRAW = 0x0002;
-        public const uint CS_DBLCLKS = 0x0008;
-        public const uint CS_OWNDC = 0x0020;
-        public const uint CS_CLASSDC = 0x0040;
-        public const uint CS_PARENTDC = 0x0080;
-        public const uint CS_NOCLOSE = 0x0200;
-        public const uint CS_SAVEBITS = 0x0800;
-        public const uint CS_BYTEALIGNCLIENT = 0x1000;
-        public const uint CS_BYTEALIGNWINDOW = 0x2000;
-        public const uint CS_GLOBALCLASS = 0x4000;
 
         public const uint WM_CREATE = 0x0001;
         public const uint WM_KILLFOCUS = 0x0008;
@@ -365,8 +326,6 @@ namespace VCCSharp.Models
 
         public const long GENERIC_READ = (0x80000000L);
         public const long GENERIC_WRITE = (0x40000000L);
-        public const long GENERIC_EXECUTE = (0x20000000L);
-        public const long GENERIC_ALL = (0x10000000L);
 
         public const long FILE_BEGIN = 0;
         public const long FILE_CURRENT = 1;
@@ -393,15 +352,5 @@ namespace VCCSharp.Models
 
         public const long DDLOCK_SURFACEMEMORYPTR = 0x00000000L;     // default
         public const long DDLOCK_WAIT = 0x00000001L;
-
-        public const long MF_BYPOSITION = 0x00000400L;
-        public const long MF_SEPARATOR = 0x00000800L;
-
-        public const long MF_STRING = 0x00000000L;
-        public const long MFT_STRING = MF_STRING;
-
-        public const uint MIIM_ID = 0x00000002;
-        public const uint MIIM_SUBMENU = 0x00000004;
-        public const uint MIIM_TYPE = 0x00000010;
     }
 }
