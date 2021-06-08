@@ -45,12 +45,12 @@ namespace VCCSharp.Modules
             unsafe
             {
                 //Needed to get max resolution from the timer normally its 10Ms
-                _winmm.timeBeginPeriod(1);	
+                _winmm.TimeBeginPeriod(1);	
                 fixed (LARGE_INTEGER* p = &_masterClock)
                 {
                     _kernel.QueryPerformanceFrequency(p);
                 }
-                _winmm.timeEndPeriod(1);
+                _winmm.TimeEndPeriod(1);
 
                 _oneFrame.QuadPart = _masterClock.QuadPart / (Define.TARGETFRAMERATE);
                 _oneMs.QuadPart = _masterClock.QuadPart / 1000;

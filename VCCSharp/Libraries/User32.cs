@@ -1,10 +1,9 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Interop;
 using VCCSharp.Models;
+using HINSTANCE = System.IntPtr;
 using HWND = System.IntPtr;
 using LRESULT = System.IntPtr;
-using HINSTANCE = System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
@@ -18,18 +17,17 @@ namespace VCCSharp.Libraries
         int SetWindowPos(HWND hWnd, HWND hWndInsertAfter, int x, int y, int cx, int cy, ushort uFlags);
         unsafe int GetClientRect(HWND hWnd, RECT* lpRect);
         unsafe int ClientToScreen(HWND hWnd, Point* lpPoint);
-        unsafe int OffsetRect(RECT* lprc, int dx, int dy);
-        unsafe int SetRect(RECT* lprc, short xLeft, short yTop, short xRight, short yBottom);
+        unsafe int OffsetRect(RECT* lpRect, int dx, int dy);
+        unsafe int SetRect(RECT* lpRect, short xLeft, short yTop, short xRight, short yBottom);
         unsafe int GetWindowRect(HWND hWnd, RECT* lpRect);
-        int MoveWindow(HWND hWnd, int X, int Y, int nWidth, int nHeight, int bRepaint);
+        int MoveWindow(HWND hWnd, int x, int y, int nWidth, int nHeight, int bRepaint);
         int DestroyWindow(HWND hWnd);
         unsafe int AdjustWindowRect(RECT* lpRect, uint dwStyle, int bMenu);
-        unsafe HWND CreateWindowExA(uint dwExStyle, byte* lpClassName, byte* lpWindowName, uint dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
-        unsafe HWND CreateWindowExA(uint dwExStyle, string lpClassName, string lpWindowName, uint dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
+        unsafe HWND CreateWindowExA(uint dwExStyle, byte* lpClassName, byte* lpWindowName, uint dwStyle, int x, int y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
+        unsafe HWND CreateWindowExA(uint dwExStyle, string lpClassName, string lpWindowName, uint dwStyle, int x, int y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
         int UpdateWindow(HWND hWnd);
-        LRESULT SendMessageA(HWND hWnd, uint Msg, ulong wParam, long lParam);
-        LRESULT DefWindowProcA(HWND hWnd, uint Msg, ulong wParam, long lParam);
-        short GetKeyState(int nVirtKey);
+        LRESULT SendMessageA(HWND hWnd, uint msg, ulong wParam, long lParam);
+        short GetKeyState(int nVirtualKey);
     }
 
     public class User32 : IUser32
@@ -58,17 +56,17 @@ namespace VCCSharp.Libraries
         public unsafe int ClientToScreen(HWND hWnd, Point* lpPoint)
             => User32Dll.ClientToScreen(hWnd, lpPoint);
 
-        public unsafe int OffsetRect(RECT* lprc, int dx, int dy)
-            => User32Dll.OffsetRect(lprc, dx, dy);
+        public unsafe int OffsetRect(RECT* lpRect, int dx, int dy)
+            => User32Dll.OffsetRect(lpRect, dx, dy);
 
-        public unsafe int SetRect(RECT* lprc, short xLeft, short yTop, short xRight, short yBottom)
-            => User32Dll.SetRect(lprc, xLeft, yTop, xRight, yBottom);
+        public unsafe int SetRect(RECT* lpRect, short xLeft, short yTop, short xRight, short yBottom)
+            => User32Dll.SetRect(lpRect, xLeft, yTop, xRight, yBottom);
 
         public unsafe int GetWindowRect(HWND hWnd, RECT* lpRect)
             => User32Dll.GetWindowRect(hWnd, lpRect);
 
-        public int MoveWindow(HWND hWnd, int X, int Y, int nWidth, int nHeight, int bRepaint)
-            => User32Dll.MoveWindow(hWnd, X, Y, nWidth, nHeight, bRepaint);
+        public int MoveWindow(HWND hWnd, int x, int y, int nWidth, int nHeight, int bRepaint)
+            => User32Dll.MoveWindow(hWnd, x, y, nWidth, nHeight, bRepaint);
 
         public int DestroyWindow(HWND hWnd)
             => User32Dll.DestroyWindow(hWnd);
@@ -76,22 +74,19 @@ namespace VCCSharp.Libraries
         public unsafe int AdjustWindowRect(RECT* lpRect, uint dwStyle, int bMenu)
             => User32Dll.AdjustWindowRect(lpRect, dwStyle, bMenu);
 
-        public unsafe HWND CreateWindowExA(uint dwExStyle, byte* lpClassName, byte* lpWindowName, uint dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam)
-            => User32Dll.CreateWindowExA(dwExStyle, lpClassName, lpWindowName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
+        public unsafe HWND CreateWindowExA(uint dwExStyle, byte* lpClassName, byte* lpWindowName, uint dwStyle, int x, int y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam)
+            => User32Dll.CreateWindowExA(dwExStyle, lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
 
-        public unsafe HWND CreateWindowExA(uint dwExStyle, string lpClassName, string lpWindowName, uint dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam)
-            => User32Dll.CreateWindowExA(dwExStyle, lpClassName, lpWindowName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
+        public unsafe HWND CreateWindowExA(uint dwExStyle, string lpClassName, string lpWindowName, uint dwStyle, int x, int y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam)
+            => User32Dll.CreateWindowExA(dwExStyle, lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
 
         public int UpdateWindow(HWND hWnd)
             => User32Dll.UpdateWindow(hWnd);
 
-        public LRESULT SendMessageA(HWND hWnd, uint Msg, ulong wParam, long lParam)
-            => User32Dll.SendMessageA(hWnd, Msg, wParam, lParam);
+        public LRESULT SendMessageA(HWND hWnd, uint msg, ulong wParam, long lParam)
+            => User32Dll.SendMessageA(hWnd, msg, wParam, lParam);
 
-        public LRESULT DefWindowProcA(HWND hWnd, uint Msg, ulong wParam, long lParam)
-            => User32Dll.DefWindowProcA(hWnd, Msg, wParam, lParam);
-
-        public short GetKeyState(int nVirtKey)
-            => User32Dll.GetKeyState(nVirtKey);
+        public short GetKeyState(int nVirtualKey)
+            => User32Dll.GetKeyState(nVirtualKey);
     }
 }

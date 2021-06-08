@@ -2,7 +2,8 @@
 
 namespace VCCSharp.Models.CPU.MC6809
 {
-    // ReSharper disable once InconsistentNaming
+    // ReSharper disable InconsistentNaming
+    // ReSharper disable IdentifierTypo
     public partial class MC6809
     {
         #region CC Masks Macros
@@ -218,4 +219,6 @@ namespace VCCSharp.Models.CPU.MC6809
 
         #endregion
     }
+    // ReSharper restore IdentifierTypo
+    // ReSharper restore InconsistentNaming
 }

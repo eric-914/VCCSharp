@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using VCCSharp.Models;
@@ -11,75 +10,70 @@ namespace VCCSharp.Libraries
 {
     public static class User32Dll
     {
-        public const string DLL = "User32.dll";
+        public const string Dll = "User32.dll";
 
-        public delegate HINSTANCE WndProc(IntPtr hWnd, uint msg, ulong wParam, long lParam);
-
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern unsafe int GetMessageA(MSG* lpMsg, HWND hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern unsafe int TranslateMessage(MSG* lpMsg);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern unsafe LRESULT DispatchMessageA(MSG* lpMsg);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern int ShowWindow(HWND hWnd, int nCmdShow);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern HWND GetActiveWindow();
 
-        [DllImport(DLL)]
-        public static extern int SetWindowPos(HWND hWnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy, ushort uFlags);
+        [DllImport(Dll)]
+        public static extern int SetWindowPos(HWND hWnd, HWND hWndInsertAfter, int x, int y, int cx, int cy, ushort uFlags);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern unsafe int GetClientRect(HWND hWnd, RECT* lpRect);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern unsafe int ClientToScreen(HWND hWnd, Point* lpPoint);
 
-        [DllImport(DLL)]
-        public static extern unsafe int OffsetRect(RECT* lprc, int dx, int dy);
+        [DllImport(Dll)]
+        public static extern unsafe int OffsetRect(RECT* lpRect, int dx, int dy);
 
-        [DllImport(DLL)]
-        public static extern unsafe int SetRect(RECT* lprc, short xLeft, short yTop, short xRight, short yBottom);
+        [DllImport(Dll)]
+        public static extern unsafe int SetRect(RECT* lpRect, short xLeft, short yTop, short xRight, short yBottom);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern unsafe int GetWindowRect(HWND hWnd, RECT* lpRect);
 
-        [DllImport(DLL)]
-        public static extern int MoveWindow(HWND hWnd, int X, int Y, int nWidth, int nHeight, int bRepaint);
+        [DllImport(Dll)]
+        public static extern int MoveWindow(HWND hWnd, int x, int y, int nWidth, int nHeight, int bRepaint);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern int DestroyWindow(HWND hWnd);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern unsafe int AdjustWindowRect(RECT* lpRect, uint dwStyle, int bMenu);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern int UpdateWindow(HWND hWnd);
 
-        [DllImport(DLL)]
-        public static extern LRESULT SendMessageA(HWND hWnd, uint Msg, ulong wParam, long lParam);
+        [DllImport(Dll)]
+        public static extern LRESULT SendMessageA(HWND hWnd, uint msg, ulong wParam, long lParam);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern unsafe HWND CreateWindowExA(uint dwExStyle, byte* lpClassName, byte* lpWindowName,
-            uint dwStyle, int X, int Y, int nWidth, int nHeight,
+            uint dwStyle, int x, int y, int nWidth, int nHeight,
             HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern unsafe HWND CreateWindowExA(uint dwExStyle, string lpClassName, string lpWindowName,
-            uint dwStyle, int X, int Y, int nWidth, int nHeight,
+            uint dwStyle, int x, int y, int nWidth, int nHeight,
             HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
 
-        [DllImport(DLL)]
-        public static extern LRESULT DefWindowProcA(HWND hWnd, uint Msg, ulong wParam, long lParam);
+        [DllImport(Dll)]
+        public static extern LRESULT DefWindowProcA(HWND hWnd, uint msg, ulong wParam, long lParam);
 
-        [DllImport(DLL)]
-        public static extern LRESULT DefWindowProc(HWND hWnd, uint Msg, ulong wParam, long lParam);
-
-        [DllImport(DLL)]
-        public static extern short GetKeyState(int nVirtKey);
+        [DllImport(Dll)]
+        public static extern short GetKeyState(int nVirtualKey);
     }
 }

@@ -1,10 +1,8 @@
-﻿using VCCSharp.Modules;
-
-namespace VCCSharp.BitBanger
+﻿namespace VCCSharp.BitBanger
 {
     public interface IBitBanger
     {
-        void ShowDialog(IConfig state);
+        void ShowDialog();
 
         void Open();
         void Close();

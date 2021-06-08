@@ -2,14 +2,16 @@
 
 namespace VCCSharp.Libraries
 {
+    // ReSharper disable once InconsistentNaming
+    // ReSharper disable once IdentifierTypo
     public static class WinmmDLL
     {
-        public const string DLL = "Winmm.dll";
+        public const string Dll = "Winmm.dll";
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern ushort timeBeginPeriod(ushort uPeriod);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern ushort timeEndPeriod(ushort uPeriod);
     }
 }

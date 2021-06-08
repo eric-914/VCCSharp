@@ -8,12 +8,12 @@ namespace VCCSharp.BitBanger
 {
     public class BitBangerViewModel : INotifyPropertyChanged
     {
-        private const string NO_FILE = "No Capture File";
+        private const string NoFile = "No Capture File";
 
         //TODO: Remove STATIC once safe
         private static IConfig _config;
 
-        private string _serialCaptureFile = NO_FILE;
+        private string _serialCaptureFile = NoFile;
 
         #region INotifyPropertyChanged
 
@@ -46,7 +46,7 @@ namespace VCCSharp.BitBanger
 
                 string file = Config.SerialCaptureFile ;
 
-                _serialCaptureFile = string.IsNullOrEmpty(file) ? NO_FILE : file;
+                _serialCaptureFile = string.IsNullOrEmpty(file) ? NoFile : file;
 
                 return _serialCaptureFile;
             }

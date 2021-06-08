@@ -138,7 +138,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe void DDSurfaceSetPalette(IDirectDrawPalette* ddPalette);
 
             [DllImport(LIBRARY)]
-            public static extern IntPtr WndProc(HWND hWnd, uint msg, long wParam, long lParam);
+            public static extern HINSTANCE WndProc(HWND hWnd, uint msg, long wParam, long lParam);
 
             [DllImport(LIBRARY)]
             public static extern unsafe int DDRegisterClass(HINSTANCE hInstance, void* lpWndProc, byte* lpszClassName, byte* lpszMenuName, uint style, HICON hIcon, HCURSOR hCursor, void* hbrBackground);

@@ -19,10 +19,7 @@ namespace VCCSharp.Configuration
             _parent = parent;
         }
 
-        public JoystickModel Model
-        {
-            get => _parent == null ? null : Side == JoystickSides.Left ? _parent.LeftModel : _parent.RightModel;
-        }
+        public JoystickModel Model => _parent == null ? null : Side == JoystickSides.Left ? _parent.LeftModel : _parent.RightModel;
 
         #region Constants
 

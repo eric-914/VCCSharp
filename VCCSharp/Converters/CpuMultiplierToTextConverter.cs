@@ -8,7 +8,7 @@ namespace VCCSharp.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            float transform = (float)((int) value * 0.894);
+            float transform = (float)((int) (value ?? 1) * 0.894);
 
             return $"{transform:F3} Mhz";
         }

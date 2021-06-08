@@ -28,18 +28,6 @@ namespace VCCSharp.Models.CPU.HD6309
         public Reg8 ureg8 { get; }
         public Reg16 xfreg16 { get; }
 
-        // ReSharper restore IdentifierTypo
-        // ReSharper restore InconsistentNaming
-
-        //_cpu->ureg8[0] = (long)&(_cpu->q.lswmsb); //(byte*)&A_REG;
-        //_cpu->ureg8[1] = (long)&(_cpu->q.lswlsb); //(byte*)&B_REG;
-        //_cpu->ureg8[2] = (long)&(_cpu->ccbits);//(byte*)&(instance->ccbits);
-        //_cpu->ureg8[3] = (long)&(_cpu->dp.msb);//(byte*)&DPA;
-        //_cpu->ureg8[4] = (long)&(_cpu->z.msb);//(byte*)&Z_H;
-        //_cpu->ureg8[5] = (long)&(_cpu->z.lsb);//(byte*)&Z_L;
-        //_cpu->ureg8[6] = (long)&(_cpu->q.mswmsb);//(byte*)&E_REG;
-        //_cpu->ureg8[7] = (long)&(_cpu->q.mswlsb);//(byte*)&F_REG;
-
         public HD6309CpuRegisters()
         {
             ureg8 = new Reg8(this);
@@ -105,15 +93,6 @@ namespace VCCSharp.Models.CPU.HD6309
                 }
             }
         }
-
-        //_cpu->xfreg16[0] = (long)&(_cpu->q.lsw); //&D_REG;
-        //_cpu->xfreg16[1] = (long)&(_cpu->x.Reg); //&X_REG;
-        //_cpu->xfreg16[2] = (long)&(_cpu->y.Reg); //&Y_REG;
-        //_cpu->xfreg16[3] = (long)&(_cpu->u.Reg); //&U_REG;
-        //_cpu->xfreg16[4] = (long)&(_cpu->s.Reg); //&S_REG;
-        //_cpu->xfreg16[5] = (long)&(_cpu->pc.Reg); //&PC_REG;
-        //_cpu->xfreg16[6] = (long)&(_cpu->q.msw); //&W_REG;
-        //_cpu->xfreg16[7] = (long)&(_cpu->v.Reg); //&V_REG;
 
         public class Reg16
         {

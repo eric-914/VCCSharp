@@ -8,12 +8,12 @@ namespace VCCSharp.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (int)value == (int)parameter;
+            return (value != null && parameter != null) && (int)value == (int)parameter;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (bool)value ? parameter : null;
+            return (bool)(value ?? 0) ? parameter : null;
         }
     }
 }

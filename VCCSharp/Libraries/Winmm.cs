@@ -1,17 +1,19 @@
 ﻿namespace VCCSharp.Libraries
 {
+    // ReSharper disable once IdentifierTypo
     public interface IWinmm
     {
-        ushort timeBeginPeriod(ushort uPeriod);
-        ushort timeEndPeriod(ushort uPeriod);
+        ushort TimeBeginPeriod(ushort uPeriod);
+        ushort TimeEndPeriod(ushort uPeriod);
     }
 
+    // ReSharper disable once IdentifierTypo
     public class Winmm : IWinmm
     {
-        public ushort timeBeginPeriod(ushort uPeriod)
+        public ushort TimeBeginPeriod(ushort uPeriod)
             => WinmmDLL.timeBeginPeriod(uPeriod);
 
-        public ushort timeEndPeriod(ushort uPeriod)
+        public ushort TimeEndPeriod(ushort uPeriod)
             => WinmmDLL.timeEndPeriod(uPeriod);
     }
 }

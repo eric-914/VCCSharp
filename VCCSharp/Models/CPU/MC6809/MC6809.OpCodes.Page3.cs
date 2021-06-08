@@ -1,6 +1,7 @@
 ﻿namespace VCCSharp.Models.CPU.MC6809
 {
-    // ReSharper disable once InconsistentNaming
+    // ReSharper disable InconsistentNaming
+    // ReSharper disable IdentifierTypo
     public partial class MC6809
     {
         public void SWI3_I() //113F 
@@ -123,4 +124,6 @@
             _cycleCounter += 8;
         }
     }
+    // ReSharper restore IdentifierTypo
+    // ReSharper restore InconsistentNaming
 }

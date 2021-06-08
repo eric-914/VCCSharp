@@ -31,7 +31,7 @@ namespace VCCSharp.Modules
     }
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate IntPtr WndProcTemplate(HWND hWnd, uint msg, long wParam, long lParam);
+    public delegate HINSTANCE WndProcTemplate(HWND hWnd, uint msg, long wParam, long lParam);
 
     public class DirectDraw : IDirectDraw
     {
@@ -69,7 +69,7 @@ namespace VCCSharp.Modules
             _textX = 0;
         }
 
-        public IntPtr WndProc(HWND hWnd, uint msg, long wParam, long lParam)
+        public HINSTANCE WndProc(HWND hWnd, uint msg, long wParam, long lParam)
         {
             _modules.Events.ProcessMessage(hWnd, msg, wParam, lParam);
 

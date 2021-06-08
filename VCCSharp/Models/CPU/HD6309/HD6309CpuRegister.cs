@@ -3,6 +3,7 @@
 namespace VCCSharp.Models.CPU.HD6309
 {
     [StructLayout(LayoutKind.Explicit)]
+    // ReSharper disable once InconsistentNaming
     public class HD6309CpuRegister
     {
         [FieldOffset(0)]

@@ -2,7 +2,8 @@
 
 namespace VCCSharp.Models.CPU.HD6309
 {
-    // ReSharper disable once InconsistentNaming
+    // ReSharper disable InconsistentNaming
+    // ReSharper disable IdentifierTypo
     partial class HD6309
     {
         #region CC Masks Macros
@@ -313,4 +314,6 @@ namespace VCCSharp.Models.CPU.HD6309
 
         #endregion
     }
+    // ReSharper restore IdentifierTypo
+    // ReSharper restore InconsistentNaming
 }

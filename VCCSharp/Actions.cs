@@ -80,7 +80,7 @@ namespace VCCSharp
 
         public void BitBanger()
         {
-            _options.BitBanger.ShowDialog(_modules.Config);
+            _options.BitBanger.ShowDialog();
         }
 
         public void OpenConfiguration()

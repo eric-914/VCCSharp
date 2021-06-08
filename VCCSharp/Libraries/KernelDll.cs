@@ -7,39 +7,39 @@ namespace VCCSharp.Libraries
 {
     public static class KernelDll
     {
-        public const string DLL = "kernel32.dll";
+        public const string Dll = "kernel32.dll";
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern HMODULE LoadLibrary(string dllToLoad);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern bool FreeLibrary(HMODULE hModule);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern ushort GetPrivateProfileIntA(string lpAppName, string lpKeyName, short nDefault, string lpFileName);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern unsafe uint GetPrivateProfileStringA(string lpAppName, string lpKeyName, string lpDefault, byte* lpReturnedString, uint nSize, string lpFileName);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern int WritePrivateProfileStringA(string lpAppName, string lpKeyName, string lpString, string lpFileName);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern unsafe int QueryPerformanceCounter(LARGE_INTEGER* lpPerformanceCount);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern unsafe int QueryPerformanceFrequency(LARGE_INTEGER* lpFrequency);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern unsafe int ReadFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToRead, uint* lpNumberOfBytesRead, void* lpOverlapped);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern unsafe uint SetFilePointer(HANDLE hFile, uint lDistanceToMove, uint* lpDistanceToMoveHigh, uint dwMoveMethod);
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern int FreeConsole();
 
-        [DllImport(DLL)]
+        [DllImport(Dll)]
         public static extern int CloseHandle(HANDLE hObject);
     }
 }

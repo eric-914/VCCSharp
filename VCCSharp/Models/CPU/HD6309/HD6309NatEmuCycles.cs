@@ -2,6 +2,7 @@
 
 namespace VCCSharp.Models.CPU.HD6309
 {
+    // ReSharper disable once InconsistentNaming
     public class HD6309NatEmuCycles
     {
         public byte _65 { get; set; } = 6;

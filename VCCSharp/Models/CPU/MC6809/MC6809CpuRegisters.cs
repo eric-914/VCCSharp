@@ -44,14 +44,14 @@ namespace VCCSharp.Models.CPU.MC6809
                 {
                     switch (index)
                     {
-                        case 0: return _cpu.d.msb;  //(byte*)(&A_REG);
-                        case 1: return _cpu.d.lsb;  //(byte*)(&B_REG);
-                        case 2: return _cpu.ccbits; //(byte*)(&(instance->ccbits));
-                        case 3: return _cpu.dp.msb; //(byte*)(&DPA);
-                        case 4: return _cpu.dp.msb; //(byte*)(&DPA);
-                        case 5: return _cpu.dp.msb; //(byte*)(&DPA);
-                        case 6: return _cpu.dp.msb; //(byte*)(&DPA);
-                        case 7: return _cpu.dp.msb; //(byte*)(&DPA);
+                        case 0: return _cpu.d.msb;
+                        case 1: return _cpu.d.lsb;
+                        case 2: return _cpu.ccbits;
+                        case 3: return _cpu.dp.msb;
+                        case 4: return _cpu.dp.msb;
+                        case 5: return _cpu.dp.msb;
+                        case 6: return _cpu.dp.msb;
+                        case 7: return _cpu.dp.msb;
                     }
 
                     throw new NotImplementedException();
