@@ -103,9 +103,9 @@ namespace VCCSharp.Modules
                 _status.Mhz = _modules.Emu.CpuCurrentSpeed;
                 _status.Status = _modules.Emu.StatusLine;
 
-                string statusBarText = $"Skip:{_status.FrameSkip} | FPS:{fps:F} | {_status.CpuName} @ {_status.Mhz:0.000}Mhz| {_status.Status}";
+                //string statusBarText = $"Skip:{_status.FrameSkip} | FPS:{fps:F} | {_status.CpuName} @ {_status.Mhz:0.000}Mhz| {_status.Status}";
 
-                _modules.DirectDraw.SetStatusBarText(statusBarText);
+                //_modules.DirectDraw.SetStatusBarText(statusBarText);
 
                 if (Throttle == Define.TRUE)
                 {

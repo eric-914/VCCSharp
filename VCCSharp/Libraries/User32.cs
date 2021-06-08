@@ -23,7 +23,6 @@ namespace VCCSharp.Libraries
         int MoveWindow(HWND hWnd, int x, int y, int nWidth, int nHeight, int bRepaint);
         int DestroyWindow(HWND hWnd);
         unsafe int AdjustWindowRect(RECT* lpRect, uint dwStyle, int bMenu);
-        unsafe HWND CreateWindowExA(uint dwExStyle, byte* lpClassName, byte* lpWindowName, uint dwStyle, int x, int y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
         unsafe HWND CreateWindowExA(uint dwExStyle, string lpClassName, string lpWindowName, uint dwStyle, int x, int y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
         int UpdateWindow(HWND hWnd);
         LRESULT SendMessageA(HWND hWnd, uint msg, ulong wParam, long lParam);

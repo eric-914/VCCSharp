@@ -43,7 +43,7 @@ namespace VCCSharp.Modules
         private static int _textX, _textY;
         private static byte _counter, _counter1 = 32, _phase = 1;
 
-        private HWND _hWndStatusBar;
+        private HWND _hWndStatusBar = Zero;
         private readonly HINSTANCE _hInstance = Zero;
         private Point _windowSize;
 
@@ -614,24 +614,24 @@ namespace VCCSharp.Modules
                 return false;
             }
 
-            _hWndStatusBar = _user32.CreateWindowExA(0, Define.STATUSCLASSNAME, "Ready",
-                Define.SBARS_SIZEGRIP | Define.WS_CHILD | Define.WS_VISIBLE, 0, 0, 0, 0,
-                _modules.Emu.WindowHandle, null, _hInstance, null);
+            //_hWndStatusBar = _user32.CreateWindowExA(0, Define.STATUSCLASSNAME, "Ready",
+            //    Define.SBARS_SIZEGRIP | Define.WS_CHILD | Define.WS_VISIBLE, 0, 0, 0, 0,
+            //    _modules.Emu.WindowHandle, null, _hInstance, null);
 
-            if (_hWndStatusBar == null)
-            {	// Can't create Status bar
-                return false;
-            }
+            //if (_hWndStatusBar == Zero)
+            //{	// Can't create Status bar
+            //    return false;
+            //}
 
             var rStatBar = new RECT();
 
             // Retrieves the dimensions of the bounding rectangle of the specified window
             // The dimensions are given in screen coordinates that are relative to the upper-left corner of the screen.
-            _user32.GetWindowRect(_hWndStatusBar, &rStatBar); // Get the size of the Status bar
+            //_user32.GetWindowRect(_hWndStatusBar, &rStatBar); // Get the size of the Status bar
 
-            _statusBarHeight = (uint)(rStatBar.bottom - rStatBar.top); // Calculate its height
+            _statusBarHeight = 0; //(uint)(rStatBar.bottom - rStatBar.top); // Calculate its height
 
-            _user32.GetWindowRect(_modules.Emu.WindowHandle, &rStatBar);
+            //_user32.GetWindowRect(_modules.Emu.WindowHandle, &rStatBar);
 
             width = rStatBar.right - rStatBar.left;
             height = rStatBar.bottom + (int)(_statusBarHeight) - rStatBar.top;
@@ -769,15 +769,12 @@ namespace VCCSharp.Modules
 
         private unsafe void CreateWindowExA(int x, int y, int width, int height, uint style)
         {
-            fixed (byte* appNameText = AppNameText)
-            {
-                fixed (byte* titleBarText = TitleBarText)
-                {
-                    _modules.Emu.WindowHandle = _user32.CreateWindowExA(0, appNameText, titleBarText,
-                        style, x, y, width, height,
-                        Zero, null, _hInstance, null);
-                }
-            }
+            string appNameText = Converter.ToString(AppNameText);
+            string titleBarText = Converter.ToString(TitleBarText);
+
+            _modules.Emu.WindowHandle = _user32.CreateWindowExA(0, appNameText, titleBarText,
+                style, x, y, width, height,
+                Zero, null, _hInstance, null);
         }
 
         // Checks if the memory associated with surfaces is lost and restores if necessary.
