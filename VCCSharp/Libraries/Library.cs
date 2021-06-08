@@ -278,24 +278,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe byte Button(void* stick, int index);
         }
 
-        public static class MenuCallbacks
-        {
-            [DllImport(LIBRARY)]
-            public static extern HMENU MenuGetMenu(HWND hWnd);
-            
-            [DllImport(LIBRARY)]
-            public static extern uint MenuDeleteMenu(HMENU hMenu, uint uPosition, uint uFlags);
-            
-            [DllImport(LIBRARY)]
-            public static extern HMENU MenuCreatePopupMenu();
-            
-            [DllImport(LIBRARY)]
-            public static extern uint MenuDrawMenuBar(HWND hWnd);
-            
-            [DllImport(LIBRARY)]
-            public static extern unsafe void MenuInsertMenuItem(HMENU hMenu, MENUITEMINFO* mii, uint item, int fByPosition);
-        }
-
         public static class PAKInterface
         {
             [DllImport(LIBRARY)]
