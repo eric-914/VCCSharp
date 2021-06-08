@@ -117,7 +117,7 @@ namespace VCCSharp.Modules
         {
             _modules.Graphics.SetBlinkState(BLINK_PHASE);
 
-            _modules.MC6821.irq_fs(PhaseStates.Falling);   //FS low to High transition start of display Blink needs this
+            _modules.MC6821.IrqFs(PhaseStates.Falling);   //FS low to High transition start of display Blink needs this
 
             //TODO: I don't think updating _modules.Emu.LineCounter = counter is needed.
 
@@ -170,7 +170,7 @@ namespace VCCSharp.Modules
                 }
             }
 
-            _modules.MC6821.irq_fs(PhaseStates.Rising);  //End of active display FS goes High to Low
+            _modules.MC6821.IrqFs(PhaseStates.Rising);  //End of active display FS goes High to Low
 
             if (_verticalInterruptEnabled != Define.FALSE)
             {
@@ -249,7 +249,7 @@ namespace VCCSharp.Modules
                 _modules.TC1014.GimeAssertHorzInterrupt();
             }
 
-            _modules.MC6821.irq_hs(PhaseStates.Any);
+            _modules.MC6821.IrqHs(PhaseStates.Any);
             _modules.PAKInterface.PakTimer();
 
             _picosThisLine += PicosPerLine;

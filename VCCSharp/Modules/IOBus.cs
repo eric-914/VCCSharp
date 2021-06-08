@@ -31,14 +31,14 @@ namespace VCCSharp.Modules
                 case 1:
                 case 2:
                 case 3:
-                    value = _modules.MC6821.pia0_read(port); //MC6821 P.I.A  Keyboard access $FF00-$FF03
+                    value = _modules.MC6821.Pia0_Read(port); //MC6821 P.I.A  Keyboard access $FF00-$FF03
                     break;
 
                 case 0x20:
                 case 0x21:
                 case 0x22:
                 case 0x23:
-                    value = _modules.MC6821.pia1_read(port); //MC6821 P.I.A	Sound and VDG Control 
+                    value = _modules.MC6821.Pia1_Read(port); //MC6821 P.I.A	Sound and VDG Control 
                     break;
 
                 case 0xC0:
@@ -164,14 +164,14 @@ namespace VCCSharp.Modules
                 case 1:
                 case 2:
                 case 3:
-                    _modules.MC6821.pia0_write(data, port);	//MC6821 P.I.A  Keyboard access $FF00-$FF03
+                    _modules.MC6821.Pia0_Write(data, port);	//MC6821 P.I.A  Keyboard access $FF00-$FF03
                     break;
 
                 case 0x20:
                 case 0x21:
                 case 0x22:
                 case 0x23:
-                    _modules.MC6821.pia1_write(data, port);	//MC6821 P.I.A	Sound and VDG Control 
+                    _modules.MC6821.Pia1_Write(data, port);	//MC6821 P.I.A	Sound and VDG Control 
                     break;
 
                 case 0xC0:

@@ -37,6 +37,9 @@ namespace VCCSharp.Modules
     {
         private readonly IModules _modules;
 
+        // ReSharper disable once InconsistentNaming
+        private static readonly object _lock = new object();
+
         private string _dllPath;
 
         public byte CartInserted { get; set; }
@@ -119,19 +122,16 @@ namespace VCCSharp.Modules
         {
             int fileType = FileId(modulePath);
 
-            switch (fileType)
+            return fileType switch
             {
-                case 0:		//File doesn't exist
-                    return InsertModuleCase0();
-
-                case 1:		//File is a DLL
-                    return InsertModuleCase1(emulationRunning, modulePath);
-
-                case 2:		//File is a ROM image
-                    return InsertModuleCase2(emulationRunning, modulePath);
-            }
-
-            return Define.NOMODULE;
+                0 => //File doesn't exist
+                    InsertModuleCase0(),
+                1 => //File is a DLL
+                    InsertModuleCase1(emulationRunning, modulePath),
+                2 => //File is a ROM image
+                    InsertModuleCase2(emulationRunning, modulePath),
+                _ => Define.NOMODULE
+            };
         }
 
         //File doesn't exist
@@ -695,21 +695,6 @@ namespace VCCSharp.Modules
         {
             unsafe
             {
-                //delegates->GetModuleName = (GETMODULENAME)GetFunction(hInstLib, "ModuleName");
-                //delegates->ConfigModule = (CONFIGMODULE)GetFunction(hInstLib, "ModuleConfig");
-                //delegates->PakPortWrite = (PAKPORTWRITE)GetFunction(hInstLib, "PackPortWrite");
-                //delegates->PakPortRead = (PAKPORTREAD)GetFunction(hInstLib, "PackPortRead");
-                //delegates->SetInterruptCallPointer = (SETINTERRUPTCALLPOINTER)GetFunction(hInstLib, "AssertInterrupt");
-                //delegates->DmaMemPointers = (DMAMEMPOINTERS)GetFunction(hInstLib, "MemPointers");
-                //delegates->HeartBeat = (HEARTBEAT)GetFunction(hInstLib, "HeartBeat");
-                //delegates->PakMemWrite8 = (PAKMEMWRITE8)GetFunction(hInstLib, "PakMemWrite8");
-                //delegates->PakMemRead8 = (PAKMEMREAD8)GetFunction(hInstLib, "PakMemRead8");
-                //delegates->ModuleStatus = (MODULESTATUS)GetFunction(hInstLib, "ModuleStatus");
-                //delegates->ModuleAudioSample = (MODULEAUDIOSAMPLE)GetFunction(hInstLib, "ModuleAudioSample");
-                //delegates->ModuleReset = (MODULERESET)GetFunction(hInstLib, "ModuleReset");
-                //delegates->SetIniPath = (SETINIPATH)GetFunction(hInstLib, "SetIniPath");
-                //delegates->PakSetCart = (PAKSETCART)GetFunction(hInstLib, "SetCart");
-
                 _d.GetModuleName = GetFunction(hInstLib, "ModuleName");
                 _d.ConfigModule = GetFunction(hInstLib, "ModuleConfig");
                 _d.PakPortWrite = GetFunction(hInstLib, "PackPortWrite");
@@ -748,8 +733,6 @@ namespace VCCSharp.Modules
             }
         }
 
-        private static readonly object Lock = new object();
-
         public byte PakMem8Read(ushort address)
         {
             if (HasModuleMem8Read())
@@ -762,7 +745,7 @@ namespace VCCSharp.Modules
             if (ExternalRomBuffer != null)
             {
                 //Threading makes it possible to reach here where ExternalRomBuffer = NULL despite check.
-                lock (Lock)
+                lock (_lock)
                 {
                     if (ExternalRomBuffer != null)
                     {
@@ -816,17 +799,17 @@ namespace VCCSharp.Modules
 
         public HINSTANCE PakLoadLibrary(string modulePath)
         {
-            return Library.PAKInterface.PAKLoadLibrary(modulePath);
+            return Library.PakInterface.PAKLoadLibrary(modulePath);
         }
 
         public void PakFreeLibrary(HINSTANCE h)
         {
-            Library.PAKInterface.PAKFreeLibrary(h);
+            Library.PakInterface.PAKFreeLibrary(h);
         }
 
         public unsafe void* GetFunction(HMODULE hModule, string lpProcName)
         {
-            return Library.PAKInterface.GetFunction(hModule, lpProcName);
+            return Library.PakInterface.GetFunction(hModule, lpProcName);
         }
     }
 }

@@ -22,6 +22,9 @@ namespace VCCSharp
 
             DataContext = this;
 
+            //Window window = GetWindow(this);
+            //IntPtr hWnd = new WindowInteropHelper(window).EnsureHandle();
+
             Task.Run(_factory.Get<IVccThread>().Run);
         }
     }

@@ -34,12 +34,12 @@ namespace VCCSharp.Modules
         // or two keys down in the emulation that must be raised.  These routines
         // track the last two key down events so they can be raised when needed.
         //--------------------------------------------------------------------------
-        private byte SC_save1;
-        private byte SC_save2;
-        private byte KB_save1;
-        private byte KB_save2;
+        private byte _scSave1;
+        private byte _scSave2;
+        private byte _kbSave1;
+        private byte _kbSave2;
 
-        private bool KeySaveToggle;
+        private bool _keySaveToggle;
 
         public Events(IModules modules, IUser32 user32)
         {
@@ -145,7 +145,7 @@ namespace VCCSharp.Modules
                     break;
 
                 case Define.WM_COMMAND:
-                    ProcessCommandMessage(hWnd, wParam);
+                    ProcessCommandMessage(wParam);
                     break;
 
                 case Define.WM_CREATE:
@@ -184,7 +184,7 @@ namespace VCCSharp.Modules
                     break;
 
                 case Define.WM_SYSCOMMAND:
-                    ProcessSysCommandMessage(hWnd, wParam);
+                    ProcessSysCommandMessage(wParam);
                     break;
 
                 case Define.WM_SYSKEYDOWN:
@@ -197,7 +197,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void ProcessSysCommandMessage(HWND hWnd, long wParam)
+        private void ProcessSysCommandMessage(long wParam)
         {
             //-------------------------------------------------------------
             // Control ATL key menu access.
@@ -210,17 +210,16 @@ namespace VCCSharp.Modules
 
             if (notKeyMenu || (keyState != 0))
             {
-                ProcessCommandMessage(hWnd, wParam);
+                ProcessCommandMessage(wParam);
             }
         }
 
-        public void ProcessCommandMessage(HWND hWnd, long wParam)
+        private void ProcessCommandMessage(long wParam)
         {
             // Force all keys up to prevent key repeats
             SendSavedKeyEvents();
 
             int wmId = (int)(wParam & 0xFFFF); //LOWORD(wParam);
-            //int wmEvent = (int)((wParam >> 16) & 0xFFFF); //HIWORD(wParam);
 
             // Parse the menu selections:
             // Added for Dynamic menu system
@@ -233,7 +232,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void KeyUp(long wParam, long lParam)
+        private void KeyUp(long wParam, long lParam)
         {
             // send emulator key up event to the emulator
             // TODO: Key up checks whether the emulation is running, this does not
@@ -243,7 +242,7 @@ namespace VCCSharp.Modules
             _modules.Keyboard.KeyboardHandleKey((byte)wParam, oemScan, KeyStates.kEventKeyUp);
         }
 
-        public void MouseMove(long lParam)
+        private void MouseMove(long lParam)
         {
             unsafe
             {
@@ -253,7 +252,7 @@ namespace VCCSharp.Modules
                     uint y = (uint)((lParam >> 16) & 0xFFFF); // HIWORD(lParam);
 
                     RECT clientSize;
-                    _modules.GDI.GDIGetClientRect(_modules.Emu.WindowHandle, &clientSize);
+                    _modules.GDI.GetClientRect(_modules.Emu.WindowHandle, &clientSize);
 
                     x /= (uint)((clientSize.right - clientSize.left) >> 6);
                     y /= (uint)(((clientSize.bottom - clientSize.top) - 20) >> 6);
@@ -263,7 +262,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void ProcessSysKeyDownMessage(long wParam, long lParam)
+        private void ProcessSysKeyDownMessage(long wParam, long lParam)
         {
             // Ignore repeated system keys
             if ((lParam >> 30) != 0)
@@ -272,7 +271,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void ProcessKeyDownMessage(long wParam, long lParam)
+        private void ProcessKeyDownMessage(long wParam, long lParam)
         {
             // get key scan code for emulator control keys
             byte oemScan = (byte)((lParam & 0x00FF0000) >> 16); // just get the scan code
@@ -289,7 +288,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void ToggleFullScreenState()
+        private void ToggleFullScreenState()
         {
             if (_modules.Vcc.RunState == 0)
             {
@@ -298,7 +297,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void KeyDown(long wParam, long lParam)
+        private void KeyDown(long wParam, long lParam)
         {
             byte oemScan = (byte)((lParam & 0x00FF0000) >> 16); // just get the scan code
 
@@ -319,7 +318,7 @@ namespace VCCSharp.Modules
         //--------------------------------------------------------------------------
 
         // Save last two key down events
-        public void SaveLastTwoKeyDownEvents(byte kbChar, byte oemScan)
+        private void SaveLastTwoKeyDownEvents(byte kbChar, byte oemScan)
         {
             // Ignore zero scan code
             if (oemScan == 0)
@@ -328,37 +327,37 @@ namespace VCCSharp.Modules
             }
 
             // Remember it
-            KeySaveToggle = !KeySaveToggle;
+            _keySaveToggle = !_keySaveToggle;
 
-            if (KeySaveToggle)
+            if (_keySaveToggle)
             {
-                KB_save1 = kbChar;
-                SC_save1 = oemScan;
+                _kbSave1 = kbChar;
+                _scSave1 = oemScan;
             }
             else
             {
-                KB_save2 = kbChar;
-                SC_save2 = oemScan;
+                _kbSave2 = kbChar;
+                _scSave2 = oemScan;
             }
         }
 
         // Force keys up if main widow keyboard focus is lost.  Otherwise
         // down keys will cause issues with OS-9 on return
         // Send key up events to keyboard handler for saved keys
-        public void SendSavedKeyEvents()
+        private void SendSavedKeyEvents()
         {
-            if (SC_save1 != 0)
+            if (_scSave1 != 0)
             {
-                _modules.Keyboard.KeyboardHandleKey(KB_save1, SC_save1, KeyStates.kEventKeyUp);
+                _modules.Keyboard.KeyboardHandleKey(_kbSave1, _scSave1, KeyStates.kEventKeyUp);
             }
 
-            if (SC_save2 != 0)
+            if (_scSave2 != 0)
             {
-                _modules.Keyboard.KeyboardHandleKey(KB_save2, SC_save2, KeyStates.kEventKeyUp);
+                _modules.Keyboard.KeyboardHandleKey(_kbSave2, _scSave2, KeyStates.kEventKeyUp);
             }
 
-            SC_save1 = 0;
-            SC_save2 = 0;
+            _scSave1 = 0;
+            _scSave2 = 0;
         }
     }
 }

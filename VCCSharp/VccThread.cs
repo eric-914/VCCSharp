@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using VCCSharp.Models;
+﻿using VCCSharp.Models;
 
 namespace VCCSharp
 {
@@ -27,7 +26,7 @@ namespace VCCSharp
                 return;
             }
 
-            _vccApp.Startup(Process.GetCurrentProcess().Handle, args.Value);
+            _vccApp.Startup(args.Value);
 
             _vccApp.Threading();
 

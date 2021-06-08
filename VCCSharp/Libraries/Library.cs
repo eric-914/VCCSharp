@@ -3,11 +3,12 @@ using System.Runtime.InteropServices;
 using System.Security;
 using VCCSharp.Models;
 using HANDLE = System.IntPtr;
+using HCURSOR = System.IntPtr;
+using HICON = System.IntPtr;
 using HINSTANCE = System.IntPtr;
-using HWND = System.IntPtr;
 using HMODULE = System.IntPtr;
 using HRESULT = System.IntPtr;
-using HMENU = System.IntPtr;
+using HWND = System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
@@ -137,10 +138,10 @@ namespace VCCSharp.Libraries
             public static extern unsafe void DDSurfaceSetPalette(IDirectDrawPalette* ddPalette);
 
             [DllImport(LIBRARY)]
-            public static extern IntPtr WndProc(IntPtr hWnd, uint msg, long wParam, long lParam);
+            public static extern IntPtr WndProc(HWND hWnd, uint msg, long wParam, long lParam);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int RegisterWcex(HINSTANCE hInstance, void* lpfnWndProc, byte* lpszClassName, byte* lpszMenuName, uint style, void* hIcon, void* hCursor, void* hbrBackground);
+            public static extern unsafe int DDRegisterClass(HINSTANCE hInstance, void* lpWndProc, byte* lpszClassName, byte* lpszMenuName, uint style, HICON hIcon, HCURSOR hCursor, void* hbrBackground);
         }
 
         public static class DirectSound
@@ -221,6 +222,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe int FileWriteFile(HANDLE handle, byte* buffer, int size);
         }
 
+        // ReSharper disable once InconsistentNaming
         public static class GDI
         {
             [DllImport(LIBRARY)]
@@ -239,10 +241,10 @@ namespace VCCSharp.Libraries
             public static extern unsafe void* GDIGetBrush();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void* GDIGetCursor(byte fullscreen);
+            public static extern HCURSOR GDIGetCursor(byte fullscreen);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void* GDIGetIcon(HINSTANCE resources);
+            public static extern HICON GDIGetIcon(HINSTANCE resources);
 
             [DllImport(LIBRARY)]
             public static extern unsafe void GDIGetClientRect(HWND hWnd, RECT* clientSize);
@@ -272,7 +274,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe byte Button(void* stick, int index);
         }
 
-        public static class PAKInterface
+        public static class PakInterface
         {
             [DllImport(LIBRARY)]
             public static extern HINSTANCE PAKLoadLibrary(string modulePath);
