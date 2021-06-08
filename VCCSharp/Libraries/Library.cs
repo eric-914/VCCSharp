@@ -1,8 +1,8 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Security;
 using VCCSharp.Models;
 using HANDLE = System.IntPtr;
+using HBRUSH = System.IntPtr;
 using HCURSOR = System.IntPtr;
 using HICON = System.IntPtr;
 using HINSTANCE = System.IntPtr;
@@ -141,7 +141,7 @@ namespace VCCSharp.Libraries
             public static extern HINSTANCE WndProc(HWND hWnd, uint msg, long wParam, long lParam);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DDRegisterClass(HINSTANCE hInstance, void* lpWndProc, string lpszClassName, byte* lpszMenuName, uint style, HICON hIcon, HCURSOR hCursor, void* hbrBackground);
+            public static extern unsafe int DDRegisterClass(HINSTANCE hInstance, void* lpWndProc, string lpszClassName, byte* lpszMenuName, uint style, HICON hIcon, HCURSOR hCursor, HBRUSH hbrBackground);
         }
 
         public static class DirectSound
@@ -238,7 +238,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe void GDITextOut(void* hdc, int x, int y, string text, int textLength);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void* GDIGetBrush();
+            public static extern HBRUSH GDIGetBrush();
 
             [DllImport(LIBRARY)]
             public static extern HCURSOR GDIGetCursor(byte fullscreen);

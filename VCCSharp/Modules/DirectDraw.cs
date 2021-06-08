@@ -12,6 +12,7 @@ using Point = System.Drawing.Point;
 using HWND = System.IntPtr;
 using HICON = System.IntPtr;
 using HCURSOR = System.IntPtr;
+using HBRUSH = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -88,7 +89,7 @@ namespace VCCSharp.Modules
             unsafe
             {
                 HCURSOR hCursor = gdi.GetCursor(fullscreen);
-                void* hBrush = gdi.GetBrush();
+                HBRUSH hBrush = gdi.GetBrush();
 
                 void* wndProc = (void*)Marshal.GetFunctionPointerForDelegate(_wndProcTemplate);
 
@@ -667,8 +668,7 @@ namespace VCCSharp.Modules
 
             return hr >= 0;
         }
-
-
+        
         private unsafe bool CreateDirectDrawWindowFullScreen(DDSURFACEDESC* ddsd)
         {
             SetPitch(ddsd, 0);
