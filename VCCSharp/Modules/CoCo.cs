@@ -736,7 +736,7 @@ namespace VCCSharp.Modules
             lines &= 3;
 
             _linesPerScreen = _modules.Graphics.Lpf[lines];
-            _topBorder = _modules.Graphics.VcenterTable[lines];
+            _topBorder = _modules.Graphics.VerticalCenterTable[lines];
 
             //4 lines of top border are un-rendered 244-4=240 rendered scan-lines
             _bottomBorder = (byte)(243 - (_topBorder + _linesPerScreen));

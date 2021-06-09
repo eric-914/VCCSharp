@@ -1,4 +1,6 @@
-﻿namespace VCCSharp.Models
+﻿using VCCSharp.Enums;
+
+namespace VCCSharp.Models
 {
     public class ConfigModel
     {
@@ -18,7 +20,7 @@
         public ushort AudioRate;
 
         //[Video]
-        public byte MonitorType;
+        public MonitorTypes MonitorType;
         public byte PaletteType;
         public byte ScanLines;
         public bool ForceAspect;

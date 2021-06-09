@@ -79,7 +79,7 @@ namespace VCCSharp.Modules
 
         public void ToggleMonitorType() //F6
         {
-            byte monType = Graphics.MonType == Define.FALSE ? Define.TRUE : Define.FALSE;
+            MonitorTypes monType = Graphics.MonitorType == MonitorTypes.Composite ? MonitorTypes.RGB : MonitorTypes.Composite;
 
             _modules.Graphics.SetMonitorType(monType);
         }

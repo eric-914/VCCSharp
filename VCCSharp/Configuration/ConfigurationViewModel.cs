@@ -205,12 +205,12 @@ namespace VCCSharp.Configuration
         //[Video]
         public MonitorTypes? MonitorType
         {
-            get => (MonitorTypes)(Model.MonitorType);
+            get => Model.MonitorType;
             set
             {
-                if (!value.HasValue || Model.MonitorType == (byte)value.Value) return;
+                if (!value.HasValue || Model.MonitorType == value.Value) return;
 
-                Model.MonitorType = (byte)value.Value;
+                Model.MonitorType = value.Value;
                 OnPropertyChanged();
             }
         }

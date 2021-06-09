@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Libraries;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
@@ -20,7 +19,7 @@ namespace VCCSharp.Modules
         void SetVidMask(uint mask);
         void SetPaletteType();
         void SetScanLines(byte lines);
-        void SetMonitorType(byte type);
+        void SetMonitorType(MonitorTypes type);
         void FlipArtifacts();
         void InvalidateBorder();
         bool CheckState(byte attributes);
@@ -49,7 +48,7 @@ namespace VCCSharp.Modules
         byte LinesPerScreen { get; set; }
         byte LowerCase { get; set; }
         byte MasterMode { get; set; }
-        byte MonType { get; set; }
+        MonitorTypes MonitorType { get; set; }
         byte PaletteIndex { get; set; }
         byte Stretch { get; set; }
         byte TextBgPalette { get; set; }
@@ -66,7 +65,7 @@ namespace VCCSharp.Modules
         uint BorderColor32 { get; set; }
 
         byte[] Lpf { get; }
-        byte[] VcenterTable { get; }
+        byte[] VerticalCenterTable { get; }
     }
 
     public class Graphics : IGraphics
@@ -114,8 +113,8 @@ namespace VCCSharp.Modules
         public byte Bpp { get; set; }
         public byte BytesPerRow { get; set; } = 32;
         public byte CC2Offset { get; set; }
-        public byte CC2VDGMode { get; set; }
-        public byte CC2VDGPiaMode { get; set; }
+        public byte CC2VdgMode { get; set; }
+        public byte CC2VdgPiaMode { get; set; }
         public byte CC3BorderColor { get; set; }
         public byte CC3Vmode { get; set; }
         public byte CC3Vres { get; set; }
@@ -131,7 +130,7 @@ namespace VCCSharp.Modules
         public byte LinesPerScreen { get; set; }
         public byte LowerCase { get; set; }
         public byte MasterMode { get; set; }
-        public byte MonType { get; set; } = 1;
+        public MonitorTypes MonitorType { get; set; } = MonitorTypes.RGB;
         public byte PaletteIndex { get; set; }
         public byte Stretch { get; set; }
         //public byte TextBGColor { get; set; }
@@ -146,7 +145,7 @@ namespace VCCSharp.Modules
         public ushort VerticalOffsetRegister { get; set; }
         public ushort VPitch { get; set; } = 32;
 
-        public uint DistoOffset { get; set; }
+        public uint VidRamOffset { get; set; }
         public uint NewStartOfVidRam { get; set; }
         public uint StartOfVidRam { get; set; }
         public uint VidMask { get; set; } = 0x1FFFF;
@@ -156,7 +155,7 @@ namespace VCCSharp.Modules
         public uint BorderColor32 { get; set; }
 
         public byte[] Lpf { get; } = { 192, 199, 225, 225 }; // #2 is really undefined but I gotta put something here.
-        public byte[] VcenterTable { get; } = { 29, 23, 12, 12 };
+        public byte[] VerticalCenterTable { get; } = { 29, 23, 12, 12 };
 
         public Graphics(IModules modules)
         {
@@ -179,7 +178,7 @@ namespace VCCSharp.Modules
             ExtendedText = 1;
             HorizontalOffsetReg = 0;
             TagY = 0;
-            DistoOffset = 0;
+            VidRamOffset = 0;
             BorderChange = 3;
             CC2Offset = 0;
             HorizontalOffset = 0;
@@ -316,17 +315,17 @@ namespace VCCSharp.Modules
             SetGimeBorderColor(borderColor);
         }
 
-        public void SetMonitorType(byte type)
+        public void SetMonitorType(MonitorTypes type)
         {
             byte borderColor = CC3BorderColor;
 
             SetGimeBorderColor(0);
 
-            MonType = (type & 1) == 0 ? Define.FALSE : Define.TRUE;
+            MonitorType = type;
 
             for (byte palIndex = 0; palIndex < 16; palIndex++)
             {
-                SetMonitorTypePalettes(MonType, palIndex);
+                SetMonitorTypePalettes(MonitorType, palIndex);
             }
 
             SetGimeBorderColor(borderColor);
@@ -357,13 +356,13 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void SetMonitorTypePalettes(byte monType, byte palIndex)
+        public void SetMonitorTypePalettes(MonitorTypes monType, byte palIndex)
         {
-            int offset = monType * 64 + palIndex;
+            int offset = (monType == MonitorTypes.Composite ? 0 : 64) + palIndex;
 
-            _colors.Palette16Bit[palIndex] = _colors.PaletteLookup16[offset]; //colors->PaletteLookup16[monType][colors->Palette[palIndex]];
-            _colors.Palette32Bit[palIndex] = _colors.PaletteLookup32[offset]; //colors->PaletteLookup32[monType][colors->Palette[palIndex]];
-            _colors.Palette8Bit[palIndex] = _colors.PaletteLookup8[offset]; //colors->PaletteLookup8[monType][colors->Palette[palIndex]];
+            _colors.Palette16Bit[palIndex] = _colors.PaletteLookup16[offset]; 
+            _colors.Palette32Bit[palIndex] = _colors.PaletteLookup32[offset]; 
+            _colors.Palette8Bit[palIndex] = _colors.PaletteLookup8[offset]; 
         }
 
         public void SetGimeBorderColor(byte data)
@@ -404,9 +403,9 @@ namespace VCCSharp.Modules
         //3 bits from SAM Registers
         public void SetGimeVdgMode(byte vdgMode)
         {
-            if (CC2VDGMode != vdgMode)
+            if (CC2VdgMode != vdgMode)
             {
-                CC2VDGMode = vdgMode;
+                CC2VdgMode = vdgMode;
                 SetupDisplay();
                 BorderChange = 3;
             }
@@ -466,16 +465,16 @@ namespace VCCSharp.Modules
         public void SetGimePalette(byte palette, byte color)
         {
             byte offset = (byte)(color & 63);
-            int index = MonType * 64 + offset;
+            int index = (MonitorType == MonitorTypes.Composite ? 0 : 64) + offset;
 
             // ReSharper disable CommentTypo
             // Convert the 6bit rgbrgb value to rrrrrggggggbbbbb for the Real video hardware.
             // ReSharper restore CommentTypo
             //	unsigned char r,g,b;
             _colors.Palette[palette] = offset;
-            _colors.Palette8Bit[palette] = _colors.PaletteLookup8[index]; //colors->PaletteLookup8[instance->MonType][offset];
-            _colors.Palette16Bit[palette] = _colors.PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonType][offset];
-            _colors.Palette32Bit[palette] = _colors.PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][offset];
+            _colors.Palette8Bit[palette] = _colors.PaletteLookup8[index]; 
+            _colors.Palette16Bit[palette] = _colors.PaletteLookup16[index]; 
+            _colors.Palette32Bit[palette] = _colors.PaletteLookup32[index]; 
         }
 
         public void SetCompatMode(byte mode)
@@ -490,7 +489,7 @@ namespace VCCSharp.Modules
 
         public void SetVideoBank(byte data)
         {
-            DistoOffset = (uint)(data * (512 * 1024));
+            VidRamOffset = (uint)(data * (512 * 1024));
 
             SetupDisplay();
         }
@@ -498,9 +497,9 @@ namespace VCCSharp.Modules
         //5 bits from PIA Register
         public void SetGimeVdgMode2(byte mode)
         {
-            if (CC2VDGPiaMode != mode)
+            if (CC2VdgPiaMode != mode)
             {
-                CC2VDGPiaMode = mode;
+                CC2VdgPiaMode = mode;
                 SetupDisplay();
                 BorderChange = 3;
             }
@@ -545,32 +544,32 @@ namespace VCCSharp.Modules
                     CC3BorderColor = 0;   //Black for text modes
                     BorderChange = 3;
                     NewStartOfVidRam = (uint)((512 * CC2Offset) + (VerticalOffsetRegister & 0xE0FF) * 8);
-                    GraphicsMode = (byte)((CC2VDGPiaMode & 16) >> 4); //PIA Set on graphics clear on text
+                    GraphicsMode = (byte)((CC2VdgPiaMode & 16) >> 4); //PIA Set on graphics clear on text
                     VresIndex = 0;
-                    LinesPerRow = CoCo2LinesPerRow[CC2VDGMode];
+                    LinesPerRow = CoCo2LinesPerRow[CC2VdgMode];
 
                     byte colorSet;
                     byte tmpByte;
 
                     if (GraphicsMode != 0)
                     {
-                        colorSet = (byte)(CC2VDGPiaMode & 1);
+                        colorSet = (byte)(CC2VdgPiaMode & 1);
 
                         CC3BorderColor = colorSet == 0 ? (byte)18 : (byte)63;
 
                         BorderChange = 3;
-                        Bpp = CoCo2Bpp[(CC2VDGPiaMode & 15) >> 1];
-                        BytesPerRow = CoCo2BytesPerRow[(CC2VDGPiaMode & 15) >> 1];
-                        tmpByte = (byte)((CC2VDGPiaMode & 1) << 1 | (Bpp & 1));
+                        Bpp = CoCo2Bpp[(CC2VdgPiaMode & 15) >> 1];
+                        BytesPerRow = CoCo2BytesPerRow[(CC2VdgPiaMode & 15) >> 1];
+                        tmpByte = (byte)((CC2VdgPiaMode & 1) << 1 | (Bpp & 1));
                         PaletteIndex = CoCo2PaletteSet[tmpByte];
                     }
                     else
                     {   //Setup for 32x16 text Mode
                         Bpp = 0;
                         BytesPerRow = 32;
-                        InvertAll = (byte)((CC2VDGPiaMode & 4) >> 2);
-                        LowerCase = (byte)((CC2VDGPiaMode & 2) >> 1);
-                        colorSet = (byte)(CC2VDGPiaMode & 1);
+                        InvertAll = (byte)((CC2VdgPiaMode & 4) >> 2);
+                        LowerCase = (byte)((CC2VdgPiaMode & 2) >> 1);
+                        colorSet = (byte)(CC2VdgPiaMode & 1);
                         tmpByte = (byte)((colorSet << 1) | InvertAll);
 
                         switch (tmpByte)
@@ -605,7 +604,7 @@ namespace VCCSharp.Modules
 
             _modules.CoCo.SetLinesPerScreen(VresIndex);
 
-            VerticalCenter = (byte)(VcenterTable[VresIndex] - 4); //4 un-rendered top lines
+            VerticalCenter = (byte)(VerticalCenterTable[VresIndex] - 4); //4 un-rendered top lines
             PixelsPerLine = (ushort)(BytesPerRow * PixelsPerByte[Bpp]);
 
             if ((PixelsPerLine % 40) != 0)
@@ -627,13 +626,13 @@ namespace VCCSharp.Modules
             }
 
             byte offset = (byte)(CC3BorderColor & 63);
-            int index = MonType * 64 + offset;
+            int index = (MonitorType == MonitorTypes.Composite ? 0 : 64) + offset;
 
             BorderColor8 = (byte)(offset | 128);
-            BorderColor16 = _colors.PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonType][instance->CC3BorderColor & 63];
-            BorderColor32 = _colors.PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonType][instance->CC3BorderColor & 63];
+            BorderColor16 = _colors.PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonitorType][instance->CC3BorderColor & 63];
+            BorderColor32 = _colors.PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonitorType][instance->CC3BorderColor & 63];
 
-            NewStartOfVidRam = (NewStartOfVidRam & VidMask) + DistoOffset; //Dist Offset for 2M configuration
+            NewStartOfVidRam = (NewStartOfVidRam & VidMask) + VidRamOffset; //Dist Offset for 2M configuration
             MasterMode = (byte)((GraphicsMode << 7) | (CompatMode << 6) | ((Bpp & 3) << 4) | (Stretch & 15));
         }
     }

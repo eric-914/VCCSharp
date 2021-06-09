@@ -375,7 +375,7 @@ namespace VCCSharp.Modules
                 model.SoundCardName = Converter.ToString(buffer);
 
                 //[Video]
-                model.MonitorType = (byte)_kernel.GetPrivateProfileIntA("Video", "MonitorType", 1, iniFilePath);
+                model.MonitorType = (MonitorTypes)_kernel.GetPrivateProfileIntA("Video", "MonitorType", 1, iniFilePath);
                 model.PaletteType = (byte)_kernel.GetPrivateProfileIntA("Video", "PaletteType", 1, iniFilePath);
                 model.ScanLines = (byte)_kernel.GetPrivateProfileIntA("Video", "ScanLines", 0, iniFilePath);
                 model.ForceAspect = (byte)_kernel.GetPrivateProfileIntA("Video", "ForceAspect", 0, iniFilePath) != 0;
@@ -573,7 +573,7 @@ namespace VCCSharp.Modules
             SaveInt("Audio", "AudioRate", model.AudioRate);
 
             //[Video]
-            SaveInt("Video", "MonitorType", model.MonitorType);
+            SaveInt("Video", "MonitorType", (int)model.MonitorType);
             SaveInt("Video", "PaletteType", model.PaletteType);
             SaveInt("Video", "ScanLines", model.ScanLines);
             SaveInt("Video", "ForceAspect", model.ForceAspect ? 1 : 0);

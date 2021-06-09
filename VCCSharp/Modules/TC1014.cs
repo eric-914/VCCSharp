@@ -3070,7 +3070,7 @@ Could not locate {ROM} in any of these locations:
                     {
                         widePixel = wRamBuffer[(Graphics.VidMask & (start + (byte)(Graphics.HorizontalOffset + beam))) >> 1];
 
-                        if (Graphics.MonType == 0)
+                        if (Graphics.MonitorType == 0)
                         { //Pcolor
                             for (byte xbit = 8; xbit > 0; xbit--)
                             {
