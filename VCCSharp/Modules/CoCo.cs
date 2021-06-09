@@ -175,7 +175,7 @@ namespace VCCSharp.Modules
 
             if (_verticalInterruptEnabled)
             {
-                _modules.TC1014.GimeAssertVertInterrupt();
+                _modules.TC1014.GimeAssertVerticalInterrupt();
             }
 
             //for (_modules.Emu.LineCounter = 0; _modules.Emu.LineCounter < (cocoState->BottomBorder); _modules.Emu.LineCounter++)
@@ -247,7 +247,7 @@ namespace VCCSharp.Modules
         {
             if (_horizontalInterruptEnabled)
             {
-                _modules.TC1014.GimeAssertHorzInterrupt();
+                _modules.TC1014.GimeAssertHorizontalInterrupt();
             }
 
             _modules.MC6821.IrqHs(PhaseStates.Any);

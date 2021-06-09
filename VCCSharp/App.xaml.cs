@@ -7,6 +7,7 @@ using VCCSharp.Menu;
 using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
 using VCCSharp.Modules;
+using VCCSharp.Modules.TC1014;
 using VCCSharp.TapePlayer;
 
 namespace VCCSharp
