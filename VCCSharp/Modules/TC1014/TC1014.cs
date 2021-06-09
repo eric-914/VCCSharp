@@ -91,6 +91,8 @@ namespace VCCSharp.Modules.TC1014
         public TC1014(IModules modules)
         {
             _modules = modules;
+
+            InitializeModes();
         }
 
         public void MC6883Reset()
@@ -497,8 +499,8 @@ Could not locate {rom} in any of these locations:
                 Graphics.TagY = y;
             }
 
-            uint start = (uint)(Graphics.StartOfVidRam + (Graphics.TagY / Graphics.LinesPerRow) * (Graphics.VPitch * Graphics.ExtendedText));
-            uint yStride = (uint)((((y + Graphics.VerticalCenter) * 2) * xPitch) + (Graphics.HorizontalCenter * 1) - 1);
+            int start = (int)(Graphics.StartOfVidRam + (Graphics.TagY / Graphics.LinesPerRow) * (Graphics.VPitch * Graphics.ExtendedText));
+            int yStride = (int)((((y + Graphics.VerticalCenter) * 2) * xPitch) + (Graphics.HorizontalCenter * 1) - 1);
 
             SwitchMasterMode32(Graphics.MasterMode, start, yStride);
         }
