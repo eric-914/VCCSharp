@@ -23,18 +23,9 @@ namespace VCCSharp.Modules
         ushort GetMem(int address);
         void SetMapType(byte type);
         void SetRomMap(byte data);
-        unsafe void DrawBottomBorder16();
-        unsafe void DrawBottomBorder24();
         unsafe void DrawBottomBorder32();
-        unsafe void DrawBottomBorder8();
-        unsafe void DrawTopBorder16();
-        unsafe void DrawTopBorder24();
         unsafe void DrawTopBorder32();
-        unsafe void DrawTopBorder8();
-        unsafe void UpdateScreen16();
-        unsafe void UpdateScreen24();
         unsafe void UpdateScreen32();
-        unsafe void UpdateScreen8();
 
         byte SAMRead(byte port);
         void SAMWrite(byte data, byte port);
@@ -798,51 +789,6 @@ Could not locate {ROM} in any of these locations:
             }
         }
 
-        public unsafe void DrawTopBorder8()
-        {
-            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
-
-            if (Graphics.BorderChange == 0)
-            {
-                return;
-            }
-
-            for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
-            {
-                graphicsSurfaces.pSurface8[x + ((_modules.Emu.LineCounter * 2) * _modules.Emu.SurfacePitch)] = (byte)(Graphics.BorderColor8 | 128);
-
-                if (!_modules.Emu.ScanLines)
-                {
-                    graphicsSurfaces.pSurface8[x + ((_modules.Emu.LineCounter * 2 + 1) * _modules.Emu.SurfacePitch)] = (byte)(Graphics.BorderColor8 | 128);
-                }
-            }
-        }
-
-        public unsafe void DrawTopBorder16()
-        {
-            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
-
-            if (Graphics.BorderChange == 0)
-            {
-                return;
-            }
-
-            for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
-            {
-                graphicsSurfaces.pSurface16[x + ((_modules.Emu.LineCounter * 2) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor16;
-
-                if (!_modules.Emu.ScanLines)
-                {
-                    graphicsSurfaces.pSurface16[x + ((_modules.Emu.LineCounter * 2 + 1) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor16;
-                }
-            }
-        }
-
-        public unsafe void DrawTopBorder24()
-        {
-            //--Not implemented
-        }
-
         public unsafe void DrawTopBorder32()
         {
             GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
@@ -864,51 +810,6 @@ Could not locate {ROM} in any of these locations:
             }
         }
 
-        public unsafe void DrawBottomBorder8()
-        {
-            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
-
-            if (Graphics.BorderChange == 0)
-            {
-                return;
-            }
-
-            for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
-            {
-                graphicsSurfaces.pSurface8[x + (2 * (_modules.Emu.LineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = (byte)(Graphics.BorderColor8 | 128);
-
-                if (!_modules.Emu.ScanLines)
-                {
-                    graphicsSurfaces.pSurface8[x + _modules.Emu.SurfacePitch + (2 * (_modules.Emu.LineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = (byte)(Graphics.BorderColor8 | 128);
-                }
-            }
-        }
-
-        public unsafe void DrawBottomBorder16()
-        {
-            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
-
-            if (Graphics.BorderChange == 0)
-            {
-                return;
-            }
-
-            for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
-            {
-                graphicsSurfaces.pSurface16[x + (2 * (_modules.Emu.LineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor16;
-
-                if (!_modules.Emu.ScanLines)
-                {
-                    graphicsSurfaces.pSurface16[x + _modules.Emu.SurfacePitch + (2 * (_modules.Emu.LineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor16;
-                }
-            }
-        }
-
-        public unsafe void DrawBottomBorder24()
-        {
-            //--Not implemented
-        }
-
         public unsafe void DrawBottomBorder32()
         {
             GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
@@ -927,93 +828,6 @@ Could not locate {ROM} in any of these locations:
                     graphicsSurfaces.pSurface32[x + _modules.Emu.SurfacePitch + (2 * (_modules.Emu.LineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor32;
                 }
             }
-        }
-
-        public unsafe void UpdateScreen8()
-        {
-            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
-
-            if ((Graphics.HorizontalCenter != 0) && (Graphics.BorderChange > 0))
-            {
-                for (ushort x = 0; x < Graphics.HorizontalCenter; x++)
-                {
-                    graphicsSurfaces.pSurface8[x + (((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor8;
-
-                    if (!_modules.Emu.ScanLines)
-                    {
-                        graphicsSurfaces.pSurface8[x + (((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2 + 1) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor8;
-                    }
-
-                    graphicsSurfaces.pSurface8[x + (Graphics.PixelsPerLine * (Graphics.Stretch + 1)) + Graphics.HorizontalCenter + (((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor8;
-
-                    if (!_modules.Emu.ScanLines)
-                    {
-                        graphicsSurfaces.pSurface8[x + (Graphics.PixelsPerLine * (Graphics.Stretch + 1)) + Graphics.HorizontalCenter + (((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2 + 1) * _modules.Emu.SurfacePitch)] = Graphics.BorderColor8;
-                    }
-                }
-            }
-
-            if (Graphics.LinesPerRow < 13)
-            {
-                Graphics.TagY++;
-            }
-
-            if (_modules.Emu.LineCounter == 0)
-            {
-                Graphics.StartOfVidRam = Graphics.NewStartOfVidRam;
-                Graphics.TagY = (ushort)(_modules.Emu.LineCounter);
-            }
-
-            uint start = (uint)(Graphics.StartOfVidRam + (Graphics.TagY / Graphics.LinesPerRow) * (Graphics.VPitch * Graphics.ExtendedText));
-            uint yStride = (uint)((((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch) + (Graphics.HorizontalCenter) - 1);
-
-            SwitchMasterMode8(Graphics.MasterMode, start, yStride);
-        }
-
-        public unsafe void UpdateScreen16()
-        {
-            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
-
-            if ((Graphics.HorizontalCenter != 0) && (Graphics.BorderChange > 0))
-            {
-                for (ushort x = 0; x < Graphics.HorizontalCenter; x++)
-                {
-                    graphicsSurfaces.pSurface16[x + (((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2) * (_modules.Emu.SurfacePitch))] = Graphics.BorderColor16;
-
-                    if (!_modules.Emu.ScanLines)
-                    {
-                        graphicsSurfaces.pSurface16[x + (((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2 + 1) * (_modules.Emu.SurfacePitch))] = Graphics.BorderColor16;
-                    }
-
-                    graphicsSurfaces.pSurface16[x + (Graphics.PixelsPerLine * (Graphics.Stretch + 1)) + Graphics.HorizontalCenter + (((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2) * (_modules.Emu.SurfacePitch))] = Graphics.BorderColor16;
-
-                    if (!_modules.Emu.ScanLines)
-                    {
-                        graphicsSurfaces.pSurface16[x + (Graphics.PixelsPerLine * (Graphics.Stretch + 1)) + Graphics.HorizontalCenter + (((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2 + 1) * (_modules.Emu.SurfacePitch))] = Graphics.BorderColor16;
-                    }
-                }
-            }
-
-            if (Graphics.LinesPerRow < 13)
-            {
-                Graphics.TagY++;
-            }
-
-            if (_modules.Emu.LineCounter == 0)
-            {
-                Graphics.StartOfVidRam = Graphics.NewStartOfVidRam;
-                Graphics.TagY = (ushort)(_modules.Emu.LineCounter);
-            }
-
-            uint start = (uint)(Graphics.StartOfVidRam + (Graphics.TagY / Graphics.LinesPerRow) * (Graphics.VPitch * Graphics.ExtendedText));
-            uint yStride = (uint)((((_modules.Emu.LineCounter + Graphics.VerticalCenter) * 2) * _modules.Emu.SurfacePitch) + (Graphics.HorizontalCenter * 1) - 1);
-
-            SwitchMasterMode16(Graphics.MasterMode, start, yStride);
-        }
-
-        public unsafe void UpdateScreen24()
-        {
-            //--Not implemented
         }
 
         public unsafe void UpdateScreen32()

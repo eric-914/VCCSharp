@@ -599,41 +599,17 @@ namespace VCCSharp.Modules
 
         private void CoCoDrawTopBorder()
         {
-            var mapping = new Dictionary<BitDepthStates, Action>
-            {
-                {BitDepthStates.BIT_8, () => _modules.TC1014.DrawTopBorder8()},
-                {BitDepthStates.BIT_16, () => _modules.TC1014.DrawTopBorder16()},
-                {BitDepthStates.BIT_24, () => _modules.TC1014.DrawTopBorder24()},
-                {BitDepthStates.BIT_32, () => _modules.TC1014.DrawTopBorder32()}
-            };
-
-            mapping[(BitDepthStates)_modules.Emu.BitDepth]();
+            _modules.TC1014.DrawTopBorder32();
         }
 
         private void CoCoUpdateScreen()
         {
-            var mapping = new Dictionary<BitDepthStates, Action>
-            {
-                {BitDepthStates.BIT_8, () => _modules.TC1014.UpdateScreen8()},
-                {BitDepthStates.BIT_16, () => _modules.TC1014.UpdateScreen16()},
-                {BitDepthStates.BIT_24, () => _modules.TC1014.UpdateScreen24()},
-                {BitDepthStates.BIT_32, () => _modules.TC1014.UpdateScreen32()}
-            };
-
-            mapping[(BitDepthStates)_modules.Emu.BitDepth]();
+            _modules.TC1014.UpdateScreen32();
         }
 
         private void CoCoDrawBottomBorder()
         {
-            var mapping = new Dictionary<BitDepthStates, Action>
-            {
-                {BitDepthStates.BIT_8, () => _modules.TC1014.DrawBottomBorder8()},
-                {BitDepthStates.BIT_16, () => _modules.TC1014.DrawBottomBorder16()},
-                {BitDepthStates.BIT_24, () => _modules.TC1014.DrawBottomBorder24()},
-                {BitDepthStates.BIT_32, () => _modules.TC1014.DrawBottomBorder32()}
-            };
-
-            mapping[(BitDepthStates)_modules.Emu.BitDepth]();
+            _modules.TC1014.DrawBottomBorder32();
         }
 
         public void SetInterruptTimer(ushort timer)

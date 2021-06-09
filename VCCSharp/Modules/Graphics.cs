@@ -60,8 +60,6 @@ namespace VCCSharp.Modules
         uint NewStartOfVidRam { get; set; }
         uint StartOfVidRam { get; set; }
         uint VidMask { get; set; }
-        byte BorderColor8 { get; set; }
-        ushort BorderColor16 { get; set; }
         uint BorderColor32 { get; set; }
 
         byte[] Lpf { get; }
@@ -150,8 +148,6 @@ namespace VCCSharp.Modules
         public uint StartOfVidRam { get; set; }
         public uint VidMask { get; set; } = 0x1FFFF;
 
-        public byte BorderColor8 { get; set; }
-        public ushort BorderColor16 { get; set; }
         public uint BorderColor32 { get; set; }
 
         public byte[] Lpf { get; } = { 192, 199, 225, 225 }; // #2 is really undefined but I gotta put something here.
@@ -360,9 +356,9 @@ namespace VCCSharp.Modules
         {
             int offset = (monType == MonitorTypes.Composite ? 0 : 64) + palIndex;
 
-            _colors.Palette16Bit[palIndex] = _colors.PaletteLookup16[offset]; 
+            //_colors.Palette16Bit[palIndex] = _colors.PaletteLookup16[offset]; 
             _colors.Palette32Bit[palIndex] = _colors.PaletteLookup32[offset]; 
-            _colors.Palette8Bit[palIndex] = _colors.PaletteLookup8[offset]; 
+            //_colors.Palette8Bit[palIndex] = _colors.PaletteLookup8[offset]; 
         }
 
         public void SetGimeBorderColor(byte data)
@@ -472,8 +468,8 @@ namespace VCCSharp.Modules
             // ReSharper restore CommentTypo
             //	unsigned char r,g,b;
             _colors.Palette[palette] = offset;
-            _colors.Palette8Bit[palette] = _colors.PaletteLookup8[index]; 
-            _colors.Palette16Bit[palette] = _colors.PaletteLookup16[index]; 
+            //_colors.Palette8Bit[palette] = _colors.PaletteLookup8[index]; 
+            //_colors.Palette16Bit[palette] = _colors.PaletteLookup16[index]; 
             _colors.Palette32Bit[palette] = _colors.PaletteLookup32[index]; 
         }
 
@@ -628,9 +624,7 @@ namespace VCCSharp.Modules
             byte offset = (byte)(CC3BorderColor & 63);
             int index = (MonitorType == MonitorTypes.Composite ? 0 : 64) + offset;
 
-            BorderColor8 = (byte)(offset | 128);
-            BorderColor16 = _colors.PaletteLookup16[index]; //colors->PaletteLookup16[instance->MonitorType][instance->CC3BorderColor & 63];
-            BorderColor32 = _colors.PaletteLookup32[index]; //colors->PaletteLookup32[instance->MonitorType][instance->CC3BorderColor & 63];
+            BorderColor32 = _colors.PaletteLookup32[index]; 
 
             NewStartOfVidRam = (NewStartOfVidRam & VidMask) + VidRamOffset; //Dist Offset for 2M configuration
             MasterMode = (byte)((GraphicsMode << 7) | (CompatMode << 6) | ((Bpp & 3) << 4) | (Stretch & 15));
