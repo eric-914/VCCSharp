@@ -58,20 +58,9 @@ namespace VCCSharp.Libraries
         public static extern int UpdateWindow(HWND hWnd);
 
         [DllImport(Dll)]
-        public static extern LRESULT SendMessageA(HWND hWnd, uint msg, ulong wParam, long lParam);
-
-        [DllImport(Dll)]
-        public static extern unsafe HWND CreateWindowExA(uint dwExStyle, byte* lpClassName, byte* lpWindowName,
-            uint dwStyle, int x, int y, int nWidth, int nHeight,
-            HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
-
-        [DllImport(Dll)]
         public static extern unsafe HWND CreateWindowExA(uint dwExStyle, string lpClassName, string lpWindowName,
             uint dwStyle, int x, int y, int nWidth, int nHeight,
             HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
-
-        [DllImport(Dll)]
-        public static extern LRESULT DefWindowProcA(HWND hWnd, uint msg, ulong wParam, long lParam);
 
         [DllImport(Dll)]
         public static extern short GetKeyState(int nVirtualKey);

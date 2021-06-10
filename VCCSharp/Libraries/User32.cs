@@ -72,17 +72,11 @@ namespace VCCSharp.Libraries
         public unsafe int AdjustWindowRect(RECT* lpRect, uint dwStyle, int bMenu)
             => User32Dll.AdjustWindowRect(lpRect, dwStyle, bMenu);
 
-        public unsafe HWND CreateWindowExA(uint dwExStyle, byte* lpClassName, byte* lpWindowName, uint dwStyle, int x, int y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam)
-            => User32Dll.CreateWindowExA(dwExStyle, lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
-
         public unsafe HWND CreateWindowExA(uint dwExStyle, string lpClassName, string lpWindowName, uint dwStyle, int x, int y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam)
             => User32Dll.CreateWindowExA(dwExStyle, lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
 
         public int UpdateWindow(HWND hWnd)
             => User32Dll.UpdateWindow(hWnd);
-
-        public LRESULT SendMessageA(HWND hWnd, uint msg, ulong wParam, long lParam)
-            => User32Dll.SendMessageA(hWnd, msg, wParam, lParam);
 
         public short GetKeyState(int nVirtualKey)
             => User32Dll.GetKeyState(nVirtualKey);

@@ -117,19 +117,13 @@ namespace VCCSharp.Modules
             return fileType switch
             {
                 0 => //File doesn't exist
-                    InsertModuleCase0(),
+                    Define.NOMODULE,
                 1 => //File is a DLL
                     InsertModuleCase1(emulationRunning, modulePath),
                 2 => //File is a ROM image
                     InsertModuleCase2(emulationRunning, modulePath),
                 _ => Define.NOMODULE
             };
-        }
-
-        //File doesn't exist
-        public int InsertModuleCase0()
-        {
-            return Define.NOMODULE;
         }
 
         //File is a DLL
