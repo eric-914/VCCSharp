@@ -79,13 +79,8 @@ namespace VCCSharp.Modules.TC1014
 
         public ushort[] MemPageOffsets = new ushort[1024];
 
-        //--TODO: This is really ushort MmuRegisters[4][8]
         public ushort[,] MmuRegisters = new ushort[4, 8];	//[4][8] // $FFA0 - FFAF
-        //unsigned short MmuRegisters[4][8];
 
-        //--TODO: This is really byte* MemPages[1024]
-        //public unsafe byte** MemPages; //[1024];
-        //public unsafe fixed long MemPages[1024];
         public unsafe byte*[] MemPages = new byte*[1024];
 
         public TC1014(IModules modules)
@@ -398,26 +393,28 @@ Could not locate {rom} in any of these locations:
 
         public void DrawTopBorder32()
         {
-            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
-
             if (Graphics.BorderChange == 0)
             {
                 return;
             }
 
+            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
+            IEmu emu = _modules.Emu;
+
+            uint bc = Graphics.BorderColor;
+            ushort wsx = (ushort)emu.WindowSize.X;
+            long sp = emu.SurfacePitch;
+            int lc = emu.LineCounter * 2;
+
             unsafe
             {
-                for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
+                for (ushort x = 0; x < wsx; x++)
                 {
-                    graphicsSurfaces.pSurface32[x + ((_modules.Emu.LineCounter * 2) * _modules.Emu.SurfacePitch)] =
-                        Graphics.BorderColor32;
+                    graphicsSurfaces.pSurface32[x + lc * sp] = bc;
 
-                    if (!_modules.Emu.ScanLines
-                    )
+                    if (!emu.ScanLines)
                     {
-                        graphicsSurfaces.pSurface32[
-                                x + ((_modules.Emu.LineCounter * 2 + 1) * _modules.Emu.SurfacePitch)] =
-                            Graphics.BorderColor32;
+                        graphicsSurfaces.pSurface32[x + (lc + 1) * sp] = bc;
                     }
                 }
             }
@@ -425,27 +422,28 @@ Could not locate {rom} in any of these locations:
 
         public void DrawBottomBorder32()
         {
-            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
-
             if (Graphics.BorderChange == 0)
             {
                 return;
             }
 
+            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
+            IEmu emu = _modules.Emu;
+
+            uint bc = Graphics.BorderColor;
+            ushort wsx = (ushort)emu.WindowSize.X;
+            long sp = emu.SurfacePitch;
+            int lc = (emu.LineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) * 2;
+
             unsafe
             {
-                for (ushort x = 0; x < _modules.Emu.WindowSize.X; x++)
+                for (ushort x = 0; x < wsx; x++)
                 {
-                    graphicsSurfaces.pSurface32[
-                        x + (2 * (_modules.Emu.LineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) *
-                             _modules.Emu.SurfacePitch)] = Graphics.BorderColor32;
+                    graphicsSurfaces.pSurface32[x + lc * sp] = bc;
 
                     if (!_modules.Emu.ScanLines)
                     {
-                        graphicsSurfaces.pSurface32[
-                            x + _modules.Emu.SurfacePitch +
-                            (2 * (_modules.Emu.LineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) *
-                             _modules.Emu.SurfacePitch)] = Graphics.BorderColor32;
+                        graphicsSurfaces.pSurface32[x + sp + lc * sp] = bc;
                     }
                 }
             }
@@ -458,31 +456,31 @@ Could not locate {rom} in any of these locations:
             ushort y = (ushort)_modules.Emu.LineCounter;
             long xPitch = _modules.Emu.SurfacePitch;
 
+            int vy = (y + Graphics.VerticalCenter) * 2;
+
             if ((Graphics.HorizontalCenter != 0) && (Graphics.BorderChange > 0))
             {
+                uint bc = Graphics.BorderColor;
+                int hx = Graphics.PixelsPerLine * (Graphics.Stretch + 1) + Graphics.HorizontalCenter;
+
                 unsafe
                 {
                     uint* szSurface32 = graphicsSurfaces.pSurface32;
 
                     for (ushort x = 0; x < Graphics.HorizontalCenter; x++)
                     {
-                        szSurface32[x + (((y + Graphics.VerticalCenter) * 2) * xPitch)] = Graphics.BorderColor32;
+                        szSurface32[x + vy * xPitch] = bc;
 
                         if (!_modules.Emu.ScanLines)
                         {
-                            szSurface32[x + (((y + Graphics.VerticalCenter) * 2 + 1) * xPitch)] =
-                                Graphics.BorderColor32;
+                            szSurface32[x + (vy + 1) * xPitch] = bc;
                         }
 
-                        szSurface32[
-                            x + (Graphics.PixelsPerLine * (Graphics.Stretch + 1)) + Graphics.HorizontalCenter +
-                            (((y + Graphics.VerticalCenter) * 2) * xPitch)] = Graphics.BorderColor32;
+                        szSurface32[x + hx + vy * xPitch] = bc;
 
                         if (!_modules.Emu.ScanLines)
                         {
-                            szSurface32[
-                                x + (Graphics.PixelsPerLine * (Graphics.Stretch + 1)) + Graphics.HorizontalCenter +
-                                (((y + Graphics.VerticalCenter) * 2 + 1) * xPitch)] = Graphics.BorderColor32;
+                            szSurface32[x + hx + (vy + 1) * xPitch] = bc;
                         }
                     }
                 }
@@ -493,14 +491,14 @@ Could not locate {rom} in any of these locations:
                 Graphics.TagY++;
             }
 
-            if (y == Define.FALSE)
+            if (y == 0)
             {
                 Graphics.StartOfVidRam = Graphics.NewStartOfVidRam;
-                Graphics.TagY = y;
+                Graphics.TagY = 0;
             }
 
             int start = (int)(Graphics.StartOfVidRam + (Graphics.TagY / Graphics.LinesPerRow) * (Graphics.VPitch * Graphics.ExtendedText));
-            int yStride = (int)((((y + Graphics.VerticalCenter) * 2) * xPitch) + (Graphics.HorizontalCenter * 1) - 1);
+            int yStride = (int)(vy * xPitch + Graphics.HorizontalCenter - 1);
 
             SwitchMasterMode32(Graphics.MasterMode, start, yStride);
         }

@@ -60,7 +60,7 @@ namespace VCCSharp.Modules
         uint NewStartOfVidRam { get; set; }
         uint StartOfVidRam { get; set; }
         uint VidMask { get; set; }
-        uint BorderColor32 { get; set; }
+        uint BorderColor { get; set; }
 
         byte[] Lpf { get; }
         byte[] VerticalCenterTable { get; }
@@ -148,7 +148,7 @@ namespace VCCSharp.Modules
         public uint StartOfVidRam { get; set; }
         public uint VidMask { get; set; } = 0x1FFFF;
 
-        public uint BorderColor32 { get; set; }
+        public uint BorderColor { get; set; }
 
         public byte[] Lpf { get; } = { 192, 199, 225, 225 }; // #2 is really undefined but I gotta put something here.
         public byte[] VerticalCenterTable { get; } = { 29, 23, 12, 12 };
@@ -624,7 +624,7 @@ namespace VCCSharp.Modules
             byte offset = (byte)(CC3BorderColor & 63);
             int index = (MonitorType == MonitorTypes.Composite ? 0 : 64) + offset;
 
-            BorderColor32 = _colors.PaletteLookup32[index]; 
+            BorderColor = _colors.PaletteLookup32[index]; 
 
             NewStartOfVidRam = (NewStartOfVidRam & VidMask) + VidRamOffset; //Dist Offset for 2M configuration
             MasterMode = (byte)((GraphicsMode << 7) | (CompatMode << 6) | ((Bpp & 3) << 4) | (Stretch & 15));
