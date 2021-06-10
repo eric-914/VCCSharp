@@ -2,7 +2,6 @@
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
-using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -118,56 +117,19 @@ namespace VCCSharp.Modules
 
         public unsafe void DoCls()
         {
-            GraphicsSurfaces graphicsSurfaces = _modules.Graphics.GetGraphicsSurfaces();
-
             if (LockScreen())
             {
                 return;
             }
 
-            switch ((BitDepthStates)_modules.Emu.BitDepth)
+            uint* pSurface32 = _modules.Graphics.GetGraphicsSurface();
+
+            for (int y = 0; y < 480; y++)
             {
-                case BitDepthStates.BIT_8:
-                    for (int y = 0; y < 480; y++)
-                    {
-                        for (int x = 0; x < 640; x++)
-                        {
-                            graphicsSurfaces.pSurface8[x + (y * _modules.Emu.SurfacePitch)] = (byte)(_color | 128);
-                        }
-                    }
-                    break;
-
-                case BitDepthStates.BIT_16:
-                    for (int y = 0; y < 480; y++)
-                    {
-                        for (int x = 0; x < 640; x++)
-                        {
-                            graphicsSurfaces.pSurface16[x + (y * _modules.Emu.SurfacePitch)] = (ushort)_color;
-                        }
-                    }
-                    break;
-
-                case BitDepthStates.BIT_24:
-                    for (int y = 0; y < 480; y++)
-                    {
-                        for (int x = 0; x < 640; x++)
-                        {
-                            graphicsSurfaces.pSurface8[(x * 3) + (y * _modules.Emu.SurfacePitch)] = (byte)((_color & 0xFF0000) >> 16);
-                            graphicsSurfaces.pSurface8[(x * 3) + 1 + (y * _modules.Emu.SurfacePitch)] = (byte)((_color & 0x00FF00) >> 8);
-                            graphicsSurfaces.pSurface8[(x * 3) + 2 + (y * _modules.Emu.SurfacePitch)] = (byte)(_color & 0xFF);
-                        }
-                    }
-                    break;
-
-                case BitDepthStates.BIT_32:
-                    for (int y = 0; y < 480; y++)
-                    {
-                        for (int x = 0; x < 640; x++)
-                        {
-                            graphicsSurfaces.pSurface32[x + (y * _modules.Emu.SurfacePitch)] = _color;
-                        }
-                    }
-                    break;
+                for (int x = 0; x < 640; x++)
+                {
+                    pSurface32[x + (y * _modules.Emu.SurfacePitch)] = _color;
+                }
             }
 
             UnlockScreen();
@@ -180,76 +142,34 @@ namespace VCCSharp.Modules
 
         public float Static()
         {
-            Static(_modules.Graphics.GetGraphicsSurfaces());
+            unsafe
+            {
+                Static(_modules.Graphics.GetGraphicsSurface());
+            }
+
 
             return _modules.Throttle.CalculateFps();
         }
 
-        private unsafe void Static(GraphicsSurfaces graphicsSurfaces)
+        private unsafe void Static(uint* pSurface32)
         {
             var random = new Random();
 
             LockScreen();
 
-            if (graphicsSurfaces.pSurface32 == null)
+            if (pSurface32 == null)
             {
                 return; //TODO: Seems bad to exit w/out unlocking first
             }
 
-            switch ((BitDepthStates)(_modules.Emu.BitDepth))
+            for (int y = 0; y < 480; y++)
             {
-                case BitDepthStates.BIT_8:
-                    byte[] greyScales = { 128, 135, 184, 191 };
+                for (int x = 0; x < 640; x++)
+                {
+                    byte temp = (byte)(random.Next() & 255);
 
-                    for (int y = 0; y < 480; y += 2)
-                    {
-                        for (int x = 0; x < 160; x++)
-                        {
-                            byte temp = (byte)(random.Next() & 3);
-
-                            graphicsSurfaces.pSurface32[x + (y * _modules.Emu.SurfacePitch >> 2)] = (uint)(greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24));
-                            graphicsSurfaces.pSurface32[x + ((y + 1) * _modules.Emu.SurfacePitch >> 2)] = (uint)(greyScales[temp] | (greyScales[temp] << 8) | (greyScales[temp] << 16) | (greyScales[temp] << 24));
-                        }
-                    }
-                    break;
-
-                case BitDepthStates.BIT_16:
-                    for (int y = 0; y < 480; y += 2)
-                    {
-                        for (int x = 0; x < 320; x++)
-                        {
-                            byte temp = (byte)(random.Next() & 31);
-
-                            graphicsSurfaces.pSurface32[x + (y * _modules.Emu.SurfacePitch >> 1)] = (uint)(temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27));
-                            graphicsSurfaces.pSurface32[x + ((y + 1) * _modules.Emu.SurfacePitch >> 1)] = (uint)(temp | (temp << 6) | (temp << 11) | (temp << 16) | (temp << 22) | (temp << 27));
-                        }
-                    }
-                    break;
-
-                case BitDepthStates.BIT_24: //--TODO: Don't think this was ever tested
-                    for (int y = 0; y < 480; y++)
-                    {
-                        for (int x = 0; x < 640; x++)
-                        {
-                            byte temp = (byte)(random.Next() & 255);
-                            graphicsSurfaces.pSurface8[(x * 3) + (y * _modules.Emu.SurfacePitch)] = temp;
-                            graphicsSurfaces.pSurface8[(x * 3) + 1 + (y * _modules.Emu.SurfacePitch)] = temp;
-                            graphicsSurfaces.pSurface8[(x * 3) + 2 + (y * _modules.Emu.SurfacePitch)] = temp;
-                        }
-                    }
-                    break;
-
-                case BitDepthStates.BIT_32:
-                    for (int y = 0; y < 480; y++)
-                    {
-                        for (int x = 0; x < 640; x++)
-                        {
-                            byte temp = (byte)(random.Next() & 255);
-
-                            graphicsSurfaces.pSurface32[x + (y * _modules.Emu.SurfacePitch)] = (uint)(temp | (temp << 8) | (temp << 16));
-                        }
-                    }
-                    break;
+                    pSurface32[x + (y * _modules.Emu.SurfacePitch)] = (uint)(temp | (temp << 8) | (temp << 16));
+                }
             }
 
             byte color = (byte)(_counter1 << 2);
@@ -440,40 +360,9 @@ namespace VCCSharp.Modules
                 return true;
             }
 
-            uint rgbBitCount = GetRgbBitCount(ddsd);
             uint pitch = GetPitch(ddsd);
 
-            switch (rgbBitCount)
-            {
-                case 8:
-                    _modules.Emu.SurfacePitch = pitch;
-                    _modules.Emu.BitDepth = (byte)BitDepthStates.BIT_8;
-                    break;
-
-                case 15:
-                case 16:
-                    _modules.Emu.SurfacePitch = pitch / 2;
-                    _modules.Emu.BitDepth = (byte)BitDepthStates.BIT_16;
-                    break;
-
-                case 24:
-                    MessageBox.Show("24 Bit color is currently unsupported", "Ok");
-
-                    Environment.Exit(0);
-
-                    //_modules.Emu.SurfacePitch = pitch;
-                    //_modules.Emu.BitDepth = (byte)BitDepthStates.BIT_24;
-                    break;
-
-                case 32:
-                    _modules.Emu.SurfacePitch = pitch / 4;
-                    _modules.Emu.BitDepth = (byte)BitDepthStates.BIT_32;
-                    break;
-
-                default:
-                    MessageBox.Show("Unsupported Color Depth!", "Error");
-                    return true;
-            }
+            _modules.Emu.SurfacePitch = pitch / 4;
 
             if (!HasSurface(ddsd))
             {

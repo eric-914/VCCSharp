@@ -19,7 +19,6 @@ namespace VCCSharp.Modules
         void SetCpuMultiplierFlag(byte doubleSpeed);
         void SetTurboMode(byte data);
 
-        byte BitDepth { get; set; }
         byte CpuType { get; set; }
         byte FrameSkip { get; set; }
         bool FullScreen { get; set; }
@@ -47,7 +46,6 @@ namespace VCCSharp.Modules
         public HWND WindowHandle { get; set; }
         public HINSTANCE Resources { get; set; }
 
-        public byte BitDepth { get; set; }
         public byte CpuType { get; set; }
 
         public byte FrameSkip { get; set; }

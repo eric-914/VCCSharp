@@ -13,7 +13,7 @@
             IEmu emu = model.Modules.Emu;
 
             uint[] palette = graphics.GetGraphicsColors().Palette32Bit;
-            uint* szSurface32 = graphics.GetGraphicsSurfaces().pSurface32;
+            uint* szSurface32 = graphics.GetGraphicsSurface();
             byte* memory = model.Memory;
             ushort y = (ushort)(emu.LineCounter);
             int xPitch = (int)emu.SurfacePitch;

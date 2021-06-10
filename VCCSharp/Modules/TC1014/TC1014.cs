@@ -398,7 +398,6 @@ Could not locate {rom} in any of these locations:
                 return;
             }
 
-            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
             IEmu emu = _modules.Emu;
 
             uint bc = Graphics.BorderColor;
@@ -408,13 +407,15 @@ Could not locate {rom} in any of these locations:
 
             unsafe
             {
+                uint* pSurface32 = Graphics.GetGraphicsSurface();
+
                 for (ushort x = 0; x < wsx; x++)
                 {
-                    graphicsSurfaces.pSurface32[x + lc * sp] = bc;
+                    pSurface32[x + lc * sp] = bc;
 
                     if (!emu.ScanLines)
                     {
-                        graphicsSurfaces.pSurface32[x + (lc + 1) * sp] = bc;
+                        pSurface32[x + (lc + 1) * sp] = bc;
                     }
                 }
             }
@@ -427,7 +428,6 @@ Could not locate {rom} in any of these locations:
                 return;
             }
 
-            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
             IEmu emu = _modules.Emu;
 
             uint bc = Graphics.BorderColor;
@@ -437,13 +437,15 @@ Could not locate {rom} in any of these locations:
 
             unsafe
             {
+                uint* pSurface32 = Graphics.GetGraphicsSurface();
+
                 for (ushort x = 0; x < wsx; x++)
                 {
-                    graphicsSurfaces.pSurface32[x + lc * sp] = bc;
+                    pSurface32[x + lc * sp] = bc;
 
                     if (!_modules.Emu.ScanLines)
                     {
-                        graphicsSurfaces.pSurface32[x + sp + lc * sp] = bc;
+                        pSurface32[x + sp + lc * sp] = bc;
                     }
                 }
             }
@@ -451,8 +453,6 @@ Could not locate {rom} in any of these locations:
 
         public void UpdateScreen32()
         {
-            GraphicsSurfaces graphicsSurfaces = Graphics.GetGraphicsSurfaces();
-
             ushort y = (ushort)_modules.Emu.LineCounter;
             long xPitch = _modules.Emu.SurfacePitch;
 
@@ -465,7 +465,9 @@ Could not locate {rom} in any of these locations:
 
                 unsafe
                 {
-                    uint* szSurface32 = graphicsSurfaces.pSurface32;
+                    uint* pSurface32 = Graphics.GetGraphicsSurface();
+
+                    uint* szSurface32 = pSurface32;
 
                     for (ushort x = 0; x < Graphics.HorizontalCenter; x++)
                     {

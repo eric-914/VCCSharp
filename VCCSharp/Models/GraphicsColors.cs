@@ -2,7 +2,7 @@
 {
     public class GraphicsColors
     {
-        public uint[] Afacts32 = { 0, 0xFF8D1F, 0x0667FF, 0xFFFFFF, 0, 0x0667FF, 0xFF8D1F, 0xFFFFFF }; //[2][4];
+        public uint[] Artifacts32 = { 0, 0xFF8D1F, 0x0667FF, 0xFFFFFF, 0, 0x0667FF, 0xFF8D1F, 0xFFFFFF }; //[2][4];
 
         public byte[] ColorTable32Bit = { 0, 85, 170, 255 };
 

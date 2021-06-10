@@ -8,8 +8,9 @@ namespace VCCSharp.Modules
 {
     public interface IGraphics
     {
-        GraphicsSurfaces GetGraphicsSurfaces();
         GraphicsColors GetGraphicsColors();
+
+        unsafe uint* GetGraphicsSurface();
 
         void ResetGraphicsState();
         void MakeRgbPalette();
@@ -104,7 +105,6 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
 
         private readonly GraphicsColors _colors = new GraphicsColors();
-        private static readonly GraphicsSurfaces Surfaces = new GraphicsSurfaces();
 
         public byte BlinkState { get; set; }
         public byte BorderChange { get; set; } = 3;
@@ -153,12 +153,14 @@ namespace VCCSharp.Modules
         public byte[] Lpf { get; } = { 192, 199, 225, 225 }; // #2 is really undefined but I gotta put something here.
         public byte[] VerticalCenterTable { get; } = { 29, 23, 12, 12 };
 
+        private unsafe uint* _surface;
+
         public Graphics(IModules modules)
         {
             _modules = modules;
         }
 
-        public GraphicsSurfaces GetGraphicsSurfaces() => Surfaces;
+        public unsafe uint* GetGraphicsSurface() => _surface;
 
         public GraphicsColors GetGraphicsColors() => _colors;
 
@@ -503,7 +505,7 @@ namespace VCCSharp.Modules
 
         public unsafe void SetGraphicsSurfaces(void* pSurface)
         {
-            Surfaces.pSurface = pSurface;
+            _surface = (uint*)pSurface;
         }
 
         public void SetupDisplay()
