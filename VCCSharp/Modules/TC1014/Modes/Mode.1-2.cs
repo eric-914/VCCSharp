@@ -2,6 +2,7 @@
 {
     //Width 40
     // ReSharper disable once InconsistentNaming
+#pragma warning disable IDE1006 // Naming Styles
     public static class _1_2
     {
         public static unsafe void Mode(ModeModel model, int start, int yStride)

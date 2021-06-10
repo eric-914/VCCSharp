@@ -3,6 +3,7 @@
     //******************************************************************** Low Res Text
     //Low Res text GraphicsMode=0 CompatMode=1 Ignore Bpp and Stretch
     // ReSharper disable once InconsistentNaming
+#pragma warning disable IDE1006 // Naming Styles
     public static class _64_127
     {
         public static unsafe void Mode(ModeModel model, int start, int yStride)

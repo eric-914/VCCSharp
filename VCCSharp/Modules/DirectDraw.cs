@@ -91,7 +91,7 @@ namespace VCCSharp.Modules
             HINSTANCE wndProc = Marshal.GetFunctionPointerForDelegate(_wndProcTemplate);
 
             //And Rebuilt it from scratch
-            return Library.DirectDraw.DDRegisterClass(_hInstance, wndProc, AppNameText, Zero, style, hIcon, hCursor, hBrush) != Define.FALSE;
+            return Library.DirectDraw.DDRegisterClass(_hInstance, wndProc, AppNameText, style, hIcon, hCursor, hBrush) != Define.FALSE;
         }
 
         public void FullScreenToggle()
@@ -715,11 +715,6 @@ namespace VCCSharp.Modules
         private static int SetDisplayMode(uint x, uint y, uint depth)
         {
             return Library.DirectDraw.DDSetDisplayMode(x, y, depth);
-        }
-
-        private static unsafe uint GetRgbBitCount(DDSURFACEDESC* ddsd)
-        {
-            return Library.DirectDraw.DDSDGetRGBBitCount(ddsd);
         }
 
         private static unsafe void SetRgbBitCount(DDSURFACEDESC* ddsd, uint value)

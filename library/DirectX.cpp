@@ -247,7 +247,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl DDRegisterClass(HINSTANCE hInstance, WNDPROC lpfnWndProc, LPCSTR lpszClassName, LPCSTR lpszMenuName, UINT style, HICON hIcon, HCURSOR hCursor, HBRUSH hbrBackground)
+  __declspec(dllexport) BOOL __cdecl DDRegisterClass(HINSTANCE hInstance, WNDPROC lpfnWndProc, LPCSTR lpszClassName, UINT style, HICON hIcon, HCURSOR hCursor, HBRUSH hbrBackground)
   {
     _wcex.cbSize = sizeof(WNDCLASSEX);	//And Rebuilt it from scratch
     _wcex.hInstance = hInstance;
@@ -257,7 +257,6 @@ extern "C" {
     _wcex.hIconSm = hIcon;
     _wcex.hbrBackground = hbrBackground;
     _wcex.lpszClassName = lpszClassName;
-    _wcex.lpszMenuName = lpszMenuName;
     _wcex.hCursor = hCursor;
     _wcex.cbClsExtra = 0;
     _wcex.cbWndExtra = 0;
@@ -293,13 +292,6 @@ extern "C" {
     ddsd.dwSize = sizeof(ddsd);		  // The first parameter of the structure must contain the size of the structure
 
     return &ddsd;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned long __cdecl DDSDGetRGBBitCount(DDSURFACEDESC* ddsd)
-  {
-    return ddsd->ddpfPixelFormat.dwRGBBitCount;
   }
 }
 
