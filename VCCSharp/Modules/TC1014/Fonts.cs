@@ -1,7 +1,7 @@
 ﻿namespace VCCSharp.Modules.TC1014
 {
     // ReSharper disable InconsistentNaming
-    public partial class TC1014
+    public static class Fonts
     {
         #region CC2 Font
 

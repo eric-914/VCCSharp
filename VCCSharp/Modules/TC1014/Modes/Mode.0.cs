@@ -26,7 +26,7 @@
             for (ushort beam = 0; beam < graphics.BytesPerRow * graphics.ExtendedText; beam += graphics.ExtendedText)
             {
                 byte character = memory[start + (byte)(beam + graphics.HorizontalOffset)];
-                byte pixel = TC1014.CC3FontData8X12[character * 12 + (y % graphics.LinesPerRow)];
+                byte pixel = Fonts.CC3FontData8X12[character * 12 + (y % graphics.LinesPerRow)];
 
                 if (graphics.ExtendedText == 2)
                 {

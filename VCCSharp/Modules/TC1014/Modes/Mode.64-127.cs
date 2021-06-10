@@ -30,16 +30,16 @@
                         textPalette[1] = palette[graphics.TextFgPalette];
 
                         if ((graphics.LowerCase != 0) && (character < 32))
-                            pixel = TC1014.NTSCRoundFontData8x12[(character + 80) * 12 + (y % 12)];
+                            pixel = Fonts.NTSCRoundFontData8x12[(character + 80) * 12 + (y % 12)];
                         else
-                            pixel = (byte)~TC1014.NTSCRoundFontData8x12[(character) * 12 + (y % 12)];
+                            pixel = (byte)~Fonts.NTSCRoundFontData8x12[(character) * 12 + (y % 12)];
                         break;
 
                     case 1:
                         character &= 63;
                         textPalette[0] = palette[graphics.TextBgPalette];
                         textPalette[1] = palette[graphics.TextFgPalette];
-                        pixel = TC1014.NTSCRoundFontData8x12[(character) * 12 + (y % 12)];
+                        pixel = Fonts.NTSCRoundFontData8x12[(character) * 12 + (y % 12)];
                         break;
 
                     case 2:
@@ -47,7 +47,7 @@
                         textPalette[1] = palette[(character & 112) >> 4];
                         textPalette[0] = palette[8];
                         character = (byte)(64 + (character & 0xF));
-                        pixel = TC1014.NTSCRoundFontData8x12[(character) * 12 + (y % 12)];
+                        pixel = Fonts.NTSCRoundFontData8x12[(character) * 12 + (y % 12)];
                         break;
                 }
 
