@@ -55,7 +55,7 @@ namespace VCCSharp.Modules
         private string _clipboardText;
 
         private readonly IModules _modules;
-        private IGraphics _graphics => _modules.Graphics;
+        private IGraphics Graphics => _modules.Graphics;
 
         public bool CodePaste;
         public bool PasteWithNew;
@@ -98,7 +98,7 @@ namespace VCCSharp.Modules
 
         public void PasteClipboard()
         {
-            int graphicsMode = _graphics.GraphicsMode;
+            int graphicsMode = Graphics.GraphicsMode;
 
             if (graphicsMode != 0)
             {
@@ -564,9 +564,9 @@ namespace VCCSharp.Modules
 
         public void CopyText()
         {
-            byte bytesPerRow = _graphics.BytesPerRow;
-            byte graphicsMode = _graphics.GraphicsMode;
-            uint startOfVidRam = _graphics.StartOfVidRam;
+            byte bytesPerRow = Graphics.BytesPerRow;
+            byte graphicsMode = Graphics.GraphicsMode;
+            uint startOfVidRam = Graphics.StartOfVidRam;
 
             if (graphicsMode != 0)
             {

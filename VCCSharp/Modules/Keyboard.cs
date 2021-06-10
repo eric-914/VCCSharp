@@ -22,10 +22,10 @@ namespace VCCSharp.Modules
 
     public class Keyboard : IKeyboard
     {
-        private const int MAX_COCO = 80;
-        private const int MAX_NATURAL = 89;
-        private const int MAX_COMPACT = 84;
-        private const int MAX_CUSTOM = 89;
+        public const int MaxCoco = 80;
+        public const int MaxNatural = 89;
+        public const int MaxCompact = 84;
+        public const int MaxCustom = 89;
 
         private readonly IModules _modules;
 
@@ -38,10 +38,10 @@ namespace VCCSharp.Modules
         /** track all keyboard scan codes state (up/down) */
         public int[] ScanTable = new int[256];
 
-        private KeyTranslationEntry[] _keyTranslationsCoCo = new KeyTranslationEntry[MAX_COCO + 1];
-        private KeyTranslationEntry[] _keyTranslationsNatural = new KeyTranslationEntry[MAX_NATURAL + 1];
-        private KeyTranslationEntry[] _keyTranslationsCompact = new KeyTranslationEntry[MAX_COMPACT + 1];
-        private KeyTranslationEntry[] _keyTranslationsCustom = new KeyTranslationEntry[MAX_CUSTOM + 1];
+        private KeyTranslationEntry[] _keyTranslationsCoCo = new KeyTranslationEntry[MaxCoco + 1];
+        private KeyTranslationEntry[] _keyTranslationsNatural = new KeyTranslationEntry[MaxNatural + 1];
+        private KeyTranslationEntry[] _keyTranslationsCompact = new KeyTranslationEntry[MaxCompact + 1];
+        private KeyTranslationEntry[] _keyTranslationsCustom = new KeyTranslationEntry[MaxCustom + 1];
 
         private KeyTranslationEntry[] _keyTransTable = new KeyTranslationEntry[Define.KBTABLE_ENTRY_COUNT];
 
@@ -78,84 +78,81 @@ namespace VCCSharp.Modules
             byte mask = 1;
             byte retVal = 0;
 
-            unsafe
+            IJoystick joystick = _modules.Joystick;
+            IMC6821 mc6821 = _modules.MC6821;
+
+            JoystickState joystickState = _modules.Joystick.State;
+
+            for (byte x = 0; x < 8; x++)
             {
-                IJoystick joystick = _modules.Joystick;
-                IMC6821 mc6821 = _modules.MC6821;
-
-                JoystickState joystickState = _modules.Joystick.State;
-
-                for (byte x = 0; x < 8; x++)
+                if ((temp & mask) != 0) // Found an active column scan
                 {
-                    if ((temp & mask) != 0) // Found an active column scan
-                    {
-                        retVal |= RolloverTable[x];
-                    }
-
-                    mask <<= 1;
+                    retVal |= RolloverTable[x];
                 }
 
-                retVal = (byte)(127 - retVal);
-
-                //Collect CA2 and CB2 from the PIA (1of4 Multiplexer)
-                _modules.Joystick.StickValue = joystick.get_pot_value(mc6821.GetMuxState());
-
-                if (_modules.Joystick.StickValue != 0)		//OS9 joyin routine needs this (koronis rift works now)
-                {
-                    if (_modules.Joystick.StickValue >= mc6821.DACState())		// Set bit of stick >= DAC output $FF20 Bits 7-2
-                    {
-                        retVal |= 0x80;
-                    }
-                }
-
-                if (joystickState.LeftButton1Status == 1)
-                {
-                    //Left Joystick Button 1 Down?
-                    retVal &= 0xFD;
-                }
-
-                if (joystickState.RightButton1Status == 1)
-                {
-                    //Right Joystick Button 1 Down?
-                    retVal &= 0xFE;
-                }
-
-                if (joystickState.LeftButton2Status == 1)
-                {
-                    //Left Joystick Button 2 Down?
-                    retVal &= 0xF7;
-                }
-
-                if (joystickState.RightButton2Status == 1)
-                {
-                    //Right Joystick Button 2 Down?
-                    retVal &= 0xFB;
-                }
-
-                #region // no noticeable change when this is disabled
-
-                //                // TODO: move to MC6821/GIME
-                //                {
-                //                    /** another keyboard IRQ flag - this should really be in the GIME code*/
-                //                    static unsigned char IrqFlag = 0;
-                //                    if ((ret_val & 0x7F) != 0x7F)
-                //                    {
-                //                        if ((IrqFlag == 0) & GimeGetKeyboardInterruptState())
-                //                        {
-                //                            GimeAssertKeyboardInterrupt();
-                //                            IrqFlag = 1;
-                //                        }
-                //                    }
-                //                    else
-                //                    {
-                //                        IrqFlag = 0;
-                //                    }
-                //                }
-
-                #endregion
-
-                return retVal;
+                mask <<= 1;
             }
+
+            retVal = (byte)(127 - retVal);
+
+            //Collect CA2 and CB2 from the PIA (1of4 Multiplexer)
+            _modules.Joystick.StickValue = joystick.get_pot_value(mc6821.GetMuxState());
+
+            if (_modules.Joystick.StickValue != 0)		//OS9 joyin routine needs this (koronis rift works now)
+            {
+                if (_modules.Joystick.StickValue >= mc6821.DACState())		// Set bit of stick >= DAC output $FF20 Bits 7-2
+                {
+                    retVal |= 0x80;
+                }
+            }
+
+            if (joystickState.LeftButton1Status == 1)
+            {
+                //Left Joystick Button 1 Down?
+                retVal &= 0xFD;
+            }
+
+            if (joystickState.RightButton1Status == 1)
+            {
+                //Right Joystick Button 1 Down?
+                retVal &= 0xFE;
+            }
+
+            if (joystickState.LeftButton2Status == 1)
+            {
+                //Left Joystick Button 2 Down?
+                retVal &= 0xF7;
+            }
+
+            if (joystickState.RightButton2Status == 1)
+            {
+                //Right Joystick Button 2 Down?
+                retVal &= 0xFB;
+            }
+
+            #region // no noticeable change when this is disabled
+
+            //                // TODO: move to MC6821/GIME
+            //                {
+            //                    /** another keyboard IRQ flag - this should really be in the GIME code*/
+            //                    static unsigned char IrqFlag = 0;
+            //                    if ((ret_val & 0x7F) != 0x7F)
+            //                    {
+            //                        if ((IrqFlag == 0) & GimeGetKeyboardInterruptState())
+            //                        {
+            //                            GimeAssertKeyboardInterrupt();
+            //                            IrqFlag = 1;
+            //                        }
+            //                    }
+            //                    else
+            //                    {
+            //                        IrqFlag = 0;
+            //                    }
+            //                }
+
+            #endregion
+
+            return retVal;
         }
 
         public void SetKeyTranslations()
@@ -300,12 +297,12 @@ namespace VCCSharp.Modules
             //);
         }
 
-        public void KeyboardClear()
+        private void KeyboardClear()
         {
             _keyTransTable = new KeyTranslationEntry[Define.KBTABLE_ENTRY_COUNT];
         }
 
-        public void KeyboardSort()
+        private void KeyboardSort()
         {
             //
             // Sort the key translation table
@@ -367,22 +364,22 @@ namespace VCCSharp.Modules
             {
                 // Key Down
                 case KeyStates.kEventKeyDown:
-                    KeyboardHandleKeyDown(key, scanCode, keyState);
+                    KeyboardHandleKeyDown(scanCode);
                     break;
 
                 // Key Up
                 case KeyStates.kEventKeyUp:
-                    KeyboardHandleKeyUp(key, scanCode, keyState);
+                    KeyboardHandleKeyUp(scanCode);
                     break;
             }
         }
 
-        public void KeyboardHandleKeyDown(byte key, byte scanCode, KeyStates keyState)
+        private void KeyboardHandleKeyDown(byte scanCode)
         {
             JoystickModel left = _modules.Joystick.GetLeftJoystick();
             JoystickModel right = _modules.Joystick.GetRightJoystick();
 
-            if ((left.UseMouse == 0) || (right.UseMouse == 0))
+            if (left.UseMouse == 0 || right.UseMouse == 0)
             {
                 scanCode = _modules.Joystick.SetMouseStatus(scanCode, 1);
             }
@@ -398,12 +395,12 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void KeyboardHandleKeyUp(byte key, byte scanCode, KeyStates keyState)
+        private void KeyboardHandleKeyUp(byte scanCode)
         {
             JoystickModel left = _modules.Joystick.GetLeftJoystick();
             JoystickModel right = _modules.Joystick.GetRightJoystick();
 
-            if ((left.UseMouse == 0) || (right.UseMouse == 0))
+            if (left.UseMouse == 0 || right.UseMouse == 0)
             {
                 scanCode = _modules.Joystick.SetMouseStatus(scanCode, 0);
             }
@@ -424,7 +421,7 @@ namespace VCCSharp.Modules
             KeyboardUpdateRolloverTable();
         }
 
-        public void KeyboardUpdateRolloverTable()
+        private void KeyboardUpdateRolloverTable()
         {
             byte lockOut = 0;
 
@@ -502,8 +499,6 @@ namespace VCCSharp.Modules
     {
         public int Compare(KeyTranslationEntry entry1, KeyTranslationEntry entry2)
         {
-            int result = 0;
-
             // empty listing push to end
             if (entry1.ScanCode1 == 0 && entry1.ScanCode2 == 0 && entry2.ScanCode1 != 0) return 1;
             if (entry2.ScanCode1 == 0 && entry2.ScanCode2 == 0 && entry1.ScanCode1 != 0) return -1;
@@ -519,7 +514,7 @@ namespace VCCSharp.Modules
             // move double key combos in front of single ones
             if (entry2.ScanCode2 == 0 && entry1.ScanCode2 != 0) return -1;
 
-            result = entry1.ScanCode1 - entry2.ScanCode1;
+            var result = entry1.ScanCode1 - entry2.ScanCode1;
 
             if (result == 0) result = entry1.Row1 - entry2.Row1;
 

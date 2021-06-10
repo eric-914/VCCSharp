@@ -93,6 +93,7 @@ namespace VCCSharp.Modules
             254, 104, 83, 77, 82, 105, 142, 188, 237, 251, 251, 251, 252, 240, 183, 255
         };
 
+#pragma warning disable IDE1006 // Naming Styles
         private static readonly byte[] CoCo2Bpp = { 1, 0, 1, 0, 1, 0, 1, 0 };
         private static readonly byte[] CoCo2LinesPerRow = { 12, 3, 3, 2, 2, 1, 1, 1 };
         private static readonly byte[] CoCo3LinesPerRow = { 1, 1, 2, 8, 9, 10, 11, 200 };
@@ -101,6 +102,7 @@ namespace VCCSharp.Modules
         private static readonly byte[] CoCo3BytesPerTextRow = { 32, 40, 32, 40, 64, 80, 64, 80 };
         private static readonly byte[] CoCo2PaletteSet = { 8, 0, 10, 4 };
         private static readonly byte[] PixelsPerByte = { 8, 4, 2, 2 };
+#pragma warning restore IDE1006 // Naming Styles
 
         private readonly IModules _modules;
 

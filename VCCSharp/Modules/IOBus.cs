@@ -5,8 +5,8 @@ namespace VCCSharp.Modules
     // ReSharper disable once InconsistentNaming
     public interface IIOBus
     {
-        byte port_read(ushort address);
-        void port_write(byte data, ushort address);
+        byte PortRead(ushort address);
+        void PortWrite(byte data, ushort address);
     }
 
     // ReSharper disable once InconsistentNaming
@@ -19,7 +19,7 @@ namespace VCCSharp.Modules
             _modules = modules;
         }
 
-        public byte port_read(ushort address)
+        public byte PortRead(ushort address)
         {
             byte value;
 
@@ -154,7 +154,7 @@ namespace VCCSharp.Modules
             return value;
         }
 
-        public void port_write(byte data, ushort address)
+        public void PortWrite(byte data, ushort address)
         {
             byte port = (byte)(address & 0xFF);
 

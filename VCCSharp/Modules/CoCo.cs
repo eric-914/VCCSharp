@@ -31,7 +31,7 @@ namespace VCCSharp.Modules
         public const double PicosPerLine = Define.PICOSECOND / LinesPerSecond;
         public const double CyclesPerLine = CyclesPerSecond / LinesPerSecond;
 
-        private const byte BlinkPhase = 1;
+        public const byte BlinkPhase = 1;
 
         private Action _audioEvent = () => { };
 

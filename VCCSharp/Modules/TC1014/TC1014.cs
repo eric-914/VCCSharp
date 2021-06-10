@@ -313,7 +313,7 @@ Could not locate {rom} in any of these locations:
 
             if (address > 0xFEFF)
             {
-                return _modules.IOBus.port_read(address);
+                return _modules.IOBus.PortRead(address);
             }
 
             return VectorMemRead8(address);
@@ -358,7 +358,7 @@ Could not locate {rom} in any of these locations:
 
             if (address > 0xFEFF)
             {
-                _modules.IOBus.port_write(data, address);
+                _modules.IOBus.PortWrite(data, address);
 
                 return;
             }
