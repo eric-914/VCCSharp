@@ -1,13 +1,8 @@
-﻿using System.Runtime.InteropServices;
-
-namespace VCCSharp.Models
+﻿namespace VCCSharp.Models
 {
-    public struct CmdLineArguments
+    public class CmdLineArguments
     {
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
         public string QLoadFile;
-
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
         public string IniFile;
     }
 }

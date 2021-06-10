@@ -20,13 +20,13 @@ namespace VCCSharp
 
         public void Run()
         {
-            CmdLineArguments? args = _commandLineParser.Parse();
+            CmdLineArguments args = _commandLineParser.Parse();
             if (args == null)
             {
                 return;
             }
 
-            _vccApp.Startup(args.Value);
+            _vccApp.Startup(args);
 
             _vccApp.Threading();
 

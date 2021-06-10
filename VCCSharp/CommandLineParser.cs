@@ -5,13 +5,13 @@ namespace VCCSharp
 {
     public interface ICommandLineParser
     {
-        CmdLineArguments? Parse();
+        CmdLineArguments Parse();
         void Help();
     }
 
     public class CommandLineParser : ICommandLineParser
     {
-        public CmdLineArguments? Parse()
+        public CmdLineArguments Parse()
         {
             string[] arguments = Environment.GetCommandLineArgs();
 
