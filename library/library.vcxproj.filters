@@ -5,7 +5,6 @@
     <ClCompile Include="DirectX.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="library.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
