@@ -131,9 +131,3 @@ extern "C" {
     TextOut(hdc, x, y, text, textLength);
   }
 }
-
-extern "C" {
-  __declspec(dllexport) void __cdecl GDIGetClientRect(HWND hwnd, RECT* clientSize) {
-    GetClientRect(hwnd, clientSize);
-  }
-}

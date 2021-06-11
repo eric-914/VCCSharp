@@ -1,6 +1,4 @@
 ﻿using VCCSharp.Libraries;
-using VCCSharp.Models;
-using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -11,7 +9,6 @@ namespace VCCSharp.Modules
         unsafe void SetBkColor(void* hdc, uint color);
         unsafe void SetTextColor(void* hdc, uint color);
         unsafe void TextOut(void* hdc, int x, int y, string text, int textLength);
-        unsafe void GetClientRect(HWND hWnd, RECT* clientSize);
     }
 
     // ReSharper disable once InconsistentNaming
@@ -35,11 +32,6 @@ namespace VCCSharp.Modules
         public unsafe void TextOut(void* hdc, int x, int y, string text, int textLength)
         {
             Library.GDI.GDITextOut(hdc, x, y, text, textLength);
-        }
-
-        public unsafe void GetClientRect(HWND hWnd, RECT* clientSize)
-        {
-            Library.GDI.GDIGetClientRect(hWnd, clientSize);
         }
     }
 }

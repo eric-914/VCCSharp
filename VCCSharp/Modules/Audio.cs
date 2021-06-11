@@ -127,7 +127,8 @@ namespace VCCSharp.Modules
 
             if (GetFreeBlockCount() <= 0)   //this should only kick in when frame skipping or un-throttled
             {
-                HandleSlowAudio(byteBuffer, length);
+                //HandleSlowAudio(byteBuffer, length);
+                HandleSlowAudio();
 
                 return;
             }
@@ -162,7 +163,8 @@ namespace VCCSharp.Modules
             _buffOffset = (_buffOffset + length) % _sndBuffLength; //Where to write next
         }
 
-        public unsafe void HandleSlowAudio(byte* buffer, ushort length)
+        //public unsafe void HandleSlowAudio(byte* buffer, ushort length)
+        public unsafe void HandleSlowAudio()
         {
             //memcpy(void* _Dst, void const* _Src, size_t _Size);
             //memcpy(audioState->AuxBuffer[audioState->AuxBufferPointer], buffer, length);	

@@ -197,9 +197,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void GDITextOut(void* hdc, int x, int y, string text, int textLength);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void GDIGetClientRect(HWND hWnd, RECT* clientSize);
         }
 
         public static class Joystick

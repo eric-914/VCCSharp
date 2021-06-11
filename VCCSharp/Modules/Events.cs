@@ -251,7 +251,7 @@ namespace VCCSharp.Modules
                     uint y = (uint)((lParam >> 16) & 0xFFFF); // HIWORD(lParam);
 
                     RECT clientSize;
-                    _modules.GDI.GetClientRect(_modules.Emu.WindowHandle, &clientSize);
+                    _user32.GetClientRect(_modules.Emu.WindowHandle, &clientSize);
 
                     uint dx = (uint) ((clientSize.right - clientSize.left) >> 6);
                     uint dy = (uint)(((clientSize.bottom - clientSize.top) - 20) >> 6);
