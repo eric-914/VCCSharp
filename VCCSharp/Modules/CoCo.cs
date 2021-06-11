@@ -104,70 +104,64 @@ namespace VCCSharp.Modules
 
         public float RenderFrame()
         {
-            if (RenderVideoFrame() == 1)
+            RenderAudioFrame();
+
+            if (!RenderVideoFrame())
             {
                 return 0;
             }
-
-            RenderAudioFrame();
-
+            
             return _modules.Throttle.CalculateFps();
         }
 
-        private byte RenderVideoFrame()
+        private bool RenderVideoFrame()
         {
+            bool skipRender = _modules.Emu.FrameCounter % _modules.Emu.FrameSkip != 0;
+
             _modules.Graphics.SetBlinkState(BlinkPhase);
 
             _modules.MC6821.IrqFs(PhaseStates.Falling);   //FS low to High transition start of display Blink needs this
 
-            //TODO: I don't think updating _modules.Emu.LineCounter = counter is needed.
+            void Cycle(int count)
+            {
+                for (short counter = 0; counter < count; counter++)
+                {
+                    CpuCycle();
+                }
+            }
 
-            //for (_modules.Emu.LineCounter = 0; _modules.Emu.LineCounter < 13; _modules.Emu.LineCounter++)
             //Vertical Blanking 13 H lines
-            for (short counter = 0; counter < 13; counter++)
-            {
-                _modules.Emu.LineCounter = counter;
-                CpuCycle();
-            }
+            Cycle(13);
 
-            //for (_modules.Emu.LineCounter = 0; _modules.Emu.LineCounter < 4; _modules.Emu.LineCounter++)
             //4 non-Rendered top Border lines
-            for (short counter = 0; counter < 4; counter++)
-            {
-                _modules.Emu.LineCounter = counter;
-                CpuCycle();
-            }
+            Cycle(4);
 
-            if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == 0)
+            if (!skipRender)
             {
                 if (_modules.DirectDraw.LockScreen())
                 {
-                    return 1;
+                    return false; //--Failed to lock screen for rendering
                 }
             }
 
-            //for (_modules.Emu.LineCounter = 0; _modules.Emu.LineCounter < cocoState->TopBorder - 4; _modules.Emu.LineCounter++)
             for (short counter = 0; counter < _topBorder - 4; counter++)
             {
-                _modules.Emu.LineCounter = counter;
-                if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == 0)
+                if (!skipRender)
                 {
-                    CoCoDrawTopBorder();
+                    _modules.TC1014.DrawTopBorder32(counter);
                 }
 
                 CpuCycle();
             }
 
-            //for (_modules.Emu.LineCounter = 0; _modules.Emu.LineCounter < cocoState->LinesPerScreen; _modules.Emu.LineCounter++)
             //Active Display area
             for (short counter = 0; counter < _linesPerScreen; counter++)
             {
-                _modules.Emu.LineCounter = counter;
                 CpuCycle();
 
-                if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == 0)
+                if (!skipRender)
                 {
-                    CoCoUpdateScreen();
+                    _modules.TC1014.UpdateScreen(counter);
                 }
             }
 
@@ -178,34 +172,27 @@ namespace VCCSharp.Modules
                 _modules.TC1014.GimeAssertVerticalInterrupt();
             }
 
-            //for (_modules.Emu.LineCounter = 0; _modules.Emu.LineCounter < (cocoState->BottomBorder); _modules.Emu.LineCounter++)
             //Bottom border
             for (short counter = 0; counter < _bottomBorder; counter++)
             {
-                _modules.Emu.LineCounter = counter;
                 CpuCycle();
 
-                if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == 0)
+                if (!skipRender)
                 {
-                    CoCoDrawBottomBorder();
+                    _modules.TC1014.DrawBottomBorder32(counter);
                 }
             }
 
-            if (_modules.Emu.FrameCounter % _modules.Emu.FrameSkip == 0)
+            if (!skipRender)
             {
                 _modules.DirectDraw.UnlockScreen();
                 _modules.Graphics.SetBorderChange();
             }
 
-            //for (_modules.Emu.LineCounter = 0; _modules.Emu.LineCounter < 6; _modules.Emu.LineCounter++)
             //Vertical Retrace 6 H lines
-            for (short counter = 0; counter < 4; counter++)
-            {
-                _modules.Emu.LineCounter = counter;
-                CpuCycle();
-            }
+            Cycle(6);
 
-            return 0;
+            return true; //--Frame was rendered
         }
 
         private void RenderAudioFrame()
@@ -597,21 +584,6 @@ namespace VCCSharp.Modules
             }
         }
 
-        private void CoCoDrawTopBorder()
-        {
-            _modules.TC1014.DrawTopBorder32();
-        }
-
-        private void CoCoUpdateScreen()
-        {
-            _modules.TC1014.UpdateScreen32();
-        }
-
-        private void CoCoDrawBottomBorder()
-        {
-            _modules.TC1014.DrawBottomBorder32();
-        }
-
         public void SetInterruptTimer(ushort timer)
         {
             _partialTickCounter = (timer & 0xFFF);
@@ -709,8 +681,6 @@ namespace VCCSharp.Modules
 
         public void SetLinesPerScreen(byte lines)
         {
-            lines &= 3;
-
             _linesPerScreen = _modules.Graphics.Lpf[lines];
             _topBorder = _modules.Graphics.VerticalCenterTable[lines];
 

@@ -275,15 +275,15 @@ namespace VCCSharp.Modules.TC1014
 
         private static void NA(ModeModel model, int start, int yStride) { throw new NotImplementedException(); }
 
-        public unsafe void SwitchMasterMode32(byte masterMode, int start, int yStride)
+        public unsafe void SwitchMasterMode(byte masterMode, int start, int yStride)
         {
             var model = new ModeModel
             {
-                Memory = Memory,
+                Memory = _memory,
                 Modules = _modules
             };
 
-            // (GraphicsMode <<7) | (CompatMode<<6)  | ((Bpp & 3)<<4) | (Stretch & 15);
+            // (GraphicsMode <<7) | (CompatibilityMode<<6)  | ((Bpp & 3)<<4) | (Stretch & 15);
             Modes[masterMode](model, start, yStride);
         }
     }

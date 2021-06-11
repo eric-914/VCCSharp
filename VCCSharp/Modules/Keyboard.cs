@@ -484,8 +484,9 @@ namespace VCCSharp.Modules
 
                             RolloverTable[col] |= entry.Row2;
 
+                            //--TODO: This implies that lockOut should be static?  But seems to work ok as is.
                             // always SHIFT
-                            lockOut = scanCode1;
+                            //lockOut = scanCode1;
 
                             break;
                         }

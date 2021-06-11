@@ -356,5 +356,7 @@ namespace VCCSharp.Models
         public const int DEFAULT_WIDTH = 640;
         public const int DEFAULT_HEIGHT = 480;
 
+        public const byte _192Lines = 0; //--Indexer
+        public const byte _225Lines = 1;
     }
 }

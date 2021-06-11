@@ -16,7 +16,7 @@
             uint[] palette = graphics.GetGraphicsColors().Palette32Bit;
             uint* szSurface32 = graphics.GetGraphicsSurface();
             byte* memory = model.Memory;
-            ushort y = (ushort)(emu.LineCounter);
+            ushort y = (ushort)emu.LineCounter;
             int xPitch = (int)emu.SurfacePitch;
 
             for (ushort beam = 0; beam < graphics.BytesPerRow * graphics.ExtendedText; beam += graphics.ExtendedText)

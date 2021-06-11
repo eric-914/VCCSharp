@@ -15,7 +15,7 @@
             uint[] palette = graphics.GetGraphicsColors().Palette32Bit;
             uint* szSurface32 = graphics.GetGraphicsSurface();
             byte* memory = model.Memory;
-            ushort y = (ushort)(emu.LineCounter);
+            ushort y = (ushort)emu.LineCounter;
             int xPitch = (int)emu.SurfacePitch;
 
             if ((graphics.HorizontalOffsetReg & 128) != 0)

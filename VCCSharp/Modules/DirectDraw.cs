@@ -11,21 +11,24 @@ namespace VCCSharp.Modules
 {
     public interface IDirectDraw
     {
-        void InitDirectDraw();
         void ClearScreen();
-        void FullScreenToggle();
         bool CreateDirectDrawWindow();
+        void DoCls();
+        void FullScreenToggle();
+        void SetAspect(bool forceAspect);
         void SetStatusBarText(string textBuffer);
         float Static();
-        void DoCls();
+
         bool LockScreen();
         void UnlockScreen();
-        void SetAspect(bool forceAspect);
+
         bool InfoBand { get; set; }
     }
 
     public class DirectDraw : IDirectDraw
     {
+        #region Properties
+
         private readonly IModules _modules;
         private readonly IUser32 _user32;
 
@@ -37,12 +40,12 @@ namespace VCCSharp.Modules
         private bool _forceAspect;
 
         private uint _color;
+        
+        private string _statusText;
 
         public bool InfoBand { get; set; }
 
-        public string AppNameText;
-        public string TitleBarText;
-        public string StatusText;
+        #endregion
 
         public DirectDraw(IModules modules, IUser32 user32)
         {
@@ -55,25 +58,35 @@ namespace VCCSharp.Modules
             _textX = 0;
         }
 
-        public void FullScreenToggle()
+        public void ClearScreen()
         {
-            _modules.Audio.PauseAudio(true);
-
-            if (!CreateDirectDrawWindow())
-            {
-                MessageBox.Show("Can't rebuild primary Window", "Error");
-
-                Environment.Exit(0);
-            }
-
-            _modules.Graphics.InvalidateBorder();
-
-            _modules.Audio.PauseAudio(false);
+            _color = 0;
         }
 
-        public void SetAspect(bool forceAspect)
+        public unsafe bool CreateDirectDrawWindow()
         {
-            _forceAspect = forceAspect;
+            var pp = new Point(Define.DEFAULT_WIDTH, Define.DEFAULT_HEIGHT);
+            
+            if (_modules.Config.GetRememberSize())
+            {
+                pp = _modules.Config.GetIniWindowSize();
+            }
+
+            _windowSize.X = pp.X;
+            _windowSize.Y = pp.Y;
+
+            DDSURFACEDESC* ddsd = CreateSurface();
+
+            //TODO: Add full screen mode back some day...
+
+            if (!CreateDirectDrawWindowedMode(ddsd))
+            {
+                return false;
+            }
+
+            _modules.Emu.WindowSize = new System.Windows.Point(_windowSize.X, _windowSize.Y);
+
+            return true;
         }
 
         public unsafe void DoCls()
@@ -98,9 +111,30 @@ namespace VCCSharp.Modules
             UnlockScreen();
         }
 
-        public void ClearScreen()
+        public void FullScreenToggle()
         {
-            _color = 0;
+            _modules.Audio.PauseAudio(true);
+
+            if (!CreateDirectDrawWindow())
+            {
+                MessageBox.Show("Can't rebuild primary Window", "Error");
+
+                Environment.Exit(0);
+            }
+
+            _modules.Graphics.InvalidateBorder();
+
+            _modules.Audio.PauseAudio(false);
+        }
+
+        public void SetAspect(bool forceAspect)
+        {
+            _forceAspect = forceAspect;
+        }
+
+        public void SetStatusBarText(string text)
+        {
+            _statusText = text;
         }
 
         public float Static()
@@ -112,6 +146,46 @@ namespace VCCSharp.Modules
 
 
             return _modules.Throttle.CalculateFps();
+        }
+
+        public unsafe bool LockScreen()
+        {
+            DDSURFACEDESC* ddsd = CreateSurface();  // A structure to describe the surfaces we want
+
+            CheckSurfaces();
+
+            // Lock entire surface, wait if it is busy, return surface memory pointer
+            int hr = LockSurface(ddsd);
+
+            if (hr < 0)
+            {
+                return true;
+            }
+
+            uint pitch = GetPitch(ddsd);
+
+            _modules.Emu.SurfacePitch = pitch / 4;
+
+            if (!HasSurface(ddsd))
+            {
+                MessageBox.Show("Returning NULL!!", "ok");
+            }
+
+            SetSurface(ddsd);
+
+            return false;
+        }
+
+        public void UnlockScreen()
+        {
+            if (_modules.Emu.FullScreen && InfoBand)
+            {
+                WriteStatusText(_statusText);
+            }
+
+            UnlockBackSurface();
+
+            DisplayFlip();
         }
 
         private unsafe void Static(uint* pSurface32)
@@ -160,7 +234,7 @@ namespace VCCSharp.Modules
             UnlockScreen();
         }
 
-        public void ShowStaticMessage(ushort x, ushort y, uint color)
+        private void ShowStaticMessage(ushort x, ushort y, uint color)
         {
             unsafe
             {
@@ -177,7 +251,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void WriteStatusText(string statusText)
+        private void WriteStatusText(string statusText)
         {
             unsafe
             {
@@ -193,11 +267,6 @@ namespace VCCSharp.Modules
 
                 ReleaseBackSurface(hdc);
             }
-        }
-
-        public void SetStatusBarText(string text)
-        {
-            StatusText = text;
         }
 
         private unsafe void DisplayFlip()
@@ -286,84 +355,9 @@ namespace VCCSharp.Modules
             _modules.Emu.WindowSize = new System.Windows.Point(windowSize.right, windowSize.bottom);
         }
 
-        public unsafe bool LockScreen()
-        {
-            DDSURFACEDESC* ddsd = CreateSurface();  // A structure to describe the surfaces we want
-
-            CheckSurfaces();
-
-            // Lock entire surface, wait if it is busy, return surface memory pointer
-            int hr = LockSurface(ddsd);
-
-            if (hr < 0)
-            {
-                return true;
-            }
-
-            uint pitch = GetPitch(ddsd);
-
-            _modules.Emu.SurfacePitch = pitch / 4;
-
-            if (!HasSurface(ddsd))
-            {
-                MessageBox.Show("Returning NULL!!", "ok");
-            }
-
-            SetSurface(ddsd);
-
-            return false;
-        }
-
-        public void UnlockScreen()
-        {
-            if (_modules.Emu.FullScreen && InfoBand)
-            {
-                WriteStatusText(StatusText);
-            }
-
-            UnlockBackSurface();
-
-            DisplayFlip();
-        }
-
-        public unsafe bool CreateDirectDrawWindow()
-        {
-            if (_modules.Config.GetRememberSize())
-            {
-                Point pp = _modules.Config.GetIniWindowSize();
-
-                _windowSize.X = pp.X;
-                _windowSize.Y = pp.Y;
-            }
-            else
-            {
-                _windowSize.X = Define.DEFAULT_WIDTH;
-                _windowSize.Y = Define.DEFAULT_HEIGHT;
-            }
-
-            DDSURFACEDESC* ddsd = CreateSurface();
-
-            //TODO: Add full screen mode back some day...
-
-            if (!CreateDirectDrawWindowedMode(ddsd))
-            {
-                return false;
-            }
-
-            _modules.Emu.WindowSize = new System.Windows.Point(_windowSize.X, _windowSize.Y);
-
-            return true;
-        }
-
         private unsafe void SetSurface(DDSURFACEDESC* ddsd)
         {
             _modules.Graphics.SetGraphicsSurface(GetSurface(ddsd));
-        }
-
-        public void InitDirectDraw()
-        {
-            TitleBarText = _modules.Config.AppTitle;
-            AppNameText = _modules.Config.AppTitle;
         }
 
         private unsafe bool CreateDirectDrawWindowedMode(DDSURFACEDESC* ddsd)

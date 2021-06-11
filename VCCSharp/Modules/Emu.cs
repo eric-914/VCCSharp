@@ -23,7 +23,7 @@ namespace VCCSharp.Modules
         byte RamSize { get; set; }
         bool ScanLines { get; set; }
         short FrameCounter { get; set; }
-        short LineCounter { get; set; }
+        short LineCounter { get; set; } //--Still used in text modes
         long SurfacePitch { get; set; }
         double CpuCurrentSpeed { get; set; }
 
