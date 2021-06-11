@@ -135,12 +135,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) LRESULT CALLBACK __cdecl WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-  {
-    return DefWindowProc(hWnd, message, wParam, lParam);
-  }
-}
-extern "C" {
   __declspec(dllexport) HBRUSH __cdecl GDIGetBrush() {
     return (HBRUSH)GetStockObject(BLACK_BRUSH);
   }

@@ -1,10 +1,11 @@
-﻿using VCCSharp.Models;
+﻿using System;
+using VCCSharp.Models;
 
 namespace VCCSharp
 {
     public interface IVccThread
     {
-        void Run();
+        void Run(IntPtr hWnd);
     }
 
     public class VccThread : IVccThread
@@ -18,13 +19,15 @@ namespace VCCSharp
             _commandLineParser = commandLineParser;
         }
 
-        public void Run()
+        public void Run(IntPtr hWnd)
         {
             CmdLineArguments args = _commandLineParser.Parse();
             if (args == null)
             {
                 return;
             }
+
+            _vccApp.SetWindow(hWnd);
 
             _vccApp.Startup(args);
 

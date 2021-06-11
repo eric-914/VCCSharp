@@ -3,7 +3,6 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
-using HWND = System.IntPtr;
 using KeyStates = VCCSharp.Enums.KeyStates;
 
 namespace VCCSharp.Modules
@@ -20,7 +19,7 @@ namespace VCCSharp.Modules
         void ToggleThrottle();
         void ToggleFullScreen();
         void ToggleInfoBand();
-        void ProcessMessage(HWND hWnd, uint message, long wParam, long lParam);
+        void ProcessMessage(int message, long wParam, long lParam);
     }
 
     public class Events : IEvents
@@ -135,7 +134,7 @@ namespace VCCSharp.Modules
         //	   		message is sent, or it is zero if the key is up.
         //	    31	The transition state. The value is always zero for a WM_KEYDOWN message.
         //----------------------------------------------------------------------------------------
-        public void ProcessMessage(HWND hWnd, uint message, long wParam, long lParam)
+        public void ProcessMessage(int message, long wParam, long lParam)
         {
             switch (message)
             {

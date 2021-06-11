@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Interop;
 using VCCSharp.IoC;
 using VCCSharp.Menu;
 
@@ -30,10 +33,19 @@ namespace VCCSharp
 
             DataContext = ViewModel;
 
-            //Window window = GetWindow(this);
-            //IntPtr hWnd = new WindowInteropHelper(window).EnsureHandle();
+            //TODO: Seems to get parent window, not surface container
+            Window window = GetWindow(Surface);
+            
+            if (window == null)
+            {
+                throw new Exception("Failed to get window object?");
+            }
 
-            Task.Run(_factory.Get<IVccThread>().Run);
+            IntPtr hWnd = new WindowInteropHelper(window).EnsureHandle();
+
+            IVccThread thread = _factory.Get<IVccThread>();
+
+            Task.Run(() => thread.Run(hWnd));
         }
     }
 }

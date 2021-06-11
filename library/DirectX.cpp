@@ -133,22 +133,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DDRelease()
-  {
-    if (_internal->DD != NULL) {
-      _internal->DD->Release();	//Destroy the current Window
-    }
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DDUnregisterClass()
-  {
-    UnregisterClass(_wcex.lpszClassName, _wcex.hInstance);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) HRESULT __cdecl DDSurfaceSetClipper()
   {
     return _internal->DDSurface->SetClipper(_internal->DDClipper);
@@ -205,20 +189,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDSetDisplayMode(DWORD x, DWORD y, DWORD depth)
-  {
-    return _internal->DD->SetDisplayMode(x, y, depth);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DDSurfaceGetAttachedSurface(DDSCAPS* ddsCaps)
-  {
-    _internal->DDSurface->GetAttachedSurface(ddsCaps, &(_internal->DDBackSurface));
-  }
-}
-
-extern "C" {
   __declspec(dllexport) BOOL __cdecl DDSurfaceIsLost()
   {
     return _internal->DDSurface->IsLost() == DDERR_SURFACELOST;
@@ -247,43 +217,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl DDRegisterClass(HINSTANCE hInstance, WNDPROC lpfnWndProc, LPCSTR lpszClassName, UINT style, HICON hIcon, HCURSOR hCursor, HBRUSH hbrBackground)
-  {
-    _wcex.cbSize = sizeof(WNDCLASSEX);	//And Rebuilt it from scratch
-    _wcex.hInstance = hInstance;
-    _wcex.lpfnWndProc = lpfnWndProc;
-    _wcex.style = style;
-    _wcex.hIcon = hIcon;
-    _wcex.hIconSm = hIcon;
-    _wcex.hbrBackground = hbrBackground;
-    _wcex.lpszClassName = lpszClassName;
-    _wcex.hCursor = hCursor;
-    _wcex.cbClsExtra = 0;
-    _wcex.cbWndExtra = 0;
-
-    return RegisterClassEx(&_wcex);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) IDirectDrawPalette* __cdecl DDCreatePalette(DWORD caps, PALETTEENTRY* pal)
-  {
-    IDirectDrawPalette* ddPalette;		  //Needed for 8bit Palette mode
-
-    _internal->DD->CreatePalette(caps, pal, &ddPalette, NULL);
-
-    return ddPalette;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DDSurfaceSetPalette(IDirectDrawPalette* ddPalette)
-  {
-    _internal->DDSurface->SetPalette(ddPalette);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) DDSURFACEDESC* __cdecl DDSDCreate()
   {
     ddsd = DDSURFACEDESC();
@@ -296,23 +229,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DDSDSetRGBBitCount(DDSURFACEDESC* ddsd, unsigned long value)
-  {
-    ddsd->ddpfPixelFormat.dwRGBBitCount = value;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) unsigned long __cdecl DDSDGetPitch(DDSURFACEDESC* ddsd)
   {
     return ddsd->lPitch;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DDSDSetPitch(DDSURFACEDESC* ddsd, unsigned long value)
-  {
-    ddsd->lPitch = value;
   }
 }
 
@@ -338,13 +257,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DDSDSetdwBackBufferCount(DDSURFACEDESC* ddsd, DWORD value)
-  {
-    ddsd->dwBackBufferCount = value;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl DDSDSetdwWidth(DDSURFACEDESC* ddsd, DWORD value)
   {
     ddsd->dwWidth = value;
@@ -362,13 +274,6 @@ extern "C" {
   __declspec(dllexport) void __cdecl DDSDSetdwFlags(DDSURFACEDESC* ddsd, DWORD value)
   {
     ddsd->dwFlags = value;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) DDSCAPS __cdecl DDSDGetddsCaps(DDSURFACEDESC* ddsd)
-  {
-    return ddsd->ddsCaps;
   }
 }
 

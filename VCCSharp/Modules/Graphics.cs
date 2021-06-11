@@ -35,7 +35,7 @@ namespace VCCSharp.Modules
         void SetCompatMode(byte mode);
         void SetVideoBank(byte data);
         void SetGimeVdgMode2(byte mode);
-        unsafe void SetGraphicsSurfaces(void* ddsdGetSurface);
+        unsafe void SetGraphicsSurface(void* ddsdGetSurface);
 
         byte BorderChange { get; set; }
         byte BytesPerRow { get; set; }
@@ -505,7 +505,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public unsafe void SetGraphicsSurfaces(void* pSurface)
+        public unsafe void SetGraphicsSurface(void* pSurface)
         {
             _surface = (uint*)pSurface;
         }
@@ -610,7 +610,8 @@ namespace VCCSharp.Modules
             if ((PixelsPerLine % 40) != 0)
             {
                 Stretch = (byte)((512 / PixelsPerLine) - 1);
-                HorizontalCenter = 64;
+                //TODO: Figure out this magic number
+                HorizontalCenter = 80; //64;
             }
             else
             {

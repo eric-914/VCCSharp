@@ -49,18 +49,7 @@ namespace VCCSharp.Libraries
         public static extern int MoveWindow(HWND hWnd, int x, int y, int nWidth, int nHeight, int bRepaint);
 
         [DllImport(Dll)]
-        public static extern int DestroyWindow(HWND hWnd);
-
-        [DllImport(Dll)]
-        public static extern unsafe int AdjustWindowRect(RECT* lpRect, uint dwStyle, int bMenu);
-
-        [DllImport(Dll)]
         public static extern int UpdateWindow(HWND hWnd);
-
-        [DllImport(Dll)]
-        public static extern unsafe HWND CreateWindowExA(uint dwExStyle, string lpClassName, string lpWindowName,
-            uint dwStyle, int x, int y, int nWidth, int nHeight,
-            HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
 
         [DllImport(Dll)]
         public static extern short GetKeyState(int nVirtualKey);

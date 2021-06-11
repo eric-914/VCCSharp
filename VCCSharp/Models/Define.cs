@@ -292,20 +292,20 @@ namespace VCCSharp.Models
         public const uint CS_VREDRAW = 0x0001;
         public const uint CS_HREDRAW = 0x0002;
 
-        public const uint WM_CREATE = 0x0001;
-        public const uint WM_KILLFOCUS = 0x0008;
-        public const uint WM_CLOSE = 0x0010;
-        public const uint WM_KEYDOWN = 0x0100;
-        public const uint WM_KEYUP = 0x0101;
-        public const uint WM_SYSKEYDOWN = 0x0104;
-        public const uint WM_SYSKEYUP = 0x0105;
-        public const uint WM_COMMAND = 0x0111;
-        public const uint WM_SYSCOMMAND = 0x0112;
-        public const uint WM_MOUSEMOVE = 0x0200;
-        public const uint WM_LBUTTONDOWN = 0x0201;
-        public const uint WM_LBUTTONUP = 0x0202;
-        public const uint WM_RBUTTONDOWN = 0x0204;
-        public const uint WM_RBUTTONUP = 0x0205;
+        public const int WM_CREATE = 0x0001;
+        public const int WM_KILLFOCUS = 0x0008;
+        public const int WM_CLOSE = 0x0010;
+        public const int WM_KEYDOWN = 0x0100;
+        public const int WM_KEYUP = 0x0101;
+        public const int WM_SYSKEYDOWN = 0x0104;
+        public const int WM_SYSKEYUP = 0x0105;
+        public const int WM_COMMAND = 0x0111;
+        public const int WM_SYSCOMMAND = 0x0112;
+        public const int WM_MOUSEMOVE = 0x0200;
+        public const int WM_LBUTTONDOWN = 0x0201;
+        public const int WM_LBUTTONUP = 0x0202;
+        public const int WM_RBUTTONDOWN = 0x0204;
+        public const int WM_RBUTTONUP = 0x0205;
 
         public const uint SC_KEYMENU = 0xF100;
         public const uint VK_LMENU = 0xA4;
@@ -352,5 +352,9 @@ namespace VCCSharp.Models
 
         public const long DDLOCK_SURFACEMEMORYPTR = 0x00000000L;     // default
         public const long DDLOCK_WAIT = 0x00000001L;
+
+        public const int DEFAULT_WIDTH = 640;
+        public const int DEFAULT_HEIGHT = 480;
+
     }
 }

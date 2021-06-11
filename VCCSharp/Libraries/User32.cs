@@ -21,9 +21,6 @@ namespace VCCSharp.Libraries
         unsafe int SetRect(RECT* lpRect, short xLeft, short yTop, short xRight, short yBottom);
         unsafe int GetWindowRect(HWND hWnd, RECT* lpRect);
         int MoveWindow(HWND hWnd, int x, int y, int nWidth, int nHeight, int bRepaint);
-        int DestroyWindow(HWND hWnd);
-        unsafe int AdjustWindowRect(RECT* lpRect, uint dwStyle, int bMenu);
-        unsafe HWND CreateWindowExA(uint dwExStyle, string lpClassName, string lpWindowName, uint dwStyle, int x, int y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam);
         int UpdateWindow(HWND hWnd);
         short GetKeyState(int nVirtualKey);
     }
@@ -65,15 +62,6 @@ namespace VCCSharp.Libraries
 
         public int MoveWindow(HWND hWnd, int x, int y, int nWidth, int nHeight, int bRepaint)
             => User32Dll.MoveWindow(hWnd, x, y, nWidth, nHeight, bRepaint);
-
-        public int DestroyWindow(HWND hWnd)
-            => User32Dll.DestroyWindow(hWnd);
-
-        public unsafe int AdjustWindowRect(RECT* lpRect, uint dwStyle, int bMenu)
-            => User32Dll.AdjustWindowRect(lpRect, dwStyle, bMenu);
-
-        public unsafe HWND CreateWindowExA(uint dwExStyle, string lpClassName, string lpWindowName, uint dwStyle, int x, int y, int nWidth, int nHeight, HWND hWndParent, void* hMenu, HINSTANCE hInstance, void* lpParam)
-            => User32Dll.CreateWindowExA(dwExStyle, lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
 
         public int UpdateWindow(HWND hWnd)
             => User32Dll.UpdateWindow(hWnd);

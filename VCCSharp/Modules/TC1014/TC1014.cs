@@ -403,19 +403,19 @@ Could not locate {rom} in any of these locations:
             uint bc = Graphics.BorderColor;
             ushort wsx = (ushort)emu.WindowSize.X;
             long sp = emu.SurfacePitch;
-            int lc = emu.LineCounter * 2;
+            long lc = emu.LineCounter * 2 * sp;
 
             unsafe
             {
-                uint* pSurface32 = Graphics.GetGraphicsSurface();
+                uint* surface = Graphics.GetGraphicsSurface();
 
                 for (ushort x = 0; x < wsx; x++)
                 {
-                    pSurface32[x + lc * sp] = bc;
+                    surface[x + lc] = bc;
 
                     if (!emu.ScanLines)
                     {
-                        pSurface32[x + (lc + 1) * sp] = bc;
+                        surface[x + lc + sp] = bc;
                     }
                 }
             }
@@ -433,19 +433,19 @@ Could not locate {rom} in any of these locations:
             uint bc = Graphics.BorderColor;
             ushort wsx = (ushort)emu.WindowSize.X;
             long sp = emu.SurfacePitch;
-            int lc = (emu.LineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) * 2;
+            long lc = (emu.LineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) * 2 * sp;
 
             unsafe
             {
-                uint* pSurface32 = Graphics.GetGraphicsSurface();
+                uint* surface = Graphics.GetGraphicsSurface();
 
                 for (ushort x = 0; x < wsx; x++)
                 {
-                    pSurface32[x + lc * sp] = bc;
+                    surface[x + lc] = bc;
 
                     if (!_modules.Emu.ScanLines)
                     {
-                        pSurface32[x + sp + lc * sp] = bc;
+                        surface[x + lc + sp] = bc;
                     }
                 }
             }
@@ -457,6 +457,7 @@ Could not locate {rom} in any of these locations:
             long xPitch = _modules.Emu.SurfacePitch;
 
             int vy = (y + Graphics.VerticalCenter) * 2;
+            long vyx = vy * xPitch;
 
             if ((Graphics.HorizontalCenter != 0) && (Graphics.BorderChange > 0))
             {
@@ -465,24 +466,24 @@ Could not locate {rom} in any of these locations:
 
                 unsafe
                 {
-                    uint* pSurface32 = Graphics.GetGraphicsSurface();
-
-                    uint* szSurface32 = pSurface32;
+                    uint* surface = Graphics.GetGraphicsSurface();
 
                     for (ushort x = 0; x < Graphics.HorizontalCenter; x++)
                     {
-                        szSurface32[x + vy * xPitch] = bc;
+                        //--Left border
+                        surface[x + vyx] = bc;
 
                         if (!_modules.Emu.ScanLines)
                         {
-                            szSurface32[x + (vy + 1) * xPitch] = bc;
+                            surface[x + vyx + xPitch] = bc;
                         }
 
-                        szSurface32[x + hx + vy * xPitch] = bc;
+                        //--Right border
+                        surface[x + hx + vyx] = bc;
 
                         if (!_modules.Emu.ScanLines)
                         {
-                            szSurface32[x + hx + (vy + 1) * xPitch] = bc;
+                            surface[x + hx + vyx + xPitch] = bc;
                         }
                     }
                 }

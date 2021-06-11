@@ -298,7 +298,7 @@ namespace VCCSharp.Modules
             }
             else
             {
-                SetWindowSize(640, 480);
+                SetWindowSize(Define.DEFAULT_WIDTH, Define.DEFAULT_HEIGHT);
             }
         }
 
@@ -380,8 +380,8 @@ namespace VCCSharp.Modules
                 model.ScanLines = (byte)_kernel.GetPrivateProfileIntA("Video", "ScanLines", 0, iniFilePath);
                 model.ForceAspect = (byte)_kernel.GetPrivateProfileIntA("Video", "ForceAspect", 0, iniFilePath) != 0;
                 model.RememberSize = _kernel.GetPrivateProfileIntA("Video", "RememberSize", 0, iniFilePath) != 0;
-                model.WindowSizeX = (short)_kernel.GetPrivateProfileIntA("Video", "WindowSizeX", 640, iniFilePath);
-                model.WindowSizeY = (short)_kernel.GetPrivateProfileIntA("Video", "WindowSizeY", 480, iniFilePath);
+                model.WindowSizeX = (short)_kernel.GetPrivateProfileIntA("Video", "WindowSizeX", Define.DEFAULT_WIDTH, iniFilePath);
+                model.WindowSizeY = (short)_kernel.GetPrivateProfileIntA("Video", "WindowSizeY", Define.DEFAULT_HEIGHT, iniFilePath);
 
                 //[Memory]
                 model.RamSize = (byte)_kernel.GetPrivateProfileIntA("Memory", "RamSize", 1, iniFilePath);

@@ -3,7 +3,6 @@ using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
-using HINSTANCE = System.IntPtr;
 using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules
@@ -11,7 +10,6 @@ namespace VCCSharp.Modules
     public interface IEmu
     {
         HWND WindowHandle { get; set; }
-        HINSTANCE Resources { get; set; }
 
         void SoftReset();
         void HardReset();
@@ -44,7 +42,6 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
 
         public HWND WindowHandle { get; set; }
-        public HINSTANCE Resources { get; set; }
 
         public byte CpuType { get; set; }
 

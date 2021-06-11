@@ -42,13 +42,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe DDSURFACEDESC* DDSDCreate();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void DDSDSetRGBBitCount(DDSURFACEDESC* ddsd, uint value);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe uint DDSDGetPitch(DDSURFACEDESC* ddsd);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void DDSDSetPitch(DDSURFACEDESC* ddsd, uint value);
 
             [DllImport(LIBRARY)]
             public static extern unsafe int DDSDHasSurface(DDSURFACEDESC* ddsd);
@@ -58,12 +52,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe int LockDDBackSurface(DDSURFACEDESC* ddsd, uint flags);
-
-            [DllImport(LIBRARY)]
-            public static extern void DDRelease();
-
-            [DllImport(LIBRARY)]
-            public static extern void DDUnregisterClass();
 
             [DllImport(LIBRARY)]
             public static extern int DDSurfaceSetClipper();
@@ -102,18 +90,6 @@ namespace VCCSharp.Libraries
             public static extern int DDCreate();
 
             [DllImport(LIBRARY)]
-            public static extern int DDSetDisplayMode(uint x, uint y, uint depth);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void DDSDSetdwBackBufferCount(DDSURFACEDESC* ddsd, uint value);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe DDSCAPS DDSDGetddsCaps(DDSURFACEDESC* ddsd);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void DDSurfaceGetAttachedSurface(DDSCAPS* ddsCaps);
-
-            [DllImport(LIBRARY)]
             public static extern int HasDDSurface();
 
             [DllImport(LIBRARY)]
@@ -127,18 +103,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern void DDBackSurfaceRestore();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe IDirectDrawPalette* DDCreatePalette(uint caps, PALETTEENTRY* pal);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void DDSurfaceSetPalette(IDirectDrawPalette* ddPalette);
-
-            [DllImport(LIBRARY)]
-            public static extern HINSTANCE WndProc(HWND hWnd, uint msg, long wParam, long lParam);
-
-            [DllImport(LIBRARY)]
-            public static extern int DDRegisterClass(HINSTANCE hInstance, HINSTANCE lpWndProc, string lpszClassName, uint style, HICON hIcon, HCURSOR hCursor, HBRUSH hbrBackground);
         }
 
         public static class DirectSound
