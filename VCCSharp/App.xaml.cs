@@ -35,7 +35,6 @@ namespace VCCSharp
                 .Singleton<IEmu, Emu>()
                 .Singleton<IEvents, Events>()
                 .Singleton<IFileOperations, FileOperations>()
-                .Singleton<IGDI, GDI>()
                 .Singleton<IGraphics, Graphics>()
                 .Singleton<IIOBus, IOBus>()
                 .Singleton<IJoystick, Joystick>()
@@ -57,6 +56,7 @@ namespace VCCSharp
                 //--Windows Libraries
                 .Bind<IKernel, Kernel>()
                 .Bind<IUser32, User32>()
+                .Bind<IGdi32, Gdi32>()
                 .Bind<IWinmm, Winmm>()
 
                 //--Main

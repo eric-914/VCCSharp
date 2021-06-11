@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Windows;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
@@ -31,6 +30,7 @@ namespace VCCSharp.Modules
 
         private readonly IModules _modules;
         private readonly IUser32 _user32;
+        private readonly IGdi32 _gdi32;
 
         private static int _textX, _textY;
         private static byte _counter, _counter1 = 32, _phase = 1;
@@ -47,10 +47,11 @@ namespace VCCSharp.Modules
 
         #endregion
 
-        public DirectDraw(IModules modules, IUser32 user32)
+        public DirectDraw(IModules modules, IUser32 user32, IGdi32 gdi32)
         {
             _modules = modules;
             _user32 = user32;
+            _gdi32 = gdi32;
         }
 
         static DirectDraw()
@@ -236,37 +237,36 @@ namespace VCCSharp.Modules
 
         private void ShowStaticMessage(ushort x, ushort y, uint color)
         {
+            const string message = " Signal Missing! Press F9 ";
+
+            IntPtr hdc;
+
             unsafe
             {
-                const string message = " Signal Missing! Press F9";
-                void* hdc;
-
                 GetBackSurface(&hdc);
-
-                _modules.GDI.SetBkColor(hdc, 0);
-                _modules.GDI.SetTextColor(hdc, color);
-                _modules.GDI.WriteTextOut(hdc, x, y, message);
-
-                ReleaseBackSurface(hdc);
             }
+
+            _gdi32.SetBkColor(hdc, 0);
+            _gdi32.SetTextColor(hdc, color);
+            _gdi32.TextOut(hdc, x, y, message, message.Length);
+
+            ReleaseBackSurface(hdc);
         }
 
-        private void WriteStatusText(string statusText)
+        private void WriteStatusText(string message)
         {
+            IntPtr hdc;
+
             unsafe
             {
-                void* hdc;
-
-                var sb = new StringBuilder(statusText.PadRight(134 - statusText.Length));
-
                 GetBackSurface(&hdc);
-
-                _modules.GDI.SetBkColor(hdc, 0); //RGB(0, 0, 0)
-                _modules.GDI.SetTextColor(hdc, 0xFFFFFF); //RGB(255, 255, 255)
-                _modules.GDI.TextOut(hdc, 0, 0, sb.ToString(), 132);
-
-                ReleaseBackSurface(hdc);
             }
+
+            _gdi32.SetBkColor(hdc, 0); //RGB(0, 0, 0)
+            _gdi32.SetTextColor(hdc, 0xFFFFFF); //RGB(255, 255, 255)
+            _gdi32.TextOut(hdc, 0, 0, message, message.Length);
+
+            ReleaseBackSurface(hdc);
         }
 
         private unsafe void DisplayFlip()
@@ -516,14 +516,12 @@ namespace VCCSharp.Modules
             return Library.DirectDraw.DDSDCreate();
         }
 
-        //--TODO: I don't know what HDC is.
-        private static unsafe void GetBackSurface(void** pHdc)
+        private static unsafe void GetBackSurface(IntPtr* pHdc)
         {
             Library.DirectDraw.GetDDBackSurfaceDC(pHdc);
         }
 
-        //--TODO: I don't know what HDC is.
-        private static unsafe void ReleaseBackSurface(void* hdc)
+        private static void ReleaseBackSurface(IntPtr hdc)
         {
             Library.DirectDraw.ReleaseDDBackSurfaceDC(hdc);
         }

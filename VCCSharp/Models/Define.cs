@@ -327,9 +327,9 @@ namespace VCCSharp.Models
         public const long GENERIC_READ = (0x80000000L);
         public const long GENERIC_WRITE = (0x40000000L);
 
-        public const long FILE_BEGIN = 0;
-        public const long FILE_CURRENT = 1;
-        public const long FILE_END = 2;
+        public const uint FILE_BEGIN = 0;
+        public const uint FILE_CURRENT = 1;
+        public const uint FILE_END = 2;
 
         public const byte RESET_NONE = 0;
         public const byte RESET_HARD = 2;

@@ -1,6 +1,8 @@
-﻿using VCCSharp.Models;
+﻿using System;
+using VCCSharp.Models;
 using HMODULE = System.IntPtr;
 using HANDLE = System.IntPtr;
+using static System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
@@ -14,9 +16,12 @@ namespace VCCSharp.Libraries
         unsafe int QueryPerformanceCounter(LARGE_INTEGER* lpPerformanceCount);
         unsafe int QueryPerformanceFrequency(LARGE_INTEGER* lpFrequency);
         unsafe int ReadFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToRead, uint* lpNumberOfBytesRead, void* lpOverlapped);
-        unsafe uint SetFilePointer(HANDLE hFile, uint lDistanceToMove, uint* lpDistanceToMoveHigh, uint dwMoveMethod);
+        uint SetFilePointer(IntPtr hFile, uint dwMoveMethod, uint lDistanceToMove = 0);
         int FreeConsole();
         int CloseHandle(HANDLE hObject);
+        IntPtr GetProcAddress(HMODULE hModule, string lpProcName);
+        uint FlushFileBuffers(HANDLE hFile);
+        unsafe uint ReadFile(HANDLE hFile, byte* lpBuffer, ulong nNumberOfBytesToRead, ulong* lpNumberOfBytesRead);
     }
 
     public class Kernel : IKernel
@@ -45,13 +50,22 @@ namespace VCCSharp.Libraries
         public unsafe int ReadFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToRead, uint* lpNumberOfBytesRead, void* lpOverlapped)
             => KernelDll.ReadFile(hFile, lpBuffer, nNumberOfBytesToRead, lpNumberOfBytesRead, lpOverlapped);
 
-        public unsafe uint SetFilePointer(HANDLE hFile, uint lDistanceToMove, uint* lpDistanceToMoveHigh, uint dwMoveMethod)
-            => KernelDll.SetFilePointer(hFile, lDistanceToMove, lpDistanceToMoveHigh, dwMoveMethod);
+        public unsafe uint SetFilePointer(IntPtr hFile, uint dwMoveMethod, uint lDistanceToMove = 0)
+            => KernelDll.SetFilePointer(hFile, lDistanceToMove, null, dwMoveMethod);
 
         public int FreeConsole()
             => KernelDll.FreeConsole();
 
-        public int CloseHandle(HANDLE hObject) 
+        public int CloseHandle(HANDLE hObject)
             => KernelDll.CloseHandle(hObject);
+
+        public IntPtr GetProcAddress(HMODULE hModule, string lpProcName)
+            => KernelDll.GetProcAddress(hModule, lpProcName);
+
+        public uint FlushFileBuffers(HANDLE hFile)
+            => KernelDll.FlushFileBuffers(hFile);
+
+        public unsafe uint ReadFile(HANDLE hFile, byte* lpBuffer, ulong nNumberOfBytesToRead, ulong* lpNumberOfBytesRead)
+            => KernelDll.ReadFile(hFile, lpBuffer, nNumberOfBytesToRead, lpNumberOfBytesRead, Zero);
     }
 }

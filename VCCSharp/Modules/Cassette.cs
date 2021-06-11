@@ -200,7 +200,7 @@ namespace VCCSharp.Modules
         //--TODO: Seems this doesn't work
         public unsafe void LoadCassetteBufferWav(byte* buffer, uint* bytesMoved)
         {
-            _kernel.SetFilePointer(TapeHandle, TapeOffset + 44, null, (uint)Define.FILE_BEGIN);
+            _kernel.SetFilePointer(TapeHandle, Define.FILE_BEGIN, TapeOffset + 44);
             _kernel.ReadFile(TapeHandle, buffer, Define.TAPEAUDIORATE / 60, bytesMoved, null);
 
             TapeOffset += *bytesMoved;
@@ -290,7 +290,7 @@ namespace VCCSharp.Modules
 
             SyncFileBuffer();
 
-            _modules.FileOperations.FileCloseHandle(TapeHandle);
+            _kernel.CloseHandle(TapeHandle);
 
             TapeHandle = Zero;
             _totalSize = 0;
@@ -401,7 +401,7 @@ namespace VCCSharp.Modules
                 return 0; //Give up
             }
 
-            _totalSize = (uint)_modules.FileOperations.FileSetFilePointer(TapeHandle, Define.FILE_END);
+            _totalSize = _kernel.SetFilePointer(TapeHandle, Define.FILE_END);
             TapeOffset = 0;
 
             var extension = Path.GetExtension(filename)?.ToUpper();
@@ -417,14 +417,14 @@ namespace VCCSharp.Modules
 
                 CasBuffer = new byte[Define.WRITEBUFFERSIZE];
 
-                _modules.FileOperations.FileSetFilePointer(TapeHandle, Define.FILE_BEGIN);
+                _kernel.SetFilePointer(TapeHandle, Define.FILE_BEGIN);
 
                 ulong moved = 0;
 
                 //Read the whole file in for .CAS files
                 fixed (byte* p = CasBuffer)
                 {
-                    _modules.FileOperations.FileReadFile(TapeHandle, p, _totalSize, &moved);
+                    _kernel.ReadFile(TapeHandle, p, _totalSize, &moved);
                 }
 
                 _bytesMoved = (uint)moved;
@@ -440,7 +440,7 @@ namespace VCCSharp.Modules
 
         public void SyncFileBuffer()
         {
-            _modules.FileOperations.FileSetFilePointer(TapeHandle, Define.FILE_BEGIN);
+            _kernel.SetFilePointer(TapeHandle, Define.FILE_BEGIN);
 
             switch (FileType)
             {
@@ -453,7 +453,7 @@ namespace VCCSharp.Modules
                     break;
             }
 
-            _modules.FileOperations.FileFlushFileBuffers(TapeHandle);
+            _kernel.FlushFileBuffers(TapeHandle);
         }
 
         public void SyncFileBufferCas()
@@ -510,7 +510,7 @@ namespace VCCSharp.Modules
 
         public unsafe void FlushCassetteWav(byte* buffer, uint length)
         {
-            _modules.FileOperations.FileSetFilePointer(TapeHandle, Define.FILE_BEGIN, TapeOffset + 44);
+            _kernel.SetFilePointer(TapeHandle, Define.FILE_BEGIN, TapeOffset + 44);
 
             _modules.FileOperations.FileWriteFile(TapeHandle, buffer, (int)length);
 

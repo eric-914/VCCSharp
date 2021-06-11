@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 // ReSharper disable CommentTypo
 // ReSharper disable InconsistentNaming
@@ -131,59 +132,59 @@ namespace VCCSharp.Models
     {
         //unsigned char (*PakMemRead8)(unsigned short);
         //public PAKMEMREAD8* PakMemRead8;
-        public unsafe void* PakMemRead8;
+        public IntPtr PakMemRead8;
 
         ////void (*PakMemWrite8)(unsigned char, unsigned short);
         //public PAKMEMWRITE8 PakMemWrite8;
-        public unsafe void* PakMemWrite8;
+        public IntPtr PakMemWrite8;
         
         ////unsigned char (*PakPortRead)(unsigned char);
         //public PAKPORTREAD PakPortRead;
-        public unsafe void* PakPortRead;
+        public IntPtr PakPortRead;
 
         ////void (*PakPortWrite)(unsigned char, unsigned char);
         //public PAKPORTWRITE PakPortWrite;
-        public unsafe void* PakPortWrite;
+        public IntPtr PakPortWrite;
 
         ////unsigned short (*ModuleAudioSample)(void);
         //public MODULEAUDIOSAMPLE ModuleAudioSample;
-        public unsafe void* ModuleAudioSample;
+        public IntPtr ModuleAudioSample;
 
         ////void (*ConfigModule)(unsigned char);
         //public CONFIGMODULE ConfigModule;
-        public unsafe void* ConfigModule;
+        public IntPtr ConfigModule;
 
         ////void (*DmaMemPointer) (MEMREAD8, MEMWRITE8);
         //public DMAMEMPOINTERS DmaMemPointers;
-        public unsafe void* DmaMemPointers;
+        public IntPtr DmaMemPointers;
 
         ////void (*GetModuleName)(char*, char*, DYNAMICMENUCALLBACK);
         //public GETMODULENAME GetModuleName;
-        public unsafe void* GetModuleName;
+        public IntPtr GetModuleName;
 
         ////void (*HeartBeat)(void);
         //public HEARTBEAT HeartBeat;
-        public unsafe void* HeartBeat;
+        public IntPtr HeartBeat;
 
         ////void (*ModuleReset) (void);
         //public MODULERESET ModuleReset;
-        public unsafe void* ModuleReset;
+        public IntPtr ModuleReset;
 
         ////void (*ModuleStatus)(char*);
         //public MODULESTATUS ModuleStatus;
-        public unsafe void* ModuleStatus;
+        public IntPtr ModuleStatus;
 
         ////void (*PakSetCart)(SETCART);
         //public PAKSETCART PakSetCart;
-        public unsafe void* PakSetCart;
+        public IntPtr PakSetCart;
 
         ////void (*SetIniPath) (char*);
         //public SETINIPATH SetIniPath;
-        public unsafe void* SetIniPath;
+        public IntPtr SetIniPath;
 
         ////void (*SetInterruptCallPointer) (ASSERTINTERRUPT);
         //public SETINTERRUPTCALLPOINTER SetInterruptCallPointer;
-        public unsafe void* SetInterruptCallPointer;
+        public IntPtr SetInterruptCallPointer;
     }
 }
 // ReSharper restore CommentTypo
