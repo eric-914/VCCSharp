@@ -1,4 +1,5 @@
-﻿using VCCSharp.Models;
+﻿using System;
+using VCCSharp.Models;
 using HMODULE = System.IntPtr;
 using HANDLE = System.IntPtr;
 
@@ -17,6 +18,7 @@ namespace VCCSharp.Libraries
         unsafe uint SetFilePointer(HANDLE hFile, uint lDistanceToMove, uint* lpDistanceToMoveHigh, uint dwMoveMethod);
         int FreeConsole();
         int CloseHandle(HANDLE hObject);
+        IntPtr GetProcAddress(HMODULE hModule, string lpProcName);
     }
 
     public class Kernel : IKernel
@@ -53,5 +55,8 @@ namespace VCCSharp.Libraries
 
         public int CloseHandle(HANDLE hObject) 
             => KernelDll.CloseHandle(hObject);
+
+        public IntPtr GetProcAddress(HMODULE hModule, string lpProcName)
+            => KernelDll.GetProcAddress(hModule, lpProcName);
     }
 }

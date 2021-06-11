@@ -1,12 +1,8 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.Security;
 using VCCSharp.Models;
 using HANDLE = System.IntPtr;
-using HBRUSH = System.IntPtr;
-using HCURSOR = System.IntPtr;
-using HICON = System.IntPtr;
-using HINSTANCE = System.IntPtr;
-using HMODULE = System.IntPtr;
 using HRESULT = System.IntPtr;
 using HWND = System.IntPtr;
 
@@ -24,10 +20,10 @@ namespace VCCSharp.Libraries
             public static extern int UnlockDDBackSurface();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void GetDDBackSurfaceDC(void** pHdc);
+            public static extern unsafe void GetDDBackSurfaceDC(IntPtr* pHdc);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void ReleaseDDBackSurfaceDC(void* hdc);
+            public static extern void ReleaseDDBackSurfaceDC(IntPtr hdc);
 
             [DllImport(LIBRARY)]
             public static extern int DDSurfaceFlip();
@@ -183,22 +179,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe int FileWriteFile(HANDLE handle, byte* buffer, int size);
         }
 
-        // ReSharper disable once InconsistentNaming
-        public static class GDI
-        {
-            [DllImport(LIBRARY)]
-            public static extern unsafe void GDIWriteTextOut(void* hdc, ushort x, ushort y, string message);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void GDISetBkColor(void* hdc, uint color);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void GDISetTextColor(void* hdc, uint color);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void GDITextOut(void* hdc, int x, int y, string text, int textLength);
-        }
-
         public static class Joystick
         {
             [DllImport(LIBRARY)]
@@ -222,17 +202,5 @@ namespace VCCSharp.Libraries
             [DllImport(LIBRARY)]
             public static extern unsafe byte Button(void* stick, int index);
         }
-
-        public static class PakInterface
-        {
-            [DllImport(LIBRARY)]
-            public static extern HINSTANCE PAKLoadLibrary(string modulePath);
-
-            [DllImport(LIBRARY)]
-            public static extern void PAKFreeLibrary(HINSTANCE hInstLib);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void* GetFunction(HMODULE hModule, string lpProcName);
-        } //--PAKInterface
     }
 }

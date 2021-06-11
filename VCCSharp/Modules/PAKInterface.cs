@@ -36,6 +36,7 @@ namespace VCCSharp.Modules
     public class PAKInterface : IPAKInterface
     {
         private readonly IModules _modules;
+        private readonly IKernel _kernel;
 
         // ReSharper disable once InconsistentNaming
         private static readonly object _lock = new object();
@@ -55,9 +56,10 @@ namespace VCCSharp.Modules
 
         private readonly PakInterfaceDelegates _d = new PakInterfaceDelegates();
 
-        public PAKInterface(IModules modules)
+        public PAKInterface(IModules modules, IKernel kernel)
         {
             _modules = modules;
+            _kernel = kernel;
         }
 
         //public unsafe PakInterfaceDelegates* GetPakInterfaceDelegates()
@@ -84,7 +86,7 @@ namespace VCCSharp.Modules
 
             if (hInstLib != Zero)
             {
-                PakFreeLibrary(hInstLib);
+                _kernel.FreeLibrary(hInstLib);
             }
 
             hInstLib = Zero;
@@ -134,7 +136,7 @@ namespace VCCSharp.Modules
 
             UnloadDll(emulationRunning);
 
-            hInstLib = PakLoadLibrary(modulePath);
+            hInstLib = _kernel.LoadLibrary(modulePath);
 
             if (hInstLib == Zero)
             {
@@ -145,7 +147,7 @@ namespace VCCSharp.Modules
 
             if (SetDelegates(hInstLib))
             {
-                PakFreeLibrary(hInstLib);
+                _kernel.FreeLibrary(hInstLib);
 
                 hInstLib = Zero;
 
@@ -392,155 +394,106 @@ namespace VCCSharp.Modules
 
         public void UnloadModule()
         {
-            unsafe
-            {
-                _d.ConfigModule = null;
-                _d.DmaMemPointers = null;
-                _d.GetModuleName = null;
-                _d.HeartBeat = null;
-                _d.ModuleAudioSample = null;
-                _d.ModuleReset = null;
-                _d.ModuleStatus = null;
-                _d.PakMemRead8 = null;
-                _d.PakMemWrite8 = null;
-                _d.PakPortRead = null;
-                _d.PakPortWrite = null;
-                _d.SetInterruptCallPointer = null;
-            }
+            _d.ConfigModule = Zero;
+            _d.DmaMemPointers = Zero;
+            _d.GetModuleName = Zero;
+            _d.HeartBeat = Zero;
+            _d.ModuleAudioSample = Zero;
+            _d.ModuleReset = Zero;
+            _d.ModuleStatus = Zero;
+            _d.PakMemRead8 = Zero;
+            _d.PakMemWrite8 = Zero;
+            _d.PakPortRead = Zero;
+            _d.PakPortWrite = Zero;
+            _d.SetInterruptCallPointer = Zero;
         }
 
         public bool HasSetInterruptCallPointer()
         {
-            unsafe
-            {
-                return _d.SetInterruptCallPointer != null;
-            }
+            return _d.SetInterruptCallPointer != Zero;
         }
 
         public bool HasModuleReset()
         {
-            unsafe
-            {
-                return _d.ModuleReset != null;
-            }
+            return _d.ModuleReset != Zero;
         }
 
         public bool HasModuleStatus()
         {
-            unsafe
-            {
-                return _d.ModuleStatus != null;
-            }
+            return _d.ModuleStatus != Zero;
         }
 
         public bool HasDmaMemPointer()
         {
-            unsafe
-            {
-                return _d.DmaMemPointers != null;
-            }
+            return _d.DmaMemPointers != Zero;
         }
 
         public bool HasModuleAudioSample()
         {
-            unsafe
-            {
-                return _d.ModuleAudioSample != null;
-            }
+            return _d.ModuleAudioSample != Zero;
         }
 
         public bool HasPakMemWrite8()
         {
-            unsafe
-            {
-                return _d.PakMemWrite8 != null;
-            }
+            return _d.PakMemWrite8 != Zero;
         }
 
         public bool HasPakMemRead8()
         {
-            unsafe
-            {
-
-                return _d.PakMemRead8 != null;
-            }
+            return _d.PakMemRead8 != Zero;
         }
 
         public bool HasSetIniPath()
         {
-            unsafe
-            {
-                return _d.SetIniPath != null;
-            }
+            return _d.SetIniPath != Zero;
         }
 
         public bool HasPakSetCart()
         {
-            unsafe
-            {
-                return _d.PakSetCart != null;
-            }
+            return _d.PakSetCart != Zero;
         }
 
         public bool HasPakPortWrite()
         {
-            unsafe
-            {
-                return _d.PakPortWrite != null;
-            }
+            return _d.PakPortWrite != Zero;
         }
 
         public bool HasPakPortRead()
         {
-            unsafe
-            {
-                return _d.PakPortRead != null;
-            }
+            return _d.PakPortRead != Zero;
         }
 
         public bool HasHeartBeat()
         {
-            unsafe
-            {
-                return _d.HeartBeat != null;
-            }
+            return _d.HeartBeat != Zero;
         }
 
         public bool HasConfigModule()
         {
-            unsafe
-            {
-                return _d.ConfigModule != null;
-            }
+            return _d.ConfigModule != Zero;
         }
 
         public void InvokeHeartBeat()
         {
-            unsafe
-            {
-                IntPtr p = (IntPtr)(_d.HeartBeat);
+            IntPtr p = _d.HeartBeat;
 
-                HEARTBEAT fn = Marshal.GetDelegateForFunctionPointer<HEARTBEAT>(p);
+            HEARTBEAT fn = Marshal.GetDelegateForFunctionPointer<HEARTBEAT>(p);
 
-                fn();
-            }
+            fn();
         }
 
         public void InvokeModuleReset()
         {
-            unsafe
-            {
-                IntPtr p = (IntPtr)(_d.ModuleReset);
+            IntPtr p = _d.ModuleReset;
 
-                MODULERESET fn = Marshal.GetDelegateForFunctionPointer<MODULERESET>(p);
+            MODULERESET fn = Marshal.GetDelegateForFunctionPointer<MODULERESET>(p);
 
-                fn();
-            }
+            fn();
         }
 
         public unsafe void InvokeModuleStatus(byte* statusLine)
         {
-            IntPtr p = (IntPtr)(_d.ModuleStatus);
+            IntPtr p = _d.ModuleStatus;
 
             MODULESTATUS fn = Marshal.GetDelegateForFunctionPointer<MODULESTATUS>(p);
 
@@ -549,14 +502,11 @@ namespace VCCSharp.Modules
 
         public void InvokeSetIniPath(string ini)
         {
-            unsafe
-            {
-                IntPtr p = (IntPtr)(_d.SetIniPath);
+            IntPtr p = _d.SetIniPath;
 
-                SETINIPATH fn = Marshal.GetDelegateForFunctionPointer<SETINIPATH>(p);
+            SETINIPATH fn = Marshal.GetDelegateForFunctionPointer<SETINIPATH>(p);
 
-                fn(ini);
-            }
+            fn(ini);
         }
 
         private static DYNAMICMENUCALLBACK _dynamicMenuCallback;
@@ -571,7 +521,7 @@ namespace VCCSharp.Modules
 
                 DYNAMICMENUCALLBACK fnx = Marshal.GetDelegateForFunctionPointer<DYNAMICMENUCALLBACK>(callback);
 
-                IntPtr p = (IntPtr)_d.GetModuleName;
+                IntPtr p = _d.GetModuleName;
 
                 GETMODULENAME fn = Marshal.GetDelegateForFunctionPointer<GETMODULENAME>(p);
 
@@ -587,14 +537,11 @@ namespace VCCSharp.Modules
 
         public void InvokeConfigModule(byte menuItem)
         {
-            unsafe
-            {
-                IntPtr p = (IntPtr)(_d.ConfigModule);
+            IntPtr p = _d.ConfigModule;
 
-                CONFIGMODULE fn = Marshal.GetDelegateForFunctionPointer<CONFIGMODULE>(p);
+            CONFIGMODULE fn = Marshal.GetDelegateForFunctionPointer<CONFIGMODULE>(p);
 
-                fn(menuItem);
-            }
+            fn(menuItem);
         }
 
         private static ASSERTINTERRUPT _assertInterruptCallback;
@@ -606,20 +553,17 @@ namespace VCCSharp.Modules
                 _modules.CPU.AssertInterrupt((CPUInterrupts)irq, flag);
             }
 
-            unsafe
-            {
-                _assertInterruptCallback = CpuAssertInterrupt;
+            _assertInterruptCallback = CpuAssertInterrupt;
 
-                IntPtr callback = Marshal.GetFunctionPointerForDelegate(_assertInterruptCallback);
+            IntPtr callback = Marshal.GetFunctionPointerForDelegate(_assertInterruptCallback);
 
-                ASSERTINTERRUPT fnx = Marshal.GetDelegateForFunctionPointer<ASSERTINTERRUPT>(callback);
+            ASSERTINTERRUPT fnx = Marshal.GetDelegateForFunctionPointer<ASSERTINTERRUPT>(callback);
 
-                IntPtr p = (IntPtr)(_d.SetInterruptCallPointer);
+            IntPtr p = _d.SetInterruptCallPointer;
 
-                SETINTERRUPTCALLPOINTER fn = Marshal.GetDelegateForFunctionPointer<SETINTERRUPTCALLPOINTER>(p);
+            SETINTERRUPTCALLPOINTER fn = Marshal.GetDelegateForFunctionPointer<SETINTERRUPTCALLPOINTER>(p);
 
-                fn(fnx);
-            }
+            fn(fnx);
         }
 
         private static PAKMEMREAD8 _readCallback;
@@ -627,97 +571,82 @@ namespace VCCSharp.Modules
 
         public void InvokeDmaMemPointer()
         {
-            unsafe
-            {
-                _readCallback = _modules.TC1014.MemRead8;
-                _writeCallback = _modules.TC1014.MemWrite8;
+            _readCallback = _modules.TC1014.MemRead8;
+            _writeCallback = _modules.TC1014.MemWrite8;
 
-                IntPtr callbackRead = Marshal.GetFunctionPointerForDelegate(_readCallback);
-                IntPtr callbackWrite = Marshal.GetFunctionPointerForDelegate(_writeCallback);
+            IntPtr callbackRead = Marshal.GetFunctionPointerForDelegate(_readCallback);
+            IntPtr callbackWrite = Marshal.GetFunctionPointerForDelegate(_writeCallback);
 
-                PAKMEMREAD8 fnRead = Marshal.GetDelegateForFunctionPointer<PAKMEMREAD8>(callbackRead);
-                PAKMEMWRITE8 fnWrite = Marshal.GetDelegateForFunctionPointer<PAKMEMWRITE8>(callbackWrite);
+            PAKMEMREAD8 fnRead = Marshal.GetDelegateForFunctionPointer<PAKMEMREAD8>(callbackRead);
+            PAKMEMWRITE8 fnWrite = Marshal.GetDelegateForFunctionPointer<PAKMEMWRITE8>(callbackWrite);
 
-                IntPtr p = (IntPtr)(_d.DmaMemPointers);
+            IntPtr p = _d.DmaMemPointers;
 
-                DMAMEMPOINTERS fn = Marshal.GetDelegateForFunctionPointer<DMAMEMPOINTERS>(p);
+            DMAMEMPOINTERS fn = Marshal.GetDelegateForFunctionPointer<DMAMEMPOINTERS>(p);
 
-                fn(fnRead, fnWrite);
-            }
+            fn(fnRead, fnWrite);
         }
 
         private static SETCART _setCartCallback;
 
         public void InvokePakSetCart()
         {
-            unsafe
-            {
-                _setCartCallback = SetCart;
-                IntPtr callback = Marshal.GetFunctionPointerForDelegate(_setCartCallback);
+            _setCartCallback = SetCart;
+            IntPtr callback = Marshal.GetFunctionPointerForDelegate(_setCartCallback);
 
-                SETCART fnx = Marshal.GetDelegateForFunctionPointer<SETCART>(callback);
+            SETCART fnx = Marshal.GetDelegateForFunctionPointer<SETCART>(callback);
 
-                IntPtr p = (IntPtr)(_d.PakSetCart);
+            IntPtr p = _d.PakSetCart;
 
-                PAKSETCART fn = Marshal.GetDelegateForFunctionPointer<PAKSETCART>(p);
+            PAKSETCART fn = Marshal.GetDelegateForFunctionPointer<PAKSETCART>(p);
 
-                fn(fnx);
-            }
+            fn(fnx);
         }
 
         public ushort ReadModuleAudioSample()
         {
-            unsafe
-            {
-                IntPtr p = (IntPtr)(_d.ModuleAudioSample);
+            IntPtr p = _d.ModuleAudioSample;
 
-                MODULEAUDIOSAMPLE fn = Marshal.GetDelegateForFunctionPointer<MODULEAUDIOSAMPLE>(p);
+            MODULEAUDIOSAMPLE fn = Marshal.GetDelegateForFunctionPointer<MODULEAUDIOSAMPLE>(p);
 
-                return fn();
-            }
+            return fn();
         }
 
         // ReSharper disable once ParameterHidesMember
         public bool SetDelegates(HINSTANCE hInstLib)
         {
-            unsafe
-            {
-                _d.GetModuleName = GetFunction(hInstLib, "ModuleName");
-                _d.ConfigModule = GetFunction(hInstLib, "ModuleConfig");
-                _d.PakPortWrite = GetFunction(hInstLib, "PackPortWrite");
-                _d.PakPortRead = GetFunction(hInstLib, "PackPortRead");
-                _d.SetInterruptCallPointer = GetFunction(hInstLib, "AssertInterrupt");
-                _d.DmaMemPointers = GetFunction(hInstLib, "MemPointers");
-                _d.HeartBeat = GetFunction(hInstLib, "HeartBeat");
-                _d.PakMemWrite8 = GetFunction(hInstLib, "PakMemWrite8");
-                _d.PakMemRead8 = GetFunction(hInstLib, "PakMemRead8");
-                _d.ModuleStatus = GetFunction(hInstLib, "ModuleStatus");
-                _d.ModuleAudioSample = GetFunction(hInstLib, "ModuleAudioSample");
-                _d.ModuleReset = GetFunction(hInstLib, "ModuleReset");
-                _d.SetIniPath = GetFunction(hInstLib, "SetIniPath");
-                _d.PakSetCart = GetFunction(hInstLib, "SetCart");
+            _d.GetModuleName = _kernel.GetProcAddress(hInstLib, "ModuleName");
+            _d.ConfigModule = _kernel.GetProcAddress(hInstLib, "ModuleConfig");
+            _d.PakPortWrite = _kernel.GetProcAddress(hInstLib, "PackPortWrite");
+            _d.PakPortRead = _kernel.GetProcAddress(hInstLib, "PackPortRead");
+            _d.SetInterruptCallPointer = _kernel.GetProcAddress(hInstLib, "AssertInterrupt");
+            _d.DmaMemPointers = _kernel.GetProcAddress(hInstLib, "MemPointers");
+            _d.HeartBeat = _kernel.GetProcAddress(hInstLib, "HeartBeat");
+            _d.PakMemWrite8 = _kernel.GetProcAddress(hInstLib, "PakMemWrite8");
+            _d.PakMemRead8 = _kernel.GetProcAddress(hInstLib, "PakMemRead8");
+            _d.ModuleStatus = _kernel.GetProcAddress(hInstLib, "ModuleStatus");
+            _d.ModuleAudioSample = _kernel.GetProcAddress(hInstLib, "ModuleAudioSample");
+            _d.ModuleReset = _kernel.GetProcAddress(hInstLib, "ModuleReset");
+            _d.SetIniPath = _kernel.GetProcAddress(hInstLib, "SetIniPath");
+            _d.PakSetCart = _kernel.GetProcAddress(hInstLib, "SetCart");
 
-                return _d.GetModuleName == null;
-            }
+            return _d.GetModuleName == null;
         }
 
         public int ModulePortWrite(byte port, byte data)
         {
-            unsafe
+            if (_d.PakPortWrite != Zero)
             {
-                if (_d.PakPortWrite != null)
-                {
-                    IntPtr p = (IntPtr)(_d.PakPortWrite);
+                IntPtr p = _d.PakPortWrite;
 
-                    PAKPORTWRITE fn = Marshal.GetDelegateForFunctionPointer<PAKPORTWRITE>(p);
+                PAKPORTWRITE fn = Marshal.GetDelegateForFunctionPointer<PAKPORTWRITE>(p);
 
-                    fn(port, data);
+                fn(port, data);
 
-                    return 0;
-                }
-
-                return 1;
+                return 0;
             }
+
+            return 1;
         }
 
         public byte PakMem8Read(ushort address)
@@ -746,57 +675,30 @@ namespace VCCSharp.Modules
 
         public bool HasModulePortRead()
         {
-            unsafe
-            {
-                return _d.PakPortRead != null;
-            }
+            return _d.PakPortRead != Zero;
         }
 
         public byte ModulePortRead(byte port)
         {
-            unsafe
-            {
-                IntPtr p = (IntPtr)(_d.PakPortRead);
+            IntPtr p = _d.PakPortRead;
 
-                PAKPORTREAD fn = Marshal.GetDelegateForFunctionPointer<PAKPORTREAD>(p);
+            PAKPORTREAD fn = Marshal.GetDelegateForFunctionPointer<PAKPORTREAD>(p);
 
-                return fn(port);
-            }
+            return fn(port);
         }
 
         public bool HasModuleMem8Read()
         {
-            unsafe
-            {
-                return _d.PakMemRead8 != null;
-            }
+            return _d.PakMemRead8 != Zero;
         }
 
         public byte ModuleMem8Read(ushort address)
         {
-            unsafe
-            {
-                IntPtr p = (IntPtr)(_d.PakMemRead8);
+            IntPtr p = _d.PakMemRead8;
 
-                PAKMEMREAD8 fn = Marshal.GetDelegateForFunctionPointer<PAKMEMREAD8>(p);
+            PAKMEMREAD8 fn = Marshal.GetDelegateForFunctionPointer<PAKMEMREAD8>(p);
 
-                return fn((ushort)(address & 32767));
-            }
-        }
-
-        public HINSTANCE PakLoadLibrary(string modulePath)
-        {
-            return Library.PakInterface.PAKLoadLibrary(modulePath);
-        }
-
-        public void PakFreeLibrary(HINSTANCE h)
-        {
-            Library.PakInterface.PAKFreeLibrary(h);
-        }
-
-        public unsafe void* GetFunction(HMODULE hModule, string lpProcName)
-        {
-            return Library.PakInterface.GetFunction(hModule, lpProcName);
+            return fn((ushort)(address & 32767));
         }
     }
 }

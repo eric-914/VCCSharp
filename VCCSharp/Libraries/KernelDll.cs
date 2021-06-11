@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using VCCSharp.Models;
 using HMODULE = System.IntPtr;
 using HANDLE = System.IntPtr;
@@ -41,5 +42,8 @@ namespace VCCSharp.Libraries
 
         [DllImport(Dll)]
         public static extern int CloseHandle(HANDLE hObject);
+
+        [DllImport(Dll)]
+        public static extern IntPtr GetProcAddress(HMODULE hModule, string lpProcName);
     }
 }

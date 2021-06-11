@@ -41,24 +41,6 @@ BOOL WINAPI DllMain(
 }
 
 extern "C" {
-  __declspec(dllexport) void* GetFunction(HMODULE hModule, LPCSTR  lpProcName) {
-    return GetProcAddress(hModule, lpProcName);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HINSTANCE __cdecl PAKLoadLibrary(char* modulePath) {
-    return LoadLibrary(modulePath);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl PAKFreeLibrary(HINSTANCE hInstLib) {
-    FreeLibrary(hInstLib);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) HANDLE __cdecl FileOpenFile(char* filename, long desiredAccess) {
     return CreateFile(filename, desiredAccess, 0, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
   }
@@ -99,35 +81,5 @@ extern "C" {
     unsigned long bytesMoved = 0;
 
     return WriteFile(handle, buffer, 4, &bytesMoved, NULL);
-  }
-}
-
-//--Stuff from wingdi.h
-
-extern "C" {
-  __declspec(dllexport) void __cdecl GDIWriteTextOut(HDC hdc, unsigned short x, unsigned short y, const char* message)
-  {
-    TextOut(hdc, x, y, message, (int)strlen(message));
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl GDISetBkColor(HDC hdc, COLORREF color)
-  {
-    SetBkColor(hdc, color);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl GDISetTextColor(HDC hdc, COLORREF color)
-  {
-    SetTextColor(hdc, color);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl GDITextOut(HDC hdc, int x, int y, char* text, int textLength)
-  {
-    TextOut(hdc, x, y, text, textLength);
   }
 }

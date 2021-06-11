@@ -19,7 +19,6 @@ namespace VCCSharp.IoC
         IEmu Emu { get; }
         IEvents Events { get; }
         IFileOperations FileOperations { get; }
-        IGDI GDI { get; }
         IGraphics Graphics { get; }
         IIOBus IOBus { get; }
         IJoystick Joystick { get; }
@@ -52,7 +51,6 @@ namespace VCCSharp.IoC
         public IEmu Emu { get; private set; }
         public IEvents Events { get; private set; }
         public IFileOperations FileOperations { get; private set; }
-        public IGDI GDI { get; private set; }
         public IGraphics Graphics { get; private set; }
         public IIOBus IOBus { get; private set; }
         public IJoystick Joystick { get; private set; }
@@ -83,7 +81,6 @@ namespace VCCSharp.IoC
             Emu = _factory.Get<IEmu>();
             Events = _factory.Get<IEvents>();
             FileOperations = _factory.Get<IFileOperations>();
-            GDI = _factory.Get<IGDI>();
             Graphics = _factory.Get<IGraphics>();
             IOBus = _factory.Get<IIOBus>();
             Joystick = _factory.Get<IJoystick>();
