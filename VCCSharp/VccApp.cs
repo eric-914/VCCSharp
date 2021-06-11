@@ -1,11 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Interop;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using static System.IntPtr;
-using HINSTANCE = System.IntPtr;
 
 namespace VCCSharp
 {
@@ -15,22 +15,20 @@ namespace VCCSharp
         void Threading();
         void Run();
         void Shutdown();
+
+        void SetWindow(IntPtr hWnd);
     }
 
     public class VccApp : IVccApp
     {
         private readonly IModules _modules;
-        private readonly IKernel _kernel;
         private readonly IUser32 _user32;
-
-        private HINSTANCE _hResources;
 
         public MSG Msg;
 
-        public VccApp(IModules modules, IKernel kernel, IUser32 user32)
+        public VccApp(IModules modules, IUser32 user32)
         {
             _modules = modules;
-            _kernel = kernel;
             _user32 = user32;
         }
 
@@ -39,14 +37,11 @@ namespace VCCSharp
             //AudioState* audioState = _modules.Audio.GetAudioState();
             _modules.CoCo.SetAudioEventAudioOut();
 
-            _hResources = _kernel.LoadLibrary("resources.dll");
-
-            _modules.Emu.Resources = _hResources;
-
-            _modules.DirectDraw.InitDirectDraw();
             _modules.Keyboard.SetKeyTranslations();
 
             _modules.CoCo.OverClock = 1;  //Default clock speed .89 MHZ	
+
+            _modules.Config.InitConfig(ref cmdLineArgs);
 
             _modules.Vcc.CreatePrimaryWindow();
 
@@ -110,8 +105,20 @@ namespace VCCSharp
             _modules.Audio.SoundDeInit();
 
             _modules.Config.WriteIniFile(); //Save any changes to ini File
+        }
 
-            _kernel.FreeLibrary(_hResources);
+        public void SetWindow(IntPtr hWnd)
+        {
+            IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+            {
+                _modules.Events.ProcessMessage(msg, (long)wParam, (long)lParam);
+
+                return Zero;
+            }
+
+            _modules.Emu.WindowHandle = hWnd;
+
+            HwndSource.FromHwnd(hWnd)?.AddHook(WndProc);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace VCCSharp.Modules.TC1014.Modes
 {
     // ReSharper disable once InconsistentNaming
+#pragma warning disable IDE1006 // Naming Styles
     public static class _128_39_46
     {
         //Bpp=2 Sr=7 4BPP Stretch=8

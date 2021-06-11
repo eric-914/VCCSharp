@@ -31,6 +31,7 @@
     {
         private static KeyTranslationEntry[] _keyTranslationsCustom;
 
+#pragma warning disable IDE1006 // Naming Styles
         private static readonly byte[][] KeyTranslationsCustomRaw =
         {
             // ScanCode1,     ScanCode2,      Row1,  Col1,  Row2, Col2    Char  

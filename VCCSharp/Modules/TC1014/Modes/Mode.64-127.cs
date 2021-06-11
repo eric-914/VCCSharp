@@ -1,8 +1,9 @@
 ﻿namespace VCCSharp.Modules.TC1014.Modes
 {
     //******************************************************************** Low Res Text
-    //Low Res text GraphicsMode=0 CompatMode=1 Ignore Bpp and Stretch
+    //Low Res text GraphicsMode=0 CompatibilityMode=1 Ignore Bpp and Stretch
     // ReSharper disable once InconsistentNaming
+#pragma warning disable IDE1006 // Naming Styles
     public static class _64_127
     {
         public static unsafe void Mode(ModeModel model, int start, int yStride)
@@ -15,7 +16,7 @@
 
             uint[] palette = graphics.GetGraphicsColors().Palette32Bit;
             uint* szSurface32 = graphics.GetGraphicsSurface();
-            ushort y = (ushort)(emu.LineCounter);
+            ushort y = (ushort)emu.LineCounter;
             int xPitch = (int)emu.SurfacePitch;
 
             for (ushort beam = 0; beam < graphics.BytesPerRow; beam++)

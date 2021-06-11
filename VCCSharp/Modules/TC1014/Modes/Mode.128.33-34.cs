@@ -1,6 +1,7 @@
 ﻿namespace VCCSharp.Modules.TC1014.Modes
 {
     // ReSharper disable once InconsistentNaming
+#pragma warning disable IDE1006 // Naming Styles
     public static class _128_33_34
     {
         public static unsafe void Mode(ModeModel model, int start, int yStride)

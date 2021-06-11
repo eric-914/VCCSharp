@@ -32,10 +32,10 @@ namespace VCCSharp.Modules
         void SetVerticalOffsetRegister(ushort voRegister);
         void SetGimeHorizontalOffset(byte data);
         void SetGimePalette(byte palette, byte color);
-        void SetCompatMode(byte mode);
+        void SetCompatMode(CompatibilityModes mode);
         void SetVideoBank(byte data);
         void SetGimeVdgMode2(byte mode);
-        unsafe void SetGraphicsSurfaces(void* ddsdGetSurface);
+        unsafe void SetGraphicsSurface(void* ddsdGetSurface);
 
         byte BorderChange { get; set; }
         byte BytesPerRow { get; set; }
@@ -93,6 +93,7 @@ namespace VCCSharp.Modules
             254, 104, 83, 77, 82, 105, 142, 188, 237, 251, 251, 251, 252, 240, 183, 255
         };
 
+#pragma warning disable IDE1006 // Naming Styles
         private static readonly byte[] CoCo2Bpp = { 1, 0, 1, 0, 1, 0, 1, 0 };
         private static readonly byte[] CoCo2LinesPerRow = { 12, 3, 3, 2, 2, 1, 1, 1 };
         private static readonly byte[] CoCo3LinesPerRow = { 1, 1, 2, 8, 9, 10, 11, 200 };
@@ -101,6 +102,7 @@ namespace VCCSharp.Modules
         private static readonly byte[] CoCo3BytesPerTextRow = { 32, 40, 32, 40, 64, 80, 64, 80 };
         private static readonly byte[] CoCo2PaletteSet = { 8, 0, 10, 4 };
         private static readonly byte[] PixelsPerByte = { 8, 4, 2, 2 };
+#pragma warning restore IDE1006 // Naming Styles
 
         private readonly IModules _modules;
 
@@ -117,7 +119,7 @@ namespace VCCSharp.Modules
         public byte CC3Vmode { get; set; }
         public byte CC3Vres { get; set; }
         public bool ColorInvert { get; set; } = true;
-        public byte CompatMode { get; set; }
+        public CompatibilityModes CompatibilityMode { get; set; }
         public byte ExtendedText { get; set; } = 1;
         public byte GraphicsMode { get; set; }
         public byte HorizontalOffset { get; set; }
@@ -150,8 +152,9 @@ namespace VCCSharp.Modules
 
         public uint BorderColor { get; set; }
 
-        public byte[] Lpf { get; } = { 192, 199, 225, 225 }; // #2 is really undefined but I gotta put something here.
-        public byte[] VerticalCenterTable { get; } = { 29, 23, 12, 12 };
+        //--Original CoCo had 192 fixed drawable lines.  Looks like CoCo 3 can do 225.
+        public byte[] Lpf { get; } = { 192, 225 }; 
+        public byte[] VerticalCenterTable { get; } = { 29, 12 };
 
         private unsafe uint* _surface;
 
@@ -468,18 +471,15 @@ namespace VCCSharp.Modules
             // ReSharper disable CommentTypo
             // Convert the 6bit rgbrgb value to rrrrrggggggbbbbb for the Real video hardware.
             // ReSharper restore CommentTypo
-            //	unsigned char r,g,b;
             _colors.Palette[palette] = offset;
-            //_colors.Palette8Bit[palette] = _colors.PaletteLookup8[index]; 
-            //_colors.Palette16Bit[palette] = _colors.PaletteLookup16[index]; 
             _colors.Palette32Bit[palette] = _colors.PaletteLookup32[index]; 
         }
 
-        public void SetCompatMode(byte mode)
+        public void SetCompatMode(CompatibilityModes mode)
         {
-            if (CompatMode != mode)
+            if (CompatibilityMode != mode)
             {
-                CompatMode = mode;
+                CompatibilityMode = mode;
                 SetupDisplay();
                 BorderChange = 3;
             }
@@ -503,7 +503,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public unsafe void SetGraphicsSurfaces(void* pSurface)
+        public unsafe void SetGraphicsSurface(void* pSurface)
         {
             _surface = (uint*)pSurface;
         }
@@ -512,18 +512,20 @@ namespace VCCSharp.Modules
         {
             ExtendedText = 1;
 
-            switch (CompatMode)
+            switch (CompatibilityMode)
             {
-                case 0:     //Color Computer 3 Mode
+                //Color Computer 3 Mode
+                case CompatibilityModes.CoCo3:     
                     NewStartOfVidRam = (uint)(VerticalOffsetRegister * 8);
                     GraphicsMode = (byte)((CC3Vmode & 128) >> 7);
-                    VresIndex = (byte)((CC3Vres & 96) >> 5);
-                    CoCo3LinesPerRow[7] = LinesPerScreen;   // For 1 pixel high modes
-                    Bpp = (byte)(CC3Vres & 3);
+                    VresIndex = (CC3Vres & 96) == 0 ? Define._192Lines : Define._225Lines;
                     LinesPerRow = CoCo3LinesPerRow[CC3Vmode & 7];
+
+                    Bpp = (byte)(CC3Vres & 3);
+                    CoCo3LinesPerRow[7] = LinesPerScreen;   // For 1 pixel high modes
                     BytesPerRow = CoCo3BytesPerRow[(CC3Vres & 28) >> 2];
                     PaletteIndex = 0;
-
+                    
                     if (GraphicsMode != 0)
                     {
                         if ((CC3Vres & 1) != 0)
@@ -537,14 +539,15 @@ namespace VCCSharp.Modules
 
                     break;
 
-                case 1:
-                    //Color Computer 2 Mode
-                    CC3BorderColor = 0;   //Black for text modes
-                    BorderChange = 3;
+                //Color Computer 2 Mode
+                case CompatibilityModes.CoCo2:
                     NewStartOfVidRam = (uint)((512 * CC2Offset) + (VerticalOffsetRegister & 0xE0FF) * 8);
                     GraphicsMode = (byte)((CC2VdgPiaMode & 16) >> 4); //PIA Set on graphics clear on text
-                    VresIndex = 0;
+                    VresIndex = Define._192Lines;
                     LinesPerRow = CoCo2LinesPerRow[CC2VdgMode];
+
+                    CC3BorderColor = 0;   //Black for text modes
+                    BorderChange = 3;
 
                     byte colorSet;
                     byte tmpByte;
@@ -608,7 +611,8 @@ namespace VCCSharp.Modules
             if ((PixelsPerLine % 40) != 0)
             {
                 Stretch = (byte)((512 / PixelsPerLine) - 1);
-                HorizontalCenter = 64;
+                //TODO: Figure out this magic number
+                HorizontalCenter = 80; //64;
             }
             else
             {
@@ -629,7 +633,7 @@ namespace VCCSharp.Modules
             BorderColor = _colors.PaletteLookup32[index]; 
 
             NewStartOfVidRam = (NewStartOfVidRam & VidMask) + VidRamOffset; //Dist Offset for 2M configuration
-            MasterMode = (byte)((GraphicsMode << 7) | (CompatMode << 6) | ((Bpp & 3) << 4) | (Stretch & 15));
+            MasterMode = (byte)((GraphicsMode << 7) | ((int)CompatibilityMode << 6) | ((Bpp & 3) << 4) | (Stretch & 15));
         }
     }
 }
