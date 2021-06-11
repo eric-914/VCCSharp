@@ -18,8 +18,6 @@ This file is part of VCC (Virtual Color Computer).
 #include <windows.h>
 #include <stdio.h>
 
-#include "../resources/resource.h"
-
 static HINSTANCE g_hinstDLL = NULL;
 
 BOOL WINAPI DllMain(
