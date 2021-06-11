@@ -494,7 +494,7 @@ namespace VCCSharp.Modules
 
         public int OpenPrintFile(string filename)
         {
-            _hPrintFile = _modules.FileOperations.FileCreateFile(filename, Define.GENERIC_READ | Define.GENERIC_WRITE);
+            _hPrintFile = _kernel.CreateFile(filename, Define.GENERIC_READ | Define.GENERIC_WRITE, Define.CREATE_ALWAYS);
 
             return _hPrintFile == Define.INVALID_HANDLE_VALUE ? 0 : 1;
         }

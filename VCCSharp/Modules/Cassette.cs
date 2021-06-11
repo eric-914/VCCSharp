@@ -385,12 +385,11 @@ namespace VCCSharp.Modules
             //_writeProtect = 0;
             FileType = 0; //0=wav 1=cas
 
-            TapeHandle =
-                _modules.FileOperations.FileOpenFile(filename, Define.GENERIC_READ | Define.GENERIC_WRITE);
+            TapeHandle = _kernel.CreateFile(filename, Define.GENERIC_READ | Define.GENERIC_WRITE, Define.OPEN_ALWAYS);
 
             if (TapeHandle == Define.INVALID_HANDLE_VALUE) //Can't open read/write. try read only
             {
-                TapeHandle = _modules.FileOperations.FileOpenFile(filename, Define.GENERIC_READ);
+                TapeHandle = _kernel.CreateFile(filename, Define.GENERIC_READ, Define.OPEN_ALWAYS);
                 //_writeProtect = 1;
             }
 
@@ -469,7 +468,7 @@ namespace VCCSharp.Modules
 
                 fixed (byte* p = CasBuffer)
                 {
-                    _modules.FileOperations.FileWriteFile(TapeHandle, p, (int) (TapeOffset));
+                    _kernel.WriteFile(TapeHandle, p, TapeOffset);
                 }
             }
         }
@@ -489,22 +488,22 @@ namespace VCCSharp.Modules
                 uint fileSize = _totalSize + 40 - 8;
                 uint chunkSize = fileSize;
 
-                _modules.FileOperations.FileWriteFile(TapeHandle, "RIFF");
-                _modules.FileOperations.FileWriteFile(TapeHandle, (byte*)&fileSize, 4);
+                _kernel.WriteFile(TapeHandle, "RIFF", TapeOffset);
+                _kernel.WriteFile(TapeHandle, (byte*)&fileSize, 4);
 
-                _modules.FileOperations.FileWriteFile(TapeHandle, "WAVE");
+                _kernel.WriteFile(TapeHandle, "WAVE", TapeOffset);
 
-                _modules.FileOperations.FileWriteFile(TapeHandle, "fmt ");
-                _modules.FileOperations.FileWriteFile(TapeHandle, (byte*)(&formatSize), 4);
-                _modules.FileOperations.FileWriteFile(TapeHandle, (byte*)(&waveType), 2);
-                _modules.FileOperations.FileWriteFile(TapeHandle, (byte*)(&channels), 2);
-                _modules.FileOperations.FileWriteFile(TapeHandle, (byte*)(&bitRate), 4);
-                _modules.FileOperations.FileWriteFile(TapeHandle, (byte*)(&bytesPerSec), 4);
-                _modules.FileOperations.FileWriteFile(TapeHandle, (byte*)(&blockAlign), 2);
-                _modules.FileOperations.FileWriteFile(TapeHandle, (byte*)(&bitsPerSample), 2);
+                _kernel.WriteFile(TapeHandle, "fmt ", TapeOffset);
+                _kernel.WriteFile(TapeHandle, (byte*)(&formatSize), 4);
+                _kernel.WriteFile(TapeHandle, (byte*)(&waveType), 2);
+                _kernel.WriteFile(TapeHandle, (byte*)(&channels), 2);
+                _kernel.WriteFile(TapeHandle, (byte*)(&bitRate), 4);
+                _kernel.WriteFile(TapeHandle, (byte*)(&bytesPerSec), 4);
+                _kernel.WriteFile(TapeHandle, (byte*)(&blockAlign), 2);
+                _kernel.WriteFile(TapeHandle, (byte*)(&bitsPerSample), 2);
 
-                _modules.FileOperations.FileWriteFile(TapeHandle, "data");
-                _modules.FileOperations.FileWriteFile(TapeHandle, (byte*)(&chunkSize), 4);
+                _kernel.WriteFile(TapeHandle, "data", TapeOffset);
+                _kernel.WriteFile(TapeHandle, (byte*)(&chunkSize), 4);
             }
         }
 
@@ -512,7 +511,7 @@ namespace VCCSharp.Modules
         {
             _kernel.SetFilePointer(TapeHandle, Define.FILE_BEGIN, TapeOffset + 44);
 
-            _modules.FileOperations.FileWriteFile(TapeHandle, buffer, (int)length);
+            _kernel.WriteFile(TapeHandle, buffer, length);
 
             if (length != _bytesMoved)
             {

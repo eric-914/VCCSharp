@@ -51,5 +51,11 @@ namespace VCCSharp.Libraries
 
         [DllImport(Dll)]
         public static extern unsafe uint ReadFile(HANDLE hFile, byte* lpBuffer, ulong nNumberOfBytesToRead, ulong* lpNumberOfBytesRead, IntPtr lpOverlapped);
+
+        [DllImport(Dll)]
+        public static extern HANDLE CreateFileA(string lpFileName, uint dwDesiredAccess, uint dwShareMode, IntPtr lpSecurityAttributes, uint dwCreationDisposition, uint dwFlagsAndAttributes, HANDLE hTemplateFile);
+
+        [DllImport(Dll)]
+        public static extern unsafe uint WriteFile(HANDLE hFile, string lpBuffer, uint nNumberOfBytesToWrite, ulong* lpNumberOfBytesWritten, IntPtr lpOverlapped);
     }
 }

@@ -155,21 +155,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe long DirectSoundGetCurrentPosition(ulong* playCursor, ulong* writeCursor);
         }
 
-        public static class FileOperations
-        {
-            [DllImport(LIBRARY)]
-            public static extern HANDLE FileOpenFile(string filename, long desiredAccess);
-
-            [DllImport(LIBRARY)]
-            public static extern HANDLE FileCreateFile(string filename, long desiredAccess);
-
-            [DllImport(LIBRARY)]
-            public static extern long FileSetFilePointer(HANDLE handle, long moveMethod, long offset);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int FileWriteFile(HANDLE handle, byte* buffer, int size);
-        }
-
         public static class Joystick
         {
             [DllImport(LIBRARY)]

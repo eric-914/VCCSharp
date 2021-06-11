@@ -22,6 +22,9 @@ namespace VCCSharp.Libraries
         IntPtr GetProcAddress(HMODULE hModule, string lpProcName);
         uint FlushFileBuffers(HANDLE hFile);
         unsafe uint ReadFile(HANDLE hFile, byte* lpBuffer, ulong nNumberOfBytesToRead, ulong* lpNumberOfBytesRead);
+        HANDLE CreateFile(string filename, uint desiredAccess, uint dwCreationDisposition);
+        uint WriteFile(HANDLE hFile, string lpBuffer, uint nNumberOfBytesToWrite);
+        unsafe uint WriteFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToWrite);
     }
 
     public class Kernel : IKernel
@@ -67,5 +70,21 @@ namespace VCCSharp.Libraries
 
         public unsafe uint ReadFile(HANDLE hFile, byte* lpBuffer, ulong nNumberOfBytesToRead, ulong* lpNumberOfBytesRead)
             => KernelDll.ReadFile(hFile, lpBuffer, nNumberOfBytesToRead, lpNumberOfBytesRead, Zero);
+
+        public HANDLE CreateFile(string filename, uint desiredAccess, uint dwCreationDisposition)
+            => KernelDll.CreateFileA(filename, desiredAccess, 0, Zero, dwCreationDisposition, Define.FILE_ATTRIBUTE_NORMAL, Zero);
+
+        public unsafe uint WriteFile(HANDLE hFile, string lpBuffer, uint nNumberOfBytesToWrite)
+        {
+            ulong temp;
+
+            return KernelDll.WriteFile(hFile, lpBuffer, nNumberOfBytesToWrite, &temp, Zero);
+        }
+
+        public unsafe uint WriteFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToWrite)
+        {
+            return WriteFile(hFile, Converter.ToString(lpBuffer), nNumberOfBytesToWrite);
+        }
+
     }
 }

@@ -18,7 +18,6 @@ namespace VCCSharp.IoC
         IDirectSound DirectSound { get; }
         IEmu Emu { get; }
         IEvents Events { get; }
-        IFileOperations FileOperations { get; }
         IGraphics Graphics { get; }
         IIOBus IOBus { get; }
         IJoystick Joystick { get; }
@@ -50,7 +49,6 @@ namespace VCCSharp.IoC
         public IDirectSound DirectSound { get; private set; }
         public IEmu Emu { get; private set; }
         public IEvents Events { get; private set; }
-        public IFileOperations FileOperations { get; private set; }
         public IGraphics Graphics { get; private set; }
         public IIOBus IOBus { get; private set; }
         public IJoystick Joystick { get; private set; }
@@ -80,7 +78,6 @@ namespace VCCSharp.IoC
             DirectSound = _factory.Get<IDirectSound>();
             Emu = _factory.Get<IEmu>();
             Events = _factory.Get<IEvents>();
-            FileOperations = _factory.Get<IFileOperations>();
             Graphics = _factory.Get<IGraphics>();
             IOBus = _factory.Get<IIOBus>();
             Joystick = _factory.Get<IJoystick>();

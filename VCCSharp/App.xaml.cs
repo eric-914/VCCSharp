@@ -34,7 +34,6 @@ namespace VCCSharp
                 .Singleton<IDirectSound, DirectSound>()
                 .Singleton<IEmu, Emu>()
                 .Singleton<IEvents, Events>()
-                .Singleton<IFileOperations, FileOperations>()
                 .Singleton<IGraphics, Graphics>()
                 .Singleton<IIOBus, IOBus>()
                 .Singleton<IJoystick, Joystick>()

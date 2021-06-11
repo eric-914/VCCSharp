@@ -22,23 +22,3 @@ BOOL WINAPI DllMain(
 
   return TRUE;
 }
-
-extern "C" {
-  __declspec(dllexport) HANDLE __cdecl FileOpenFile(char* filename, long desiredAccess) {
-    return CreateFile(filename, desiredAccess, 0, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HANDLE __cdecl FileCreateFile(char* filename, long desiredAccess) {
-    return CreateFile(filename, desiredAccess, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl FileWriteFile(HANDLE handle, unsigned char* buffer, int size) {
-    unsigned long bytesMoved = 0;
-
-    return WriteFile(handle, buffer, 4, &bytesMoved, NULL);
-  }
-}
