@@ -1,10 +1,6 @@
 ﻿using VCCSharp.Libraries;
 using VCCSharp.Models;
-using HCURSOR = System.IntPtr;
-using HICON = System.IntPtr;
-using HINSTANCE = System.IntPtr;
 using HWND = System.IntPtr;
-using HBRUSH = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -15,9 +11,6 @@ namespace VCCSharp.Modules
         unsafe void SetBkColor(void* hdc, uint color);
         unsafe void SetTextColor(void* hdc, uint color);
         unsafe void TextOut(void* hdc, int x, int y, string text, int textLength);
-        HICON GetIcon(HINSTANCE resources);
-        HCURSOR GetCursor(bool fullscreen);
-        HBRUSH GetBrush();
         unsafe void GetClientRect(HWND hWnd, RECT* clientSize);
     }
 
@@ -42,21 +35,6 @@ namespace VCCSharp.Modules
         public unsafe void TextOut(void* hdc, int x, int y, string text, int textLength)
         {
             Library.GDI.GDITextOut(hdc, x, y, text, textLength);
-        }
-
-        public HICON GetIcon(HINSTANCE resources)
-        {
-            return Library.GDI.GDIGetIcon(resources);
-        }
-
-        public HCURSOR GetCursor(bool fullscreen)
-        {
-            return Library.GDI.GDIGetCursor(fullscreen ? Define.TRUE : Define.FALSE);
-        }
-
-        public HBRUSH GetBrush()
-        {
-            return Library.GDI.GDIGetBrush();
         }
 
         public unsafe void GetClientRect(HWND hWnd, RECT* clientSize)

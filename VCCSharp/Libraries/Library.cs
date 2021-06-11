@@ -199,15 +199,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe void GDITextOut(void* hdc, int x, int y, string text, int textLength);
 
             [DllImport(LIBRARY)]
-            public static extern HBRUSH GDIGetBrush();
-
-            [DllImport(LIBRARY)]
-            public static extern HCURSOR GDIGetCursor(byte fullscreen);
-
-            [DllImport(LIBRARY)]
-            public static extern HICON GDIGetIcon(HINSTANCE resources);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe void GDIGetClientRect(HWND hWnd, RECT* clientSize);
         }
 

@@ -135,24 +135,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) HBRUSH __cdecl GDIGetBrush() {
-    return (HBRUSH)GetStockObject(BLACK_BRUSH);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HCURSOR __cdecl GDIGetCursor(unsigned char fullscreen) {
-    return fullscreen ? LoadCursor(NULL, MAKEINTRESOURCE(IDC_NONE)) : LoadCursor(NULL, IDC_ARROW);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HICON __cdecl GDIGetIcon(HINSTANCE resources) {
-    return LoadIcon(resources, (LPCTSTR)IDI_COCO3);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl GDIGetClientRect(HWND hwnd, RECT* clientSize) {
     GetClientRect(hwnd, clientSize);
   }
