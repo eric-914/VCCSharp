@@ -97,7 +97,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>comctl32.lib;ddraw.lib;dinput8.lib;dsound.lib;dxguid.lib;libcmtd.lib;shlwapi.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ddraw.lib;dinput8.lib;dsound.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableUAC>false</EnableUAC>
       <LinkDLL>true</LinkDLL>
     </Link>
@@ -117,7 +117,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>comctl32.lib;ddraw.lib;dinput8.lib;dsound.lib;dxguid.lib;libcmtd.lib;shlwapi.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ddraw.lib;dinput8.lib;dsound.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableUAC>false</EnableUAC>
@@ -135,7 +135,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>comctl32.lib;ddraw.lib;dinput8.lib;dsound.lib;dxguid.lib;libcmtd.lib;shlwapi.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ddraw.lib;dinput8.lib;dsound.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableUAC>false</EnableUAC>
       <LinkDLL>true</LinkDLL>
     </Link>
@@ -155,7 +155,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>comctl32.lib;ddraw.lib;dinput8.lib;dsound.lib;dxguid.lib;libcmtd.lib;shlwapi.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ddraw.lib;dinput8.lib;dsound.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableUAC>false</EnableUAC>
@@ -163,7 +163,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="library.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
