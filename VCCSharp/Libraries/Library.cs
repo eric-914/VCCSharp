@@ -17,22 +17,19 @@ namespace VCCSharp.Libraries
         public static class DirectDraw
         {
             [DllImport(LIBRARY)]
-            public static extern int UnlockDDBackSurface();
+            public static extern unsafe DirectDrawInternalState* GetDirectDrawInternalState();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void GetDDBackSurfaceDC(IntPtr* pHdc);
+            public static extern unsafe void GetDDBackSurfaceDC(IntPtr surface, IntPtr* pHdc);
 
             [DllImport(LIBRARY)]
-            public static extern void ReleaseDDBackSurfaceDC(IntPtr hdc);
+            public static extern void ReleaseDDBackSurfaceDC(IntPtr surface, IntPtr hdc);
 
             [DllImport(LIBRARY)]
-            public static extern int DDSurfaceFlip();
+            public static extern int DDSurfaceFlip(IntPtr surface);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DDSurfaceBlt(RECT* rcDest, RECT* rcSrc);
-
-            [DllImport(LIBRARY)]
-            public static extern int HasDDBackSurface();
+            public static extern unsafe int DDSurfaceBlt(IntPtr surface, IntPtr back, RECT* rcDest, RECT* rcSrc);
 
             [DllImport(LIBRARY)]
             public static extern unsafe DDSURFACEDESC* DDSDCreate();
@@ -47,25 +44,28 @@ namespace VCCSharp.Libraries
             public static extern unsafe void* DDSDGetSurface(DDSURFACEDESC* ddsd);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int LockDDBackSurface(DDSURFACEDESC* ddsd, uint flags);
+            public static extern unsafe int LockDDBackSurface(IntPtr surface, DDSURFACEDESC* ddsd, uint flags);
 
             [DllImport(LIBRARY)]
-            public static extern int DDSurfaceSetClipper();
+            public static extern int UnlockDDBackSurface(IntPtr surface);
 
             [DllImport(LIBRARY)]
-            public static extern int DDClipperSetHWnd(HWND hWnd);
+            public static extern int DDSurfaceSetClipper(IntPtr surface, IntPtr clipper);
 
             [DllImport(LIBRARY)]
-            public static extern int DDCreateClipper();
+            public static extern int DDClipperSetHWnd(IntPtr clipper, HWND hWnd);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DDGetDisplayMode(DDSURFACEDESC* ddsd);
+            public static extern unsafe int DDCreateClipper(IntPtr dd, IntPtr* clipper);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DDCreateBackSurface(DDSURFACEDESC* ddsd);
+            public static extern unsafe int DDGetDisplayMode(IntPtr dd, DDSURFACEDESC* ddsd);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DDCreateSurface(DDSURFACEDESC* ddsd);
+            public static extern unsafe int DDCreateBackSurface(IntPtr dd, IntPtr* back, DDSURFACEDESC* ddsd);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int DDCreateSurface(IntPtr dd, IntPtr* surface, DDSURFACEDESC* ddsd);
 
             [DllImport(LIBRARY)]
             public static extern unsafe void DDSDSetdwCaps(DDSURFACEDESC* ddsd, uint value);
@@ -80,25 +80,22 @@ namespace VCCSharp.Libraries
             public static extern unsafe void DDSDSetdwFlags(DDSURFACEDESC* ddsd, uint value);
 
             [DllImport(LIBRARY)]
-            public static extern int DDSetCooperativeLevel(HWND hWnd, uint value);
+            public static extern int DDSetCooperativeLevel(IntPtr dd, HWND hWnd, uint value);
 
             [DllImport(LIBRARY)]
-            public static extern int DDCreate();
+            public static extern unsafe int DDCreate(IntPtr* dd);
 
             [DllImport(LIBRARY)]
-            public static extern int HasDDSurface();
+            public static extern int DDSurfaceIsLost(IntPtr surface);
 
             [DllImport(LIBRARY)]
-            public static extern int DDSurfaceIsLost();
+            public static extern int DDBackSurfaceIsLost(IntPtr back);
 
             [DllImport(LIBRARY)]
-            public static extern int DDBackSurfaceIsLost();
+            public static extern void DDSurfaceRestore(IntPtr surface);
 
             [DllImport(LIBRARY)]
-            public static extern void DDSurfaceRestore();
-
-            [DllImport(LIBRARY)]
-            public static extern void DDBackSurfaceRestore();
+            public static extern void DDBackSurfaceRestore(IntPtr back);
         }
 
         public static class DirectSound

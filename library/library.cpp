@@ -25,14 +25,6 @@ static char StickName[MAXSTICKS][STRLEN];
 static DIJOYSTATE2* PollStick = new DIJOYSTATE2();
 
 typedef struct {
-  //Global Variables for Direct Draw functions
-  LPDIRECTDRAW        DD;             // The DirectDraw object
-  LPDIRECTDRAWCLIPPER DDClipper;      // Clipper for primary surface
-  LPDIRECTDRAWSURFACE DDSurface;      // Primary surface
-  LPDIRECTDRAWSURFACE DDBackSurface;  // Back surface
-} DirectDrawInternalState;
-
-typedef struct {
   //PlayBack
   LPDIRECTSOUND	lpds;           // directsound interface pointer
   DSBUFFERDESC	dsbd;           // directsound description
@@ -49,183 +41,135 @@ typedef struct {
   WAVEFORMATEX pcmwf; //generic waveformat structure
 } DirectSoundState;
 
-DirectDrawInternalState* InitializeInternal(DirectDrawInternalState*);
-
-static DirectDrawInternalState* _internal = InitializeInternal(new DirectDrawInternalState());
-
 static WNDCLASSEX _wcex;
 
 static DDSURFACEDESC ddsd;
 
-extern "C" {
-  __declspec(dllexport) DirectDrawInternalState* __cdecl GetDirectDrawInternalState() {
-    return _internal;
-  }
-}
-
-DirectDrawInternalState* InitializeInternal(DirectDrawInternalState* p) {
-  p->DD = NULL;
-  p->DDClipper = NULL;
-  p->DDSurface = NULL;
-  p->DDBackSurface = NULL;
-
-  return p;
-}
-
-DirectSoundState* InitializeDirectSoundState(DirectSoundState*);
-
-static DirectSoundState* _sound = InitializeDirectSoundState(new DirectSoundState());
-
 /***********************************************************************************************/
 
 extern "C" {
-  __declspec(dllexport) DirectSoundState* __cdecl GetDirectSoundState() {
-    return _sound;
-  }
-}
-
-DirectSoundState* InitializeDirectSoundState(DirectSoundState* p) {
-  p->lpdsbuffer1 = NULL;
-  p->lpdsbuffer2 = NULL;
-
-  return p;
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl LockDDBackSurface(DDSURFACEDESC* ddsd, DWORD flags) {
-    return _internal->DDBackSurface->Lock(NULL, ddsd, flags, NULL);
+  __declspec(dllexport) HRESULT __cdecl LockDDBackSurface(LPDIRECTDRAWSURFACE surface, DDSURFACEDESC* ddsd, DWORD flags) {
+    return surface->Lock(NULL, ddsd, flags, NULL);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl UnlockDDBackSurface() {
-    return _internal->DDBackSurface->Unlock(NULL);
+  __declspec(dllexport) HRESULT __cdecl UnlockDDBackSurface(LPDIRECTDRAWSURFACE surface) {
+    return surface->Unlock(NULL);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl GetDDBackSurfaceDC(HDC* hdc) {
-    _internal->DDBackSurface->GetDC(hdc);
+  __declspec(dllexport) void __cdecl GetDDBackSurfaceDC(LPDIRECTDRAWSURFACE surface, HDC* hdc) {
+    surface->GetDC(hdc);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl ReleaseDDBackSurfaceDC(HDC hdc) {
-    _internal->DDBackSurface->ReleaseDC(hdc);
+  __declspec(dllexport) void __cdecl ReleaseDDBackSurfaceDC(LPDIRECTDRAWSURFACE surface, HDC hdc) {
+    surface->ReleaseDC(hdc);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDSurfaceFlip()
+  __declspec(dllexport) HRESULT __cdecl DDSurfaceFlip(LPDIRECTDRAWSURFACE surface)
   {
-    return _internal->DDSurface->Flip(NULL, DDFLIP_NOVSYNC | DDFLIP_DONOTWAIT); //DDFLIP_WAIT
+    return surface->Flip(NULL, DDFLIP_NOVSYNC | DDFLIP_DONOTWAIT); //DDFLIP_WAIT
   }
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasDDBackSurface()
+  __declspec(dllexport) HRESULT __cdecl DDSurfaceBlt(LPDIRECTDRAWSURFACE surface, LPDIRECTDRAWSURFACE back, RECT* rcDest, RECT* rcSrc)
   {
-    return _internal->DDBackSurface != NULL;
+    return surface->Blt(rcDest, back, rcSrc, DDBLT_WAIT, NULL); // DDBLT_WAIT
   }
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl HasDDSurface()
+  __declspec(dllexport) HRESULT __cdecl DDSurfaceSetClipper(LPDIRECTDRAWSURFACE surface, LPDIRECTDRAWCLIPPER clipper)
   {
-    return _internal->DDSurface != NULL;
+    return surface->SetClipper(clipper);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDSurfaceBlt(RECT* rcDest, RECT* rcSrc)
+  __declspec(dllexport) HRESULT __cdecl DDClipperSetHWnd(LPDIRECTDRAWCLIPPER clipper, HWND hWnd)
   {
-    return _internal->DDSurface->Blt(rcDest, _internal->DDBackSurface, rcSrc, DDBLT_WAIT, NULL); // DDBLT_WAIT
+    return clipper->SetHWnd(0, hWnd);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDSurfaceSetClipper()
+  __declspec(dllexport) HRESULT __cdecl DDCreateClipper(LPDIRECTDRAW dd, LPDIRECTDRAWCLIPPER* clipper)
   {
-    return _internal->DDSurface->SetClipper(_internal->DDClipper);
+    return dd->CreateClipper(0, clipper, NULL);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDClipperSetHWnd(HWND hWnd)
+  __declspec(dllexport) HRESULT __cdecl DDGetDisplayMode(LPDIRECTDRAW dd, DDSURFACEDESC* ddsd)
   {
-    return _internal->DDClipper->SetHWnd(0, hWnd);
+    return dd->GetDisplayMode(ddsd);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDCreateClipper()
+  __declspec(dllexport) HRESULT __cdecl DDCreateBackSurface(LPDIRECTDRAW dd, LPDIRECTDRAWSURFACE* back, DDSURFACEDESC* ddsd)
   {
-    return _internal->DD->CreateClipper(0, &(_internal->DDClipper), NULL);
+    return dd->CreateSurface(ddsd, back, NULL);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDGetDisplayMode(DDSURFACEDESC* ddsd)
+  __declspec(dllexport) HRESULT __cdecl DDCreateSurface(LPDIRECTDRAW dd, LPDIRECTDRAWSURFACE* surface, DDSURFACEDESC* ddsd)
   {
-    return _internal->DD->GetDisplayMode(ddsd);
+    return dd->CreateSurface(ddsd, surface, NULL);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDCreateBackSurface(DDSURFACEDESC* ddsd)
+  __declspec(dllexport) HRESULT __cdecl DDSetCooperativeLevel(LPDIRECTDRAW dd, HWND hWnd, DWORD value)
   {
-    return _internal->DD->CreateSurface(ddsd, &(_internal->DDBackSurface), NULL);
+    return dd->SetCooperativeLevel(hWnd, value);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDCreateSurface(DDSURFACEDESC* ddsd)
+  __declspec(dllexport) HRESULT __cdecl DDCreate(LPDIRECTDRAW* dd)
   {
-    return _internal->DD->CreateSurface(ddsd, &(_internal->DDSurface), NULL);
+    return DirectDrawCreate(NULL, dd, NULL);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDSetCooperativeLevel(HWND hWnd, DWORD value)
+  __declspec(dllexport) BOOL __cdecl DDSurfaceIsLost(LPDIRECTDRAWSURFACE surface)
   {
-    return _internal->DD->SetCooperativeLevel(hWnd, value);
+    return surface->IsLost() == DDERR_SURFACELOST;
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDCreate()
+  __declspec(dllexport) BOOL __cdecl DDBackSurfaceIsLost(LPDIRECTDRAWSURFACE back)
   {
-    return DirectDrawCreate(NULL, &(_internal->DD), NULL);
+    return back->IsLost() == DDERR_SURFACELOST;
   }
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl DDSurfaceIsLost()
+  __declspec(dllexport) void __cdecl DDSurfaceRestore(LPDIRECTDRAWSURFACE surface)
   {
-    return _internal->DDSurface->IsLost() == DDERR_SURFACELOST;
+    surface->Restore();
   }
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl DDBackSurfaceIsLost()
+  __declspec(dllexport) void __cdecl DDBackSurfaceRestore(LPDIRECTDRAWSURFACE back)
   {
-    return _internal->DDBackSurface->IsLost() == DDERR_SURFACELOST;
+    back->Restore();
   }
 }
 
-extern "C" {
-  __declspec(dllexport) void __cdecl DDSurfaceRestore()
-  {
-    _internal->DDSurface->Restore();
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DDBackSurfaceRestore()
-  {
-    _internal->DDBackSurface->Restore();
-  }
-}
+/***********************************************************************************************/
 
 extern "C" {
   __declspec(dllexport) DDSURFACEDESC* __cdecl DDSDCreate()
@@ -464,6 +408,23 @@ extern "C" {
 }
 
 /***********************************************************************************************/
+
+DirectSoundState* InitializeDirectSoundState(DirectSoundState*);
+
+static DirectSoundState* _sound = InitializeDirectSoundState(new DirectSoundState());
+
+extern "C" {
+  __declspec(dllexport) DirectSoundState* __cdecl GetDirectSoundState() {
+    return _sound;
+  }
+}
+
+DirectSoundState* InitializeDirectSoundState(DirectSoundState* p) {
+  p->lpdsbuffer1 = NULL;
+  p->lpdsbuffer2 = NULL;
+
+  return p;
+}
 
 extern "C" {
   __declspec(dllexport) void __cdecl DirectSoundStopAndRelease() {

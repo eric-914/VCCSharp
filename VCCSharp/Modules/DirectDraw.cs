@@ -5,6 +5,7 @@ using VCCSharp.Libraries;
 using VCCSharp.Models;
 using HWND = System.IntPtr;
 using Point = System.Drawing.Point;
+using static System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -47,16 +48,16 @@ namespace VCCSharp.Modules
 
         #endregion
 
+        private IntPtr _dd = Zero;      // The DirectDraw object
+        private IntPtr _clipper = Zero; // Clipper for primary surface
+        private IntPtr _surf = Zero;    // Primary surface
+        private IntPtr _back = Zero;    // Back surface
+        
         public DirectDraw(IModules modules, IUser32 user32, IGdi32 gdi32)
         {
             _modules = modules;
             _user32 = user32;
             _gdi32 = gdi32;
-        }
-
-        static DirectDraw()
-        {
-            _textX = 0;
         }
 
         public void ClearScreen()
@@ -440,7 +441,7 @@ namespace VCCSharp.Modules
         }
 
         // Checks if the memory associated with surfaces is lost and restores if necessary.
-        private static void CheckSurfaces()
+        private void CheckSurfaces()
         {
             if (HasSurface())
             {	// Check the primary surface
@@ -459,36 +460,36 @@ namespace VCCSharp.Modules
             }
         }
 
-        private static unsafe int LockSurface(DDSURFACEDESC* ddsd)
+        private unsafe int LockSurface(DDSURFACEDESC* ddsd)
         {
             long flags = Define.DDLOCK_WAIT | Define.DDLOCK_SURFACEMEMORYPTR;
 
-            return Library.DirectDraw.LockDDBackSurface(ddsd, (uint)flags);
+            return Library.DirectDraw.LockDDBackSurface(_back, ddsd, (uint)flags);
         }
 
-        private static bool HasSurface()
+        private bool HasSurface()
         {
-            return Library.DirectDraw.HasDDSurface() == Define.TRUE;
+            return _surf != Zero;
         }
 
-        private static bool SurfaceIsLost()
+        private bool SurfaceIsLost()
         {
-            return Library.DirectDraw.DDSurfaceIsLost() == Define.TRUE;
+            return Library.DirectDraw.DDSurfaceIsLost(_surf) != 0;
         }
 
-        private static bool BackSurfaceIsLost()
+        private bool BackSurfaceIsLost()
         {
-            return Library.DirectDraw.DDBackSurfaceIsLost() == Define.TRUE;
+            return Library.DirectDraw.DDBackSurfaceIsLost(_back) != 0;
         }
 
-        private static void SurfaceRestore()
+        private void SurfaceRestore()
         {
-            Library.DirectDraw.DDSurfaceRestore();
+            Library.DirectDraw.DDSurfaceRestore(_surf);
         }
 
-        private static void BackSurfaceRestore()
+        private void BackSurfaceRestore()
         {
-            Library.DirectDraw.DDBackSurfaceRestore();
+            Library.DirectDraw.DDBackSurfaceRestore(_back);
         }
 
         private static unsafe uint GetPitch(DDSURFACEDESC* ddsd)
@@ -501,14 +502,14 @@ namespace VCCSharp.Modules
             return Library.DirectDraw.DDSDHasSurface(ddsd) != 0;
         }
 
-        private static unsafe void SurfaceBlt(RECT* rcDest, RECT* rcSrc)
+        private unsafe void SurfaceBlt(RECT* rcDest, RECT* rcSrc)
         {
-            Library.DirectDraw.DDSurfaceBlt(rcDest, rcSrc);
+            Library.DirectDraw.DDSurfaceBlt(_surf, _back, rcDest, rcSrc);
         }
 
-        private static bool HasBackSurface()
+        private bool HasBackSurface()
         {
-            return Library.DirectDraw.HasDDBackSurface() != Define.FALSE;
+            return _back != Zero;
         }
 
         private static unsafe DDSURFACEDESC* CreateSurface()
@@ -516,19 +517,19 @@ namespace VCCSharp.Modules
             return Library.DirectDraw.DDSDCreate();
         }
 
-        private static unsafe void GetBackSurface(IntPtr* pHdc)
+        private unsafe void GetBackSurface(IntPtr* pHdc)
         {
-            Library.DirectDraw.GetDDBackSurfaceDC(pHdc);
+            Library.DirectDraw.GetDDBackSurfaceDC(_back, pHdc);
         }
 
-        private static void ReleaseBackSurface(IntPtr hdc)
+        private void ReleaseBackSurface(IntPtr hdc)
         {
-            Library.DirectDraw.ReleaseDDBackSurfaceDC(hdc);
+            Library.DirectDraw.ReleaseDDBackSurfaceDC(_back, hdc);
         }
 
-        private static void SurfaceFlip()
+        private void SurfaceFlip()
         {
-            Library.DirectDraw.DDSurfaceFlip();
+            Library.DirectDraw.DDSurfaceFlip(_surf);
         }
 
         private static unsafe void* GetSurface(DDSURFACEDESC* ddsd)
@@ -536,29 +537,35 @@ namespace VCCSharp.Modules
             return Library.DirectDraw.DDSDGetSurface(ddsd);
         }
 
-        private static int SetSurfaceClipper()
+        private int SetSurfaceClipper()
         {
-            return Library.DirectDraw.DDSurfaceSetClipper();
+            return Library.DirectDraw.DDSurfaceSetClipper(_surf, _clipper);
         }
 
-        private static int SetClipper(HWND hWnd)
+        private int SetClipper(HWND hWnd)
         {
-            return Library.DirectDraw.DDClipperSetHWnd(hWnd);
+            return Library.DirectDraw.DDClipperSetHWnd(_clipper, hWnd);
         }
 
-        private static int CreateClipper()
+        private unsafe int CreateClipper()
         {
-            return Library.DirectDraw.DDCreateClipper();
+            fixed (IntPtr* p = &_clipper)
+            {
+                return Library.DirectDraw.DDCreateClipper(_dd, p);
+            }
         }
 
-        private static unsafe int GetDisplayMode(DDSURFACEDESC* ddsd)
+        private unsafe int GetDisplayMode(DDSURFACEDESC* ddsd)
         {
-            return Library.DirectDraw.DDGetDisplayMode(ddsd);
+            return Library.DirectDraw.DDGetDisplayMode(_dd, ddsd);
         }
 
-        private static unsafe int CreateBackSurface(DDSURFACEDESC* ddsd)
+        private unsafe int CreateBackSurface(DDSURFACEDESC* ddsd)
         {
-            return Library.DirectDraw.DDCreateBackSurface(ddsd);
+            fixed (IntPtr* p = &_back)
+            {
+                return Library.DirectDraw.DDCreateBackSurface(_dd, p, ddsd);
+            }
         }
 
         private static unsafe void SetSurfaceCapabilities(DDSURFACEDESC* ddsd, uint value)
@@ -581,24 +588,30 @@ namespace VCCSharp.Modules
             Library.DirectDraw.DDSDSetdwFlags(ddsd, value);
         }
 
-        private static unsafe int CreateSurface(DDSURFACEDESC* ddsd)
+        private unsafe int CreateSurface(DDSURFACEDESC* ddsd)
         {
-            return Library.DirectDraw.DDCreateSurface(ddsd);
+            fixed (IntPtr* p = &_surf)
+            {
+                return Library.DirectDraw.DDCreateSurface(_dd, p, ddsd);
+            }
         }
 
-        private static int SetCooperativeLevel(HWND hWnd, uint value)
+        private int SetCooperativeLevel(HWND hWnd, uint value)
         {
-            return Library.DirectDraw.DDSetCooperativeLevel(hWnd, value);
+            return Library.DirectDraw.DDSetCooperativeLevel(_dd, hWnd, value);
         }
 
-        private static int DirectDrawCreate()
+        private unsafe int DirectDrawCreate()
         {
-            return Library.DirectDraw.DDCreate();
+            fixed (IntPtr* p = &_dd)
+            {
+                return Library.DirectDraw.DDCreate(p);
+            }
         }
 
-        private static int UnlockBackSurface()
+        private int UnlockBackSurface()
         {
-            return Library.DirectDraw.UnlockDDBackSurface();
+            return Library.DirectDraw.UnlockDDBackSurface(_back);
         }
     }
 }
