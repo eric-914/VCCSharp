@@ -5,14 +5,8 @@
     <ClCompile Include="DirectX.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="legal">
       <UniqueIdentifier>{b1110f74-34ea-4882-92c9-833443968697}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="library.rc" />
   </ItemGroup>
 </Project>
