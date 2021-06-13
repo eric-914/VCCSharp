@@ -18,21 +18,21 @@ static DDSURFACEDESC _ddsd;
 //--IDirectDraw
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDCreate(IDirectDraw** dd)
+  __declspec(dllexport) HRESULT __cdecl CreateDx(IDirectDraw** dd)
   {
     return DirectDrawCreate(NULL, dd, NULL);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDGetDisplayMode(IDirectDraw* dd, DDSURFACEDESC* ddsd)
+  __declspec(dllexport) HRESULT __cdecl GetDxDisplayMode(IDirectDraw* dd, DDSURFACEDESC* ddsd)
   {
     return dd->GetDisplayMode(ddsd);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDSetCooperativeLevel(IDirectDraw* dd, HWND hWnd, DWORD value)
+  __declspec(dllexport) HRESULT __cdecl SetDxCooperativeLevel(IDirectDraw* dd, HWND hWnd, DWORD value)
   {
     return dd->SetCooperativeLevel(hWnd, value);
   }
@@ -41,21 +41,14 @@ extern "C" {
 //--IDirectDraw->Create[...]
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDCreateSurface(IDirectDraw* dd, IDirectDrawSurface** surface, DDSURFACEDESC* ddsd)
+  __declspec(dllexport) HRESULT __cdecl CreateDxSurface(IDirectDraw* dd, IDirectDrawSurface** surface, DDSURFACEDESC* ddsd)
   {
     return dd->CreateSurface(ddsd, surface, NULL);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDCreateBackSurface(IDirectDraw* dd, IDirectDrawSurface** back, DDSURFACEDESC* ddsd)
-  {
-    return dd->CreateSurface(ddsd, back, NULL);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDCreateClipper(IDirectDraw* dd, IDirectDrawClipper** clipper)
+  __declspec(dllexport) HRESULT __cdecl CreateDxClipper(IDirectDraw* dd, IDirectDrawClipper** clipper)
   {
     return dd->CreateClipper(0, clipper, NULL);
   }
@@ -64,7 +57,7 @@ extern "C" {
 //--IDirectDrawClipper
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDClipperSetHWnd(IDirectDrawClipper* clipper, HWND hWnd)
+  __declspec(dllexport) HRESULT __cdecl SetClipperHWnd(IDirectDrawClipper* clipper, HWND hWnd)
   {
     return clipper->SetHWnd(0, hWnd);
   }
@@ -73,70 +66,54 @@ extern "C" {
 //--IDirectDrawSurface
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDSurfaceFlip(IDirectDrawSurface* surface)
+  __declspec(dllexport) HRESULT __cdecl FlipSurface(IDirectDrawSurface* surface)
   {
     return surface->Flip(NULL, DDFLIP_NOVSYNC | DDFLIP_DONOTWAIT); //DDFLIP_WAIT
   }
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl DDSurfaceIsLost(IDirectDrawSurface* surface)
+  __declspec(dllexport) BOOL __cdecl IsSurfaceLost(IDirectDrawSurface* surface)
   {
     return surface->IsLost() == DDERR_SURFACELOST;
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DDSurfaceRestore(IDirectDrawSurface* surface)
+  __declspec(dllexport) void __cdecl RestoreSurface(IDirectDrawSurface* surface)
   {
     surface->Restore();
   }
 }
 
-//--IDirectDrawSurface/Back
-
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl LockDDBackSurface(IDirectDrawSurface* back, DDSURFACEDESC* ddsd, DWORD flags) {
-    return back->Lock(NULL, ddsd, flags, NULL);
+  __declspec(dllexport) HRESULT __cdecl LockSurface(IDirectDrawSurface* surface, DDSURFACEDESC* ddsd, DWORD flags) {
+    return surface->Lock(NULL, ddsd, flags, NULL);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl UnlockDDBackSurface(IDirectDrawSurface* back) {
-    return back->Unlock(NULL);
+  __declspec(dllexport) HRESULT __cdecl UnlockSurface(IDirectDrawSurface* surface) {
+    return surface->Unlock(NULL);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl GetDDBackSurfaceDC(IDirectDrawSurface* back, HDC* hdc) {
-    back->GetDC(hdc);
+  __declspec(dllexport) void __cdecl GetSurfaceDC(IDirectDrawSurface* surface, HDC* hdc) {
+    surface->GetDC(hdc);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl ReleaseDDBackSurfaceDC(IDirectDrawSurface* back, HDC hdc) {
-    back->ReleaseDC(hdc);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl DDBackSurfaceIsLost(IDirectDrawSurface* back)
-  {
-    return back->IsLost() == DDERR_SURFACELOST;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DDBackSurfaceRestore(IDirectDrawSurface* back)
-  {
-    back->Restore();
+  __declspec(dllexport) void __cdecl ReleaseSurfaceDC(IDirectDrawSurface* surface, HDC hdc) {
+    surface->ReleaseDC(hdc);
   }
 }
 
 //--IDirectDrawSurface/IDirectDraw[Back]Surface
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDSurfaceBlt(IDirectDrawSurface* surface, IDirectDrawSurface* back, RECT* rcDest, RECT* rcSrc)
+  __declspec(dllexport) HRESULT __cdecl SurfaceBlt(IDirectDrawSurface* surface, IDirectDrawSurface* back, RECT* rcDest, RECT* rcSrc)
   {
     return surface->Blt(rcDest, back, rcSrc, DDBLT_WAIT, NULL);
   }
