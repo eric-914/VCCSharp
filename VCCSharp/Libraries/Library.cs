@@ -22,21 +22,21 @@ namespace VCCSharp.Libraries
             public static extern unsafe int CreateDx(IntPtr* dd);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int GetDxDisplayMode(IntPtr dd, DDSURFACEDESC* ddsd);
+            public static extern unsafe int GetDxDisplayMode(IDirectDraw dd, DDSURFACEDESC* ddsd);
 
             [DllImport(LIBRARY)]
-            public static extern int SetDxCooperativeLevel(IntPtr dd, HWND hWnd, uint value);
+            public static extern int SetDxCooperativeLevel(IDirectDraw dd, HWND hWnd, uint value);
 
             #endregion
 
             #region IDirectDraw->Create[...]
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int CreateDxSurface(IntPtr dd, IntPtr* surface, DDSURFACEDESC* ddsd);
+            public static extern unsafe int CreateDxSurface(IDirectDraw dd, IntPtr* surface, DDSURFACEDESC* ddsd);
 
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int CreateDxClipper(IntPtr dd, IntPtr* clipper);
+            public static extern unsafe int CreateDxClipper(IDirectDraw dd, IntPtr* clipper);
 
             #endregion
 

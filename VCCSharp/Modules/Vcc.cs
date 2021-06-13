@@ -51,7 +51,7 @@ namespace VCCSharp.Modules
             //As it holds the Secondary screen buffer open while running
             if (RunState == (byte)EmuRunStates.Waiting)
             {
-                _modules.DirectDraw.FullScreenToggle();
+                _modules.Draw.FullScreenToggle();
 
                 RunState = (byte)EmuRunStates.Running;
             }
@@ -59,7 +59,7 @@ namespace VCCSharp.Modules
 
         public void CreatePrimaryWindow()
         {
-            if (!_modules.DirectDraw.CreateDirectDrawWindow())
+            if (!_modules.Draw.CreateDirectDrawWindow())
             {
                 MessageBox.Show("Can't create primary window", "Error");
 
@@ -126,17 +126,17 @@ namespace VCCSharp.Modules
                 {(byte) ResetPendingStates.Hard, () =>
                 {
                     _modules.Config.SynchSystemWithConfig();
-                    _modules.DirectDraw.DoCls();
+                    _modules.Draw.DoCls();
                     _modules.Emu.HardReset();
 
                 }},
 
-                {(byte) ResetPendingStates.Cls, () => { _modules.DirectDraw.DoCls();}},
+                {(byte) ResetPendingStates.Cls, () => { _modules.Draw.DoCls();}},
 
                 {(byte) ResetPendingStates.ClsSynch, () =>
                 {
                     _modules.Config.SynchSystemWithConfig();
-                    _modules.DirectDraw.DoCls();
+                    _modules.Draw.DoCls();
                 }}
             };
 
@@ -152,7 +152,7 @@ namespace VCCSharp.Modules
                 }
                 else
                 {
-                    fps += _modules.DirectDraw.Static();
+                    fps += _modules.Draw.Static();
                 }
             }
 

@@ -30,7 +30,7 @@ namespace VCCSharp
                 .Singleton<IClipboard, Modules.Clipboard>()
                 .Singleton<ICoCo, CoCo>()
                 .Singleton<IConfig, Config>()
-                .Singleton<IDirectDraw, DirectDraw>()
+                .Singleton<IDraw, Draw>()
                 .Singleton<IDirectSound, DirectSound>()
                 .Singleton<IEmu, Emu>()
                 .Singleton<IEvents, Events>()

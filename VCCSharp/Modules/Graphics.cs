@@ -215,7 +215,7 @@ namespace VCCSharp.Modules
             _modules.Emu.ScanLines = lines != Define.FALSE;
             _modules.Emu.ResetPending = (byte)ResetPendingStates.Cls;
 
-            _modules.DirectDraw.ClearScreen();
+            _modules.Draw.ClearScreen();
 
             BorderChange = 3;
         }

@@ -59,7 +59,7 @@ namespace VCCSharp
             //Loads the default config file Vcc.ini from the exec directory
             _modules.Config.InitConfig(ref cmdLineArgs);
 
-            _modules.DirectDraw.ClearScreen();
+            _modules.Draw.ClearScreen();
 
             _modules.Emu.ResetPending = (byte)ResetPendingStates.Cls;
 

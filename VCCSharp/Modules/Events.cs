@@ -98,13 +98,13 @@ namespace VCCSharp.Modules
             }
             else
             {
-                _modules.DirectDraw.SetStatusBarText("");
+                _modules.Draw.SetStatusBarText("");
             }
         }
 
         public void ToggleInfoBand() //F10
         {
-            _modules.DirectDraw.InfoBand = !_modules.DirectDraw.InfoBand;
+            _modules.Draw.InfoBand = !_modules.Draw.InfoBand;
 
             _modules.Graphics.InvalidateBorder();
         }

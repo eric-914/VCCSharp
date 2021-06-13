@@ -155,7 +155,7 @@ namespace VCCSharp.Modules
             _modules.Emu.FrameSkip = ConfigModel.FrameSkip;
 
             _modules.Graphics.SetPaletteType();
-            _modules.DirectDraw.SetAspect(ConfigModel.ForceAspect);
+            _modules.Draw.SetAspect(ConfigModel.ForceAspect);
             _modules.Graphics.SetScanLines(ConfigModel.ScanLines);
             _modules.Emu.SetCpuMultiplier(ConfigModel.CPUMultiplier);
 

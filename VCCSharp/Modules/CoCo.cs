@@ -138,7 +138,7 @@ namespace VCCSharp.Modules
 
             if (!skipRender)
             {
-                if (_modules.DirectDraw.LockScreen())
+                if (_modules.Draw.LockScreen())
                 {
                     return false; //--Failed to lock screen for rendering
                 }
@@ -185,7 +185,7 @@ namespace VCCSharp.Modules
 
             if (!skipRender)
             {
-                _modules.DirectDraw.UnlockScreen();
+                _modules.Draw.UnlockScreen();
                 _modules.Graphics.SetBorderChange();
             }
 

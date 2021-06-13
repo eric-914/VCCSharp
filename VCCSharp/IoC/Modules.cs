@@ -14,7 +14,7 @@ namespace VCCSharp.IoC
         IClipboard Clipboard { get; }
         ICoCo CoCo { get; }
         IConfig Config { get; }
-        IDirectDraw DirectDraw { get; }
+        IDraw Draw { get; }
         IDirectSound DirectSound { get; }
         IEmu Emu { get; }
         IEvents Events { get; }
@@ -45,7 +45,7 @@ namespace VCCSharp.IoC
         public IClipboard Clipboard { get; private set; }
         public ICoCo CoCo { get; private set; }
         public IConfig Config { get; private set; }
-        public IDirectDraw DirectDraw { get; private set; }
+        public IDraw Draw { get; private set; }
         public IDirectSound DirectSound { get; private set; }
         public IEmu Emu { get; private set; }
         public IEvents Events { get; private set; }
@@ -74,7 +74,7 @@ namespace VCCSharp.IoC
             Clipboard = _factory.Get<IClipboard>();
             CoCo = _factory.Get<ICoCo>();
             Config = _factory.Get<IConfig>();
-            DirectDraw = _factory.Get<IDirectDraw>();
+            Draw = _factory.Get<IDraw>();
             DirectSound = _factory.Get<IDirectSound>();
             Emu = _factory.Get<IEmu>();
             Events = _factory.Get<IEvents>();

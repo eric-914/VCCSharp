@@ -7,11 +7,10 @@ using VCCSharp.Models;
 using VCCSharp.Models.DirectX;
 using HWND = System.IntPtr;
 using Point = System.Drawing.Point;
-using static System.IntPtr;
 
 namespace VCCSharp.Modules
 {
-    public interface IDirectDraw
+    public interface IDraw
     {
         void ClearScreen();
         bool CreateDirectDrawWindow();
@@ -27,7 +26,7 @@ namespace VCCSharp.Modules
         bool InfoBand { get; set; }
     }
 
-    public class DirectDraw : IDirectDraw
+    public class Draw : IDraw
     {
         #region Properties
 
@@ -50,12 +49,12 @@ namespace VCCSharp.Modules
 
         #endregion
 
-        private IntPtr _dd = Zero;      // The DirectDraw object
+        private IDirectDraw _dd;      // The DirectDraw object
         private IDirectDrawClipper _clipper; // Clipper for primary surface
         private IDirectDrawSurface _surface;    // Primary surface
         private IDirectDrawSurface _back;    // Back surface
 
-        public DirectDraw(IModules modules, IUser32 user32, IGdi32 gdi32)
+        public Draw(IModules modules, IUser32 user32, IGdi32 gdi32)
         {
             _modules = modules;
             _user32 = user32;
@@ -378,12 +377,12 @@ namespace VCCSharp.Modules
             _user32.ShowWindow(_modules.Emu.WindowHandle, Define.SW_SHOWDEFAULT);
             _user32.UpdateWindow(_modules.Emu.WindowHandle);
 
-            long hr = DirectDrawCreate();
+            _dd = DirectDrawCreate();
 
-            if (hr < 0) return false;
+            if (_dd == null) return false;
 
             // Initialize the DirectDraw object
-            hr = SetCooperativeLevel(_modules.Emu.WindowHandle, Define.DDSCL_NORMAL); // Set to use windowed mode
+            int hr = SetCooperativeLevel(_modules.Emu.WindowHandle, Define.DDSCL_NORMAL); // Set to use windowed mode
 
             if (hr < 0) return false;
 
@@ -570,10 +569,6 @@ namespace VCCSharp.Modules
             var hr = Library.DirectDraw.CreateDxSurface(_dd, &surface, ddsd);
 
             return hr < 0 ? null : (IDirectDrawSurface)Marshal.GetObjectForIUnknown(surface);
-            //fixed (IntPtr* p = &_back)
-            //{
-            //    return Library.DirectDraw.CreateDxSurface(_dd, p, ddsd);
-            //}
         }
 
         private static unsafe void SetSurfaceCapabilities(DDSURFACEDESC* ddsd, uint value)
@@ -603,11 +598,6 @@ namespace VCCSharp.Modules
             var hr = Library.DirectDraw.CreateDxSurface(_dd, &surface, ddsd);
 
             return hr < 0 ? null : (IDirectDrawSurface)Marshal.GetObjectForIUnknown(surface);
-
-            //fixed (IntPtr* p = &_surface)
-            //{
-            //    return Library.DirectDraw.CreateDxSurface(_dd, p, ddsd);
-            //}
         }
 
         private int SetCooperativeLevel(HWND hWnd, uint value)
@@ -615,12 +605,13 @@ namespace VCCSharp.Modules
             return Library.DirectDraw.SetDxCooperativeLevel(_dd, hWnd, value);
         }
 
-        private unsafe int DirectDrawCreate()
+        private static unsafe IDirectDraw DirectDrawCreate()
         {
-            fixed (IntPtr* p = &_dd)
-            {
-                return Library.DirectDraw.CreateDx(p);
-            }
+            var dd = new IntPtr();
+
+            var hr = Library.DirectDraw.CreateDx(&dd);
+
+            return hr < 0 ? null : (IDirectDraw)Marshal.GetObjectForIUnknown(dd);
         }
 
         private int UnlockBackSurface()
