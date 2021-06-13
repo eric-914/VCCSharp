@@ -50,39 +50,39 @@ namespace VCCSharp.Libraries
             #region IDirectDrawSurface
 
             [DllImport(LIBRARY)]
-            public static extern int FlipSurface(IntPtr surface);
+            public static extern int FlipSurface(IDirectDrawSurface surface);
 
             [DllImport(LIBRARY)]
-            public static extern int IsSurfaceLost(IntPtr surface);
+            public static extern int IsSurfaceLost(IDirectDrawSurface surface);
 
             [DllImport(LIBRARY)]
-            public static extern void RestoreSurface(IntPtr surface);
+            public static extern void RestoreSurface(IDirectDrawSurface surface);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int LockSurface(IntPtr surface, DDSURFACEDESC* ddsd, uint flags);
+            public static extern unsafe int LockSurface(IDirectDrawSurface surface, DDSURFACEDESC* ddsd, uint flags);
 
             [DllImport(LIBRARY)]
-            public static extern int UnlockSurface(IntPtr surface);
+            public static extern int UnlockSurface(IDirectDrawSurface surface);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void GetSurfaceDC(IntPtr surface, IntPtr* pHdc);
+            public static extern unsafe void GetSurfaceDC(IDirectDrawSurface surface, IntPtr* pHdc);
 
             [DllImport(LIBRARY)]
-            public static extern void ReleaseSurfaceDC(IntPtr surface, IntPtr hdc);
+            public static extern void ReleaseSurfaceDC(IDirectDrawSurface surface, IntPtr hdc);
             
             #endregion
 
             #region IDirectDrawSurface/IDirectDraw[Back]Surface
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int SurfaceBlt(IntPtr surface, IntPtr back, RECT* rcDest, RECT* rcSrc);
+            public static extern unsafe int SurfaceBlt(IDirectDrawSurface surface, IDirectDrawSurface back, RECT* rcDest, RECT* rcSrc);
 
             #endregion
 
             #region IDirectDrawSurface/IDirectDrawClipper
 
             [DllImport(LIBRARY)]
-            public static extern int DDSurfaceSetClipper(IntPtr surface, IDirectDrawClipper clipper);
+            public static extern int DDSurfaceSetClipper(IDirectDrawSurface surface, IDirectDrawClipper clipper);
 
             #endregion
 
