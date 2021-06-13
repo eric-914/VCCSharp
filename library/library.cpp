@@ -73,9 +73,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl IsSurfaceLost(IDirectDrawSurface* surface)
+  __declspec(dllexport) HRESULT __cdecl IsSurfaceLost(IDirectDrawSurface* surface)
   {
-    return surface->IsLost() == DDERR_SURFACELOST;
+    return surface->IsLost();
   }
 }
 

@@ -53,7 +53,7 @@ namespace VCCSharp.Libraries
             public static extern int FlipSurface(IDirectDrawSurface surface);
 
             [DllImport(LIBRARY)]
-            public static extern int IsSurfaceLost(IDirectDrawSurface surface);
+            public static extern long IsSurfaceLost(IDirectDrawSurface surface);
 
             [DllImport(LIBRARY)]
             public static extern void RestoreSurface(IDirectDrawSurface surface);
