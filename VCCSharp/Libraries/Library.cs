@@ -82,7 +82,7 @@ namespace VCCSharp.Libraries
             #region IDirectDrawSurface/IDirectDrawClipper
 
             [DllImport(LIBRARY)]
-            public static extern int DDSurfaceSetClipper(IDirectDrawSurface surface, IDirectDrawClipper clipper);
+            public static extern int SetSurfaceClipper(IDirectDrawSurface surface, IDirectDrawClipper clipper);
 
             #endregion
 

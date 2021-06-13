@@ -122,7 +122,7 @@ extern "C" {
 //--IDirectDrawSurface/IDirectDrawClipper
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDSurfaceSetClipper(IDirectDrawSurface* surface, IDirectDrawClipper* clipper)
+  __declspec(dllexport) HRESULT __cdecl SetSurfaceClipper(IDirectDrawSurface* surface, IDirectDrawClipper* clipper)
   {
     return surface->SetClipper(clipper);
   }

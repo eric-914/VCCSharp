@@ -541,7 +541,7 @@ namespace VCCSharp.Modules
 
         private int SetSurfaceClipper()
         {
-            return Library.DirectDraw.DDSurfaceSetClipper(_surface, _clipper);
+            return Library.DirectDraw.SetSurfaceClipper(_surface, _clipper);
         }
 
         private int SetClipper(HWND hWnd)
