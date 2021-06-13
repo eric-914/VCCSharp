@@ -138,7 +138,7 @@ namespace VCCSharp.Modules
 
             if (!skipRender)
             {
-                if (_modules.Draw.LockScreen())
+                if (!_modules.Draw.LockScreen())
                 {
                     return false; //--Failed to lock screen for rendering
                 }

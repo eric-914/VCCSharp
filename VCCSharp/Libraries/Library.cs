@@ -20,70 +20,7 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe int CreateDx(IntPtr* dd);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int GetDxDisplayMode(IDirectDraw dd, DDSURFACEDESC* ddsd);
-
-            [DllImport(LIBRARY)]
-            public static extern int SetDxCooperativeLevel(IDirectDraw dd, HWND hWnd, uint value);
-
-            #endregion
-
-            #region IDirectDraw->Create[...]
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int CreateDxSurface(IDirectDraw dd, IntPtr* surface, DDSURFACEDESC* ddsd);
-
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int CreateDxClipper(IDirectDraw dd, IntPtr* clipper);
-
-            #endregion
-
-            #region IDirectDrawClipper
-
-            [DllImport(LIBRARY)]
-            public static extern int SetClipperHWnd(IDirectDrawClipper clipper, HWND hWnd);
-
-            #endregion
-
-            #region IDirectDrawSurface
-
-            [DllImport(LIBRARY)]
-            public static extern int FlipSurface(IDirectDrawSurface surface);
-
-            [DllImport(LIBRARY)]
-            public static extern long IsSurfaceLost(IDirectDrawSurface surface);
-
-            [DllImport(LIBRARY)]
-            public static extern void RestoreSurface(IDirectDrawSurface surface);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int LockSurface(IDirectDrawSurface surface, DDSURFACEDESC* ddsd, uint flags);
-
-            [DllImport(LIBRARY)]
-            public static extern int UnlockSurface(IDirectDrawSurface surface);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void GetSurfaceDC(IDirectDrawSurface surface, IntPtr* pHdc);
-
-            [DllImport(LIBRARY)]
-            public static extern void ReleaseSurfaceDC(IDirectDrawSurface surface, IntPtr hdc);
             
-            #endregion
-
-            #region IDirectDrawSurface/IDirectDraw[Back]Surface
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int SurfaceBlt(IDirectDrawSurface surface, IDirectDrawSurface back, RECT* rcDest, RECT* rcSrc);
-
-            #endregion
-
-            #region IDirectDrawSurface/IDirectDrawClipper
-
-            [DllImport(LIBRARY)]
-            public static extern int SetSurfaceClipper(IDirectDrawSurface surface, IDirectDrawClipper clipper);
-
             #endregion
 
             #region DDSURFACEDESC

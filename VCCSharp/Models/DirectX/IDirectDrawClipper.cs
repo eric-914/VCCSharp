@@ -1,10 +1,17 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace VCCSharp.Models.DirectX
 {
-    [ComImport]
-    [Guid("6c14db85-a733-11ce-a521-0020af0be560")]
+    [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [Guid(DxGuid.DirectDrawClipper)]
     public interface IDirectDrawClipper
     {
+        long GetClipList();
+        long GetHWnd();
+        long Initialize();
+        long IsClipListChanged();
+        long SetClipList();
+        long SetHWnd(uint zero, IntPtr hWnd);
     }
 }

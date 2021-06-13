@@ -1,11 +1,44 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace VCCSharp.Models.DirectX
 {
-    [ComImport]
-    [Guid("6c14db81-a733-11ce-a521-0020af0be560")]
+    [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [Guid(DxGuid.DirectDrawSurface)]
     public interface IDirectDrawSurface
     {
+        long AddAttachedSurface();
+        long AddOverlayDirtyRect();
+        unsafe long Blt(RECT* rcDest, IDirectDrawSurface back, RECT* rcSrc, uint flags, IntPtr pFlags);
+        long BltBatch();
+        long BltFast();
+        long DeleteAttachedSurface();
+        long EnumAttachedSurfaces();
+        long EnumOverlayZOrders();
+        long Flip(IntPtr pUnknown, uint ddFlip);
+        long GetAttachedSurface();
+        long GetBltStatus();
+        long GetCaps();
+        long GetClipper();
+        long GetColorKey();
+        unsafe long GetDC(IntPtr* pHdc);
+        long GetFlipStatus();
+        long GetOverlayPosition();
+        long GetPalette();
+        long GetPixelFormat();
+        long GetSurfaceDesc();
+        long Initialize();
         long IsLost();
+        unsafe long Lock(IntPtr rect, DDSURFACEDESC* ddsd, uint flags, IntPtr handle);
+        long ReleaseDC(IntPtr hdc);
+        long Restore();
+        long SetClipper(IDirectDrawClipper clipper);
+        long SetColorKey();
+        long SetOverlayPosition();
+        long SetPalette();
+        long Unlock(IntPtr surface);
+        long UpdateOverlay();
+        long UpdateOverlayDisplay();
+        long UpdateOverlayZOrder();
     }
 }
