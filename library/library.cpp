@@ -10,162 +10,144 @@ Has following depedency libraries:
 #include <dinput.h>
 #include <dsound.h>
 
-#include <windows.h>
-
-#define MAXSTICKS 10
-#define STRLEN 64
-
-static LPDIRECTINPUT8 di;
-static LPDIRECTINPUTDEVICE8 Joysticks[MAXSTICKS];
-
-static unsigned char CurrentStick;
-
-static char StickName[MAXSTICKS][STRLEN];
-
-static DIJOYSTATE2* PollStick = new DIJOYSTATE2();
-
-typedef struct {
-  //PlayBack
-  LPDIRECTSOUND	lpds;           // directsound interface pointer
-  DSBUFFERDESC	dsbd;           // directsound description
-  DSCAPS			  dscaps;         // directsound caps
-  DSBCAPS			  dsbcaps;        // directsound buffer caps
-
-  //Record
-  LPDIRECTSOUNDCAPTURE8	lpdsin;
-  DSCBUFFERDESC			    dsbdin; // directsound description
-
-  LPDIRECTSOUNDBUFFER	lpdsbuffer1;			    //the sound buffers
-  LPDIRECTSOUNDCAPTUREBUFFER	lpdsbuffer2;	//the sound buffers for capture
-
-  WAVEFORMATEX pcmwf; //generic waveformat structure
-} DirectSoundState;
-
-static WNDCLASSEX _wcex;
-
-static DDSURFACEDESC ddsd;
+static LPDIRECTINPUT8 _di;
+static DDSURFACEDESC _ddsd;
 
 /***********************************************************************************************/
 
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl LockDDBackSurface(LPDIRECTDRAWSURFACE surface, DDSURFACEDESC* ddsd, DWORD flags) {
-    return surface->Lock(NULL, ddsd, flags, NULL);
-  }
-}
+//--IDirectDraw
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl UnlockDDBackSurface(LPDIRECTDRAWSURFACE surface) {
-    return surface->Unlock(NULL);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl GetDDBackSurfaceDC(LPDIRECTDRAWSURFACE surface, HDC* hdc) {
-    surface->GetDC(hdc);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl ReleaseDDBackSurfaceDC(LPDIRECTDRAWSURFACE surface, HDC hdc) {
-    surface->ReleaseDC(hdc);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDSurfaceFlip(LPDIRECTDRAWSURFACE surface)
-  {
-    return surface->Flip(NULL, DDFLIP_NOVSYNC | DDFLIP_DONOTWAIT); //DDFLIP_WAIT
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDSurfaceBlt(LPDIRECTDRAWSURFACE surface, LPDIRECTDRAWSURFACE back, RECT* rcDest, RECT* rcSrc)
-  {
-    return surface->Blt(rcDest, back, rcSrc, DDBLT_WAIT, NULL); // DDBLT_WAIT
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDSurfaceSetClipper(LPDIRECTDRAWSURFACE surface, LPDIRECTDRAWCLIPPER clipper)
-  {
-    return surface->SetClipper(clipper);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDClipperSetHWnd(LPDIRECTDRAWCLIPPER clipper, HWND hWnd)
-  {
-    return clipper->SetHWnd(0, hWnd);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDCreateClipper(LPDIRECTDRAW dd, LPDIRECTDRAWCLIPPER* clipper)
-  {
-    return dd->CreateClipper(0, clipper, NULL);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDGetDisplayMode(LPDIRECTDRAW dd, DDSURFACEDESC* ddsd)
-  {
-    return dd->GetDisplayMode(ddsd);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDCreateBackSurface(LPDIRECTDRAW dd, LPDIRECTDRAWSURFACE* back, DDSURFACEDESC* ddsd)
-  {
-    return dd->CreateSurface(ddsd, back, NULL);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDCreateSurface(LPDIRECTDRAW dd, LPDIRECTDRAWSURFACE* surface, DDSURFACEDESC* ddsd)
-  {
-    return dd->CreateSurface(ddsd, surface, NULL);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDSetCooperativeLevel(LPDIRECTDRAW dd, HWND hWnd, DWORD value)
-  {
-    return dd->SetCooperativeLevel(hWnd, value);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DDCreate(LPDIRECTDRAW* dd)
+  __declspec(dllexport) HRESULT __cdecl DDCreate(IDirectDraw** dd)
   {
     return DirectDrawCreate(NULL, dd, NULL);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl DDSurfaceIsLost(LPDIRECTDRAWSURFACE surface)
+  __declspec(dllexport) HRESULT __cdecl DDGetDisplayMode(IDirectDraw* dd, DDSURFACEDESC* ddsd)
+  {
+    return dd->GetDisplayMode(ddsd);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DDSetCooperativeLevel(IDirectDraw* dd, HWND hWnd, DWORD value)
+  {
+    return dd->SetCooperativeLevel(hWnd, value);
+  }
+}
+
+//--IDirectDraw->Create[...]
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DDCreateSurface(IDirectDraw* dd, IDirectDrawSurface** surface, DDSURFACEDESC* ddsd)
+  {
+    return dd->CreateSurface(ddsd, surface, NULL);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DDCreateBackSurface(IDirectDraw* dd, IDirectDrawSurface** back, DDSURFACEDESC* ddsd)
+  {
+    return dd->CreateSurface(ddsd, back, NULL);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DDCreateClipper(IDirectDraw* dd, IDirectDrawClipper** clipper)
+  {
+    return dd->CreateClipper(0, clipper, NULL);
+  }
+}
+
+//--IDirectDrawClipper
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DDClipperSetHWnd(IDirectDrawClipper* clipper, HWND hWnd)
+  {
+    return clipper->SetHWnd(0, hWnd);
+  }
+}
+
+//--IDirectDrawSurface
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DDSurfaceFlip(IDirectDrawSurface* surface)
+  {
+    return surface->Flip(NULL, DDFLIP_NOVSYNC | DDFLIP_DONOTWAIT); //DDFLIP_WAIT
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl DDSurfaceIsLost(IDirectDrawSurface* surface)
   {
     return surface->IsLost() == DDERR_SURFACELOST;
   }
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl DDBackSurfaceIsLost(LPDIRECTDRAWSURFACE back)
+  __declspec(dllexport) void __cdecl DDSurfaceRestore(IDirectDrawSurface* surface)
+  {
+    surface->Restore();
+  }
+}
+
+//--IDirectDrawSurface/Back
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl LockDDBackSurface(IDirectDrawSurface* back, DDSURFACEDESC* ddsd, DWORD flags) {
+    return back->Lock(NULL, ddsd, flags, NULL);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl UnlockDDBackSurface(IDirectDrawSurface* back) {
+    return back->Unlock(NULL);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl GetDDBackSurfaceDC(IDirectDrawSurface* back, HDC* hdc) {
+    back->GetDC(hdc);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl ReleaseDDBackSurfaceDC(IDirectDrawSurface* back, HDC hdc) {
+    back->ReleaseDC(hdc);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl DDBackSurfaceIsLost(IDirectDrawSurface* back)
   {
     return back->IsLost() == DDERR_SURFACELOST;
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DDSurfaceRestore(LPDIRECTDRAWSURFACE surface)
+  __declspec(dllexport) void __cdecl DDBackSurfaceRestore(IDirectDrawSurface* back)
   {
-    surface->Restore();
+    back->Restore();
   }
 }
 
+//--IDirectDrawSurface/IDirectDraw[Back]Surface
+
 extern "C" {
-  __declspec(dllexport) void __cdecl DDBackSurfaceRestore(LPDIRECTDRAWSURFACE back)
+  __declspec(dllexport) HRESULT __cdecl DDSurfaceBlt(IDirectDrawSurface* surface, IDirectDrawSurface* back, RECT* rcDest, RECT* rcSrc)
   {
-    back->Restore();
+    return surface->Blt(rcDest, back, rcSrc, DDBLT_WAIT, NULL);
+  }
+}
+
+//--IDirectDrawSurface/IDirectDrawClipper
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DDSurfaceSetClipper(IDirectDrawSurface* surface, IDirectDrawClipper* clipper)
+  {
+    return surface->SetClipper(clipper);
   }
 }
 
@@ -174,12 +156,12 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) DDSURFACEDESC* __cdecl DDSDCreate()
   {
-    ddsd = DDSURFACEDESC();
+    _ddsd = DDSURFACEDESC();
 
-    memset(&ddsd, 0, sizeof(ddsd));	// Clear all members of the structure to 0
-    ddsd.dwSize = sizeof(ddsd);		  // The first parameter of the structure must contain the size of the structure
+    memset(&_ddsd, 0, sizeof(_ddsd));	// Clear all members of the structure to 0
+    _ddsd.dwSize = sizeof(_ddsd);		  // The first parameter of the structure must contain the size of the structure
 
-    return &ddsd;
+    return &_ddsd;
   }
 }
 
@@ -234,15 +216,23 @@ extern "C" {
 
 /***********************************************************************************************/
 
-BOOL HasJoystick(unsigned char stickNumber) {
-  return Joysticks[stickNumber] != NULL;
-}
+#define MAXSTICKS 10
+#define STRLEN 64
 
+static DIJOYSTATE2* _joyState = new DIJOYSTATE2();
+static LPDIRECTINPUTDEVICE8 _joysticks[MAXSTICKS];
+
+static char _stickName[MAXSTICKS][STRLEN];
+static unsigned char _currentStick;
+
+BOOL HasJoystick(unsigned char stickNumber) {
+  return _joysticks[stickNumber] != NULL;
+}
 
 extern "C" {
   __declspec(dllexport) DIJOYSTATE2* __cdecl GetPollStick()
   {
-    return PollStick;
+    return _joyState;
   }
 }
 
@@ -251,18 +241,18 @@ extern "C" {
   {
     HRESULT hr;
 
-    if (Joysticks[stickNumber] == NULL) {
+    if (_joysticks[stickNumber] == NULL) {
       return (S_OK);
     }
 
-    hr = Joysticks[stickNumber]->Poll();
+    hr = _joysticks[stickNumber]->Poll();
 
     if (FAILED(hr))
     {
-      hr = Joysticks[stickNumber]->Acquire();
+      hr = _joysticks[stickNumber]->Acquire();
 
       while (hr == DIERR_INPUTLOST) {
-        hr = Joysticks[stickNumber]->Acquire();
+        hr = _joysticks[stickNumber]->Acquire();
       }
 
       if (hr == DIERR_INVALIDPARAM) {
@@ -274,7 +264,7 @@ extern "C" {
       }
     }
 
-    if (FAILED(hr = Joysticks[stickNumber]->GetDeviceState(sizeof(DIJOYSTATE2), js))) {
+    if (FAILED(hr = _joysticks[stickNumber]->GetDeviceState(sizeof(DIJOYSTATE2), js))) {
       return(hr);
     }
 
@@ -283,7 +273,7 @@ extern "C" {
 }
 
 void SetStickName(unsigned char joystickIndex, const char* joystickName) {
-  strncpy(StickName[joystickIndex], joystickName, STRLEN);
+  strncpy(_stickName[joystickIndex], joystickName, STRLEN);
 }
 
 extern "C" {
@@ -293,7 +283,7 @@ extern "C" {
     static unsigned char joystickIndex = 0;
 
     LPDIENUMDEVICESCALLBACKA callback = [](const DIDEVICEINSTANCE* p, VOID* v) {
-      HRESULT hr = di->CreateDevice(p->guidInstance, &Joysticks[joystickIndex], NULL);
+      HRESULT hr = _di->CreateDevice(p->guidInstance, &_joysticks[joystickIndex], NULL);
 
       SetStickName(joystickIndex, p->tszProductName);
       joystickIndex++;
@@ -301,11 +291,11 @@ extern "C" {
       return (BOOL)(joystickIndex < MAXSTICKS);
     };
 
-    if (FAILED(hr = DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, IID_IDirectInput8, (VOID**)&di, NULL))) {
+    if (FAILED(hr = DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, IID_IDirectInput8, (VOID**)&_di, NULL))) {
       return(0);
     }
 
-    if (FAILED(hr = di->EnumDevices(DI8DEVCLASS_GAMECTRL, callback, NULL, DIEDFL_ATTACHEDONLY))) {
+    if (FAILED(hr = _di->EnumDevices(DI8DEVCLASS_GAMECTRL, callback, NULL, DIEDFL_ATTACHEDONLY))) {
       return(0);
     }
 
@@ -328,24 +318,24 @@ extern "C" {
       d.lMin = 0;
       d.lMax = 0xFFFF;
 
-      if (FAILED(Joysticks[CurrentStick]->SetProperty(DIPROP_RANGE, &d.diph))) {
+      if (FAILED(_joysticks[_currentStick]->SetProperty(DIPROP_RANGE, &d.diph))) {
         return(DIENUM_STOP);
       }
 
       return (BOOL)(DIENUM_CONTINUE);
     };
 
-    CurrentStick = stickNumber;
+    _currentStick = stickNumber;
 
-    if (Joysticks[stickNumber] == NULL) {
+    if (_joysticks[stickNumber] == NULL) {
       return(0);
     }
 
-    if (FAILED(hr = Joysticks[stickNumber]->SetDataFormat(&c_dfDIJoystick2))) {
+    if (FAILED(hr = _joysticks[stickNumber]->SetDataFormat(&c_dfDIJoystick2))) {
       return(0);
     }
 
-    if (FAILED(hr = Joysticks[stickNumber]->EnumObjects(callback, NULL, DIDFT_AXIS))) {
+    if (FAILED(hr = _joysticks[stickNumber]->EnumObjects(callback, NULL, DIDFT_AXIS))) {
       return(0);
     }
 
@@ -358,18 +348,18 @@ extern "C" {
   {
     HRESULT hr;
 
-    if (Joysticks[stickNumber] == NULL) {
+    if (_joysticks[stickNumber] == NULL) {
       return (S_OK);
     }
 
-    hr = Joysticks[stickNumber]->Poll();
+    hr = _joysticks[stickNumber]->Poll();
 
     if (FAILED(hr))
     {
-      hr = Joysticks[stickNumber]->Acquire();
+      hr = _joysticks[stickNumber]->Acquire();
 
       while (hr == DIERR_INPUTLOST) {
-        hr = Joysticks[stickNumber]->Acquire();
+        hr = _joysticks[stickNumber]->Acquire();
       }
 
       if (hr == DIERR_INVALIDPARAM) {
@@ -381,7 +371,7 @@ extern "C" {
       }
     }
 
-    if (FAILED(hr = Joysticks[stickNumber]->GetDeviceState(sizeof(DIJOYSTATE2), js))) {
+    if (FAILED(hr = _joysticks[stickNumber]->GetDeviceState(sizeof(DIJOYSTATE2), js))) {
       return(hr);
     }
 
@@ -408,6 +398,23 @@ extern "C" {
 }
 
 /***********************************************************************************************/
+
+typedef struct {
+  //PlayBack
+  LPDIRECTSOUND	lpds;           // directsound interface pointer
+  DSBUFFERDESC	dsbd;           // directsound description
+  DSCAPS			  dscaps;         // directsound caps
+  DSBCAPS			  dsbcaps;        // directsound buffer caps
+
+  //Record
+  LPDIRECTSOUNDCAPTURE8	lpdsin;
+  DSCBUFFERDESC			    dsbdin; // directsound description
+
+  LPDIRECTSOUNDBUFFER	lpdsbuffer1;			    //the sound buffers
+  LPDIRECTSOUNDCAPTUREBUFFER	lpdsbuffer2;	//the sound buffers for capture
+
+  WAVEFORMATEX pcmwf; //generic waveformat structure
+} DirectSoundState;
 
 DirectSoundState* InitializeDirectSoundState(DirectSoundState*);
 
