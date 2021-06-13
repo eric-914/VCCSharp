@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Windows;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using VCCSharp.Models.DirectX;
 using HWND = System.IntPtr;
 using Point = System.Drawing.Point;
 using static System.IntPtr;
@@ -41,7 +43,7 @@ namespace VCCSharp.Modules
         private bool _forceAspect;
 
         private uint _color;
-        
+
         private string _statusText;
 
         public bool InfoBand { get; set; }
@@ -49,10 +51,10 @@ namespace VCCSharp.Modules
         #endregion
 
         private IntPtr _dd = Zero;      // The DirectDraw object
-        private IntPtr _clipper = Zero; // Clipper for primary surface
+        private IDirectDrawClipper _clipper; // Clipper for primary surface
         private IntPtr _surf = Zero;    // Primary surface
         private IntPtr _back = Zero;    // Back surface
-        
+
         public DirectDraw(IModules modules, IUser32 user32, IGdi32 gdi32)
         {
             _modules = modules;
@@ -68,7 +70,7 @@ namespace VCCSharp.Modules
         public unsafe bool CreateDirectDrawWindow()
         {
             var pp = new Point(Define.DEFAULT_WIDTH, Define.DEFAULT_HEIGHT);
-            
+
             if (_modules.Config.GetRememberSize())
             {
                 pp = _modules.Config.GetIniWindowSize();
@@ -419,9 +421,9 @@ namespace VCCSharp.Modules
 
             if (hr < 0) return false;
 
-            hr = CreateClipper(); // Create the clipper using the DirectDraw object
+            _clipper = CreateClipper(); // Create the clipper using the DirectDraw object
 
-            if (hr < 0) return false;
+            if (_clipper == null) return false;
 
             hr = SetClipper(_modules.Emu.WindowHandle);	// Assign your window's HWND to the clipper
 
@@ -547,12 +549,13 @@ namespace VCCSharp.Modules
             return Library.DirectDraw.DDClipperSetHWnd(_clipper, hWnd);
         }
 
-        private unsafe int CreateClipper()
+        private unsafe IDirectDrawClipper CreateClipper()
         {
-            fixed (IntPtr* p = &_clipper)
-            {
-                return Library.DirectDraw.DDCreateClipper(_dd, p);
-            }
+            var clipper = new IntPtr();
+
+            var hr = Library.DirectDraw.DDCreateClipper(_dd, &clipper);
+
+            return hr < 0 ? null : (IDirectDrawClipper) Marshal.GetObjectForIUnknown(clipper);
         }
 
         private unsafe int GetDisplayMode(DDSURFACEDESC* ddsd)

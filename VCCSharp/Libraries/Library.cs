@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Security;
 using VCCSharp.Models;
+using VCCSharp.Models.DirectX;
 using HRESULT = System.IntPtr;
 using HWND = System.IntPtr;
 
@@ -44,7 +45,7 @@ namespace VCCSharp.Libraries
             #region IDirectDrawClipper
 
             [DllImport(LIBRARY)]
-            public static extern int DDClipperSetHWnd(IntPtr clipper, HWND hWnd);
+            public static extern int DDClipperSetHWnd(IDirectDrawClipper clipper, HWND hWnd);
 
             #endregion
 
@@ -93,7 +94,7 @@ namespace VCCSharp.Libraries
             #region IDirectDrawSurface/IDirectDrawClipper
 
             [DllImport(LIBRARY)]
-            public static extern int DDSurfaceSetClipper(IntPtr surface, IntPtr clipper);
+            public static extern int DDSurfaceSetClipper(IntPtr surface, IDirectDrawClipper clipper);
 
             #endregion
 
