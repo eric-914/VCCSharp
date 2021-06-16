@@ -35,7 +35,7 @@ namespace VCCSharp.Modules
         void SetCompatMode(CompatibilityModes mode);
         void SetVideoBank(byte data);
         void SetGimeVdgMode2(byte mode);
-        unsafe void SetGraphicsSurface(void* ddsdGetSurface);
+        void SetGraphicsSurface(IntPtr surface);
 
         byte BorderChange { get; set; }
         byte BytesPerRow { get; set; }
@@ -503,9 +503,9 @@ namespace VCCSharp.Modules
             }
         }
 
-        public unsafe void SetGraphicsSurface(void* pSurface)
+        public unsafe void SetGraphicsSurface(IntPtr surface)
         {
-            _surface = (uint*)pSurface;
+            _surface = (uint*)surface;
         }
 
         public void SetupDisplay()

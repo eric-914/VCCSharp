@@ -26,28 +26,7 @@ namespace VCCSharp.Libraries
             #region DDSURFACEDESC
 
             [DllImport(LIBRARY)]
-            public static extern unsafe DDSURFACEDESC* DDSDCreate();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe uint DDSDGetPitch(DDSURFACEDESC* ddsd);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int DDSDHasSurface(DDSURFACEDESC* ddsd);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void* DDSDGetSurface(DDSURFACEDESC* ddsd);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe void DDSDSetdwCaps(DDSURFACEDESC* ddsd, uint value);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void DDSDSetdwWidth(DDSURFACEDESC* ddsd, uint value);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void DDSDSetdwHeight(DDSURFACEDESC* ddsd, uint value);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void DDSDSetdwFlags(DDSURFACEDESC* ddsd, uint value);
 
             #endregion
         }

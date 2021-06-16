@@ -10,9 +10,6 @@ Has following depedency libraries:
 #include <dinput.h>
 #include <dsound.h>
 
-static LPDIRECTINPUT8 _di;
-static DDSURFACEDESC _ddsd;
-
 /***********************************************************************************************/
 
 //--IDirectDraw
@@ -24,66 +21,10 @@ extern "C" {
   }
 }
 
-/***********************************************************************************************/
-
-extern "C" {
-  __declspec(dllexport) DDSURFACEDESC* __cdecl DDSDCreate()
-  {
-    _ddsd = DDSURFACEDESC();
-
-    memset(&_ddsd, 0, sizeof(_ddsd));	// Clear all members of the structure to 0
-    _ddsd.dwSize = sizeof(_ddsd);		  // The first parameter of the structure must contain the size of the structure
-
-    return &_ddsd;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) unsigned long __cdecl DDSDGetPitch(DDSURFACEDESC* ddsd)
-  {
-    return ddsd->lPitch;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl DDSDHasSurface(DDSURFACEDESC* ddsd)
-  {
-    return ddsd->lpSurface != NULL;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void* __cdecl DDSDGetSurface(DDSURFACEDESC* ddsd)
-  {
-    return ddsd->lpSurface;
-  }
-}
-
 extern "C" {
   __declspec(dllexport) void __cdecl DDSDSetdwCaps(DDSURFACEDESC* ddsd, DWORD value)
   {
     ddsd->ddsCaps.dwCaps = value;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DDSDSetdwWidth(DDSURFACEDESC* ddsd, DWORD value)
-  {
-    ddsd->dwWidth = value;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DDSDSetdwHeight(DDSURFACEDESC* ddsd, DWORD value)
-  {
-    ddsd->dwHeight = value;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DDSDSetdwFlags(DDSURFACEDESC* ddsd, DWORD value)
-  {
-    ddsd->dwFlags = value;
   }
 }
 
@@ -94,6 +35,7 @@ extern "C" {
 
 static DIJOYSTATE2* _joyState = new DIJOYSTATE2();
 static LPDIRECTINPUTDEVICE8 _joysticks[MAXSTICKS];
+static LPDIRECTINPUT8 _di;
 
 static char _stickName[MAXSTICKS][STRLEN];
 static unsigned char _currentStick;
