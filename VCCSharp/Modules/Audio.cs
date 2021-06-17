@@ -48,7 +48,7 @@ namespace VCCSharp.Modules
         public unsafe void* SndPointer1;
         public unsafe void* SndPointer2;
 
-        private DirectSoundState _ds;
+        //private DirectSoundState _ds;
 
         private IntPtr _lpds = Zero;    //--IDirectSound*
         private IntPtr _lpBuffer = Zero;  //--IDirectSoundBuffer*  //the sound buffers
@@ -63,7 +63,7 @@ namespace VCCSharp.Modules
 
         public void ModuleInitialize()
         {
-            _ds = new DirectSoundState();
+            //_ds = new DirectSoundState();
 
             _dsbd = new DSBUFFERDESC();
             _pcmwf = new WAVEFORMATEX();
@@ -129,27 +129,27 @@ namespace VCCSharp.Modules
                     return 1;
                 }
 
-                _ds.pcmwf.wFormatTag = Define.WAVE_FORMAT_PCM;
-                _ds.pcmwf.nChannels = 2;
-                _ds.pcmwf.nSamplesPerSec = _bitRate;
-                _ds.pcmwf.wBitsPerSample = 16;
-                _ds.pcmwf.nBlockAlign = (ushort)((_ds.pcmwf.wBitsPerSample * _ds.pcmwf.nChannels) >> 3);
-                _ds.pcmwf.nAvgBytesPerSec = _ds.pcmwf.nSamplesPerSec * _ds.pcmwf.nBlockAlign;
-                _ds.pcmwf.cbSize = 0;
+                _pcmwf.wFormatTag = Define.WAVE_FORMAT_PCM;
+                _pcmwf.nChannels = 2;
+                _pcmwf.nSamplesPerSec = _bitRate;
+                _pcmwf.wBitsPerSample = 16;
+                _pcmwf.nBlockAlign = (ushort)((_pcmwf.wBitsPerSample * _pcmwf.nChannels) >> 3);
+                _pcmwf.nAvgBytesPerSec = _pcmwf.nSamplesPerSec * _pcmwf.nBlockAlign;
+                _pcmwf.cbSize = 0;
 
                 int flags = Define.DSBCAPS_GETCURRENTPOSITION2 | Define.DSBCAPS_LOCSOFTWARE | Define.DSBCAPS_STATIC | Define.DSBCAPS_GLOBALFOCUS;
-                _ds.dsbd.dwSize = (uint)sizeof(DSBUFFERDESC);
-                _ds.dsbd.dwFlags = (uint)flags;
-                _ds.dsbd.dwBufferBytes = _sndBuffLength;
+                _dsbd.dwSize = (uint)sizeof(DSBUFFERDESC);
+                _dsbd.dwFlags = (uint)flags;
+                _dsbd.dwBufferBytes = _sndBuffLength;
 
-                fixed (WAVEFORMATEX* p = &(_ds.pcmwf))
+                fixed (WAVEFORMATEX* p = &(_pcmwf))
                 {
-                    _ds.dsbd.lpwfxFormat = (IntPtr)(p);
+                    _dsbd.lpwfxFormat = (IntPtr)(p);
                 }
 
                 fixed (IntPtr* p = &_lpBuffer)
                 {
-                    fixed (DSBUFFERDESC* q = &(_ds.dsbd))
+                    fixed (DSBUFFERDESC* q = &(_dsbd))
                     {
                         _hr = _modules.DirectSound.DirectSoundCreateSoundBuffer(_lpds, q, p);
                     }

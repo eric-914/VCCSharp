@@ -201,18 +201,6 @@ extern "C" {
 
 //--DirectSound / Audio
 
-typedef struct {
-  DSBUFFERDESC	dsbd;     // directsound description
-
-  WAVEFORMATEX  pcmwf;    //generic waveformat structure
-} DirectSoundState;
-
-extern "C" {
-  __declspec(dllexport) DirectSoundState* __cdecl GetDirectSoundState() {
-    return new DirectSoundState();
-  }
-}
-
 extern "C" {
   __declspec(dllexport) HRESULT __cdecl DirectSoundInitialize(IDirectSound** lpds, GUID* guid) {
     return DirectSoundCreate(guid, lpds, NULL);	// create a directsound object
