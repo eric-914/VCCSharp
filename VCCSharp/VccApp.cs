@@ -34,7 +34,7 @@ namespace VCCSharp
 
         public void Startup(CmdLineArguments cmdLineArgs)
         {
-            //AudioState* audioState = _modules.Audio.GetAudioState();
+            _modules.Audio.ModuleInitialize();
             _modules.CoCo.SetAudioEventAudioOut();
 
             _modules.Keyboard.SetKeyTranslations();

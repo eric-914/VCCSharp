@@ -15,57 +15,61 @@ namespace VCCSharp.Libraries
         public static class DirectSound
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundInitialize(_GUID* guid);
+            public static extern unsafe DirectSoundState* GetDirectSoundState();
 
             [DllImport(LIBRARY)]
-            public static extern int DirectSoundSetCooperativeLevel(HWND hWnd, uint flag);
+            public static extern unsafe int DirectSoundInitialize(DirectSoundState* ds, _GUID* guid);
 
             [DllImport(LIBRARY)]
-            public static extern void DirectSoundSetupFormatDataStructure(ushort bitRate);
+            public static extern unsafe int DirectSoundSetCooperativeLevel(DirectSoundState* ds, HWND hWnd, uint flag);
 
             [DllImport(LIBRARY)]
-            public static extern void DirectSoundSetupSecondaryBuffer(uint sndBuffLength, uint flags);
+            public static extern unsafe void DirectSoundSetupFormatDataStructure(DirectSoundState* ds, ushort bitRate);
 
             [DllImport(LIBRARY)]
-            public static extern int DirectSoundCreateSoundBuffer();
+            public static extern unsafe void DirectSoundSetupSecondaryBuffer(DirectSoundState* ds, uint sndBuffLength, uint flags);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundLock(ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
+            public static extern unsafe int DirectSoundCreateSoundBuffer(DirectSoundState* ds);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundUnlock(void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
+            public static extern unsafe int DirectSoundLock(DirectSoundState* ds, ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe long DirectSoundGetCurrentPosition(ulong* playCursor, ulong* writeCursor);
+            public static extern unsafe int DirectSoundUnlock(DirectSoundState* ds, void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
 
             [DllImport(LIBRARY)]
-            public static extern void DirectSoundSetCurrentPosition(ulong position);
+            public static extern unsafe long DirectSoundGetCurrentPosition(DirectSoundState* ds, ulong* playCursor, ulong* writeCursor);
 
             [DllImport(LIBRARY)]
-            public static extern int DirectSoundPlay();
+            public static extern unsafe void DirectSoundSetCurrentPosition(DirectSoundState* ds, ulong position);
 
             [DllImport(LIBRARY)]
-            public static extern int DirectSoundStop();
+            public static extern unsafe int DirectSoundPlay(DirectSoundState* ds);
 
             [DllImport(LIBRARY)]
-            public static extern void DirectSoundStopAndRelease();
+            public static extern unsafe int DirectSoundStop(DirectSoundState* ds);
 
             [DllImport(LIBRARY)]
-            public static extern int DirectSoundHasBuffer();
+            public static extern unsafe void DirectSoundStopAndRelease(DirectSoundState* ds);
 
             [DllImport(LIBRARY)]
-            public static extern int DirectSoundBufferRelease();
+            public static extern unsafe int DirectSoundHasBuffer(DirectSoundState* ds);
 
             [DllImport(LIBRARY)]
-            public static extern int DirectSoundHasInterface();
+            public static extern unsafe int DirectSoundBufferRelease(DirectSoundState* ds);
 
             [DllImport(LIBRARY)]
-            public static extern int DirectSoundInterfaceRelease();
+            public static extern unsafe int DirectSoundHasInterface(DirectSoundState* ds);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int DirectSoundInterfaceRelease(DirectSoundState* ds);
 
             //....................................................................//
 
             [DllImport(LIBRARY)]
             public static extern unsafe void DirectSoundEnumerateSoundCards(void* fn);
+
         }
 
         public static class Joystick
