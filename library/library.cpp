@@ -6,22 +6,12 @@ Has following depedency libraries:
     > dxguid.lib;
 */
 #define DIRECTINPUT_VERSION 0x0800
-#include <ddraw.h>
 #include <dinput.h>
 #include <dsound.h>
 
 /***********************************************************************************************/
 
-//--IDirectDraw
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl CreateDx(IDirectDraw** dd)
-  {
-    return DirectDrawCreate(NULL, dd, NULL);
-  }
-}
-
-/***********************************************************************************************/
+//--DirectInput / Joysticks
 
 #define MAXSTICKS 10
 #define STRLEN 64
@@ -206,6 +196,8 @@ extern "C" {
 }
 
 /***********************************************************************************************/
+
+//--DirectSound / Audio
 
 typedef struct {
   //PlayBack

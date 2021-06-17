@@ -57,6 +57,7 @@ namespace VCCSharp
                 .Bind<IUser32, User32>()
                 .Bind<IGdi32, Gdi32>()
                 .Bind<IWinmm, Winmm>()
+                .Bind<IDdraw, Ddraw>()
 
                 //--Main
                 .Bind<ICommandLineParser, CommandLineParser>()

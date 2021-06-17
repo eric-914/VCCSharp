@@ -1,8 +1,6 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Security;
 using VCCSharp.Models;
-using VCCSharp.Models.DirectX;
 using HRESULT = System.IntPtr;
 using HWND = System.IntPtr;
 
@@ -13,16 +11,6 @@ namespace VCCSharp.Libraries
     {
         // ReSharper disable once InconsistentNaming
         public const string LIBRARY = "library.dll";
-
-        public static class DirectDraw
-        {
-            #region IDirectDraw
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int CreateDx(IntPtr* dd);
-            
-            #endregion
-        }
 
         public static class DirectSound
         {

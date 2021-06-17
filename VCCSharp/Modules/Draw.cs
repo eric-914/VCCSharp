@@ -34,6 +34,7 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
         private readonly IUser32 _user32;
         private readonly IGdi32 _gdi32;
+        private readonly IDdraw _ddraw;
 
         private static int _textX, _textY;
         private static byte _counter, _counter1 = 32, _phase = 1;
@@ -55,11 +56,12 @@ namespace VCCSharp.Modules
         private IDirectDrawSurface _surface;    // Primary surface
         private IDirectDrawSurface _back;    // Back surface
 
-        public Draw(IModules modules, IUser32 user32, IGdi32 gdi32)
+        public Draw(IModules modules, IUser32 user32, IGdi32 gdi32, IDdraw ddraw)
         {
             _modules = modules;
             _user32 = user32;
             _gdi32 = gdi32;
+            _ddraw = ddraw;
         }
 
         public void ClearScreen()
@@ -552,11 +554,11 @@ namespace VCCSharp.Modules
             return _dd.SetCooperativeLevel(hWnd, value);
         }
 
-        private static unsafe IDirectDraw DirectDrawCreate()
+        private unsafe IDirectDraw DirectDrawCreate()
         {
             var dd = new IntPtr();
 
-            var hr = Library.DirectDraw.CreateDx(&dd);
+            var hr = _ddraw.DirectDrawCreate(Zero, &dd, Zero);
 
             return hr < 0 ? null : (IDirectDraw)Marshal.GetObjectForIUnknown(dd);
         }
