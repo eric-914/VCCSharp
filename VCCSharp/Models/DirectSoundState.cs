@@ -6,12 +6,6 @@ namespace VCCSharp.Models
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct DirectSoundState
     {
-        //--IDirectSoundBuffer*
-        public IntPtr lpdsbuffer1;
-
-        //--IDirectSoundCaptureBuffer*
-        public IntPtr lpdsbuffer2;
-
         // directsound description
         public DSBUFFERDESC dsbd;
 

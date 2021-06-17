@@ -31,37 +31,34 @@ namespace VCCSharp.Libraries
             public static extern unsafe void DirectSoundSetupSecondaryBuffer(DirectSoundState* ds, uint sndBuffLength, uint flags);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundCreateSoundBuffer(DirectSoundState* ds, IntPtr lpds);
+            public static extern unsafe int DirectSoundCreateSoundBuffer(DirectSoundState* ds, IntPtr lpds, IntPtr* buffer);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundLock(DirectSoundState* ds, ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
+            public static extern unsafe int DirectSoundLock(IntPtr buffer, ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundUnlock(DirectSoundState* ds, void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
+            public static extern unsafe int DirectSoundUnlock(IntPtr buffer, void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe long DirectSoundGetCurrentPosition(DirectSoundState* ds, ulong* playCursor, ulong* writeCursor);
+            public static extern unsafe long DirectSoundGetCurrentPosition(IntPtr buffer, ulong* playCursor, ulong* writeCursor);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void DirectSoundSetCurrentPosition(DirectSoundState* ds, ulong position);
+            public static extern void DirectSoundSetCurrentPosition(IntPtr buffer, ulong position);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundPlay(DirectSoundState* ds);
+            public static extern int DirectSoundPlay(IntPtr buffer);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundStop(DirectSoundState* ds);
+            public static extern int DirectSoundStop(IntPtr buffer);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void DirectSoundStopAndRelease(DirectSoundState* ds, IntPtr lpds);
+            public static extern void DirectSoundRelease(IntPtr lpds);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundHasBuffer(DirectSoundState* ds);
+            public static extern int DirectSoundBufferRelease(IntPtr buffer);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundBufferRelease(DirectSoundState* ds);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundInterfaceRelease(IntPtr lpds);
+            public static extern int DirectSoundInterfaceRelease(IntPtr lpds);
 
             //....................................................................//
 

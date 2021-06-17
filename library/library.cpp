@@ -11,7 +11,7 @@ Has following depedency libraries:
 
 /***********************************************************************************************/
 
-//--DirectInput / Joysticks
+#if (1) //--DirectInput / Joysticks
 
 #define MAXSTICKS 10
 #define STRLEN 64
@@ -195,20 +195,19 @@ extern "C" {
   }
 }
 
+#endif
+
 /***********************************************************************************************/
 
 //--DirectSound / Audio
 
 typedef struct {
-  IDirectSoundBuffer*	        lpdsbuffer1;  //the sound buffers
-  IDirectSoundCaptureBuffer*	lpdsbuffer2;	//the sound buffers for capture
-
   DSBUFFERDESC	dsbd;     // directsound description
   DSCAPS			  dscaps;   // directsound caps
   DSBCAPS			  dsbcaps;  // directsound buffer caps
   DSCBUFFERDESC	dsbdin;   // directsound description
 
-  WAVEFORMATEX pcmwf; //generic waveformat structure
+  WAVEFORMATEX  pcmwf;    //generic waveformat structure
 } DirectSoundState;
 
 extern "C" {
@@ -253,65 +252,56 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundCreateSoundBuffer(DirectSoundState* ds, IDirectSound* lpds) {
-    return lpds->CreateSoundBuffer(&(ds->dsbd), &(ds->lpdsbuffer1), NULL);
+  __declspec(dllexport) HRESULT __cdecl DirectSoundCreateSoundBuffer(DirectSoundState* ds, IDirectSound* lpds, IDirectSoundBuffer** lpdsbuffer1) {
+    return lpds->CreateSoundBuffer(&(ds->dsbd), lpdsbuffer1, NULL);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundLock(DirectSoundState* ds, DWORD buffOffset, unsigned short length, void** sndPointer1, DWORD* sndLength1, void** sndPointer2, DWORD* sndLength2) {
-    return ds->lpdsbuffer1->Lock(buffOffset, length, sndPointer1, sndLength1, sndPointer2, sndLength2, 0);
+  __declspec(dllexport) HRESULT __cdecl DirectSoundLock(IDirectSoundBuffer* buffer, DWORD buffOffset, unsigned short length, void** sndPointer1, DWORD* sndLength1, void** sndPointer2, DWORD* sndLength2) {
+    return buffer->Lock(buffOffset, length, sndPointer1, sndLength1, sndPointer2, sndLength2, 0);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundUnlock(DirectSoundState* ds, void* sndPointer1, DWORD sndLength1, void* sndPointer2, DWORD sndLength2) {
-    return ds->lpdsbuffer1->Unlock(sndPointer1, sndLength1, sndPointer2, sndLength2);
+  __declspec(dllexport) HRESULT __cdecl DirectSoundUnlock(IDirectSoundBuffer* buffer, void* sndPointer1, DWORD sndLength1, void* sndPointer2, DWORD sndLength2) {
+    return buffer->Unlock(sndPointer1, sndLength1, sndPointer2, sndLength2);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) long __cdecl DirectSoundGetCurrentPosition(DirectSoundState* ds, unsigned long* playCursor, unsigned long* writeCursor) {
-    return ds->lpdsbuffer1->GetCurrentPosition(playCursor, writeCursor);
+  __declspec(dllexport) long __cdecl DirectSoundGetCurrentPosition(IDirectSoundBuffer* buffer, unsigned long* playCursor, unsigned long* writeCursor) {
+    return buffer->GetCurrentPosition(playCursor, writeCursor);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DirectSoundSetCurrentPosition(DirectSoundState* ds, DWORD position) {
-    ds->lpdsbuffer1->SetCurrentPosition(position);
+  __declspec(dllexport) void __cdecl DirectSoundSetCurrentPosition(IDirectSoundBuffer* buffer, DWORD position) {
+    buffer->SetCurrentPosition(position);
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundPlay(DirectSoundState* ds) {
-    return ds->lpdsbuffer1->Play(0, 0, DSBPLAY_LOOPING);	// play the sound in looping mode
+  __declspec(dllexport) HRESULT __cdecl DirectSoundPlay(IDirectSoundBuffer* buffer) {
+    return buffer->Play(0, 0, DSBPLAY_LOOPING);	// play the sound in looping mode
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundStop(DirectSoundState* ds) {
-    return ds->lpdsbuffer1->Stop();
+  __declspec(dllexport) HRESULT __cdecl DirectSoundStop(IDirectSoundBuffer* buffer) {
+    return buffer->Stop();
   }
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DirectSoundStopAndRelease(DirectSoundState* ds, IDirectSound* lpds) {
-    ds->lpdsbuffer1->Stop();
+  __declspec(dllexport) void __cdecl DirectSoundRelease(IDirectSound* lpds) {
     lpds->Release();
   }
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl DirectSoundHasBuffer(DirectSoundState* ds) {
-    return ds->lpdsbuffer1 != NULL;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundBufferRelease(DirectSoundState* ds) {
-    HRESULT hResult = ds->lpdsbuffer1->Release();
-    ds->lpdsbuffer1 = NULL;
-    return hResult;
+  __declspec(dllexport) HRESULT __cdecl DirectSoundBufferRelease(IDirectSoundBuffer* buffer) {
+    return buffer->Release();
   }
 }
 

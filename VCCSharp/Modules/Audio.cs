@@ -51,6 +51,7 @@ namespace VCCSharp.Modules
         private unsafe DirectSoundState* _ds;
 
         private IntPtr _lpds = Zero;    //--IDirectSound*
+        private IntPtr _lpBuffer = Zero;  //--IDirectSoundBuffer*  //the sound buffers
 
         public Audio(IModules modules)
         {
@@ -70,7 +71,7 @@ namespace VCCSharp.Modules
             rate &= 3;
 
             if (rate != 0)
-            {   
+            {
                 //TODO: Since there is only 44100 or mute, remove the other options and make this a boolean
                 //Force 44100 or Mute
                 rate = 3;
@@ -81,11 +82,12 @@ namespace VCCSharp.Modules
             if (_initPassed)
             {
                 _initPassed = false;
-                _modules.DirectSound.DirectSoundStop(_ds);
+                _modules.DirectSound.DirectSoundStop(_lpBuffer);
 
-                if (_modules.DirectSound.DirectSoundHasBuffer(_ds))
+                if (_lpBuffer != Zero)
                 {
-                    _hr = _modules.DirectSound.DirectSoundBufferRelease(_ds);
+                    _hr = _modules.DirectSound.DirectSoundBufferRelease(_lpBuffer);
+                    _lpBuffer = Zero;
                 }
 
                 if (_lpds != Zero)
@@ -128,7 +130,10 @@ namespace VCCSharp.Modules
 
                 _modules.DirectSound.DirectSoundSetupSecondaryBuffer(_ds, _sndBuffLength);
 
-                _hr = _modules.DirectSound.DirectSoundCreateSoundBuffer(_ds, _lpds);
+                fixed (IntPtr* p = &_lpBuffer)
+                {
+                    _hr = _modules.DirectSound.DirectSoundCreateSoundBuffer(_ds, _lpds, p);
+                }
 
                 if (_hr != Define.DS_OK)
                 {
@@ -156,9 +161,9 @@ namespace VCCSharp.Modules
                     return 1;
                 }
 
-                _modules.DirectSound.DirectSoundSetCurrentPosition(_ds, 0);
+                _modules.DirectSound.DirectSoundSetCurrentPosition(_lpBuffer, 0);
 
-                _hr = _modules.DirectSound.DirectSoundPlay(_ds);
+                _hr = _modules.DirectSound.DirectSoundPlay(_lpBuffer);
 
                 if (_hr != Define.DS_OK)
                 {
@@ -174,13 +179,14 @@ namespace VCCSharp.Modules
             return result;
         }
 
-        public unsafe short SoundDeInit()
+        public short SoundDeInit()
         {
             if (_initPassed)
             {
                 _initPassed = false;
 
-                _modules.DirectSound.DirectSoundStopAndRelease(_ds, _lpds);
+                _modules.DirectSound.DirectSoundStop(_lpBuffer);
+                _modules.DirectSound.DirectSoundRelease(_lpds);
             }
 
             return 0;
@@ -192,10 +198,7 @@ namespace VCCSharp.Modules
 
             if (_initPassed)
             {
-                unsafe
-                {
-                    _modules.DirectSound.DirectSoundSetCurrentPosition(_ds, 0);
-                }
+                _modules.DirectSound.DirectSoundSetCurrentPosition(_lpBuffer, 0);
             }
 
             _buffOffset = 0;
@@ -206,7 +209,7 @@ namespace VCCSharp.Modules
         {
             int Invoke(void** sp1, uint* sl1, void** sp2, uint* sl2)
             {
-                return _modules.DirectSound.DirectSoundLock(_ds, _buffOffset, length, sp1, sl1, sp2, sl2);
+                return _modules.DirectSound.DirectSoundLock(_lpBuffer, _buffOffset, length, sp1, sl1, sp2, sl2);
             }
 
             fixed (uint* sl1 = &_sndLength1)
@@ -231,7 +234,7 @@ namespace VCCSharp.Modules
             void* s1 = SndPointer1;
             void* s2 = SndPointer2;
 
-            var result = _modules.DirectSound.DirectSoundUnlock(_ds, s1, _sndLength1, s2, _sndLength2);
+            var result = _modules.DirectSound.DirectSoundUnlock(_lpBuffer, s1, _sndLength1, s2, _sndLength2);
 
             SndPointer1 = s1;
             SndPointer2 = s2;
@@ -323,7 +326,7 @@ namespace VCCSharp.Modules
                     return Define.AUDIOBUFFERS;
                 }
 
-                _modules.DirectSound.DirectSoundGetCurrentPosition(_ds, &playCursor, &writeCursor);
+                _modules.DirectSound.DirectSoundGetCurrentPosition(_lpBuffer, &playCursor, &writeCursor);
 
                 if (_buffOffset <= playCursor)
                 {
@@ -371,15 +374,15 @@ namespace VCCSharp.Modules
             //instance->AuxBufferPointer = 0;
         }
 
-        public unsafe bool PauseAudio(bool pause)
+        public bool PauseAudio(bool pause)
         {
             _audioPause = pause;
 
             if (_initPassed)
             {
                 _hr = _audioPause
-                    ? _modules.DirectSound.DirectSoundStop(_ds)
-                    : _modules.DirectSound.DirectSoundPlay(_ds);
+                    ? _modules.DirectSound.DirectSoundStop(_lpBuffer)
+                    : _modules.DirectSound.DirectSoundPlay(_lpBuffer);
             }
 
             return _audioPause;
