@@ -10,22 +10,21 @@ namespace VCCSharp.Modules
     public interface IDirectSound
     {
         unsafe DirectSoundState* GetDirectSoundState();
-        unsafe int DirectSoundInitialize(IntPtr* ds, _GUID* guid);
-        unsafe int DirectSoundSetCooperativeLevel(DirectSoundState* ds, HWND hWnd);
+        unsafe bool DirectSoundInitialize(IntPtr* ds, _GUID* guid);
+        int DirectSoundSetCooperativeLevel(IntPtr lpds, HWND hWnd);
         unsafe void DirectSoundSetupFormatDataStructure(DirectSoundState* ds, ushort bitRate);
         unsafe void DirectSoundSetupSecondaryBuffer(DirectSoundState* ds, uint sndBuffLength);
-        unsafe int DirectSoundCreateSoundBuffer(DirectSoundState* ds);
+        unsafe int DirectSoundCreateSoundBuffer(DirectSoundState* ds, IntPtr lpds);
         unsafe int DirectSoundLock(DirectSoundState* ds, ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
         unsafe int DirectSoundUnlock(DirectSoundState* ds, void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
         unsafe long DirectSoundGetCurrentPosition(DirectSoundState* ds, ulong* playCursor, ulong* writeCursor);
         unsafe void DirectSoundSetCurrentPosition(DirectSoundState* ds, ulong position);
         unsafe int DirectSoundPlay(DirectSoundState* ds);
         unsafe int DirectSoundStop(DirectSoundState* ds);
-        unsafe void DirectSoundStopAndRelease(DirectSoundState* ds);
+        unsafe void DirectSoundStopAndRelease(DirectSoundState* ds, IntPtr lpds);
         unsafe bool DirectSoundHasBuffer(DirectSoundState* ds);
         unsafe int DirectSoundBufferRelease(DirectSoundState* ds);
-        unsafe bool DirectSoundHasInterface(DirectSoundState* ds);
-        unsafe int DirectSoundInterfaceRelease(DirectSoundState* ds);
+        unsafe int DirectSoundInterfaceRelease(IntPtr lpds);
 
         void DirectSoundEnumerateSoundCards();
     }
@@ -49,14 +48,14 @@ namespace VCCSharp.Modules
             return Library.DirectSound.GetDirectSoundState();
         }
 
-        public unsafe int DirectSoundInitialize(IntPtr* ds, _GUID* guid)
+        public unsafe bool DirectSoundInitialize(IntPtr* lpds, _GUID* guid)
         {
-            return Library.DirectSound.DirectSoundInitialize(ds, guid);
+            return Library.DirectSound.DirectSoundInitialize(lpds, guid) == Define.DS_OK;
         }
 
-        public unsafe int DirectSoundSetCooperativeLevel(DirectSoundState* ds, HWND hWnd)
+        public int DirectSoundSetCooperativeLevel(IntPtr lpds, HWND hWnd)
         {
-            return Library.DirectSound.DirectSoundSetCooperativeLevel(ds, hWnd, Define.DSSCL_NORMAL);
+            return Library.DirectSound.DirectSoundSetCooperativeLevel(lpds, hWnd, Define.DSSCL_NORMAL);
         }
 
         public unsafe void DirectSoundSetupFormatDataStructure(DirectSoundState* ds, ushort bitRate)
@@ -70,9 +69,9 @@ namespace VCCSharp.Modules
             Library.DirectSound.DirectSoundSetupSecondaryBuffer(ds, sndBuffLength, (uint)flags);
         }
 
-        public unsafe int DirectSoundCreateSoundBuffer(DirectSoundState* ds)
+        public unsafe int DirectSoundCreateSoundBuffer(DirectSoundState* ds, IntPtr lpds)
         {
-            return Library.DirectSound.DirectSoundCreateSoundBuffer(ds);
+            return Library.DirectSound.DirectSoundCreateSoundBuffer(ds, lpds);
         }
 
         public unsafe int DirectSoundLock(DirectSoundState* ds, ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2)
@@ -105,9 +104,9 @@ namespace VCCSharp.Modules
             return Library.DirectSound.DirectSoundStop(ds);
         }
 
-        public unsafe void DirectSoundStopAndRelease(DirectSoundState* ds)
+        public unsafe void DirectSoundStopAndRelease(DirectSoundState* ds, IntPtr lpds)
         {
-            Library.DirectSound.DirectSoundStopAndRelease(ds);
+            Library.DirectSound.DirectSoundStopAndRelease(ds, lpds);
         }
 
         public unsafe bool DirectSoundHasBuffer(DirectSoundState* ds)
@@ -115,19 +114,14 @@ namespace VCCSharp.Modules
             return Library.DirectSound.DirectSoundHasBuffer(ds) != 0;
         }
 
-        public unsafe bool DirectSoundHasInterface(DirectSoundState* ds)
-        {
-            return Library.DirectSound.DirectSoundHasInterface(ds) != 0;
-        }
-
         public unsafe int DirectSoundBufferRelease(DirectSoundState* ds)
         {
             return Library.DirectSound.DirectSoundBufferRelease(ds);
         }
 
-        public unsafe int DirectSoundInterfaceRelease(DirectSoundState* ds)
+        public unsafe int DirectSoundInterfaceRelease(IntPtr lpds)
         {
-            return Library.DirectSound.DirectSoundInterfaceRelease(ds);
+            return Library.DirectSound.DirectSoundInterfaceRelease(lpds);
         }
 
         //.........................................................................//

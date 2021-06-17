@@ -1,6 +1,8 @@
-﻿using VCCSharp.IoC;
+﻿using System;
+using VCCSharp.IoC;
 using VCCSharp.Models;
 using HWND = System.IntPtr;
+using static System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -35,6 +37,7 @@ namespace VCCSharp.Modules
 
         private int _hr;
 
+        // ReSharper disable once NotAccessedField.Local
         private byte _auxBufferPointer;
 
         private uint _sndLength1;
@@ -46,6 +49,8 @@ namespace VCCSharp.Modules
         public unsafe void* SndPointer2;
 
         private unsafe DirectSoundState* _ds;
+
+        private IntPtr _lpds = Zero;    //--IDirectSound*
 
         public Audio(IModules modules)
         {
@@ -83,9 +88,10 @@ namespace VCCSharp.Modules
                     _hr = _modules.DirectSound.DirectSoundBufferRelease(_ds);
                 }
 
-                if (_modules.DirectSound.DirectSoundHasInterface(_ds))
+                if (_lpds != Zero)
                 {
-                    _hr = _modules.DirectSound.DirectSoundInterfaceRelease(_ds);
+                    _hr = _modules.DirectSound.DirectSoundInterfaceRelease(_lpds);
+                    _lpds = Zero;
                 }
             }
 
@@ -101,15 +107,17 @@ namespace VCCSharp.Modules
 
             if (rate != 0)
             {
-                _hr = _modules.DirectSound.DirectSoundInitialize(&(_ds->lpds), guid);    // create a direct sound object
-
-                if (_hr != Define.DS_OK)
+                // create a direct sound object
+                fixed (IntPtr* p = &_lpds)
                 {
-                    return 1;
+                    if (!_modules.DirectSound.DirectSoundInitialize(p, guid))
+                    {
+                        return 1;
+                    }
                 }
 
                 // set cooperation level normal
-                _hr = _modules.DirectSound.DirectSoundSetCooperativeLevel(_ds, hWnd);
+                _hr = _modules.DirectSound.DirectSoundSetCooperativeLevel(_lpds, hWnd);
 
                 if (_hr != Define.DS_OK)
                 {
@@ -120,7 +128,7 @@ namespace VCCSharp.Modules
 
                 _modules.DirectSound.DirectSoundSetupSecondaryBuffer(_ds, _sndBuffLength);
 
-                _hr = _modules.DirectSound.DirectSoundCreateSoundBuffer(_ds);
+                _hr = _modules.DirectSound.DirectSoundCreateSoundBuffer(_ds, _lpds);
 
                 if (_hr != Define.DS_OK)
                 {
@@ -172,7 +180,7 @@ namespace VCCSharp.Modules
             {
                 _initPassed = false;
 
-                _modules.DirectSound.DirectSoundStopAndRelease(_ds);
+                _modules.DirectSound.DirectSoundStopAndRelease(_ds, _lpds);
             }
 
             return 0;
@@ -283,7 +291,7 @@ namespace VCCSharp.Modules
         }
 
         //public unsafe void HandleSlowAudio(byte* buffer, ushort length)
-        public unsafe void HandleSlowAudio()
+        public void HandleSlowAudio()
         {
             //memcpy(void* _Dst, void const* _Src, size_t _Size);
             //memcpy(audioState->AuxBuffer[audioState->AuxBufferPointer], buffer, length);	
@@ -376,19 +384,5 @@ namespace VCCSharp.Modules
 
             return _audioPause;
         }
-
-        #region This is what was in Audio.c
-
-        void Library_Audio_PurgeAuxBuffer()
-        {
-            //        memcpy(instance->SndPointer1, instance->AuxBuffer[instance->AuxBufferPointer], instance->SndLength1);
-
-            //        if (instance->SndPointer2 != NULL) {
-            //            memcpy(instance->SndPointer2, (instance->AuxBuffer[instance->AuxBufferPointer] + (instance->SndLength1 >> 2)), instance->SndLength2);
-            //        }
-        }
-
-        #endregion
-
     }
 }

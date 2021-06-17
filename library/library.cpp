@@ -200,8 +200,6 @@ extern "C" {
 //--DirectSound / Audio
 
 typedef struct {
-  IDirectSound*	              lpds;         // directsound interface pointer
-  IDirectSoundCapture*	      lpdsin;
   IDirectSoundBuffer*	        lpdsbuffer1;  //the sound buffers
   IDirectSoundCaptureBuffer*	lpdsbuffer2;	//the sound buffers for capture
 
@@ -220,14 +218,14 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundInitialize(LPDIRECTSOUND* lpds, GUID* guid) {
+  __declspec(dllexport) HRESULT __cdecl DirectSoundInitialize(IDirectSound** lpds, GUID* guid) {
     return DirectSoundCreate(guid, lpds, NULL);	// create a directsound object
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundSetCooperativeLevel(DirectSoundState* ds, HWND hWnd, DWORD flag) {
-    return ds->lpds->SetCooperativeLevel(hWnd, flag);
+  __declspec(dllexport) HRESULT __cdecl DirectSoundSetCooperativeLevel(IDirectSound* lpds, HWND hWnd, DWORD flag) {
+    return lpds->SetCooperativeLevel(hWnd, flag);
   }
 }
 
@@ -255,8 +253,8 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundCreateSoundBuffer(DirectSoundState* ds) {
-    return ds->lpds->CreateSoundBuffer(&(ds->dsbd), &(ds->lpdsbuffer1), NULL);
+  __declspec(dllexport) HRESULT __cdecl DirectSoundCreateSoundBuffer(DirectSoundState* ds, IDirectSound* lpds) {
+    return lpds->CreateSoundBuffer(&(ds->dsbd), &(ds->lpdsbuffer1), NULL);
   }
 }
 
@@ -297,9 +295,9 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DirectSoundStopAndRelease(DirectSoundState* ds) {
+  __declspec(dllexport) void __cdecl DirectSoundStopAndRelease(DirectSoundState* ds, IDirectSound* lpds) {
     ds->lpdsbuffer1->Stop();
-    ds->lpds->Release();
+    lpds->Release();
   }
 }
 
@@ -318,16 +316,8 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl DirectSoundHasInterface(DirectSoundState* ds) {
-    return ds->lpds != NULL;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundInterfaceRelease(DirectSoundState* ds) {
-    HRESULT hResult = ds->lpds->Release();
-    ds->lpds = NULL;
-    return hResult;
+  __declspec(dllexport) HRESULT __cdecl DirectSoundInterfaceRelease(IDirectSound* lpds) {
+    return lpds->Release();
   }
 }
 

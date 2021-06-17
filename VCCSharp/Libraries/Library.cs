@@ -19,10 +19,10 @@ namespace VCCSharp.Libraries
             public static extern unsafe DirectSoundState* GetDirectSoundState();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundInitialize(IntPtr* ds, _GUID* guid);
+            public static extern unsafe int DirectSoundInitialize(IntPtr* lpds, _GUID* guid);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundSetCooperativeLevel(DirectSoundState* ds, HWND hWnd, uint flag);
+            public static extern int DirectSoundSetCooperativeLevel(IntPtr lpds, HWND hWnd, uint flag);
 
             [DllImport(LIBRARY)]
             public static extern unsafe void DirectSoundSetupFormatDataStructure(DirectSoundState* ds, ushort bitRate);
@@ -31,7 +31,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe void DirectSoundSetupSecondaryBuffer(DirectSoundState* ds, uint sndBuffLength, uint flags);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundCreateSoundBuffer(DirectSoundState* ds);
+            public static extern unsafe int DirectSoundCreateSoundBuffer(DirectSoundState* ds, IntPtr lpds);
 
             [DllImport(LIBRARY)]
             public static extern unsafe int DirectSoundLock(DirectSoundState* ds, ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
@@ -52,7 +52,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe int DirectSoundStop(DirectSoundState* ds);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void DirectSoundStopAndRelease(DirectSoundState* ds);
+            public static extern unsafe void DirectSoundStopAndRelease(DirectSoundState* ds, IntPtr lpds);
 
             [DllImport(LIBRARY)]
             public static extern unsafe int DirectSoundHasBuffer(DirectSoundState* ds);
@@ -61,10 +61,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe int DirectSoundBufferRelease(DirectSoundState* ds);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundHasInterface(DirectSoundState* ds);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundInterfaceRelease(DirectSoundState* ds);
+            public static extern unsafe int DirectSoundInterfaceRelease(IntPtr lpds);
 
             //....................................................................//
 
