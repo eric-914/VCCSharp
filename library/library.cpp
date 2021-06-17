@@ -21,13 +21,6 @@ extern "C" {
   }
 }
 
-extern "C" {
-  __declspec(dllexport) void __cdecl DDSDSetdwCaps(DDSURFACEDESC* ddsd, DWORD value)
-  {
-    ddsd->ddsCaps.dwCaps = value;
-  }
-}
-
 /***********************************************************************************************/
 
 #define MAXSTICKS 10

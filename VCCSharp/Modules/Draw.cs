@@ -377,7 +377,7 @@ namespace VCCSharp.Modules
             if (SetCooperativeLevel(_modules.Emu.WindowHandle, Define.DDSCL_NORMAL) < 0) return false;
 
             ddsd->dwFlags = Define.DDSD_CAPS;
-            SetSurfaceCapabilities(ddsd, Define.DDSCAPS_PRIMARYSURFACE);
+            ddsd->ddsCaps.dwCaps = Define.DDSCAPS_PRIMARYSURFACE;
 
             // Create our Primary Surface
             _surface = CreateSurface(ddsd);
@@ -390,12 +390,12 @@ namespace VCCSharp.Modules
             ddsd->dwWidth = (uint)_windowSize.X;
             ddsd->dwHeight = (uint) _windowSize.Y;
 
-            SetSurfaceCapabilities(ddsd, Define.DDSCAPS_VIDEOMEMORY); // Try to create back buffer in video RAM
+            ddsd->ddsCaps.dwCaps = Define.DDSCAPS_VIDEOMEMORY; // Try to create back buffer in video RAM
             _back = CreateBackSurface(ddsd);
 
             if (_back == null)
             { // If not enough Video Ram 			
-                SetSurfaceCapabilities(ddsd, Define.DDSCAPS_SYSTEMMEMORY);			// Try to create back buffer in System RAM
+                ddsd->ddsCaps.dwCaps = Define.DDSCAPS_SYSTEMMEMORY;			// Try to create back buffer in System RAM
                 _back = CreateBackSurface(ddsd);
 
                 if (_back == null)
@@ -536,11 +536,6 @@ namespace VCCSharp.Modules
             var hr = _dd.CreateSurface(ddsd, &back, Zero);
 
             return hr < 0 ? null : (IDirectDrawSurface)Marshal.GetObjectForIUnknown(back);
-        }
-
-        private static unsafe void SetSurfaceCapabilities(DDSURFACEDESC* ddsd, uint value)
-        {
-            Library.DirectDraw.DDSDSetdwCaps(ddsd, value);
         }
 
         private unsafe IDirectDrawSurface CreateSurface(DDSURFACEDESC* ddsd)

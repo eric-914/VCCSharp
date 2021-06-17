@@ -22,13 +22,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe int CreateDx(IntPtr* dd);
             
             #endregion
-
-            #region DDSURFACEDESC
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void DDSDSetdwCaps(DDSURFACEDESC* ddsd, uint value);
-
-            #endregion
         }
 
         public static class DirectSound
