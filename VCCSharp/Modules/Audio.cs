@@ -48,13 +48,13 @@ namespace VCCSharp.Modules
         public unsafe void* SndPointer1;
         public unsafe void* SndPointer2;
 
-        //private DirectSoundState _ds;
+        private IntPtr _ds = Zero;          //--IDirectSound*
+        private IntPtr _lpBuffer = Zero;    //--IDirectSoundBuffer*  //the sound buffers
 
-        private IntPtr _lpds = Zero;    //--IDirectSound*
-        private IntPtr _lpBuffer = Zero;  //--IDirectSoundBuffer*  //the sound buffers
-
-        private DSBUFFERDESC _dsbd;     // directsound description
+        // ReSharper disable IdentifierTypo
+        private DSBUFFERDESC _dsbd;     // direct sound description
         private WAVEFORMATEX _pcmwf;    //generic wave format structure
+        // ReSharper restore IdentifierTypo
 
         public Audio(IModules modules)
         {
@@ -63,8 +63,6 @@ namespace VCCSharp.Modules
 
         public void ModuleInitialize()
         {
-            //_ds = new DirectSoundState();
-
             _dsbd = new DSBUFFERDESC();
             _pcmwf = new WAVEFORMATEX();
         }
@@ -93,10 +91,10 @@ namespace VCCSharp.Modules
                     _lpBuffer = Zero;
                 }
 
-                if (_lpds != Zero)
+                if (_ds != Zero)
                 {
-                    _hr = _modules.DirectSound.DirectSoundInterfaceRelease(_lpds);
-                    _lpds = Zero;
+                    _hr = _modules.DirectSound.DirectSoundInterfaceRelease(_ds);
+                    _ds = Zero;
                 }
             }
 
@@ -112,17 +110,14 @@ namespace VCCSharp.Modules
 
             if (rate != 0)
             {
-                // create a direct sound object
-                fixed (IntPtr* p = &_lpds)
+                _ds = CreateDirectSound(guid);
+                if (_ds == Zero)
                 {
-                    if (!_modules.DirectSound.DirectSoundInitialize(p, guid))
-                    {
-                        return 1;
-                    }
+                    return 1;
                 }
 
                 // set cooperation level normal
-                _hr = _modules.DirectSound.DirectSoundSetCooperativeLevel(_lpds, hWnd);
+                _hr = _modules.DirectSound.DirectSoundSetCooperativeLevel(_ds, hWnd);
 
                 if (_hr != Define.DS_OK)
                 {
@@ -151,7 +146,7 @@ namespace VCCSharp.Modules
                 {
                     fixed (DSBUFFERDESC* q = &(_dsbd))
                     {
-                        _hr = _modules.DirectSound.DirectSoundCreateSoundBuffer(_lpds, q, p);
+                        _hr = _modules.DirectSound.DirectSoundCreateSoundBuffer(_ds, q, p);
                     }
                 }
 
@@ -199,6 +194,13 @@ namespace VCCSharp.Modules
             return result;
         }
 
+        public unsafe IntPtr CreateDirectSound(_GUID* guid)
+        {
+            var dd = new IntPtr();
+
+            return _modules.DirectSound.DirectSoundInitialize(&dd, guid) ? dd : Zero;
+        }
+
         public short SoundDeInit()
         {
             if (_initPassed)
@@ -206,7 +208,7 @@ namespace VCCSharp.Modules
                 _initPassed = false;
 
                 _modules.DirectSound.DirectSoundStop(_lpBuffer);
-                _modules.DirectSound.DirectSoundRelease(_lpds);
+                _modules.DirectSound.DirectSoundRelease(_ds);
             }
 
             return 0;

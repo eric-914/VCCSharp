@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 namespace VCCSharp.Models
 {
     [StructLayout(LayoutKind.Explicit, Size = 40, CharSet = CharSet.Ansi)]
+    // ReSharper disable once InconsistentNaming
+    // ReSharper disable once IdentifierTypo
     public struct DSBUFFERDESC
     {
         [FieldOffset(0)]
