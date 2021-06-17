@@ -9,12 +9,9 @@ namespace VCCSharp.Modules
 {
     public interface IDirectSound
     {
-        unsafe DirectSoundState* GetDirectSoundState();
         unsafe bool DirectSoundInitialize(IntPtr* ds, _GUID* guid);
         int DirectSoundSetCooperativeLevel(IntPtr lpds, HWND hWnd);
-        unsafe void DirectSoundSetupFormatDataStructure(DirectSoundState* ds, ushort bitRate);
-        unsafe void DirectSoundSetupSecondaryBuffer(DirectSoundState* ds, uint sndBuffLength);
-        unsafe int DirectSoundCreateSoundBuffer(DirectSoundState* ds, IntPtr lpds, IntPtr* buffer);
+        unsafe int DirectSoundCreateSoundBuffer(IntPtr lpds, DSBUFFERDESC* dsbd, IntPtr* buffer);
         unsafe int DirectSoundLock(IntPtr buffer, ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
         unsafe int DirectSoundUnlock(IntPtr buffer, void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
         unsafe long DirectSoundGetCurrentPosition(IntPtr buffer, ulong* playCursor, ulong* writeCursor);
@@ -42,11 +39,6 @@ namespace VCCSharp.Modules
             _modules = modules;
         }
 
-        public unsafe DirectSoundState* GetDirectSoundState()
-        {
-            return Library.DirectSound.GetDirectSoundState();
-        }
-
         public unsafe bool DirectSoundInitialize(IntPtr* lpds, _GUID* guid)
         {
             return Library.DirectSound.DirectSoundInitialize(lpds, guid) == Define.DS_OK;
@@ -57,20 +49,9 @@ namespace VCCSharp.Modules
             return Library.DirectSound.DirectSoundSetCooperativeLevel(lpds, hWnd, Define.DSSCL_NORMAL);
         }
 
-        public unsafe void DirectSoundSetupFormatDataStructure(DirectSoundState* ds, ushort bitRate)
+        public unsafe int DirectSoundCreateSoundBuffer(IntPtr lpds, DSBUFFERDESC* dsbd, IntPtr* buffer)
         {
-            Library.DirectSound.DirectSoundSetupFormatDataStructure(ds, bitRate);
-        }
-
-        public unsafe void DirectSoundSetupSecondaryBuffer(DirectSoundState* ds, uint sndBuffLength)
-        {
-            int flags = Define.DSBCAPS_GETCURRENTPOSITION2 | Define.DSBCAPS_LOCSOFTWARE | Define.DSBCAPS_STATIC | Define.DSBCAPS_GLOBALFOCUS;
-            Library.DirectSound.DirectSoundSetupSecondaryBuffer(ds, sndBuffLength, (uint)flags);
-        }
-
-        public unsafe int DirectSoundCreateSoundBuffer(DirectSoundState* ds, IntPtr lpds, IntPtr* buffer)
-        {
-            return Library.DirectSound.DirectSoundCreateSoundBuffer(ds, lpds, buffer);
+            return Library.DirectSound.DirectSoundCreateSoundBuffer(lpds, dsbd, buffer);
         }
 
         public unsafe int DirectSoundLock(IntPtr buffer, ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2)

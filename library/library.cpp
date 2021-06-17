@@ -203,9 +203,6 @@ extern "C" {
 
 typedef struct {
   DSBUFFERDESC	dsbd;     // directsound description
-  DSCAPS			  dscaps;   // directsound caps
-  DSBCAPS			  dsbcaps;  // directsound buffer caps
-  DSCBUFFERDESC	dsbdin;   // directsound description
 
   WAVEFORMATEX  pcmwf;    //generic waveformat structure
 } DirectSoundState;
@@ -229,31 +226,8 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DirectSoundSetupFormatDataStructure(DirectSoundState* ds, unsigned short bitRate) {
-    memset(&(ds->pcmwf), 0, sizeof(WAVEFORMATEX));
-    ds->pcmwf.wFormatTag = WAVE_FORMAT_PCM;
-    ds->pcmwf.nChannels = 2;
-    ds->pcmwf.nSamplesPerSec = bitRate;
-    ds->pcmwf.wBitsPerSample = 16;
-    ds->pcmwf.nBlockAlign = (ds->pcmwf.wBitsPerSample * ds->pcmwf.nChannels) >> 3;
-    ds->pcmwf.nAvgBytesPerSec = ds->pcmwf.nSamplesPerSec * ds->pcmwf.nBlockAlign;
-    ds->pcmwf.cbSize = 0;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DirectSoundSetupSecondaryBuffer(DirectSoundState* ds, DWORD sndBuffLength, DWORD flags) {
-    memset(&(ds->dsbd), 0, sizeof(DSBUFFERDESC));
-    ds->dsbd.dwSize = sizeof(DSBUFFERDESC);
-    ds->dsbd.dwFlags = flags;
-    ds->dsbd.dwBufferBytes = sndBuffLength;
-    ds->dsbd.lpwfxFormat = &(ds->pcmwf);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundCreateSoundBuffer(DirectSoundState* ds, IDirectSound* lpds, IDirectSoundBuffer** lpdsbuffer1) {
-    return lpds->CreateSoundBuffer(&(ds->dsbd), lpdsbuffer1, NULL);
+  __declspec(dllexport) HRESULT __cdecl DirectSoundCreateSoundBuffer(IDirectSound* lpds, DSBUFFERDESC* dsbd, IDirectSoundBuffer** lpdsbuffer1) {
+    return lpds->CreateSoundBuffer(dsbd, lpdsbuffer1, NULL);
   }
 }
 

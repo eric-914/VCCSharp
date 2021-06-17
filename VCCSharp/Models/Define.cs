@@ -320,5 +320,7 @@ namespace VCCSharp.Models
         public const uint DDFLIP_DONOTWAIT = 0x00000020;
 
         public const uint DDBLT_WAIT = 0x01000000;
+
+        public const ushort WAVE_FORMAT_PCM = 1;
     }
 }

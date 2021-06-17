@@ -16,22 +16,13 @@ namespace VCCSharp.Libraries
         public static class DirectSound
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe DirectSoundState* GetDirectSoundState();
-
-            [DllImport(LIBRARY)]
             public static extern unsafe int DirectSoundInitialize(IntPtr* lpds, _GUID* guid);
 
             [DllImport(LIBRARY)]
             public static extern int DirectSoundSetCooperativeLevel(IntPtr lpds, HWND hWnd, uint flag);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void DirectSoundSetupFormatDataStructure(DirectSoundState* ds, ushort bitRate);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void DirectSoundSetupSecondaryBuffer(DirectSoundState* ds, uint sndBuffLength, uint flags);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundCreateSoundBuffer(DirectSoundState* ds, IntPtr lpds, IntPtr* buffer);
+            public static extern unsafe int DirectSoundCreateSoundBuffer(IntPtr lpds, DSBUFFERDESC* dsbd, IntPtr* buffer);
 
             [DllImport(LIBRARY)]
             public static extern unsafe int DirectSoundLock(IntPtr buffer, ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
@@ -64,7 +55,6 @@ namespace VCCSharp.Libraries
 
             [DllImport(LIBRARY)]
             public static extern unsafe void DirectSoundEnumerateSoundCards(void* fn);
-
         }
 
         public static class Joystick

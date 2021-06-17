@@ -48,10 +48,13 @@ namespace VCCSharp.Modules
         public unsafe void* SndPointer1;
         public unsafe void* SndPointer2;
 
-        private unsafe DirectSoundState* _ds;
+        private DirectSoundState _ds;
 
         private IntPtr _lpds = Zero;    //--IDirectSound*
         private IntPtr _lpBuffer = Zero;  //--IDirectSoundBuffer*  //the sound buffers
+
+        private DSBUFFERDESC _dsbd;     // directsound description
+        private WAVEFORMATEX _pcmwf;    //generic wave format structure
 
         public Audio(IModules modules)
         {
@@ -60,10 +63,10 @@ namespace VCCSharp.Modules
 
         public void ModuleInitialize()
         {
-            unsafe
-            {
-                _ds = _modules.DirectSound.GetDirectSoundState();
-            }
+            _ds = new DirectSoundState();
+
+            _dsbd = new DSBUFFERDESC();
+            _pcmwf = new WAVEFORMATEX();
         }
 
         public unsafe int SoundInit(HWND hWnd, _GUID* guid, ushort rate)
@@ -126,13 +129,30 @@ namespace VCCSharp.Modules
                     return 1;
                 }
 
-                _modules.DirectSound.DirectSoundSetupFormatDataStructure(_ds, _bitRate);
+                _ds.pcmwf.wFormatTag = Define.WAVE_FORMAT_PCM;
+                _ds.pcmwf.nChannels = 2;
+                _ds.pcmwf.nSamplesPerSec = _bitRate;
+                _ds.pcmwf.wBitsPerSample = 16;
+                _ds.pcmwf.nBlockAlign = (ushort)((_ds.pcmwf.wBitsPerSample * _ds.pcmwf.nChannels) >> 3);
+                _ds.pcmwf.nAvgBytesPerSec = _ds.pcmwf.nSamplesPerSec * _ds.pcmwf.nBlockAlign;
+                _ds.pcmwf.cbSize = 0;
 
-                _modules.DirectSound.DirectSoundSetupSecondaryBuffer(_ds, _sndBuffLength);
+                int flags = Define.DSBCAPS_GETCURRENTPOSITION2 | Define.DSBCAPS_LOCSOFTWARE | Define.DSBCAPS_STATIC | Define.DSBCAPS_GLOBALFOCUS;
+                _ds.dsbd.dwSize = (uint)sizeof(DSBUFFERDESC);
+                _ds.dsbd.dwFlags = (uint)flags;
+                _ds.dsbd.dwBufferBytes = _sndBuffLength;
+
+                fixed (WAVEFORMATEX* p = &(_ds.pcmwf))
+                {
+                    _ds.dsbd.lpwfxFormat = (IntPtr)(p);
+                }
 
                 fixed (IntPtr* p = &_lpBuffer)
                 {
-                    _hr = _modules.DirectSound.DirectSoundCreateSoundBuffer(_ds, _lpds, p);
+                    fixed (DSBUFFERDESC* q = &(_ds.dsbd))
+                    {
+                        _hr = _modules.DirectSound.DirectSoundCreateSoundBuffer(_lpds, q, p);
+                    }
                 }
 
                 if (_hr != Define.DS_OK)

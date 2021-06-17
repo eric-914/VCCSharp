@@ -9,46 +9,38 @@ namespace VCCSharp.Models
         // directsound description
         public DSBUFFERDESC dsbd;
 
-        // directsound caps
-        public DSCAPS dscaps;
-
-        // directsound buffer caps
-        public DSBCAPS dsbcaps;
-
-        // directsound description
-        public DSCBUFFERDESC dsbdin;
-
         //generic waveformat structure
         public WAVEFORMATEX pcmwf;
     }
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    [StructLayout(LayoutKind.Explicit, Size = 40, CharSet = CharSet.Ansi)]
     public struct DSBUFFERDESC
     {
+        [FieldOffset(0)]
+        public uint dwSize;
 
-    }
+        [FieldOffset(4)]
+        public uint dwFlags;
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    public struct DSCAPS
-    {
+        [FieldOffset(8)]
+        public uint dwBufferBytes;
 
-    }
+        [FieldOffset(12)]
+        public uint dwReserved;
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    public struct DSBCAPS
-    {
-
-    }
-
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    public struct DSCBUFFERDESC
-    {
-
+        [FieldOffset(16)]
+        public IntPtr lpwfxFormat; //--WAVEFORMATEX*
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct WAVEFORMATEX
     {
-
+        public ushort wFormatTag;         /* format type */
+        public ushort nChannels;          /* number of channels (i.e. mono, stereo...) */
+        public uint nSamplesPerSec;       /* sample rate */
+        public uint nAvgBytesPerSec;      /* for buffer estimation */
+        public ushort nBlockAlign;        /* block size of data */
+        public ushort wBitsPerSample;     /* number of bits per sample of mono data */
+        public ushort cbSize;             /* the count in bytes of the size of extra information (after cbSize) */
     }
 }
