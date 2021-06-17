@@ -133,7 +133,6 @@ namespace VCCSharp.Modules
                 return;
             }
 
-            //_hr = _modules.DirectSound.DirectSoundLock(audioState->BuffOffset, length, &(audioState->SndPointer1), &(SndLength1), &(audioState->SndPointer2), &(SndLength2));
             _hr = DirectSoundLock(length);
 
             if (_hr != Define.DS_OK)
@@ -141,7 +140,7 @@ namespace VCCSharp.Modules
                 return;
             }
 
-            //memcpy(instance->SndPointer1, byteBuffer, instance->SndLength1);	// copy first section of circular buffer
+            // copy first section of circular buffer
             byte* sourceBuffer = (byte*)SndPointer1;
             for (int index = 0; index < _sndLength1; index++)
             {
@@ -313,7 +312,6 @@ namespace VCCSharp.Modules
                 }
 
                 // Clear out sound buffers
-                //_hr = _modules.DirectSound.DirectSoundLock(0, (ushort)instance->SndBuffLength, &(instance->SndPointer1), &(SndLength1), &(instance->SndPointer2), &(SndLength2));
                 _hr = DirectSoundLock((ushort)_sndBuffLength);
 
                 if (_hr != Define.DS_OK)

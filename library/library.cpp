@@ -234,72 +234,6 @@ DirectSoundState* InitializeDirectSoundState(DirectSoundState* p) {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DirectSoundStopAndRelease() {
-    _sound->lpdsbuffer1->Stop();
-    _sound->lpds->Release();
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DirectSoundSetCurrentPosition(DWORD position) {
-    _sound->lpdsbuffer1->SetCurrentPosition(position);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundLock(DWORD buffOffset, unsigned short length, void** sndPointer1, DWORD* sndLength1, void** sndPointer2, DWORD* sndLength2) {
-    return _sound->lpdsbuffer1->Lock(buffOffset, length, sndPointer1, sndLength1, sndPointer2, sndLength2, 0);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundUnlock(void* sndPointer1, DWORD sndLength1, void* sndPointer2, DWORD sndLength2) {
-    return _sound->lpdsbuffer1->Unlock(sndPointer1, sndLength1, sndPointer2, sndLength2);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DirectSoundEnumerateSoundCards(LPDSENUMCALLBACKA pDSEnumCallback)
-  {
-    DirectSoundEnumerate(pDSEnumCallback, NULL);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundStop() {
-    return _sound->lpdsbuffer1->Stop();
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl DirectSoundHasBuffer() {
-    return _sound->lpdsbuffer1 != NULL;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundBufferRelease() {
-    HRESULT hResult = _sound->lpdsbuffer1->Release();
-    _sound->lpdsbuffer1 = NULL;
-    return hResult;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl DirectSoundHasInterface() {
-    return _sound->lpds != NULL;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundInterfaceRelease() {
-    HRESULT hResult = _sound->lpds->Release();
-    _sound->lpds = NULL;
-    return hResult;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) HRESULT __cdecl DirectSoundInitialize(GUID* guid) {
     return DirectSoundCreate(guid, &(_sound->lpds), NULL);	// create a directsound object
   }
@@ -341,15 +275,82 @@ extern "C" {
 }
 
 extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DirectSoundLock(DWORD buffOffset, unsigned short length, void** sndPointer1, DWORD* sndLength1, void** sndPointer2, DWORD* sndLength2) {
+    return _sound->lpdsbuffer1->Lock(buffOffset, length, sndPointer1, sndLength1, sndPointer2, sndLength2, 0);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DirectSoundUnlock(void* sndPointer1, DWORD sndLength1, void* sndPointer2, DWORD sndLength2) {
+    return _sound->lpdsbuffer1->Unlock(sndPointer1, sndLength1, sndPointer2, sndLength2);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) long __cdecl DirectSoundGetCurrentPosition(unsigned long* playCursor, unsigned long* writeCursor) {
+    return _sound->lpdsbuffer1->GetCurrentPosition(playCursor, writeCursor);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl DirectSoundSetCurrentPosition(DWORD position) {
+    _sound->lpdsbuffer1->SetCurrentPosition(position);
+  }
+}
+
+extern "C" {
   __declspec(dllexport) HRESULT __cdecl DirectSoundPlay() {
     return _sound->lpdsbuffer1->Play(0, 0, DSBPLAY_LOOPING);	// play the sound in looping mode
   }
 }
 
 extern "C" {
-  __declspec(dllexport) long __cdecl DirectSoundGetCurrentPosition(unsigned long* playCursor, unsigned long* writeCursor)
+  __declspec(dllexport) HRESULT __cdecl DirectSoundStop() {
+    return _sound->lpdsbuffer1->Stop();
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) void __cdecl DirectSoundStopAndRelease() {
+    _sound->lpdsbuffer1->Stop();
+    _sound->lpds->Release();
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl DirectSoundHasBuffer() {
+    return _sound->lpdsbuffer1 != NULL;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DirectSoundBufferRelease() {
+    HRESULT hResult = _sound->lpdsbuffer1->Release();
+    _sound->lpdsbuffer1 = NULL;
+    return hResult;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl DirectSoundHasInterface() {
+    return _sound->lpds != NULL;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) HRESULT __cdecl DirectSoundInterfaceRelease() {
+    HRESULT hResult = _sound->lpds->Release();
+    _sound->lpds = NULL;
+    return hResult;
+  }
+}
+
+//....................................................................//
+
+extern "C" {
+  __declspec(dllexport) void __cdecl DirectSoundEnumerateSoundCards(LPDSENUMCALLBACKA pDSEnumCallback)
   {
-    return _sound->lpdsbuffer1->GetCurrentPosition(playCursor, writeCursor);
+    DirectSoundEnumerate(pDSEnumCallback, NULL);
   }
 }
 

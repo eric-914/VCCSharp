@@ -15,37 +15,10 @@ namespace VCCSharp.Libraries
         public static class DirectSound
         {
             [DllImport(LIBRARY)]
-            public static extern int DirectSoundHasBuffer();
-
-            [DllImport(LIBRARY)]
-            public static extern int DirectSoundHasInterface();
-
-            [DllImport(LIBRARY)]
-            public static extern int DirectSoundBufferRelease();
-
-            [DllImport(LIBRARY)]
-            public static extern int DirectSoundCreateSoundBuffer();
-
-            [DllImport(LIBRARY)]
             public static extern unsafe int DirectSoundInitialize(_GUID* guid);
 
             [DllImport(LIBRARY)]
-            public static extern int DirectSoundInterfaceRelease();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundLock(ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundUnlock(void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
-
-            [DllImport(LIBRARY)]
             public static extern int DirectSoundSetCooperativeLevel(HWND hWnd, uint flag);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe void DirectSoundEnumerateSoundCards(void* fn);
-
-            [DllImport(LIBRARY)]
-            public static extern void DirectSoundSetCurrentPosition(ulong position);
 
             [DllImport(LIBRARY)]
             public static extern void DirectSoundSetupFormatDataStructure(ushort bitRate);
@@ -54,7 +27,19 @@ namespace VCCSharp.Libraries
             public static extern void DirectSoundSetupSecondaryBuffer(uint sndBuffLength, uint flags);
 
             [DllImport(LIBRARY)]
-            public static extern void DirectSoundStopAndRelease();
+            public static extern int DirectSoundCreateSoundBuffer();
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int DirectSoundLock(ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int DirectSoundUnlock(void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe long DirectSoundGetCurrentPosition(ulong* playCursor, ulong* writeCursor);
+
+            [DllImport(LIBRARY)]
+            public static extern void DirectSoundSetCurrentPosition(ulong position);
 
             [DllImport(LIBRARY)]
             public static extern int DirectSoundPlay();
@@ -63,7 +48,24 @@ namespace VCCSharp.Libraries
             public static extern int DirectSoundStop();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe long DirectSoundGetCurrentPosition(ulong* playCursor, ulong* writeCursor);
+            public static extern void DirectSoundStopAndRelease();
+
+            [DllImport(LIBRARY)]
+            public static extern int DirectSoundHasBuffer();
+
+            [DllImport(LIBRARY)]
+            public static extern int DirectSoundBufferRelease();
+
+            [DllImport(LIBRARY)]
+            public static extern int DirectSoundHasInterface();
+
+            [DllImport(LIBRARY)]
+            public static extern int DirectSoundInterfaceRelease();
+
+            //....................................................................//
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe void DirectSoundEnumerateSoundCards(void* fn);
         }
 
         public static class Joystick
