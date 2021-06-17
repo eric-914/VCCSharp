@@ -200,18 +200,15 @@ extern "C" {
 //--DirectSound / Audio
 
 typedef struct {
-  //PlayBack
-  LPDIRECTSOUND	lpds;           // directsound interface pointer
-  DSBUFFERDESC	dsbd;           // directsound description
-  DSCAPS			  dscaps;         // directsound caps
-  DSBCAPS			  dsbcaps;        // directsound buffer caps
+  IDirectSound*	              lpds;         // directsound interface pointer
+  IDirectSoundCapture*	      lpdsin;
+  IDirectSoundBuffer*	        lpdsbuffer1;  //the sound buffers
+  IDirectSoundCaptureBuffer*	lpdsbuffer2;	//the sound buffers for capture
 
-  //Record
-  LPDIRECTSOUNDCAPTURE8	lpdsin;
-  DSCBUFFERDESC			    dsbdin; // directsound description
-
-  LPDIRECTSOUNDBUFFER	lpdsbuffer1;			    //the sound buffers
-  LPDIRECTSOUNDCAPTUREBUFFER	lpdsbuffer2;	//the sound buffers for capture
+  DSBUFFERDESC	dsbd;     // directsound description
+  DSCAPS			  dscaps;   // directsound caps
+  DSBCAPS			  dsbcaps;  // directsound buffer caps
+  DSCBUFFERDESC	dsbdin;   // directsound description
 
   WAVEFORMATEX pcmwf; //generic waveformat structure
 } DirectSoundState;
@@ -223,14 +220,14 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundInitialize(DirectSoundState* ds, GUID* guid) {
-    return DirectSoundCreate(guid, &(ds->lpds), NULL);	// create a directsound object
+  __declspec(dllexport) HRESULT __cdecl DirectSoundInitialize(LPDIRECTSOUND* lpds, GUID* guid) {
+    return DirectSoundCreate(guid, lpds, NULL);	// create a directsound object
   }
 }
 
 extern "C" {
   __declspec(dllexport) HRESULT __cdecl DirectSoundSetCooperativeLevel(DirectSoundState* ds, HWND hWnd, DWORD flag) {
-    return ds->lpds->SetCooperativeLevel(hWnd, flag); 
+    return ds->lpds->SetCooperativeLevel(hWnd, flag);
   }
 }
 

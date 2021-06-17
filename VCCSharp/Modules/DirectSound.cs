@@ -10,7 +10,7 @@ namespace VCCSharp.Modules
     public interface IDirectSound
     {
         unsafe DirectSoundState* GetDirectSoundState();
-        unsafe int DirectSoundInitialize(DirectSoundState* ds, _GUID* guid);
+        unsafe int DirectSoundInitialize(IntPtr* ds, _GUID* guid);
         unsafe int DirectSoundSetCooperativeLevel(DirectSoundState* ds, HWND hWnd);
         unsafe void DirectSoundSetupFormatDataStructure(DirectSoundState* ds, ushort bitRate);
         unsafe void DirectSoundSetupSecondaryBuffer(DirectSoundState* ds, uint sndBuffLength);
@@ -49,7 +49,7 @@ namespace VCCSharp.Modules
             return Library.DirectSound.GetDirectSoundState();
         }
 
-        public unsafe int DirectSoundInitialize(DirectSoundState* ds, _GUID* guid)
+        public unsafe int DirectSoundInitialize(IntPtr* ds, _GUID* guid)
         {
             return Library.DirectSound.DirectSoundInitialize(ds, guid);
         }

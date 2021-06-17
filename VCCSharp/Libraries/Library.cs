@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.Security;
 using VCCSharp.Models;
 using HRESULT = System.IntPtr;
@@ -18,7 +19,7 @@ namespace VCCSharp.Libraries
             public static extern unsafe DirectSoundState* GetDirectSoundState();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundInitialize(DirectSoundState* ds, _GUID* guid);
+            public static extern unsafe int DirectSoundInitialize(IntPtr* ds, _GUID* guid);
 
             [DllImport(LIBRARY)]
             public static extern unsafe int DirectSoundSetCooperativeLevel(DirectSoundState* ds, HWND hWnd, uint flag);
