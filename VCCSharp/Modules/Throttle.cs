@@ -100,7 +100,7 @@ namespace VCCSharp.Modules
 
             if (audio.CurrentRate != 0)
             {
-                _modules.Audio.PurgeAuxBuffer();
+                //_modules.Audio.PurgeAuxBuffer();
 
                 if (_frameSkip == 1)
                 {

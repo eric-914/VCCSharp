@@ -208,50 +208,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundLock(IDirectSoundBuffer* buffer, DWORD buffOffset, unsigned short length, void** sndPointer1, DWORD* sndLength1, void** sndPointer2, DWORD* sndLength2) {
-    return buffer->Lock(buffOffset, length, sndPointer1, sndLength1, sndPointer2, sndLength2, 0);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundUnlock(IDirectSoundBuffer* buffer, void* sndPointer1, DWORD sndLength1, void* sndPointer2, DWORD sndLength2) {
-    return buffer->Unlock(sndPointer1, sndLength1, sndPointer2, sndLength2);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) long __cdecl DirectSoundGetCurrentPosition(IDirectSoundBuffer* buffer, unsigned long* playCursor, unsigned long* writeCursor) {
-    return buffer->GetCurrentPosition(playCursor, writeCursor);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DirectSoundSetCurrentPosition(IDirectSoundBuffer* buffer, DWORD position) {
-    buffer->SetCurrentPosition(position);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundPlay(IDirectSoundBuffer* buffer) {
-    return buffer->Play(0, 0, DSBPLAY_LOOPING);	// play the sound in looping mode
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundStop(IDirectSoundBuffer* buffer) {
-    return buffer->Stop();
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundBufferRelease(IDirectSoundBuffer* buffer) {
-    return buffer->Release();
-  }
-}
-
-//....................................................................//
-
-extern "C" {
   __declspec(dllexport) void __cdecl DirectSoundEnumerateSoundCards(LPDSENUMCALLBACKA pDSEnumCallback)
   {
     DirectSoundEnumerate(pDSEnumCallback, NULL);

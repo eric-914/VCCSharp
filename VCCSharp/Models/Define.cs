@@ -322,5 +322,7 @@ namespace VCCSharp.Models
         public const uint DDBLT_WAIT = 0x01000000;
 
         public const ushort WAVE_FORMAT_PCM = 1;
+
+        public const uint DSBPLAY_LOOPING = 0x00000001;
     }
 }
