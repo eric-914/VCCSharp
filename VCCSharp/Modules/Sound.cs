@@ -8,8 +8,6 @@ namespace VCCSharp.Modules
 {
     public interface ISound
     {
-        unsafe bool DirectSoundInitialize(IntPtr* ds, _GUID* guid);
-
         void DirectSoundEnumerateSoundCards();
     }
 
@@ -26,13 +24,6 @@ namespace VCCSharp.Modules
         {
             _modules = modules;
         }
-
-        public unsafe bool DirectSoundInitialize(IntPtr* lpds, _GUID* guid)
-        {
-            return Library.DirectSound.DirectSoundInitialize(lpds, guid) == Define.DS_OK;
-        }
-
-        //.........................................................................//
 
         public unsafe void DirectSoundEnumerateSoundCards()
         {

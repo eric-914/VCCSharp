@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using VCCSharp.IoC;
+using VCCSharp.Libraries;
 using VCCSharp.Models;
 using VCCSharp.Models.DirectX;
 using HWND = System.IntPtr;
@@ -24,6 +25,7 @@ namespace VCCSharp.Modules
     public class Audio : IAudio
     {
         private readonly IModules _modules;
+        private readonly IDSound _dSound;
 
         public AudioSpectrum Spectrum { get; set; }
         public ushort CurrentRate { get; set; }
@@ -57,9 +59,10 @@ namespace VCCSharp.Modules
         private WAVEFORMATEX _pcmwf;    //generic wave format structure
         // ReSharper restore IdentifierTypo
 
-        public Audio(IModules modules)
+        public Audio(IModules modules, IDSound dSound)
         {
             _modules = modules;
+            _dSound = dSound;
         }
 
         public void ModuleInitialize()
@@ -184,7 +187,7 @@ namespace VCCSharp.Modules
         {
             var dd = new IntPtr();
 
-            var result = _modules.Sound.DirectSoundInitialize(&dd, guid);
+            bool result = _dSound.DirectSoundCreate(guid, &dd, Zero) == Define.DS_OK;
 
             return result ? (IDirectSound)Marshal.GetObjectForIUnknown(dd) : null;
         }

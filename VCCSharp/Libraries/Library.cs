@@ -15,9 +15,6 @@ namespace VCCSharp.Libraries
         public static class DirectSound
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundInitialize(IntPtr* lpds, _GUID* guid);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe void DirectSoundEnumerateSoundCards(void* fn);
         }
 

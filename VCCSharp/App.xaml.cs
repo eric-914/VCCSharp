@@ -58,6 +58,7 @@ namespace VCCSharp
                 .Bind<IGdi32, Gdi32>()
                 .Bind<IWinmm, Winmm>()
                 .Bind<IDdraw, Ddraw>()
+                .Bind<IDSound, DSound>()
 
                 //--Main
                 .Bind<ICommandLineParser, CommandLineParser>()

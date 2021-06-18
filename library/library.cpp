@@ -202,15 +202,9 @@ extern "C" {
 //--DirectSound / Audio
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundInitialize(IDirectSound** lpds, GUID* guid) {
-    return DirectSoundCreate(guid, lpds, NULL);	// create a directsound object
-  }
-}
-
-extern "C" {
   __declspec(dllexport) void __cdecl DirectSoundEnumerateSoundCards(LPDSENUMCALLBACKA pDSEnumCallback)
   {
-    DirectSoundEnumerate(pDSEnumCallback, NULL);
+    DirectSoundEnumerateA(pDSEnumCallback, NULL);
   }
 }
 
