@@ -12,12 +12,6 @@ namespace VCCSharp.Libraries
         // ReSharper disable once InconsistentNaming
         public const string LIBRARY = "library.dll";
 
-        public static class DirectSound
-        {
-            [DllImport(LIBRARY)]
-            public static extern void DirectSoundEnumerateSoundCards(IntPtr fn);
-        }
-
         public static class Joystick
         {
             [DllImport(LIBRARY)]

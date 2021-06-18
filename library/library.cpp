@@ -11,7 +11,7 @@ Has following depedency libraries:
 
 /***********************************************************************************************/
 
-#if (1) //--DirectInput / Joysticks
+//--DirectInput / Joysticks
 
 #define MAXSTICKS 10
 #define STRLEN 64
@@ -192,19 +192,6 @@ extern "C" {
 extern "C" {
   __declspec(dllexport) unsigned char __cdecl Button(DIJOYSTATE2* stick, int index) {
     return stick->rgbButtons[index];
-  }
-}
-
-#endif
-
-/***********************************************************************************************/
-
-//--DirectSound / Audio
-
-extern "C" {
-  __declspec(dllexport) void __cdecl DirectSoundEnumerateSoundCards(LPDSENUMCALLBACKA pDSEnumCallback)
-  {
-    DirectSoundEnumerateA(pDSEnumCallback, NULL);
   }
 }
 

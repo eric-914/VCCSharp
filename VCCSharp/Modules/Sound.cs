@@ -19,10 +19,12 @@ namespace VCCSharp.Modules
         private static DirectSoundEnumerateCallbackTemplate _delegateInstance;
 
         private readonly IModules _modules;
+        private readonly IDSound _dSound;
 
-        public Sound(IModules modules)
+        public Sound(IModules modules, IDSound dSound)
         {
             _modules = modules;
+            _dSound = dSound;
         }
 
         public void DirectSoundEnumerateSoundCards()
@@ -31,7 +33,7 @@ namespace VCCSharp.Modules
 
             IntPtr fn = Marshal.GetFunctionPointerForDelegate(_delegateInstance);
 
-            Library.DirectSound.DirectSoundEnumerateSoundCards(fn);
+            _dSound.DirectSoundEnumerate(fn, IntPtr.Zero);
         }
 
         public int DirectSoundEnumerateCallback(IntPtr guid, IntPtr description, IntPtr module, IntPtr context)
