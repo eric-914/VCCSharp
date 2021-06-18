@@ -7,7 +7,7 @@ using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
-    public interface IDirectSound
+    public interface ISound
     {
         unsafe bool DirectSoundInitialize(IntPtr* ds, _GUID* guid);
         int DirectSoundSetCooperativeLevel(IntPtr lpds, HWND hWnd);
@@ -28,13 +28,13 @@ namespace VCCSharp.Modules
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int DirectSoundEnumerateCallbackTemplate(IntPtr guid, IntPtr description, IntPtr module, IntPtr context);
 
-    public class DirectSound : IDirectSound
+    public class Sound : ISound
     {
         private static DirectSoundEnumerateCallbackTemplate _delegateInstance;
 
         private readonly IModules _modules;
 
-        public DirectSound(IModules modules)
+        public Sound(IModules modules)
         {
             _modules = modules;
         }

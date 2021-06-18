@@ -15,7 +15,7 @@ namespace VCCSharp.IoC
         ICoCo CoCo { get; }
         IConfig Config { get; }
         IDraw Draw { get; }
-        IDirectSound DirectSound { get; }
+        ISound Sound { get; }
         IEmu Emu { get; }
         IEvents Events { get; }
         IGraphics Graphics { get; }
@@ -46,7 +46,7 @@ namespace VCCSharp.IoC
         public ICoCo CoCo { get; private set; }
         public IConfig Config { get; private set; }
         public IDraw Draw { get; private set; }
-        public IDirectSound DirectSound { get; private set; }
+        public ISound Sound { get; private set; }
         public IEmu Emu { get; private set; }
         public IEvents Events { get; private set; }
         public IGraphics Graphics { get; private set; }
@@ -75,7 +75,7 @@ namespace VCCSharp.IoC
             CoCo = _factory.Get<ICoCo>();
             Config = _factory.Get<IConfig>();
             Draw = _factory.Get<IDraw>();
-            DirectSound = _factory.Get<IDirectSound>();
+            Sound = _factory.Get<ISound>();
             Emu = _factory.Get<IEmu>();
             Events = _factory.Get<IEvents>();
             Graphics = _factory.Get<IGraphics>();

@@ -31,7 +31,7 @@ namespace VCCSharp
                 .Singleton<ICoCo, CoCo>()
                 .Singleton<IConfig, Config>()
                 .Singleton<IDraw, Draw>()
-                .Singleton<IDirectSound, DirectSound>()
+                .Singleton<ISound, Sound>()
                 .Singleton<IEmu, Emu>()
                 .Singleton<IEvents, Events>()
                 .Singleton<IGraphics, Graphics>()
