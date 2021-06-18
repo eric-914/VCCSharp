@@ -15,7 +15,7 @@ namespace VCCSharp.Libraries
         public static class DirectSound
         {
             [DllImport(LIBRARY)]
-            public static extern unsafe void DirectSoundEnumerateSoundCards(void* fn);
+            public static extern void DirectSoundEnumerateSoundCards(IntPtr fn);
         }
 
         public static class Joystick

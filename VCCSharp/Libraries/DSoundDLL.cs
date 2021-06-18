@@ -10,5 +10,8 @@ namespace VCCSharp.Libraries
 
         [DllImport(Dll)]
         public static extern unsafe long DirectSoundCreate(_GUID* pcGuidDevice, IntPtr* ppDS, IntPtr pUnkOuter);
+
+        [DllImport(Dll)]
+        public static extern long DirectSoundEnumerate(IntPtr lpDSEnumCallback, IntPtr lpContext);
     }
 }

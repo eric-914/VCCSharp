@@ -25,11 +25,11 @@ namespace VCCSharp.Modules
             _modules = modules;
         }
 
-        public unsafe void DirectSoundEnumerateSoundCards()
+        public void DirectSoundEnumerateSoundCards()
         {
             _delegateInstance = DirectSoundEnumerateCallback;
 
-            void* fn = (void*)Marshal.GetFunctionPointerForDelegate(_delegateInstance);
+            IntPtr fn = Marshal.GetFunctionPointerForDelegate(_delegateInstance);
 
             Library.DirectSound.DirectSoundEnumerateSoundCards(fn);
         }
