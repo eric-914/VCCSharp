@@ -10,17 +10,13 @@ namespace VCCSharp.Modules
     public interface ISound
     {
         unsafe bool DirectSoundInitialize(IntPtr* ds, _GUID* guid);
-        int DirectSoundSetCooperativeLevel(IntPtr lpds, HWND hWnd);
-        unsafe int DirectSoundCreateSoundBuffer(IntPtr lpds, DSBUFFERDESC* dsbd, IntPtr* buffer);
         unsafe int DirectSoundLock(IntPtr buffer, ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
         unsafe int DirectSoundUnlock(IntPtr buffer, void* sndPointer1, uint sndLength1, void* sndPointer2, uint sndLength2);
         unsafe long DirectSoundGetCurrentPosition(IntPtr buffer, ulong* playCursor, ulong* writeCursor);
         void DirectSoundSetCurrentPosition(IntPtr buffer, ulong position);
         int DirectSoundPlay(IntPtr buffer);
         int DirectSoundStop(IntPtr buffer);
-        void DirectSoundRelease(IntPtr lpds);
         int DirectSoundBufferRelease(IntPtr buffer);
-        int DirectSoundInterfaceRelease(IntPtr lpds);
 
         void DirectSoundEnumerateSoundCards();
     }
@@ -42,16 +38,6 @@ namespace VCCSharp.Modules
         public unsafe bool DirectSoundInitialize(IntPtr* lpds, _GUID* guid)
         {
             return Library.DirectSound.DirectSoundInitialize(lpds, guid) == Define.DS_OK;
-        }
-
-        public int DirectSoundSetCooperativeLevel(IntPtr lpds, HWND hWnd)
-        {
-            return Library.DirectSound.DirectSoundSetCooperativeLevel(lpds, hWnd, Define.DSSCL_NORMAL);
-        }
-
-        public unsafe int DirectSoundCreateSoundBuffer(IntPtr lpds, DSBUFFERDESC* dsbd, IntPtr* buffer)
-        {
-            return Library.DirectSound.DirectSoundCreateSoundBuffer(lpds, dsbd, buffer);
         }
 
         public unsafe int DirectSoundLock(IntPtr buffer, ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2)
@@ -84,19 +70,9 @@ namespace VCCSharp.Modules
             return Library.DirectSound.DirectSoundStop(buffer);
         }
 
-        public void DirectSoundRelease(IntPtr lpds)
-        {
-            Library.DirectSound.DirectSoundRelease(lpds);
-        }
-
         public int DirectSoundBufferRelease(IntPtr buffer)
         {
             return Library.DirectSound.DirectSoundBufferRelease(buffer);
-        }
-
-        public int DirectSoundInterfaceRelease(IntPtr lpds)
-        {
-            return Library.DirectSound.DirectSoundInterfaceRelease(lpds);
         }
 
         //.........................................................................//

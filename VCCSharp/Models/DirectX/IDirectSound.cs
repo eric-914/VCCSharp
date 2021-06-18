@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace VCCSharp.Models.DirectX
 {
@@ -6,10 +7,10 @@ namespace VCCSharp.Models.DirectX
     [Guid(DxGuid.DirectSound)]
     public interface IDirectSound
     {
-        long CreateSoundBuffer();
+        unsafe long CreateSoundBuffer(DSBUFFERDESC* dsbd, IntPtr* ppDSBuffer, IntPtr pUnkOuter);
         long GetCaps();
         long DuplicateSoundBuffer();
-        long SetCooperativeLevel();
+        long SetCooperativeLevel(IntPtr hwnd, uint dwLevel);
         long Compact();
         long GetSpeakerConfig();
         long SetSpeakerConfig();

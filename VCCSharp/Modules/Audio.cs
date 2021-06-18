@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using VCCSharp.IoC;
 using VCCSharp.Models;
+using VCCSharp.Models.DirectX;
 using HWND = System.IntPtr;
 using static System.IntPtr;
 
@@ -48,7 +50,7 @@ namespace VCCSharp.Modules
         public unsafe void* SndPointer1;
         public unsafe void* SndPointer2;
 
-        private IntPtr _ds = Zero;          //--IDirectSound*
+        private IDirectSound _ds;          //--IDirectSound*
         private IntPtr _lpBuffer = Zero;    //--IDirectSoundBuffer*  //the sound buffers
 
         // ReSharper disable IdentifierTypo
@@ -67,7 +69,7 @@ namespace VCCSharp.Modules
             _pcmwf = new WAVEFORMATEX();
         }
 
-        public unsafe int SoundInit(HWND hWnd, _GUID* guid, ushort rate)
+        public unsafe int SoundInit(IntPtr hWnd, _GUID* guid, ushort rate)
         {
             rate &= 3;
 
@@ -91,10 +93,10 @@ namespace VCCSharp.Modules
                     _lpBuffer = Zero;
                 }
 
-                if (_ds != Zero)
+                if (_ds != null)
                 {
-                    _hr = _modules.Sound.DirectSoundInterfaceRelease(_ds);
-                    _ds = Zero;
+                    //_hr = _modules.Sound.DirectSoundInterfaceRelease(_ds);
+                    _ds = null;
                 }
             }
 
@@ -111,13 +113,13 @@ namespace VCCSharp.Modules
             if (rate != 0)
             {
                 _ds = CreateDirectSound(guid);
-                if (_ds == Zero)
+                if (_ds == null)
                 {
                     return 1;
                 }
 
                 // set cooperation level normal
-                _hr = _modules.Sound.DirectSoundSetCooperativeLevel(_ds, hWnd);
+                _hr = (int)_ds.SetCooperativeLevel(hWnd, Define.DSSCL_NORMAL);
 
                 if (_hr != Define.DS_OK)
                 {
@@ -146,7 +148,9 @@ namespace VCCSharp.Modules
                 {
                     fixed (DSBUFFERDESC* q = &(_dsbd))
                     {
-                        _hr = _modules.Sound.DirectSoundCreateSoundBuffer(_ds, q, p);
+                        //_hr = _modules.Sound.DirectSoundCreateSoundBuffer(_ds, q, p);
+                        _hr = (int)_ds.CreateSoundBuffer(q, p, Zero);
+                            //_modules.Sound.DirectSoundCreateSoundBuffer(_ds, q, p);
                     }
                 }
 
@@ -194,11 +198,14 @@ namespace VCCSharp.Modules
             return result;
         }
 
-        public unsafe IntPtr CreateDirectSound(_GUID* guid)
+        public unsafe IDirectSound CreateDirectSound(_GUID* guid)
         {
             var dd = new IntPtr();
 
-            return _modules.Sound.DirectSoundInitialize(&dd, guid) ? dd : Zero;
+            var result = _modules.Sound.DirectSoundInitialize(&dd, guid);
+
+            return result ? (IDirectSound)Marshal.GetObjectForIUnknown(dd) : null;
+
         }
 
         public short SoundDeInit()
@@ -208,7 +215,9 @@ namespace VCCSharp.Modules
                 _initPassed = false;
 
                 _modules.Sound.DirectSoundStop(_lpBuffer);
-                _modules.Sound.DirectSoundRelease(_ds);
+
+                _ds = null;
+                //_modules.Sound.DirectSoundRelease(_ds);
             }
 
             return 0;

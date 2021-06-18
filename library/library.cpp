@@ -208,18 +208,6 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundSetCooperativeLevel(IDirectSound* lpds, HWND hWnd, DWORD flag) {
-    return lpds->SetCooperativeLevel(hWnd, flag);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundCreateSoundBuffer(IDirectSound* lpds, DSBUFFERDESC* dsbd, IDirectSoundBuffer** lpdsbuffer1) {
-    return lpds->CreateSoundBuffer(dsbd, lpdsbuffer1, NULL);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) HRESULT __cdecl DirectSoundLock(IDirectSoundBuffer* buffer, DWORD buffOffset, unsigned short length, void** sndPointer1, DWORD* sndLength1, void** sndPointer2, DWORD* sndLength2) {
     return buffer->Lock(buffOffset, length, sndPointer1, sndLength1, sndPointer2, sndLength2, 0);
   }
@@ -256,20 +244,8 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) void __cdecl DirectSoundRelease(IDirectSound* lpds) {
-    lpds->Release();
-  }
-}
-
-extern "C" {
   __declspec(dllexport) HRESULT __cdecl DirectSoundBufferRelease(IDirectSoundBuffer* buffer) {
     return buffer->Release();
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl DirectSoundInterfaceRelease(IDirectSound* lpds) {
-    return lpds->Release();
   }
 }
 

@@ -19,12 +19,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe int DirectSoundInitialize(IntPtr* lpds, _GUID* guid);
 
             [DllImport(LIBRARY)]
-            public static extern int DirectSoundSetCooperativeLevel(IntPtr lpds, HWND hWnd, uint flag);
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe int DirectSoundCreateSoundBuffer(IntPtr lpds, DSBUFFERDESC* dsbd, IntPtr* buffer);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe int DirectSoundLock(IntPtr buffer, ulong buffOffset, ushort length, void** sndPointer1, uint* sndLength1, void** sndPointer2, uint* sndLength2);
 
             [DllImport(LIBRARY)]
