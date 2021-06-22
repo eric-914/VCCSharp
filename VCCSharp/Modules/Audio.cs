@@ -19,7 +19,6 @@ namespace VCCSharp.Modules
         AudioSpectrum Spectrum { get; set; }
         bool PauseAudio(bool pause);
         ushort CurrentRate { get; set; }
-        void ModuleInitialize();
     }
 
     public class Audio : IAudio
@@ -52,7 +51,7 @@ namespace VCCSharp.Modules
         public IntPtr SndPointer2;
 
         private IDirectSound _ds;
-        private IDirectSoundBuffer _buffer;
+        private readonly IDirectSoundBufferWrapper _buffer = new DirectSoundBufferWrapper();
 
         // ReSharper disable IdentifierTypo
         private DSBUFFERDESC _dsbd;     // direct sound description
@@ -63,12 +62,6 @@ namespace VCCSharp.Modules
         {
             _modules = modules;
             _dSound = dSound;
-        }
-
-        public void ModuleInitialize()
-        {
-            _dsbd = new DSBUFFERDESC();
-            _pcmwf = new WAVEFORMATEX();
         }
 
         public unsafe int SoundInit(IntPtr hWnd, _GUID* guid, ushort rate)
@@ -84,18 +77,8 @@ namespace VCCSharp.Modules
 
             CurrentRate = rate;
 
-            if (_initPassed)
-            {
-                _initPassed = false;
-
-                if (_buffer != null)
-                {
-                    _buffer.Stop();
-                    _buffer = null;
-                }
-
-                _ds = null;
-            }
+            _initPassed = false;
+            _ds = null;
 
             _sndLength1 = 0;
             _sndLength2 = 0;
@@ -141,7 +124,10 @@ namespace VCCSharp.Modules
                     _dsbd.lpwfxFormat = (IntPtr)(p);
                 }
 
-                _buffer = CreateDirectSoundBuffer();
+                _buffer.Instance = CreateDirectSoundBuffer();
+                _buffer.IsValid = true;
+                _buffer.Mute = rate == 0;
+                _buffer.Stop();
 
                 if (_hr != Define.DS_OK)
                 {
@@ -216,7 +202,7 @@ namespace VCCSharp.Modules
                 _initPassed = false;
 
                 _buffer.Stop();
-                _buffer = null;
+                _buffer.IsValid = false;
 
                 _ds = null;
             }

@@ -34,7 +34,6 @@ namespace VCCSharp
 
         public void Startup(CmdLineArguments cmdLineArgs)
         {
-            _modules.Audio.ModuleInitialize();
             _modules.CoCo.SetAudioEventAudioOut();
 
             _modules.Keyboard.SetKeyTranslations();
