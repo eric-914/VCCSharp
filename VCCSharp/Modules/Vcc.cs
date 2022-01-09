@@ -182,10 +182,11 @@ namespace VCCSharp.Modules
                 //}
 
                 string soundCardName = configModel.SoundCardName;
-                byte tempSoundCardIndex = _modules.Config.GetSoundCardIndex(soundCardName);
-                SoundCardList card = _modules.Config.SoundCards[tempSoundCardIndex];
+                byte soundCardIndex = _modules.Config.GetSoundCardIndex(soundCardName);
 
-                _modules.Audio.SoundInit(_modules.Emu.WindowHandle, card.Guid, configModel.AudioRate);
+                SoundCardList soundCard = _modules.Config.SoundCards[soundCardIndex];
+
+                _modules.Audio.SoundInit(_modules.Emu.WindowHandle, soundCard.Guid, configModel.AudioRate);
 
                 _modules.Keyboard.KeyboardBuildRuntimeTable(configModel.KeyMapIndex);
 

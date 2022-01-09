@@ -107,20 +107,20 @@ namespace VCCSharp.Modules
                     int half = Define.AUDIOBUFFERS / 2;
 
                     //Don't let the buffer get less than half full
-                    if (_modules.Audio.GetFreeBlockCount() > half)
+                    if (audio.GetFreeBlockCount() > half)
                     {
                         return;
                     }
 
                     // Don't let it fill up either;
-                    while (_modules.Audio.GetFreeBlockCount() < 1)
+                    while (audio.GetFreeBlockCount() < 1)
                     {
                         //--wait
                     }
                 }
             }
 
-            //Poll Until frame end.
+            //Poll until frame end.
             while (_currentTime.QuadPart < _targetTime.QuadPart)
             {	
                 UpdateCurrentTime();

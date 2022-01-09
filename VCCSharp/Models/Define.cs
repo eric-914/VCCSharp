@@ -31,6 +31,9 @@ namespace VCCSharp.Models
         public const double COLORBURST = 3579545;
 
         public const int AUDIOBUFFERS = 12;
+        public const ushort CHANNELS = 2;
+        public const ushort BITSPERSAMPLE = 16;
+        public const ushort BLOCKALIGN = (BITSPERSAMPLE * CHANNELS) >> 3;
 
         public const int TAPEAUDIORATE = 44100;
 

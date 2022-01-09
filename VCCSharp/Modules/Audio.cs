@@ -29,7 +29,7 @@ namespace VCCSharp.Modules
         public AudioSpectrum Spectrum { get; set; }
         public ushort CurrentRate { get; set; }
 
-        private bool _initPassed;
+        private bool _initialized;
         private bool _audioPause;
 
         private ushort _bitRate;
@@ -77,7 +77,6 @@ namespace VCCSharp.Modules
 
             CurrentRate = rate;
 
-            _initPassed = false;
             _ds = null;
 
             _sndLength1 = 0;
@@ -90,9 +89,10 @@ namespace VCCSharp.Modules
 
             int result = 0;
 
-            if (rate != 0)
+            if (!_initialized)
             {
                 _ds = CreateDirectSound(guid);
+
                 if (_ds == null)
                 {
                     return 1;
@@ -106,28 +106,7 @@ namespace VCCSharp.Modules
                     return 1;
                 }
 
-                _pcmwf.wFormatTag = Define.WAVE_FORMAT_PCM;
-                _pcmwf.nChannels = 2;
-                _pcmwf.nSamplesPerSec = _bitRate;
-                _pcmwf.wBitsPerSample = 16;
-                _pcmwf.nBlockAlign = (ushort)((_pcmwf.wBitsPerSample * _pcmwf.nChannels) >> 3);
-                _pcmwf.nAvgBytesPerSec = _pcmwf.nSamplesPerSec * _pcmwf.nBlockAlign;
-                _pcmwf.cbSize = 0;
-
-                int flags = Define.DSBCAPS_GETCURRENTPOSITION2 | Define.DSBCAPS_LOCSOFTWARE | Define.DSBCAPS_STATIC | Define.DSBCAPS_GLOBALFOCUS;
-                _dsbd.dwSize = (uint)sizeof(DSBUFFERDESC);
-                _dsbd.dwFlags = (uint)flags;
-                _dsbd.dwBufferBytes = _sndBuffLength;
-
-                fixed (WAVEFORMATEX* p = &(_pcmwf))
-                {
-                    _dsbd.lpwfxFormat = (IntPtr)(p);
-                }
-
-                _buffer.Instance = CreateDirectSoundBuffer();
-                _buffer.IsValid = true;
-                _buffer.Mute = rate == 0;
-                _buffer.Stop();
+                _buffer.SetInstance(CreateDirectSoundBuffer());
 
                 if (_hr != Define.DS_OK)
                 {
@@ -160,11 +139,13 @@ namespace VCCSharp.Modules
                     return 1;
                 }
 
-                _initPassed = true;
-                _audioPause = false;
-
-                _modules.CoCo.SetAudioRate(_rateList[rate]);
+                _initialized = true;
             }
+
+            _audioPause = false;
+            _modules.CoCo.SetAudioRate(_rateList[rate]);
+
+            _buffer.Mute = (rate == 0);
 
             return result;
         }
@@ -180,6 +161,27 @@ namespace VCCSharp.Modules
 
         public unsafe IDirectSoundBuffer CreateDirectSoundBuffer()
         {
+            uint avgBytesPerSec = (uint)(_bitRate * Define.BLOCKALIGN);
+
+            _pcmwf.wFormatTag = Define.WAVE_FORMAT_PCM;
+            _pcmwf.nChannels = Define.CHANNELS;
+            _pcmwf.nSamplesPerSec = _bitRate;
+            _pcmwf.wBitsPerSample = Define.BITSPERSAMPLE;
+            _pcmwf.nBlockAlign = Define.BLOCKALIGN;
+            _pcmwf.nAvgBytesPerSec = avgBytesPerSec;
+            _pcmwf.cbSize = 0;
+
+            int flags = Define.DSBCAPS_GETCURRENTPOSITION2 | Define.DSBCAPS_LOCSOFTWARE | Define.DSBCAPS_STATIC | Define.DSBCAPS_GLOBALFOCUS;
+
+            _dsbd.dwSize = (uint)sizeof(DSBUFFERDESC);
+            _dsbd.dwFlags = (uint)flags;
+            _dsbd.dwBufferBytes = _sndBuffLength;
+
+            fixed (WAVEFORMATEX* p = &(_pcmwf))
+            {
+                _dsbd.lpwfxFormat = (IntPtr)(p);
+            }
+
             var dd = new IntPtr();
 
             fixed (DSBUFFERDESC* q = &(_dsbd))
@@ -197,12 +199,11 @@ namespace VCCSharp.Modules
 
         public short SoundDeInit()
         {
-            if (_initPassed)
+            if (_initialized)
             {
-                _initPassed = false;
+                _initialized = false;
 
                 _buffer.Stop();
-                _buffer.IsValid = false;
 
                 _ds = null;
             }
@@ -214,7 +215,7 @@ namespace VCCSharp.Modules
         {
             _modules.CoCo.SetAudioRate(_rateList[CurrentRate]);
 
-            if (_initPassed)
+            if (_initialized)
             {
                 _buffer.SetCurrentPosition(0);
             }
@@ -261,7 +262,7 @@ namespace VCCSharp.Modules
 
             _modules.Audio.Spectrum?.UpdateSoundBar(leftAverage, rightAverage);
 
-            if (!_initPassed || _audioPause)
+            if (!_initialized || _audioPause || length == 0 || _buffer.Mute)
             {
                 return;
             }
@@ -283,7 +284,7 @@ namespace VCCSharp.Modules
             CopyBuffer(SndPointer1, byteBuffer, _sndLength1);
 
             if (SndPointer2 != Zero)
-            { 
+            {
                 // copy last section of circular buffer if wrapped
                 CopyBuffer(SndPointer2, &byteBuffer[_sndLength1], _sndLength1);
             }
@@ -295,7 +296,7 @@ namespace VCCSharp.Modules
 
         public void HandleSlowAudio()
         {
-            _auxBufferPointer++;		//and chase your own tail
+            _auxBufferPointer++;	//and chase your own tail
             _auxBufferPointer %= 5;	//At this point we are so far behind we may as well drop the buffer
         }
 
@@ -306,7 +307,7 @@ namespace VCCSharp.Modules
                 ulong playCursor = 0, writeCursor = 0;
                 long maxSize;
 
-                if (!_initPassed || _audioPause)
+                if (!_initialized || _audioPause || _buffer.Mute)
                 {
                     return Define.AUDIOBUFFERS;
                 }
@@ -330,7 +331,7 @@ namespace VCCSharp.Modules
         {
             _audioPause = pause;
 
-            if (_initPassed)
+            if (_initialized)
             {
                 if (_audioPause)
                 {

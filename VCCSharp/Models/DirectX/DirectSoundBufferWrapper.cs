@@ -4,8 +4,7 @@ namespace VCCSharp.Models.DirectX
 {
     public interface IDirectSoundBufferWrapper : IDirectSoundBuffer
     {
-        public IDirectSoundBuffer Instance { get; set; }
-        public bool IsValid { get; set; }
+        public void SetInstance(IDirectSoundBuffer instance);
         public bool Mute { get; set; }
     }
 
@@ -15,27 +14,29 @@ namespace VCCSharp.Models.DirectX
     /// </summary>
     public class DirectSoundBufferWrapper : IDirectSoundBufferWrapper
     {
-        public IDirectSoundBuffer Instance { get; set; }
-        public bool IsValid { get; set; }
+        private IDirectSoundBuffer _instance;
+
         public bool Mute { get; set; }
 
+        public void SetInstance(IDirectSoundBuffer instance) => _instance = instance;
+
         public unsafe long GetCurrentPosition(ulong* playCursor, ulong* writeCursor)
-            => (IsValid && !Mute) ? Instance.GetCurrentPosition(playCursor, writeCursor) : 0;
+            => !Mute ? _instance.GetCurrentPosition(playCursor, writeCursor) : 0;
 
         public unsafe long Lock(uint buffOffset, ushort length, IntPtr* sndPointer1, uint* sndLength1, IntPtr* sndPointer2, uint* sndLength2, uint dwFlags)
-            => IsValid ? Instance.Lock(buffOffset, length, sndPointer1, sndLength1, sndPointer2, sndLength2, dwFlags) : 0;
+            => _instance.Lock(buffOffset, length, sndPointer1, sndLength1, sndPointer2, sndLength2, dwFlags);
 
         public long Play(uint dwReserved1, uint dwPriority, uint dwFlags)
-            => (IsValid && !Mute) ? Instance.Play(dwReserved1, dwPriority, dwFlags) : 0;
+            => !Mute ? _instance.Play(dwReserved1, dwPriority, dwFlags) : 0;
 
         public long SetCurrentPosition(uint position)
-            => (IsValid && !Mute) ? Instance.SetCurrentPosition(position) : 0;
+            => !Mute ? _instance.SetCurrentPosition(position) : 0;
 
         public long Stop()
-            => IsValid ? Instance.Stop() : 0;
+            => _instance.Stop();
 
         public long Unlock(IntPtr sndPointer1, uint sndLength1, IntPtr sndPointer2, uint sndLength2)
-            => IsValid ? Instance.Unlock(sndPointer1, sndLength1, sndPointer2, sndLength2) : 0;
+            => _instance.Unlock(sndPointer1, sndLength1, sndPointer2, sndLength2);
 
         #region Not Implemented
 
