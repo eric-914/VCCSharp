@@ -1,7 +1,5 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Security;
-using VCCSharp.Models;
 using HRESULT = System.IntPtr;
 
 namespace VCCSharp.Libraries

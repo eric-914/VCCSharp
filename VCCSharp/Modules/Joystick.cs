@@ -1,8 +1,8 @@
 ﻿//using Microsoft.DirectX.DirectInput;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
-using JoystickState = VCCSharp.Models.JoystickState;
 using HRESULT = System.IntPtr;
+using JoystickState = VCCSharp.Models.JoystickState;
 
 namespace VCCSharp.Modules
 {
@@ -17,10 +17,11 @@ namespace VCCSharp.Modules
         short EnumerateJoysticks();
         int InitJoyStick(byte stickNumber);
         void SetStickNumbers(byte leftStickNumber, byte rightStickNumber);
-        ushort get_pot_value(byte pot);
         void SetButtonStatus(byte side, byte state);
         void SetJoystick(ushort x, ushort y);
         byte SetMouseStatus(byte scanCode, byte phase);
+
+        ushort get_pot_value(byte pot);
 
         ushort StickValue { get; set; }
         JoystickState State { get; set; }
@@ -207,173 +208,170 @@ namespace VCCSharp.Modules
         {
             byte retValue = scanCode;
 
-            unsafe
+            JoystickModel left = GetLeftJoystick();
+            JoystickModel right = GetRightJoystick();
+
+            switch (phase)
             {
-                JoystickModel left = GetLeftJoystick();
-                JoystickModel right = GetRightJoystick();
-
-                switch (phase)
-                {
-                    case 0:
-                        if (left.UseMouse == 0)
+                case 0:
+                    if (left.UseMouse == 0)
+                    {
+                        if (scanCode == left.Left)
                         {
-                            if (scanCode == left.Left)
-                            {
-                                State.LeftStickX = 32;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == left.Right)
-                            {
-                                State.LeftStickX = 32;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == left.Up)
-                            {
-                                State.LeftStickY = 32;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == left.Down)
-                            {
-                                State.LeftStickY = 32;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == left.Fire1)
-                            {
-                                State.LeftButton1Status = 0;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == left.Fire2)
-                            {
-                                State.LeftButton2Status = 0;
-                                retValue = 0;
-                            }
+                            State.LeftStickX = 32;
+                            retValue = 0;
                         }
 
-                        if (right.UseMouse == 0)
+                        if (scanCode == left.Right)
                         {
-                            if (scanCode == right.Left)
-                            {
-                                State.RightStickX = 32;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == right.Right)
-                            {
-                                State.RightStickX = 32;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == right.Up)
-                            {
-                                State.RightStickY = 32;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == right.Down)
-                            {
-                                State.RightStickY = 32;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == right.Fire1)
-                            {
-                                State.RightButton1Status = 0;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == right.Fire2)
-                            {
-                                State.RightButton2Status = 0;
-                                retValue = 0;
-                            }
-                        }
-                        break;
-
-                    case 1:
-                        if (left.UseMouse == 0)
-                        {
-                            if (scanCode == left.Left)
-                            {
-                                State.LeftStickX = 0;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == left.Right)
-                            {
-                                State.LeftStickX = 63;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == left.Up)
-                            {
-                                State.LeftStickY = 0;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == left.Down)
-                            {
-                                State.LeftStickY = 63;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == left.Fire1)
-                            {
-                                State.LeftButton1Status = 1;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == left.Fire2)
-                            {
-                                State.LeftButton2Status = 1;
-                                retValue = 0;
-                            }
+                            State.LeftStickX = 32;
+                            retValue = 0;
                         }
 
-                        if (right.UseMouse == 0)
+                        if (scanCode == left.Up)
                         {
-                            if (scanCode == right.Left)
-                            {
-                                retValue = 0;
-                                State.RightStickX = 0;
-                            }
-
-                            if (scanCode == right.Right)
-                            {
-                                State.RightStickX = 63;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == right.Up)
-                            {
-                                State.RightStickY = 0;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == right.Down)
-                            {
-                                State.RightStickY = 63;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == right.Fire1)
-                            {
-                                State.RightButton1Status = 1;
-                                retValue = 0;
-                            }
-
-                            if (scanCode == right.Fire2)
-                            {
-                                State.RightButton2Status = 1;
-                                retValue = 0;
-                            }
+                            State.LeftStickY = 32;
+                            retValue = 0;
                         }
-                        break;
-                }
+
+                        if (scanCode == left.Down)
+                        {
+                            State.LeftStickY = 32;
+                            retValue = 0;
+                        }
+
+                        if (scanCode == left.Fire1)
+                        {
+                            State.LeftButton1Status = 0;
+                            retValue = 0;
+                        }
+
+                        if (scanCode == left.Fire2)
+                        {
+                            State.LeftButton2Status = 0;
+                            retValue = 0;
+                        }
+                    }
+
+                    if (right.UseMouse == 0)
+                    {
+                        if (scanCode == right.Left)
+                        {
+                            State.RightStickX = 32;
+                            retValue = 0;
+                        }
+
+                        if (scanCode == right.Right)
+                        {
+                            State.RightStickX = 32;
+                            retValue = 0;
+                        }
+
+                        if (scanCode == right.Up)
+                        {
+                            State.RightStickY = 32;
+                            retValue = 0;
+                        }
+
+                        if (scanCode == right.Down)
+                        {
+                            State.RightStickY = 32;
+                            retValue = 0;
+                        }
+
+                        if (scanCode == right.Fire1)
+                        {
+                            State.RightButton1Status = 0;
+                            retValue = 0;
+                        }
+
+                        if (scanCode == right.Fire2)
+                        {
+                            State.RightButton2Status = 0;
+                            retValue = 0;
+                        }
+                    }
+                    break;
+
+                case 1:
+                    if (left.UseMouse == 0)
+                    {
+                        if (scanCode == left.Left)
+                        {
+                            State.LeftStickX = 0;
+                            retValue = 0;
+                        }
+
+                        if (scanCode == left.Right)
+                        {
+                            State.LeftStickX = 63;
+                            retValue = 0;
+                        }
+
+                        if (scanCode == left.Up)
+                        {
+                            State.LeftStickY = 0;
+                            retValue = 0;
+                        }
+
+                        if (scanCode == left.Down)
+                        {
+                            State.LeftStickY = 63;
+                            retValue = 0;
+                        }
+
+                        if (scanCode == left.Fire1)
+                        {
+                            State.LeftButton1Status = 1;
+                            retValue = 0;
+                        }
+
+                        if (scanCode == left.Fire2)
+                        {
+                            State.LeftButton2Status = 1;
+                            retValue = 0;
+                        }
+                    }
+
+                    if (right.UseMouse == 0)
+                    {
+                        if (scanCode == right.Left)
+                        {
+                            retValue = 0;
+                            State.RightStickX = 0;
+                        }
+
+                        if (scanCode == right.Right)
+                        {
+                            State.RightStickX = 63;
+                            retValue = 0;
+                        }
+
+                        if (scanCode == right.Up)
+                        {
+                            State.RightStickY = 0;
+                            retValue = 0;
+                        }
+
+                        if (scanCode == right.Down)
+                        {
+                            State.RightStickY = 63;
+                            retValue = 0;
+                        }
+
+                        if (scanCode == right.Fire1)
+                        {
+                            State.RightButton1Status = 1;
+                            retValue = 0;
+                        }
+
+                        if (scanCode == right.Fire2)
+                        {
+                            State.RightButton2Status = 1;
+                            retValue = 0;
+                        }
+                    }
+                    break;
             }
 
             return retValue;

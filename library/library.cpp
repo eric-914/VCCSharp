@@ -7,13 +7,12 @@ Has following depedency libraries:
 */
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
-#include <dsound.h>
 
 /***********************************************************************************************/
 
 //--DirectInput / Joysticks
 
-#define MAXSTICKS 10
+#define MAXSTICKS 8
 #define STRLEN 64
 
 static DIJOYSTATE2* _joyState = new DIJOYSTATE2();
@@ -22,10 +21,6 @@ static LPDIRECTINPUT8 _di;
 
 static char _stickName[MAXSTICKS][STRLEN];
 static unsigned char _currentStick;
-
-BOOL HasJoystick(unsigned char stickNumber) {
-  return _joysticks[stickNumber] != NULL;
-}
 
 extern "C" {
   __declspec(dllexport) DIJOYSTATE2* __cdecl GetPollStick()
@@ -70,10 +65,6 @@ extern "C" {
   }
 }
 
-void SetStickName(unsigned char joystickIndex, const char* joystickName) {
-  strncpy(_stickName[joystickIndex], joystickName, STRLEN);
-}
-
 extern "C" {
   __declspec(dllexport) int __cdecl EnumerateJoysticks()
   {
@@ -83,7 +74,8 @@ extern "C" {
     LPDIENUMDEVICESCALLBACKA callback = [](const DIDEVICEINSTANCE* p, VOID* v) {
       HRESULT hr = _di->CreateDevice(p->guidInstance, &_joysticks[joystickIndex], NULL);
 
-      SetStickName(joystickIndex, p->tszProductName);
+      strncpy(_stickName[joystickIndex], p->tszProductName, STRLEN);
+
       joystickIndex++;
 
       return (BOOL)(joystickIndex < MAXSTICKS);
@@ -218,4 +210,3 @@ BOOL WINAPI DllMain(
 
   return TRUE;
 }
-
