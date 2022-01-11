@@ -11,9 +11,42 @@ static LPDIRECTINPUTDEVICE8 _joysticks[MAXSTICKS];
 static unsigned char _joystickIndex = 0;
 
 extern "C" {
-  __declspec(dllexport) void __cdecl EnumerateJoysticks(LPDIRECTINPUT8 di, LPDIENUMDEVICESCALLBACKA callback)
+  __declspec(dllexport) BOOL __cdecl InitJoyStick(unsigned char stickNumber)
   {
-    HRESULT hr = di->EnumDevices(DI8DEVCLASS_GAMECTRL, callback, NULL, DIEDFL_ATTACHEDONLY);
+    static LPDIRECTINPUTDEVICE8 stick = _joysticks[stickNumber];
+
+    //	DIDEVCAPS capabilities;
+    HRESULT hr;
+
+    LPDIENUMDEVICEOBJECTSCALLBACKA callback = [](const DIDEVICEOBJECTINSTANCE* p, VOID* v) {
+      DIPROPRANGE d;
+      d.diph.dwSize = sizeof(DIPROPRANGE);
+      d.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+      d.diph.dwHow = DIPH_BYID;
+      d.diph.dwObj = p->dwType;
+      d.lMin = 0;
+      d.lMax = 0xFFFF;
+
+      if (FAILED(stick->SetProperty(DIPROP_RANGE, &d.diph))) {
+        return(DIENUM_STOP);
+      }
+
+      return (BOOL)(DIENUM_CONTINUE);
+    };
+
+    if (stick == NULL) {
+      return(0);
+    }
+
+    if (FAILED(hr = stick->SetDataFormat(&c_dfDIJoystick2))) {
+      return(0);
+    }
+
+    if (FAILED(hr = stick->EnumObjects(callback, NULL, DIDFT_AXIS))) {
+      return(0);
+    }
+
+    return(1); //return true on success
   }
 }
 
@@ -57,46 +90,6 @@ extern "C" {
     }
 
     return(S_OK);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl InitJoyStick(unsigned char stickNumber)
-  {
-    static LPDIRECTINPUTDEVICE8 stick = _joysticks[stickNumber];
-
-    //	DIDEVCAPS capabilities;
-    HRESULT hr;
-
-    LPDIENUMDEVICEOBJECTSCALLBACKA callback = [](const DIDEVICEOBJECTINSTANCE* p, VOID* v) {
-      DIPROPRANGE d;
-      d.diph.dwSize = sizeof(DIPROPRANGE);
-      d.diph.dwHeaderSize = sizeof(DIPROPHEADER);
-      d.diph.dwHow = DIPH_BYID;
-      d.diph.dwObj = p->dwType;
-      d.lMin = 0;
-      d.lMax = 0xFFFF;
-
-      if (FAILED(stick->SetProperty(DIPROP_RANGE, &d.diph))) {
-        return(DIENUM_STOP);
-      }
-
-      return (BOOL)(DIENUM_CONTINUE);
-    };
-
-    if (stick == NULL) {
-      return(0);
-    }
-
-    if (FAILED(hr = stick->SetDataFormat(&c_dfDIJoystick2))) {
-      return(0);
-    }
-
-    if (FAILED(hr = stick->EnumObjects(callback, NULL, DIDFT_AXIS))) {
-      return(0);
-    }
-
-    return(1); //return true on success
   }
 }
 

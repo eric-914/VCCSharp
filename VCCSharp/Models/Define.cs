@@ -329,5 +329,14 @@ namespace VCCSharp.Models
         public const uint DSBPLAY_LOOPING = 0x00000001;
 
         public const uint MAX_JOYSTICKS = 8;
+
+        //public const uint DI8DEVCLASS_ALL = 0;
+        //public const uint DI8DEVCLASS_DEVICE = 1;
+        //public const uint DI8DEVCLASS_POINTER = 2;
+        //public const uint DI8DEVCLASS_KEYBOARD = 3;
+        public const uint DI8DEVCLASS_GAMECTRL = 4;
+
+        //public const uint DIEDFL_ALLDEVICES = 0x00000000;
+        public const uint DIEDFL_ATTACHEDONLY = 0x00000001;
     }
 }

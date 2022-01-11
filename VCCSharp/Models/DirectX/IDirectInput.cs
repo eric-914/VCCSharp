@@ -21,7 +21,7 @@ namespace VCCSharp.Models.DirectX
         unsafe long CreateDevice(_GUID refGuid, ref IDirectInputDevice lpDirectInputDevice, IntPtr lpUnknown);
 
         //STDMETHOD(EnumDevices)(THIS_ DWORD,LPDIENUMDEVICESCALLBACKA,LPVOID,DWORD) PURE;
-        unsafe long EnumDevices(uint dwDevType, DIEnumDevicesCallback lpCallback, void* pvRef, uint dwFlags);
+        unsafe long EnumDevices(uint dwDevType, [MarshalAs(UnmanagedType.FunctionPtr)] DIEnumDevicesCallback callback, IntPtr pvRef, uint dwFlags);
 
         //STDMETHOD(GetDeviceStatus)(THIS_ REFGUID) PURE;
         unsafe long GetDeviceStatus(_GUID* rguidInstance);

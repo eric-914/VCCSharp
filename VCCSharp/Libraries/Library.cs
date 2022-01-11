@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using System.Security;
-using VCCSharp.Models.DirectX;
 using HRESULT = System.IntPtr;
 
 namespace VCCSharp.Libraries
@@ -13,9 +12,6 @@ namespace VCCSharp.Libraries
 
         public static class Joystick
         {
-            [DllImport(LIBRARY)]
-            public static extern void EnumerateJoysticks(IDirectInput di, DIEnumDevicesCallback callback);
-
             [DllImport(LIBRARY)]
             public static extern int InitJoyStick(byte stickNumber);
 

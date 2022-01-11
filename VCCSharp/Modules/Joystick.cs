@@ -7,8 +7,8 @@ using VCCSharp.Libraries;
 using VCCSharp.Models;
 using VCCSharp.Models.DirectX;
 using HRESULT = System.IntPtr;
-using LPVOID = System.IntPtr;
 using JoystickState = VCCSharp.Models.JoystickState;
+using LPVOID = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -85,11 +85,12 @@ namespace VCCSharp.Modules
                     return ++NumberOfJoysticks < Define.MAX_JOYSTICKS ? Define.TRUE : Define.FALSE;
                 }
 
-                //DeviceList devices = Manager.GetDevices(
-                //    DeviceClass.GameControl,
-                //    EnumDevicesFlags.AttachedOnly);
+                long hr = _di.EnumDevices(Define.DI8DEVCLASS_GAMECTRL, EnumerateCallback, IntPtr.Zero, Define.DIEDFL_ATTACHEDONLY);
 
-                Library.Joystick.EnumerateJoysticks(_di, EnumerateCallback);
+                if (hr < 0)
+                {
+                    throw new Exception("Failed to enumerate joysticks");
+                }
             }
 
             Joysticks = Joysticks.Take(NumberOfJoysticks).ToArray();
