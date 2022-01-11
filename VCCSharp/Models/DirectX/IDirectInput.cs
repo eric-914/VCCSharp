@@ -5,7 +5,7 @@ using HINSTANCE = System.IntPtr;
 
 namespace VCCSharp.Models.DirectX
 {
-    public delegate int DIEnumDevicesCallback( /*LPCDIDEVICEINSTANCE*/ IntPtr lpddi, /*LPVOID*/ IntPtr pvRef);
+    public unsafe delegate int DIEnumDevicesCallback(DIDEVICEINSTANCE* lpddi, void* pvRef);
 
     [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [Guid(DxGuid.DirectInput)]
@@ -21,7 +21,7 @@ namespace VCCSharp.Models.DirectX
         unsafe long CreateDevice(_GUID* refGuid, IntPtr lpDirectInputDevice, IntPtr lpUnknown);
 
         //STDMETHOD(EnumDevices)(THIS_ DWORD,LPDIENUMDEVICESCALLBACKA,LPVOID,DWORD) PURE;
-        unsafe long EnumDevices(uint dwDevType, IntPtr lpCallback, IntPtr pvRef, uint dwFlags);
+        unsafe long EnumDevices(uint dwDevType, DIEnumDevicesCallback lpCallback, void* pvRef, uint dwFlags);
 
         //STDMETHOD(GetDeviceStatus)(THIS_ REFGUID) PURE;
         unsafe long GetDeviceStatus(_GUID* rguidInstance);

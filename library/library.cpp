@@ -29,7 +29,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl EnumerateJoysticksX(LPDIRECTINPUT8 di, char* buffer, unsigned char bufferSize, LPDIENUMDEVICESCALLBACKA callback)
+  __declspec(dllexport) int __cdecl EnumerateJoysticks(LPDIRECTINPUT8 di, char* buffer, unsigned char bufferSize, LPDIENUMDEVICESCALLBACKA callback)
   {
     _di = di;
     _buffer = buffer;
@@ -38,13 +38,6 @@ extern "C" {
     HRESULT hr = _di->EnumDevices(DI8DEVCLASS_GAMECTRL, callback, NULL, DIEDFL_ATTACHEDONLY);
 
     return FAILED(hr) ? 0 : _joystickIndex;
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) int __cdecl EnumerateJoysticks(LPDIRECTINPUT8 di, char* buffer, unsigned char bufferSize)
-  {
-    return EnumerateJoysticksX(di, buffer, bufferSize, EnumerateCallback);
   }
 }
 

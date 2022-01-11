@@ -148,7 +148,7 @@ namespace VCCSharp.Modules
             {
                 fixed (byte* buffer = names)
                 {
-                    return Library.Joystick.EnumerateJoysticks(_di, buffer, bufferLength);
+                    return Library.Joystick.EnumerateJoysticks(_di, buffer, bufferLength, Library.Joystick.EnumerateCallback);
                 }
             }
         }
