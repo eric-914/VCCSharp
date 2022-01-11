@@ -39,8 +39,9 @@
       <ComboBox Grid.Row="0" Grid.Column="1" IsEnabled="{Binding Device, Converter={StaticResource Enabled}, ConverterParameter={x:Static enums:JoystickDevices.Audio}}"/>
 
       <!-- TODO: Re-enable once I figure out how to add 'joysticks' to the list -->
-      <RadioButton Grid.Row="1" Grid.Column="0" IsEnabled="False" Content="Joystick" IsChecked="{Binding Device, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:JoystickDevices.Joystick}}"/>
-      <ComboBox Grid.Row="1" Grid.Column="1" IsEnabled="{Binding Device, Converter={StaticResource Enabled}, ConverterParameter={x:Static enums:JoystickDevices.Joystick}}"/>
+      <RadioButton Grid.Row="1" Grid.Column="0" IsEnabled="True" Content="Joystick" IsChecked="{Binding Device, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:JoystickDevices.Joystick}}"/>
+      <ComboBox Grid.Row="1" Grid.Column="1" IsEnabled="{Binding Device, Converter={StaticResource Enabled}, ConverterParameter={x:Static enums:JoystickDevices.Joystick}}"
+                ItemsSource="{Binding JoystickNames}"/>
 
       <RadioButton Grid.Row="2" Grid.Column="0" Content="Mouse" IsChecked="{Binding Device, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:JoystickDevices.Mouse}}"/>
 

@@ -59,6 +59,7 @@ namespace VCCSharp
                 .Bind<IWinmm, Winmm>()
                 .Bind<IDdraw, Ddraw>()
                 .Bind<IDSound, DSound>()
+                .Bind<IDInput, DInput>()
 
                 //--Main
                 .Bind<ICommandLineParser, CommandLineParser>()

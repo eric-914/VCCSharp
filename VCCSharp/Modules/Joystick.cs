@@ -1,6 +1,10 @@
 ﻿//using Microsoft.DirectX.DirectInput;
+
+using System;
+using System.Runtime.InteropServices;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using VCCSharp.Models.DirectX;
 using HRESULT = System.IntPtr;
 using JoystickState = VCCSharp.Models.JoystickState;
 
@@ -8,14 +12,14 @@ namespace VCCSharp.Modules
 {
     public interface IJoystick
     {
+        short FindJoysticks();
+
         JoystickModel GetLeftJoystick();
         JoystickModel GetRightJoystick();
 
         void SetLeftJoystick(JoystickModel model);
         void SetRightJoystick(JoystickModel model);
 
-        short EnumerateJoysticks();
-        int InitJoyStick(byte stickNumber);
         void SetStickNumbers(byte leftStickNumber, byte rightStickNumber);
         void SetButtonStatus(byte side, byte state);
         void SetJoystick(ushort x, ushort y);
@@ -29,13 +33,90 @@ namespace VCCSharp.Modules
 
     public class Joystick : IJoystick
     {
+        private readonly IDInput _dInput;
+
         public ushort StickValue { get; set; }
+
+        public short NumberOfJoysticks { get; private set; }
+        public string[] JoystickNames { get; private set; }
 
         public JoystickState State { get; set; } = new JoystickState();
         private JoystickModel _left = new JoystickModel();
         private JoystickModel _right = new JoystickModel();
 
         private readonly unsafe void* _pollStick = GetPollStick();
+
+        private IDirectInput _di;
+
+        public Joystick(IDInput dInput)
+        {
+            _dInput = dInput;
+        }
+
+        public short FindJoysticks()
+        {
+            const int bufferLength = 64;
+
+            byte[,] buffer = new byte[Define.MAX_JOYSTICKS, bufferLength];
+
+            _di = CreateDirectInput();
+
+            NumberOfJoysticks = EnumerateJoysticks(buffer, bufferLength);
+
+            JoystickNames = new string[NumberOfJoysticks];
+
+            for (int i = 0; i < NumberOfJoysticks; i++)
+            {
+                unsafe
+                {
+                    fixed (byte* p = &buffer[i, 0])
+                    {
+                        JoystickNames[i] = $"{i + 1}. {Converter.ToString(p)}";
+                    }
+                }
+            }
+
+            for (byte index = 0; index < NumberOfJoysticks; index++)
+            {
+                InitJoyStick(index);
+            }
+
+            return NumberOfJoysticks;
+        }
+
+        private IDirectInput CreateDirectInput()
+        {
+            const uint version = 0x0800;
+
+            HRESULT di = IntPtr.Zero;
+
+            IntPtr handle = KernelDll.GetModuleHandleA(IntPtr.Zero);
+
+            _GUID guid = CreateIDirectInput8AGuid();
+
+            long hr = _dInput.DirectInputCreate(handle, version, guid, ref di);
+
+            return hr < 0 ? null : (IDirectInput)Marshal.GetObjectForIUnknown(di);
+        }
+
+        private static unsafe _GUID CreateIDirectInput8AGuid()
+        {
+            byte[] d4 = { 0xAA, 0x99, 0x5D, 0x64, 0xED, 0x36, 0x97, 0x00 };
+
+            _GUID guid = new _GUID
+            {
+                Data1 = 0xBF798030,
+                Data2 = 0x483A,
+                Data3 = 0x4DA2
+            };
+
+            for (int i = 0; i < 8; i++)
+            {
+                guid.Data4[i] = d4[i];
+            }
+
+            return guid;
+        }
 
         public JoystickModel GetLeftJoystick()
         {
@@ -57,13 +138,19 @@ namespace VCCSharp.Modules
             _right = model;
         }
 
-        public short EnumerateJoysticks()
+        public short EnumerateJoysticks(byte[,] names, byte bufferLength)
         {
             //DeviceList devices = Manager.GetDevices(
             //    DeviceClass.GameControl,
             //    EnumDevicesFlags.AttachedOnly);
 
-            return Library.Joystick.EnumerateJoysticks();
+            unsafe
+            {
+                fixed (byte* buffer = names)
+                {
+                    return Library.Joystick.EnumerateJoysticks(_di, buffer, bufferLength);
+                }
+            }
         }
 
         public int InitJoyStick(byte stickNumber)

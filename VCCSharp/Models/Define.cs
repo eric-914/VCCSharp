@@ -327,5 +327,7 @@ namespace VCCSharp.Models
         public const ushort WAVE_FORMAT_PCM = 1;
 
         public const uint DSBPLAY_LOOPING = 0x00000001;
+
+        public const uint MAX_JOYSTICKS = 8;
     }
 }

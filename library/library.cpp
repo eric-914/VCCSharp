@@ -1,26 +1,52 @@
-/*
-Has following depedency libraries:
-    > ddraw.lib
-    > dinput8.lib
-    > dsound.lib
-    > dxguid.lib;
-*/
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
 /***********************************************************************************************/
 
-//--DirectInput / Joysticks
-
 #define MAXSTICKS 8
-#define STRLEN 64
 
 static DIJOYSTATE2* _joyState = new DIJOYSTATE2();
 static LPDIRECTINPUTDEVICE8 _joysticks[MAXSTICKS];
+
+static unsigned char _joystickIndex = 0;
+static char* _buffer;
+static unsigned char _bufferSize;
 static LPDIRECTINPUT8 _di;
 
-static char _stickName[MAXSTICKS][STRLEN];
-static unsigned char _currentStick;
+extern "C" {
+  __declspec(dllexport) int __cdecl EnumerateCallback(LPCDIDEVICEINSTANCEA p, void* v)
+  {
+    HRESULT hr = _di->CreateDevice(p->guidInstance, &_joysticks[_joystickIndex], NULL);
+
+    unsigned int offset = _joystickIndex * _bufferSize;
+
+    strncpy(_buffer + offset, p->tszProductName, _bufferSize);
+
+    _joystickIndex++;
+
+    return (int)(_joystickIndex < MAXSTICKS);
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) int __cdecl EnumerateJoysticksX(LPDIRECTINPUT8 di, char* buffer, unsigned char bufferSize, LPDIENUMDEVICESCALLBACKA callback)
+  {
+    _di = di;
+    _buffer = buffer;
+    _bufferSize = bufferSize;
+
+    HRESULT hr = _di->EnumDevices(DI8DEVCLASS_GAMECTRL, callback, NULL, DIEDFL_ATTACHEDONLY);
+
+    return FAILED(hr) ? 0 : _joystickIndex;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) int __cdecl EnumerateJoysticks(LPDIRECTINPUT8 di, char* buffer, unsigned char bufferSize)
+  {
+    return EnumerateJoysticksX(di, buffer, bufferSize, EnumerateCallback);
+  }
+}
 
 extern "C" {
   __declspec(dllexport) DIJOYSTATE2* __cdecl GetPollStick()
@@ -66,36 +92,10 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) int __cdecl EnumerateJoysticks()
-  {
-    HRESULT hr;
-    static unsigned char joystickIndex = 0;
-
-    LPDIENUMDEVICESCALLBACKA callback = [](const DIDEVICEINSTANCE* p, VOID* v) {
-      HRESULT hr = _di->CreateDevice(p->guidInstance, &_joysticks[joystickIndex], NULL);
-
-      strncpy(_stickName[joystickIndex], p->tszProductName, STRLEN);
-
-      joystickIndex++;
-
-      return (BOOL)(joystickIndex < MAXSTICKS);
-    };
-
-    if (FAILED(hr = DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, IID_IDirectInput8, (VOID**)&_di, NULL))) {
-      return(0);
-    }
-
-    if (FAILED(hr = _di->EnumDevices(DI8DEVCLASS_GAMECTRL, callback, NULL, DIEDFL_ATTACHEDONLY))) {
-      return(0);
-    }
-
-    return(joystickIndex);
-  }
-}
-
-extern "C" {
   __declspec(dllexport) BOOL __cdecl InitJoyStick(unsigned char stickNumber)
   {
+    static LPDIRECTINPUTDEVICE8 stick = _joysticks[stickNumber];
+
     //	DIDEVCAPS capabilities;
     HRESULT hr;
 
@@ -108,24 +108,22 @@ extern "C" {
       d.lMin = 0;
       d.lMax = 0xFFFF;
 
-      if (FAILED(_joysticks[_currentStick]->SetProperty(DIPROP_RANGE, &d.diph))) {
+      if (FAILED(stick->SetProperty(DIPROP_RANGE, &d.diph))) {
         return(DIENUM_STOP);
       }
 
       return (BOOL)(DIENUM_CONTINUE);
     };
 
-    _currentStick = stickNumber;
-
-    if (_joysticks[stickNumber] == NULL) {
+    if (stick == NULL) {
       return(0);
     }
 
-    if (FAILED(hr = _joysticks[stickNumber]->SetDataFormat(&c_dfDIJoystick2))) {
+    if (FAILED(hr = stick->SetDataFormat(&c_dfDIJoystick2))) {
       return(0);
     }
 
-    if (FAILED(hr = _joysticks[stickNumber]->EnumObjects(callback, NULL, DIDFT_AXIS))) {
+    if (FAILED(hr = stick->EnumObjects(callback, NULL, DIDFT_AXIS))) {
       return(0);
     }
 

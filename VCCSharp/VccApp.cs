@@ -56,7 +56,7 @@ namespace VCCSharp
 
             //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
             //Loads the default config file Vcc.ini from the exec directory
-            _modules.Config.InitConfig(ref cmdLineArgs);
+            //_modules.Config.InitConfig(ref cmdLineArgs);
 
             _modules.Draw.ClearScreen();
 
