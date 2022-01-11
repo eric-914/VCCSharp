@@ -9,35 +9,11 @@ static DIJOYSTATE2* _joyState = new DIJOYSTATE2();
 static LPDIRECTINPUTDEVICE8 _joysticks[MAXSTICKS];
 
 static unsigned char _joystickIndex = 0;
-static char* _buffer;
-static unsigned char _bufferSize;
-static LPDIRECTINPUT8 _di;
 
 extern "C" {
-  __declspec(dllexport) int __cdecl EnumerateCallback(LPCDIDEVICEINSTANCEA p, void* v)
+  __declspec(dllexport) void __cdecl EnumerateJoysticks(LPDIRECTINPUT8 di, LPDIENUMDEVICESCALLBACKA callback)
   {
-    HRESULT hr = _di->CreateDevice(p->guidInstance, &_joysticks[_joystickIndex], NULL);
-
-    unsigned int offset = _joystickIndex * _bufferSize;
-
-    strncpy(_buffer + offset, p->tszProductName, _bufferSize);
-
-    _joystickIndex++;
-
-    return (int)(_joystickIndex < MAXSTICKS);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) int __cdecl EnumerateJoysticks(LPDIRECTINPUT8 di, char* buffer, unsigned char bufferSize, LPDIENUMDEVICESCALLBACKA callback)
-  {
-    _di = di;
-    _buffer = buffer;
-    _bufferSize = bufferSize;
-
-    HRESULT hr = _di->EnumDevices(DI8DEVCLASS_GAMECTRL, callback, NULL, DIEDFL_ATTACHEDONLY);
-
-    return FAILED(hr) ? 0 : _joystickIndex;
+    HRESULT hr = di->EnumDevices(DI8DEVCLASS_GAMECTRL, callback, NULL, DIEDFL_ATTACHEDONLY);
   }
 }
 

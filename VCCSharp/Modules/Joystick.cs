@@ -1,11 +1,13 @@
 ﻿//using Microsoft.DirectX.DirectInput;
 
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using VCCSharp.Models.DirectX;
 using HRESULT = System.IntPtr;
+using LPVOID = System.IntPtr;
 using JoystickState = VCCSharp.Models.JoystickState;
 
 namespace VCCSharp.Modules
@@ -38,7 +40,7 @@ namespace VCCSharp.Modules
         public ushort StickValue { get; set; }
 
         public short NumberOfJoysticks { get; private set; }
-        public string[] JoystickNames { get; private set; }
+        public JoystickDevice[] Joysticks { get; private set; }
 
         public JoystickState State { get; set; } = new JoystickState();
         private JoystickModel _left = new JoystickModel();
@@ -55,30 +57,47 @@ namespace VCCSharp.Modules
 
         public short FindJoysticks()
         {
-            const int bufferLength = 64;
-
-            byte[,] buffer = new byte[Define.MAX_JOYSTICKS, bufferLength];
-
             _di = CreateDirectInput();
 
-            NumberOfJoysticks = EnumerateJoysticks(buffer, bufferLength);
+            Joysticks = new JoystickDevice[Define.MAX_JOYSTICKS];
 
-            JoystickNames = new string[NumberOfJoysticks];
-
-            for (int i = 0; i < NumberOfJoysticks; i++)
+            unsafe
             {
-                unsafe
+                int EnumerateCallback(DIDEVICEINSTANCE* p, void* v)
                 {
-                    fixed (byte* p = &buffer[i, 0])
+                    IDirectInputDevice joystick = null;
+
+                    _GUID guidInstance = p->guidInstance;
+
+                    long hr = _di.CreateDevice(guidInstance, ref joystick, IntPtr.Zero);
+
+                    if (hr < 0)
                     {
-                        JoystickNames[i] = $"{i + 1}. {Converter.ToString(p)}";
+                        throw new Exception($"Failed to create device #{NumberOfJoysticks}");
                     }
+
+                    Joysticks[NumberOfJoysticks] = new JoystickDevice
+                    {
+                        Device = joystick,
+                        Name = $"{NumberOfJoysticks + 1}. {Converter.ToString(p->tszInstanceName)}"
+                    };
+
+                    return ++NumberOfJoysticks < Define.MAX_JOYSTICKS ? Define.TRUE : Define.FALSE;
                 }
+
+                //DeviceList devices = Manager.GetDevices(
+                //    DeviceClass.GameControl,
+                //    EnumDevicesFlags.AttachedOnly);
+
+                Library.Joystick.EnumerateJoysticks(_di, EnumerateCallback);
             }
+
+            Joysticks = Joysticks.Take(NumberOfJoysticks).ToArray();
 
             for (byte index = 0; index < NumberOfJoysticks; index++)
             {
-                InitJoyStick(index);
+                //TODO: Disabled as C++ doesn't have joystick list now
+                //InitJoyStick(index);
             }
 
             return NumberOfJoysticks;
@@ -88,7 +107,7 @@ namespace VCCSharp.Modules
         {
             const uint version = 0x0800;
 
-            HRESULT di = IntPtr.Zero;
+            LPVOID di = IntPtr.Zero;
 
             IntPtr handle = KernelDll.GetModuleHandleA(IntPtr.Zero);
 
@@ -136,21 +155,6 @@ namespace VCCSharp.Modules
         public void SetRightJoystick(JoystickModel model)
         {
             _right = model;
-        }
-
-        public short EnumerateJoysticks(byte[,] names, byte bufferLength)
-        {
-            //DeviceList devices = Manager.GetDevices(
-            //    DeviceClass.GameControl,
-            //    EnumDevicesFlags.AttachedOnly);
-
-            unsafe
-            {
-                fixed (byte* buffer = names)
-                {
-                    return Library.Joystick.EnumerateJoysticks(_di, buffer, bufferLength, Library.Joystick.EnumerateCallback);
-                }
-            }
         }
 
         public int InitJoyStick(byte stickNumber)

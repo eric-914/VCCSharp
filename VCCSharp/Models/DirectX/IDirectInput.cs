@@ -18,7 +18,7 @@ namespace VCCSharp.Models.DirectX
 
         /*** IDirectInput8A methods ***/
         //STDMETHOD(CreateDevice)(THIS_ REFGUID,LPDIRECTINPUTDEVICE8A *,LPUNKNOWN) PURE;
-        unsafe long CreateDevice(_GUID* refGuid, IntPtr lpDirectInputDevice, IntPtr lpUnknown);
+        unsafe long CreateDevice(_GUID refGuid, ref IDirectInputDevice lpDirectInputDevice, IntPtr lpUnknown);
 
         //STDMETHOD(EnumDevices)(THIS_ DWORD,LPDIENUMDEVICESCALLBACKA,LPVOID,DWORD) PURE;
         unsafe long EnumDevices(uint dwDevType, DIEnumDevicesCallback lpCallback, void* pvRef, uint dwFlags);
