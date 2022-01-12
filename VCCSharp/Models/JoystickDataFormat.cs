@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using VCCSharp.Libraries;
-
-namespace VCCSharp.Models
+﻿namespace VCCSharp.Models
 {
     /// <summary>
     /// This is a dump of dinput.h :: c_dfDIJoystick2
@@ -202,28 +199,28 @@ namespace VCCSharp.Models
             return a;
         }
 
-        public unsafe void Dump()
-        {
-            DIOBJECTDATAFORMAT[] a = new DIOBJECTDATAFORMAT[164];
+        //public unsafe void Dump()
+        //{
+        //    DIOBJECTDATAFORMAT[] a = new DIOBJECTDATAFORMAT[164];
 
-            for (int i = 0; i < 164; i++)
-            {
-                a[i] = Library.Joystick.GetDataObjectFormatByIndex(i);
-            }
+        //    for (int i = 0; i < 164; i++)
+        //    {
+        //        a[i] = Library.Joystick.GetDataObjectFormatByIndex(i);
+        //    }
 
-            for (int i = 0; i < 164; i++)
-            {
-                DIOBJECTDATAFORMAT t = a[i];
+        //    for (int i = 0; i < 164; i++)
+        //    {
+        //        DIOBJECTDATAFORMAT t = a[i];
 
-                if (t.pguid == null)
-                {
-                    Debug.WriteLine($"/*{i:D3}*/ a[{i}]=new DIOBJECTDATAFORMAT {{ dwFlags={t.dwFlags},dwOfs={t.dwOfs},dwType={t.dwType},unknown={t.unknown},pguid=null}};");
-                }
-                else
-                {
-                    Debug.WriteLine($"/*{i:D3}*/ g[{i}]=Converter.ToGuid(\"{Converter.ToString(*t.pguid)}\"); fixed (_GUID* p = &g[{i}]) {{ a[{i}]=new DIOBJECTDATAFORMAT {{ dwFlags={t.dwFlags},dwOfs={t.dwOfs},dwType={t.dwType},unknown={t.unknown},pguid=p}};}}");
-                }
-            }
-        }
+        //        if (t.pguid == null)
+        //        {
+        //            Debug.WriteLine($"/*{i:D3}*/ a[{i}]=new DIOBJECTDATAFORMAT {{ dwFlags={t.dwFlags},dwOfs={t.dwOfs},dwType={t.dwType},unknown={t.unknown},pguid=null}};");
+        //        }
+        //        else
+        //        {
+        //            Debug.WriteLine($"/*{i:D3}*/ g[{i}]=Converter.ToGuid(\"{Converter.ToString(*t.pguid)}\"); fixed (_GUID* p = &g[{i}]) {{ a[{i}]=new DIOBJECTDATAFORMAT {{ dwFlags={t.dwFlags},dwOfs={t.dwOfs},dwType={t.dwType},unknown={t.unknown},pguid=p}};}}");
+        //        }
+        //    }
+        //}
     }
 }
