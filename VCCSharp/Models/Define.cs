@@ -338,5 +338,12 @@ namespace VCCSharp.Models
 
         //public const uint DIEDFL_ALLDEVICES = 0x00000000;
         public const uint DIEDFL_ATTACHEDONLY = 0x00000001;
+
+        public const int DIENUM_STOP = 0;
+        public const int DIENUM_CONTINUE = 1;
+
+        //public const uint DIPH_DEVICE = 0;
+        //public const uint DIPH_BYOFFSET = 1;
+        public const uint DIPH_BYID = 2;
     }
 }

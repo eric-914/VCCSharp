@@ -123,8 +123,39 @@ namespace VCCSharp.Modules
 
                 for (byte index = 0; index < NumberOfJoysticks; index++)
                 {
-                    Library.Joystick.SetJoystickDataFormat(Joysticks[index].Device, df);
-                    Library.Joystick.SetJoystickProperties(Joysticks[index].Device, Library.Joystick.SetJoystickPropertiesCallback);
+                    _GUID* DIPROP_RANGE = Library.Joystick.GetRangeGuid();
+
+                    var device = Joysticks[index].Device;
+
+                    int SetJoystickPropertiesCallback(DIDEVICEOBJECTINSTANCE* p, void* v)
+                    {
+                        DIPROPRANGE d;
+                        d.diph.dwSize = (uint)sizeof(DIPROPRANGE);
+                        d.diph.dwHeaderSize = (uint)sizeof(DIPROPHEADER);
+                        d.diph.dwHow = Define.DIPH_BYID;
+                        d.diph.dwObj = p->dwType;
+                        d.lMin = 0;
+                        d.lMax = 0xFFFF;
+
+                        long hr = device.SetProperty(DIPROP_RANGE, &d.diph);
+
+                        //--This will iterate a few times per joystick.
+                        return hr < 0 ? Define.DIENUM_STOP : Define.DIENUM_CONTINUE;
+                    }
+
+                    long hr = device.SetDataFormat(&df);
+
+                    if (hr < 0)
+                    {
+                        throw new Exception($"Failed to set data format on joystick #{index}");
+                    }
+
+                    hr = Library.Joystick.SetJoystickProperties(device, SetJoystickPropertiesCallback);
+
+                    if (hr < 0)
+                    {
+                        throw new Exception($"Failed to set properties on joystick #{index}");
+                    }
                 }
             }
 

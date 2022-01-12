@@ -18,7 +18,7 @@ namespace VCCSharp.Models.DirectX
         unsafe long GetCapabilities(/*LPDIDEVCAPS*/ System.IntPtr lpDIDevCaps);
         /**/ unsafe long EnumObjects(DIEnumDeviceObjectsCallback lpCallback, void* pvRef, uint dwFlags);
         unsafe long GetProperty(ref _GUID rguidProp, /*LPDIPROPHEADER*/ System.IntPtr pdiph);
-        /**/ unsafe long SetProperty(ref _GUID rguidProp, DIPROPHEADER* pdiph);
+        /**/ unsafe long SetProperty(_GUID* rguidProp, DIPROPHEADER* pdiph);
         unsafe long Acquire();
         unsafe long Unacquire();
         unsafe long GetDeviceState(uint cbData, void* lpvData);

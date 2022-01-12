@@ -18,32 +18,12 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl SetJoystickPropertiesCallback(const DIDEVICEOBJECTINSTANCE* p, VOID* v)
+  __declspec(dllexport) GUID* __cdecl GetRangeGuid()
   {
-    DIPROPRANGE d;
-    d.diph.dwSize = sizeof(DIPROPRANGE);
-    d.diph.dwHeaderSize = sizeof(DIPROPHEADER);
-    d.diph.dwHow = DIPH_BYID;
-    d.diph.dwObj = p->dwType;
-    d.lMin = 0;
-    d.lMax = 0xFFFF;
-
-    if (FAILED(_stick->SetProperty(DIPROP_RANGE, &d.diph))) {
-      return(DIENUM_STOP);
-    }
-
-    return (BOOL)(DIENUM_CONTINUE);
+    return (GUID*)(&DIPROP_RANGE);
   }
 }
-
-extern "C" {
-  __declspec(dllexport) BOOL __cdecl SetJoystickDataFormat(LPDIRECTINPUTDEVICE8 stick, DIDATAFORMAT df) {
-    HRESULT hr = stick->SetDataFormat(&df);
-
-    return FAILED(hr) ? 0 : 1;
-  }
-}
-
+    
 extern "C" {
   __declspec(dllexport) BOOL __cdecl SetJoystickProperties(LPDIRECTINPUTDEVICE8 stick, LPDIENUMDEVICEOBJECTSCALLBACKA callback)
   {
