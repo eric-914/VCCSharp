@@ -18,7 +18,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl InitJoystickCallback(const DIDEVICEOBJECTINSTANCE* p, VOID* v)
+  __declspec(dllexport) BOOL __cdecl SetJoystickPropertiesCallback(const DIDEVICEOBJECTINSTANCE* p, VOID* v)
   {
     DIPROPRANGE d;
     d.diph.dwSize = sizeof(DIPROPRANGE);
@@ -37,7 +37,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl SetDataFormat(LPDIRECTINPUTDEVICE8 stick, DIDATAFORMAT df) {
+  __declspec(dllexport) BOOL __cdecl SetJoystickDataFormat(LPDIRECTINPUTDEVICE8 stick, DIDATAFORMAT df) {
     HRESULT hr = stick->SetDataFormat(&df);
 
     return FAILED(hr) ? 0 : 1;
@@ -45,7 +45,7 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl InitJoyStick(LPDIRECTINPUTDEVICE8 stick, LPDIENUMDEVICEOBJECTSCALLBACKA callback)
+  __declspec(dllexport) BOOL __cdecl SetJoystickProperties(LPDIRECTINPUTDEVICE8 stick, LPDIENUMDEVICEOBJECTSCALLBACKA callback)
   {
     _stick = stick;
 
@@ -64,42 +64,6 @@ extern "C" {
 
 extern "C" {
   __declspec(dllexport) HRESULT __cdecl JoystickPoll(DIJOYSTATE2* js, unsigned char stickNumber)
-  {
-    HRESULT hr;
-
-    if (_joysticks[stickNumber] == NULL) {
-      return (S_OK);
-    }
-
-    hr = _joysticks[stickNumber]->Poll();
-
-    if (FAILED(hr))
-    {
-      hr = _joysticks[stickNumber]->Acquire();
-
-      while (hr == DIERR_INPUTLOST) {
-        hr = _joysticks[stickNumber]->Acquire();
-      }
-
-      if (hr == DIERR_INVALIDPARAM) {
-        return(E_FAIL);
-      }
-
-      if (hr == DIERR_OTHERAPPHASPRIO) {
-        return(S_OK);
-      }
-    }
-
-    if (FAILED(hr = _joysticks[stickNumber]->GetDeviceState(sizeof(DIJOYSTATE2), js))) {
-      return(hr);
-    }
-
-    return(S_OK);
-  }
-}
-
-extern "C" {
-  __declspec(dllexport) HRESULT __cdecl JoyStickPoll(DIJOYSTATE2* js, unsigned char stickNumber)
   {
     HRESULT hr;
 

@@ -18,19 +18,19 @@ namespace VCCSharp.Libraries
             public static extern DIDATAFORMAT GetDataFormat();
 
             [DllImport(LIBRARY)]
-            public static extern int SetDataFormat(IDirectInputDevice stick, DIDATAFORMAT df);
+            public static extern int SetJoystickDataFormat(IDirectInputDevice stick, DIDATAFORMAT df);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe int InitJoystickCallback(DIDEVICEOBJECTINSTANCE* p, void* v);
+            public static extern unsafe int SetJoystickPropertiesCallback(DIDEVICEOBJECTINSTANCE* p, void* v);
 
             [DllImport(LIBRARY)]
-            public static extern int InitJoyStick(IDirectInputDevice stick, DIEnumDeviceObjectsCallback callback);
+            public static extern int SetJoystickProperties(IDirectInputDevice stick, DIEnumDeviceObjectsCallback callback);
 
             [DllImport(LIBRARY)]
             public static extern unsafe void* GetPollStick();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe HRESULT JoyStickPoll(void* js, byte stickNumber);
+            public static extern unsafe HRESULT JoystickPoll(void* js, byte stickNumber);
 
             [DllImport(LIBRARY)]
             public static extern unsafe ushort StickX(void* stick);

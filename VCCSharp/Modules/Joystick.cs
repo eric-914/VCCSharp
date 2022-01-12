@@ -123,8 +123,8 @@ namespace VCCSharp.Modules
 
                 for (byte index = 0; index < NumberOfJoysticks; index++)
                 {
-                    Library.Joystick.SetDataFormat(Joysticks[index].Device, df);
-                    Library.Joystick.InitJoyStick(Joysticks[index].Device, Library.Joystick.InitJoystickCallback);
+                    Library.Joystick.SetJoystickDataFormat(Joysticks[index].Device, df);
+                    Library.Joystick.SetJoystickProperties(Joysticks[index].Device, Library.Joystick.SetJoystickPropertiesCallback);
                 }
             }
 
@@ -200,7 +200,7 @@ namespace VCCSharp.Modules
 
                 if (useLeft)
                 {
-                    JoyStickPoll(_pollStick, State.LeftStickNumber);
+                    JoystickPoll(_pollStick, State.LeftStickNumber);
 
                     State.LeftStickX = (ushort)(Library.Joystick.StickX(_pollStick) >> 10);
                     State.LeftStickY = (ushort)(Library.Joystick.StickY(_pollStick) >> 10);
@@ -210,7 +210,7 @@ namespace VCCSharp.Modules
 
                 if (useRight)
                 {
-                    JoyStickPoll(_pollStick, State.RightStickNumber);
+                    JoystickPoll(_pollStick, State.RightStickNumber);
 
                     State.RightStickX = (ushort)(Library.Joystick.StickX(_pollStick) >> 10);
                     State.RightStickY = (ushort)(Library.Joystick.StickY(_pollStick) >> 10);
@@ -496,9 +496,9 @@ namespace VCCSharp.Modules
             return Library.Joystick.GetPollStick();
         }
 
-        public unsafe HRESULT JoyStickPoll(void* js, byte stickNumber)
+        public unsafe HRESULT JoystickPoll(void* js, byte stickNumber)
         {
-            return Library.Joystick.JoyStickPoll(js, stickNumber);
+            return Library.Joystick.JoystickPoll(js, stickNumber);
         }
     }
 }
