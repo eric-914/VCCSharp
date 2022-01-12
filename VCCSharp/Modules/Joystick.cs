@@ -150,7 +150,7 @@ namespace VCCSharp.Modules
                         throw new Exception($"Failed to set data format on joystick #{index}");
                     }
 
-                    hr = Library.Joystick.SetJoystickProperties(device, SetJoystickPropertiesCallback);
+                    hr = device.EnumObjects(SetJoystickPropertiesCallback, IntPtr.Zero, Define.DIDFT_AXIS);
 
                     if (hr < 0)
                     {

@@ -345,5 +345,10 @@ namespace VCCSharp.Models
         //public const uint DIPH_DEVICE = 0;
         //public const uint DIPH_BYOFFSET = 1;
         public const uint DIPH_BYID = 2;
+
+        //public const uint DIDFT_RELAXIS = 0x00000001;
+        //public const uint DIDFT_ABSAXIS = 0x00000002;
+        public const uint DIDFT_AXIS = 0x00000003;
+
     }
 }

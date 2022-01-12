@@ -16,7 +16,7 @@ namespace VCCSharp.Models.DirectX
 
         /*** IDirectInputDevice8A methods ***/
         unsafe long GetCapabilities(/*LPDIDEVCAPS*/ System.IntPtr lpDIDevCaps);
-        /**/ unsafe long EnumObjects(DIEnumDeviceObjectsCallback lpCallback, void* pvRef, uint dwFlags);
+        /**/ unsafe long EnumObjects([MarshalAs(UnmanagedType.FunctionPtr)] DIEnumDeviceObjectsCallback lpCallback, System.IntPtr pvRef, uint dwFlags);
         unsafe long GetProperty(ref _GUID rguidProp, /*LPDIPROPHEADER*/ System.IntPtr pdiph);
         /**/ unsafe long SetProperty(_GUID* rguidProp, DIPROPHEADER* pdiph);
         unsafe long Acquire();

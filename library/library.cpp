@@ -25,17 +25,6 @@ extern "C" {
 }
     
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl SetJoystickProperties(LPDIRECTINPUTDEVICE8 stick, LPDIENUMDEVICEOBJECTSCALLBACKA callback)
-  {
-    _stick = stick;
-
-    HRESULT hr = stick->EnumObjects(callback, NULL, DIDFT_AXIS);
-
-    return FAILED(hr) ? 0 : 1;
-  }
-}
-
-extern "C" {
   __declspec(dllexport) DIJOYSTATE2* __cdecl GetPollStick()
   {
     return _joyState;

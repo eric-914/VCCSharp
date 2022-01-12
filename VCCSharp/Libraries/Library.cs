@@ -21,9 +21,6 @@ namespace VCCSharp.Libraries
             public static extern unsafe _GUID* GetRangeGuid();
 
             [DllImport(LIBRARY)]
-            public static extern int SetJoystickProperties(IDirectInputDevice stick, DIEnumDeviceObjectsCallback callback);
-
-            [DllImport(LIBRARY)]
             public static extern unsafe void* GetPollStick();
 
             [DllImport(LIBRARY)]
