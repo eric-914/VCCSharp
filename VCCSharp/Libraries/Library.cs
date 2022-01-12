@@ -21,19 +21,19 @@ namespace VCCSharp.Libraries
             public static extern unsafe _GUID* GetRangeGuid();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe void* GetPollStick();
+            public static extern unsafe DIJOYSTATE2* GetJoystickState();
 
             [DllImport(LIBRARY)]
-            public static extern unsafe HRESULT JoystickPoll(void* js, byte stickNumber);
+            public static extern unsafe HRESULT JoystickPoll(DIJOYSTATE2* state, byte stickNumber);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe ushort StickX(void* stick);
+            public static extern unsafe ushort StickX(DIJOYSTATE2* state);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe ushort StickY(void* stick);
+            public static extern unsafe ushort StickY(DIJOYSTATE2* state);
 
             [DllImport(LIBRARY)]
-            public static extern unsafe byte Button(void* stick, int index);
+            public static extern unsafe byte Button(DIJOYSTATE2* state, int index);
         }
     }
 }

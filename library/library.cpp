@@ -25,29 +25,29 @@ extern "C" {
 }
     
 extern "C" {
-  __declspec(dllexport) DIJOYSTATE2* __cdecl GetPollStick()
+  __declspec(dllexport) DIJOYSTATE2* __cdecl GetJoystickState()
   {
     return _joyState;
   }
 }
 
 extern "C" {
-  __declspec(dllexport) HRESULT __cdecl JoystickPoll(DIJOYSTATE2* js, unsigned char stickNumber)
+  __declspec(dllexport) HRESULT __cdecl JoystickPoll(DIJOYSTATE2* state, unsigned char stickNumber)
   {
-    HRESULT hr;
+    LPDIRECTINPUTDEVICE8 stick = _joysticks[stickNumber];
 
-    if (_joysticks[stickNumber] == NULL) {
+    if (stick == NULL) {
       return (S_OK);
     }
 
-    hr = _joysticks[stickNumber]->Poll();
+    HRESULT hr = stick->Poll();
 
     if (FAILED(hr))
     {
-      hr = _joysticks[stickNumber]->Acquire();
+      hr = stick->Acquire();
 
       while (hr == DIERR_INPUTLOST) {
-        hr = _joysticks[stickNumber]->Acquire();
+        hr = stick->Acquire();
       }
 
       if (hr == DIERR_INVALIDPARAM) {
@@ -59,7 +59,7 @@ extern "C" {
       }
     }
 
-    if (FAILED(hr = _joysticks[stickNumber]->GetDeviceState(sizeof(DIJOYSTATE2), js))) {
+    if (FAILED(hr = stick->GetDeviceState(sizeof(DIJOYSTATE2), state))) {
       return(hr);
     }
 
@@ -68,20 +68,20 @@ extern "C" {
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned short __cdecl StickX(DIJOYSTATE2* stick) {
-    return (unsigned short)stick->lX;
+  __declspec(dllexport) unsigned short __cdecl StickX(DIJOYSTATE2* state) {
+    return (unsigned short)state->lX;
   }
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned short __cdecl StickY(DIJOYSTATE2* stick) {
-    return (unsigned short)stick->lY;
+  __declspec(dllexport) unsigned short __cdecl StickY(DIJOYSTATE2* state) {
+    return (unsigned short)state->lY;
   }
 }
 
 extern "C" {
-  __declspec(dllexport) unsigned char __cdecl Button(DIJOYSTATE2* stick, int index) {
-    return stick->rgbButtons[index];
+  __declspec(dllexport) unsigned char __cdecl Button(DIJOYSTATE2* state, int index) {
+    return state->rgbButtons[index];
   }
 }
 

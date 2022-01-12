@@ -46,7 +46,7 @@ namespace VCCSharp.Modules
         private JoystickModel _left = new JoystickModel();
         private JoystickModel _right = new JoystickModel();
 
-        private readonly unsafe void* _pollStick = GetPollStick();
+        private readonly unsafe DIJOYSTATE2* _pollState = GetJoystickState();
 
         private IDirectInput _di;
 
@@ -231,22 +231,22 @@ namespace VCCSharp.Modules
 
                 if (useLeft)
                 {
-                    JoystickPoll(_pollStick, State.LeftStickNumber);
+                    JoystickPoll(_pollState, State.LeftStickNumber);
 
-                    State.LeftStickX = (ushort)(Library.Joystick.StickX(_pollStick) >> 10);
-                    State.LeftStickY = (ushort)(Library.Joystick.StickY(_pollStick) >> 10);
-                    State.LeftButton1Status = (byte)(Library.Joystick.Button(_pollStick, 0) >> 7);
-                    State.LeftButton2Status = (byte)(Library.Joystick.Button(_pollStick, 1) >> 7);
+                    State.LeftStickX = (ushort)(Library.Joystick.StickX(_pollState) >> 10);
+                    State.LeftStickY = (ushort)(Library.Joystick.StickY(_pollState) >> 10);
+                    State.LeftButton1Status = (byte)(Library.Joystick.Button(_pollState, 0) >> 7);
+                    State.LeftButton2Status = (byte)(Library.Joystick.Button(_pollState, 1) >> 7);
                 }
 
                 if (useRight)
                 {
-                    JoystickPoll(_pollStick, State.RightStickNumber);
+                    JoystickPoll(_pollState, State.RightStickNumber);
 
-                    State.RightStickX = (ushort)(Library.Joystick.StickX(_pollStick) >> 10);
-                    State.RightStickY = (ushort)(Library.Joystick.StickY(_pollStick) >> 10);
-                    State.RightButton1Status = (byte)(Library.Joystick.Button(_pollStick, 0) >> 7);
-                    State.RightButton2Status = (byte)(Library.Joystick.Button(_pollStick, 1) >> 7);
+                    State.RightStickX = (ushort)(Library.Joystick.StickX(_pollState) >> 10);
+                    State.RightStickY = (ushort)(Library.Joystick.StickY(_pollState) >> 10);
+                    State.RightButton1Status = (byte)(Library.Joystick.Button(_pollState, 0) >> 7);
+                    State.RightButton2Status = (byte)(Library.Joystick.Button(_pollState, 1) >> 7);
                 }
 
                 switch (pot)
@@ -522,14 +522,14 @@ namespace VCCSharp.Modules
             return retValue;
         }
 
-        public static unsafe void* GetPollStick()
+        public static unsafe DIJOYSTATE2* GetJoystickState()
         {
-            return Library.Joystick.GetPollStick();
+            return Library.Joystick.GetJoystickState();
         }
 
-        public unsafe HRESULT JoystickPoll(void* js, byte stickNumber)
+        public unsafe HRESULT JoystickPoll(DIJOYSTATE2* state, byte stickNumber)
         {
-            return Library.Joystick.JoystickPoll(js, stickNumber);
+            return Library.Joystick.JoystickPoll(state, stickNumber);
         }
     }
 }
