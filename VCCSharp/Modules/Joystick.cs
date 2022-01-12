@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using VCCSharp.Models.DirectX;
-using HRESULT = System.IntPtr;
 using JoystickState = VCCSharp.Models.JoystickState;
 using LPVOID = System.IntPtr;
 
@@ -46,7 +45,7 @@ namespace VCCSharp.Modules
         private JoystickModel _left = new JoystickModel();
         private JoystickModel _right = new JoystickModel();
 
-        private readonly unsafe DIJOYSTATE2* _pollState = GetJoystickState();
+        private readonly DIJOYSTATE2 _pollState = new DIJOYSTATE2();
 
         private IDirectInput _di;
 
@@ -233,20 +232,21 @@ namespace VCCSharp.Modules
                 {
                     JoystickPoll(_pollState, State.LeftStickNumber);
 
-                    State.LeftStickX = (ushort)(Library.Joystick.StickX(_pollState) >> 10);
-                    State.LeftStickY = (ushort)(Library.Joystick.StickY(_pollState) >> 10);
-                    State.LeftButton1Status = (byte)(Library.Joystick.Button(_pollState, 0) >> 7);
-                    State.LeftButton2Status = (byte)(Library.Joystick.Button(_pollState, 1) >> 7);
+                    State.LeftStickX = (ushort)(_pollState.lX >> 10);
+                    State.LeftStickY = (ushort)(_pollState.lY >> 10);
+
+                    State.LeftButton1Status = (byte)(_pollState.rgbButtons[0] >> 7);
+                    State.LeftButton2Status = (byte)(_pollState.rgbButtons[1] >> 7);
                 }
 
                 if (useRight)
                 {
                     JoystickPoll(_pollState, State.RightStickNumber);
 
-                    State.RightStickX = (ushort)(Library.Joystick.StickX(_pollState) >> 10);
-                    State.RightStickY = (ushort)(Library.Joystick.StickY(_pollState) >> 10);
-                    State.RightButton1Status = (byte)(Library.Joystick.Button(_pollState, 0) >> 7);
-                    State.RightButton2Status = (byte)(Library.Joystick.Button(_pollState, 1) >> 7);
+                    State.RightStickX = (ushort)(_pollState.lX >> 10);
+                    State.RightStickY = (ushort)(_pollState.lY >> 10);
+                    State.RightButton1Status = (byte)(_pollState.rgbButtons[0] >> 7);
+                    State.RightButton2Status = (byte)(_pollState.rgbButtons[1] >> 7);
                 }
 
                 switch (pot)
@@ -522,14 +522,41 @@ namespace VCCSharp.Modules
             return retValue;
         }
 
-        public static unsafe DIJOYSTATE2* GetJoystickState()
+        public unsafe long JoystickPoll(DIJOYSTATE2 state, byte stickNumber)
         {
-            return Library.Joystick.GetJoystickState();
-        }
+            IDirectInputDevice stick = Joysticks[stickNumber].Device;
 
-        public unsafe HRESULT JoystickPoll(DIJOYSTATE2* state, byte stickNumber)
-        {
-            return Library.Joystick.JoystickPoll(state, stickNumber);
+            if (stick == null)
+            {
+                return Define.S_OK;
+            }
+
+            long hr = stick.Poll();
+
+            if (hr < 0)
+            {
+                hr = stick.Acquire();
+
+                while (hr == Define.DIERR_INPUTLOST)
+                {
+                    hr = stick.Acquire();
+                }
+
+                switch (hr)
+                {
+                    case Define.DIERR_INVALIDPARAM:
+                        return Define.E_FAIL;
+
+                    case Define.DIERR_OTHERAPPHASPRIO:
+                        return Define.S_OK;
+                }
+            }
+
+            hr = stick.GetDeviceState((uint)sizeof(DIJOYSTATE2), &state);
+
+            return hr < 0 ? hr : Define.S_OK;
+
+            //return Library.Joystick.JoystickPoll(state, stick);
         }
     }
 }

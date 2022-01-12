@@ -350,5 +350,44 @@ namespace VCCSharp.Models
         //public const uint DIDFT_ABSAXIS = 0x00000002;
         public const uint DIDFT_AXIS = 0x00000003;
 
+        //public const long SEVERITY_SUCCESS = 0;
+        public const long SEVERITY_ERROR = 1;
+
+        //public const long FACILITY_NULL = 0;
+        //public const long FACILITY_RPC = 1;
+        //public const long FACILITY_DISPATCH = 2;
+        //public const long FACILITY_STORAGE = 3;
+        //public const long FACILITY_ITF = 4;
+        public const long FACILITY_WIN32 = 7;
+        //public const long FACILITY_WINDOWS = 8;
+
+        /// <summary>
+        /// The system cannot read from the specified device.
+        /// </summary>
+        public const long ERROR_READ_FAULT = 30L;
+
+        /// <summary>
+        /// One or more arguments are invalid
+        /// </summary>
+        public const long E_INVALIDARG = 0x80070057L;
+
+        /// <summary>
+        /// General access denied error
+        /// </summary>
+        public const long E_ACCESSDENIED = 0x80070005L;
+
+        /// <summary>
+        /// Unspecified error
+        /// </summary>
+        public const long E_FAIL = 0x80004005L;
+
+        public const long DIERR_INPUTLOST = (SEVERITY_ERROR << 31) | (FACILITY_WIN32 << 16) | ERROR_READ_FAULT;
+        public const long DIERR_INVALIDPARAM = E_INVALIDARG;
+
+        /// <summary>
+        /// Another app has a higher priority level, preventing this call from succeeding.
+        /// </summary>
+        public const long DIERR_OTHERAPPHASPRIO = E_ACCESSDENIED;
+
     }
 }
