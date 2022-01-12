@@ -122,7 +122,9 @@ namespace VCCSharp.Modules
 
                 for (byte index = 0; index < NumberOfJoysticks; index++)
                 {
-                    _GUID* DIPROP_RANGE = Library.Joystick.GetRangeGuid();
+                    //--Just seems to be a GUID* to address "4".
+                    //_GUID* DIPROP_RANGE = Library.Joystick.GetRangeGuid();
+                    long DIPROP_RANGE = 4L;
 
                     var device = Joysticks[index].Device;
 

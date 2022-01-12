@@ -3,8 +3,7 @@
 
 /***********************************************************************************************/
 
-extern "C" {  __declspec(dllexport) DIDATAFORMAT GetDataFormat() { return c_dfDIJoystick2; }}
-extern "C" {  __declspec(dllexport) GUID* __cdecl GetRangeGuid() { return (GUID*)(&DIPROP_RANGE); }}
+extern "C" { __declspec(dllexport) DIDATAFORMAT GetDataFormat() { return c_dfDIJoystick2; } }
 
 /***********************************************************************************************/
 

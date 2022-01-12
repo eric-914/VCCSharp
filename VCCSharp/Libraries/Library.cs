@@ -14,9 +14,6 @@ namespace VCCSharp.Libraries
         {
             [DllImport(LIBRARY)]
             public static extern DIDATAFORMAT GetDataFormat();
-
-            [DllImport(LIBRARY)]
-            public static extern unsafe _GUID* GetRangeGuid();
         }
     }
 }

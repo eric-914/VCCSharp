@@ -20,7 +20,8 @@ namespace VCCSharp.Models.DirectX
         unsafe long EnumObjects([MarshalAs(UnmanagedType.FunctionPtr)] DIEnumDeviceObjectsCallback lpCallback, System.IntPtr pvRef, uint dwFlags);
         unsafe long GetProperty(ref _GUID rguidProp, /*LPDIPROPHEADER*/ System.IntPtr pdiph);
         /**/
-        unsafe long SetProperty(_GUID* rguidProp, DIPROPHEADER* pdiph);
+        //unsafe long SetProperty(_GUID* rguidProp, DIPROPHEADER* pdiph);
+        unsafe long SetProperty(long rguidProp, DIPROPHEADER* pdiph);
         unsafe long Acquire();
         unsafe long Unacquire();
         unsafe long GetDeviceState(uint cbData, void* lpvData);
