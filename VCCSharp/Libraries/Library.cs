@@ -13,7 +13,7 @@ namespace VCCSharp.Libraries
         public static class Joystick
         {
             [DllImport(LIBRARY)]
-            public static extern DIDATAFORMAT GetDataFormat();
+            public static extern DIOBJECTDATAFORMAT GetDataObjectFormatByIndex(int index);
         }
     }
 }

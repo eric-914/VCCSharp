@@ -2,7 +2,7 @@
 
 namespace VCCSharp.Models
 {
-    [StructLayout(LayoutKind.Explicit, Size = 58, CharSet = CharSet.Ansi)]
+    [StructLayout(LayoutKind.Explicit, Size = 32, CharSet = CharSet.Ansi)]
     // ReSharper disable once InconsistentNaming
     // ReSharper disable once IdentifierTypo
     public struct DIDATAFORMAT
@@ -22,7 +22,9 @@ namespace VCCSharp.Models
         [FieldOffset(16)]
         public uint dwNumObjs;
 
-        [FieldOffset(20)]
-        public unsafe DIOBJECTDATAFORMAT rgodf;
+        //--Mystery gap @ 20,21,22,23
+
+        [FieldOffset(24)]
+        public unsafe DIOBJECTDATAFORMAT* rgodf;
     }
 }

@@ -1,6 +1,7 @@
 ﻿//using Microsoft.DirectX.DirectInput;
 
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using VCCSharp.Libraries;
@@ -54,7 +55,7 @@ namespace VCCSharp.Modules
             _dInput = dInput;
         }
 
-        public short FindJoysticks()
+        public unsafe short FindJoysticks()
         {
             _di = CreateDirectInput();
 
@@ -94,32 +95,13 @@ namespace VCCSharp.Modules
 
             Joysticks = Joysticks.Take(NumberOfJoysticks).ToArray();
 
-            DIDATAFORMAT df = Library.Joystick.GetDataFormat();
+            //--Manually recreate: c_dfDIJoystick2
+            var jdf = new JoystickDataFormat();
+            DIDATAFORMAT df2 = jdf.GetDataFormat();
+            //jdf.Dump();
 
             unsafe
             {
-                DIDATAFORMAT df2 = new DIDATAFORMAT
-                {
-                    dwDataSize = 272,
-                    dwFlags = 1,
-                    dwNumObjs = 164,
-                    dwObjSize = 24,
-                    dwSize = 32,
-                    rgodf = new DIOBJECTDATAFORMAT
-                    {
-                        dwFlags = 0,
-                        dwOfs = 0,
-                        dwType = 4,
-                        pguid = df.rgodf.pguid
-                        //new _GUID
-                        //{
-                        //    Data1 = 0,
-                        //    Data2 = 0xF000,
-                        //    Data3 = 0xD4DF
-                        //}
-                    }
-                };
-
                 for (byte index = 0; index < NumberOfJoysticks; index++)
                 {
                     //--Just seems to be a GUID* to address "4".
@@ -144,7 +126,7 @@ namespace VCCSharp.Modules
                         return hr < 0 ? Define.DIENUM_STOP : Define.DIENUM_CONTINUE;
                     }
 
-                    long hr = device.SetDataFormat(&df);
+                    long hr = device.SetDataFormat(&df2);
 
                     if (hr < 0)
                     {

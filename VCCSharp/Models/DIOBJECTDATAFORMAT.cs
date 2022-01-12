@@ -2,19 +2,23 @@
 
 namespace VCCSharp.Models
 {
-    [StructLayout(LayoutKind.Explicit, Size = 28, CharSet = CharSet.Ansi)]
+    [StructLayout(LayoutKind.Explicit, Size = 24, CharSet = CharSet.Ansi)]
     public struct DIOBJECTDATAFORMAT
     {
-        [FieldOffset(0)]
-        public _GUID pguid;
+        [FieldOffset(0)] //--Length=8
+        public unsafe _GUID* pguid;
 
-        [FieldOffset(16)]
+        //--What is hiding @ 8,9,10,11?
+        [FieldOffset(8)] 
+        public uint unknown;
+
+        [FieldOffset(12)]
         public uint dwOfs;
 
-        [FieldOffset(20)]
+        [FieldOffset(16)]
         public uint dwType;
 
-        [FieldOffset(24)]
+        [FieldOffset(20)]
         public uint dwFlags;
     }
 }

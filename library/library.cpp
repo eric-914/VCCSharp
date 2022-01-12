@@ -3,7 +3,7 @@
 
 /***********************************************************************************************/
 
-extern "C" { __declspec(dllexport) DIDATAFORMAT GetDataFormat() { return c_dfDIJoystick2; } }
+extern "C" { __declspec(dllexport) DIOBJECTDATAFORMAT GetDataObjectFormatByIndex(int index) { return c_dfDIJoystick2.rgodf[index]; } }
 
 /***********************************************************************************************/
 
