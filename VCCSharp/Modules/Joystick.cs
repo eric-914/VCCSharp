@@ -95,10 +95,37 @@ namespace VCCSharp.Modules
 
             Joysticks = Joysticks.Take(NumberOfJoysticks).ToArray();
 
-            for (byte index = 0; index < NumberOfJoysticks; index++)
+            DIDATAFORMAT df = Library.Joystick.GetDataFormat();
+
+            unsafe
             {
-                //TODO: Disabled as C++ doesn't have joystick list now
-                //InitJoyStick(index);
+                DIDATAFORMAT df2 = new DIDATAFORMAT
+                {
+                    dwDataSize = 272,
+                    dwFlags = 1,
+                    dwNumObjs = 164,
+                    dwObjSize = 24,
+                    dwSize = 32,
+                    rgodf = new DIOBJECTDATAFORMAT
+                    {
+                        dwFlags = 0,
+                        dwOfs = 0,
+                        dwType = 4,
+                        pguid = df.rgodf.pguid
+                        //new _GUID
+                        //{
+                        //    Data1 = 0,
+                        //    Data2 = 0xF000,
+                        //    Data3 = 0xD4DF
+                        //}
+                    }
+                };
+
+                for (byte index = 0; index < NumberOfJoysticks; index++)
+                {
+                    Library.Joystick.SetDataFormat(Joysticks[index].Device, df);
+                    Library.Joystick.InitJoyStick(Joysticks[index].Device, Library.Joystick.InitJoystickCallback);
+                }
             }
 
             return NumberOfJoysticks;
@@ -156,11 +183,6 @@ namespace VCCSharp.Modules
         public void SetRightJoystick(JoystickModel model)
         {
             _right = model;
-        }
-
-        public int InitJoyStick(byte stickNumber)
-        {
-            return Library.Joystick.InitJoyStick(stickNumber);
         }
 
         public void SetStickNumbers(byte leftStickNumber, byte rightStickNumber)

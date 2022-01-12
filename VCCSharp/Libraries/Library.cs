@@ -1,5 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Security;
+using VCCSharp.Models;
+using VCCSharp.Models.DirectX;
 using HRESULT = System.IntPtr;
 
 namespace VCCSharp.Libraries
@@ -13,7 +15,16 @@ namespace VCCSharp.Libraries
         public static class Joystick
         {
             [DllImport(LIBRARY)]
-            public static extern int InitJoyStick(byte stickNumber);
+            public static extern DIDATAFORMAT GetDataFormat();
+
+            [DllImport(LIBRARY)]
+            public static extern int SetDataFormat(IDirectInputDevice stick, DIDATAFORMAT df);
+
+            [DllImport(LIBRARY)]
+            public static extern unsafe int InitJoystickCallback(DIDEVICEOBJECTINSTANCE* p, void* v);
+
+            [DllImport(LIBRARY)]
+            public static extern int InitJoyStick(IDirectInputDevice stick, DIEnumDeviceObjectsCallback callback);
 
             [DllImport(LIBRARY)]
             public static extern unsafe void* GetPollStick();

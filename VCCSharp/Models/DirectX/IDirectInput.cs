@@ -6,6 +6,7 @@ using HINSTANCE = System.IntPtr;
 namespace VCCSharp.Models.DirectX
 {
     public unsafe delegate int DIEnumDevicesCallback(DIDEVICEINSTANCE* lpddi, void* pvRef);
+    public unsafe delegate int DIEnumDeviceObjectsCallback(DIDEVICEOBJECTINSTANCE *lpddoi, void* pvRef);
 
     [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [Guid(DxGuid.DirectInput)]

@@ -9,44 +9,49 @@ static DIJOYSTATE2* _joyState = new DIJOYSTATE2();
 static LPDIRECTINPUTDEVICE8 _joysticks[MAXSTICKS];
 
 static unsigned char _joystickIndex = 0;
+static LPDIRECTINPUTDEVICE8 _stick;
 
 extern "C" {
-  __declspec(dllexport) BOOL __cdecl InitJoyStick(unsigned char stickNumber)
+  __declspec(dllexport) DIDATAFORMAT GetDataFormat() {
+    return c_dfDIJoystick2;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl InitJoystickCallback(const DIDEVICEOBJECTINSTANCE* p, VOID* v)
   {
-    static LPDIRECTINPUTDEVICE8 stick = _joysticks[stickNumber];
+    DIPROPRANGE d;
+    d.diph.dwSize = sizeof(DIPROPRANGE);
+    d.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+    d.diph.dwHow = DIPH_BYID;
+    d.diph.dwObj = p->dwType;
+    d.lMin = 0;
+    d.lMax = 0xFFFF;
 
-    //	DIDEVCAPS capabilities;
-    HRESULT hr;
-
-    LPDIENUMDEVICEOBJECTSCALLBACKA callback = [](const DIDEVICEOBJECTINSTANCE* p, VOID* v) {
-      DIPROPRANGE d;
-      d.diph.dwSize = sizeof(DIPROPRANGE);
-      d.diph.dwHeaderSize = sizeof(DIPROPHEADER);
-      d.diph.dwHow = DIPH_BYID;
-      d.diph.dwObj = p->dwType;
-      d.lMin = 0;
-      d.lMax = 0xFFFF;
-
-      if (FAILED(stick->SetProperty(DIPROP_RANGE, &d.diph))) {
-        return(DIENUM_STOP);
-      }
-
-      return (BOOL)(DIENUM_CONTINUE);
-    };
-
-    if (stick == NULL) {
-      return(0);
+    if (FAILED(_stick->SetProperty(DIPROP_RANGE, &d.diph))) {
+      return(DIENUM_STOP);
     }
 
-    if (FAILED(hr = stick->SetDataFormat(&c_dfDIJoystick2))) {
-      return(0);
-    }
+    return (BOOL)(DIENUM_CONTINUE);
+  }
+}
 
-    if (FAILED(hr = stick->EnumObjects(callback, NULL, DIDFT_AXIS))) {
-      return(0);
-    }
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl SetDataFormat(LPDIRECTINPUTDEVICE8 stick, DIDATAFORMAT df) {
+    HRESULT hr = stick->SetDataFormat(&df);
 
-    return(1); //return true on success
+    return FAILED(hr) ? 0 : 1;
+  }
+}
+
+extern "C" {
+  __declspec(dllexport) BOOL __cdecl InitJoyStick(LPDIRECTINPUTDEVICE8 stick, LPDIENUMDEVICEOBJECTSCALLBACKA callback)
+  {
+    _stick = stick;
+
+    HRESULT hr = stick->EnumObjects(callback, NULL, DIDFT_AXIS);
+
+    return FAILED(hr) ? 0 : 1;
   }
 }
 
