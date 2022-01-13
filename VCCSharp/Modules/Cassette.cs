@@ -49,7 +49,6 @@ namespace VCCSharp.Modules
         public byte FileType;
 
         private byte _quiet = 30;
-        //private byte _writeProtect;
 
         public int LastTrans;
 

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Documents;
 using VCCSharp.Annotations;
 using VCCSharp.Enums;
 using VCCSharp.Models;
@@ -162,6 +161,5 @@ namespace VCCSharp.Configuration
                 OnPropertyChanged();
             }
         }
-
     }
 }

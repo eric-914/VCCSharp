@@ -7,7 +7,6 @@ namespace VCCSharp.Menu
     {
         public MenuCommand F9;
 
-
         public MainCommands(Actions actions)
         {
             MenuCommand F(Key key, Action action) => new MenuCommand(key.ToString()) { Key = key, Action = action };

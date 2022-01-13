@@ -7,7 +7,6 @@ using VCCSharp.Libraries;
 using VCCSharp.Models;
 using static System.IntPtr;
 using HINSTANCE = System.IntPtr;
-using HMODULE = System.IntPtr;
 
 namespace VCCSharp.Modules
 {

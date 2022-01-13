@@ -1,7 +1,6 @@
 ﻿using System.Drawing;
 using System.Windows.Interop;
 using VCCSharp.Models;
-using HINSTANCE = System.IntPtr;
 using HWND = System.IntPtr;
 using LRESULT = System.IntPtr;
 

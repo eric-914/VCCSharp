@@ -4,8 +4,8 @@ using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using VCCSharp.Models.DirectX;
-using HWND = System.IntPtr;
 using static System.IntPtr;
+using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules
 {

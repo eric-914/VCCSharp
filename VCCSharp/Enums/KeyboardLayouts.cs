@@ -1,5 +1,6 @@
 ﻿namespace VCCSharp.Enums
 {
+    // ReSharper disable InconsistentNaming
     public enum KeyboardLayouts
     {
         kKBLayoutCoCo = 0,
@@ -9,4 +10,5 @@
 
         kKBLayoutCount
     }
+    // ReSharper restore InconsistentNaming
 }

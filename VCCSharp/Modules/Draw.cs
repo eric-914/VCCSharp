@@ -502,11 +502,6 @@ namespace VCCSharp.Modules
             _surface.Flip(Zero, Define.DDFLIP_NOVSYNC | Define.DDFLIP_DONOTWAIT);
         }
 
-        //private static unsafe void* GetSurface(DDSURFACEDESC ddsd)
-        //{
-        //    return Library.DirectDraw.DDSDGetSurface(&ddsd);
-        //}
-
         private long SetSurfaceClipper()
         {
             return _surface.SetClipper(_clipper);

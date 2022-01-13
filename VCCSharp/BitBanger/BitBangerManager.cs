@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Windows;
 using VCCSharp.IoC;
-using VCCSharp.Models;
 
 namespace VCCSharp.BitBanger
 {

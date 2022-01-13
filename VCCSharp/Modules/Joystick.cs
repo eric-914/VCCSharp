@@ -1,7 +1,4 @@
-﻿//using Microsoft.DirectX.DirectInput;
-
-using System;
-using System.Diagnostics;
+﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using VCCSharp.Libraries;
@@ -539,8 +536,6 @@ namespace VCCSharp.Modules
             hr = stick.GetDeviceState((uint)sizeof(DIJOYSTATE2), &state);
 
             return hr < 0 ? hr : Define.S_OK;
-
-            //return Library.Joystick.JoystickPoll(state, stick);
         }
     }
 }

@@ -660,6 +660,5 @@ namespace VCCSharp.Modules
 
             return p;
         }
-
     }
 }

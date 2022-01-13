@@ -1,5 +1,7 @@
 ﻿namespace VCCSharp.Enums
 {
+    // ReSharper disable InconsistentNaming
+    // ReSharper disable IdentifierTypo
     public enum MDFlagMasks
     {
         NATIVE6309 = 0,
@@ -11,4 +13,6 @@
         ILLEGAL = 6,
         ZERODIV = 7
     }
+    // ReSharper restore IdentifierTypo
+    // ReSharper restore InconsistentNaming
 }

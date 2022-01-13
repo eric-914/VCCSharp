@@ -528,5 +528,4 @@ namespace VCCSharp.Modules
             return result;
         }
     }
-
 }

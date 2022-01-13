@@ -10,6 +10,6 @@
 
         public uint[] Palette32Bit = new uint[16];      //Color values translated to 24/32 bits
 
-        public uint[] PaletteLookup32 = new uint[128];      //[2][64];	//0 = RGB 1=comp 32BIT
+        public uint[] PaletteLookup32 = new uint[128];  //[2][64];	//0 = RGB 1=comp 32BIT
     }
 }

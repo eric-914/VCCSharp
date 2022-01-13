@@ -388,6 +388,5 @@ namespace VCCSharp.Models
         /// Another app has a higher priority level, preventing this call from succeeding.
         /// </summary>
         public const long DIERR_OTHERAPPHASPRIO = E_ACCESSDENIED;
-
     }
 }

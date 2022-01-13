@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using HWND = System.IntPtr;
 using HINSTANCE = System.IntPtr;
+using HWND = System.IntPtr;
 
 namespace VCCSharp.Models.DirectX
 {
@@ -22,24 +22,24 @@ namespace VCCSharp.Models.DirectX
         unsafe long CreateDevice(_GUID refGuid, ref IDirectInputDevice lpDirectInputDevice, IntPtr lpUnknown);
 
         //STDMETHOD(EnumDevices)(THIS_ DWORD,LPDIENUMDEVICESCALLBACKA,LPVOID,DWORD) PURE;
-        unsafe long EnumDevices(uint dwDevType, [MarshalAs(UnmanagedType.FunctionPtr)] DIEnumDevicesCallback callback, IntPtr pvRef, uint dwFlags);
+        long EnumDevices(uint dwDevType, [MarshalAs(UnmanagedType.FunctionPtr)] DIEnumDevicesCallback callback, IntPtr pvRef, uint dwFlags);
 
         //STDMETHOD(GetDeviceStatus)(THIS_ REFGUID) PURE;
         unsafe long GetDeviceStatus(_GUID* rguidInstance);
 
         //STDMETHOD(RunControlPanel)(THIS_ HWND,DWORD) PURE;
-        unsafe long RunControlPanel(HWND hwndOwner, uint dwFlags);
+        long RunControlPanel(HWND hwndOwner, uint dwFlags);
 
         //STDMETHOD(Initialize)(THIS_ HINSTANCE,DWORD) PURE;
-        unsafe long Initialize(HINSTANCE hinst, uint dwVersion);
+        long Initialize(HINSTANCE hinst, uint dwVersion);
 
         //STDMETHOD(FindDevice)(THIS_ REFGUID,LPCSTR,LPGUID) PURE;
         unsafe long FindDevice(_GUID* rguidClass, IntPtr ptszName, IntPtr pguidInstance);
 
         //STDMETHOD(EnumDevicesBySemantics)(THIS_ LPCSTR,LPDIACTIONFORMATA,LPDIENUMDEVICESBYSEMANTICSCBA,LPVOID,DWORD) PURE;
-        unsafe long EnumDevicesBySemantics(IntPtr ptszUserName, IntPtr lpdiActionFormat, IntPtr lpCallback, IntPtr pvRef, uint dwFlags);
+        long EnumDevicesBySemantics(IntPtr ptszUserName, IntPtr lpdiActionFormat, IntPtr lpCallback, IntPtr pvRef, uint dwFlags);
 
         //STDMETHOD(ConfigureDevices)(THIS_ LPDICONFIGUREDEVICESCALLBACK,LPDICONFIGUREDEVICESPARAMSA,DWORD,LPVOID) PURE;
-        unsafe long ConfigureDevices(IntPtr lpdiCallback, IntPtr lpdiCDParams, uint dwFlags, IntPtr pvRefData);
+        long ConfigureDevices(IntPtr lpdiCallback, IntPtr lpdiCDParams, uint dwFlags, IntPtr pvRefData);
     }
 }
