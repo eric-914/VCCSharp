@@ -8,7 +8,7 @@ namespace VCCSharp.DX8.Interfaces
     [Guid(DxGuid.DirectSound)]
     public interface IDirectSound
     {
-        unsafe long CreateSoundBuffer(DSBUFFERDESC* dsbd, IntPtr* ppDSBuffer, IntPtr pUnkOuter);
+        unsafe long CreateSoundBuffer(DSBUFFERDESC* pBufferDescription, ref IntPtr pInstance, IntPtr pUnknown);
         long GetCaps();
         long DuplicateSoundBuffer();
         long SetCooperativeLevel(IntPtr hwnd, uint dwLevel);

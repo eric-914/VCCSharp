@@ -9,6 +9,6 @@ namespace VCCSharp.DX8.Libraries
         public const string Dll = "ddraw.dll";
 
         [DllImport(Dll)]
-        public static extern unsafe int DirectDrawCreate(IntPtr lpGUID, IntPtr* lplpDD, IntPtr pUnkOuter);
+        public static extern int DirectDrawCreate(IntPtr pGuid, ref IntPtr pInstance, IntPtr pUnknown);
     }
 }

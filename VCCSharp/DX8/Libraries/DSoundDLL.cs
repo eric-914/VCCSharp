@@ -10,9 +10,9 @@ namespace VCCSharp.DX8.Libraries
         public const string Dll = "dsound.dll";
 
         [DllImport(Dll)]
-        public static extern unsafe long DirectSoundCreate(_GUID* pcGuidDevice, IntPtr* ppDS, IntPtr pUnkOuter);
+        public static extern unsafe long DirectSoundCreate(_GUID* pGuid, ref IntPtr pInstance, IntPtr pUnknown);
 
         [DllImport(Dll)]
-        public static extern long DirectSoundEnumerate(IntPtr lpDSEnumCallback, IntPtr lpContext);
+        public static extern long DirectSoundEnumerate(IntPtr pCallback, IntPtr pContext);
     }
 }

@@ -9,15 +9,15 @@ namespace VCCSharp.DX8.Interfaces
     public interface IDirectDraw
     {
         long Compact();
-        unsafe long CreateClipper(uint flags, IntPtr* clipper, IntPtr pUnknown);
+        unsafe long CreateClipper(uint flags, ref IntPtr pInstance, IntPtr pUnknown);
         long CreatePalette();
-        unsafe long CreateSurface(DDSURFACEDESC* ddsd, IntPtr* surface, IntPtr pUnknown);
+        unsafe long CreateSurface(DDSURFACEDESC* pSurfaceDescription, ref IntPtr pInstance, IntPtr pUnknown);
         long DuplicateSurface();
         long EnumDisplayModes();
         long EnumSurfaces();
         long FlipToGDISurface();
         long GetCaps();
-        unsafe long GetDisplayMode(DDSURFACEDESC* ddsd);
+        unsafe long GetDisplayMode(DDSURFACEDESC* pSurfaceDescription);
         long GetFourCCCodes();
         long GetGDISurface();
         long GetMonitorFrequency();

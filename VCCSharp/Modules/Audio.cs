@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using VCCSharp.DX8;
 using VCCSharp.DX8.Interfaces;
 using VCCSharp.DX8.Libraries;
 using VCCSharp.DX8.Models;
@@ -10,9 +11,6 @@ using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
-    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate int DirectSoundEnumerateCallbackTemplate(IntPtr guid, IntPtr description, IntPtr module, IntPtr context);
-
     public interface IAudio
     {
         short SoundDeInit();
@@ -30,6 +28,7 @@ namespace VCCSharp.Modules
     {
         private readonly IModules _modules;
         private readonly IDSound _dSound;
+        private readonly IDxFactory _factory;
 
         public AudioSpectrum Spectrum { get; set; }
         public ushort CurrentRate { get; set; }
@@ -67,10 +66,11 @@ namespace VCCSharp.Modules
 
         private static DirectSoundEnumerateCallbackTemplate _delegateInstance;
 
-        public Audio(IModules modules, IDSound dSound)
+        public Audio(IModules modules, IDSound dSound, IDxFactory factory)
         {
             _modules = modules;
             _dSound = dSound;
+            _factory = factory;
         }
 
         public unsafe int SoundInit(IntPtr hWnd, _GUID* guid, ushort rate)
@@ -100,7 +100,7 @@ namespace VCCSharp.Modules
 
             if (!_initialized)
             {
-                _ds = CreateDirectSound(guid);
+                _ds = _factory.CreateDirectSound(_dSound, guid);
 
                 if (_ds == null)
                 {
@@ -162,15 +162,6 @@ namespace VCCSharp.Modules
             return result;
         }
 
-        public unsafe IDirectSound CreateDirectSound(_GUID* guid)
-        {
-            var dd = new IntPtr();
-
-            bool result = _dSound.DirectSoundCreate(guid, &dd, Zero) == Define.DS_OK;
-
-            return result ? (IDirectSound)Marshal.GetObjectForIUnknown(dd) : null;
-        }
-
         public unsafe IDirectSoundBuffer CreateDirectSoundBuffer()
         {
             uint avgBytesPerSec = (uint)(_bitRate * Define.BLOCKALIGN);
@@ -191,22 +182,13 @@ namespace VCCSharp.Modules
 
             fixed (WAVEFORMATEX* p = &(_pcmwf))
             {
-                _dsbd.lpwfxFormat = (IntPtr)(p);
+                _dsbd.lpwfxFormat = (IntPtr)p;
             }
 
-            var dd = new IntPtr();
-
-            fixed (DSBUFFERDESC* q = &(_dsbd))
+            fixed (DSBUFFERDESC* p = &(_dsbd))
             {
-                _hr = (int)_ds.CreateSoundBuffer(q, &dd, Zero);
+                return _factory.CreateSoundBuffer(_ds, p);
             }
-
-            if (_hr != Define.DS_OK)
-            {
-                return null;
-            }
-
-            return (IDirectSoundBuffer)Marshal.GetObjectForIUnknown(dd);
         }
 
         public short SoundDeInit()
@@ -420,7 +402,7 @@ namespace VCCSharp.Modules
 
                 _modules.Config.NumberOfSoundCards++;
 
-                return (_modules.Config.NumberOfSoundCards < Define.MAXCARDS) ? Define.TRUE : Define.FALSE;
+                return _modules.Config.NumberOfSoundCards < Define.MAXCARDS ? Define.TRUE : Define.FALSE;
             }
         }
     }

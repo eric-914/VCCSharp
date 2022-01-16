@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using VCCSharp.DX8;
 using VCCSharp.DX8.Interfaces;
 using VCCSharp.DX8.Libraries;
 using VCCSharp.DX8.Models;
@@ -35,6 +36,7 @@ namespace VCCSharp.Modules
     public class Joystick : IJoystick
     {
         private readonly IDInput _dInput;
+        private readonly IDxFactory _factory;
 
         public ushort StickValue { get; set; }
 
@@ -49,9 +51,10 @@ namespace VCCSharp.Modules
 
         private IDirectInput _di;
 
-        public Joystick(IDInput dInput)
+        public Joystick(IDInput dInput, IDxFactory factory)
         {
             _dInput = dInput;
+            _factory = factory;
         }
 
         public unsafe short FindJoysticks()
@@ -148,15 +151,11 @@ namespace VCCSharp.Modules
         {
             const uint version = 0x0800;
 
-            LPVOID di = IntPtr.Zero;
-
             IntPtr handle = KernelDll.GetModuleHandleA(IntPtr.Zero);
 
             _GUID guid = CreateIDirectInput8AGuid();
 
-            long hr = _dInput.DirectInputCreate(handle, version, guid, ref di);
-
-            return hr < 0 ? null : (IDirectInput)Marshal.GetObjectForIUnknown(di);
+            return _factory.CreateDirectInput(_dInput, handle, version, guid);
         }
 
         private static unsafe _GUID CreateIDirectInput8AGuid()

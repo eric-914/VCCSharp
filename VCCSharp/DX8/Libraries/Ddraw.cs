@@ -5,15 +5,15 @@ namespace VCCSharp.DX8.Libraries
     // ReSharper disable once IdentifierTypo
     public interface IDDraw
     {
-        unsafe int DirectDrawCreate(IntPtr lpGuid, IntPtr* pDirectDraw, IntPtr pUnkOuter);
+        int DirectDrawCreate(IntPtr pGuid, ref IntPtr pInstance, IntPtr pUnknown);
     }
 
     // ReSharper disable once IdentifierTypo
     public class DDraw : IDDraw
     {
-        public unsafe int DirectDrawCreate(IntPtr lpGuid, IntPtr* pDirectDraw, IntPtr pUnkOuter)
+        public int DirectDrawCreate(IntPtr pGuid, ref IntPtr pInstance, IntPtr pUnknown)
         {
-            return DDrawDLL.DirectDrawCreate(lpGuid, pDirectDraw, pUnkOuter);
+            return DDrawDLL.DirectDrawCreate(pGuid, ref pInstance, pUnknown);
         }
     }
 }

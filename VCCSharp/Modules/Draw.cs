@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Windows;
+using VCCSharp.DX8;
 using VCCSharp.DX8.Interfaces;
 using VCCSharp.DX8.Libraries;
 using VCCSharp.DX8.Models;
@@ -37,7 +37,8 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
         private readonly IUser32 _user32;
         private readonly IGdi32 _gdi32;
-        private readonly IDDraw _idDraw;
+        private readonly IDDraw _dDraw;
+        private readonly IDxFactory _factory;
 
         private static int _textX, _textY;
         private static byte _counter, _counter1 = 32, _phase = 1;
@@ -59,12 +60,13 @@ namespace VCCSharp.Modules
         private IDirectDrawSurface _surface;    // Primary surface
         private IDirectDrawSurface _back;    // Back surface
 
-        public Draw(IModules modules, IUser32 user32, IGdi32 gdi32, IDDraw idDraw)
+        public Draw(IModules modules, IUser32 user32, IGdi32 gdi32, IDDraw dDraw, IDxFactory factory)
         {
             _modules = modules;
             _user32 = user32;
             _gdi32 = gdi32;
-            _idDraw = idDraw;
+            _dDraw = dDraw;
+            _factory = factory;
         }
 
         public void ClearScreen()
@@ -375,7 +377,7 @@ namespace VCCSharp.Modules
             _user32.UpdateWindow(_modules.Emu.WindowHandle);
 
             // Initialize the DirectDraw object
-            _dd = DirectDrawCreate();
+            _dd = _factory.CreateDirectDraw(_dDraw);
             if (_dd == null) return false;
 
             // Set to use windowed mode
@@ -385,7 +387,7 @@ namespace VCCSharp.Modules
             ddsd->ddsCaps.dwCaps = Define.DDSCAPS_PRIMARYSURFACE;
 
             // Create our Primary Surface
-            _surface = CreateSurface(ddsd);
+            _surface = _factory.CreateSurface(_dd, ddsd);
 
             if (_surface == null) return false;
 
@@ -396,12 +398,12 @@ namespace VCCSharp.Modules
             ddsd->dwHeight = (uint) _windowSize.Y;
 
             ddsd->ddsCaps.dwCaps = Define.DDSCAPS_VIDEOMEMORY; // Try to create back buffer in video RAM
-            _back = CreateBackSurface(ddsd);
+            _back = _factory.CreateSurface(_dd, ddsd);
 
             if (_back == null)
             { // If not enough Video Ram 			
                 ddsd->ddsCaps.dwCaps = Define.DDSCAPS_SYSTEMMEMORY;			// Try to create back buffer in System RAM
-                _back = CreateBackSurface(ddsd);
+                _back = _factory.CreateSurface(_dd, ddsd);
 
                 if (_back == null)
                 {
@@ -413,7 +415,7 @@ namespace VCCSharp.Modules
 
             if (GetDisplayMode(ddsd) < 0) return false;
 
-            _clipper = CreateClipper(); // Create the clipper using the DirectDraw object
+            _clipper = _factory.CreateClipper(_dd); // Create the clipper using the DirectDraw object
             if (_clipper == null) return false;
 
             // Assign your window's HWND to the clipper
@@ -515,50 +517,14 @@ namespace VCCSharp.Modules
             return _clipper.SetHWnd(0, hWnd);
         }
 
-        private unsafe IDirectDrawClipper CreateClipper()
-        {
-            var clipper = new IntPtr();
-
-            var hr = _dd.CreateClipper(0, &clipper, Zero);
-
-            return hr < 0 ? null : (IDirectDrawClipper)Marshal.GetObjectForIUnknown(clipper);
-        }
-
         private unsafe long GetDisplayMode(DDSURFACEDESC* ddsd)
         {
             return _dd.GetDisplayMode(ddsd);
         }
 
-        private unsafe IDirectDrawSurface CreateBackSurface(DDSURFACEDESC* ddsd)
-        {
-            var back = new IntPtr();
-
-            var hr = _dd.CreateSurface(ddsd, &back, Zero);
-
-            return hr < 0 ? null : (IDirectDrawSurface)Marshal.GetObjectForIUnknown(back);
-        }
-
-        private unsafe IDirectDrawSurface CreateSurface(DDSURFACEDESC* ddsd)
-        {
-            var surface = new IntPtr();
-
-            var hr = _dd.CreateSurface(ddsd, &surface, Zero);
-
-            return hr < 0 ? null : (IDirectDrawSurface)Marshal.GetObjectForIUnknown(surface);
-        }
-
         private long SetCooperativeLevel(HWND hWnd, uint value)
         {
             return _dd.SetCooperativeLevel(hWnd, value);
-        }
-
-        private unsafe IDirectDraw DirectDrawCreate()
-        {
-            var dd = new IntPtr();
-
-            var hr = _idDraw.DirectDrawCreate(Zero, &dd, Zero);
-
-            return hr < 0 ? null : (IDirectDraw)Marshal.GetObjectForIUnknown(dd);
         }
 
         private long UnlockBackSurface()

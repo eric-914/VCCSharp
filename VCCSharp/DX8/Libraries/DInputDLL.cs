@@ -10,6 +10,6 @@ namespace VCCSharp.DX8.Libraries
         public const string Dll = "dinput8.dll";
 
         [DllImport(Dll)]
-        public static extern int DirectInput8Create(IntPtr handle, uint version, _GUID pId, ref IntPtr di, IntPtr unknown);
+        public static extern int DirectInput8Create(IntPtr handle, uint version, _GUID pGuid, ref IntPtr pInstance, IntPtr pUnknown);
     }
 }

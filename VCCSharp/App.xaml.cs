@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using VCCSharp.BitBanger;
 using VCCSharp.Configuration;
+using VCCSharp.DX8;
 using VCCSharp.DX8.Libraries;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
@@ -60,6 +61,7 @@ namespace VCCSharp
                 .Bind<IDDraw, DDraw>()
                 .Bind<IDSound, DSound>()
                 .Bind<IDInput, DInput>()
+                .Bind<IDxFactory, DxFactory>()
 
                 //--Main
                 .Bind<ICommandLineParser, CommandLineParser>()
