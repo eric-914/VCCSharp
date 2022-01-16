@@ -51,12 +51,14 @@ namespace VCCSharp.Modules
         public IntPtr SndPointer2;
 
         private IDirectSound _ds;
-        private readonly IDirectSoundBufferWrapper _buffer = new DirectSoundBufferWrapper();
+        private IDirectSoundBuffer _buffer;
 
         // ReSharper disable IdentifierTypo
         private DSBUFFERDESC _dsbd;     // direct sound description
         private WAVEFORMATEX _pcmwf;    //generic wave format structure
         // ReSharper restore IdentifierTypo
+
+        private bool _mute;
 
         public Audio(IModules modules, IDSound dSound)
         {
@@ -106,7 +108,7 @@ namespace VCCSharp.Modules
                     return 1;
                 }
 
-                _buffer.SetInstance(CreateDirectSoundBuffer());
+                _buffer = CreateDirectSoundBuffer();
 
                 if (_hr != Define.DS_OK)
                 {
@@ -132,7 +134,10 @@ namespace VCCSharp.Modules
 
                 _buffer.SetCurrentPosition(0);
 
-                _buffer.Play(0, 0, Define.DSBPLAY_LOOPING);
+                if (!_mute)
+                {
+                    _buffer.Play(0, 0, Define.DSBPLAY_LOOPING);
+                }
 
                 if (_hr != Define.DS_OK)
                 {
@@ -145,7 +150,7 @@ namespace VCCSharp.Modules
             _audioPause = false;
             _modules.CoCo.SetAudioRate(_rateList[rate]);
 
-            _buffer.Mute = (rate == 0);
+            _mute = (rate == 0);
 
             return result;
         }
@@ -262,7 +267,7 @@ namespace VCCSharp.Modules
 
             _modules.Audio.Spectrum?.UpdateSoundBar(leftAverage, rightAverage);
 
-            if (!_initialized || _audioPause || length == 0 || _buffer.Mute)
+            if (!_initialized || _audioPause || length == 0 || _mute)
             {
                 return;
             }
@@ -307,12 +312,15 @@ namespace VCCSharp.Modules
                 ulong playCursor = 0, writeCursor = 0;
                 long maxSize;
 
-                if (!_initialized || _audioPause || _buffer.Mute)
+                if (!_initialized || _audioPause || _mute)
                 {
                     return Define.AUDIOBUFFERS;
                 }
 
-                _buffer.GetCurrentPosition(&playCursor, &writeCursor);
+                if (!_mute)
+                {
+                    _buffer.GetCurrentPosition(&playCursor, &writeCursor);
+                }
 
                 if (_buffOffset <= playCursor)
                 {
@@ -339,7 +347,10 @@ namespace VCCSharp.Modules
                 }
                 else
                 {
-                    _buffer.Play(0, 0, Define.DSBPLAY_LOOPING);
+                    if (!_mute)
+                    {
+                        _buffer.Play(0, 0, Define.DSBPLAY_LOOPING);
+                    }
                 }
             }
 
