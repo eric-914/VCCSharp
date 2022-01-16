@@ -1,4 +1,6 @@
-﻿namespace VCCSharp.Models
+﻿using VCCSharp.DX8.Models;
+
+namespace VCCSharp.Models
 {
     /// <summary>
     /// This is a dump of dinput.h :: c_dfDIJoystick2

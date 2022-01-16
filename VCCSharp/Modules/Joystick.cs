@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using VCCSharp.DX8.Interfaces;
+using VCCSharp.DX8.Libraries;
+using VCCSharp.DX8.Models;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
-using VCCSharp.Models.DirectX;
 using JoystickState = VCCSharp.Models.JoystickState;
 using LPVOID = System.IntPtr;
 

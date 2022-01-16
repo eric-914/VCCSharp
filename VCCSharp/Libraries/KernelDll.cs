@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using VCCSharp.Libraries.Models;
 using VCCSharp.Models;
 using HMODULE = System.IntPtr;
 using HANDLE = System.IntPtr;

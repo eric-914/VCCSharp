@@ -1,4 +1,4 @@
-﻿using VCCSharp.Models.DirectX;
+﻿using VCCSharp.DX8.Interfaces;
 
 namespace VCCSharp.Models
 {

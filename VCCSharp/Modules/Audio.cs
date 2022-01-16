@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using VCCSharp.DX8.Interfaces;
+using VCCSharp.DX8.Libraries;
+using VCCSharp.DX8.Models;
 using VCCSharp.IoC;
-using VCCSharp.Libraries;
 using VCCSharp.Models;
-using VCCSharp.Models.DirectX;
 using static System.IntPtr;
 using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate int DirectSoundEnumerateCallbackTemplate(IntPtr guid, IntPtr description, IntPtr module, IntPtr context);
+
     public interface IAudio
     {
         short SoundDeInit();
@@ -19,6 +23,7 @@ namespace VCCSharp.Modules
         AudioSpectrum Spectrum { get; set; }
         bool PauseAudio(bool pause);
         ushort CurrentRate { get; set; }
+        void DirectSoundEnumerateSoundCards();
     }
 
     public class Audio : IAudio
@@ -59,6 +64,8 @@ namespace VCCSharp.Modules
         // ReSharper restore IdentifierTypo
 
         private bool _mute;
+
+        private static DirectSoundEnumerateCallbackTemplate _delegateInstance;
 
         public Audio(IModules modules, IDSound dSound)
         {
@@ -384,6 +391,36 @@ namespace VCCSharp.Modules
             for (int index = 0; index < length; index++)
             {
                 buffer[index] = 0;
+            }
+        }
+
+        public void DirectSoundEnumerateSoundCards()
+        {
+            _delegateInstance = DirectSoundEnumerateCallback;
+
+            IntPtr fn = Marshal.GetFunctionPointerForDelegate(_delegateInstance);
+
+            _dSound.DirectSoundEnumerate(fn, IntPtr.Zero);
+        }
+
+        public int DirectSoundEnumerateCallback(IntPtr guid, IntPtr description, IntPtr module, IntPtr context)
+        {
+            unsafe
+            {
+                var text = Converter.ToString((byte*)description);
+                var index = _modules.Config.NumberOfSoundCards;
+
+                var cards = _modules.Config.SoundCards;
+
+                fixed (SoundCardList* card = &(cards[index]))
+                {
+                    Converter.ToByteArray(text, (*card).CardName);
+                    (*card).Guid =(_GUID*)guid;
+                }
+
+                _modules.Config.NumberOfSoundCards++;
+
+                return (_modules.Config.NumberOfSoundCards < Define.MAXCARDS) ? Define.TRUE : Define.FALSE;
             }
         }
     }

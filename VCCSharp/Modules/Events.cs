@@ -2,6 +2,7 @@
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
+using VCCSharp.Libraries.Models;
 using VCCSharp.Models;
 using KeyStates = VCCSharp.Enums.KeyStates;
 

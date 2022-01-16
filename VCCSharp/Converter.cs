@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using VCCSharp.DX8.Models;
 using VCCSharp.Models;
 
 namespace VCCSharp

@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using VCCSharp.BitBanger;
 using VCCSharp.Configuration;
+using VCCSharp.DX8.Libraries;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Menu;
@@ -31,7 +32,6 @@ namespace VCCSharp
                 .Singleton<ICoCo, CoCo>()
                 .Singleton<IConfig, Config>()
                 .Singleton<IDraw, Draw>()
-                .Singleton<ISound, Sound>()
                 .Singleton<IEmu, Emu>()
                 .Singleton<IEvents, Events>()
                 .Singleton<IGraphics, Graphics>()
@@ -57,7 +57,7 @@ namespace VCCSharp
                 .Bind<IUser32, User32>()
                 .Bind<IGdi32, Gdi32>()
                 .Bind<IWinmm, Winmm>()
-                .Bind<IDdraw, Ddraw>()
+                .Bind<IDDraw, DDraw>()
                 .Bind<IDSound, DSound>()
                 .Bind<IDInput, DInput>()
 

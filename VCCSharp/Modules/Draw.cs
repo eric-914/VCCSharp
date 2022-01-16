@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows;
+using VCCSharp.DX8.Interfaces;
+using VCCSharp.DX8.Libraries;
+using VCCSharp.DX8.Models;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
+using VCCSharp.Libraries.Models;
 using VCCSharp.Models;
-using VCCSharp.Models.DirectX;
+using static System.IntPtr;
 using HWND = System.IntPtr;
 using Point = System.Drawing.Point;
-using static System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -34,7 +37,7 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
         private readonly IUser32 _user32;
         private readonly IGdi32 _gdi32;
-        private readonly IDdraw _ddraw;
+        private readonly IDDraw _idDraw;
 
         private static int _textX, _textY;
         private static byte _counter, _counter1 = 32, _phase = 1;
@@ -56,12 +59,12 @@ namespace VCCSharp.Modules
         private IDirectDrawSurface _surface;    // Primary surface
         private IDirectDrawSurface _back;    // Back surface
 
-        public Draw(IModules modules, IUser32 user32, IGdi32 gdi32, IDdraw ddraw)
+        public Draw(IModules modules, IUser32 user32, IGdi32 gdi32, IDDraw idDraw)
         {
             _modules = modules;
             _user32 = user32;
             _gdi32 = gdi32;
-            _ddraw = ddraw;
+            _idDraw = idDraw;
         }
 
         public void ClearScreen()
@@ -553,7 +556,7 @@ namespace VCCSharp.Modules
         {
             var dd = new IntPtr();
 
-            var hr = _ddraw.DirectDrawCreate(Zero, &dd, Zero);
+            var hr = _idDraw.DirectDrawCreate(Zero, &dd, Zero);
 
             return hr < 0 ? null : (IDirectDraw)Marshal.GetObjectForIUnknown(dd);
         }

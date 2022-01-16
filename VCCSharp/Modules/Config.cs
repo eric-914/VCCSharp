@@ -105,7 +105,7 @@ namespace VCCSharp.Modules
             //SoundCardList* soundCards = (SoundCardList*)(&configState->SoundCards);
 
             NumberOfSoundCards = 0;
-            _modules.Sound.DirectSoundEnumerateSoundCards();
+            _modules.Audio.DirectSoundEnumerateSoundCards();
 
             //--Synch joysticks to config instance
             _modules.Joystick.SetLeftJoystick(_left);

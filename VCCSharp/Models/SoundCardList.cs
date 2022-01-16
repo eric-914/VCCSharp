@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using VCCSharp.DX8.Models;
 
 namespace VCCSharp.Models
 {
