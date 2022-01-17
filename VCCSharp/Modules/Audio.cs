@@ -51,11 +51,6 @@ namespace VCCSharp.Modules
         public IntPtr SndPointer1;
         public IntPtr SndPointer2;
 
-        // ReSharper disable IdentifierTypo
-        private DSBUFFERDESC _dsbd;     // direct sound description
-        private WAVEFORMATEX _pcmwf;    // generic wave format structure
-        // ReSharper restore IdentifierTypo
-
         private bool _mute;
 
         public Audio(IModules modules, IDxSound sound)
@@ -94,7 +89,7 @@ namespace VCCSharp.Modules
                 // set cooperation level normal
                 if (!_sound.SetCooperativeLevel(hWnd)) return 1;
 
-                if (!CreateDirectSoundBuffer()) return 1;
+                if (!_sound.CreateDirectSoundBuffer(_bitRate, _sndBuffLength)) return 1;
 
                 // Clear out sound buffers
                 _hr = DirectSoundLock((ushort)_sndBuffLength);
@@ -134,32 +129,6 @@ namespace VCCSharp.Modules
             _mute = (rate == 0);
 
             return result;
-        }
-
-        public unsafe bool CreateDirectSoundBuffer()
-        {
-            uint avgBytesPerSec = (uint)(_bitRate * Define.BLOCKALIGN);
-
-            _pcmwf.wFormatTag = Define.WAVE_FORMAT_PCM;
-            _pcmwf.nChannels = Define.CHANNELS;
-            _pcmwf.nSamplesPerSec = _bitRate;
-            _pcmwf.wBitsPerSample = Define.BITSPERSAMPLE;
-            _pcmwf.nBlockAlign = Define.BLOCKALIGN;
-            _pcmwf.nAvgBytesPerSec = avgBytesPerSec;
-            _pcmwf.cbSize = 0;
-
-            int flags = Define.DSBCAPS_GETCURRENTPOSITION2 | Define.DSBCAPS_LOCSOFTWARE | Define.DSBCAPS_STATIC | Define.DSBCAPS_GLOBALFOCUS;
-
-            _dsbd.dwSize = (uint)sizeof(DSBUFFERDESC);
-            _dsbd.dwFlags = (uint)flags;
-            _dsbd.dwBufferBytes = _sndBuffLength;
-
-            fixed (WAVEFORMATEX* p = &(_pcmwf))
-            {
-                _dsbd.lpwfxFormat = (IntPtr)p;
-            }
-
-            return _sound.CreateDirectSoundBuffer(_dsbd);
         }
 
         public short SoundDeInit()
@@ -281,8 +250,7 @@ namespace VCCSharp.Modules
 
             if (!_mute)
             {
-                _sound.ReadCursors();
-                playCursor = _sound.PlayCursor;
+                playCursor = _sound.ReadPlayCursor();
             }
 
             if (_buffOffset <= playCursor)

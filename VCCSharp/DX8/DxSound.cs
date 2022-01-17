@@ -15,21 +15,15 @@ namespace VCCSharp.DX8
     {
         unsafe bool CreateDirectSound(_GUID* guid);
         bool SetCooperativeLevel(IntPtr hWnd);
-        bool CreateDirectSoundBuffer(DSBUFFERDESC bufferDescription);
 
         long DirectSoundEnumerate(DirectSoundEnumerateCallbackTemplate callback);
-        bool LockBuffer(uint offset, ushort length, uint sndLength1, uint sndLength2);
-        bool UnlockBuffer(uint sndLength1, uint sndLength2);
-        void ClearBuffer(uint sndBuffLength);
-        unsafe void CopyBuffer(uint sndLength1, uint* buffer);
+
+        bool CreateDirectSoundBuffer(ushort bitRate, uint length);
 
         void Stop();
         void Play();
         void Reset();
-        void ReadCursors();
-
-        ulong PlayCursor { get; }
-        ulong WriteCursor { get; }
+        ulong ReadPlayCursor();
 
         unsafe int Lock(uint offset, ushort length, IntPtr* sp1, uint* sl1, IntPtr* sp2, uint* sl2);
         unsafe int Unlock(IntPtr* sp1, uint sl1, IntPtr* sp2, uint sl2);
@@ -42,17 +36,6 @@ namespace VCCSharp.DX8
 
         private IDirectSound _ds;
         private IDirectSoundBuffer _buffer;
-
-        // ReSharper disable IdentifierTypo
-        private DSBUFFERDESC _dsbd;     // direct sound description
-        private WAVEFORMATEX _pcmwf;    //generic wave format structure
-        // ReSharper restore IdentifierTypo
-
-        public IntPtr SndPointer1;
-        public IntPtr SndPointer2;
-
-        public ulong PlayCursor { get; private set; } = 0;
-        public ulong WriteCursor { get; private set; } = 0;
 
         public DxSound(IDSound sound, IDxFactory factory)
         {
@@ -79,6 +62,36 @@ namespace VCCSharp.DX8
             return (_buffer != null);
         }
 
+        private static WAVEFORMATEX CreateWaveFormat(ushort bitRate)
+        {
+            uint avgBytesPerSec = (uint)(bitRate * Define.BLOCKALIGN);
+
+            // generic wave format structure
+            return new WAVEFORMATEX
+            {
+                wFormatTag = Define.WAVE_FORMAT_PCM,
+                nChannels = Define.CHANNELS,
+                nSamplesPerSec = bitRate,
+                wBitsPerSample = Define.BITSPERSAMPLE,
+                nBlockAlign = Define.BLOCKALIGN,
+                nAvgBytesPerSec = avgBytesPerSec,
+                cbSize = 0
+            };
+        }
+
+        private static unsafe DSBUFFERDESC CreateBufferDescription(uint length, WAVEFORMATEX* waveFormat)
+        {
+            int flags = Define.DSBCAPS_GETCURRENTPOSITION2 | Define.DSBCAPS_LOCSOFTWARE | Define.DSBCAPS_STATIC | Define.DSBCAPS_GLOBALFOCUS;
+
+            return new DSBUFFERDESC
+            {
+                dwSize = (uint)sizeof(DSBUFFERDESC),
+                dwFlags = (uint)flags,
+                dwBufferBytes = length,
+                lpwfxFormat = (IntPtr)waveFormat
+            };
+        }
+
         public long DirectSoundEnumerate(DirectSoundEnumerateCallbackTemplate callback)
         {
             IntPtr fn = Marshal.GetFunctionPointerForDelegate(callback);
@@ -86,47 +99,11 @@ namespace VCCSharp.DX8
             return _sound.DirectSoundEnumerate(fn, Zero);
         }
 
-        public unsafe bool LockBuffer(uint offset, ushort length, uint sndLength1, uint sndLength2)
-        {
-            fixed (IntPtr* sp1 = &SndPointer1)
-            {
-                fixed (IntPtr* sp2 = &SndPointer2)
-                {
-                    var result = (int)_buffer.Lock(offset, length, sp1, &sndLength1, sp2, &sndLength2, 0);
-
-                    return result == Define.S_OK;
-                }
-            }
-        }
-
-        public bool UnlockBuffer(uint sndLength1, uint sndLength2)
-        {
-            return (int)_buffer.Unlock(SndPointer1, sndLength1, SndPointer2, sndLength2) == Define.S_OK;
-        }
-
-        public void ClearBuffer(uint sndBuffLength)
-        {
-            ClearBuffer(SndPointer1, sndBuffLength);
-        }
-
-        public unsafe void CopyBuffer(uint sndLength1, uint* buffer)
-        {
-            byte* byteBuffer = (byte*)buffer;
-
-            CopyBuffer(SndPointer1, byteBuffer, sndLength1);
-
-            if (SndPointer2 != Zero)
-            {
-                // copy last section of circular buffer if wrapped
-                CopyBuffer(SndPointer2, &byteBuffer[sndLength1], sndLength1);
-            }
-        }
-
         public void Stop() => _buffer.Stop();
         public void Play() => _buffer.Play(0, 0, Define.DSBPLAY_LOOPING);
         public void Reset() => _buffer.SetCurrentPosition(0);
 
-        public void ReadCursors()
+        public ulong ReadPlayCursor()
         {
             ulong playCursor = 0, writeCursor = 0;
 
@@ -135,42 +112,20 @@ namespace VCCSharp.DX8
                 _buffer.GetCurrentPosition(&playCursor, &writeCursor);
             }
 
-            PlayCursor = playCursor;
-            WriteCursor = writeCursor;
-        }
-
-        private static unsafe void CopyBuffer(IntPtr sndPtr, byte* source, uint length)
-        {
-            byte* buffer = (byte*)sndPtr;
-
-            if (buffer == null)
-            {
-                throw new Exception("Bad buffer");
-            }
-
-            for (int index = 0; index < length; index++)
-            {
-                buffer[index] = source[index];
-            }
-        }
-
-        private static unsafe void ClearBuffer(IntPtr sndPtr, uint length)
-        {
-            byte* buffer = (byte*)sndPtr;
-
-            if (buffer == null)
-            {
-                throw new Exception("Bad buffer");
-            }
-
-            for (int index = 0; index < length; index++)
-            {
-                buffer[index] = 0;
-            }
+            return playCursor;
         }
 
         public unsafe int Lock(uint offset, ushort length, IntPtr* sp1, uint* sl1, IntPtr* sp2, uint* sl2) => (int)_buffer.Lock(offset, length, sp1, sl1, sp2, sl2, 0);
 
         public unsafe int Unlock(IntPtr* sp1, uint sl1, IntPtr* sp2, uint sl2) => (int)_buffer.Unlock(*sp1, sl1, *sp2, sl2);
+
+        public unsafe bool CreateDirectSoundBuffer(ushort bitRate, uint length)
+        {
+            WAVEFORMATEX waveFormat = CreateWaveFormat(bitRate);
+
+            DSBUFFERDESC soundBuffer = CreateBufferDescription(length, &waveFormat);
+
+            return CreateDirectSoundBuffer(soundBuffer);
+        }
     }
 }
