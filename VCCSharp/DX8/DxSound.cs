@@ -25,8 +25,11 @@ namespace VCCSharp.DX8
         void Reset();
         ulong ReadPlayCursor();
 
-        unsafe int Lock(uint offset, ushort length, IntPtr* sp1, uint* sl1, IntPtr* sp2, uint* sl2);
-        unsafe int Unlock(IntPtr* sp1, uint sl1, IntPtr* sp2, uint sl2);
+        void ClearBuffer(uint length);
+        unsafe void CopyBuffer(uint* buffer);
+
+        bool Lock(uint offset, ushort length);
+        bool Unlock();
     }
 
     public class DxSound : IDxSound
@@ -36,6 +39,12 @@ namespace VCCSharp.DX8
 
         private IDirectSound _ds;
         private IDirectSoundBuffer _buffer;
+
+        public IntPtr SndPointer1;
+        public IntPtr SndPointer2;
+
+        private uint _sndLength1;
+        private uint _sndLength2;
 
         public DxSound(IDSound sound, IDxFactory factory)
         {
@@ -115,17 +124,91 @@ namespace VCCSharp.DX8
             return playCursor;
         }
 
-        public unsafe int Lock(uint offset, ushort length, IntPtr* sp1, uint* sl1, IntPtr* sp2, uint* sl2) => (int)_buffer.Lock(offset, length, sp1, sl1, sp2, sl2, 0);
+        public unsafe bool Lock(uint offset, ushort length)
+        {
+            long LockBuffer(IntPtr* sp1, uint* sl1, IntPtr* sp2, uint* sl2) 
+                => _buffer.Lock(offset, length, sp1, sl1, sp2, sl2, 0);
 
-        public unsafe int Unlock(IntPtr* sp1, uint sl1, IntPtr* sp2, uint sl2) => (int)_buffer.Unlock(*sp1, sl1, *sp2, sl2);
+            fixed (uint* sl1 = &_sndLength1)
+            {
+                fixed (uint* sl2 = &_sndLength2)
+                {
+                    IntPtr s1 = SndPointer1;
+                    IntPtr s2 = SndPointer2;
+
+                    var result = LockBuffer(&s1, sl1, &s2, sl2);
+
+                    SndPointer1 = s1;
+                    SndPointer2 = s2;
+
+                    return result == Define.S_OK;
+                }
+            }
+        }
+
+        public unsafe bool Unlock()
+        {
+            long UnlockBuffer(IntPtr* sp1, IntPtr* sp2) 
+                => _buffer.Unlock(*sp1, _sndLength1, *sp2, _sndLength2);
+
+            fixed (IntPtr* sp1 = &SndPointer1)
+            {
+                fixed (IntPtr* sp2 = &SndPointer2)
+                {
+                    return UnlockBuffer(sp1, sp2) == Define.S_OK;
+                }
+            }
+        }
 
         public unsafe bool CreateDirectSoundBuffer(ushort bitRate, uint length)
         {
             WAVEFORMATEX waveFormat = CreateWaveFormat(bitRate);
-
             DSBUFFERDESC soundBuffer = CreateBufferDescription(length, &waveFormat);
 
             return CreateDirectSoundBuffer(soundBuffer);
+        }
+
+        public unsafe void ClearBuffer(uint length)
+        {
+            byte* buffer = (byte*)SndPointer1;
+
+            if (buffer == null)
+            {
+                throw new Exception("Bad buffer");
+            }
+
+            for (int index = 0; index < length; index++)
+            {
+                buffer[index] = 0;
+            }
+        }
+
+        public unsafe void CopyBuffer(uint* buffer)
+        {
+            byte* byteBuffer = (byte*)buffer;
+
+            void Copy(IntPtr sndPtr, byte* source, uint length)
+            {
+                byte* target = (byte*)sndPtr;
+
+                if (target == null)
+                {
+                    throw new Exception("Bad buffer");
+                }
+
+                for (int index = 0; index < length; index++)
+                {
+                    target[index] = source[index];
+                }
+            }
+
+            Copy(SndPointer1, byteBuffer, _sndLength1);
+
+            if (SndPointer2 != Zero)
+            {
+                // copy last section of circular buffer if wrapped
+                Copy(SndPointer2, &byteBuffer[_sndLength1], _sndLength1);
+            }
         }
     }
 }
