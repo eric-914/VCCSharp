@@ -191,24 +191,24 @@ namespace VCCSharp.Modules
         {
             var joystick = _modules.Joystick;
 
-            int numberOfJoysticks = joystick.FindJoysticks();
+            var joysticks = joystick.FindJoysticks();
 
             JoystickModel left = GetLeftJoystick();
             JoystickModel right = GetRightJoystick();
 
-            if (right.DiDevice >= numberOfJoysticks)
+            if (right.DiDevice >= joysticks.Count)
             {
                 right.DiDevice = 0;
             }
 
-            if (left.DiDevice >= numberOfJoysticks)
+            if (left.DiDevice >= joysticks.Count)
             {
                 left.DiDevice = 0;
             }
 
             joystick.SetStickNumbers(left.DiDevice, right.DiDevice);
 
-            if (numberOfJoysticks == 0)	//Use Mouse input if no Joysticks present
+            if (joysticks.Count == 0)	//Use Mouse input if no Joysticks present
             {
                 if (left.UseMouse == 3)
                 {

@@ -1,6 +1,5 @@
 ﻿namespace VCCSharp.Models
 {
-    //[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public class JoystickModel
     {
         // 0 -- Keyboard
@@ -10,7 +9,7 @@
         public byte UseMouse;
 
         // Index of which Joystick is selected
-        public byte DiDevice;
+        public byte DiDevice; //TODO: Rename as "Index" -- Including .cfg
 
         // 0 -- Standard,
         // 1 -- TandyHiRes,

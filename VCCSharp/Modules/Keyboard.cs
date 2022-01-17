@@ -81,7 +81,7 @@ namespace VCCSharp.Modules
             IJoystick joystick = _modules.Joystick;
             IMC6821 mc6821 = _modules.MC6821;
 
-            JoystickStates joystickState = _modules.Joystick.States;
+            //JoystickStates joystickState = _modules.Joystick.States;
 
             for (byte x = 0; x < 8; x++)
             {
@@ -106,25 +106,25 @@ namespace VCCSharp.Modules
                 }
             }
 
-            if (joystickState.Left.Button1 == 1)
+            if (_modules.Joystick.Left.Button1 == 1)
             {
                 //Left Joystick Button 1 Down?
                 retVal &= 0xFD;
             }
 
-            if (joystickState.Right.Button1 == 1)
+            if (_modules.Joystick.Right.Button1 == 1)
             {
                 //Right Joystick Button 1 Down?
                 retVal &= 0xFE;
             }
 
-            if (joystickState.Left.Button2 == 1)
+            if (_modules.Joystick.Left.Button2 == 1)
             {
                 //Left Joystick Button 2 Down?
                 retVal &= 0xF7;
             }
 
-            if (joystickState.Right.Button2 == 1)
+            if (_modules.Joystick.Right.Button2 == 1)
             {
                 //Right Joystick Button 2 Down?
                 retVal &= 0xFB;

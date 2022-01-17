@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using VCCSharp.DX8.Interfaces;
 using VCCSharp.DX8.Libraries;
 using VCCSharp.DX8.Models;
@@ -6,17 +8,15 @@ using VCCSharp.Models;
 
 namespace VCCSharp.DX8
 {
-    public delegate void EnumerateDevicesCallback(IDirectInputDevice joystick, string name);
+    public delegate void EnumerateDevicesCallback(string name);
 
     public interface IDxInput
     {
         void CreateDirectInput(IntPtr handle);
 
-        void EnumerateDevices(EnumerateDevicesCallback callback);
+        int EnumerateDevices(EnumerateDevicesCallback callback);
 
-        void SetJoystickProperties(IDirectInputDevice device);
-
-        JoystickState JoystickPoll(IDirectInputDevice stick);
+        JoystickState JoystickPoll(int id);
     }
 
     public class DxInput : IDxInput
@@ -25,6 +25,7 @@ namespace VCCSharp.DX8
         private readonly IDxFactory _factory;
 
         private IDirectInput _di;
+        private readonly List<IDirectInputDevice> _devices = new List<IDirectInputDevice>();
 
         public DxInput(IDInput input, IDxFactory factory)
         {
@@ -36,32 +37,12 @@ namespace VCCSharp.DX8
         {
             const uint version = 0x0800;
 
-            _GUID guid = CreateIDirectInput8AGuid();
+            _GUID guid = Converter.ToGuid(DxGuid.DirectInput);
 
             _di = _factory.CreateDirectInput(_input, handle, version, guid);
         }
 
-        private static unsafe _GUID CreateIDirectInput8AGuid()
-        {
-            //return Converter.ToGuid("BF798030-483A-4DA2AA99-5D64ED369700");
-            byte[] d4 = { 0xAA, 0x99, 0x5D, 0x64, 0xED, 0x36, 0x97, 0x00 };
-
-            _GUID guid = new _GUID
-            {
-                Data1 = 0xBF798030,
-                Data2 = 0x483A,
-                Data3 = 0x4DA2
-            };
-
-            for (int i = 0; i < 8; i++)
-            {
-                guid.Data4[i] = d4[i];
-            }
-
-            return guid;
-        }
-
-        public IDirectInputDevice CreateDevice(_GUID guidInstance)
+        private IDirectInputDevice CreateDevice(_GUID guidInstance)
         {
             IDirectInputDevice joystick = null;
 
@@ -75,17 +56,7 @@ namespace VCCSharp.DX8
             return joystick;
         }
 
-        public void EnumerateDevices(DIEnumDevicesCallback callback)
-        {
-            long hr = _di.EnumDevices(Define.DI8DEVCLASS_GAMECTRL, callback, IntPtr.Zero, Define.DIEDFL_ATTACHEDONLY);
-
-            if (hr < 0)
-            {
-                throw new Exception("Failed to enumerate joysticks");
-            }
-        }
-
-        public unsafe void EnumerateDevices(EnumerateDevicesCallback callback)
+        public unsafe int EnumerateDevices(EnumerateDevicesCallback callback)
         {
             int count = 0;
 
@@ -94,7 +65,11 @@ namespace VCCSharp.DX8
                 IDirectInputDevice joystick = CreateDevice(p->guidInstance);
                 string name = Converter.ToString(p->tszInstanceName);
 
-                callback(joystick, name);
+                _devices.Add(joystick);
+
+                callback(name);
+
+                SetJoystickProperties(joystick);
 
                 return ++count < Define.MAX_JOYSTICKS ? Define.TRUE : Define.FALSE;
             }
@@ -105,11 +80,13 @@ namespace VCCSharp.DX8
             {
                 throw new Exception("Failed to enumerate joysticks");
             }
+
+            return count;
         }
 
-        public unsafe void SetJoystickProperties(IDirectInputDevice device)
+        private static unsafe void SetJoystickProperties(IDirectInputDevice device)
         {
-            int SetJoystickPropertiesCallback(DIDEVICEOBJECTINSTANCE* p, void* v)
+            int Callback(DIDEVICEOBJECTINSTANCE* p, void* v)
             {
                 //--Just seems to be a GUID* to address "4".
                 //_GUID* DIPROP_RANGE = Library.Joystick.GetRangeGuid();
@@ -146,7 +123,7 @@ namespace VCCSharp.DX8
                 throw new Exception("Failed to set data format on joystick");
             }
 
-            hr = device.EnumObjects(SetJoystickPropertiesCallback, IntPtr.Zero, Define.DIDFT_AXIS);
+            hr = device.EnumObjects(Callback, IntPtr.Zero, Define.DIDFT_AXIS);
 
             if (hr < 0)
             {
@@ -154,11 +131,16 @@ namespace VCCSharp.DX8
             }
         }
 
-        public JoystickState JoystickPoll(IDirectInputDevice stick)
+        public JoystickState JoystickPoll(int id)
         {
             DIJOYSTATE2 state = new DIJOYSTATE2();
 
-            JoystickPoll(state, stick);
+            long hr = JoystickPoll(state, _devices[id]);
+
+            if (hr != Define.S_OK)
+            {
+                Debug.WriteLine($"Bad joystick poll: {hr}");
+            }
 
             unsafe
             {
@@ -173,7 +155,7 @@ namespace VCCSharp.DX8
             }
         }
 
-        private unsafe long JoystickPoll(DIJOYSTATE2 state, IDirectInputDevice stick)
+        private static unsafe long JoystickPoll(DIJOYSTATE2 state, IDirectInputDevice stick)
         {
             if (stick == null)
             {
@@ -205,6 +187,5 @@ namespace VCCSharp.DX8
 
             return hr < 0 ? hr : Define.S_OK;
         }
-
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using VCCSharp.DX8;
-using VCCSharp.DX8.Interfaces;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 
@@ -9,7 +8,7 @@ namespace VCCSharp.Modules
 {
     public interface IJoystick
     {
-        int FindJoysticks();
+        List<string> FindJoysticks();
 
         JoystickModel GetLeftJoystick();
         JoystickModel GetRightJoystick();
@@ -25,7 +24,9 @@ namespace VCCSharp.Modules
         int get_pot_value(byte pot);
 
         ushort StickValue { get; set; }
-        JoystickStates States { get; set; }
+
+        JoystickState Left { get; }
+        JoystickState Right { get; }
     }
 
     public class Joystick : IJoystick
@@ -34,46 +35,29 @@ namespace VCCSharp.Modules
 
         public ushort StickValue { get; set; }
 
-        public JoystickDevice[] Joysticks { get; private set; }
-        public JoystickStates States { get; set; } = new JoystickStates();
+        public JoystickState Left { get; private set; } = new JoystickState();
+        public JoystickState Right { get; private set; } = new JoystickState();
 
         private JoystickModel _left = new JoystickModel();
         private JoystickModel _right = new JoystickModel();
+
+        private int _leftId;
+        private int _rightId;
 
         public Joystick(IDxInput input)
         {
             _input = input;
         }
 
-        public int FindJoysticks()
+        public List<string> FindJoysticks()
         {
+            var names = new List<string>();
+
             _input.CreateDirectInput(KernelDll.GetModuleHandleA(IntPtr.Zero));
 
-            var joysticks = new List<JoystickDevice>();
+            _input.EnumerateDevices(names.Add);
 
-            void Callback(IDirectInputDevice joystick, string name)
-            {
-                var device = new JoystickDevice
-                {
-                    Device = joystick,
-                    Name = name
-                };
-
-                joysticks.Add(device);
-            }
-
-            _input.EnumerateDevices(Callback);
-
-            Joysticks = joysticks.ToArray();
-
-            for (byte index = 0; index < Joysticks.Length; index++)
-            {
-                IDirectInputDevice device = Joysticks[index].Device;
-
-                _input.SetJoystickProperties(device);
-            }
-
-            return Joysticks.Length;
+            return names;
         }
 
         public JoystickModel GetLeftJoystick()
@@ -98,8 +82,8 @@ namespace VCCSharp.Modules
 
         public void SetStickNumbers(byte leftStickNumber, byte rightStickNumber)
         {
-            States.LeftStickNumber = leftStickNumber;
-            States.RightStickNumber = rightStickNumber;
+            _leftId = leftStickNumber;
+            _rightId = rightStickNumber;
         }
 
         public int get_pot_value(byte pot)
@@ -109,33 +93,33 @@ namespace VCCSharp.Modules
 
             if (useLeft)
             {
-                States.Left = _input.JoystickPoll(Joysticks[States.LeftStickNumber].Device);
+                Left = _input.JoystickPoll(_leftId);
             }
 
             if (useRight)
             {
-                States.Right = _input.JoystickPoll(Joysticks[States.RightStickNumber].Device);
+                Right = _input.JoystickPoll(_rightId);
             }
 
             switch (pot)
             {
                 case 0:
-                    return States.Right.X;
+                    return Right.X;
 
                 case 1:
-                    return States.Right.Y;
+                    return Right.Y;
 
                 case 2:
-                    return States.Left.X;
+                    return Left.X;
 
                 case 3:
-                    return States.Left.Y;
+                    return Left.Y;
             }
 
             return 0;
         }
 
-        //0 = Left 1=right
+        //0=left 1=right
         public void SetButtonStatus(byte side, byte state)
         {
             byte buttonStatus = (byte)((side << 1) | state);
@@ -148,19 +132,19 @@ namespace VCCSharp.Modules
                 switch (buttonStatus)
                 {
                     case 0:
-                        States.Left.Button1 = 0;
+                        Left.Button1 = 0;
                         break;
 
                     case 1:
-                        States.Left.Button1 = 1;
+                        Left.Button1 = 1;
                         break;
 
                     case 2:
-                        States.Left.Button2 = 0;
+                        Left.Button2 = 0;
                         break;
 
                     case 3:
-                        States.Left.Button2 = 1;
+                        Left.Button2 = 1;
                         break;
                 }
             }
@@ -170,19 +154,19 @@ namespace VCCSharp.Modules
                 switch (buttonStatus)
                 {
                     case 0:
-                        States.Right.Button1 = 0;
+                        Right.Button1 = 0;
                         break;
 
                     case 1:
-                        States.Right.Button1 = 1;
+                        Right.Button1 = 1;
                         break;
 
                     case 2:
-                        States.Right.Button2 = 0;
+                        Right.Button2 = 0;
                         break;
 
                     case 3:
-                        States.Right.Button2 = 1;
+                        Right.Button2 = 1;
                         break;
                 }
             }
@@ -205,14 +189,14 @@ namespace VCCSharp.Modules
 
             if (left.UseMouse == 1)
             {
-                States.Left.X = x;
-                States.Left.Y = y;
+                Left.X = x;
+                Left.Y = y;
             }
 
             if (right.UseMouse == 1)
             {
-                States.Right.X = x;
-                States.Right.Y = y;
+                Right.X = x;
+                Right.Y = y;
             }
         }
 
@@ -230,37 +214,37 @@ namespace VCCSharp.Modules
                     {
                         if (scanCode == left.Left)
                         {
-                            States.Left.X = 32;
+                            Left.X = 32;
                             retValue = 0;
                         }
 
                         if (scanCode == left.Right)
                         {
-                            States.Left.X = 32;
+                            Left.X = 32;
                             retValue = 0;
                         }
 
                         if (scanCode == left.Up)
                         {
-                            States.Left.Y = 32;
+                            Left.Y = 32;
                             retValue = 0;
                         }
 
                         if (scanCode == left.Down)
                         {
-                            States.Left.Y = 32;
+                            Left.Y = 32;
                             retValue = 0;
                         }
 
                         if (scanCode == left.Fire1)
                         {
-                            States.Left.Button1 = 0;
+                            Left.Button1 = 0;
                             retValue = 0;
                         }
 
                         if (scanCode == left.Fire2)
                         {
-                            States.Left.Button2 = 0;
+                            Left.Button2 = 0;
                             retValue = 0;
                         }
                     }
@@ -269,37 +253,37 @@ namespace VCCSharp.Modules
                     {
                         if (scanCode == right.Left)
                         {
-                            States.Right.X = 32;
+                            Right.X = 32;
                             retValue = 0;
                         }
 
                         if (scanCode == right.Right)
                         {
-                            States.Right.X = 32;
+                            Right.X = 32;
                             retValue = 0;
                         }
 
                         if (scanCode == right.Up)
                         {
-                            States.Right.Y = 32;
+                            Right.Y = 32;
                             retValue = 0;
                         }
 
                         if (scanCode == right.Down)
                         {
-                            States.Right.Y = 32;
+                            Right.Y = 32;
                             retValue = 0;
                         }
 
                         if (scanCode == right.Fire1)
                         {
-                            States.Right.Button1 = 0;
+                            Right.Button1 = 0;
                             retValue = 0;
                         }
 
                         if (scanCode == right.Fire2)
                         {
-                            States.Right.Button2 = 0;
+                            Right.Button2 = 0;
                             retValue = 0;
                         }
                     }
@@ -310,37 +294,37 @@ namespace VCCSharp.Modules
                     {
                         if (scanCode == left.Left)
                         {
-                            States.Left.X = 0;
+                            Left.X = 0;
                             retValue = 0;
                         }
 
                         if (scanCode == left.Right)
                         {
-                            States.Left.X = 63;
+                            Left.X = 63;
                             retValue = 0;
                         }
 
                         if (scanCode == left.Up)
                         {
-                            States.Left.Y = 0;
+                            Left.Y = 0;
                             retValue = 0;
                         }
 
                         if (scanCode == left.Down)
                         {
-                            States.Left.Y = 63;
+                            Left.Y = 63;
                             retValue = 0;
                         }
 
                         if (scanCode == left.Fire1)
                         {
-                            States.Left.Button1 = 1;
+                            Left.Button1 = 1;
                             retValue = 0;
                         }
 
                         if (scanCode == left.Fire2)
                         {
-                            States.Left.Button2 = 1;
+                            Left.Button2 = 1;
                             retValue = 0;
                         }
                     }
@@ -350,36 +334,36 @@ namespace VCCSharp.Modules
                         if (scanCode == right.Left)
                         {
                             retValue = 0;
-                            States.Right.X = 0;
+                            Right.X = 0;
                         }
 
                         if (scanCode == right.Right)
                         {
-                            States.Right.X = 63;
+                            Right.X = 63;
                             retValue = 0;
                         }
 
                         if (scanCode == right.Up)
                         {
-                            States.Right.Y = 0;
+                            Right.Y = 0;
                             retValue = 0;
                         }
 
                         if (scanCode == right.Down)
                         {
-                            States.Right.Y = 63;
+                            Right.Y = 63;
                             retValue = 0;
                         }
 
                         if (scanCode == right.Fire1)
                         {
-                            States.Right.Button1 = 1;
+                            Right.Button1 = 1;
                             retValue = 0;
                         }
 
                         if (scanCode == right.Fire2)
                         {
-                            States.Right.Button2 = 1;
+                            Right.Button2 = 1;
                             retValue = 0;
                         }
                     }
