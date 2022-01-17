@@ -63,6 +63,7 @@ namespace VCCSharp
                 .Bind<IDInput, DInput>()
                 .Bind<IDxFactory, DxFactory>()
                 .Bind<IDxDraw, DxDraw>()
+                .Bind<IDxSound, DxSound>()
 
                 //--Main
                 .Bind<ICommandLineParser, CommandLineParser>()

@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using VCCSharp.DX8.Models;
 
 namespace VCCSharp.DX8.Libraries
 {
-    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate int DirectSoundEnumerateCallbackTemplate(IntPtr pGuid, IntPtr pDescription, IntPtr pModule, IntPtr pContext);
-
     public interface IDSound
     {
         unsafe long DirectSoundCreate(_GUID* pGuid, ref IntPtr pInstance, IntPtr pUnknown);
