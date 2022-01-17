@@ -7,7 +7,7 @@ namespace VCCSharp.Models
     /// </summary>
     public class JoystickDataFormat
     {
-        public unsafe DIDATAFORMAT GetDataFormat()
+        public static unsafe DIDATAFORMAT GetDataFormat()
         {
             DIDATAFORMAT df;
 
@@ -27,7 +27,7 @@ namespace VCCSharp.Models
             return df;
         }
 
-        public unsafe DIOBJECTDATAFORMAT[] GetDataFormatArray()
+        public static unsafe DIOBJECTDATAFORMAT[] GetDataFormatArray()
         {
             DIOBJECTDATAFORMAT[] a = new DIOBJECTDATAFORMAT[164];
 

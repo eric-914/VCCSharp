@@ -63,8 +63,6 @@ namespace VCCSharp.Modules
         public string SerialCaptureFile { get; set; }
         //public string OutBuffer;
 
-        private byte _numberOfJoysticks;
-
         private readonly JoystickModel _left = new JoystickModel();
         private readonly JoystickModel _right = new JoystickModel();
 
@@ -97,9 +95,6 @@ namespace VCCSharp.Modules
 
             ConfigModel.Release = AppTitle; //--A kind of "version" I guess
             IniFilePath = iniFile;
-
-            //--TODO: Silly way to get C# to look at the SoundCardList array correctly
-            //SoundCardList* soundCards = (SoundCardList*)(&configState->SoundCards);
 
             _modules.Audio.EnumerateSoundCards();
 
@@ -196,24 +191,24 @@ namespace VCCSharp.Modules
         {
             var joystick = _modules.Joystick;
 
-            _numberOfJoysticks = (byte)joystick.FindJoysticks();
+            int numberOfJoysticks = joystick.FindJoysticks();
 
             JoystickModel left = GetLeftJoystick();
             JoystickModel right = GetRightJoystick();
 
-            if (right.DiDevice >= _numberOfJoysticks)
+            if (right.DiDevice >= numberOfJoysticks)
             {
                 right.DiDevice = 0;
             }
 
-            if (left.DiDevice >= _numberOfJoysticks)
+            if (left.DiDevice >= numberOfJoysticks)
             {
                 left.DiDevice = 0;
             }
 
             joystick.SetStickNumbers(left.DiDevice, right.DiDevice);
 
-            if (_numberOfJoysticks == 0)	//Use Mouse input if no Joysticks present
+            if (numberOfJoysticks == 0)	//Use Mouse input if no Joysticks present
             {
                 if (left.UseMouse == 3)
                 {

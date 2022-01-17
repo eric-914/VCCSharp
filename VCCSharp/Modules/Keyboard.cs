@@ -81,7 +81,7 @@ namespace VCCSharp.Modules
             IJoystick joystick = _modules.Joystick;
             IMC6821 mc6821 = _modules.MC6821;
 
-            JoystickState joystickState = _modules.Joystick.State;
+            JoystickStates joystickState = _modules.Joystick.States;
 
             for (byte x = 0; x < 8; x++)
             {
@@ -96,7 +96,7 @@ namespace VCCSharp.Modules
             retVal = (byte)(127 - retVal);
 
             //Collect CA2 and CB2 from the PIA (1of4 Multiplexer)
-            _modules.Joystick.StickValue = joystick.get_pot_value(mc6821.GetMuxState());
+            _modules.Joystick.StickValue = (ushort)joystick.get_pot_value(mc6821.GetMuxState());
 
             if (_modules.Joystick.StickValue != 0)		//OS9 joyin routine needs this (koronis rift works now)
             {
@@ -106,25 +106,25 @@ namespace VCCSharp.Modules
                 }
             }
 
-            if (joystickState.LeftButton1Status == 1)
+            if (joystickState.Left.Button1 == 1)
             {
                 //Left Joystick Button 1 Down?
                 retVal &= 0xFD;
             }
 
-            if (joystickState.RightButton1Status == 1)
+            if (joystickState.Right.Button1 == 1)
             {
                 //Right Joystick Button 1 Down?
                 retVal &= 0xFE;
             }
 
-            if (joystickState.LeftButton2Status == 1)
+            if (joystickState.Left.Button2 == 1)
             {
                 //Left Joystick Button 2 Down?
                 retVal &= 0xF7;
             }
 
-            if (joystickState.RightButton2Status == 1)
+            if (joystickState.Right.Button2 == 1)
             {
                 //Right Joystick Button 2 Down?
                 retVal &= 0xFB;

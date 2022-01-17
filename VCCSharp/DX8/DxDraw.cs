@@ -74,7 +74,6 @@ namespace VCCSharp.DX8
             _factory = factory;
         }
 
-
         public bool CreateDirectDraw(Point windowSize)
         {
             _windowSize = windowSize;
