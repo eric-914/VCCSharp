@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.InteropServices;
 using VCCSharp.DX8;
 using VCCSharp.DX8.Interfaces;
-using VCCSharp.DX8.Libraries;
 using VCCSharp.DX8.Models;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using JoystickState = VCCSharp.Models.JoystickState;
-using LPVOID = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -35,8 +32,7 @@ namespace VCCSharp.Modules
 
     public class Joystick : IJoystick
     {
-        private readonly IDInput _dInput;
-        private readonly IDxFactory _factory;
+        private readonly IDxInput _input;
 
         public ushort StickValue { get; set; }
 
@@ -49,17 +45,14 @@ namespace VCCSharp.Modules
 
         private readonly DIJOYSTATE2 _pollState = new DIJOYSTATE2();
 
-        private IDirectInput _di;
-
-        public Joystick(IDInput dInput, IDxFactory factory)
+        public Joystick(IDxInput input)
         {
-            _dInput = dInput;
-            _factory = factory;
+            _input = input;
         }
 
         public unsafe short FindJoysticks()
         {
-            _di = CreateDirectInput();
+            CreateDirectInput();
 
             Joysticks = new JoystickDevice[Define.MAX_JOYSTICKS];
 
@@ -67,16 +60,7 @@ namespace VCCSharp.Modules
             {
                 int EnumerateCallback(DIDEVICEINSTANCE* p, void* v)
                 {
-                    IDirectInputDevice joystick = null;
-
-                    _GUID guidInstance = p->guidInstance;
-
-                    long hr = _di.CreateDevice(guidInstance, ref joystick, IntPtr.Zero);
-
-                    if (hr < 0)
-                    {
-                        throw new Exception($"Failed to create device #{NumberOfJoysticks}");
-                    }
+                    IDirectInputDevice joystick = _input.CreateDevice(p->guidInstance);
 
                     Joysticks[NumberOfJoysticks] = new JoystickDevice
                     {
@@ -87,12 +71,7 @@ namespace VCCSharp.Modules
                     return ++NumberOfJoysticks < Define.MAX_JOYSTICKS ? Define.TRUE : Define.FALSE;
                 }
 
-                long hr = _di.EnumDevices(Define.DI8DEVCLASS_GAMECTRL, EnumerateCallback, IntPtr.Zero, Define.DIEDFL_ATTACHEDONLY);
-
-                if (hr < 0)
-                {
-                    throw new Exception("Failed to enumerate joysticks");
-                }
+                _input.EnumerateDevices(EnumerateCallback);
             }
 
             Joysticks = Joysticks.Take(NumberOfJoysticks).ToArray();
@@ -147,35 +126,13 @@ namespace VCCSharp.Modules
             return NumberOfJoysticks;
         }
 
-        private IDirectInput CreateDirectInput()
+        private void CreateDirectInput()
         {
-            const uint version = 0x0800;
-
             IntPtr handle = KernelDll.GetModuleHandleA(IntPtr.Zero);
 
-            _GUID guid = CreateIDirectInput8AGuid();
-
-            return _factory.CreateDirectInput(_dInput, handle, version, guid);
+            _input.CreateDirectInput(handle);
         }
 
-        private static unsafe _GUID CreateIDirectInput8AGuid()
-        {
-            byte[] d4 = { 0xAA, 0x99, 0x5D, 0x64, 0xED, 0x36, 0x97, 0x00 };
-
-            _GUID guid = new _GUID
-            {
-                Data1 = 0xBF798030,
-                Data2 = 0x483A,
-                Data3 = 0x4DA2
-            };
-
-            for (int i = 0; i < 8; i++)
-            {
-                guid.Data4[i] = d4[i];
-            }
-
-            return guid;
-        }
 
         public JoystickModel GetLeftJoystick()
         {
