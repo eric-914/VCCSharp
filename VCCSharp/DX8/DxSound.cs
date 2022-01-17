@@ -13,7 +13,7 @@ namespace VCCSharp.DX8
 
     public interface IDxSound
     {
-        unsafe bool CreateDirectSound(_GUID* guid);
+        bool CreateDirectSound(_GUID guid);
         bool SetCooperativeLevel(IntPtr hWnd);
 
         long DirectSoundEnumerate(DirectSoundEnumerateCallbackTemplate callback);
@@ -52,9 +52,9 @@ namespace VCCSharp.DX8
             _factory = factory;
         }
 
-        public unsafe bool CreateDirectSound(_GUID* guid)
+        public unsafe bool CreateDirectSound(_GUID guid)
         {
-            _ds = _factory.CreateDirectSound(_sound, guid);
+            _ds = _factory.CreateDirectSound(_sound, &guid);
 
             return _ds != null;
         }

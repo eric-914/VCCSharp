@@ -38,12 +38,11 @@ namespace VCCSharp.Modules
         bool PrintMonitorWindow { get; set; }
         ushort TapeCounter { get; set; }
         byte TapeMode { get; set; }
-        short NumberOfSoundCards { get; set; }
         string TapeFileName { get; set; }
         string SerialCaptureFile { get; set; }
         string IniFilePath { get; set; }
 
-        SoundCardList[] SoundCards { get; }
+        List<SoundCard> SoundCards { get; }
     }
 
     public class Config : IConfig
@@ -60,8 +59,6 @@ namespace VCCSharp.Modules
         public ushort TapeCounter { get; set; }
         public byte TapeMode { get; set; } = Define.STOP;
 
-        public short NumberOfSoundCards { get; set; }
-
         public string TapeFileName { get; set; }
         public string SerialCaptureFile { get; set; }
         //public string OutBuffer;
@@ -71,7 +68,7 @@ namespace VCCSharp.Modules
         private readonly JoystickModel _left = new JoystickModel();
         private readonly JoystickModel _right = new JoystickModel();
 
-        public SoundCardList[] SoundCards { get; } = new SoundCardList[Define.MAXCARDS];
+        public List<SoundCard> SoundCards { get; } = new List<SoundCard>();
 
         public ConfigModel ConfigModel { get; set; } = new ConfigModel();
 
@@ -94,7 +91,7 @@ namespace VCCSharp.Modules
             return _right;
         }
 
-        public unsafe void InitConfig(ref CmdLineArguments cmdLineArgs)
+        public void InitConfig(ref CmdLineArguments cmdLineArgs)
         {
             string iniFile = GetIniFilePath(cmdLineArgs.IniFile);
 
@@ -104,8 +101,7 @@ namespace VCCSharp.Modules
             //--TODO: Silly way to get C# to look at the SoundCardList array correctly
             //SoundCardList* soundCards = (SoundCardList*)(&configState->SoundCards);
 
-            NumberOfSoundCards = 0;
-            _modules.Audio.DirectSoundEnumerateSoundCards();
+            _modules.Audio.EnumerateSoundCards();
 
             //--Synch joysticks to config instance
             _modules.Joystick.SetLeftJoystick(_left);
@@ -120,7 +116,7 @@ namespace VCCSharp.Modules
             string soundCardName = ConfigModel.SoundCardName;
             byte soundCardIndex = GetSoundCardIndex(soundCardName);
 
-            SoundCardList soundCard = SoundCards[soundCardIndex];
+            SoundCard soundCard = SoundCards[soundCardIndex];
 
             _modules.Audio.SoundInit(_modules.Emu.WindowHandle, soundCard.Guid, ConfigModel.AudioRate);
 
@@ -625,9 +621,9 @@ namespace VCCSharp.Modules
 
         public byte GetSoundCardIndex(string soundCardName)
         {
-            for (byte index = 0; index < NumberOfSoundCards; index++)
+            for (byte index = 0; index < SoundCards.Count; index++)
             {
-                var item = GetSoundCardNameAtIndex(index);
+                var item = SoundCards[index].CardName;
 
                 if (soundCardName == item)
                 {
@@ -636,17 +632,6 @@ namespace VCCSharp.Modules
             }
 
             return 0;
-        }
-
-        public unsafe string GetSoundCardNameAtIndex(byte index)
-        {
-            var card = SoundCards[index];
-
-            return Converter.ToString(card.CardName);
-            //var cards = GetConfigState()->SoundCards.ToArray();
-            //var card = cards[index]; 
-
-            //return Converter.ToString(card.CardName);
         }
 
         public bool GetRememberSize()

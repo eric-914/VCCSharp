@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using VCCSharp.Annotations;
 using VCCSharp.Enums;
@@ -170,25 +171,7 @@ namespace VCCSharp.Configuration
         public int MaxOverclock => Model.MaxOverclock;
 
         //[Audio]
-        public List<string> SoundCards
-        {
-            get
-            {
-                unsafe
-                {
-                    var items = new List<string>();
-
-                    for (int index = 0; index < Config.NumberOfSoundCards; index++)
-                    {
-                        var card = Config.SoundCards[index];
-
-                        items.Add(Converter.ToString(card.CardName));
-                    }
-
-                    return items;
-                }
-            }
-        }
+        public List<string> SoundCards => Config.SoundCards.Select(card => card.CardName).ToList();
 
         public string SoundCardName
         {

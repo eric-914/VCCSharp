@@ -168,30 +168,27 @@ namespace VCCSharp.Modules
 
         public void ApplyConfigurationChanges()
         {
-            unsafe
-            {
-                ConfigModel configModel = _modules.Config.ConfigModel;
+            ConfigModel configModel = _modules.Config.ConfigModel;
 
-                JoystickModel left = _modules.Config.GetLeftJoystick();
-                JoystickModel right = _modules.Config.GetRightJoystick();
+            JoystickModel left = _modules.Config.GetLeftJoystick();
+            JoystickModel right = _modules.Config.GetRightJoystick();
 
-                _modules.Emu.ResetPending = (byte)ResetPendingStates.ClsSynch;
+            _modules.Emu.ResetPending = (byte)ResetPendingStates.ClsSynch;
 
-                //if ((configState->Model->RamSize != configModel->RamSize) || (configState->Model->CpuType != configModel->CpuType)) {
-                //emuState->ResetPending = (byte)ResetPendingStates.Hard;
-                //}
+            //if ((configState->Model->RamSize != configModel->RamSize) || (configState->Model->CpuType != configModel->CpuType)) {
+            //emuState->ResetPending = (byte)ResetPendingStates.Hard;
+            //}
 
-                string soundCardName = configModel.SoundCardName;
-                byte soundCardIndex = _modules.Config.GetSoundCardIndex(soundCardName);
+            string soundCardName = configModel.SoundCardName;
+            byte soundCardIndex = _modules.Config.GetSoundCardIndex(soundCardName);
 
-                SoundCardList soundCard = _modules.Config.SoundCards[soundCardIndex];
+            SoundCard soundCard = _modules.Config.SoundCards[soundCardIndex];
 
-                _modules.Audio.SoundInit(_modules.Emu.WindowHandle, soundCard.Guid, configModel.AudioRate);
+            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, soundCard.Guid, configModel.AudioRate);
 
-                _modules.Keyboard.KeyboardBuildRuntimeTable(configModel.KeyMapIndex);
+            _modules.Keyboard.KeyboardBuildRuntimeTable(configModel.KeyMapIndex);
 
-                _modules.Joystick.SetStickNumbers(left.DiDevice, right.DiDevice);
-            }
+            _modules.Joystick.SetStickNumbers(left.DiDevice, right.DiDevice);
         }
     }
 }

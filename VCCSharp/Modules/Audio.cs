@@ -4,19 +4,20 @@ using VCCSharp.DX8.Models;
 using VCCSharp.IoC;
 using VCCSharp.Models;
 using HWND = System.IntPtr;
+using static System.IntPtr;
 
 namespace VCCSharp.Modules
 {
     public interface IAudio
     {
-        unsafe void SoundInit(HWND hWnd, _GUID* guid, ushort rate);
+        void SoundInit(HWND hWnd, _GUID guid, ushort rate);
         short SoundDeInit();
 
         bool PauseAudio(bool pause);
         void ResetAudio();
         unsafe void FlushAudioBuffer(uint* buffer, ushort length);
         int GetFreeBlockCount();
-        void DirectSoundEnumerateSoundCards();
+        void EnumerateSoundCards();
 
         AudioSpectrum Spectrum { get; set; }
         ushort CurrentRate { get; set; }
@@ -38,9 +39,6 @@ namespace VCCSharp.Modules
 
         private readonly ushort[] _rateList = { 0, 11025, 22050, 44100 };
 
-        // ReSharper disable once NotAccessedField.Local
-        private byte _auxBufferPointer;
-
         private uint _sndBuffLength;
         private uint _buffOffset;
 
@@ -52,7 +50,7 @@ namespace VCCSharp.Modules
             _sound = sound;
         }
 
-        public unsafe void SoundInit(IntPtr hWnd, _GUID* guid, ushort rate)
+        public void SoundInit(IntPtr hWnd, _GUID guid, ushort rate)
         {
             rate &= 3;
 
@@ -66,7 +64,6 @@ namespace VCCSharp.Modules
             CurrentRate = rate;
 
             _buffOffset = 0;
-            _auxBufferPointer = 0;
             _bitRate = _rateList[rate];
             _blockSize = (ushort)(_bitRate * 4 / Define.TARGETFRAMERATE);
             _sndBuffLength = (ushort)(_blockSize * Define.AUDIOBUFFERS);
@@ -125,7 +122,6 @@ namespace VCCSharp.Modules
             }
 
             _buffOffset = 0;
-            _auxBufferPointer = 0;
         }
 
         public unsafe void FlushAudioBuffer(uint* buffer, ushort length)
@@ -142,8 +138,6 @@ namespace VCCSharp.Modules
 
             if (GetFreeBlockCount() <= 0)   //this should only kick in when frame skipping or un-throttled
             {
-                HandleSlowAudio();
-
                 return;
             }
 
@@ -154,12 +148,6 @@ namespace VCCSharp.Modules
             _sound.Unlock(); // unlock the buffer
 
             _buffOffset = (_buffOffset + length) % _sndBuffLength; //Where to write next
-        }
-
-        public void HandleSlowAudio()
-        {
-            _auxBufferPointer++;	//and chase your own tail
-            _auxBufferPointer %= 5;	//At this point we are so far behind we may as well drop the buffer
         }
 
         public int GetFreeBlockCount()
@@ -211,30 +199,31 @@ namespace VCCSharp.Modules
             return _audioPause;
         }
 
-        public void DirectSoundEnumerateSoundCards()
+        public void EnumerateSoundCards()
         {
-            _sound.DirectSoundEnumerate(DirectSoundEnumerateCallback);
-        }
-
-        public int DirectSoundEnumerateCallback(IntPtr guid, IntPtr description, IntPtr module, IntPtr context)
-        {
-            unsafe
+            int Callback(IntPtr guid, IntPtr description, IntPtr module, IntPtr context)
             {
-                var text = Converter.ToString((byte*)description);
-                var index = _modules.Config.NumberOfSoundCards;
-
-                var cards = _modules.Config.SoundCards;
-
-                fixed (SoundCardList* card = &(cards[index]))
+                unsafe
                 {
-                    Converter.ToByteArray(text, (*card).CardName);
-                    (*card).Guid = (_GUID*)guid;
+                    var text = Converter.ToString((byte*)description);
+
+                    var card = new SoundCard
+                    {
+                        CardName = text
+                    };
+
+                    if (guid != Zero)
+                    {
+                        card.Guid = *(_GUID*)guid;
+                    }
+
+                    _modules.Config.SoundCards.Add(card);
+
+                    return _modules.Config.SoundCards.Count < Define.MAXCARDS ? Define.TRUE : Define.FALSE;
                 }
-
-                _modules.Config.NumberOfSoundCards++;
-
-                return _modules.Config.NumberOfSoundCards < Define.MAXCARDS ? Define.TRUE : Define.FALSE;
             }
+
+            _sound.DirectSoundEnumerate(Callback);
         }
     }
 }
