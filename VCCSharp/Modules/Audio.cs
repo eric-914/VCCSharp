@@ -1,10 +1,8 @@
-﻿using System;
-using VCCSharp.DX8;
+﻿using VCCSharp.DX8;
 using VCCSharp.DX8.Models;
 using VCCSharp.IoC;
 using VCCSharp.Models;
 using HWND = System.IntPtr;
-using static System.IntPtr;
 
 namespace VCCSharp.Modules
 {
@@ -50,7 +48,7 @@ namespace VCCSharp.Modules
             _sound = sound;
         }
 
-        public void SoundInit(IntPtr hWnd, _GUID guid, ushort rate)
+        public void SoundInit(HWND hWnd, _GUID guid, ushort rate)
         {
             rate &= 3;
 
@@ -126,10 +124,10 @@ namespace VCCSharp.Modules
 
         public unsafe void FlushAudioBuffer(uint* buffer, ushort length)
         {
-            ushort leftAverage = (ushort)(buffer[0] >> 16);
-            ushort rightAverage = (ushort)(buffer[0] & 0xFFFF);
+            uint leftAverage = buffer[0] >> 16;
+            uint rightAverage = buffer[0] & 0xFFFF;
 
-            _modules.Audio.Spectrum?.UpdateSoundBar(leftAverage, rightAverage);
+            _modules.Audio.Spectrum?.UpdateSoundBar((int)leftAverage, (int)rightAverage);
 
             if (!_initialized || _audioPause || length == 0 || _mute)
             {
@@ -153,7 +151,6 @@ namespace VCCSharp.Modules
         public int GetFreeBlockCount()
         {
             ulong playCursor = 0;
-            long maxSize;
 
             if (!_initialized || _audioPause || _mute)
             {
@@ -165,14 +162,7 @@ namespace VCCSharp.Modules
                 playCursor = _sound.ReadPlayCursor();
             }
 
-            if (_buffOffset <= playCursor)
-            {
-                maxSize = (long)(playCursor - _buffOffset);
-            }
-            else
-            {
-                maxSize = (long)(_sndBuffLength - _buffOffset + playCursor);
-            }
+            long maxSize = (long)(_buffOffset <= playCursor ? playCursor - _buffOffset : _sndBuffLength - _buffOffset + playCursor);
 
             return (int)(maxSize / _blockSize);
         }
@@ -201,29 +191,18 @@ namespace VCCSharp.Modules
 
         public void EnumerateSoundCards()
         {
-            int Callback(IntPtr guid, IntPtr description, IntPtr module, IntPtr context)
+            void Callback(_GUID guid, string text)
             {
-                unsafe
+                var card = new SoundCard
                 {
-                    var text = Converter.ToString((byte*)description);
+                    Guid = guid,
+                    CardName = text
+                };
 
-                    var card = new SoundCard
-                    {
-                        CardName = text
-                    };
-
-                    if (guid != Zero)
-                    {
-                        card.Guid = *(_GUID*)guid;
-                    }
-
-                    _modules.Config.SoundCards.Add(card);
-
-                    return _modules.Config.SoundCards.Count < Define.MAXCARDS ? Define.TRUE : Define.FALSE;
-                }
+                _modules.Config.SoundCards.Add(card);
             }
 
-            _sound.DirectSoundEnumerate(Callback);
+            _sound.EnumerateSoundCards(Callback);
         }
     }
 }

@@ -41,7 +41,7 @@ namespace VCCSharp.Models
             }
         }
 
-        public void UpdateSoundBar(ushort left, ushort right)
+        public void UpdateSoundBar(int left, int right)
         {
             LeftSpeaker = left;
             RightSpeaker = right;

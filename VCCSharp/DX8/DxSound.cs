@@ -8,15 +8,14 @@ using static System.IntPtr;
 
 namespace VCCSharp.DX8
 {
-    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate int DirectSoundEnumerateCallbackTemplate(IntPtr pGuid, IntPtr pDescription, IntPtr pModule, IntPtr pContext);
+    public delegate void SoundEnumerateCallback(_GUID guid, string description);
 
     public interface IDxSound
     {
         bool CreateDirectSound(_GUID guid);
         bool SetCooperativeLevel(IntPtr hWnd);
 
-        long DirectSoundEnumerate(DirectSoundEnumerateCallbackTemplate callback);
+        void EnumerateSoundCards(SoundEnumerateCallback callback);
 
         bool CreateDirectSoundBuffer(ushort bitRate, uint length);
 
@@ -34,6 +33,9 @@ namespace VCCSharp.DX8
 
     public class DxSound : IDxSound
     {
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        private delegate int DirectSoundEnumerateCallbackTemplate(IntPtr pGuid, IntPtr pDescription, IntPtr pModule, IntPtr pContext);
+
         private readonly IDSound _sound;
         private readonly IDxFactory _factory;
 
@@ -101,11 +103,26 @@ namespace VCCSharp.DX8
             };
         }
 
-        public long DirectSoundEnumerate(DirectSoundEnumerateCallbackTemplate callback)
+        public void EnumerateSoundCards(SoundEnumerateCallback callback)
         {
-            IntPtr fn = Marshal.GetFunctionPointerForDelegate(callback);
+            int count = 0;
 
-            return _sound.DirectSoundEnumerate(fn, Zero);
+            int Callback(IntPtr pGuid, IntPtr description, IntPtr module, IntPtr context)
+            {
+                unsafe
+                {
+                    _GUID guid = pGuid != Zero ? *(_GUID*)pGuid : new _GUID();
+                    string text = Converter.ToString((byte*)description);
+
+                    callback(guid, text);
+                }
+
+                return ++count < Define.MAXCARDS ? Define.TRUE : Define.FALSE;
+            }
+
+            IntPtr fn = Marshal.GetFunctionPointerForDelegate((DirectSoundEnumerateCallbackTemplate)Callback);
+
+            _sound.DirectSoundEnumerate(fn, Zero);
         }
 
         public void Stop() => _buffer.Stop();
