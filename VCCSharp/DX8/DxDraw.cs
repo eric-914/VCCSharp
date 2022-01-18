@@ -1,8 +1,7 @@
-﻿using System;
-using DX8.Interfaces;
+﻿using DX8.Interfaces;
 using DX8.Libraries;
 using DX8.Models;
-using VCCSharp.Libraries.Models;
+using System;
 using VCCSharp.Models;
 using static System.IntPtr;
 using Point = System.Drawing.Point;

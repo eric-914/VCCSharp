@@ -3,6 +3,9 @@ using VCCSharp.Menu;
 
 namespace VCCSharp.IoC
 {
+    /// <summary>
+    /// Dependency injection services
+    /// </summary>
     public interface IFactory
     {
         IFactory Bind<TInterface, TClass>() where TClass : class, TInterface;
@@ -14,6 +17,9 @@ namespace VCCSharp.IoC
         IFactory InitializeModules();
     }
 
+    /// <summary>
+    /// A wrapper around NInject to handle dependency injection
+    /// </summary>
     public class Factory : IFactory
     {
         public static Factory Instance { get; } = new Factory();

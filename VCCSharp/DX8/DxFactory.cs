@@ -1,8 +1,8 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using DX8.Interfaces;
+﻿using DX8.Interfaces;
 using DX8.Libraries;
 using DX8.Models;
+using System;
+using System.Runtime.InteropServices;
 using VCCSharp.Models;
 using static System.IntPtr;
 

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using DX8.Converters;
+using DX8.Formats;
 using DX8.Interfaces;
 using DX8.Libraries;
 using DX8.Models;
-using DX8.Converters;
-using DX8.Formats;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using VCCSharp.Models;
 
 namespace VCCSharp.DX8

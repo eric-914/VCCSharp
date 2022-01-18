@@ -1,18 +1,19 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using DX8.Interfaces;
+﻿using DX8.Interfaces;
 using DX8.Libraries;
 using DX8.Models;
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using VCCSharp.Models;
 using static System.IntPtr;
 
 namespace VCCSharp.DX8
 {
-    public delegate void SoundEnumerateCallback(_GUID guid, string description);
+    public delegate void SoundEnumerateCallback(string description);
 
     public interface IDxSound
     {
-        bool CreateDirectSound(_GUID guid);
+        bool CreateDirectSound(int index);
         bool SetCooperativeLevel(IntPtr hWnd);
 
         void EnumerateSoundCards(SoundEnumerateCallback callback);
@@ -48,15 +49,23 @@ namespace VCCSharp.DX8
         private uint _sndLength1;
         private uint _sndLength2;
 
+        // ReSharper disable once IdentifierTypo
+        private readonly List<_GUID> _guids = new List<_GUID>();
+
         public DxSound(IDSound sound, IDxFactory factory)
         {
             _sound = sound;
             _factory = factory;
         }
 
-        public unsafe bool CreateDirectSound(_GUID guid)
+        public bool CreateDirectSound(int index)
         {
-            _ds = _factory.CreateDirectSound(_sound, &guid);
+            _GUID guid = _guids[index];
+
+            unsafe
+            {
+                _ds = _factory.CreateDirectSound(_sound, &guid);
+            }
 
             return _ds != null;
         }
@@ -114,7 +123,8 @@ namespace VCCSharp.DX8
                     _GUID guid = pGuid != Zero ? *(_GUID*)pGuid : new _GUID();
                     string text = Converter.ToString((byte*)description);
 
-                    callback(guid, text);
+                    _guids.Add(guid);
+                    callback(text);
                 }
 
                 return ++count < Define.MAXCARDS ? Define.TRUE : Define.FALSE;
