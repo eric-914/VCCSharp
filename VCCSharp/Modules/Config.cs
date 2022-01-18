@@ -29,7 +29,6 @@ namespace VCCSharp.Modules
         void LoadIniFile();
         short GetCurrentKeyboardLayout();
         void SaveConfig();
-        byte GetSoundCardIndex(string soundCardName);
         bool GetRememberSize();
 
         Point GetIniWindowSize();
@@ -42,7 +41,7 @@ namespace VCCSharp.Modules
         string SerialCaptureFile { get; set; }
         string IniFilePath { get; set; }
 
-        List<SoundCard> SoundCards { get; }
+        List<string> SoundDevices { get; }
     }
 
     public class Config : IConfig
@@ -61,12 +60,11 @@ namespace VCCSharp.Modules
 
         public string TapeFileName { get; set; }
         public string SerialCaptureFile { get; set; }
-        //public string OutBuffer;
 
         private readonly JoystickModel _left = new JoystickModel();
         private readonly JoystickModel _right = new JoystickModel();
 
-        public List<SoundCard> SoundCards { get; } = new List<SoundCard>();
+        public List<string> SoundDevices { get; } = new List<string>();
 
         public ConfigModel ConfigModel { get; set; } = new ConfigModel();
 
@@ -109,11 +107,9 @@ namespace VCCSharp.Modules
             ConfigureJoysticks();
 
             string soundCardName = ConfigModel.SoundCardName;
-            byte soundCardIndex = GetSoundCardIndex(soundCardName);
+            int soundCardIndex = SoundDevices.IndexOf(soundCardName);
 
-            SoundCard soundCard = SoundCards[soundCardIndex];
-
-            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, soundCard.Guid, ConfigModel.AudioRate);
+            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, soundCardIndex, ConfigModel.AudioRate);
 
             //  Try to open the config file.  Create it if necessary.  Abort if failure.
             if (File.Exists(iniFile))
@@ -612,21 +608,6 @@ namespace VCCSharp.Modules
 
             //--Flush .ini file
             _kernel.WritePrivateProfileStringA(null, null, null, iniFilePath);
-        }
-
-        public byte GetSoundCardIndex(string soundCardName)
-        {
-            for (byte index = 0; index < SoundCards.Count; index++)
-            {
-                var item = SoundCards[index].CardName;
-
-                if (soundCardName == item)
-                {
-                    return index;
-                }
-            }
-
-            return 0;
         }
 
         public bool GetRememberSize()

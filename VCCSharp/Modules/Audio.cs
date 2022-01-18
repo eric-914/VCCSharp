@@ -1,4 +1,5 @@
 ﻿using DX8.Models;
+using System.Collections.Generic;
 using VCCSharp.DX8;
 using VCCSharp.IoC;
 using VCCSharp.Models;
@@ -8,7 +9,7 @@ namespace VCCSharp.Modules
 {
     public interface IAudio
     {
-        void SoundInit(HWND hWnd, _GUID guid, ushort rate);
+        void SoundInit(HWND hWnd, int index, ushort rate);
         short SoundDeInit();
 
         bool PauseAudio(bool pause);
@@ -42,13 +43,15 @@ namespace VCCSharp.Modules
 
         private bool _mute;
 
+        private readonly List<_GUID> _guids = new List<_GUID>();
+
         public Audio(IModules modules, IDxSound sound)
         {
             _modules = modules;
             _sound = sound;
         }
 
-        public void SoundInit(HWND hWnd, _GUID guid, ushort rate)
+        public void SoundInit(HWND hWnd, int index, ushort rate)
         {
             rate &= 3;
 
@@ -68,7 +71,7 @@ namespace VCCSharp.Modules
 
             if (!_initialized)
             {
-                if (!_sound.CreateDirectSound(guid)) return;
+                if (!_sound.CreateDirectSound(_guids[index])) return;
 
                 // set cooperation level normal
                 if (!_sound.SetCooperativeLevel(hWnd)) return;
@@ -193,13 +196,8 @@ namespace VCCSharp.Modules
         {
             void Callback(_GUID guid, string text)
             {
-                var card = new SoundCard
-                {
-                    Guid = guid,
-                    CardName = text
-                };
-
-                _modules.Config.SoundCards.Add(card);
+                _guids.Add(guid);
+                _modules.Config.SoundDevices.Add(text);
             }
 
             _sound.EnumerateSoundCards(Callback);
