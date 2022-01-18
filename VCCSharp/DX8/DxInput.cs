@@ -6,6 +6,7 @@ using DX8.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using DX8;
 using VCCSharp.Models;
 
 namespace VCCSharp.DX8
@@ -34,6 +35,8 @@ namespace VCCSharp.DX8
             _input = input;
             _factory = factory;
         }
+
+        public DxInput() : this(new DInput(), new DxFactory()) { }
 
         public void CreateDirectInput(IntPtr handle)
         {

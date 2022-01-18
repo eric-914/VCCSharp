@@ -2,6 +2,7 @@
 using DX8.Libraries;
 using DX8.Models;
 using System;
+using DX8;
 using VCCSharp.Models;
 using static System.IntPtr;
 using Point = System.Drawing.Point;
@@ -72,6 +73,8 @@ namespace VCCSharp.DX8
             _dDraw = dDraw;
             _factory = factory;
         }
+
+        public DxDraw() : this(new DDraw(), new DxFactory()) { }
 
         public bool CreateDirectDraw(Point windowSize)
         {

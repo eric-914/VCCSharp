@@ -1,12 +1,11 @@
-﻿using DX8.Interfaces;
+﻿using System;
+using System.Runtime.InteropServices;
+using DX8.Interfaces;
 using DX8.Libraries;
 using DX8.Models;
-using System;
-using System.Runtime.InteropServices;
-using VCCSharp.Models;
 using static System.IntPtr;
 
-namespace VCCSharp.DX8
+namespace DX8
 {
     public interface IDxFactory
     {
@@ -29,7 +28,7 @@ namespace VCCSharp.DX8
         {
             IntPtr p = Zero;
 
-            return fn(ref p) != Define.DS_OK ? null : (T)Marshal.GetObjectForIUnknown(p);
+            return fn(ref p) != DxDefine.S_OK ? null : (T)Marshal.GetObjectForIUnknown(p);
         }
 
         public IDirectDraw CreateDirectDraw(IDDraw d)

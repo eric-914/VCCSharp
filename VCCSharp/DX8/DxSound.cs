@@ -4,6 +4,7 @@ using DX8.Models;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using DX8;
 using VCCSharp.Models;
 using static System.IntPtr;
 
@@ -57,6 +58,8 @@ namespace VCCSharp.DX8
             _sound = sound;
             _factory = factory;
         }
+
+        public DxSound() : this(new DSound(), new DxFactory()) { }
 
         public bool CreateDirectSound(int index)
         {

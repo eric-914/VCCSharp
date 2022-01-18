@@ -18,7 +18,6 @@ namespace VCCSharp.Models
         public const int MAX_PATH = 260;
 
         public const long S_OK = 0;
-        public const long DS_OK = S_OK;
 
         public const int MAXCARDS = 12;
 
@@ -41,7 +40,6 @@ namespace VCCSharp.Models
 
         public const uint DDSCAPS_PRIMARYSURFACE = 0x00000200;
         public const uint DDSCAPS_VIDEOMEMORY = 0x00004000;
-        public const uint DDSCAPS_SYSTEMMEMORY = 0x00000800;
 
         public const uint DDSD_CAPS = 0x00000001;
         public const uint DDSD_HEIGHT = 0x00000002;
