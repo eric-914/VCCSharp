@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using VCCSharp.DX8.Interfaces;
-using VCCSharp.DX8.Libraries;
-using VCCSharp.DX8.Models;
+using DX8.Interfaces;
+using DX8.Libraries;
+using DX8.Models;
+using DX8.Converters;
+using DX8.Formats;
 using VCCSharp.Models;
 
 namespace VCCSharp.DX8
@@ -37,7 +39,7 @@ namespace VCCSharp.DX8
         {
             const uint version = 0x0800;
 
-            _GUID guid = Converter.ToGuid(DxGuid.DirectInput);
+            _GUID guid = GuidConverter.ToGuid(DxGuid.DirectInput);
 
             _di = _factory.CreateDirectInput(_input, handle, version, guid);
         }

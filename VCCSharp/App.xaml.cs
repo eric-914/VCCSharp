@@ -1,8 +1,8 @@
 ﻿using System.Windows;
+using DX8.Libraries;
 using VCCSharp.BitBanger;
 using VCCSharp.Configuration;
 using VCCSharp.DX8;
-using VCCSharp.DX8.Libraries;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Menu;

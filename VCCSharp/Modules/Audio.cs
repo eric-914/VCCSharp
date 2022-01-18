@@ -1,5 +1,5 @@
-﻿using VCCSharp.DX8;
-using VCCSharp.DX8.Models;
+﻿using DX8.Models;
+using VCCSharp.DX8;
 using VCCSharp.IoC;
 using VCCSharp.Models;
 using HWND = System.IntPtr;

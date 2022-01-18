@@ -336,7 +336,7 @@ namespace VCCSharp.Modules
                     MessageBox.Show("Odd", "Error"); // yes, odd error indeed!! (??) especially since we go ahead and use it below!
                 }
 
-                _draw.SurfaceBlt(&rcDest, &rcSrc);
+                _draw.SurfaceBlt(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, rcSrc.left, rcSrc.top, rcSrc.right, rcSrc.bottom);
             }
 
             //--Store the updated WindowSizeX/Y for configuration, later.

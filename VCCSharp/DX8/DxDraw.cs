@@ -1,7 +1,7 @@
 ﻿using System;
-using VCCSharp.DX8.Interfaces;
-using VCCSharp.DX8.Libraries;
-using VCCSharp.DX8.Models;
+using DX8.Interfaces;
+using DX8.Libraries;
+using DX8.Models;
 using VCCSharp.Libraries.Models;
 using VCCSharp.Models;
 using static System.IntPtr;
@@ -27,7 +27,7 @@ namespace VCCSharp.DX8
         bool BackSurfaceIsLost();
         void SurfaceRestore();
         void BackSurfaceRestore();
-        unsafe void SurfaceBlt(RECT* rcDest, RECT* rcSrc);
+        void SurfaceBlt(int dl, int dt, int dr, int db, int sl, int st, int sr, int sb);
         bool HasBackSurface();
         unsafe void GetBackSurface(IntPtr* pHdc);
         void ReleaseBackSurface(IntPtr hdc);
@@ -144,10 +144,18 @@ namespace VCCSharp.DX8
             _back.Restore();
         }
 
-        public unsafe void SurfaceBlt(RECT* rcDest, RECT* rcSrc)
+        public unsafe void SurfaceBlt(int dl, int dt, int dr, int db, int sl, int st, int sr, int sb)
         {
-            _surface.Blt(rcDest, _back, rcSrc, Define.DDBLT_WAIT, Zero);
+            DXRECT rcDest = new DXRECT { left = dl, top = dt, right = dr, bottom = db};
+            DXRECT rcSrc = new DXRECT { left = sl, top = st, right = sr, bottom = sb};
+
+            _surface.Blt(&rcDest, _back, &rcSrc, Define.DDBLT_WAIT, Zero);
         }
+
+        //public unsafe void SurfaceBlt(DXRECT * rcDest, DXRECT * rcSrc)
+        //{
+        //    _surface.Blt(rcDest, _back, rcSrc, Define.DDBLT_WAIT, Zero);
+        //}
 
         public bool HasBackSurface()
         {

@@ -31,6 +31,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DX8\DX8.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\3guys.bmp" />
     <Resource Include="Resources\audio.ico" />
     <Resource Include="Resources\composite.ico" />
