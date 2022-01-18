@@ -13,7 +13,8 @@ namespace DX8.Libraries
     {
         public unsafe long DirectSoundCreate(_GUID* pGuid, ref IntPtr pInstance, IntPtr pUnknown)
         {
-            return DSoundDLL.DirectSoundCreate(pGuid, ref pInstance, pUnknown);
+            _GUID p = *pGuid;
+            return DSoundDLL.DirectSoundCreate(ref p, ref pInstance, pUnknown);
         }
 
         public long DirectSoundEnumerate(IntPtr pCallback, IntPtr pContext)

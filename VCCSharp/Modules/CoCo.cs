@@ -24,6 +24,7 @@ namespace VCCSharp.Modules
         int OverClock { get; set; }
     }
 
+    // ReSharper disable once InconsistentNaming
     public class CoCo : ICoCo
     {
         public const double CyclesPerSecond = (Define.COLORBURST / 4) * (Define.TARGETFRAMERATE / Define.FRAMESPERSECORD);
@@ -110,7 +111,7 @@ namespace VCCSharp.Modules
             {
                 return 0;
             }
-            
+
             return _modules.Throttle.CalculateFps();
         }
 
@@ -197,32 +198,22 @@ namespace VCCSharp.Modules
 
         private void RenderAudioFrame()
         {
-            unsafe
+            switch (_soundOutputMode)
             {
-                switch (_soundOutputMode)
-                {
-                    case 0:
-                        fixed (uint* buffer = _audioBuffer)
-                        {
-                            _modules.Audio.FlushAudioBuffer(buffer, (ushort)(_audioIndex << 2));
-                        }
-                        break;
+                case 0:
+                    _modules.Audio.FlushAudioBuffer(_audioBuffer, (ushort)(_audioIndex << 2));
+                    break;
 
-                    case 1:
-                        fixed (byte* buffer = _cassetteBuffer)
-                        {
-                            FlushCassetteBuffer(buffer, _audioIndex);
-                        }
+                case 1:
+                    FlushCassetteBuffer(_cassetteBuffer, _audioIndex);
+                    break;
 
-                        break;
-
-                    case 2:
-                        LoadCassetteBuffer();
-                        break;
-                }
-
-                _audioIndex = 0;
+                case 2:
+                    LoadCassetteBuffer();
+                    break;
             }
+
+            _audioIndex = 0;
         }
 
 
@@ -324,7 +315,7 @@ namespace VCCSharp.Modules
             _stateSwitch = 0;
 
             //Does this iteration need to Timer Interrupt
-            if (_picosToInterrupt <= _picosThisLine && _intEnable )
+            if (_picosToInterrupt <= _picosThisLine && _intEnable)
             {
                 _stateSwitch = 1;
             }
@@ -528,60 +519,54 @@ namespace VCCSharp.Modules
         //0 = Speaker 1= Cassette Out 2=Cassette In
         public byte SetSndOutMode(byte mode)
         {
-            unsafe
+            _primarySoundRate = _soundRate;
+
+            switch (mode)
             {
-                _primarySoundRate = _soundRate;
+                case 0:
+                    if (_lastMode == 1)
+                    {
+                        //Send the last bits to be encoded
+                        FlushCassetteBuffer(_cassetteBuffer, _audioIndex); /* Cassette.cpp */
+                    }
 
-                switch (mode)
-                {
-                    case 0:
-                        if (_lastMode == 1)
-                        {
-                            //Send the last bits to be encoded
-                            fixed (byte* buffer = _cassetteBuffer)
-                            {
-                                FlushCassetteBuffer(buffer, _audioIndex); /* Cassette.cpp */
-                            }
-                        }
+                    SetAudioEventAudioOut();
+                    //SetAudioRate(primarySoundRate);
+                    SetAudioRate(_primarySoundRate);
 
-                        SetAudioEventAudioOut();
-                        //SetAudioRate(primarySoundRate);
-                        SetAudioRate(_primarySoundRate);
+                    break;
 
-                        break;
+                case 1:
+                    SetAudioEventCassetteOut();
 
-                    case 1:
-                        SetAudioEventCassetteOut();
+                    _primarySoundRate = _soundRate;
 
-                        _primarySoundRate = _soundRate;
+                    SetAudioRate(Define.TAPEAUDIORATE);
 
-                        SetAudioRate(Define.TAPEAUDIORATE);
+                    break;
 
-                        break;
+                case 2:
+                    SetAudioEventCassetteIn();
 
-                    case 2:
-                        SetAudioEventCassetteIn();
+                    _primarySoundRate = _soundRate;
 
-                        _primarySoundRate = _soundRate;
+                    SetAudioRate(Define.TAPEAUDIORATE);
 
-                        SetAudioRate(Define.TAPEAUDIORATE);
+                    break;
 
-                        break;
-
-                    default: //QUERY
-                        return _soundOutputMode;
-                }
-
-                if (mode != _lastMode)
-                {
-                    _audioIndex = 0;	//Reset Buffer on true mode switch
-                    _lastMode = mode;
-                }
-
-                _soundOutputMode = mode;
-
-                return _soundOutputMode;
+                default: //QUERY
+                    return _soundOutputMode;
             }
+
+            if (mode != _lastMode)
+            {
+                _audioIndex = 0;	//Reset Buffer on true mode switch
+                _lastMode = mode;
+            }
+
+            _soundOutputMode = mode;
+
+            return _soundOutputMode;
         }
 
         public void SetInterruptTimer(ushort timer)
@@ -637,11 +622,14 @@ namespace VCCSharp.Modules
             _intEnable = _masterTickCounter != 0;
         }
 
-        private unsafe void FlushCassetteBuffer(byte* buffer, uint length)
+        private unsafe void FlushCassetteBuffer(byte[] buffer, uint length)
         {
-            uint offset = _modules.Cassette.FlushCassetteBuffer(buffer, length);
+            fixed (byte* p = buffer)
+            {
+                uint offset = _modules.Cassette.FlushCassetteBuffer(p, length);
 
-            UpdateTapeDialog((int)offset);
+                UpdateTapeDialog((int)offset);
+            }
         }
 
         private unsafe void LoadCassetteBuffer()

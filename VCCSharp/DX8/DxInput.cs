@@ -1,4 +1,5 @@
-﻿using DX8.Converters;
+﻿using DX8;
+using DX8.Converters;
 using DX8.Formats;
 using DX8.Interfaces;
 using DX8.Libraries;
@@ -6,18 +7,15 @@ using DX8.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using DX8;
 using VCCSharp.Models;
 
 namespace VCCSharp.DX8
 {
-    public delegate void EnumerateDevicesCallback(string name);
-
     public interface IDxInput
     {
         void CreateDirectInput(IntPtr handle);
 
-        int EnumerateDevices(EnumerateDevicesCallback callback);
+        List<string> EnumerateDevices();
 
         JoystickState JoystickPoll(int id);
     }
@@ -61,32 +59,31 @@ namespace VCCSharp.DX8
             return joystick;
         }
 
-        public unsafe int EnumerateDevices(EnumerateDevicesCallback callback)
+        public unsafe List<string> EnumerateDevices()
         {
-            int count = 0;
+            var names = new List<string>();
 
-            int EnumerateCallback(DIDEVICEINSTANCE* p, void* v)
+            int Callback(DIDEVICEINSTANCE* p, void* v)
             {
                 IDirectInputDevice joystick = CreateDevice(p->guidInstance);
                 string name = Converter.ToString(p->tszInstanceName);
 
                 _devices.Add(joystick);
-
-                callback(name);
+                names.Add(name);
 
                 SetJoystickProperties(joystick);
 
-                return ++count < Define.MAX_JOYSTICKS ? Define.TRUE : Define.FALSE;
+                return names.Count < Define.MAX_JOYSTICKS ? Define.TRUE : Define.FALSE;
             }
 
-            long hr = _di.EnumDevices(Define.DI8DEVCLASS_GAMECTRL, EnumerateCallback, IntPtr.Zero, Define.DIEDFL_ATTACHEDONLY);
+            long hr = _di.EnumDevices(Define.DI8DEVCLASS_GAMECTRL, Callback, IntPtr.Zero, Define.DIEDFL_ATTACHEDONLY);
 
             if (hr < 0)
             {
                 throw new Exception("Failed to enumerate joysticks");
             }
 
-            return count;
+            return names;
         }
 
         private static unsafe void SetJoystickProperties(IDirectInputDevice device)

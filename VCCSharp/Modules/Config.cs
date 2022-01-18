@@ -41,7 +41,7 @@ namespace VCCSharp.Modules
         string SerialCaptureFile { get; set; }
         string IniFilePath { get; set; }
 
-        List<string> SoundDevices { get; }
+        List<string> SoundDevices { get; set; }
     }
 
     public class Config : IConfig
@@ -64,7 +64,7 @@ namespace VCCSharp.Modules
         private readonly JoystickModel _left = new JoystickModel();
         private readonly JoystickModel _right = new JoystickModel();
 
-        public List<string> SoundDevices { get; } = new List<string>();
+        public List<string> SoundDevices { get; set; } = new List<string>();
 
         public ConfigModel ConfigModel { get; set; } = new ConfigModel();
 
@@ -94,7 +94,7 @@ namespace VCCSharp.Modules
             ConfigModel.Release = AppTitle; //--A kind of "version" I guess
             IniFilePath = iniFile;
 
-            _modules.Audio.EnumerateSoundCards();
+            SoundDevices = _modules.Audio.FindSoundDevices();
 
             //--Synch joysticks to config instance
             _modules.Joystick.SetLeftJoystick(_left);

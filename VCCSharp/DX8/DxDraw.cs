@@ -29,7 +29,7 @@ namespace VCCSharp.DX8
         void BackSurfaceRestore();
         void SurfaceBlt(int dl, int dt, int dr, int db, int sl, int st, int sr, int sb);
         bool HasBackSurface();
-        unsafe void GetBackSurface(IntPtr* pHdc);
+        IntPtr GetBackSurface();
         void ReleaseBackSurface(IntPtr hdc);
         void SurfaceFlip();
         bool LockSurface();
@@ -85,25 +85,31 @@ namespace VCCSharp.DX8
             return _dd != null;
         }
 
-        public unsafe bool CreatePrimarySurface()
+        public bool CreatePrimarySurface()
         {
             _primarySurface = CreatePrimarySurfaceDescription();
 
-            fixed (DDSURFACEDESC* p = &_primarySurface)
+            unsafe
             {
-                _surface = _factory.CreateSurface(_dd, p);
+                fixed (DDSURFACEDESC* p = &_primarySurface)
+                {
+                    _surface = _factory.CreateSurface(_dd, p);
+                }
             }
 
             return _surface != null;
         }
 
-        public unsafe bool CreateBackSurface()
+        public bool CreateBackSurface()
         {
             _backSurface = CreateBackSurfaceDescription(_windowSize);
 
-            fixed (DDSURFACEDESC* p = &_backSurface)
+            unsafe
             {
-                _back = _factory.CreateSurface(_dd, p);
+                fixed (DDSURFACEDESC* p = &_backSurface)
+                {
+                    _back = _factory.CreateSurface(_dd, p);
+                }
             }
 
             return _back != null;
@@ -146,27 +152,32 @@ namespace VCCSharp.DX8
             _back.Restore();
         }
 
-        public unsafe void SurfaceBlt(int dl, int dt, int dr, int db, int sl, int st, int sr, int sb)
+        public void SurfaceBlt(int dl, int dt, int dr, int db, int sl, int st, int sr, int sb)
         {
             DXRECT rcDest = new DXRECT { left = dl, top = dt, right = dr, bottom = db};
             DXRECT rcSrc = new DXRECT { left = sl, top = st, right = sr, bottom = sb};
 
-            _surface.Blt(&rcDest, _back, &rcSrc, Define.DDBLT_WAIT, Zero);
+            unsafe
+            {
+                _surface.Blt(&rcDest, _back, &rcSrc, Define.DDBLT_WAIT, Zero);
+            }
         }
-
-        //public unsafe void SurfaceBlt(DXRECT * rcDest, DXRECT * rcSrc)
-        //{
-        //    _surface.Blt(rcDest, _back, rcSrc, Define.DDBLT_WAIT, Zero);
-        //}
 
         public bool HasBackSurface()
         {
             return _back != null;
         }
 
-        public unsafe void GetBackSurface(IntPtr* pHdc)
+        public IntPtr GetBackSurface()
         {
-            _back.GetDC(pHdc);
+            IntPtr p = Zero;
+
+            unsafe
+            {
+                _back.GetDC(&p);
+            }
+
+            return p;
         }
 
         public void ReleaseBackSurface(IntPtr hdc)

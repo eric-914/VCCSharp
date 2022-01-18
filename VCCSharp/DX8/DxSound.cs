@@ -1,23 +1,22 @@
-﻿using DX8.Interfaces;
+﻿using DX8;
+using DX8.Interfaces;
 using DX8.Libraries;
 using DX8.Models;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using DX8;
 using VCCSharp.Models;
 using static System.IntPtr;
+using HWND = System.IntPtr;
 
 namespace VCCSharp.DX8
 {
-    public delegate void SoundEnumerateCallback(string description);
-
     public interface IDxSound
     {
         bool CreateDirectSound(int index);
-        bool SetCooperativeLevel(IntPtr hWnd);
+        bool SetCooperativeLevel(HWND hWnd);
 
-        void EnumerateSoundCards(SoundEnumerateCallback callback);
+        List<string> EnumerateSoundCards();
 
         bool CreateDirectSoundBuffer(ushort bitRate, uint length);
 
@@ -27,7 +26,7 @@ namespace VCCSharp.DX8
         ulong ReadPlayCursor();
 
         void ClearBuffer(uint length);
-        unsafe void CopyBuffer(uint* buffer);
+        void CopyBuffer(uint[] buffer);
 
         bool Lock(uint offset, ushort length);
         bool Unlock();
@@ -73,7 +72,7 @@ namespace VCCSharp.DX8
             return _ds != null;
         }
 
-        public bool SetCooperativeLevel(IntPtr hWnd)
+        public bool SetCooperativeLevel(HWND hWnd)
         {
             return _ds.SetCooperativeLevel(hWnd, Define.DSSCL_NORMAL) == Define.S_OK;
         }
@@ -115,9 +114,9 @@ namespace VCCSharp.DX8
             };
         }
 
-        public void EnumerateSoundCards(SoundEnumerateCallback callback)
+        public List<string> EnumerateSoundCards()
         {
-            int count = 0;
+            List<string> names = new List<string>();
 
             int Callback(IntPtr pGuid, IntPtr description, IntPtr module, IntPtr context)
             {
@@ -127,15 +126,17 @@ namespace VCCSharp.DX8
                     string text = Converter.ToString((byte*)description);
 
                     _guids.Add(guid);
-                    callback(text);
+                    names.Add(text);
                 }
 
-                return ++count < Define.MAXCARDS ? Define.TRUE : Define.FALSE;
+                return names.Count < Define.MAXCARDS ? Define.TRUE : Define.FALSE;
             }
 
             IntPtr fn = Marshal.GetFunctionPointerForDelegate((DirectSoundEnumerateCallbackTemplate)Callback);
 
             _sound.DirectSoundEnumerate(fn, Zero);
+
+            return names;
         }
 
         public void Stop() => _buffer.Stop();
@@ -213,10 +214,8 @@ namespace VCCSharp.DX8
             }
         }
 
-        public unsafe void CopyBuffer(uint* buffer)
+        public unsafe void CopyBuffer(uint[] buffer)
         {
-            byte* byteBuffer = (byte*)buffer;
-
             void Copy(IntPtr sndPtr, byte* source, uint length)
             {
                 byte* target = (byte*)sndPtr;
@@ -231,6 +230,12 @@ namespace VCCSharp.DX8
                     target[index] = source[index];
                 }
             }
+
+            byte* byteBuffer;
+            fixed (uint* p = buffer)
+            {
+                byteBuffer = (byte*)p;
+            };
 
             Copy(SndPointer1, byteBuffer, _sndLength1);
 

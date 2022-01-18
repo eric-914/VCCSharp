@@ -1,4 +1,5 @@
-﻿using VCCSharp.DX8;
+﻿using System.Collections.Generic;
+using VCCSharp.DX8;
 using VCCSharp.IoC;
 using VCCSharp.Models;
 using HWND = System.IntPtr;
@@ -7,14 +8,15 @@ namespace VCCSharp.Modules
 {
     public interface IAudio
     {
+        List<string> FindSoundDevices();
+
         void SoundInit(HWND hWnd, int index, ushort rate);
         short SoundDeInit();
 
         bool PauseAudio(bool pause);
         void ResetAudio();
-        unsafe void FlushAudioBuffer(uint* buffer, ushort length);
+        void FlushAudioBuffer(uint[] buffer, ushort length);
         int GetFreeBlockCount();
-        void EnumerateSoundCards();
 
         AudioSpectrum Spectrum { get; set; }
         ushort CurrentRate { get; set; }
@@ -121,7 +123,7 @@ namespace VCCSharp.Modules
             _buffOffset = 0;
         }
 
-        public unsafe void FlushAudioBuffer(uint* buffer, ushort length)
+        public void FlushAudioBuffer(uint[] buffer, ushort length)
         {
             uint leftAverage = buffer[0] >> 16;
             uint rightAverage = buffer[0] & 0xFFFF;
@@ -188,14 +190,6 @@ namespace VCCSharp.Modules
             return _audioPause;
         }
 
-        public void EnumerateSoundCards()
-        {
-            void Callback(string text)
-            {
-                _modules.Config.SoundDevices.Add(text);
-            }
-
-            _sound.EnumerateSoundCards(Callback);
-        }
+        public List<string> FindSoundDevices() => _sound.EnumerateSoundCards();
     }
 }

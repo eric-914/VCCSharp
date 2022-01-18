@@ -51,13 +51,9 @@ namespace VCCSharp.Modules
 
         public List<string> FindJoysticks()
         {
-            var names = new List<string>();
-
             _input.CreateDirectInput(KernelDll.GetModuleHandleA(IntPtr.Zero));
 
-            _input.EnumerateDevices(names.Add);
-
-            return names;
+            return _input.EnumerateDevices();
         }
 
         public JoystickModel GetLeftJoystick()

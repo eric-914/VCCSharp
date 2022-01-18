@@ -231,12 +231,7 @@ namespace VCCSharp.Modules
         {
             const string message = " Signal Missing! Press F9 ";
 
-            IntPtr hdc;
-
-            unsafe
-            {
-                _draw.GetBackSurface(&hdc);
-            }
+            IntPtr hdc = _draw.GetBackSurface();
 
             _gdi32.SetBkColor(hdc, 0);
             _gdi32.SetTextColor(hdc, color);
@@ -247,12 +242,7 @@ namespace VCCSharp.Modules
 
         private void WriteStatusText(string message)
         {
-            IntPtr hdc;
-
-            unsafe
-            {
-                _draw.GetBackSurface(&hdc);
-            }
+            IntPtr hdc = _draw.GetBackSurface();
 
             _gdi32.SetBkColor(hdc, 0); //RGB(0, 0, 0)
             _gdi32.SetTextColor(hdc, 0xFFFFFF); //RGB(255, 255, 255)
