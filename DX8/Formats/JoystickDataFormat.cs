@@ -1,4 +1,5 @@
-﻿using DX8.Converters;
+﻿using System;
+using DX8.Converters;
 using DX8.Models;
 
 namespace DX8.Formats
@@ -33,10 +34,10 @@ namespace DX8.Formats
         public static unsafe DIOBJECTDATAFORMAT[] GetDataFormatArray()
         {
             DIOBJECTDATAFORMAT X(uint dwOfs, uint unknown)
-                => new DIOBJECTDATAFORMAT { dwFlags = 0, dwOfs = dwOfs, dwType = 0, unknown = unknown, pguid = null };
+                => new DIOBJECTDATAFORMAT { dwFlags = 0, dwOfs = dwOfs, dwType = 0, unknown = unknown, pguid = IntPtr.Zero };
 
-            DIOBJECTDATAFORMAT Y(uint dwOfs, uint dwType, uint unknown, _GUID guid)
-                => new DIOBJECTDATAFORMAT { dwFlags = 0, dwOfs = dwOfs, dwType = dwType, unknown = unknown, pguid = &guid };
+            DIOBJECTDATAFORMAT Y(uint dwOfs, uint dwType, uint unknown, _GUID guid) 
+                => new DIOBJECTDATAFORMAT { dwFlags = 0, dwOfs = dwOfs, dwType = dwType, unknown = unknown, pguid = (IntPtr)(&guid) };
 
             DIOBJECTDATAFORMAT Z(uint dwOfs, uint dwType, uint unknown, string guid)
                 => Y(dwOfs, dwType, unknown, GuidConverter.ToGuid(guid));
