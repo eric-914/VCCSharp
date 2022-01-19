@@ -27,7 +27,7 @@ namespace DX8.Interfaces
         /// DSERR_INVALIDPARAM | DSERR_PRIOLEVELNEEDED
         /// </returns>
         /// <remarks>The write cursor indicates the position at which it is safe to write new data to the buffer. The write cursor always leads the play cursor, typically by about 15 milliseconds' worth of audio data.</remarks>
-        public unsafe long GetCurrentPosition(/*DWORD*/ uint* playCursor, /*DWORD*/ uint* writeCursor);
+        public long GetCurrentPosition(/*DWORD*/ ref uint playCursor, /*DWORD*/ ref uint writeCursor);
 
         #region unused
         public long GetFormat();

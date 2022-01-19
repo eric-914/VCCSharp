@@ -11,7 +11,7 @@ using LPVOID = System.IntPtr;
 
 namespace DX8.Interfaces
 {
-    public unsafe delegate int DIEnumDeviceObjectsCallback(DIDEVICEOBJECTINSTANCE* lpddoi, void* pvRef);
+    public delegate int DIEnumDeviceObjectsCallback(ref DIDEVICEOBJECTINSTANCE lpddoi, IntPtr pvRef);
 
     /// <summary>
     /// Applications use the methods of the IDirectInputDevice interface to gain and release access to Microsoft DirectInput devices, manage device properties and information, set behavior, perform initialization, create and play force-feedback effects, and invoke a device's control panel.
@@ -54,7 +54,7 @@ namespace DX8.Interfaces
         /// DIERR_INVALIDPARAM | DIERR_NOTINITIALIZED | DIERR_OBJECTNOTFOUND | DIERR_UNSUPPORTED.
         /// </returns>
         /// <remarks>The buffer size determines the amount of data that the buffer can hold between calls to the GetDeviceData method before data is lost. This value may be set to 0 to indicate that the application does not read buffered data from the device. If the buffer size in the dwData member of the DIPROPDWORD structure is too large for the device to support it, then the largest possible buffer size is set.</remarks>
-        unsafe long SetProperty(/*REFGUID*/ long rguidProp, DIPROPHEADER* pdiph);
+        long SetProperty(/*REFGUID*/ long rguidProp, ref DIPROPHEADER pdiph);
 
         /// <summary>
         /// Obtains access to the input device.
@@ -84,10 +84,11 @@ namespace DX8.Interfaces
         /// DIERR_INPUTLOST | DIERR_INVALIDPARAM | DIERR_NOTACQUIRED | DIERR_NOTINITIALIZED | E_PENDING.
         /// </returns>
         /// <remarks>Before device data can be obtained, set the cooperative level by using the SetCooperativeLevel method, then set the data format by using SetDataFormat, and acquire the device by using the IDirectInputDevice8 Interface method.</remarks>
-        unsafe long GetDeviceState(/*DWORD*/ uint cbData, /*LPVOID*/ void* lpvData);
+        long GetDeviceState(/*DWORD*/ uint cbData, /*LPVOID*/ ref DIJOYSTATE2 lpvData);
+        //long GetDeviceState(/*DWORD*/ uint cbData, /*LPVOID*/ ref LPVOID lpvData); //--TODO: Hold this until change is confirmed.
         
         #region unused
-        unsafe long GetDeviceData(uint cbObjectData, /*LPDIDEVICEOBJECTDATA*/ IntPtr rgdod, uint* pdwInOut, uint dwFlags);
+        long GetDeviceData(uint cbObjectData, /*LPDIDEVICEOBJECTDATA*/ IntPtr rgdod, ref uint pdwInOut, uint dwFlags);
         #endregion
 
         /// <summary>
@@ -100,7 +101,7 @@ namespace DX8.Interfaces
         /// If the method fails, the return value can be one of the following error values:
         /// DIERR_ACQUIRED | DIERR_INVALIDPARAM | DIERR_NOTINITIALIZED.
         /// </returns>
-        unsafe long SetDataFormat(DIDATAFORMAT* lpdf);
+        long SetDataFormat(ref DIDATAFORMAT lpdf);
         
         #region unused
         long SetEventNotification(HANDLE hEvent);
@@ -131,12 +132,12 @@ namespace DX8.Interfaces
         long Poll();
 
         #region unused
-        //unsafe long SendDeviceData(uint cbObjectData, LPCDIDEVICEOBJECTDATA rgdod, uint* pdwInOut, uint fl);
-        //unsafe long EnumEffectsInFile(string lpszFileName, LPDIENUMEFFECTSINFILECALLBACK pec, void* pvRef, uint dwFlags);
-        //unsafe long WriteEffectToFile(string lpszFileName, uint dwEntries, LPDIFILEEFFECT rgDiFileEft, uint dwFlags);
-        //unsafe long BuildActionMap(LPDIACTIONFORMATA lpdiaf, string lpszUserName, uint dwFlags);
-        //unsafe long SetActionMap(LPDIACTIONFORMATA lpdiActionFormat, string lptszUserName, uint dwFlags);
-        //unsafe long GetImageInfo(LPDIDEVICEIMAGEINFOHEADERA lpdiDevImageInfoHeader);
+        //long SendDeviceData(uint cbObjectData, LPCDIDEVICEOBJECTDATA rgdod, ref uint pdwInOut, uint fl);
+        //long EnumEffectsInFile(string lpszFileName, LPDIENUMEFFECTSINFILECALLBACK pec, IntPtr pvRef, uint dwFlags);
+        //long WriteEffectToFile(string lpszFileName, uint dwEntries, LPDIFILEEFFECT rgDiFileEft, uint dwFlags);
+        //long BuildActionMap(LPDIACTIONFORMATA lpdiaf, string lpszUserName, uint dwFlags);
+        //long SetActionMap(LPDIACTIONFORMATA lpdiActionFormat, string lptszUserName, uint dwFlags);
+        //long GetImageInfo(LPDIDEVICEIMAGEINFOHEADERA lpdiDevImageInfoHeader);
         #endregion
     }
 }

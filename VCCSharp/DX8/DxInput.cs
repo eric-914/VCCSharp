@@ -86,12 +86,13 @@ namespace VCCSharp.DX8
             return names;
         }
 
-        private static unsafe void SetJoystickProperties(IDirectInputDevice device)
+        private static void SetJoystickProperties(IDirectInputDevice device)
         {
-            int Callback(DIDEVICEOBJECTINSTANCE* p, void* v)
+            int Callback(ref DIDEVICEOBJECTINSTANCE p, IntPtr v)
             {
                 //--Just seems to be a GUID* to address "4".
                 //_GUID* DIPROP_RANGE = Library.Joystick.GetRangeGuid();
+                //TODO: Define.DI8DEVCLASS_GAMECTRL ?
                 long guidPropertyRange = 4L;
 
                 var propertyHeader = new DIPROPHEADER
@@ -99,7 +100,7 @@ namespace VCCSharp.DX8
                     dwSize = (uint)DIPROPRANGE.Size,
                     dwHeaderSize = (uint)DIPROPHEADER.Size,
                     dwHow = Define.DIPH_BYID,
-                    dwObj = p->dwType
+                    dwObj = p.dwType
                 };
 
                 var d = new DIPROPRANGE
@@ -109,7 +110,7 @@ namespace VCCSharp.DX8
                     diph = propertyHeader //--TODO: Somehow the address of diph is not the same address as property header.
                 };
 
-                long hr = device.SetProperty(guidPropertyRange, &d.diph);
+                long hr = device.SetProperty(guidPropertyRange, ref d.diph);
 
                 //--This will iterate a few times per joystick.
                 return hr < 0 ? Define.DIENUM_STOP : Define.DIENUM_CONTINUE;
@@ -118,7 +119,7 @@ namespace VCCSharp.DX8
             //--Manually recreate: c_dfDIJoystick2
             DIDATAFORMAT df = JoystickDataFormat.GetDataFormat();
 
-            long hr = device.SetDataFormat(&df);
+            long hr = device.SetDataFormat(ref df);
 
             if (hr < 0)
             {
@@ -185,10 +186,15 @@ namespace VCCSharp.DX8
                 }
             }
 
-            unsafe
-            {
-                hr = stick.GetDeviceState((uint)DIJOYSTATE2.Size, &state);
-            }
+            hr = stick.GetDeviceState((uint)DIJOYSTATE2.Size, ref state);
+
+            //TODO: Need to verify change works before deleting this
+            //unsafe
+            //{
+            //    hr = stick.GetDeviceState((uint)DIJOYSTATE2.Size, &state);
+            //}
+
+            //TODO: un-acquire?
 
             return hr < 0 ? hr : Define.S_OK;
         }

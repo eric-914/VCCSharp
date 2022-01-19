@@ -72,11 +72,11 @@ namespace VCCSharp.DX8
             return _ds.SetCooperativeLevel(hWnd, Define.DSSCL_NORMAL) == Define.S_OK;
         }
 
-        public unsafe bool CreateDirectSoundBuffer(DSBUFFERDESC bufferDescription)
+        public bool CreateDirectSoundBuffer(DSBUFFERDESC bufferDescription)
         {
-            _buffer = _factory.CreateSoundBuffer(_ds, &bufferDescription);
+            _buffer = _factory.CreateSoundBuffer(_ds, bufferDescription);
 
-            return (_buffer != null);
+            return _buffer != null;
         }
 
         private static WAVEFORMATEX CreateWaveFormat(ushort bitRate)
@@ -142,10 +142,7 @@ namespace VCCSharp.DX8
         {
             uint playCursor = 0, writeCursor = 0;
 
-            unsafe
-            {
-                _buffer.GetCurrentPosition(&playCursor, &writeCursor);
-            }
+            _buffer.GetCurrentPosition(ref playCursor, ref writeCursor);
 
             return playCursor;
         }

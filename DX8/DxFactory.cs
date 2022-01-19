@@ -1,8 +1,8 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using DX8.Interfaces;
+﻿using DX8.Interfaces;
 using DX8.Libraries;
 using DX8.Models;
+using System;
+using System.Runtime.InteropServices;
 using static System.IntPtr;
 
 namespace DX8
@@ -13,7 +13,7 @@ namespace DX8
         IDirectDrawSurface CreateSurface(IDirectDraw d, ref DDSURFACEDESC pSurfaceDescription);
         IDirectDrawClipper CreateClipper(IDirectDraw d);
         IDirectSound CreateDirectSound(IDSound d, _GUID guid);
-        unsafe IDirectSoundBuffer CreateSoundBuffer(IDirectSound d, DSBUFFERDESC* pBufferDescription);
+        IDirectSoundBuffer CreateSoundBuffer(IDirectSound d, DSBUFFERDESC pBufferDescription);
         IDirectInput CreateDirectInput(IDInput d, IntPtr handle, uint version, _GUID guid);
     }
 
@@ -36,9 +36,9 @@ namespace DX8
             return Create<IDirectDraw>((ref IntPtr p) => d.DirectDrawCreate(Zero, ref p, Zero));
         }
 
-        public unsafe IDirectSoundBuffer CreateSoundBuffer(IDirectSound d, DSBUFFERDESC* pBufferDescription)
+        public IDirectSoundBuffer CreateSoundBuffer(IDirectSound d, DSBUFFERDESC pBufferDescription)
         {
-            return Create<IDirectSoundBuffer>((ref IntPtr p) => d.CreateSoundBuffer(pBufferDescription, ref p, Zero));
+            return Create<IDirectSoundBuffer>((ref IntPtr p) => d.CreateSoundBuffer(ref pBufferDescription, ref p, Zero));
         }
 
         public IDirectSound CreateDirectSound(IDSound d, _GUID guid)

@@ -20,7 +20,7 @@ namespace DX8.Interfaces
         /// <param name="pUnknown">Address of the controlling object's IUnknown interface for COM aggregation. Must be NULL.</param>
         /// <returns>If the method succeeds, the return value is DS_OK</returns>
         /// <remarks>DirectSound does not initialize the contents of the buffer, and the application cannot assume that it contains silence.</remarks>
-        unsafe long CreateSoundBuffer(DSBUFFERDESC* pBufferDescription, ref LPDIRECTSOUNDBUFFER pInstance, LPUNKNOWN pUnknown);
+        long CreateSoundBuffer(ref DSBUFFERDESC pBufferDescription, ref LPDIRECTSOUNDBUFFER pInstance, LPUNKNOWN pUnknown);
 
         #region unused
         long GetCaps();
