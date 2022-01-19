@@ -1,4 +1,5 @@
 ﻿using DX8.Models;
+using System;
 using System.Globalization;
 
 namespace DX8.Converters
@@ -58,5 +59,6 @@ namespace DX8.Converters
             return g;
         }
 
+        public static unsafe IntPtr ToIntPtr(_GUID guid) => (IntPtr)(&guid);
     }
 }

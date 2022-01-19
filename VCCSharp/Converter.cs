@@ -27,21 +27,5 @@ namespace VCCSharp
         {
             return Encoding.ASCII.GetBytes(text);
         }
-
-        public static unsafe void ToByteArray(string text, byte* target)
-        {
-            if (string.IsNullOrEmpty(text))
-            {
-                text = "\0";
-            }
-
-            byte[] buffer = ToByteArray(text);
-
-            for (int i = 0; i < buffer.Length; i++)
-            {
-                target[i] = buffer[i];
-            }
-        }
-
     }
 }

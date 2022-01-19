@@ -1,9 +1,8 @@
 ﻿// ReSharper disable InconsistentNaming
 // ReSharper disable IdentifierTypo
 // ReSharper disable CommentTypo
-
-using System;
 using System.Runtime.InteropServices;
+using LPDIOBJECTDATAFORMAT = System.IntPtr;
 
 namespace DX8.Models
 {
@@ -50,6 +49,6 @@ namespace DX8.Models
         /// Address to an array of DIOBJECTDATAFORMAT structures. Each structure describes how one object's data should be reported in the device data. Typical errors include placing two pieces of information in the same location and placing one piece of information in more than one location.
         /// </summary>
         [FieldOffset(24)]
-        public unsafe /*DIOBJECTDATAFORMAT**/ IntPtr rgodf;
+        public LPDIOBJECTDATAFORMAT rgodf;
     }
 }

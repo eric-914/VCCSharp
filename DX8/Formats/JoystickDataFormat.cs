@@ -1,7 +1,7 @@
 ﻿// ReSharper disable CommentTypo
 using DX8.Converters;
 using DX8.Models;
-using System;
+using static System.IntPtr;
 
 namespace DX8.Formats
 {
@@ -25,13 +25,13 @@ namespace DX8.Formats
             };
         }
 
-        private static unsafe DIOBJECTDATAFORMAT[] GetDataFormatArray()
+        private static DIOBJECTDATAFORMAT[] GetDataFormatArray()
         {
             DIOBJECTDATAFORMAT X(uint dwOfs, uint unknown)
-                => new DIOBJECTDATAFORMAT { dwFlags = 0, dwOfs = dwOfs, dwType = 0, unknown = unknown, pguid = IntPtr.Zero };
+                => new DIOBJECTDATAFORMAT { dwFlags = 0, dwOfs = dwOfs, dwType = 0, unknown = unknown, pguid = Zero };
 
             DIOBJECTDATAFORMAT Y(uint dwOfs, uint dwType, uint unknown, _GUID guid)
-                => new DIOBJECTDATAFORMAT { dwFlags = 0, dwOfs = dwOfs, dwType = dwType, unknown = unknown, pguid = (IntPtr)(&guid) };
+                => new DIOBJECTDATAFORMAT { dwFlags = 0, dwOfs = dwOfs, dwType = dwType, unknown = unknown, pguid = GuidConverter.ToIntPtr(guid) };
 
             DIOBJECTDATAFORMAT Z(uint dwOfs, uint dwType, uint unknown, string guid)
                 => Y(dwOfs, dwType, unknown, GuidConverter.ToGuid(guid));
