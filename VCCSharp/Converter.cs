@@ -24,18 +24,6 @@ namespace VCCSharp
             return Encoding.ASCII.GetString(buffer, 0, buffer.Length).Split('\0').First();
         }
 
-        public static string ToString(BYTE260 source, int max = Define.MAX_LOADSTRING)
-        {
-            byte[] buffer = new byte[max];
-
-            for (int index = 0; index < max && source[index] != '\0'; index++)
-            {
-                buffer[index] = source[index];
-            }
-
-            return Encoding.ASCII.GetString(buffer, 0, buffer.Length).Split('\0').First();
-        }
-
         public static byte[] ToByteArray(string text)
         {
             return Encoding.ASCII.GetBytes(text);

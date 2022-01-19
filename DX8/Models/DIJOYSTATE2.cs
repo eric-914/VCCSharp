@@ -63,7 +63,8 @@ namespace DX8.Models
         /// Array of buttons. The high-order bit of the byte is set if the corresponding button is down, and clear if the button is up or does not exist.
         /// </summary>
         [FieldOffset(40)]
-        public BYTE128 rgbButtons;   // 128 buttons 
+        [MarshalAs(UnmanagedType.I1, SizeConst = 128)]
+        public byte rgbButtons;   // 128 buttons 
 
         /// <summary>
         /// X-axis velocity.

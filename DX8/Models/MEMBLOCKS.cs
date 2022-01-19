@@ -1,6 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
 // ReSharper disable IdentifierTypo
 
+using System;
 using System.Runtime.InteropServices;
 
 namespace DX8.Models
@@ -22,27 +23,8 @@ namespace DX8.Models
     [StructLayout(LayoutKind.Explicit, Size = 260, CharSet = CharSet.Ansi)]
     public struct BYTE260
     {
-        public unsafe byte this[int index]
-        {
-            get => B[index];
-            set => B[index] = value;
-        }
-
-        [FieldOffset(0)]
-        public unsafe fixed byte B[260];
-    }
-
-    [StructLayout(LayoutKind.Explicit, Size = 128, CharSet = CharSet.Ansi)]
-    public struct BYTE128
-    {
-        public unsafe byte this[int index]
-        {
-            get => B[index];
-            set => B[index] = value;
-        }
-
-        [FieldOffset(0)]
-        public unsafe fixed byte B[128];
+        [FieldOffset(0)] [MarshalAs(UnmanagedType.I1, SizeConst = 260)]
+        public byte B;
     }
 
     [StructLayout(LayoutKind.Explicit, Size = 8, CharSet = CharSet.Ansi)]

@@ -67,7 +67,13 @@ namespace VCCSharp.DX8
             {
                 IDirectInputDevice joystick = CreateDevice(p.guidInstance);
 
-                names.Add(Converter.ToString(p.tszInstanceName));
+                unsafe
+                {
+                    fixed (byte* b = &p.tszInstanceName)
+                    {
+                        names.Add(Converter.ToString(b));
+                    }
+                }
 
                 _devices.Add(joystick);
 
@@ -145,13 +151,18 @@ namespace VCCSharp.DX8
                 Debug.WriteLine($"Bad joystick poll: {hr}");
             }
 
-            return new JoystickState
+            unsafe
             {
-                X = state.lX >> 10,
-                Y = state.lY >> 10,
-                Button1 = state.rgbButtons[0] >> 7,
-                Button2 = state.rgbButtons[1] >> 7,
-            };
+                byte* p = &state.rgbButtons;
+
+                return new JoystickState
+                {
+                    X = state.lX >> 10,
+                    Y = state.lY >> 10,
+                    Button1 = p[0] >> 7,
+                    Button2 = p[1] >> 7,
+                };
+            }
         }
 
         private static long JoystickPoll(DIJOYSTATE2 state, IDirectInputDevice stick)

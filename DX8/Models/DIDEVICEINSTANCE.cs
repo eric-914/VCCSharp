@@ -40,13 +40,15 @@ namespace DX8.Models
         /// Friendly name for the instance. For example, "Joystick 1."
         /// </summary>
         [FieldOffset(40)]
-        public BYTE260 tszInstanceName;
+        [MarshalAs(UnmanagedType.I1, SizeConst = 260)]
+        public byte tszInstanceName;
 
         /// <summary>
         /// Friendly name for the product.
         /// </summary>
         [FieldOffset(300)]
-        public BYTE260 tszProductName;
+        [MarshalAs(UnmanagedType.I1, SizeConst = 260)]
+        public byte tszProductName;
 
         /// <summary>
         /// Unique identifier for the driver being used for force feedback. The driver's manufacturer establishes this identifier.
