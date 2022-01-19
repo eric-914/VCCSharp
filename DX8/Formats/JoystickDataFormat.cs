@@ -1,6 +1,7 @@
-﻿using System;
+﻿// ReSharper disable CommentTypo
 using DX8.Converters;
 using DX8.Models;
+using System;
 
 namespace DX8.Formats
 {
@@ -11,32 +12,25 @@ namespace DX8.Formats
     {
         public const int Count = 164;
 
-        public static unsafe DIDATAFORMAT GetDataFormat()
+        public static DIDATAFORMAT GetDataFormat()
         {
-            DIDATAFORMAT df;
-
-            fixed (DIOBJECTDATAFORMAT* p = GetDataFormatArray())
+            return new DIDATAFORMAT
             {
-                df = new DIDATAFORMAT
-                {
-                    dwDataSize = 272,
-                    dwFlags = 1,
-                    dwNumObjs = Count,
-                    dwObjSize = 24,
-                    dwSize = 32,
-                    rgodf = p
-                };
-            }
-
-            return df;
+                dwDataSize = 272,
+                dwFlags = 1,
+                dwNumObjs = Count,
+                dwObjSize = 24,
+                dwSize = 32,
+                rgodf = IntPtrConverter.Convert(GetDataFormatArray())
+            };
         }
 
-        public static unsafe DIOBJECTDATAFORMAT[] GetDataFormatArray()
+        private static unsafe DIOBJECTDATAFORMAT[] GetDataFormatArray()
         {
             DIOBJECTDATAFORMAT X(uint dwOfs, uint unknown)
                 => new DIOBJECTDATAFORMAT { dwFlags = 0, dwOfs = dwOfs, dwType = 0, unknown = unknown, pguid = IntPtr.Zero };
 
-            DIOBJECTDATAFORMAT Y(uint dwOfs, uint dwType, uint unknown, _GUID guid) 
+            DIOBJECTDATAFORMAT Y(uint dwOfs, uint dwType, uint unknown, _GUID guid)
                 => new DIOBJECTDATAFORMAT { dwFlags = 0, dwOfs = dwOfs, dwType = dwType, unknown = unknown, pguid = (IntPtr)(&guid) };
 
             DIOBJECTDATAFORMAT Z(uint dwOfs, uint dwType, uint unknown, string guid)

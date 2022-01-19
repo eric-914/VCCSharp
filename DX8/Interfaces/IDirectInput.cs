@@ -11,7 +11,7 @@ using LPVOID = System.IntPtr;
 
 namespace DX8.Interfaces
 {
-    public unsafe delegate int DIEnumDevicesCallback(DIDEVICEINSTANCE* lpddi, void* pvRef);
+    public delegate int DIEnumDevicesCallback(ref DIDEVICEINSTANCE lpddi, IntPtr pvRef);
 
     [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid(DxGuid.DirectInput)]
     public interface IDirectInput

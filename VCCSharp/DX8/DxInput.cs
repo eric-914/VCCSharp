@@ -59,17 +59,24 @@ namespace VCCSharp.DX8
             return joystick;
         }
 
-        public unsafe List<string> EnumerateDevices()
+        public List<string> EnumerateDevices()
         {
             var names = new List<string>();
 
-            int Callback(DIDEVICEINSTANCE* p, void* v)
+            int Callback(ref DIDEVICEINSTANCE p, IntPtr v)
             {
-                IDirectInputDevice joystick = CreateDevice(p->guidInstance);
-                string name = Converter.ToString(p->tszInstanceName);
+                IDirectInputDevice joystick = CreateDevice(p.guidInstance);
+
+                unsafe
+                {
+                    fixed (byte* b = p.tszInstanceName)
+                    {
+                        string name = Converter.ToString(b);
+                        names.Add(name);
+                    }
+                }
 
                 _devices.Add(joystick);
-                names.Add(name);
 
                 SetJoystickProperties(joystick);
 
@@ -153,7 +160,6 @@ namespace VCCSharp.DX8
                     Y = state.lY >> 10,
                     Button1 = state.rgbButtons[0] >> 7,
                     Button2 = state.rgbButtons[1] >> 7,
-
                 };
             }
         }
