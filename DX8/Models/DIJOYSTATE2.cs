@@ -1,188 +1,192 @@
-﻿using System.Runtime.InteropServices;
+﻿// ReSharper disable InconsistentNaming
+// ReSharper disable IdentifierTypo
+using System.Runtime.InteropServices;
 
 namespace DX8.Models
 {
+    /// <summary>
+    /// Describes the state of a joystick device with extended capabilities. This structure is used with the GetDeviceState method.
+    /// </summary>
+    /// <see href="https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ee416628(v=vs.85)"/>
     [StructLayout(LayoutKind.Explicit, Size = 264, CharSet = CharSet.Ansi)]
-    // ReSharper disable once InconsistentNaming
-    // ReSharper disable once IdentifierTypo
     public struct DIJOYSTATE2
     {
         /// <summary>
-        /// x-axis position
+        /// X-axis, usually the left-right movement of a stick.
         /// </summary>
         [FieldOffset(0)]
-        public int lX;
+        public int lX;  // x-axis position
 
         /// <summary>
-        /// y-axis position
+        /// Y-axis, usually the forward-backward movement of a stick.
         /// </summary>
         [FieldOffset(4)]
-        public int lY;
+        public int lY;  // y-axis position
 
         /// <summary>
-        /// z-axis position
+        /// Z-axis, often the throttle control. If the joystick does not have this axis, the value is 0.
         /// </summary>
         [FieldOffset(8)]
-        public int lZ;
+        public int lZ;  // z-axis position
 
         /// <summary>
-        /// x-axis rotation 
+        /// X-axis rotation. If the joystick does not have this axis, the value is 0.
         /// </summary>
         [FieldOffset(12)]
-        public int lRx;
+        public int lRx; // x-axis rotation 
 
         /// <summary>
-        /// y-axis rotation 
+        /// Y-axis rotation. If the joystick does not have this axis, the value is 0.
         /// </summary>
         [FieldOffset(16)]
-        public int lRy;
+        public int lRy; // y-axis rotation 
 
         /// <summary>
-        /// z-axis rotation 
+        /// Z-axis rotation (often called the rudder). If the joystick does not have this axis, the value is 0.
         /// </summary>
         [FieldOffset(20)]
-        public int lRz;
+        public int lRz; // z-axis rotation 
 
         /// <summary>
-        /// extra axes positions 
+        /// Two additional axis values (formerly called the u-axis and v-axis) whose semantics depend on the joystick. Use the GetObjectInfo method to obtain semantic information about these values.
         /// </summary>
         [FieldOffset(24)]
-        public unsafe fixed int rglSlider[2];
+        public unsafe fixed int rglSlider[2];   // extra axes positions 
 
         /// <summary>
-        /// POV directions 
+        /// Direction controllers, such as point-of-view hats. The position is indicated in hundredths of a degree clockwise from north (away from the user). The center position is normally reported as - 1; but see Remarks. For indicators that have only five positions, the value for a controller is - 1, 0, 9,000, 18,000, or 27,000.
         /// </summary>
         [FieldOffset(32)]
-        public unsafe fixed uint rgdwPOV[4];
+        public unsafe fixed uint rgdwPOV[4];    // POV directions 
 
         /// <summary>
-        /// 128 buttons 
+        /// Array of buttons. The high-order bit of the byte is set if the corresponding button is down, and clear if the button is up or does not exist.
         /// </summary>
         [FieldOffset(40)]
-        public unsafe fixed byte rgbButtons[128];
+        public unsafe fixed byte rgbButtons[128];   // 128 buttons 
 
         /// <summary>
-        /// x-axis velocity 
+        /// X-axis velocity.
         /// </summary>
         [FieldOffset(168)]
         public int lVX;
 
         /// <summary>
-        /// y-axis velocity 
+        /// Y-axis velocity.
         /// </summary>
         [FieldOffset(172)]
         public int lVY;
 
         /// <summary>
-        /// z-axis velocity 
+        /// Z-axis velocity.
         /// </summary>
         [FieldOffset(176)]
         public int lVZ;
 
         /// <summary>
-        /// x-axis angular velocity 
+        /// X-axis angular velocity.
         /// </summary>
         [FieldOffset(180)]
         public int lVRx;
 
         /// <summary>
-        /// y-axis angular velocity 
+        /// Y-axis angular velocity.
         /// </summary>
         [FieldOffset(184)]
         public int lVRy;
 
         /// <summary>
-        /// z-axis angular velocity 
+        /// Z-axis angular velocity.
         /// </summary>
         [FieldOffset(188)]
         public int lVRz;
 
         /// <summary>
-        /// extra axes velocities 
+        /// Extra axis velocities.
         /// </summary>
         [FieldOffset(192)]
         public unsafe fixed int rglVSlider[2];
 
         /// <summary>
-        /// x-axis acceleration 
+        /// X-axis acceleration.
         /// </summary>
         [FieldOffset(200)]
         public int lAX;
 
         /// <summary>
-        /// y-axis acceleration 
+        /// Y-axis acceleration.
         /// </summary>
         [FieldOffset(204)]
         public int lAY;
 
         /// <summary>
-        /// z-axis acceleration 
+        /// Z-axis acceleration.
         /// </summary>
         [FieldOffset(208)]
         public int lAZ;
 
         /// <summary>
-        /// x-axis angular acceleration 
+        /// X-axis angular acceleration.
         /// </summary>
         [FieldOffset(212)]
         public int lARx;
 
         /// <summary>
-        /// y-axis angular acceleration 
+        /// Y-axis angular acceleration.
         /// </summary>
         [FieldOffset(216)]
         public int lARy;
 
         /// <summary>
-        /// z-axis angular acceleration 
+        /// Z-axis angular acceleration.
         /// </summary>
         [FieldOffset(220)]
         public int lARz;
 
         /// <summary>
-        /// extra axes accelerations 
+        /// Extra axis accelerations.
         /// </summary>
         [FieldOffset(224)]
         public unsafe fixed int rglASlider[2];
 
         /// <summary>
-        /// x-axis force 
+        /// X-axis force.
         /// </summary>
         [FieldOffset(232)]
         public int lFX;
 
         /// <summary>
-        /// y-axis force 
+        /// Y-axis force.
         /// </summary>
         [FieldOffset(236)]
         public int lFY;
 
         /// <summary>
-        /// z-axis force 
+        /// Z-axis force.
         /// </summary>
         [FieldOffset(240)]
         public int lFZ;
 
         /// <summary>
-        /// x-axis torque 
+        /// X-axis torque.
         /// </summary>
         [FieldOffset(244)]
         public int lFRx;
 
         /// <summary>
-        /// y-axis torque 
+        /// Y-axis torque.
         /// </summary>
         [FieldOffset(248)]
         public int lFRy;
 
         /// <summary>
-        /// z-axis torque 
+        /// Z-axis torque.
         /// </summary>
         [FieldOffset(252)]
         public int lFRz;
 
         /// <summary>
-        /// extra axes forces 
+        /// Extra axis forces.
         /// </summary>
         [FieldOffset(256)]
         public unsafe fixed int rglFSlider[2];
