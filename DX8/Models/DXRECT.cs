@@ -1,6 +1,11 @@
-﻿namespace DX8.Models
+﻿// ReSharper disable InconsistentNaming
+// ReSharper disable IdentifierTypo
+
+namespace DX8.Models
 {
-    // ReSharper disable InconsistentNaming
+    /// <summary>
+    /// Same as RECT, but kept separate as to not create a dependency
+    /// </summary>
     public struct DXRECT
     {
         public int left;
@@ -8,5 +13,4 @@
         public int right;
         public int bottom;
     }
-    // ReSharper restore InconsistentNaming
 }

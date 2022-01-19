@@ -186,5 +186,7 @@ namespace DX8.Models
         /// </summary>
         [FieldOffset(256)]
         public unsafe fixed int rglFSlider[2];
+
+        public static unsafe int Size => sizeof(DIJOYSTATE2);
     }
 }

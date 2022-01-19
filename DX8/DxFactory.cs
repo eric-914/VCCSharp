@@ -10,9 +10,9 @@ namespace DX8
     public interface IDxFactory
     {
         IDirectDraw CreateDirectDraw(IDDraw d);
-        unsafe IDirectDrawSurface CreateSurface(IDirectDraw d, DDSURFACEDESC* pSurfaceDescription);
+        IDirectDrawSurface CreateSurface(IDirectDraw d, ref DDSURFACEDESC pSurfaceDescription);
         IDirectDrawClipper CreateClipper(IDirectDraw d);
-        unsafe IDirectSound CreateDirectSound(IDSound d, _GUID* guid);
+        IDirectSound CreateDirectSound(IDSound d, _GUID guid);
         unsafe IDirectSoundBuffer CreateSoundBuffer(IDirectSound d, DSBUFFERDESC* pBufferDescription);
         IDirectInput CreateDirectInput(IDInput d, IntPtr handle, uint version, _GUID guid);
     }
@@ -41,7 +41,7 @@ namespace DX8
             return Create<IDirectSoundBuffer>((ref IntPtr p) => d.CreateSoundBuffer(pBufferDescription, ref p, Zero));
         }
 
-        public unsafe IDirectSound CreateDirectSound(IDSound d, _GUID* guid)
+        public IDirectSound CreateDirectSound(IDSound d, _GUID guid)
         {
             return Create<IDirectSound>((ref IntPtr p) => d.DirectSoundCreate(guid, ref p, Zero));
         }
@@ -51,9 +51,13 @@ namespace DX8
             return Create<IDirectDrawClipper>((ref IntPtr p) => d.CreateClipper(0, ref p, Zero));
         }
 
-        public unsafe IDirectDrawSurface CreateSurface(IDirectDraw d, DDSURFACEDESC* pSurfaceDescription)
+        public IDirectDrawSurface CreateSurface(IDirectDraw d, ref DDSURFACEDESC pSurfaceDescription)
         {
-            return Create<IDirectDrawSurface>((ref IntPtr p) => d.CreateSurface(pSurfaceDescription, ref p, Zero));
+            IntPtr p = Zero;
+
+            long hr = d.CreateSurface(ref pSurfaceDescription, ref p, Zero);
+
+            return hr != DxDefine.S_OK ? null : (IDirectDrawSurface)Marshal.GetObjectForIUnknown(p);
         }
 
         public IDirectInput CreateDirectInput(IDInput d, IntPtr handle, uint version, _GUID guid)

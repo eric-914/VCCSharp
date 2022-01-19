@@ -6,8 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using VCCSharp.Models;
-using static System.IntPtr;
 using HWND = System.IntPtr;
+using static System.IntPtr;
 
 namespace VCCSharp.DX8
 {
@@ -23,7 +23,7 @@ namespace VCCSharp.DX8
         void Stop();
         void Play();
         void Reset();
-        ulong ReadPlayCursor();
+        uint ReadPlayCursor();
 
         void ClearBuffer(uint length);
         void CopyBuffer(uint[] buffer);
@@ -43,8 +43,8 @@ namespace VCCSharp.DX8
         private IDirectSound _ds;
         private IDirectSoundBuffer _buffer;
 
-        public IntPtr SndPointer1;
-        public IntPtr SndPointer2;
+        public IntPtr SndPointer1 = Zero;
+        public IntPtr SndPointer2 = Zero;
 
         private uint _sndLength1;
         private uint _sndLength2;
@@ -62,12 +62,7 @@ namespace VCCSharp.DX8
 
         public bool CreateDirectSound(int index)
         {
-            _GUID guid = _guids[index];
-
-            unsafe
-            {
-                _ds = _factory.CreateDirectSound(_sound, &guid);
-            }
+            _ds = _factory.CreateDirectSound(_sound, _guids[index]);
 
             return _ds != null;
         }
@@ -107,7 +102,7 @@ namespace VCCSharp.DX8
 
             return new DSBUFFERDESC
             {
-                dwSize = (uint)sizeof(DSBUFFERDESC),
+                dwSize = (uint)DSBUFFERDESC.Size,
                 dwFlags = (uint)flags,
                 dwBufferBytes = length,
                 lpwfxFormat = (IntPtr)waveFormat
@@ -143,9 +138,9 @@ namespace VCCSharp.DX8
         public void Play() => _buffer.Play(0, 0, Define.DSBPLAY_LOOPING);
         public void Reset() => _buffer.SetCurrentPosition(0);
 
-        public ulong ReadPlayCursor()
+        public uint ReadPlayCursor()
         {
-            ulong playCursor = 0, writeCursor = 0;
+            uint playCursor = 0, writeCursor = 0;
 
             unsafe
             {
@@ -157,38 +152,23 @@ namespace VCCSharp.DX8
 
         public unsafe bool Lock(uint offset, ushort length)
         {
-            long LockBuffer(IntPtr* sp1, uint* sl1, IntPtr* sp2, uint* sl2) 
-                => _buffer.Lock(offset, length, sp1, sl1, sp2, sl2, 0);
+            long LockBuffer(IntPtr* sp1, IntPtr* sp2) 
+                => _buffer.Lock(offset, length, sp1, ref _sndLength1, sp2, ref _sndLength2, 0);
 
-            fixed (uint* sl1 = &_sndLength1)
-            {
-                fixed (uint* sl2 = &_sndLength2)
-                {
-                    IntPtr s1 = SndPointer1;
-                    IntPtr s2 = SndPointer2;
+            IntPtr s1 = SndPointer1;
+            IntPtr s2 = SndPointer2;
 
-                    var result = LockBuffer(&s1, sl1, &s2, sl2);
+            var result = LockBuffer(&s1, &s2);
 
-                    SndPointer1 = s1;
-                    SndPointer2 = s2;
+            SndPointer1 = s1;
+            SndPointer2 = s2;
 
-                    return result == Define.S_OK;
-                }
-            }
+            return result == Define.S_OK;
         }
 
-        public unsafe bool Unlock()
+        public bool Unlock()
         {
-            long UnlockBuffer(IntPtr* sp1, IntPtr* sp2) 
-                => _buffer.Unlock(*sp1, _sndLength1, *sp2, _sndLength2);
-
-            fixed (IntPtr* sp1 = &SndPointer1)
-            {
-                fixed (IntPtr* sp2 = &SndPointer2)
-                {
-                    return UnlockBuffer(sp1, sp2) == Define.S_OK;
-                }
-            }
+            return _buffer.Unlock(SndPointer1, _sndLength1, SndPointer2, _sndLength2) == Define.S_OK;
         }
 
         public unsafe bool CreateDirectSoundBuffer(ushort bitRate, uint length)
@@ -235,7 +215,7 @@ namespace VCCSharp.DX8
             fixed (uint* p = buffer)
             {
                 byteBuffer = (byte*)p;
-            };
+            }
 
             Copy(SndPointer1, byteBuffer, _sndLength1);
 

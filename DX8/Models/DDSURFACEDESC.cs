@@ -68,6 +68,8 @@ namespace DX8.Models
 
         [FieldOffset(112)]
         public DDSCAPS ddsCaps;
+
+        public static unsafe int Size => sizeof(DDSURFACEDESC);
     }
 
     [StructLayout(LayoutKind.Explicit, Size = 8, CharSet = CharSet.Ansi)]

@@ -96,8 +96,8 @@ namespace VCCSharp.DX8
 
                 var propertyHeader = new DIPROPHEADER
                 {
-                    dwSize = (uint)sizeof(DIPROPRANGE),
-                    dwHeaderSize = (uint)sizeof(DIPROPHEADER),
+                    dwSize = (uint)DIPROPRANGE.Size,
+                    dwHeaderSize = (uint)DIPROPHEADER.Size,
                     dwHow = Define.DIPH_BYID,
                     dwObj = p->dwType
                 };
@@ -157,7 +157,7 @@ namespace VCCSharp.DX8
             }
         }
 
-        private static unsafe long JoystickPoll(DIJOYSTATE2 state, IDirectInputDevice stick)
+        private static long JoystickPoll(DIJOYSTATE2 state, IDirectInputDevice stick)
         {
             if (stick == null)
             {
@@ -185,7 +185,10 @@ namespace VCCSharp.DX8
                 }
             }
 
-            hr = stick.GetDeviceState((uint)sizeof(DIJOYSTATE2), &state);
+            unsafe
+            {
+                hr = stick.GetDeviceState((uint)DIJOYSTATE2.Size, &state);
+            }
 
             return hr < 0 ? hr : Define.S_OK;
         }

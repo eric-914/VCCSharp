@@ -88,14 +88,7 @@ namespace VCCSharp.DX8
         public bool CreatePrimarySurface()
         {
             _primarySurface = CreatePrimarySurfaceDescription();
-
-            unsafe
-            {
-                fixed (DDSURFACEDESC* p = &_primarySurface)
-                {
-                    _surface = _factory.CreateSurface(_dd, p);
-                }
-            }
+            _surface = _factory.CreateSurface(_dd, ref _primarySurface);
 
             return _surface != null;
         }
@@ -103,14 +96,7 @@ namespace VCCSharp.DX8
         public bool CreateBackSurface()
         {
             _backSurface = CreateBackSurfaceDescription(_windowSize);
-
-            unsafe
-            {
-                fixed (DDSURFACEDESC* p = &_backSurface)
-                {
-                    _back = _factory.CreateSurface(_dd, p);
-                }
-            }
+            _back = _factory.CreateSurface(_dd, ref _backSurface);
 
             return _back != null;
         }
@@ -154,13 +140,10 @@ namespace VCCSharp.DX8
 
         public void SurfaceBlt(int dl, int dt, int dr, int db, int sl, int st, int sr, int sb)
         {
-            DXRECT rcDest = new DXRECT { left = dl, top = dt, right = dr, bottom = db};
-            DXRECT rcSrc = new DXRECT { left = sl, top = st, right = sr, bottom = sb};
+            var rcDest = new DXRECT { left = dl, top = dt, right = dr, bottom = db };
+            var rcSrc = new DXRECT { left = sl, top = st, right = sr, bottom = sb };
 
-            unsafe
-            {
-                _surface.Blt(&rcDest, _back, &rcSrc, Define.DDBLT_WAIT, Zero);
-            }
+            _surface.Blt(ref rcDest, _back, ref rcSrc, Define.DDBLT_WAIT, Zero);
         }
 
         public bool HasBackSurface()
@@ -172,10 +155,7 @@ namespace VCCSharp.DX8
         {
             IntPtr p = Zero;
 
-            unsafe
-            {
-                _back.GetDC(&p);
-            }
+            _back.GetDC(ref p);
 
             return p;
         }
@@ -196,18 +176,12 @@ namespace VCCSharp.DX8
 
             _lockSurface = CreateSurfaceDescription();
 
-            unsafe
-            {
-                fixed (DDSURFACEDESC* p = &_lockSurface)
-                {
-                    var result = _back.Lock(Zero, p, (uint)flags, Zero) == Define.S_OK;
+            var result = _back.Lock(Zero, ref _lockSurface, (uint)flags, Zero) == Define.S_OK;
 
-                    SurfacePitch = _lockSurface.lPitch >> 2;
-                    Surface = _lockSurface.lpSurface;
+            SurfacePitch = _lockSurface.lPitch >> 2;
+            Surface = _lockSurface.lpSurface;
 
-                    return result;
-                }
-            }
+            return result;
         }
 
         public bool UnlockSurface()
@@ -225,18 +199,11 @@ namespace VCCSharp.DX8
             return _clipper.SetHWnd(0, hWnd) == Define.S_OK;
         }
 
-        public bool SetWindowSize(Point windowSize)
-        {
-            _windowSize = windowSize;
-
-            return true;
-        }
-
         private static DDSURFACEDESC CreateSurfaceDescription()
         {
             return new DDSURFACEDESC
             {
-                dwSize = (uint)SizeOfSurfaceDescription()
+                dwSize = (uint)DDSURFACEDESC.Size
             };
         }
 
@@ -244,7 +211,7 @@ namespace VCCSharp.DX8
         {
             return new DDSURFACEDESC
             {
-                dwSize = (uint)SizeOfSurfaceDescription(),
+                dwSize = (uint)DDSURFACEDESC.Size,
                 dwFlags = Define.DDSD_CAPS,
                 ddsCaps = new DDSCAPS
                 {
@@ -257,7 +224,7 @@ namespace VCCSharp.DX8
         {
             return new DDSURFACEDESC
             {
-                dwSize = (uint)SizeOfSurfaceDescription(),
+                dwSize = (uint)DDSURFACEDESC.Size,
                 dwFlags = Define.DDSD_WIDTH | Define.DDSD_HEIGHT | Define.DDSD_CAPS,
                 dwWidth = (uint)windowSize.X,
                 dwHeight = (uint)windowSize.Y,
@@ -267,7 +234,5 @@ namespace VCCSharp.DX8
                 }
             };
         }
-
-        private static unsafe int SizeOfSurfaceDescription() => sizeof(DDSURFACEDESC);
     }
 }

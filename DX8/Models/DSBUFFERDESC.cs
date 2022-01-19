@@ -22,5 +22,7 @@ namespace DX8.Models
 
         [FieldOffset(16)]
         public IntPtr lpwfxFormat; //--WAVEFORMATEX*
+
+        public static unsafe int Size => sizeof(DSBUFFERDESC);
     }
 }
