@@ -46,7 +46,7 @@ namespace DX8.Models
         /// Name of the object; for example, "X-Axis" or "Right Shift."
         /// </summary>
         [FieldOffset(32)]
-        public unsafe fixed byte tszName[260];
+        public BYTE260 tszName;
         
         /// <summary>
         /// The magnitude of the maximum force that can be created by the actuator associated with this object. Force is expressed in newtons and measured in relation to where the hand would be during normal operation of the device.

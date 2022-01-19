@@ -36,6 +36,6 @@ namespace DX8.Models
         [FieldOffset(12)]
         public uint dwHow;
 
-        public static unsafe int Size => sizeof(DIPROPHEADER);
+        public static int Size => MEMBLOCK.DIPROPHEADER;
     }
 }

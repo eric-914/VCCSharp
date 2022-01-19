@@ -49,6 +49,6 @@ namespace DX8.Models
         [FieldOffset(24)]
         public _GUID guid3DAlgorithm;
 
-        public static unsafe int Size => sizeof(DSBUFFERDESC);
+        public static int Size => MEMBLOCK.DSBUFFERDESC;
     }
 }

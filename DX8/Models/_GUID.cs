@@ -32,7 +32,7 @@ namespace DX8.Models
         /// <summary>
         /// An array of unsigned characters.
         /// </summary>
-        public unsafe fixed byte Data4[8];
+        public BYTE8 Data4;
 
         /// <summary>
         /// For debugging purposes

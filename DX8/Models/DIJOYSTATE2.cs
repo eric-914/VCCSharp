@@ -51,19 +51,19 @@ namespace DX8.Models
         /// Two additional axis values (formerly called the u-axis and v-axis) whose semantics depend on the joystick. Use the GetObjectInfo method to obtain semantic information about these values.
         /// </summary>
         [FieldOffset(24)]
-        public unsafe fixed int rglSlider[2];   // extra axes positions 
+        public INT2 rglSlider;   // extra axes positions 
 
         /// <summary>
         /// Direction controllers, such as point-of-view hats. The position is indicated in hundredths of a degree clockwise from north (away from the user). The center position is normally reported as - 1; but see Remarks. For indicators that have only five positions, the value for a controller is - 1, 0, 9,000, 18,000, or 27,000.
         /// </summary>
         [FieldOffset(32)]
-        public unsafe fixed uint rgdwPOV[4];    // POV directions 
+        public UINT4 rgdwPOV;    // POV directions 
 
         /// <summary>
         /// Array of buttons. The high-order bit of the byte is set if the corresponding button is down, and clear if the button is up or does not exist.
         /// </summary>
         [FieldOffset(40)]
-        public unsafe fixed byte rgbButtons[128];   // 128 buttons 
+        public BYTE128 rgbButtons;   // 128 buttons 
 
         /// <summary>
         /// X-axis velocity.
@@ -105,7 +105,7 @@ namespace DX8.Models
         /// Extra axis velocities.
         /// </summary>
         [FieldOffset(192)]
-        public unsafe fixed int rglVSlider[2];
+        public INT2 rglVSlider;
 
         /// <summary>
         /// X-axis acceleration.
@@ -147,7 +147,7 @@ namespace DX8.Models
         /// Extra axis accelerations.
         /// </summary>
         [FieldOffset(224)]
-        public unsafe fixed int rglASlider[2];
+        public INT2 rglASlider;
 
         /// <summary>
         /// X-axis force.
@@ -189,8 +189,8 @@ namespace DX8.Models
         /// Extra axis forces.
         /// </summary>
         [FieldOffset(256)]
-        public unsafe fixed int rglFSlider[2];
+        public INT2 rglFSlider;
 
-        public static unsafe int Size => sizeof(DIJOYSTATE2);
+        public static int Size => MEMBLOCK.DIJOYSTATE2;
     }
 }

@@ -136,7 +136,7 @@ namespace DX8.Models
         [FieldOffset(112)]
         public DDSCAPS ddsCaps;
 
-        public static unsafe int Size => sizeof(DDSURFACEDESC);
+        public static int Size => MEMBLOCK.DDSURFACEDESC;
     }
 
     /// <summary>

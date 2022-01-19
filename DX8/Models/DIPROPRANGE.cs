@@ -30,6 +30,6 @@ namespace DX8.Models
         [FieldOffset(20)]
         public int lMax;
 
-        public static unsafe int Size => sizeof(DIPROPRANGE);
+        public static int Size => MEMBLOCK.DIPROPRANGE;
     }
 }
