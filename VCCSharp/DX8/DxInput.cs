@@ -67,13 +67,7 @@ namespace VCCSharp.DX8
             {
                 IDirectInputDevice joystick = CreateDevice(p.guidInstance);
 
-                unsafe
-                {
-                    fixed (byte* b = &p.tszInstanceName)
-                    {
-                        names.Add(Converter.ToString(b));
-                    }
-                }
+                names.Add(Converter.ToString(p.tszInstanceName));
 
                 _devices.Add(joystick);
 

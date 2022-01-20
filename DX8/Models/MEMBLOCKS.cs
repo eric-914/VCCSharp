@@ -20,13 +20,6 @@ namespace DX8.Models
         public static unsafe int DSBUFFERDESC => sizeof(DSBUFFERDESC);
     }
 
-    [StructLayout(LayoutKind.Explicit, Size = 260, CharSet = CharSet.Ansi)]
-    public struct BYTE260
-    {
-        [FieldOffset(0)] [MarshalAs(UnmanagedType.I1, SizeConst = 260)]
-        public byte B;
-    }
-
     [StructLayout(LayoutKind.Explicit, Size = 8, CharSet = CharSet.Ansi)]
     public struct BYTE8
     {
@@ -56,13 +49,7 @@ namespace DX8.Models
     [StructLayout(LayoutKind.Explicit, Size = 16, CharSet = CharSet.Ansi)]
     public struct UINT4
     {
-        public unsafe uint this[int index]
-        {
-            get => UI[index];
-            set => UI[index] = value;
-        }
-
-        [FieldOffset(0)]
+        [FieldOffset(0)] /*[MarshalAs(UnmanagedType.LPArray, SizeConst=4)]*/
         public unsafe fixed uint UI[4];
     }
 }

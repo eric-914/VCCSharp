@@ -29,7 +29,7 @@ namespace DX8.Models
         /// </summary>
         [FieldOffset(20)]
         public _GUID guidProduct;
-        
+
         /// <summary>
         /// Device type specifier. The least-significant byte of the device type description code specifies the device type. The next-significant byte specifies the device subtype. This value can also be combined with DIDEVTYPE_HID, which specifies a Human Interface Device (human interface device).
         /// </summary>
@@ -40,15 +40,16 @@ namespace DX8.Models
         /// Friendly name for the instance. For example, "Joystick 1."
         /// </summary>
         [FieldOffset(40)]
-        [MarshalAs(UnmanagedType.I1, SizeConst = 260)]
-        public byte tszInstanceName;
+        [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.I1, SizeConst = 260)]
+        public byte[] tszInstanceName;
 
-        /// <summary>
-        /// Friendly name for the product.
-        /// </summary>
-        [FieldOffset(300)]
-        [MarshalAs(UnmanagedType.I1, SizeConst = 260)]
-        public byte tszProductName;
+        //TODO: Any attempt to make this an array fails.  But I'm not using it, so is it worth pursuing?
+        ///// <summary>
+        ///// Friendly name for the product.
+        ///// </summary>
+        //[FieldOffset(300)]
+        //[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.I1, SizeConst = 260)]
+        //public byte[] tszProductName;
 
         /// <summary>
         /// Unique identifier for the driver being used for force feedback. The driver's manufacturer establishes this identifier.
