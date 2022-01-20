@@ -10,7 +10,7 @@ namespace DX8.Models
     /// The DSBUFFERDESC structure describes the characteristics of a new buffer object.
     /// </summary>
     /// <see href="https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ee416820(v=vs.85)"/>
-    [StructLayout(LayoutKind.Explicit, Size = 40, CharSet = CharSet.Ansi)]
+    [StructLayout(LayoutKind.Explicit, Size = MEMBLOCK.DSBUFFERDESC, CharSet = CharSet.Ansi)]
     public struct DSBUFFERDESC
     {
         /// <summary>

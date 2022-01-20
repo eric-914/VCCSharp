@@ -13,11 +13,11 @@ namespace DX8.Models
     // ReSharper disable once UnusedMember.Global
     public static class MEMBLOCK
     {
-        public static unsafe int DDSURFACEDESC => sizeof(DDSURFACEDESC);
-        public static unsafe int DIJOYSTATE2 => sizeof(DIJOYSTATE2);
-        public static unsafe int DIPROPHEADER => sizeof(DIPROPHEADER);
-        public static unsafe int DIPROPRANGE => sizeof(DIPROPRANGE);
-        public static unsafe int DSBUFFERDESC => sizeof(DSBUFFERDESC);
+        public const int DDSURFACEDESC = 120; //sizeof(DDSURFACEDESC);
+        public const int DIJOYSTATE2 = 264; //sizeof(DIJOYSTATE2);
+        public const int DIPROPHEADER = 16; //sizeof(DIPROPHEADER);
+        public const int DIPROPRANGE = 24; //sizeof(DIPROPRANGE);
+        public const int DSBUFFERDESC = 40; //sizeof(DSBUFFERDESC);
     }
 
     [StructLayout(LayoutKind.Explicit, Size = 8, CharSet = CharSet.Ansi)]

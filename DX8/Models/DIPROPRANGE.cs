@@ -9,7 +9,7 @@ namespace DX8.Models
     /// Contains information about the range of an object within a device.
     /// </summary>
     /// <see href="https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ee416640(v=vs.85)"/>
-    [StructLayout(LayoutKind.Explicit, Size = 24, CharSet = CharSet.Ansi)]
+    [StructLayout(LayoutKind.Explicit, Size = MEMBLOCK.DIPROPRANGE, CharSet = CharSet.Ansi)]
     public struct DIPROPRANGE
     {
         /// <summary>

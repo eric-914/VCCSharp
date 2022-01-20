@@ -10,7 +10,7 @@ namespace DX8.Models
     /// The DDSURFACEDESC structure contains a description of a surface to be created by the driver.
     /// </summary>
     /// <see href="https://docs.microsoft.com/en-us/previous-versions/windows/hardware/drivers/ff550339(v=vs.85)"/>
-    [StructLayout(LayoutKind.Explicit, Size = 120, CharSet = CharSet.Ansi)]
+    [StructLayout(LayoutKind.Explicit, Size = MEMBLOCK.DDSURFACEDESC, CharSet = CharSet.Ansi)]
     public struct DDSURFACEDESC
     {
         /// <summary>

@@ -8,7 +8,7 @@ namespace DX8.Models
     /// Describes the state of a joystick device with extended capabilities. This structure is used with the GetDeviceState method.
     /// </summary>
     /// <see href="https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ee416628(v=vs.85)"/>
-    [StructLayout(LayoutKind.Explicit, Size = 264, CharSet = CharSet.Ansi)]
+    [StructLayout(LayoutKind.Explicit, Size = MEMBLOCK.DIJOYSTATE2, CharSet = CharSet.Ansi)]
     public struct DIJOYSTATE2
     {
         /// <summary>

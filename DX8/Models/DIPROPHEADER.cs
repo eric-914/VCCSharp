@@ -9,7 +9,7 @@ namespace DX8.Models
     /// Serves as a header for all property structures.
     /// </summary>
     /// <see href="https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ee416638(v=vs.85)"/>
-    [StructLayout(LayoutKind.Explicit, Size = 16, CharSet = CharSet.Ansi)]
+    [StructLayout(LayoutKind.Explicit, Size = MEMBLOCK.DIPROPHEADER, CharSet = CharSet.Ansi)]
     public struct DIPROPHEADER
     {
         /// <summary>
