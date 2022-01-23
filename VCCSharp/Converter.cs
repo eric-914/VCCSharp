@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using VCCSharp.Models;
 
@@ -24,9 +25,13 @@ namespace VCCSharp
             return Encoding.ASCII.GetString(buffer, 0, buffer.Length).Split('\0').First();
         }
 
-        public static unsafe string ToString(IntPtr source, int max = Define.MAX_LOADSTRING)
+        public static string ToString(IntPtr source, int max = Define.MAX_LOADSTRING)
         {
-            return ToString((byte*)source, max);
+            var buffer = new byte[max];
+
+            Marshal.Copy(source, buffer, 0, max);
+
+            return ToString(buffer);
         }
 
         public static byte[] ToByteArray(string text)

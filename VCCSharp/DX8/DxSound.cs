@@ -117,7 +117,7 @@ namespace VCCSharp.DX8
             int Callback(IntPtr pGuid, IntPtr description, IntPtr module, IntPtr context)
             {
                 _GUID guid = GuidConverter.ToGuid(pGuid);
-                string text = Converter.ToString(description);
+                string text = StringConverter.ToString(description);
 
                 _guids.Add(guid);
                 names.Add(text);

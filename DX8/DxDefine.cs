@@ -6,6 +6,8 @@
     {
         public const long S_OK = 0;
 
+        public const int MAX_LOADSTRING = 100;
+
         public const uint DDFLIP_NOVSYNC = 0x00000008;
         public const uint DDFLIP_DONOTWAIT = 0x00000020;
 
