@@ -15,7 +15,7 @@ namespace VCCSharp.Modules
         HANDLE TapeHandle { get; set; }
 
         unsafe uint FlushCassetteBuffer(byte* buffer, uint length);
-        unsafe void LoadCassetteBuffer(byte* buffer);
+        void LoadCassetteBuffer(byte[] buffer);
         void Motor(byte state);
 
         //void SetTapeCounter(uint count);
@@ -76,7 +76,7 @@ namespace VCCSharp.Modules
             UpdateTapeDialog = offset => { }; //_modules.Config.UpdateTapeDialog((uint) offset);
         }
 
-        public unsafe void LoadCassetteBuffer(byte* buffer)
+        public void LoadCassetteBuffer(byte[] buffer)
         {
             uint bytesMoved = 0;
 
@@ -88,23 +88,23 @@ namespace VCCSharp.Modules
             switch ((TapeFileType)(FileType))
             {
                 case TapeFileType.WAV:
-                    LoadCassetteBufferWav(buffer, &bytesMoved);
+                    LoadCassetteBufferWav(buffer, ref bytesMoved);
                     break;
 
                 case TapeFileType.CAS:
-                    LoadCassetteBufferCas(buffer, &bytesMoved);
+                    LoadCassetteBufferCas(buffer, ref bytesMoved);
                     break;
             }
 
             UpdateTapeDialog((int)TapeOffset);
         }
 
-        public unsafe void LoadCassetteBufferCas(byte* buffer, uint* bytesMoved)
+        public void LoadCassetteBufferCas(byte[] buffer, ref uint bytesMoved)
         {
-            CasToWav(buffer, Define.TAPEAUDIORATE / 60, bytesMoved);
+            CasToWav(buffer, Define.TAPEAUDIORATE / 60, ref bytesMoved);
         }
 
-        public unsafe void CasToWav(byte* buffer, ushort bytesToConvert, uint* bytesConverted)
+        public void CasToWav(byte[] buffer, ushort bytesToConvert, ref uint bytesConverted)
         {
             if (_quiet > 0)
             {
@@ -197,12 +197,12 @@ namespace VCCSharp.Modules
         }
 
         //--TODO: Seems this doesn't work
-        public unsafe void LoadCassetteBufferWav(byte* buffer, uint* bytesMoved)
+        private void LoadCassetteBufferWav(byte[] buffer, ref uint bytesMoved)
         {
             _kernel.SetFilePointer(TapeHandle, Define.FILE_BEGIN, TapeOffset + 44);
-            _kernel.ReadFile(TapeHandle, buffer, Define.TAPEAUDIORATE / 60, bytesMoved, null);
+            _kernel.ReadFile(TapeHandle, buffer, Define.TAPEAUDIORATE / 60, ref bytesMoved, IntPtr.Zero);
 
-            TapeOffset += *bytesMoved;
+            TapeOffset += bytesMoved;
 
             if (TapeOffset > _totalSize)
             {
@@ -479,8 +479,8 @@ namespace VCCSharp.Modules
             ushort channels = 1;		//mono/stereo
             uint bitRate = Define.TAPEAUDIORATE;		//sample rate
             ushort bitsPerSample = 8;	//Bits/sample
-            uint bytesPerSec = (uint)(bitRate * channels * (bitsPerSample / 8));		//bytes/sec
-            ushort blockAlign = (ushort)((bitsPerSample * channels) / 8);		//Block alignment
+            uint bytesPerSec = (uint)(bitRate * channels * (bitsPerSample / 8));	//bytes/sec
+            ushort blockAlign = (ushort)((bitsPerSample * channels) / 8);		    //Block alignment
 
             unsafe
             {

@@ -634,12 +634,9 @@ namespace VCCSharp.Modules
             }
         }
 
-        private unsafe void LoadCassetteBuffer()
+        private void LoadCassetteBuffer()
         {
-            fixed (byte* buffer = _cassetteBuffer)
-            {
-                _modules.Cassette.LoadCassetteBuffer(buffer);
-            }
+            _modules.Cassette.LoadCassetteBuffer(_cassetteBuffer);
         }
 
         public ushort SetAudioRate(ushort rate)

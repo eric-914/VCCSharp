@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 using VCCSharp.Libraries.Models;
 using HANDLE = System.IntPtr;
 using HMODULE = System.IntPtr;
+using LPVOID = System.IntPtr;
+using LPUINT = System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
@@ -32,10 +34,10 @@ namespace VCCSharp.Libraries
         public static extern int QueryPerformanceFrequency(ref LARGE_INTEGER lpFrequency);
 
         [DllImport(Dll)]
-        public static extern unsafe int ReadFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToRead, uint* lpNumberOfBytesRead, void* lpOverlapped);
+        public static extern int ReadFile(HANDLE hFile, byte[] lpBuffer, uint nNumberOfBytesToRead, ref uint lpNumberOfBytesRead, LPVOID lpOverlapped);
 
         [DllImport(Dll)]
-        public static extern unsafe uint SetFilePointer(HANDLE hFile, uint lDistanceToMove, uint* lpDistanceToMoveHigh, uint dwMoveMethod);
+        public static extern uint SetFilePointer(HANDLE hFile, uint lDistanceToMove, LPUINT lpDistanceToMoveHigh, uint dwMoveMethod);
 
         [DllImport(Dll)]
         public static extern int FreeConsole();

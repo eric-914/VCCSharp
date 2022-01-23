@@ -3,6 +3,7 @@ using VCCSharp.Libraries.Models;
 using VCCSharp.Models;
 using HMODULE = System.IntPtr;
 using HANDLE = System.IntPtr;
+using LPVOID = System.IntPtr;
 using static System.IntPtr;
 
 namespace VCCSharp.Libraries
@@ -16,7 +17,7 @@ namespace VCCSharp.Libraries
         int WritePrivateProfileStringA(string lpAppName, string lpKeyName, string lpString, string lpFileName);
         int QueryPerformanceCounter(ref LARGE_INTEGER lpPerformanceCount);
         int QueryPerformanceFrequency(ref LARGE_INTEGER lpFrequency);
-        unsafe int ReadFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToRead, uint* lpNumberOfBytesRead, void* lpOverlapped);
+        int ReadFile(HANDLE hFile, byte[] lpBuffer, uint nNumberOfBytesToRead, ref uint lpNumberOfBytesRead, LPVOID lpOverlapped);
         uint SetFilePointer(IntPtr hFile, uint dwMoveMethod, uint lDistanceToMove = 0);
         int FreeConsole();
         int CloseHandle(HANDLE hObject);
@@ -51,11 +52,11 @@ namespace VCCSharp.Libraries
         public int QueryPerformanceFrequency(ref LARGE_INTEGER lpFrequency)
             => KernelDll.QueryPerformanceFrequency(ref lpFrequency);
 
-        public unsafe int ReadFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToRead, uint* lpNumberOfBytesRead, void* lpOverlapped)
-            => KernelDll.ReadFile(hFile, lpBuffer, nNumberOfBytesToRead, lpNumberOfBytesRead, lpOverlapped);
+        public int ReadFile(HANDLE hFile, byte[] lpBuffer, uint nNumberOfBytesToRead, ref uint lpNumberOfBytesRead, LPVOID lpOverlapped)
+            => KernelDll.ReadFile(hFile, lpBuffer, nNumberOfBytesToRead, ref lpNumberOfBytesRead, lpOverlapped);
 
-        public unsafe uint SetFilePointer(IntPtr hFile, uint dwMoveMethod, uint lDistanceToMove = 0)
-            => KernelDll.SetFilePointer(hFile, lDistanceToMove, null, dwMoveMethod);
+        public uint SetFilePointer(IntPtr hFile, uint dwMoveMethod, uint lDistanceToMove = 0)
+            => KernelDll.SetFilePointer(hFile, lDistanceToMove, IntPtr.Zero, dwMoveMethod);
 
         public int FreeConsole()
             => KernelDll.FreeConsole();
