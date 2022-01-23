@@ -1,11 +1,12 @@
-﻿using DX8.Converters;
-using DX8.Formats;
-using DX8.Interfaces;
-using DX8.Libraries;
-using DX8.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using DX8.Internal;
+using DX8.Internal.Converters;
+using DX8.Internal.Formats;
+using DX8.Internal.Interfaces;
+using DX8.Internal.Libraries;
+using DX8.Internal.Models;
 
 namespace DX8
 {
@@ -26,7 +27,7 @@ namespace DX8
         private IDirectInput _di;
         private readonly List<IDirectInputDevice> _devices = new List<IDirectInputDevice>();
 
-        public DxInput(IDInput input, IDxFactory factory)
+        internal DxInput(IDInput input, IDxFactory factory)
         {
             _input = input;
             _factory = factory;

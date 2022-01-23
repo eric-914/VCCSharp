@@ -1,13 +1,14 @@
-﻿using DX8.Interfaces;
-using DX8.Libraries;
-using DX8.Models;
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
+using DX8.Internal;
+using DX8.Internal.Interfaces;
+using DX8.Internal.Libraries;
+using DX8.Internal.Models;
 using static System.IntPtr;
 
 namespace DX8
 {
-    public interface IDxFactory
+    internal interface IDxFactory
     {
         IDirectDraw CreateDirectDraw(IDDraw d);
         IDirectDrawSurface CreateSurface(IDirectDraw d, ref DDSURFACEDESC pSurfaceDescription);
@@ -20,7 +21,7 @@ namespace DX8
     /// <summary>
     /// Isolation of the Dx8 instances (which use Marshalling)
     /// </summary>
-    public class DxFactory : IDxFactory
+    internal class DxFactory : IDxFactory
     {
         private delegate long CreateDelegate(ref IntPtr p);
 

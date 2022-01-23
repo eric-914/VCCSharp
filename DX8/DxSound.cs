@@ -1,12 +1,13 @@
 ﻿// ReSharper disable IdentifierTypo
 
-using DX8.Converters;
-using DX8.Interfaces;
-using DX8.Libraries;
-using DX8.Models;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using DX8.Internal;
+using DX8.Internal.Converters;
+using DX8.Internal.Interfaces;
+using DX8.Internal.Libraries;
+using DX8.Internal.Models;
 using static System.IntPtr;
 using HWND = System.IntPtr;
 using LPVOID = System.IntPtr;
@@ -52,7 +53,7 @@ namespace DX8
         // ReSharper disable once IdentifierTypo
         private readonly List<_GUID> _guids = new List<_GUID>();
 
-        public DxSound(IDSound sound, IDxFactory factory)
+        internal DxSound(IDSound sound, IDxFactory factory)
         {
             _sound = sound;
             _factory = factory;

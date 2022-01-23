@@ -1,7 +1,8 @@
-﻿using DX8.Interfaces;
-using DX8.Libraries;
-using DX8.Models;
-using System;
+﻿using System;
+using DX8.Internal;
+using DX8.Internal.Interfaces;
+using DX8.Internal.Libraries;
+using DX8.Internal.Models;
 using static System.IntPtr;
 using Point = System.Drawing.Point;
 
@@ -66,7 +67,7 @@ namespace DX8
         public long SurfacePitch { get; private set; }
         public IntPtr Surface { get; private set; }
 
-        public DxDraw(IDDraw dDraw, IDxFactory factory)
+        internal DxDraw(IDDraw dDraw, IDxFactory factory)
         {
             _dDraw = dDraw;
             _factory = factory;
