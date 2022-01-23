@@ -1,4 +1,5 @@
-﻿using DX8;
+﻿// ReSharper disable IdentifierTypo
+using DX8;
 using DX8.Interfaces;
 using DX8.Libraries;
 using DX8.Models;
@@ -44,8 +45,8 @@ namespace VCCSharp.DX8
         private IDirectSound _ds;
         private IDirectSoundBuffer _buffer;
 
-        public IntPtr SndPointer1 = Zero;
-        public IntPtr SndPointer2 = Zero;
+        public LPVOID SndPointer1 = Zero;
+        public LPVOID SndPointer2 = Zero;
 
         private uint _sndLength1;
         private uint _sndLength2;
@@ -73,7 +74,7 @@ namespace VCCSharp.DX8
             return _ds.SetCooperativeLevel(hWnd, Define.DSSCL_NORMAL) == Define.S_OK;
         }
 
-        public bool CreateDirectSoundBuffer(DSBUFFERDESC bufferDescription)
+        private bool CreateDirectSoundBuffer(DSBUFFERDESC bufferDescription)
         {
             _buffer = _factory.CreateSoundBuffer(_ds, bufferDescription);
 

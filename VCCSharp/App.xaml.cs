@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using DX8.Libraries;
+using DX8;
 using VCCSharp.BitBanger;
 using VCCSharp.Configuration;
 using VCCSharp.DX8;
@@ -58,9 +58,11 @@ namespace VCCSharp
                 .Bind<IUser32, User32>()
                 .Bind<IGdi32, Gdi32>()
                 .Bind<IWinmm, Winmm>()
-                .Bind<IDxDraw, DxDraw>()
-                .Bind<IDxSound, DxSound>()
-                .Bind<IDxInput, DxInput>()
+
+                //--Bind to DX8 library
+                .Bind<IDxDraw, Dx>()
+                .Bind<IDxSound, Dx>()
+                .Bind<IDxInput, Dx>()
 
                 //--Main
                 .Bind<ICommandLineParser, CommandLineParser>()

@@ -2,12 +2,10 @@
 using DX8.Libraries;
 using DX8.Models;
 using System;
-using DX8;
-using VCCSharp.Models;
 using static System.IntPtr;
 using Point = System.Drawing.Point;
 
-namespace VCCSharp.DX8
+namespace DX8
 {
     public interface IDxDraw
     {
@@ -110,7 +108,7 @@ namespace VCCSharp.DX8
 
         public bool SetCooperativeLevel(IntPtr hWnd, uint value)
         {
-            return _dd.SetCooperativeLevel(hWnd, value) == Define.S_OK;
+            return _dd.SetCooperativeLevel(hWnd, value) == DxDefine.S_OK;
         }
 
         public bool HasSurface()
@@ -143,7 +141,7 @@ namespace VCCSharp.DX8
             var rcDest = new DXRECT { left = dl, top = dt, right = dr, bottom = db };
             var rcSrc = new DXRECT { left = sl, top = st, right = sr, bottom = sb };
 
-            _surface.Blt(ref rcDest, _back, ref rcSrc, Define.DDBLT_WAIT, Zero);
+            _surface.Blt(ref rcDest, _back, ref rcSrc, DxDefine.DDBLT_WAIT, Zero);
         }
 
         public bool HasBackSurface()
@@ -167,16 +165,16 @@ namespace VCCSharp.DX8
 
         public void SurfaceFlip()
         {
-            _surface.Flip(Zero, Define.DDFLIP_NOVSYNC | Define.DDFLIP_DONOTWAIT);
+            _surface.Flip(Zero, DxDefine.DDFLIP_NOVSYNC | DxDefine.DDFLIP_DONOTWAIT);
         }
 
         public bool LockSurface()
         {
-            long flags = Define.DDLOCK_WAIT | Define.DDLOCK_SURFACEMEMORYPTR;
+            long flags = DxDefine.DDLOCK_WAIT | DxDefine.DDLOCK_SURFACEMEMORYPTR;
 
             _lockSurface = CreateSurfaceDescription();
 
-            var result = _back.Lock(Zero, ref _lockSurface, (uint)flags, Zero) == Define.S_OK;
+            var result = _back.Lock(Zero, ref _lockSurface, (uint)flags, Zero) == DxDefine.S_OK;
 
             SurfacePitch = _lockSurface.lPitch >> 2;
             Surface = _lockSurface.lpSurface;
@@ -186,17 +184,17 @@ namespace VCCSharp.DX8
 
         public bool UnlockSurface()
         {
-            return _back.Unlock(Zero) == Define.S_OK;
+            return _back.Unlock(Zero) == DxDefine.S_OK;
         }
 
         public bool SetSurfaceClipper()
         {
-            return _surface.SetClipper(_clipper) == Define.S_OK;
+            return _surface.SetClipper(_clipper) == DxDefine.S_OK;
         }
 
         public bool SetClipper(IntPtr hWnd)
         {
-            return _clipper.SetHWnd(0, hWnd) == Define.S_OK;
+            return _clipper.SetHWnd(0, hWnd) == DxDefine.S_OK;
         }
 
         private static DDSURFACEDESC CreateSurfaceDescription()
@@ -212,10 +210,10 @@ namespace VCCSharp.DX8
             return new DDSURFACEDESC
             {
                 dwSize = (uint)DDSURFACEDESC.Size,
-                dwFlags = Define.DDSD_CAPS,
+                dwFlags = DxDefine.DDSD_CAPS,
                 ddsCaps = new DDSCAPS
                 {
-                    dwCaps = Define.DDSCAPS_PRIMARYSURFACE
+                    dwCaps = DxDefine.DDSCAPS_PRIMARYSURFACE
                 }
             };
         }
@@ -225,12 +223,12 @@ namespace VCCSharp.DX8
             return new DDSURFACEDESC
             {
                 dwSize = (uint)DDSURFACEDESC.Size,
-                dwFlags = Define.DDSD_WIDTH | Define.DDSD_HEIGHT | Define.DDSD_CAPS,
+                dwFlags = DxDefine.DDSD_WIDTH | DxDefine.DDSD_HEIGHT | DxDefine.DDSD_CAPS,
                 dwWidth = (uint)windowSize.X,
                 dwHeight = (uint)windowSize.Y,
                 ddsCaps = new DDSCAPS
                 {
-                    dwCaps = Define.DDSCAPS_VIDEOMEMORY // Try to create back buffer in video RAM
+                    dwCaps = DxDefine.DDSCAPS_VIDEOMEMORY // Try to create back buffer in video RAM
                 }
             };
         }

@@ -38,13 +38,6 @@ namespace VCCSharp.Models
 
         public const uint DDSCL_NORMAL = 0x00000008;
 
-        public const uint DDSCAPS_PRIMARYSURFACE = 0x00000200;
-        public const uint DDSCAPS_VIDEOMEMORY = 0x00004000;
-
-        public const uint DDSD_CAPS = 0x00000001;
-        public const uint DDSD_HEIGHT = 0x00000002;
-        public const uint DDSD_WIDTH = 0x00000004;
-
         public const int SW_SHOWDEFAULT = 10;
 
         // MC6809 Vector table
@@ -303,9 +296,6 @@ namespace VCCSharp.Models
 
         public const int DSSCL_NORMAL = 0x00000001;
 
-        public const long DDLOCK_SURFACEMEMORYPTR = 0x00000000L;     // default
-        public const long DDLOCK_WAIT = 0x00000001L;
-
         public const int DEFAULT_WIDTH = 640;
         public const int DEFAULT_HEIGHT = 480;
 
@@ -316,11 +306,6 @@ namespace VCCSharp.Models
         public const uint OPEN_ALWAYS = 4;
 
         public const uint FILE_ATTRIBUTE_NORMAL = 0x00000080;
-
-        public const uint DDFLIP_NOVSYNC = 0x00000008;
-        public const uint DDFLIP_DONOTWAIT = 0x00000020;
-
-        public const uint DDBLT_WAIT = 0x01000000;
 
         public const ushort WAVE_FORMAT_PCM = 1;
 

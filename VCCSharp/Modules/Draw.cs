@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using DX8;
 using VCCSharp.DX8;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
