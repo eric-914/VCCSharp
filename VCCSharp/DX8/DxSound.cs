@@ -44,11 +44,8 @@ namespace VCCSharp.DX8
         private IDirectSound _ds;
         private IDirectSoundBuffer _buffer;
 
-        private LPVOID SndPointer1 = Zero;
-        private LPVOID SndPointer2 = Zero;
-
-        private byte[] _buffer1 = Array.Empty<byte>();
-        private byte[] _buffer2 = Array.Empty<byte>();
+        private LPVOID _sndPointer1 = Zero;
+        private LPVOID _sndPointer2 = Zero;
 
         private uint _sndLength1;
         private uint _sndLength2;
@@ -151,20 +148,20 @@ namespace VCCSharp.DX8
         public bool Lock(int offset, int length)
         {
             //--TODO: I'm not really sure why I can't inline s1/s2 here...   "Variable has write usage"
-            LPVOID s1 = SndPointer1;
-            LPVOID s2 = SndPointer2;
+            LPVOID s1 = _sndPointer1;
+            LPVOID s2 = _sndPointer2;
 
             long result = _buffer.Lock((uint)offset, (uint)length, ref s1, ref _sndLength1, ref s2, ref _sndLength2, 0);
 
-            SndPointer1 = s1;
-            SndPointer2 = s2;
+            _sndPointer1 = s1;
+            _sndPointer2 = s2;
 
             return result == Define.S_OK;
         }
 
         public bool Unlock()
         {
-            return _buffer.Unlock(SndPointer1, _sndLength1, SndPointer2, _sndLength2) == Define.S_OK;
+            return _buffer.Unlock(_sndPointer1, _sndLength1, _sndPointer2, _sndLength2) == Define.S_OK;
         }
 
         public bool CreateDirectSoundBuffer(ushort bitRate, int length)
@@ -175,23 +172,13 @@ namespace VCCSharp.DX8
             return CreateDirectSoundBuffer(soundBuffer);
         }
 
-        public unsafe void CopyBuffer(int[] buffer)
+        public void CopyBuffer(int[] buffer)
         {
-            //Marshal.Copy(buffer, 0, SndPointer1, (int)_sndLength1);
-            //Marshal.Copy(buffer, (int)_sndLength1, SndPointer2, (int)_sndLength2);
+            Marshal.Copy(buffer, 0, _sndPointer1, (int)(_sndLength1 >> 2));
 
-            byte* byteBuffer;
-            fixed (int* p = buffer)
+            if (_sndPointer2 != Zero)
             {
-                byteBuffer = (byte*)p;
-            }
-
-            Buffer.MemoryCopy(byteBuffer, (byte*)SndPointer1, _sndLength1, _sndLength1);
-
-            if (SndPointer2 != Zero)
-            {
-                // copy last section of circular buffer if wrapped
-                Buffer.MemoryCopy(&byteBuffer[_sndLength1], (byte*)SndPointer2, _sndLength2, _sndLength2);
+                Marshal.Copy(buffer, (int)(_sndLength1 >> 2), _sndPointer2, (int)(_sndLength2 >> 2));
             }
         }
     }
