@@ -44,5 +44,26 @@ namespace DX8.Converters
                 }
             }
         }
+
+        /// <summary>
+        /// Get the IntPtr for the given instance reference
+        /// Not really sure how this doesn't fail.  :)
+        /// </summary>
+        public static IntPtr Convert<T>(ref T instance)
+        {
+            GCHandle handle = GCHandle.Alloc(instance, GCHandleType.Pinned);
+
+            try
+            {
+                return handle.AddrOfPinnedObject();
+            }
+            finally
+            {
+                if (handle.IsAllocated)
+                {
+                    handle.Free();
+                }
+            }
+        }
     }
 }

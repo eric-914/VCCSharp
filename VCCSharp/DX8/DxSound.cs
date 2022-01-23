@@ -1,16 +1,16 @@
 ﻿// ReSharper disable IdentifierTypo
 using DX8;
+using DX8.Converters;
 using DX8.Interfaces;
 using DX8.Libraries;
 using DX8.Models;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using DX8.Converters;
 using VCCSharp.Models;
+using static System.IntPtr;
 using HWND = System.IntPtr;
 using LPVOID = System.IntPtr;
-using static System.IntPtr;
 
 namespace VCCSharp.DX8
 {
@@ -28,7 +28,6 @@ namespace VCCSharp.DX8
         void Reset();
         uint ReadPlayCursor();
 
-        void ClearBuffer(uint length);
         void CopyBuffer(uint[] buffer);
 
         bool Lock(uint offset, ushort length);
@@ -45,8 +44,11 @@ namespace VCCSharp.DX8
         private IDirectSound _ds;
         private IDirectSoundBuffer _buffer;
 
-        public LPVOID SndPointer1 = Zero;
-        public LPVOID SndPointer2 = Zero;
+        private LPVOID SndPointer1 = Zero;
+        private LPVOID SndPointer2 = Zero;
+
+        private byte[] _buffer1 = Array.Empty<byte>();
+        private byte[] _buffer2 = Array.Empty<byte>();
 
         private uint _sndLength1;
         private uint _sndLength2;
@@ -102,24 +104,18 @@ namespace VCCSharp.DX8
         {
             int flags = Define.DSBCAPS_GETCURRENTPOSITION2 | Define.DSBCAPS_LOCSOFTWARE | Define.DSBCAPS_STATIC | Define.DSBCAPS_GLOBALFOCUS;
 
-            unsafe
+            return new DSBUFFERDESC
             {
-                fixed (WAVEFORMATEX* p = &waveFormat)
-                {
-                    return new DSBUFFERDESC
-                    {
-                        dwSize = (uint)DSBUFFERDESC.Size,
-                        dwFlags = (uint)flags,
-                        dwBufferBytes = length,
-                        lpwfxFormat = (IntPtr)p
-                    };
-                }
-            }
+                dwSize = (uint)DSBUFFERDESC.Size,
+                dwFlags = (uint)flags,
+                dwBufferBytes = length,
+                lpwfxFormat = IntPtrConverter.Convert(ref waveFormat)
+            };
         }
 
         public List<string> EnumerateSoundCards()
         {
-            List<string> names = new List<string>();
+            var names = new List<string>();
 
             int Callback(IntPtr pGuid, IntPtr description, IntPtr module, IntPtr context)
             {
@@ -179,50 +175,20 @@ namespace VCCSharp.DX8
             return CreateDirectSoundBuffer(soundBuffer);
         }
 
-        public unsafe void ClearBuffer(uint length)
-        {
-            byte* buffer = (byte*)SndPointer1;
-
-            if (buffer == null)
-            {
-                throw new Exception("Bad buffer");
-            }
-
-            for (int index = 0; index < length; index++)
-            {
-                buffer[index] = 0;
-            }
-        }
-
         public unsafe void CopyBuffer(uint[] buffer)
         {
-            void Copy(IntPtr sndPtr, byte* source, uint length)
-            {
-                byte* target = (byte*)sndPtr;
-
-                if (target == null)
-                {
-                    throw new Exception("Bad buffer");
-                }
-
-                for (int index = 0; index < length; index++)
-                {
-                    target[index] = source[index];
-                }
-            }
-
             byte* byteBuffer;
             fixed (uint* p = buffer)
             {
                 byteBuffer = (byte*)p;
             }
 
-            Copy(SndPointer1, byteBuffer, _sndLength1);
+            Buffer.MemoryCopy(byteBuffer, (byte*)SndPointer1, _sndLength1, _sndLength1);
 
             if (SndPointer2 != Zero)
             {
                 // copy last section of circular buffer if wrapped
-                Copy(SndPointer2, &byteBuffer[_sndLength1], _sndLength1);
+                Buffer.MemoryCopy(&byteBuffer[_sndLength1], (byte*)SndPointer2, _sndLength1, _sndLength1);
             }
         }
     }

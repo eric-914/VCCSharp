@@ -60,7 +60,6 @@ namespace VCCSharp.DX8
         public void Play() => _sound.Play();
         public void Reset() => _sound.Reset();
         public uint ReadPlayCursor() => _sound.ReadPlayCursor();
-        public void ClearBuffer(uint length) => _sound.ClearBuffer(length);
         public void CopyBuffer(uint[] buffer) => _sound.CopyBuffer(buffer);
         public bool Lock(uint offset, ushort length) => _sound.Lock(offset, length);
         public bool Unlock() => _sound.Unlock();

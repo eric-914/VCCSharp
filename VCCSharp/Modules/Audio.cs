@@ -79,7 +79,7 @@ namespace VCCSharp.Modules
                 // Clear out sound buffers
                 if (!_sound.Lock(_buffOffset, (ushort)_sndBuffLength)) return;
 
-                _sound.ClearBuffer(_sndBuffLength);
+                _sound.CopyBuffer(new uint[_sndBuffLength >> 2]);
 
                 if (!_sound.Unlock()) return;
 
