@@ -14,11 +14,11 @@ namespace VCCSharp.Libraries
         int ShowWindow(HWND hWnd, int nCmdShow);
         HWND GetActiveWindow();
         int SetWindowPos(HWND hWnd, HWND hWndInsertAfter, int x, int y, int cx, int cy, ushort uFlags);
-        unsafe int GetClientRect(HWND hWnd, RECT* lpRect);
-        unsafe int ClientToScreen(HWND hWnd, Point* lpPoint);
-        unsafe int OffsetRect(RECT* lpRect, int dx, int dy);
-        unsafe int SetRect(RECT* lpRect, short xLeft, short yTop, short xRight, short yBottom);
-        unsafe int GetWindowRect(HWND hWnd, RECT* lpRect);
+        int GetClientRect(HWND hWnd, ref RECT lpRect);
+        int ClientToScreen(HWND hWnd, ref Point lpPoint);
+        int OffsetRect(ref RECT lpRect, int dx, int dy);
+        int SetRect(ref RECT lpRect, short xLeft, short yTop, short xRight, short yBottom);
+        int GetWindowRect(HWND hWnd, ref RECT lpRect);
         int MoveWindow(HWND hWnd, int x, int y, int nWidth, int nHeight, int bRepaint);
         int UpdateWindow(HWND hWnd);
         short GetKeyState(int nVirtualKey);
@@ -44,20 +44,20 @@ namespace VCCSharp.Libraries
         public int SetWindowPos(HWND hWnd, HWND hWndInsertAfter, int x, int y, int cx, int cy, ushort uFlags)
             => User32Dll.SetWindowPos(hWnd, hWndInsertAfter, x, y, cx, cy, uFlags);
 
-        public unsafe int GetClientRect(HWND hWnd, RECT* lpRect)
-            => User32Dll.GetClientRect(hWnd, lpRect);
+        public int GetClientRect(HWND hWnd, ref RECT lpRect)
+            => User32Dll.GetClientRect(hWnd, ref lpRect);
 
-        public unsafe int ClientToScreen(HWND hWnd, Point* lpPoint)
-            => User32Dll.ClientToScreen(hWnd, lpPoint);
+        public int ClientToScreen(HWND hWnd, ref Point lpPoint)
+            => User32Dll.ClientToScreen(hWnd, ref lpPoint);
 
-        public unsafe int OffsetRect(RECT* lpRect, int dx, int dy)
-            => User32Dll.OffsetRect(lpRect, dx, dy);
+        public int OffsetRect(ref RECT lpRect, int dx, int dy)
+            => User32Dll.OffsetRect(ref lpRect, dx, dy);
 
-        public unsafe int SetRect(RECT* lpRect, short xLeft, short yTop, short xRight, short yBottom)
-            => User32Dll.SetRect(lpRect, xLeft, yTop, xRight, yBottom);
+        public int SetRect(ref RECT lpRect, short xLeft, short yTop, short xRight, short yBottom)
+            => User32Dll.SetRect(ref lpRect, xLeft, yTop, xRight, yBottom);
 
-        public unsafe int GetWindowRect(HWND hWnd, RECT* lpRect)
-            => User32Dll.GetWindowRect(hWnd, lpRect);
+        public int GetWindowRect(HWND hWnd, ref RECT lpRect)
+            => User32Dll.GetWindowRect(hWnd, ref lpRect);
 
         public int MoveWindow(HWND hWnd, int x, int y, int nWidth, int nHeight, int bRepaint)
             => User32Dll.MoveWindow(hWnd, x, y, nWidth, nHeight, bRepaint);

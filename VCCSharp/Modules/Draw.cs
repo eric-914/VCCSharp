@@ -1,7 +1,6 @@
-﻿using System;
+﻿using DX8;
+using System;
 using System.Windows;
-using DX8;
-using VCCSharp.DX8;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Libraries.Models;
@@ -252,7 +251,7 @@ namespace VCCSharp.Modules
             _draw.ReleaseBackSurface(hdc);
         }
 
-        private unsafe void DisplayFlip()
+        private void DisplayFlip()
         {
             if (_modules.Emu.FullScreen)
             {	// if we're windowed do the blit, else just Flip
@@ -261,23 +260,23 @@ namespace VCCSharp.Modules
             else
             {
                 var p = new Point(0, 0);
-                RECT rcSrc;  // source blit rectangle
-                RECT rcDest; // destination blit rectangle
+                var rcSrc = new RECT();  // source blit rectangle
+                var rcDest = new RECT(); // destination blit rectangle
 
                 // The ClientToScreen function converts the client-area coordinates of a specified point to screen coordinates.
                 // in other word the client rectangle of the main windows 0, 0 (upper-left corner) 
                 // in a screen x,y coords which is put back into p  
-                _user32.ClientToScreen(_modules.Emu.WindowHandle, &p);  // find out where on the primary surface our window lives
+                _user32.ClientToScreen(_modules.Emu.WindowHandle, ref p);  // find out where on the primary surface our window lives
 
                 // get the actual client rectangle, which is always 0,0 - w,h
-                _user32.GetClientRect(_modules.Emu.WindowHandle, &rcDest);
+                _user32.GetClientRect(_modules.Emu.WindowHandle, ref rcDest);
 
                 // The OffsetRect function moves the specified rectangle by the specified offsets
                 // add the delta screen point we got above, which gives us the client rect in screen coordinates.
-                _user32.OffsetRect(&rcDest, p.X, p.Y);
+                _user32.OffsetRect(ref rcDest, p.X, p.Y);
 
                 // our destination rectangle is going to be 
-                _user32.SetRect(&rcSrc, 0, 0, (short)_windowSize.X, (short)_windowSize.Y);
+                _user32.SetRect(ref rcSrc, 0, 0, (short)_windowSize.X, (short)_windowSize.Y);
 
                 if (_forceAspect) // Adjust the Aspect Ratio if window is resized
                 {
@@ -287,9 +286,9 @@ namespace VCCSharp.Modules
 
                     // change this to use the existing rcDest and the calc, w = right-left & h = bottom-top, 
                     //                         because rcDest has already been converted to screen cords, right?   
-                    RECT rcClient;
+                    var rcClient = new RECT();
 
-                    _user32.GetClientRect(_modules.Emu.WindowHandle, &rcClient);  // x,y is always 0,0 so right, bottom is w,h
+                    _user32.GetClientRect(_modules.Emu.WindowHandle, ref rcClient);  // x,y is always 0,0 so right, bottom is w,h
 
                     float clientWidth = rcClient.right;
                     float clientHeight = rcClient.bottom;
@@ -313,13 +312,13 @@ namespace VCCSharp.Modules
 
                     Point pDstLeftTop = new Point { X = (int)dstX, Y = (int)dstY };
 
-                    _user32.ClientToScreen(_modules.Emu.WindowHandle, &pDstLeftTop);
+                    _user32.ClientToScreen(_modules.Emu.WindowHandle, ref pDstLeftTop);
 
                     Point pDstRightBottom = new Point { X = (int)(dstX + dstWidth), Y = (int)(dstY + dstHeight) };
 
-                    _user32.ClientToScreen(_modules.Emu.WindowHandle, &pDstRightBottom);
+                    _user32.ClientToScreen(_modules.Emu.WindowHandle, ref pDstRightBottom);
 
-                    _user32.SetRect(&rcDest, (short)pDstLeftTop.X, (short)pDstLeftTop.Y, (short)pDstRightBottom.X, (short)pDstRightBottom.Y);
+                    _user32.SetRect(ref rcDest, (short)pDstLeftTop.X, (short)pDstLeftTop.Y, (short)pDstRightBottom.X, (short)pDstRightBottom.Y);
                 }
 
                 if (!_draw.HasBackSurface())
@@ -331,21 +330,18 @@ namespace VCCSharp.Modules
             }
 
             //--Store the updated WindowSizeX/Y for configuration, later.
-            RECT windowSize;
+            var windowSize = new RECT();
 
-            _user32.GetClientRect(_modules.Emu.WindowHandle, &windowSize);
+            _user32.GetClientRect(_modules.Emu.WindowHandle, ref windowSize);
 
             _modules.Emu.WindowSize = new System.Windows.Point(windowSize.right, windowSize.bottom);
         }
 
         private bool CreateDirectDrawWindowedMode()
         {
-            RECT size;
+            var size = new RECT();
 
-            unsafe
-            {
-                _user32.GetWindowRect(_modules.Emu.WindowHandle, &size); // And save the Final size of the Window 
-            }
+            _user32.GetWindowRect(_modules.Emu.WindowHandle, ref size); // And save the Final size of the Window 
 
             int width = size.right - size.left;
             int height = size.bottom - size.top;

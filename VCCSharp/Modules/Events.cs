@@ -244,24 +244,21 @@ namespace VCCSharp.Modules
 
         private void MouseMove(long lParam)
         {
-            unsafe
+            if (_modules.Emu.EmulationRunning)
             {
-                if (_modules.Emu.EmulationRunning)
-                {
-                    uint x = (uint)(lParam & 0xFFFF); // LOWORD(lParam);
-                    uint y = (uint)((lParam >> 16) & 0xFFFF); // HIWORD(lParam);
+                uint x = (uint)(lParam & 0xFFFF); // LOWORD(lParam);
+                uint y = (uint)((lParam >> 16) & 0xFFFF); // HIWORD(lParam);
 
-                    RECT clientSize;
-                    _user32.GetClientRect(_modules.Emu.WindowHandle, &clientSize);
+                var clientSize = new RECT();
+                _user32.GetClientRect(_modules.Emu.WindowHandle, ref clientSize);
 
-                    uint dx = (uint) ((clientSize.right - clientSize.left) >> 6);
-                    uint dy = (uint)(((clientSize.bottom - clientSize.top) - 20) >> 6);
+                uint dx = (uint) ((clientSize.right - clientSize.left) >> 6);
+                uint dy = (uint)(((clientSize.bottom - clientSize.top) - 20) >> 6);
 
-                    if (dx > 0) x /= dx;
-                    if (dy > 0) y /= dy;
+                if (dx > 0) x /= dx;
+                if (dy > 0) y /= dy;
 
-                    _modules.Joystick.SetJoystick((ushort)x, (ushort)y);
-                }
+                _modules.Joystick.SetJoystick((ushort)x, (ushort)y);
             }
         }
 

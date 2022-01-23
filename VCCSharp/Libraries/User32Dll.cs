@@ -30,19 +30,19 @@ namespace VCCSharp.Libraries
         public static extern int SetWindowPos(HWND hWnd, HWND hWndInsertAfter, int x, int y, int cx, int cy, ushort uFlags);
 
         [DllImport(Dll)]
-        public static extern unsafe int GetClientRect(HWND hWnd, RECT* lpRect);
+        public static extern int GetClientRect(HWND hWnd, ref RECT lpRect);
 
         [DllImport(Dll)]
-        public static extern unsafe int ClientToScreen(HWND hWnd, Point* lpPoint);
+        public static extern int ClientToScreen(HWND hWnd, ref Point lpPoint);
 
         [DllImport(Dll)]
-        public static extern unsafe int OffsetRect(RECT* lpRect, int dx, int dy);
+        public static extern int OffsetRect(ref RECT lpRect, int dx, int dy);
 
         [DllImport(Dll)]
-        public static extern unsafe int SetRect(RECT* lpRect, short xLeft, short yTop, short xRight, short yBottom);
+        public static extern int SetRect(ref RECT lpRect, short xLeft, short yTop, short xRight, short yBottom);
 
         [DllImport(Dll)]
-        public static extern unsafe int GetWindowRect(HWND hWnd, RECT* lpRect);
+        public static extern int GetWindowRect(HWND hWnd, ref RECT lpRect);
 
         [DllImport(Dll)]
         public static extern int MoveWindow(HWND hWnd, int x, int y, int nWidth, int nHeight, int bRepaint);
