@@ -17,7 +17,7 @@ namespace VCCSharp.DX8
 
         List<string> EnumerateDevices();
 
-        JoystickState JoystickPoll(int id);
+        IDxJoystickState JoystickPoll(int id);
     }
 
     public class DxInput : IDxInput
@@ -134,7 +134,7 @@ namespace VCCSharp.DX8
             }
         }
 
-        public JoystickState JoystickPoll(int id)
+        public IDxJoystickState JoystickPoll(int id)
         {
             DIJOYSTATE2 state = new DIJOYSTATE2();
 
@@ -156,13 +156,19 @@ namespace VCCSharp.DX8
             int b1 = state.rgbButtons[0];
             int b2 = state.rgbButtons[1];
 
-            return new JoystickState
+            return new DxJoystickState
             {
-                X = state.lX >> 10,
-                Y = state.lY >> 10,
-                Button1 = b1 >> 7,
-                Button2 = b2 >> 7,
+                X = state.lX,
+                Y = state.lY,
+                Buttons = new[] { b1, b2 }
             };
+            //return new JoystickState
+            //{
+            //    X = state.lX >> 10,
+            //    Y = state.lY >> 10,
+            //    Button1 = b1 >> 7,
+            //    Button2 = b2 >> 7,
+            //};
         }
 
         private static long JoystickPoll(DIJOYSTATE2 state, IDirectInputDevice stick)

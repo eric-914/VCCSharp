@@ -89,12 +89,12 @@ namespace VCCSharp.Modules
 
             if (useLeft)
             {
-                Left = _input.JoystickPoll(_leftId);
+                Left = new JoystickState(_input.JoystickPoll(_leftId));
             }
 
             if (useRight)
             {
-                Right = _input.JoystickPoll(_rightId);
+                Right = new JoystickState(_input.JoystickPoll(_rightId));
             }
 
             switch (pot)
