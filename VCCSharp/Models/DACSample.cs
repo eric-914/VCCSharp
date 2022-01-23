@@ -2,11 +2,35 @@
 {
     public class DACSample
     {
-        public int OutLeft { get; set; }
-        public int OutRight { get; set; }
-        public int LastLeft { get; set; }
-        public int LastRight { get; set; }
+        public class Channel
+        {
+            public int Out { get; set; }
+            public int Last { get; set; }
 
-        public uint Sample => (uint)((LastLeft << 16) + (OutRight));
+            public void Sample(int pakSample, byte audioSample, byte singleBitSample)
+            {
+                var sample = pakSample + audioSample + singleBitSample;
+
+                sample <<= 6;   //Convert to 16 bit values, for Max volume
+
+                //Simulate a slow high pass filter
+                if (sample == Last)
+                {
+                    if (Out != 0)
+                    {
+                        Out--;
+                    }
+                }
+                else
+                {
+                    Out = Last = sample;
+                }
+            }
+        }
+
+        public Channel Left { get; } = new Channel();
+        public Channel Right { get; } = new Channel();
+
+        public uint Sample => (uint)((Left.Out << 16) + Right.Out);
     }
 }

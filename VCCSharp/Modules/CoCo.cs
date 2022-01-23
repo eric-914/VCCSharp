@@ -74,7 +74,7 @@ namespace VCCSharp.Modules
         private readonly uint[] _audioBuffer = new uint[16384];
         private readonly byte[] _cassetteBuffer = new byte[8192];
 
-        private DACSample _dacSample = new DACSample();
+        private readonly DACSample _dacSample = new DACSample();
 
         public int OverClock { get; set; }
 

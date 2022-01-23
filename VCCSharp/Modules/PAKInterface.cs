@@ -325,12 +325,7 @@ namespace VCCSharp.Modules
 
         public ushort PakAudioSample()
         {
-            if (HasModuleAudioSample())
-            {
-                return (ReadModuleAudioSample());
-            }
-
-            return 0;
+            return HasModuleAudioSample() ? ReadModuleAudioSample() : (ushort)0;
         }
 
         public int FileId(string filename)

@@ -49,9 +49,9 @@ namespace VCCSharp.Modules
         private readonly byte[] _regb = { 0, 0, 0, 0 };
         // ReSharper restore IdentifierTypo
 
-        private byte _aSample;
-        private byte _sSample;
-        private byte _cSample;
+        private byte _audioSample;
+        private byte _singleBitSample;
+        private byte _cassetteSample;
 
         public byte CartAutoStart;
 
@@ -342,11 +342,11 @@ namespace VCCSharp.Modules
                         {
                             if ((_regb[3] & 8) != 0)
                             { //==0 for cassette writes
-                                _aSample = (byte)((_regb[0] & 0xFC) >> 1); //0 to 127
+                                _audioSample = (byte)((_regb[0] & 0xFC) >> 1); //0 to 127
                             }
                             else
                             {
-                                _cSample = (byte)(_regb[0] & 0xFC);
+                                _cassetteSample = (byte)(_regb[0] & 0xFC);
                             }
                         }
                     }
@@ -362,9 +362,9 @@ namespace VCCSharp.Modules
                     {
                         _regb[port] = (byte)(data & _regbdd[port]);
 
-                        _modules.Graphics.SetGimeVdgMode2((byte)((_regb[2] & 248) >> 3));
+                        _singleBitSample = (byte)((_regb[port] & 2) << 6);
 
-                        _sSample = (byte)((_regb[port] & 2) << 6);
+                        _modules.Graphics.SetGimeVdgMode2((byte)((_regb[2] & 248) >> 3));
                     }
                     else
                     {
@@ -506,37 +506,8 @@ namespace VCCSharp.Modules
         {
             int pakSample = _modules.PAKInterface.PakAudioSample();
 
-            var sampleLeft = (pakSample >> 8) + _aSample + _sSample;
-            var sampleRight = (pakSample & 0xFF) + _aSample + _sSample;
-
-            sampleLeft <<= 6;   //Convert to 16 bit values
-            sampleRight <<= 6;  //For Max volume
-
-            if (sampleLeft == dacSample.LastLeft) //Simulate a slow high pass filter
-            {
-                if (dacSample.OutLeft != 0)
-                {
-                    dacSample.OutLeft--;
-                }
-            }
-            else
-            {
-                dacSample.OutLeft = sampleLeft;
-                dacSample.LastLeft = sampleLeft;
-            }
-
-            if (sampleRight == dacSample.LastRight)
-            {
-                if (dacSample.OutRight != 0)
-                {
-                    dacSample.OutRight--;
-                }
-            }
-            else
-            {
-                dacSample.OutRight = sampleRight;
-                dacSample.LastRight = sampleRight;
-            }
+            dacSample.Left.Sample(pakSample >> 8, _audioSample, _singleBitSample);
+            dacSample.Right.Sample(pakSample & 0xFF, _audioSample, _singleBitSample);
         }
 
         public void SetCassetteSample(byte sample)
@@ -551,7 +522,7 @@ namespace VCCSharp.Modules
 
         public byte GetCassetteSample()
         {
-            return _cSample;
+            return _cassetteSample;
         }
     }
 }
