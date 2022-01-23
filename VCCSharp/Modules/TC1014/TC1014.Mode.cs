@@ -279,7 +279,7 @@ namespace VCCSharp.Modules.TC1014
         {
             var model = new ModeModel
             {
-                Memory = _memory.RAM.GetPointer(0x0000),
+                Memory = _ram.GetPointer(0x0000),
                 Modules = _modules
             };
 
