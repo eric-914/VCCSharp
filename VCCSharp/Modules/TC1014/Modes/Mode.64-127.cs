@@ -18,11 +18,12 @@
             uint* szSurface32 = graphics.GetGraphicsSurface();
             ushort y = (ushort)emu.LineCounter;
             int xPitch = (int)emu.SurfacePitch;
+            var memory = model.BytePointer;
 
             for (ushort beam = 0; beam < graphics.BytesPerRow; beam++)
             {
                 int index = start + (byte)(beam + graphics.HorizontalOffset);
-                byte character = model.BytePointer[index];
+                byte character = memory[index];
 
                 switch ((character & 192) >> 6)
                 {

@@ -280,6 +280,7 @@ namespace VCCSharp.Modules.TC1014
             var model = new ModeModel
             {
                 BytePointer = _ram,
+                ShortPointer = new ShortPointer(_ram),
                 Modules = _modules
             };
 

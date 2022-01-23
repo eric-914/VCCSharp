@@ -61,9 +61,9 @@ namespace VCCSharp.Modules.TC1014
 
         private ushort _mmuPrefix;
 
-        private readonly MemoryPointer _ram = new MemoryPointer();
-        private readonly MemoryPointer _rom = new MemoryPointer();
-        private readonly MemoryPointer _irb = new MemoryPointer(); //--Internal ROM buffer
+        private readonly BytePointer _ram = new BytePointer();
+        private readonly BytePointer _rom = new BytePointer();
+        private readonly BytePointer _irb = new BytePointer(); //--Internal ROM buffer
 
         private byte _enhancedFIRQFlag;
         private byte _enhancedIRQFlag;
@@ -78,7 +78,7 @@ namespace VCCSharp.Modules.TC1014
         private readonly byte[] _gimeRegisters = new byte[256];
         private readonly ushort[] _memPageOffsets = new ushort[1024];
         private readonly ushort[,] _mmuRegisters = new ushort[4, 8];	// $FFA0 - FFAF
-        private readonly MemoryPointer[] _memPages = new MemoryPointer[1024];
+        private readonly BytePointer[] _memPages = new BytePointer[1024];
 
         public TC1014(IModules modules)
         {

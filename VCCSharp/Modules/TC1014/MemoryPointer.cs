@@ -3,24 +3,24 @@ using System.Runtime.InteropServices;
 
 namespace VCCSharp.Modules.TC1014
 {
-    public class MemoryPointer
+    public class BytePointer
     {
         private unsafe byte* _pointer;
         private readonly int _offset;
 
-        public MemoryPointer()
+        public BytePointer()
         {
             _offset = 0;
         }
 
-        private unsafe MemoryPointer(byte* pointer, int offset)
+        private unsafe BytePointer(byte* pointer, int offset)
         {
             _pointer = pointer;
             _offset = offset;
         }
 
         public unsafe byte* GetPointer() => _pointer;
-        public unsafe MemoryPointer GetMemoryPointer(int offset) => new MemoryPointer(_pointer, offset);
+        public unsafe BytePointer GetMemoryPointer(int offset) => new BytePointer(_pointer, offset);
 
         public unsafe byte this[int index]
         {
@@ -37,7 +37,7 @@ namespace VCCSharp.Modules.TC1014
             return _pointer != null;
         }
 
-        public unsafe void Reset(MemoryPointer source)
+        public unsafe void Reset(BytePointer source)
         {
             _pointer = source.GetPointer();
         }
@@ -56,13 +56,13 @@ namespace VCCSharp.Modules.TC1014
         }
     }
 
-    public class WideMemoryPointer
+    public class ShortPointer
     {
-        private readonly MemoryPointer _source;
+        private readonly BytePointer _source;
 
         public ushort this[long index] => (ushort)((_source[(int)(index << 1) + 1] << 8) | _source[(int)(index << 1)]);
 
-        public WideMemoryPointer(MemoryPointer source)
+        public ShortPointer(BytePointer source)
         {
             _source = source;
         }

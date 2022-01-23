@@ -17,17 +17,18 @@
             uint* szSurface32 = graphics.GetGraphicsSurface();
             ushort y = (ushort)emu.LineCounter;
             int xPitch = (int)emu.SurfacePitch;
+            var memory = model.BytePointer;
 
             for (ushort beam = 0; beam < graphics.BytesPerRow * graphics.ExtendedText; beam += graphics.ExtendedText)
             {
                 int index = start + (byte)(beam + graphics.HorizontalOffset);
-                byte character = model.BytePointer[index];
+                byte character = memory[index];
 
                 byte pixel = Fonts.CC3FontData8X12[character * 12 + (y % graphics.LinesPerRow)];
 
                 if (graphics.ExtendedText == 2)
                 {
-                    attributes = model.BytePointer[start + (byte)(beam + graphics.HorizontalOffset) + 1];
+                    attributes = memory[start + (byte)(beam + graphics.HorizontalOffset) + 1];
 
                     if (((attributes & 64) != 0) && (y % graphics.LinesPerRow == (graphics.LinesPerRow - 1)))
                     {   //UnderLine
