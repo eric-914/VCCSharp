@@ -188,7 +188,7 @@ namespace VCCSharp.DX8
             if (SndPointer2 != Zero)
             {
                 // copy last section of circular buffer if wrapped
-                Buffer.MemoryCopy(&byteBuffer[_sndLength1], (byte*)SndPointer2, _sndLength1, _sndLength1);
+                Buffer.MemoryCopy(&byteBuffer[_sndLength1], (byte*)SndPointer2, _sndLength2, _sndLength2);
             }
         }
     }
