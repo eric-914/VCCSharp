@@ -523,13 +523,15 @@ namespace VCCSharp.Modules
 
                 GETMODULENAME fn = Marshal.GetDelegateForFunctionPointer<GETMODULENAME>(p);
 
-                fixed (byte* b = new byte[256])
+                var buffer = new byte[256];
+
+                fixed (byte* b = buffer)
                 {
                     //TODO: Does catNumber serve a purpose
                     fn(b, "", fnx);
-
-                    return Converter.ToString(b);
                 }
+
+                return Converter.ToString(buffer);
             }
         }
 
