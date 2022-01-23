@@ -55,7 +55,7 @@ namespace DX8.Interfaces
         /// DSERR_BUFFERLOST | DSERR_INVALIDCALL | DSERR_INVALIDPARAM |DSERR_PRIOLEVELNEEDED
         /// </returns>
         /// <remarks>This method accepts an offset and a byte count, and returns two write pointers and their associated sizes.</remarks>
-        public unsafe long Lock(/*DWORD*/ uint offset, /*DWORD*/ uint length, LPVOID* sndPointer1, ref /*DWORD*/ uint sndLength1, LPVOID* sndPointer2, ref /*DWORD*/ uint sndLength2, /*DWORD*/ uint dwFlags);
+        public long Lock(/*DWORD*/ uint offset, /*DWORD*/ uint length, ref LPVOID sndPointer1, ref /*DWORD*/ uint sndLength1, ref LPVOID sndPointer2, ref /*DWORD*/ uint sndLength2, /*DWORD*/ uint dwFlags);
 
         /// <summary>
         /// This method causes the sound buffer to play from the current position.

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using VCCSharp.Models;
 using HWND = System.IntPtr;
+using LPVOID = System.IntPtr;
 using static System.IntPtr;
 
 namespace VCCSharp.DX8
@@ -147,15 +148,13 @@ namespace VCCSharp.DX8
             return playCursor;
         }
 
-        public unsafe bool Lock(uint offset, ushort length)
+        public bool Lock(uint offset, ushort length)
         {
-            long LockBuffer(IntPtr* sp1, IntPtr* sp2) 
-                => _buffer.Lock(offset, length, sp1, ref _sndLength1, sp2, ref _sndLength2, 0);
+            //--TODO: I'm not really sure why I can't inline s1/s2 here...   "Variable has write usage"
+            LPVOID s1 = SndPointer1;
+            LPVOID s2 = SndPointer2;
 
-            IntPtr s1 = SndPointer1;
-            IntPtr s2 = SndPointer2;
-
-            var result = LockBuffer(&s1, &s2);
+            var result = _buffer.Lock(offset, length, ref s1, ref _sndLength1, ref s2, ref _sndLength2, 0);
 
             SndPointer1 = s1;
             SndPointer2 = s2;
