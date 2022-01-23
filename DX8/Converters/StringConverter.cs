@@ -7,6 +7,11 @@ namespace DX8.Converters
 {
     public static class StringConverter
     {
+        public static string ToString(byte[] buffer)
+        {
+            return Encoding.ASCII.GetString(buffer, 0, buffer.Length).Split('\0').First();
+        }
+
         public static string ToString(IntPtr source, int max = DxDefine.MAX_LOADSTRING)
         {
             var buffer = new byte[max];

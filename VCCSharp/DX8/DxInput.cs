@@ -7,7 +7,6 @@ using DX8.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using VCCSharp.Models;
 
 namespace VCCSharp.DX8
 {
@@ -67,7 +66,7 @@ namespace VCCSharp.DX8
             {
                 IDirectInputDevice joystick = CreateDevice(p.guidInstance);
 
-                names.Add(Converter.ToString(p.tszInstanceName));
+                names.Add(StringConverter.ToString(p.tszInstanceName));
 
                 _devices.Add(joystick);
 
