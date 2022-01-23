@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
@@ -10,6 +9,7 @@ using VCCSharp.Models;
 namespace VCCSharp.Modules.TC1014
 {
     // ReSharper disable InconsistentNaming
+    // ReSharper disable CommentTypo
     public interface ITC1014
     {
         void MC6883Reset();
@@ -61,9 +61,7 @@ namespace VCCSharp.Modules.TC1014
 
         private ushort _mmuPrefix;
 
-        private unsafe byte* _rom;
-        private unsafe byte* _memory;	//Emulated RAM
-        private unsafe byte* _internalRomBuffer;
+        private readonly MemoryPointers _memory = new MemoryPointers();
 
         private byte _enhancedFIRQFlag;
         private byte _enhancedIRQFlag;
@@ -92,10 +90,7 @@ namespace VCCSharp.Modules.TC1014
             _vdgMode = 0;
             _disOffset = 0;
 
-            unsafe
-            {
-                _rom = GetInternalRomPointer();
-            }
+            _memory.ResetROM();
         }
 
         //TODO: Used by MmuInit()
@@ -182,7 +177,7 @@ Could not locate {rom} in any of these locations:
 
                 for (int index = 0; index < 1024; index++)
                 {
-                    byte* offset = _memory + (index & _ramMask[_currentRamConfig]) * 0x2000;
+                    byte* offset = _memory.RAM.GetPointer((index & _ramMask[_currentRamConfig]) * 0x2000);
                     _memPages[index] = offset;
                     _memPageOffsets[index] = 1;
                 }
@@ -199,49 +194,37 @@ Could not locate {rom} in any of these locations:
         *****************************************************************************************/
         public byte MmuInit(byte ramSizeOption)
         {
-            unsafe
+            uint ramSize = _memConfig[ramSizeOption];
+
+            _currentRamConfig = ramSizeOption;
+
+            if (!_memory.ResetRAM(ramSize))
             {
-                uint ramSize = _memConfig[ramSizeOption];
-
-                _currentRamConfig = ramSizeOption;
-
-                FreeMemory(_memory);
-
-                _memory = AllocateMemory(ramSize);
-
-                if (_memory == null)
-                {
-                    return 0;
-                }
-
-                //--Well, this explains the vertical bands when you start a graphics mode in BASIC w/out PCLS
-                for (uint index = 0; index < ramSize; index++)
-                {
-                    _memory[index] = (byte)((index & 1) == 0 ? 0 : 0xFF);
-                }
-
-                Graphics.SetVidMask(_vidMask[_currentRamConfig]);
-
-                FreeMemory(_internalRomBuffer);
-
-                _internalRomBuffer = AllocateMemory(0x8001); //--TODO: Weird that the extra byte is needed here
-
-                if (_internalRomBuffer == null)
-                {
-                    return 0;
-                }
-
-                //memset(mmuState->InternalRomBuffer, 0xFF, 0x8000);
-                for (uint index = 0; index <= 0x8000; index++)
-                {
-                    _internalRomBuffer[index] = 0xFF;
-                }
-
-                CopyRom();
-                MmuReset();
-
-                return 1;
+                return Define.FALSE;
             }
+
+            //--Well, this explains the vertical bands when you start a graphics mode in BASIC w/out PCLS
+            for (int index = 0; index < ramSize; index++)
+            {
+                _memory.RAM[index] = (byte)((index & 1) == 0 ? 0 : 0xFF);
+            }
+
+            Graphics.SetVidMask(_vidMask[_currentRamConfig]);
+
+            if (!_memory.ResetROM(0x8001)) //--TODO: Weird that the extra byte is needed here
+            {
+                return Define.FALSE;
+            }
+
+            for (int index = 0; index <= 0x8000; index++)
+            {
+                _memory.InternalRomBuffer[index] = 0xFF;
+            }
+
+            CopyRom();
+            MmuReset();
+
+            return 1;
         }
 
         public bool LoadInternalRom(string filename)
@@ -252,12 +235,9 @@ Could not locate {rom} in any of these locations:
 
             byte[] bytes = File.ReadAllBytes(filename);
 
-            unsafe
+            for (ushort index = 0; index < bytes.Length; index++)
             {
-                for (ushort index = 0; index < bytes.Length; index++)
-                {
-                    _internalRomBuffer[index] = bytes[index];
-                }
+                _memory.InternalRomBuffer[index] = bytes[index];
             }
 
             return true; //(ushort)bytes.Length;
@@ -277,19 +257,6 @@ Could not locate {rom} in any of these locations:
 
                 _lastIrq |= 8;
             }
-        }
-
-        public unsafe void FreeMemory(byte* target)
-        {
-            if (target != null)
-            {
-                Marshal.FreeHGlobal((IntPtr)target);
-            }
-        }
-
-        public unsafe byte* AllocateMemory(uint size)
-        {
-            return (byte*)Marshal.AllocHGlobal((int)size); //malloc(size);
         }
 
         public byte MemRead8(ushort address)
@@ -326,11 +293,8 @@ Could not locate {rom} in any of these locations:
         {
             if (_ramVectors != 0)
             {
-                unsafe
-                {
-                    //Address must be $FE00 - $FEFF
-                    return (_memory[(0x2000 * _vectorMask[_currentRamConfig]) | (address & 0x1FFF)]);
-                }
+                //Address must be $FE00 - $FEFF
+                return (_memory.RAM[(0x2000 * _vectorMask[_currentRamConfig]) | (address & 0x1FFF)]);
             }
 
             return MemRead8(address);
@@ -373,11 +337,8 @@ Could not locate {rom} in any of these locations:
         {
             if (_ramVectors != 0)
             {
-                unsafe
-                {
-                    //Address must be $FE00 - $FEFF
-                    _memory[(0x2000 * _vectorMask[_currentRamConfig]) | (address & 0x1FFF)] = data;
-                }
+                //Address must be $FE00 - $FEFF
+                _memory.RAM[(0x2000 * _vectorMask[_currentRamConfig]) | (address & 0x1FFF)] = data;
             }
             else
             {
@@ -388,24 +349,18 @@ Could not locate {rom} in any of these locations:
         //--I think this is just a hack to access memory directly for the 40/80 char-wide screen-scrapes
         public ushort GetMem(int address)
         {
-            unsafe
-            {
-                return _memory[address];
-            }
+            return _memory.RAM[address];
         }
 
         public byte SAMRead(byte port)
         {
-            unsafe
+            if (port >= 0xF0) // && port <= 0xFF)
             {
-                if ((port >= 0xF0) && (port <= 0xFF))
-                {
-                    //IRQ vectors from rom
-                    return (_rom[0x3F00 + port]);
-                }
-
-                return (0);
+                //IRQ vectors from rom
+                return (_memory.ROM[0x3F00 + port]);
             }
+
+            return (0);
         }
 
         public void SAMWrite(byte data, byte port)
@@ -696,10 +651,10 @@ Could not locate {rom} in any of these locations:
         {
             if (_mapType != 0)
             {
-                _memPages[_vectorMask[_currentRamConfig] - 3] = (_memory + (0x2000 * (_vectorMask[_currentRamConfig] - 3)));
-                _memPages[_vectorMask[_currentRamConfig] - 2] = (_memory + (0x2000 * (_vectorMask[_currentRamConfig] - 2)));
-                _memPages[_vectorMask[_currentRamConfig] - 1] = (_memory + (0x2000 * (_vectorMask[_currentRamConfig] - 1)));
-                _memPages[_vectorMask[_currentRamConfig]] = (_memory + (0x2000 * _vectorMask[_currentRamConfig]));
+                _memPages[_vectorMask[_currentRamConfig] - 3] = (_memory.RAM.GetPointer(0x2000 * (_vectorMask[_currentRamConfig] - 3)));
+                _memPages[_vectorMask[_currentRamConfig] - 2] = (_memory.RAM.GetPointer(0x2000 * (_vectorMask[_currentRamConfig] - 2)));
+                _memPages[_vectorMask[_currentRamConfig] - 1] = (_memory.RAM.GetPointer(0x2000 * (_vectorMask[_currentRamConfig] - 1)));
+                _memPages[_vectorMask[_currentRamConfig]] = (_memory.RAM.GetPointer(0x2000 * _vectorMask[_currentRamConfig]));
 
                 _memPageOffsets[_vectorMask[_currentRamConfig] - 3] = 1;
                 _memPageOffsets[_vectorMask[_currentRamConfig] - 2] = 1;
@@ -713,8 +668,8 @@ Could not locate {rom} in any of these locations:
             {
                 case 0:
                 case 1: //16K Internal 16K External
-                    _memPages[_vectorMask[_currentRamConfig] - 3] = (_internalRomBuffer);
-                    _memPages[_vectorMask[_currentRamConfig] - 2] = (_internalRomBuffer + 0x2000);
+                    _memPages[_vectorMask[_currentRamConfig] - 3] = _memory.InternalRomBuffer.GetPointer(0x0000);
+                    _memPages[_vectorMask[_currentRamConfig] - 2] = _memory.InternalRomBuffer.GetPointer(0x2000);
                     _memPages[_vectorMask[_currentRamConfig] - 1] = null;
                     _memPages[_vectorMask[_currentRamConfig]] = null;
 
@@ -726,10 +681,10 @@ Could not locate {rom} in any of these locations:
                     return;
 
                 case 2: // 32K Internal
-                    _memPages[_vectorMask[_currentRamConfig] - 3] = _internalRomBuffer;
-                    _memPages[_vectorMask[_currentRamConfig] - 2] = _internalRomBuffer + 0x2000;
-                    _memPages[_vectorMask[_currentRamConfig] - 1] = _internalRomBuffer + 0x4000;
-                    _memPages[_vectorMask[_currentRamConfig]] = _internalRomBuffer + 0x6000;
+                    _memPages[_vectorMask[_currentRamConfig] - 3] = _memory.InternalRomBuffer.GetPointer(0x0000);
+                    _memPages[_vectorMask[_currentRamConfig] - 2] = _memory.InternalRomBuffer.GetPointer(0x2000);
+                    _memPages[_vectorMask[_currentRamConfig] - 1] = _memory.InternalRomBuffer.GetPointer(0x4000);
+                    _memPages[_vectorMask[_currentRamConfig]] = _memory.InternalRomBuffer.GetPointer(0x6000);
 
                     _memPageOffsets[_vectorMask[_currentRamConfig] - 3] = 1;
                     _memPageOffsets[_vectorMask[_currentRamConfig] - 2] = 1;
@@ -795,11 +750,6 @@ Could not locate {rom} in any of these locations:
         private void SetMmuPrefix(byte data)
         {
             _mmuPrefix = (ushort)((data & 3) << 8);
-        }
-
-        public unsafe byte* GetInternalRomPointer()
-        {
-            return _internalRomBuffer;
         }
 
         private void SetVectors(byte data)

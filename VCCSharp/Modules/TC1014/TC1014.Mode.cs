@@ -279,11 +279,11 @@ namespace VCCSharp.Modules.TC1014
         {
             var model = new ModeModel
             {
-                Memory = _memory,
+                Memory = _memory.RAM.GetPointer(0x0000),
                 Modules = _modules
             };
 
-            // (GraphicsMode <<7) | (CompatibilityMode<<6)  | ((Bpp & 3)<<4) | (Stretch & 15);
+            // (GraphicsMode << 7) | (CompatibilityMode << 6)  | ((Bpp & 3) << 4) | (Stretch & 15);
             Modes[masterMode](model, start, yStride);
         }
     }
