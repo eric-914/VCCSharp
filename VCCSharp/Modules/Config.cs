@@ -352,7 +352,7 @@ namespace VCCSharp.Modules
 
                 //[Audio]
                 model.AudioRate = _kernel.GetPrivateProfileIntA("Audio", "AudioRate", 3, iniFilePath);
-                _kernel.GetPrivateProfileStringA("Audio", "SoundCardName", "", p, Define.MAX_LOADSTRING, iniFilePath);
+                _kernel.GetPrivateProfileStringA("Audio", "SoundCardName", "", buffer, Define.MAX_LOADSTRING, iniFilePath);
 
                 model.SoundCardName = Converter.ToString(buffer);
 
@@ -367,7 +367,7 @@ namespace VCCSharp.Modules
 
                 //[Memory]
                 model.RamSize = (byte)_kernel.GetPrivateProfileIntA("Memory", "RamSize", 1, iniFilePath);
-                _kernel.GetPrivateProfileStringA("Memory", "ExternalBasicImage", "", p, Define.MAX_PATH, iniFilePath);
+                _kernel.GetPrivateProfileStringA("Memory", "ExternalBasicImage", "", buffer, Define.MAX_PATH, iniFilePath);
 
                 model.ExternalBasicImage = Convert.ToString(buffer);
 
@@ -377,7 +377,7 @@ namespace VCCSharp.Modules
                 model.KeyMapIndex = (byte)_kernel.GetPrivateProfileIntA("Misc", "KeyMapIndex", 0, iniFilePath);
 
                 //[Module]
-                _kernel.GetPrivateProfileStringA("Module", "ModulePath", "", p, Define.MAX_PATH, iniFilePath);
+                _kernel.GetPrivateProfileStringA("Module", "ModulePath", "", buffer, Define.MAX_PATH, iniFilePath);
 
                 model.ModulePath = Converter.ToString(buffer);
 
@@ -406,19 +406,19 @@ namespace VCCSharp.Modules
                 right.HiRes = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "HiResDevice", 0, iniFilePath);
 
                 //[DefaultPaths]
-                _kernel.GetPrivateProfileStringA("DefaultPaths", "CassPath", "", p, Define.MAX_PATH, iniFilePath);
+                _kernel.GetPrivateProfileStringA("DefaultPaths", "CassPath", "", buffer, Define.MAX_PATH, iniFilePath);
                 model.CassPath = Converter.ToString(buffer);
 
-                _kernel.GetPrivateProfileStringA("DefaultPaths", "FloppyPath", "", p, Define.MAX_PATH, iniFilePath);
+                _kernel.GetPrivateProfileStringA("DefaultPaths", "FloppyPath", "", buffer, Define.MAX_PATH, iniFilePath);
                 model.FloppyPath = Converter.ToString(buffer);
 
-                _kernel.GetPrivateProfileStringA("DefaultPaths", "CoCoRomPath", "", p, Define.MAX_PATH, iniFilePath);
+                _kernel.GetPrivateProfileStringA("DefaultPaths", "CoCoRomPath", "", buffer, Define.MAX_PATH, iniFilePath);
                 model.CoCoRomPath = Converter.ToString(buffer);
 
-                _kernel.GetPrivateProfileStringA("DefaultPaths", "SerialCaptureFilePath", "", p, Define.MAX_PATH, iniFilePath);
+                _kernel.GetPrivateProfileStringA("DefaultPaths", "SerialCaptureFilePath", "", buffer, Define.MAX_PATH, iniFilePath);
                 model.SerialCaptureFilePath = Converter.ToString(buffer);
 
-                _kernel.GetPrivateProfileStringA("DefaultPaths", "PakPath", "", p, Define.MAX_PATH, iniFilePath);
+                _kernel.GetPrivateProfileStringA("DefaultPaths", "PakPath", "", buffer, Define.MAX_PATH, iniFilePath);
                 model.PakPath = Converter.ToString(buffer);
 
             }

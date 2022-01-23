@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using VCCSharp.Libraries.Models;
-using VCCSharp.Models;
-using HMODULE = System.IntPtr;
 using HANDLE = System.IntPtr;
+using HMODULE = System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
@@ -21,7 +20,7 @@ namespace VCCSharp.Libraries
         public static extern ushort GetPrivateProfileIntA(string lpAppName, string lpKeyName, short nDefault, string lpFileName);
 
         [DllImport(Dll)]
-        public static extern unsafe uint GetPrivateProfileStringA(string lpAppName, string lpKeyName, string lpDefault, byte* lpReturnedString, uint nSize, string lpFileName);
+        public static extern uint GetPrivateProfileStringA(string lpAppName, string lpKeyName, string lpDefault, byte[] lpReturnedString, uint nSize, string lpFileName);
 
         [DllImport(Dll)]
         public static extern int WritePrivateProfileStringA(string lpAppName, string lpKeyName, string lpString, string lpFileName);

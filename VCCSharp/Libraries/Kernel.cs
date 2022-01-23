@@ -12,7 +12,7 @@ namespace VCCSharp.Libraries
         HMODULE LoadLibrary(string dllToLoad);
         bool FreeLibrary(HMODULE hModule);
         ushort GetPrivateProfileIntA(string lpAppName, string lpKeyName, short nDefault, string lpFileName);
-        unsafe uint GetPrivateProfileStringA(string lpAppName, string lpKeyName, string lpDefault, byte* lpReturnedString, uint nSize, string lpFileName);
+        uint GetPrivateProfileStringA(string lpAppName, string lpKeyName, string lpDefault, byte[] lpReturnedString, uint nSize, string lpFileName);
         int WritePrivateProfileStringA(string lpAppName, string lpKeyName, string lpString, string lpFileName);
         unsafe int QueryPerformanceCounter(LARGE_INTEGER* lpPerformanceCount);
         unsafe int QueryPerformanceFrequency(LARGE_INTEGER* lpFrequency);
@@ -39,7 +39,7 @@ namespace VCCSharp.Libraries
         public ushort GetPrivateProfileIntA(string lpAppName, string lpKeyName, short nDefault, string lpFileName)
             => KernelDll.GetPrivateProfileIntA(lpAppName, lpKeyName, nDefault, lpFileName);
 
-        public unsafe uint GetPrivateProfileStringA(string lpAppName, string lpKeyName, string lpDefault, byte* lpReturnedString, uint nSize, string lpFileName)
+        public uint GetPrivateProfileStringA(string lpAppName, string lpKeyName, string lpDefault, byte[] lpReturnedString, uint nSize, string lpFileName)
             => KernelDll.GetPrivateProfileStringA(lpAppName, lpKeyName, lpDefault, lpReturnedString, nSize, lpFileName);
 
         public int WritePrivateProfileStringA(string lpAppName, string lpKeyName, string lpString, string lpFileName)
