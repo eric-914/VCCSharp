@@ -2,8 +2,8 @@
 // ReSharper disable CommentTypo
 // ReSharper disable InconsistentNaming
 
-using System.Runtime.InteropServices;
 using DX8.Internal.Models;
+using System.Runtime.InteropServices;
 using HANDLE = System.IntPtr;
 using HINSTANCE = System.IntPtr;
 using HWND = System.IntPtr;

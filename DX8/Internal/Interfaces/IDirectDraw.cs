@@ -1,12 +1,12 @@
 ﻿// ReSharper disable CommentTypo
 // ReSharper disable IdentifierTypo
 
-using System.Runtime.InteropServices;
 using DX8.Internal.Models;
+using System.Runtime.InteropServices;
+using HWND = System.IntPtr;
 using IUnknown = System.IntPtr;
 using LPDIRECTDRAWCLIPPER = System.IntPtr;
 using LPDIRECTDRAWSURFACE7 = System.IntPtr;
-using HWND = System.IntPtr;
 
 namespace DX8.Internal.Interfaces
 {

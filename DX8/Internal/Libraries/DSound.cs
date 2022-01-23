@@ -1,5 +1,5 @@
-﻿using System;
-using DX8.Internal.Models;
+﻿using DX8.Internal.Models;
+using System;
 
 namespace DX8.Internal.Libraries
 {

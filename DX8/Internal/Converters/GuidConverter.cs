@@ -1,7 +1,7 @@
-﻿using System;
+﻿using DX8.Internal.Models;
+using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
-using DX8.Internal.Models;
 
 namespace DX8.Internal.Converters
 {

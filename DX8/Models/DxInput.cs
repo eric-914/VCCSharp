@@ -1,39 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using DX8.Internal;
+﻿using DX8.Internal;
 using DX8.Internal.Converters;
 using DX8.Internal.Formats;
 using DX8.Internal.Interfaces;
 using DX8.Internal.Libraries;
 using DX8.Internal.Models;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
-namespace DX8
+namespace DX8.Models
 {
-    public interface IDxInput
-    {
-        void CreateDirectInput(IntPtr handle);
-
-        List<string> EnumerateDevices();
-
-        IDxJoystickState JoystickPoll(int id);
-    }
-
-    public class DxInput : IDxInput
+    internal class DxInput : IDxInput
     {
         private readonly IDInput _input;
-        private readonly IDxFactory _factory;
+        private readonly IDxFactoryInternal _factory;
 
         private IDirectInput _di;
         private readonly List<IDirectInputDevice> _devices = new List<IDirectInputDevice>();
 
-        internal DxInput(IDInput input, IDxFactory factory)
+        internal DxInput(IDInput input, IDxFactoryInternal factory)
         {
             _input = input;
             _factory = factory;
         }
 
-        public DxInput() : this(new DInput(), new DxFactory()) { }
+        public DxInput() : this(new DInput(), new DxFactoryInternal()) { }
 
         public void CreateDirectInput(IntPtr handle)
         {

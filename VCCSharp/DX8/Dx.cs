@@ -1,8 +1,7 @@
-﻿using System;
+﻿using DX8;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
-using DX8;
-using VCCSharp.Models;
 
 namespace VCCSharp.DX8
 {
@@ -15,14 +14,14 @@ namespace VCCSharp.DX8
         private readonly IDxSound _sound;
         private readonly IDxInput _input;
 
-        private Dx(IDxDraw draw, IDxSound sound, IDxInput input)
+        private Dx(IDxFactory factory)
         {
-            _draw = draw;
-            _sound = sound;
-            _input = input;
+            _draw = factory.CreateDxDraw();
+            _sound = factory.CreateDxSound();
+            _input = factory.CreateDxInput();
         }
 
-        public Dx() : this(new DxDraw(), new DxSound(), new DxInput()) { }
+        public Dx() : this(DxFactory.Instance) { }
 
         #region DxDraw
 

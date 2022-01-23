@@ -1,45 +1,25 @@
 ﻿// ReSharper disable IdentifierTypo
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using DX8.Internal;
 using DX8.Internal.Converters;
 using DX8.Internal.Interfaces;
 using DX8.Internal.Libraries;
 using DX8.Internal.Models;
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using static System.IntPtr;
 using HWND = System.IntPtr;
 using LPVOID = System.IntPtr;
 
-namespace DX8
+namespace DX8.Models
 {
-    public interface IDxSound
-    {
-        bool CreateDirectSound(int index);
-        bool SetCooperativeLevel(HWND hWnd);
-
-        List<string> EnumerateSoundCards();
-
-        bool CreateDirectSoundBuffer(ushort bitRate, int length);
-
-        void Stop();
-        void Play();
-        void Reset();
-        int ReadPlayCursor();
-
-        void CopyBuffer(int[] buffer);
-
-        bool Lock(int offset, int length);
-        bool Unlock();
-    }
-
-    public class DxSound : IDxSound
+    internal class DxSound : IDxSound
     {
         private delegate int DirectSoundEnumerateCallbackTemplate(IntPtr pGuid, IntPtr pDescription, IntPtr pModule, IntPtr pContext);
 
         private readonly IDSound _sound;
-        private readonly IDxFactory _factory;
+        private readonly IDxFactoryInternal _factory;
 
         private IDirectSound _ds;
         private IDirectSoundBuffer _buffer;
@@ -53,13 +33,13 @@ namespace DX8
         // ReSharper disable once IdentifierTypo
         private readonly List<_GUID> _guids = new List<_GUID>();
 
-        internal DxSound(IDSound sound, IDxFactory factory)
+        internal DxSound(IDSound sound, IDxFactoryInternal factory)
         {
             _sound = sound;
             _factory = factory;
         }
 
-        public DxSound() : this(new DSound(), new DxFactory()) { }
+        public DxSound() : this(new DSound(), new DxFactoryInternal()) { }
 
         public bool CreateDirectSound(int index)
         {

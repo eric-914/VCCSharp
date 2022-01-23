@@ -1,8 +1,8 @@
 ﻿// ReSharper disable CommentTypo
 // ReSharper disable IdentifierTypo
 
-using System.Runtime.InteropServices;
 using DX8.Internal.Models;
+using System.Runtime.InteropServices;
 using HWND = System.IntPtr;
 using LPDIRECTSOUNDBUFFER = System.IntPtr;
 using LPUNKNOWN = System.IntPtr;

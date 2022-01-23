@@ -1,57 +1,17 @@
-﻿using System;
-using DX8.Internal;
+﻿using DX8.Internal;
 using DX8.Internal.Interfaces;
 using DX8.Internal.Libraries;
 using DX8.Internal.Models;
+using System;
 using static System.IntPtr;
 using Point = System.Drawing.Point;
 
-namespace DX8
+namespace DX8.Models
 {
-    public interface IDxDraw
-    {
-        #region DirectDraw
-
-        bool CreateDirectDraw(Point windowSize);
-        bool SetCooperativeLevel(IntPtr hWnd, uint value);
-
-        #endregion
-
-        #region Surfaces
-
-        bool CreatePrimarySurface();
-        bool CreateBackSurface();
-        bool HasSurface();
-        bool SurfaceIsLost();
-        bool BackSurfaceIsLost();
-        void SurfaceRestore();
-        void BackSurfaceRestore();
-        void SurfaceBlt(int dl, int dt, int dr, int db, int sl, int st, int sr, int sb);
-        bool HasBackSurface();
-        IntPtr GetBackSurface();
-        void ReleaseBackSurface(IntPtr hdc);
-        void SurfaceFlip();
-        bool LockSurface();
-        bool UnlockSurface();
-
-        #endregion
-
-        #region Clipper
-
-        bool CreateClipper();
-        bool SetSurfaceClipper();
-        bool SetClipper(IntPtr hWnd);
-
-        #endregion
-
-        long SurfacePitch { get; }
-        IntPtr Surface { get; }
-    }
-
-    public class DxDraw : IDxDraw
+    internal class DxDraw : IDxDraw
     {
         private readonly IDDraw _dDraw;
-        private readonly IDxFactory _factory;
+        private readonly IDxFactoryInternal _factory;
 
         private IDirectDraw _dd;      // The DirectDraw object
         private IDirectDrawClipper _clipper; // Clipper for primary surface
@@ -67,13 +27,13 @@ namespace DX8
         public long SurfacePitch { get; private set; }
         public IntPtr Surface { get; private set; }
 
-        internal DxDraw(IDDraw dDraw, IDxFactory factory)
+        internal DxDraw(IDDraw dDraw, IDxFactoryInternal factory)
         {
             _dDraw = dDraw;
             _factory = factory;
         }
 
-        public DxDraw() : this(new DDraw(), new DxFactory()) { }
+        public DxDraw() : this(new DDraw(), new DxFactoryInternal()) { }
 
         public bool CreateDirectDraw(Point windowSize)
         {

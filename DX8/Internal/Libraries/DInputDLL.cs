@@ -1,8 +1,8 @@
 ﻿// ReSharper disable IdentifierTypo
 // ReSharper disable CommentTypo
 
-using System.Runtime.InteropServices;
 using DX8.Internal.Models;
+using System.Runtime.InteropServices;
 using HINSTANCE = System.IntPtr;
 using LPUNKNOWN = System.IntPtr;
 using LPVOID = System.IntPtr;

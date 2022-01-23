@@ -1,8 +1,8 @@
 ﻿// ReSharper disable CommentTypo
 // ReSharper disable IdentifierTypo
 
-using System.Runtime.InteropServices;
 using DX8.Internal.Models;
+using System.Runtime.InteropServices;
 using HANDLE = System.IntPtr;
 using HDC = System.IntPtr;
 using LPDDBLTFX = System.IntPtr;

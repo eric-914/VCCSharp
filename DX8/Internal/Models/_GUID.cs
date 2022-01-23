@@ -1,8 +1,8 @@
 ﻿#pragma warning disable IDE1006 // Naming Styles
 // ReSharper disable InconsistentNaming
 // ReSharper disable CommentTypo
-using System.Runtime.InteropServices;
 using DX8.Internal.Converters;
+using System.Runtime.InteropServices;
 
 namespace DX8.Internal.Models
 {
