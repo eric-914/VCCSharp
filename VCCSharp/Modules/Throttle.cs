@@ -19,6 +19,7 @@ namespace VCCSharp.Modules
     {
         private readonly IModules _modules;
         private readonly IKernel _kernel;
+        // ReSharper disable once InconsistentNaming
         private readonly IWinmm _win_mm;
 
         private LARGE_INTEGER _currentTime;
@@ -43,44 +44,32 @@ namespace VCCSharp.Modules
 
         public void CalibrateThrottle()
         {
-            unsafe
-            {
-                //Needed to get max resolution from the timer normally its 10Ms
-                _win_mm.TimeBeginPeriod(1);	
-                fixed (LARGE_INTEGER* p = &_masterClock)
-                {
-                    _kernel.QueryPerformanceFrequency(p);
-                }
-                _win_mm.TimeEndPeriod(1);
+            //Needed to get max resolution from the timer normally its 10Ms
+            _win_mm.TimeBeginPeriod(1);
+            _kernel.QueryPerformanceFrequency(ref _masterClock);
+            _win_mm.TimeEndPeriod(1);
 
-                _oneFrame.QuadPart = _masterClock.QuadPart / (Define.TARGETFRAMERATE);
-                _oneMs.QuadPart = _masterClock.QuadPart / 1000;
-                _fMasterClock = _masterClock.QuadPart;
-            }
+            _oneFrame.QuadPart = _masterClock.QuadPart / (Define.TARGETFRAMERATE);
+            _oneMs.QuadPart = _masterClock.QuadPart / 1000;
+            _fMasterClock = _masterClock.QuadPart;
         }
 
         public float CalculateFps()
         {
-            unsafe
+            if (++_frameCount != Define.FRAMEINTERVAL)
             {
-                if (++_frameCount != Define.FRAMEINTERVAL)
-                {
-                    return (_fps);
-                }
-
-                fixed (LARGE_INTEGER* p = &_now)
-                {
-                    _kernel.QueryPerformanceCounter(p);
-                }
-
-                _fNow = _now.QuadPart;
-                _fps = (_fNow - _fLast) / _fMasterClock;
-                _fLast = _fNow;
-                _frameCount = 0;
-                _fps = Define.FRAMEINTERVAL / _fps;
-
-                return _fps;
+                return (_fps);
             }
+
+            _kernel.QueryPerformanceCounter(ref _now);
+
+            _fNow = _now.QuadPart;
+            _fps = (_fNow - _fLast) / _fMasterClock;
+            _fLast = _fNow;
+            _frameCount = 0;
+            _fps = Define.FRAMEINTERVAL / _fps;
+
+            return _fps;
         }
 
         public void FrameWait()
@@ -123,31 +112,19 @@ namespace VCCSharp.Modules
 
             //Poll until frame end.
             while (_currentTime.QuadPart < _targetTime.QuadPart)
-            {	
+            {
                 UpdateCurrentTime();
             }
         }
 
         private void UpdateCurrentTime()
         {
-            unsafe
-            {
-                fixed (LARGE_INTEGER* p = &_currentTime)
-                {
-                    _kernel.QueryPerformanceCounter(p);
-                }
-            }
+            _kernel.QueryPerformanceCounter(ref _currentTime);
         }
 
         public void StartRender()
         {
-            unsafe
-            {
-                fixed (LARGE_INTEGER* p = &_startTime)
-                {
-                    _kernel.QueryPerformanceCounter(p);
-                }
-            }
+            _kernel.QueryPerformanceCounter(ref _startTime);
         }
 
         public void EndRender(byte skip)

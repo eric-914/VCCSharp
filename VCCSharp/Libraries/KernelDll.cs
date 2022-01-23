@@ -26,10 +26,10 @@ namespace VCCSharp.Libraries
         public static extern int WritePrivateProfileStringA(string lpAppName, string lpKeyName, string lpString, string lpFileName);
 
         [DllImport(Dll)]
-        public static extern unsafe int QueryPerformanceCounter(LARGE_INTEGER* lpPerformanceCount);
+        public static extern int QueryPerformanceCounter(ref LARGE_INTEGER lpPerformanceCount);
 
         [DllImport(Dll)]
-        public static extern unsafe int QueryPerformanceFrequency(LARGE_INTEGER* lpFrequency);
+        public static extern int QueryPerformanceFrequency(ref LARGE_INTEGER lpFrequency);
 
         [DllImport(Dll)]
         public static extern unsafe int ReadFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToRead, uint* lpNumberOfBytesRead, void* lpOverlapped);

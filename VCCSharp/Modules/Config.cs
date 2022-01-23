@@ -334,94 +334,93 @@ namespace VCCSharp.Modules
             _user32.SetWindowPos(handle, Zero, 0, 0, width + 16, height + 81, (ushort)flags);
         }
 
-        public unsafe void LoadConfiguration(ConfigModel model, string iniFilePath)
+        public void LoadConfiguration(ConfigModel model, string iniFilePath)
         {
             byte[] buffer = new byte[Define.MAX_PATH];
 
-            fixed (byte* p = buffer)
-            {
-                //[Version]
-                //_kernel.GetPrivateProfileStringA("Version", "Release", "", model.Release, Define.MAX_LOADSTRING, iniFilePath);  //## Write-only ##//
+            //[Version]
+            //_kernel.GetPrivateProfileStringA("Version", "Release", "", model.Release, Define.MAX_LOADSTRING, iniFilePath);  //## Write-only ##//
 
-                //[CPU]
-                model.CPUMultiplier = (byte)_kernel.GetPrivateProfileIntA("CPU", "CPUMultiplier", 2, iniFilePath);
-                model.FrameSkip = (byte)_kernel.GetPrivateProfileIntA("CPU", "FrameSkip", 1, iniFilePath);
-                model.SpeedThrottle = (byte)_kernel.GetPrivateProfileIntA("CPU", "SpeedThrottle", 1, iniFilePath);
-                model.CpuType = (byte)_kernel.GetPrivateProfileIntA("CPU", "CpuType", 0, iniFilePath);
-                model.MaxOverclock = _kernel.GetPrivateProfileIntA("CPU", "MaxOverClock", 227, iniFilePath);
+            //[CPU]
+            model.CPUMultiplier = (byte)_kernel.GetPrivateProfileIntA("CPU", "CPUMultiplier", 2, iniFilePath);
+            model.FrameSkip = (byte)_kernel.GetPrivateProfileIntA("CPU", "FrameSkip", 1, iniFilePath);
+            model.SpeedThrottle = (byte)_kernel.GetPrivateProfileIntA("CPU", "SpeedThrottle", 1, iniFilePath);
+            model.CpuType = (byte)_kernel.GetPrivateProfileIntA("CPU", "CpuType", 0, iniFilePath);
+            model.MaxOverclock = _kernel.GetPrivateProfileIntA("CPU", "MaxOverClock", 227, iniFilePath);
 
-                //[Audio]
-                model.AudioRate = _kernel.GetPrivateProfileIntA("Audio", "AudioRate", 3, iniFilePath);
-                _kernel.GetPrivateProfileStringA("Audio", "SoundCardName", "", buffer, Define.MAX_LOADSTRING, iniFilePath);
+            //[Audio]
+            model.AudioRate = _kernel.GetPrivateProfileIntA("Audio", "AudioRate", 3, iniFilePath);
+            _kernel.GetPrivateProfileStringA("Audio", "SoundCardName", "", buffer, Define.MAX_LOADSTRING, iniFilePath);
 
-                model.SoundCardName = Converter.ToString(buffer);
+            model.SoundCardName = Converter.ToString(buffer);
 
-                //[Video]
-                model.MonitorType = (MonitorTypes)_kernel.GetPrivateProfileIntA("Video", "MonitorType", 1, iniFilePath);
-                model.PaletteType = (byte)_kernel.GetPrivateProfileIntA("Video", "PaletteType", 1, iniFilePath);
-                model.ScanLines = (byte)_kernel.GetPrivateProfileIntA("Video", "ScanLines", 0, iniFilePath);
-                model.ForceAspect = (byte)_kernel.GetPrivateProfileIntA("Video", "ForceAspect", 0, iniFilePath) != 0;
-                model.RememberSize = _kernel.GetPrivateProfileIntA("Video", "RememberSize", 0, iniFilePath) != 0;
-                model.WindowSizeX = (short)_kernel.GetPrivateProfileIntA("Video", "WindowSizeX", Define.DEFAULT_WIDTH, iniFilePath);
-                model.WindowSizeY = (short)_kernel.GetPrivateProfileIntA("Video", "WindowSizeY", Define.DEFAULT_HEIGHT, iniFilePath);
+            //[Video]
+            model.MonitorType = (MonitorTypes)_kernel.GetPrivateProfileIntA("Video", "MonitorType", 1, iniFilePath);
+            model.PaletteType = (byte)_kernel.GetPrivateProfileIntA("Video", "PaletteType", 1, iniFilePath);
+            model.ScanLines = (byte)_kernel.GetPrivateProfileIntA("Video", "ScanLines", 0, iniFilePath);
+            model.ForceAspect = (byte)_kernel.GetPrivateProfileIntA("Video", "ForceAspect", 0, iniFilePath) != 0;
+            model.RememberSize = _kernel.GetPrivateProfileIntA("Video", "RememberSize", 0, iniFilePath) != 0;
+            model.WindowSizeX =
+                (short)_kernel.GetPrivateProfileIntA("Video", "WindowSizeX", Define.DEFAULT_WIDTH, iniFilePath);
+            model.WindowSizeY =
+                (short)_kernel.GetPrivateProfileIntA("Video", "WindowSizeY", Define.DEFAULT_HEIGHT, iniFilePath);
 
-                //[Memory]
-                model.RamSize = (byte)_kernel.GetPrivateProfileIntA("Memory", "RamSize", 1, iniFilePath);
-                _kernel.GetPrivateProfileStringA("Memory", "ExternalBasicImage", "", buffer, Define.MAX_PATH, iniFilePath);
+            //[Memory]
+            model.RamSize = (byte)_kernel.GetPrivateProfileIntA("Memory", "RamSize", 1, iniFilePath);
+            _kernel.GetPrivateProfileStringA("Memory", "ExternalBasicImage", "", buffer, Define.MAX_PATH, iniFilePath);
 
-                model.ExternalBasicImage = Convert.ToString(buffer);
+            model.ExternalBasicImage = Convert.ToString(buffer);
 
-                //[Misc]
-                model.AutoStart = _kernel.GetPrivateProfileIntA("Misc", "AutoStart", 1, iniFilePath) != 0;
-                model.CartAutoStart = (byte)_kernel.GetPrivateProfileIntA("Misc", "CartAutoStart", 1, iniFilePath);
-                model.KeyMapIndex = (byte)_kernel.GetPrivateProfileIntA("Misc", "KeyMapIndex", 0, iniFilePath);
+            //[Misc]
+            model.AutoStart = _kernel.GetPrivateProfileIntA("Misc", "AutoStart", 1, iniFilePath) != 0;
+            model.CartAutoStart = (byte)_kernel.GetPrivateProfileIntA("Misc", "CartAutoStart", 1, iniFilePath);
+            model.KeyMapIndex = (byte)_kernel.GetPrivateProfileIntA("Misc", "KeyMapIndex", 0, iniFilePath);
 
-                //[Module]
-                _kernel.GetPrivateProfileStringA("Module", "ModulePath", "", buffer, Define.MAX_PATH, iniFilePath);
+            //[Module]
+            _kernel.GetPrivateProfileStringA("Module", "ModulePath", "", buffer, Define.MAX_PATH, iniFilePath);
 
-                model.ModulePath = Converter.ToString(buffer);
+            model.ModulePath = Converter.ToString(buffer);
 
-                //[LeftJoyStick]
-                var left = GetLeftJoystick();
-                left.UseMouse = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "UseMouse", 1, iniFilePath);
-                left.Left = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Left", 75, iniFilePath);
-                left.Right = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Right", 77, iniFilePath);
-                left.Up = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Up", 72, iniFilePath);
-                left.Down = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Down", 80, iniFilePath);
-                left.Fire1 = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Fire1", 59, iniFilePath);
-                left.Fire2 = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Fire2", 60, iniFilePath);
-                left.DiDevice = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "DiDevice", 0, iniFilePath);
-                left.HiRes = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "HiResDevice", 0, iniFilePath);
+            //[LeftJoyStick]
+            var left = GetLeftJoystick();
+            left.UseMouse = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "UseMouse", 1, iniFilePath);
+            left.Left = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Left", 75, iniFilePath);
+            left.Right = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Right", 77, iniFilePath);
+            left.Up = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Up", 72, iniFilePath);
+            left.Down = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Down", 80, iniFilePath);
+            left.Fire1 = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Fire1", 59, iniFilePath);
+            left.Fire2 = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "Fire2", 60, iniFilePath);
+            left.DiDevice = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "DiDevice", 0, iniFilePath);
+            left.HiRes = (byte)_kernel.GetPrivateProfileIntA("LeftJoyStick", "HiResDevice", 0, iniFilePath);
 
-                //[RightJoyStick]
-                var right = GetRightJoystick();
-                right.UseMouse = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "UseMouse", 1, iniFilePath);
-                right.Left = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Left", 75, iniFilePath);
-                right.Right = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Right", 77, iniFilePath);
-                right.Up = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Up", 72, iniFilePath);
-                right.Down = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Down", 80, iniFilePath);
-                right.Fire1 = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Fire1", 59, iniFilePath);
-                right.Fire2 = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Fire2", 60, iniFilePath);
-                right.DiDevice = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "DiDevice", 0, iniFilePath);
-                right.HiRes = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "HiResDevice", 0, iniFilePath);
+            //[RightJoyStick]
+            var right = GetRightJoystick();
+            right.UseMouse = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "UseMouse", 1, iniFilePath);
+            right.Left = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Left", 75, iniFilePath);
+            right.Right = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Right", 77, iniFilePath);
+            right.Up = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Up", 72, iniFilePath);
+            right.Down = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Down", 80, iniFilePath);
+            right.Fire1 = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Fire1", 59, iniFilePath);
+            right.Fire2 = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "Fire2", 60, iniFilePath);
+            right.DiDevice = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "DiDevice", 0, iniFilePath);
+            right.HiRes = (byte)_kernel.GetPrivateProfileIntA("RightJoyStick", "HiResDevice", 0, iniFilePath);
 
-                //[DefaultPaths]
-                _kernel.GetPrivateProfileStringA("DefaultPaths", "CassPath", "", buffer, Define.MAX_PATH, iniFilePath);
-                model.CassPath = Converter.ToString(buffer);
+            //[DefaultPaths]
+            _kernel.GetPrivateProfileStringA("DefaultPaths", "CassPath", "", buffer, Define.MAX_PATH, iniFilePath);
+            model.CassPath = Converter.ToString(buffer);
 
-                _kernel.GetPrivateProfileStringA("DefaultPaths", "FloppyPath", "", buffer, Define.MAX_PATH, iniFilePath);
-                model.FloppyPath = Converter.ToString(buffer);
+            _kernel.GetPrivateProfileStringA("DefaultPaths", "FloppyPath", "", buffer, Define.MAX_PATH, iniFilePath);
+            model.FloppyPath = Converter.ToString(buffer);
 
-                _kernel.GetPrivateProfileStringA("DefaultPaths", "CoCoRomPath", "", buffer, Define.MAX_PATH, iniFilePath);
-                model.CoCoRomPath = Converter.ToString(buffer);
+            _kernel.GetPrivateProfileStringA("DefaultPaths", "CoCoRomPath", "", buffer, Define.MAX_PATH, iniFilePath);
+            model.CoCoRomPath = Converter.ToString(buffer);
 
-                _kernel.GetPrivateProfileStringA("DefaultPaths", "SerialCaptureFilePath", "", buffer, Define.MAX_PATH, iniFilePath);
-                model.SerialCaptureFilePath = Converter.ToString(buffer);
+            _kernel.GetPrivateProfileStringA("DefaultPaths", "SerialCaptureFilePath", "", buffer, Define.MAX_PATH,
+                iniFilePath);
+            model.SerialCaptureFilePath = Converter.ToString(buffer);
 
-                _kernel.GetPrivateProfileStringA("DefaultPaths", "PakPath", "", buffer, Define.MAX_PATH, iniFilePath);
-                model.PakPath = Converter.ToString(buffer);
-
-            }
+            _kernel.GetPrivateProfileStringA("DefaultPaths", "PakPath", "", buffer, Define.MAX_PATH, iniFilePath);
+            model.PakPath = Converter.ToString(buffer);
         }
 
         public void SaveConfig()

@@ -14,8 +14,8 @@ namespace VCCSharp.Libraries
         ushort GetPrivateProfileIntA(string lpAppName, string lpKeyName, short nDefault, string lpFileName);
         uint GetPrivateProfileStringA(string lpAppName, string lpKeyName, string lpDefault, byte[] lpReturnedString, uint nSize, string lpFileName);
         int WritePrivateProfileStringA(string lpAppName, string lpKeyName, string lpString, string lpFileName);
-        unsafe int QueryPerformanceCounter(LARGE_INTEGER* lpPerformanceCount);
-        unsafe int QueryPerformanceFrequency(LARGE_INTEGER* lpFrequency);
+        int QueryPerformanceCounter(ref LARGE_INTEGER lpPerformanceCount);
+        int QueryPerformanceFrequency(ref LARGE_INTEGER lpFrequency);
         unsafe int ReadFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToRead, uint* lpNumberOfBytesRead, void* lpOverlapped);
         uint SetFilePointer(IntPtr hFile, uint dwMoveMethod, uint lDistanceToMove = 0);
         int FreeConsole();
@@ -45,11 +45,11 @@ namespace VCCSharp.Libraries
         public int WritePrivateProfileStringA(string lpAppName, string lpKeyName, string lpString, string lpFileName)
             => KernelDll.WritePrivateProfileStringA(lpAppName, lpKeyName, lpString, lpFileName);
 
-        public unsafe int QueryPerformanceCounter(LARGE_INTEGER* lpPerformanceCount)
-            => KernelDll.QueryPerformanceCounter(lpPerformanceCount);
+        public int QueryPerformanceCounter(ref LARGE_INTEGER lpPerformanceCount)
+            => KernelDll.QueryPerformanceCounter(ref lpPerformanceCount);
 
-        public unsafe int QueryPerformanceFrequency(LARGE_INTEGER* lpFrequency)
-            => KernelDll.QueryPerformanceFrequency(lpFrequency);
+        public int QueryPerformanceFrequency(ref LARGE_INTEGER lpFrequency)
+            => KernelDll.QueryPerformanceFrequency(ref lpFrequency);
 
         public unsafe int ReadFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToRead, uint* lpNumberOfBytesRead, void* lpOverlapped)
             => KernelDll.ReadFile(hFile, lpBuffer, nNumberOfBytesToRead, lpNumberOfBytesRead, lpOverlapped);
