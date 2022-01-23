@@ -1,5 +1,5 @@
 ﻿// ReSharper disable IdentifierTypo
-using DX8;
+
 using DX8.Converters;
 using DX8.Interfaces;
 using DX8.Libraries;
@@ -7,12 +7,11 @@ using DX8.Models;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using VCCSharp.Models;
 using static System.IntPtr;
 using HWND = System.IntPtr;
 using LPVOID = System.IntPtr;
 
-namespace VCCSharp.DX8
+namespace DX8
 {
     public interface IDxSound
     {
@@ -70,7 +69,7 @@ namespace VCCSharp.DX8
 
         public bool SetCooperativeLevel(HWND hWnd)
         {
-            return _ds.SetCooperativeLevel(hWnd, Define.DSSCL_NORMAL) == Define.S_OK;
+            return _ds.SetCooperativeLevel(hWnd, DxDefine.DSSCL_NORMAL) == DxDefine.S_OK;
         }
 
         private bool CreateDirectSoundBuffer(DSBUFFERDESC bufferDescription)
@@ -82,16 +81,16 @@ namespace VCCSharp.DX8
 
         private static WAVEFORMATEX CreateWaveFormat(ushort bitRate)
         {
-            uint avgBytesPerSec = (uint)(bitRate * Define.BLOCKALIGN);
+            uint avgBytesPerSec = (uint)(bitRate * DxDefine.BLOCKALIGN);
 
             // generic wave format structure
             return new WAVEFORMATEX
             {
-                wFormatTag = Define.WAVE_FORMAT_PCM,
-                nChannels = Define.CHANNELS,
+                wFormatTag = DxDefine.WAVE_FORMAT_PCM,
+                nChannels = DxDefine.CHANNELS,
                 nSamplesPerSec = bitRate,
-                wBitsPerSample = Define.BITSPERSAMPLE,
-                nBlockAlign = Define.BLOCKALIGN,
+                wBitsPerSample = DxDefine.BITSPERSAMPLE,
+                nBlockAlign = DxDefine.BLOCKALIGN,
                 nAvgBytesPerSec = avgBytesPerSec,
                 cbSize = 0
             };
@@ -99,7 +98,7 @@ namespace VCCSharp.DX8
 
         private static DSBUFFERDESC CreateBufferDescription(int length, ref WAVEFORMATEX waveFormat)
         {
-            int flags = Define.DSBCAPS_GETCURRENTPOSITION2 | Define.DSBCAPS_LOCSOFTWARE | Define.DSBCAPS_STATIC | Define.DSBCAPS_GLOBALFOCUS;
+            int flags = DxDefine.DSBCAPS_GETCURRENTPOSITION2 | DxDefine.DSBCAPS_LOCSOFTWARE | DxDefine.DSBCAPS_STATIC | DxDefine.DSBCAPS_GLOBALFOCUS;
 
             return new DSBUFFERDESC
             {
@@ -122,7 +121,7 @@ namespace VCCSharp.DX8
                 _guids.Add(guid);
                 names.Add(text);
 
-                return names.Count < Define.MAXCARDS ? Define.TRUE : Define.FALSE;
+                return names.Count < DxDefine.MAXCARDS ? DxDefine.TRUE : DxDefine.FALSE;
             }
 
             IntPtr fn = Marshal.GetFunctionPointerForDelegate((DirectSoundEnumerateCallbackTemplate)Callback);
@@ -133,7 +132,7 @@ namespace VCCSharp.DX8
         }
 
         public void Stop() => _buffer.Stop();
-        public void Play() => _buffer.Play(0, 0, Define.DSBPLAY_LOOPING);
+        public void Play() => _buffer.Play(0, 0, DxDefine.DSBPLAY_LOOPING);
         public void Reset() => _buffer.SetCurrentPosition(0);
 
         public int ReadPlayCursor()
@@ -156,12 +155,12 @@ namespace VCCSharp.DX8
             _sndPointer1 = s1;
             _sndPointer2 = s2;
 
-            return result == Define.S_OK;
+            return result == DxDefine.S_OK;
         }
 
         public bool Unlock()
         {
-            return _buffer.Unlock(_sndPointer1, _sndLength1, _sndPointer2, _sndLength2) == Define.S_OK;
+            return _buffer.Unlock(_sndPointer1, _sndLength1, _sndPointer2, _sndLength2) == DxDefine.S_OK;
         }
 
         public bool CreateDirectSoundBuffer(ushort bitRate, int length)

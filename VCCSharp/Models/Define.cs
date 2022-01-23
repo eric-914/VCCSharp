@@ -19,8 +19,6 @@ namespace VCCSharp.Models
 
         public const long S_OK = 0;
 
-        public const int MAXCARDS = 12;
-
         public const ushort FRAMEINTERVAL = 120;
         public const int TARGETFRAMERATE = 60;
         public const int LINESPERFIELD = 262;
@@ -30,9 +28,6 @@ namespace VCCSharp.Models
         public const double COLORBURST = 3579545;
 
         public const int AUDIOBUFFERS = 12;
-        public const ushort CHANNELS = 2;
-        public const ushort BITSPERSAMPLE = 16;
-        public const ushort BLOCKALIGN = (BITSPERSAMPLE * CHANNELS) >> 3;
 
         public const int TAPEAUDIORATE = 44100;
 
@@ -289,13 +284,6 @@ namespace VCCSharp.Models
 
         public const int PAK_MAX_MEM = 0x40000;
 
-        public const int DSBCAPS_STATIC = 0x00000002;
-        public const int DSBCAPS_LOCSOFTWARE = 0x00000008;
-        public const int DSBCAPS_GLOBALFOCUS = 0x00008000;
-        public const int DSBCAPS_GETCURRENTPOSITION2 = 0x00010000;
-
-        public const int DSSCL_NORMAL = 0x00000001;
-
         public const int DEFAULT_WIDTH = 640;
         public const int DEFAULT_HEIGHT = 480;
 
@@ -306,10 +294,6 @@ namespace VCCSharp.Models
         public const uint OPEN_ALWAYS = 4;
 
         public const uint FILE_ATTRIBUTE_NORMAL = 0x00000080;
-
-        public const ushort WAVE_FORMAT_PCM = 1;
-
-        public const uint DSBPLAY_LOOPING = 0x00000001;
 
         public const uint MAX_JOYSTICKS = 8;
 

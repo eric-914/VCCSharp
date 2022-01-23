@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DX8;
 using VCCSharp.DX8;
 using VCCSharp.IoC;
 using VCCSharp.Models;
