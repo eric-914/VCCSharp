@@ -73,10 +73,10 @@ namespace VCCSharp.DX8
 
                 SetJoystickProperties(joystick);
 
-                return names.Count < Define.MAX_JOYSTICKS ? Define.TRUE : Define.FALSE;
+                return names.Count < DxDefine.MAX_JOYSTICKS ? DxDefine.TRUE : DxDefine.FALSE;
             }
 
-            long hr = _di.EnumDevices(Define.DI8DEVCLASS_GAMECTRL, Callback, IntPtr.Zero, Define.DIEDFL_ATTACHEDONLY);
+            long hr = _di.EnumDevices(DxDefine.DI8DEVCLASS_GAMECTRL, Callback, IntPtr.Zero, DxDefine.DIEDFL_ATTACHEDONLY);
 
             if (hr < 0)
             {
@@ -99,7 +99,7 @@ namespace VCCSharp.DX8
                 {
                     dwSize = (uint)DIPROPRANGE.Size,
                     dwHeaderSize = (uint)DIPROPHEADER.Size,
-                    dwHow = Define.DIPH_BYID,
+                    dwHow = DxDefine.DIPH_BYID,
                     dwObj = p.dwType
                 };
 
@@ -113,7 +113,7 @@ namespace VCCSharp.DX8
                 long hr = device.SetProperty(guidPropertyRange, ref d.diph);
 
                 //--This will iterate a few times per joystick.
-                return hr < 0 ? Define.DIENUM_STOP : Define.DIENUM_CONTINUE;
+                return hr < 0 ? DxDefine.DIENUM_STOP : DxDefine.DIENUM_CONTINUE;
             }
 
             //--Manually recreate: c_dfDIJoystick2
@@ -126,7 +126,7 @@ namespace VCCSharp.DX8
                 throw new Exception("Failed to set data format on joystick");
             }
 
-            hr = device.EnumObjects(Callback, IntPtr.Zero, Define.DIDFT_AXIS);
+            hr = device.EnumObjects(Callback, IntPtr.Zero, DxDefine.DIDFT_AXIS);
 
             if (hr < 0)
             {
@@ -140,30 +140,36 @@ namespace VCCSharp.DX8
 
             long hr = JoystickPoll(state, _devices[id]);
 
-            if (hr != Define.S_OK)
+            if (hr != DxDefine.S_OK)
             {
                 Debug.WriteLine($"Bad joystick poll: {hr}");
             }
 
-            unsafe
-            {
-                byte* p = &state.rgbButtons;
+            //TODO: Need to confirm reading the button array works before deleting this.
+            //unsafe
+            //{
+                //byte* p = &state.rgbButtons;
+                //int b1 = p[0];
+                //int b2 = p[1];
+            //}
 
-                return new JoystickState
-                {
-                    X = state.lX >> 10,
-                    Y = state.lY >> 10,
-                    Button1 = p[0] >> 7,
-                    Button2 = p[1] >> 7,
-                };
-            }
+            int b1 = state.rgbButtons[0];
+            int b2 = state.rgbButtons[1];
+
+            return new JoystickState
+            {
+                X = state.lX >> 10,
+                Y = state.lY >> 10,
+                Button1 = b1 >> 7,
+                Button2 = b2 >> 7,
+            };
         }
 
         private static long JoystickPoll(DIJOYSTATE2 state, IDirectInputDevice stick)
         {
             if (stick == null)
             {
-                return Define.S_OK;
+                return DxDefine.S_OK;
             }
 
             long hr = stick.Poll();
@@ -172,18 +178,18 @@ namespace VCCSharp.DX8
             {
                 hr = stick.Acquire();
 
-                while (hr == Define.DIERR_INPUTLOST)
+                while (hr == DxDefine.DIERR_INPUTLOST)
                 {
                     hr = stick.Acquire();
                 }
 
                 switch (hr)
                 {
-                    case Define.DIERR_INVALIDPARAM:
-                        return Define.E_FAIL;
+                    case DxDefine.DIERR_INVALIDPARAM:
+                        return DxDefine.E_FAIL;
 
-                    case Define.DIERR_OTHERAPPHASPRIO:
-                        return Define.S_OK;
+                    case DxDefine.DIERR_OTHERAPPHASPRIO:
+                        return DxDefine.S_OK;
                 }
             }
 
@@ -197,7 +203,7 @@ namespace VCCSharp.DX8
 
             //TODO: un-acquire?
 
-            return hr < 0 ? hr : Define.S_OK;
+            return hr < 0 ? hr : DxDefine.S_OK;
         }
     }
 }
