@@ -30,8 +30,6 @@ namespace VCCSharp.Models.CPU.HD6309
         public byte _42 { get; set; } = 4;
         public byte _53 { get; set; } = 5;
 
-        //public unsafe fixed byte InsCycles[2 * 25]; //[2][25];
-
         public byte[,] InsCycles =
         {
             {6, 5},    /* M65 */
@@ -59,8 +57,6 @@ namespace VCCSharp.Models.CPU.HD6309
             {4, 2},    /* M42 */
             {5, 3}     /* M53 */
         };
-
-        //public unsafe fixed long /* byte* */ NatEmuCycles[24];
 
         public byte this[int index]
         {

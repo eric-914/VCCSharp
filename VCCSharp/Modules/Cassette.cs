@@ -265,19 +265,14 @@ namespace VCCSharp.Modules
 
         //public void SetTapeCounter(uint count)
         //{
-        //    unsafe
+        //    TapeOffset = count;
+
+        //    if (TapeOffset > _totalSize)
         //    {
-        //        CassetteState* instance = GetCassetteState();
-
-        //        instance->TapeOffset = count;
-
-        //        if (instance->TapeOffset > instance->TotalSize)
-        //        {
-        //            instance->TotalSize = instance->TapeOffset;
-        //        }
-
-        //        UpdateTapeDialog((int)instance->TapeOffset);
+        //        _totalSize = TapeOffset;
         //    }
+
+        //    UpdateTapeDialog((int)TapeOffset);
         //}
 
         public void CloseTapeFile()
