@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace VCCSharp.Modules.TC1014
 {
@@ -49,25 +50,25 @@ namespace VCCSharp.Modules.TC1014
         }
     }
 
-    public unsafe class IntPointer
+    public class IntPointer
     {
-        private readonly uint* _pointer;
+        private readonly IntPtr _pointer;
 
         public IntPointer(IntPtr pointer)
         {
-            _pointer = (uint*)pointer;
+            _pointer = pointer;
         }
 
         public uint this[int index]
         {
-            get => _pointer[index];
-            set => _pointer[index] = value;
+            get => (uint)Marshal.ReadInt32(_pointer, index << 2);
+            set => Marshal.WriteInt32(_pointer, index << 2, (int)value);
         }
 
         public uint this[long index]
         {
-            get => _pointer[index];
-            set => _pointer[index] = value;
+            get => this[(int)index];
+            set => this[(int)index] = value;
         }
     }
 }
