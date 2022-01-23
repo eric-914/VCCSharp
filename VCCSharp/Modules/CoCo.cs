@@ -74,6 +74,8 @@ namespace VCCSharp.Modules
         private readonly uint[] _audioBuffer = new uint[16384];
         private readonly byte[] _cassetteBuffer = new byte[8192];
 
+        private DACSample _dacSample = new DACSample();
+
         public int OverClock { get; set; }
 
         public CoCo(IModules modules)
@@ -680,7 +682,9 @@ namespace VCCSharp.Modules
         {
             void AudioOut()
             {
-                _audioBuffer[_audioIndex++] = _modules.MC6821.GetDACSample();
+                _modules.MC6821.GetDACSample(_dacSample);
+
+                _audioBuffer[_audioIndex++] = _dacSample.Sample;
             }
 
             _audioEvent = AudioOut;
@@ -700,7 +704,9 @@ namespace VCCSharp.Modules
         {
             void CassetteIn()
             {
-                _audioBuffer[_audioIndex] = _modules.MC6821.GetDACSample();
+                _modules.MC6821.GetDACSample(_dacSample);
+
+                _audioBuffer[_audioIndex] = _dacSample.Sample;
 
                 _modules.MC6821.SetCassetteSample(_cassetteBuffer[_audioIndex++]);
             }

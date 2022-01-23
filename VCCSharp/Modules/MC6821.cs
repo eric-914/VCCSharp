@@ -25,7 +25,7 @@ namespace VCCSharp.Modules
 
         byte GetMuxState();
         byte DACState();
-        uint GetDACSample();
+        void GetDACSample(DACSample dacSample);
         void SetCassetteSample(byte sample);
         byte GetCassetteSample();
     }
@@ -52,8 +52,6 @@ namespace VCCSharp.Modules
         private byte _aSample;
         private byte _sSample;
         private byte _cSample;
-
-        private int _outLeft, _outRight, _lastLeft, _lastRight;
 
         public byte CartAutoStart;
 
@@ -504,7 +502,7 @@ namespace VCCSharp.Modules
             _addLf = textMode;
         }
 
-        public uint GetDACSample()
+        public void GetDACSample(DACSample dacSample)
         {
             int pakSample = _modules.PAKInterface.PakAudioSample();
 
@@ -512,35 +510,33 @@ namespace VCCSharp.Modules
             var sampleRight = (pakSample & 0xFF) + _aSample + _sSample;
 
             sampleLeft <<= 6;   //Convert to 16 bit values
-            sampleRight <<= 6; //For Max volume
+            sampleRight <<= 6;  //For Max volume
 
-            if (sampleLeft == _lastLeft) //Simulate a slow high pass filter
+            if (sampleLeft == dacSample.LastLeft) //Simulate a slow high pass filter
             {
-                if (_outLeft != 0)
+                if (dacSample.OutLeft != 0)
                 {
-                    _outLeft--;
+                    dacSample.OutLeft--;
                 }
             }
             else
             {
-                _outLeft = sampleLeft;
-                _lastLeft = sampleLeft;
+                dacSample.OutLeft = sampleLeft;
+                dacSample.LastLeft = sampleLeft;
             }
 
-            if (sampleRight == _lastRight)
+            if (sampleRight == dacSample.LastRight)
             {
-                if (_outRight != 0)
+                if (dacSample.OutRight != 0)
                 {
-                    _outRight--;
+                    dacSample.OutRight--;
                 }
             }
             else
             {
-                _outRight = sampleRight;
-                _lastRight = sampleRight;
+                dacSample.OutRight = sampleRight;
+                dacSample.LastRight = sampleRight;
             }
-
-            return (uint)((_outLeft << 16) + (_outRight));
         }
 
         public void SetCassetteSample(byte sample)
