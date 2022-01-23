@@ -1,6 +1,7 @@
 ﻿using DX8.Models;
 using System;
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 namespace DX8.Converters
 {
@@ -9,8 +10,8 @@ namespace DX8.Converters
         public static string ToString(_GUID guid)
         {
             string c1 = $"{guid.Data1:X8}";
-            string c2 = $"{guid.Data2:X8}".Substring(4,4);
-            string c3 = $"{guid.Data3:X8}".Substring(4,4);
+            string c2 = $"{guid.Data2:X8}".Substring(4, 4);
+            string c3 = $"{guid.Data3:X8}".Substring(4, 4);
 
             uint d0 = guid.Data4[0];
             uint d1 = guid.Data4[1];
@@ -25,8 +26,8 @@ namespace DX8.Converters
             uint d4b = d2 << 8 | d3;
             uint d4c = d4 << 24 | d5 << 16 | d6 << 8 | d7;
 
-            string c4a = $"{d4a:X8}".Substring(4,4);
-            string c4b = $"{d4b:X8}".Substring(4,4);
+            string c4a = $"{d4a:X8}".Substring(4, 4);
+            string c4b = $"{d4b:X8}".Substring(4, 4);
             string c4c = $"{d4c:X8}";
 
             return $"{c1}-{c2}-{c3}-{c4a}-{c4b}{c4c}";
@@ -37,8 +38,8 @@ namespace DX8.Converters
             var g = new _GUID
             {
                 Data1 = uint.Parse(s.Substring(0, 8), NumberStyles.AllowHexSpecifier),
-                Data2 = ushort.Parse(s.Substring(9,4), NumberStyles.AllowHexSpecifier),
-                Data3 = ushort.Parse(s.Substring(14,4), NumberStyles.AllowHexSpecifier),
+                Data2 = ushort.Parse(s.Substring(9, 4), NumberStyles.AllowHexSpecifier),
+                Data3 = ushort.Parse(s.Substring(14, 4), NumberStyles.AllowHexSpecifier),
             };
 
             g.Data4[0] = byte.Parse(s.Substring(19, 2), NumberStyles.AllowHexSpecifier);
@@ -54,5 +55,33 @@ namespace DX8.Converters
         }
 
         public static IntPtr ToIntPtr(_GUID guid) => IntPtrConverter.Convert(guid);
+
+        public static _GUID ToGuid(IntPtr pGuid)
+        {
+            if (pGuid == IntPtr.Zero) return new _GUID();
+
+            int len = Marshal.SizeOf(typeof(_GUID)); 
+            byte[] destination = new byte[len];
+
+            //--Copy pGuid contents into byte array
+            Marshal.Copy(pGuid, destination, 0, len); 
+
+            IntPtr ptr = Marshal.AllocHGlobal(len);
+            
+            //--Copy byte array into new _Guid
+            Marshal.Copy(destination, 0, ptr, len);
+
+            object o = Marshal.PtrToStructure(ptr, typeof(_GUID));
+            if (o == null)
+            {
+                throw new NullReferenceException("Failed to convert IntPtr to _GUID");
+            }
+
+            _GUID guid = (_GUID)o;
+
+            Marshal.FreeHGlobal(ptr);
+
+            return guid;
+        }
     }
 }

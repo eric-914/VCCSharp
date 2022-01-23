@@ -6,6 +6,7 @@ using DX8.Models;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using DX8.Converters;
 using VCCSharp.Models;
 using HWND = System.IntPtr;
 using LPVOID = System.IntPtr;
@@ -117,14 +118,11 @@ namespace VCCSharp.DX8
 
             int Callback(IntPtr pGuid, IntPtr description, IntPtr module, IntPtr context)
             {
-                unsafe
-                {
-                    _GUID guid = pGuid != Zero ? *(_GUID*)pGuid : new _GUID();
-                    string text = Converter.ToString((byte*)description);
+                _GUID guid = GuidConverter.ToGuid(pGuid);
+                string text = Converter.ToString(description);
 
-                    _guids.Add(guid);
-                    names.Add(text);
-                }
+                _guids.Add(guid);
+                names.Add(text);
 
                 return names.Count < Define.MAXCARDS ? Define.TRUE : Define.FALSE;
             }
