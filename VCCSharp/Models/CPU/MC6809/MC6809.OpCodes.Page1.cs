@@ -214,33 +214,21 @@
 
         public void Lbra_R() // 16
         {
-            unsafe
-            {
-                fixed (ushort* p = &_postWord)
-                {
-                    *p = MemRead16(PC_REG);
-                    PC_REG += 2;
-                    PC_REG += *p;
-                }
-            }
+            _postWord = MemRead16(PC_REG);
+            PC_REG += 2;
+            PC_REG += _postWord;
 
             _cycleCounter += 5;
         }
 
         public void Lbsr_R() // 17
         {
-            unsafe
-            {
-                fixed (ushort* p = &_postWord)
-                {
-                    *p = MemRead16(PC_REG);
-                    PC_REG += 2;
-                    S_REG--;
-                    MemWrite8(PC_L, S_REG--);
-                    MemWrite8(PC_H, S_REG);
-                    PC_REG += *p;
-                }
-            }
+            _postWord = MemRead16(PC_REG);
+            PC_REG += 2;
+            S_REG--;
+            MemWrite8(PC_L, S_REG--);
+            MemWrite8(PC_H, S_REG);
+            PC_REG += _postWord;
 
             _cycleCounter += 9;
         }
