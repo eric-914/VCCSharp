@@ -84,17 +84,11 @@ namespace VCCSharp
             {
                 _modules.Vcc.CheckScreenModeChange();
 
-                unsafe
-                {
-                    fixed (MSG* msg = &(Msg))
-                    {
-                        _user32.GetMessageA(msg, Zero, 0, 0);   //Seems if the main loop stops polling for Messages the child threads stall
+                _user32.GetMessageA(ref Msg, Zero, 0, 0);   //Seems if the main loop stops polling for Messages the child threads stall
 
-                        _user32.TranslateMessage(msg);
+                _user32.TranslateMessage(ref Msg);
 
-                        _user32.DispatchMessageA(msg);
-                    }
-                }
+                _user32.DispatchMessageA(ref Msg);
             }
         }
 

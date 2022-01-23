@@ -2,7 +2,6 @@
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using VCCSharp.Libraries.Models;
-using VCCSharp.Models;
 using HWND = System.IntPtr;
 using LRESULT = System.IntPtr;
 
@@ -13,13 +12,13 @@ namespace VCCSharp.Libraries
         public const string Dll = "User32.dll";
 
         [DllImport(Dll)]
-        public static extern unsafe int GetMessageA(MSG* lpMsg, HWND hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+        public static extern int GetMessageA(ref MSG lpMsg, HWND hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
 
         [DllImport(Dll)]
-        public static extern unsafe int TranslateMessage(MSG* lpMsg);
+        public static extern int TranslateMessage(ref MSG lpMsg);
 
         [DllImport(Dll)]
-        public static extern unsafe LRESULT DispatchMessageA(MSG* lpMsg);
+        public static extern LRESULT DispatchMessageA(ref MSG lpMsg);
 
         [DllImport(Dll)]
         public static extern int ShowWindow(HWND hWnd, int nCmdShow);
