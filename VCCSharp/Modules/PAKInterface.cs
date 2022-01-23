@@ -297,13 +297,7 @@ namespace VCCSharp.Modules
                 string text = (_modules.Emu.StatusLine ?? "") + "...";
                 byte[] status = Converter.ToByteArray(text);
 
-                unsafe
-                {
-                    fixed (byte* p = status)
-                    {
-                        InvokeModuleStatus(p);
-                    }
-                }
+                InvokeModuleStatus(status);
             }
             else
             {
@@ -489,7 +483,7 @@ namespace VCCSharp.Modules
             fn();
         }
 
-        public unsafe void InvokeModuleStatus(byte* statusLine)
+        public void InvokeModuleStatus(byte[] statusLine)
         {
             IntPtr p = _d.ModuleStatus;
 
@@ -512,27 +506,21 @@ namespace VCCSharp.Modules
         public string InvokeGetModuleName()
         {
             //Instantiate the menus from HERE!
-            unsafe
-            {
-                _dynamicMenuCallback = _modules.MenuCallbacks.BuildCartridgeMenu;
-                IntPtr callback = Marshal.GetFunctionPointerForDelegate(_dynamicMenuCallback);
+            _dynamicMenuCallback = _modules.MenuCallbacks.BuildCartridgeMenu;
+            IntPtr callback = Marshal.GetFunctionPointerForDelegate(_dynamicMenuCallback);
 
-                DYNAMICMENUCALLBACK fnx = Marshal.GetDelegateForFunctionPointer<DYNAMICMENUCALLBACK>(callback);
+            DYNAMICMENUCALLBACK fnx = Marshal.GetDelegateForFunctionPointer<DYNAMICMENUCALLBACK>(callback);
 
-                IntPtr p = _d.GetModuleName;
+            IntPtr p = _d.GetModuleName;
 
-                GETMODULENAME fn = Marshal.GetDelegateForFunctionPointer<GETMODULENAME>(p);
+            GETMODULENAME fn = Marshal.GetDelegateForFunctionPointer<GETMODULENAME>(p);
 
-                var buffer = new byte[256];
+            var buffer = new byte[256];
 
-                fixed (byte* b = buffer)
-                {
-                    //TODO: Does catNumber serve a purpose
-                    fn(b, "", fnx);
-                }
+            //TODO: Does catNumber serve a purpose
+            fn(buffer, "", fnx);
 
-                return Converter.ToString(buffer);
-            }
+            return Converter.ToString(buffer);
         }
 
         public void InvokeConfigModule(byte menuItem)
