@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DX8;
 using VCCSharp.DX8;
 using VCCSharp.Libraries;
 using VCCSharp.Models;

@@ -1,5 +1,4 @@
-﻿using DX8;
-using DX8.Converters;
+﻿using DX8.Converters;
 using DX8.Formats;
 using DX8.Interfaces;
 using DX8.Libraries;
@@ -8,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace VCCSharp.DX8
+namespace DX8
 {
     public interface IDxInput
     {
