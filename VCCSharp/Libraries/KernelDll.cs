@@ -52,13 +52,13 @@ namespace VCCSharp.Libraries
         public static extern uint FlushFileBuffers(HANDLE hFile);
 
         [DllImport(Dll)]
-        public static extern unsafe uint ReadFile(HANDLE hFile, byte* lpBuffer, ulong nNumberOfBytesToRead, ulong* lpNumberOfBytesRead, IntPtr lpOverlapped);
+        public static extern uint ReadFile(HANDLE hFile, byte[] lpBuffer, ulong nNumberOfBytesToRead, ref ulong lpNumberOfBytesRead, IntPtr lpOverlapped);
 
         [DllImport(Dll)]
         public static extern HANDLE CreateFileA(string lpFileName, uint dwDesiredAccess, uint dwShareMode, IntPtr lpSecurityAttributes, uint dwCreationDisposition, uint dwFlagsAndAttributes, HANDLE hTemplateFile);
 
         [DllImport(Dll)]
-        public static extern unsafe uint WriteFile(HANDLE hFile, string lpBuffer, uint nNumberOfBytesToWrite, ulong* lpNumberOfBytesWritten, IntPtr lpOverlapped);
+        public static extern uint WriteFile(HANDLE hFile, string lpBuffer, uint nNumberOfBytesToWrite, ref ulong lpNumberOfBytesWritten, IntPtr lpOverlapped);
 
         [DllImport(Dll)]
         public static extern HMODULE GetModuleHandleA(IntPtr lpModuleName);

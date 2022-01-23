@@ -23,7 +23,7 @@ namespace VCCSharp.Libraries
         int CloseHandle(HANDLE hObject);
         IntPtr GetProcAddress(HMODULE hModule, string lpProcName);
         uint FlushFileBuffers(HANDLE hFile);
-        unsafe uint ReadFile(HANDLE hFile, byte* lpBuffer, ulong nNumberOfBytesToRead, ulong* lpNumberOfBytesRead);
+        uint ReadFile(HANDLE hFile, byte[] lpBuffer, ulong nNumberOfBytesToRead, ref ulong lpNumberOfBytesRead);
         HANDLE CreateFile(string filename, uint desiredAccess, uint dwCreationDisposition);
         uint WriteFile(HANDLE hFile, string lpBuffer, uint nNumberOfBytesToWrite);
         unsafe uint WriteFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToWrite);
@@ -70,17 +70,17 @@ namespace VCCSharp.Libraries
         public uint FlushFileBuffers(HANDLE hFile)
             => KernelDll.FlushFileBuffers(hFile);
 
-        public unsafe uint ReadFile(HANDLE hFile, byte* lpBuffer, ulong nNumberOfBytesToRead, ulong* lpNumberOfBytesRead)
-            => KernelDll.ReadFile(hFile, lpBuffer, nNumberOfBytesToRead, lpNumberOfBytesRead, Zero);
+        public uint ReadFile(HANDLE hFile, byte[] lpBuffer, ulong nNumberOfBytesToRead, ref ulong lpNumberOfBytesRead)
+            => KernelDll.ReadFile(hFile, lpBuffer, nNumberOfBytesToRead, ref lpNumberOfBytesRead, Zero);
 
         public HANDLE CreateFile(string filename, uint desiredAccess, uint dwCreationDisposition)
             => KernelDll.CreateFileA(filename, desiredAccess, 0, Zero, dwCreationDisposition, Define.FILE_ATTRIBUTE_NORMAL, Zero);
 
-        public unsafe uint WriteFile(HANDLE hFile, string lpBuffer, uint nNumberOfBytesToWrite)
+        public uint WriteFile(HANDLE hFile, string lpBuffer, uint nNumberOfBytesToWrite)
         {
-            ulong temp;
+            ulong temp = 0;
 
-            return KernelDll.WriteFile(hFile, lpBuffer, nNumberOfBytesToWrite, &temp, Zero);
+            return KernelDll.WriteFile(hFile, lpBuffer, nNumberOfBytesToWrite, ref temp, Zero);
         }
 
         public unsafe uint WriteFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToWrite)

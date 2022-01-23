@@ -420,10 +420,7 @@ namespace VCCSharp.Modules
                 ulong moved = 0;
 
                 //Read the whole file in for .CAS files
-                fixed (byte* p = CasBuffer)
-                {
-                    _kernel.ReadFile(TapeHandle, p, _totalSize, &moved);
-                }
+                _kernel.ReadFile(TapeHandle, CasBuffer, _totalSize, ref moved);
 
                 _bytesMoved = (uint)moved;
 
