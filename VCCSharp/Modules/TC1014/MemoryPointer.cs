@@ -1,4 +1,6 @@
-﻿namespace VCCSharp.Modules.TC1014
+﻿using System;
+
+namespace VCCSharp.Modules.TC1014
 {
     public class BytePointer
     {
@@ -51,9 +53,9 @@
     {
         private readonly uint* _pointer;
 
-        public IntPointer(uint* pointer)
+        public IntPointer(IntPtr pointer)
         {
-            _pointer = pointer;
+            _pointer = (uint*)pointer;
         }
 
         public uint this[int index]
@@ -67,6 +69,5 @@
             get => _pointer[index];
             set => _pointer[index] = value;
         }
-
     }
 }

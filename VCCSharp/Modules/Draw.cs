@@ -96,18 +96,15 @@ namespace VCCSharp.Modules
                 return;
             }
 
-            unsafe
+            IntPointer pSurface32 = _modules.Graphics.GetGraphicsSurface();
+
+            for (int y = 0; y < _windowSize.Y; y++)
             {
-                IntPointer pSurface32 = _modules.Graphics.GetGraphicsSurface();
+                long yy = y * _modules.Emu.SurfacePitch;
 
-                for (int y = 0; y < _windowSize.Y; y++)
+                for (int x = 0; x < _windowSize.X; x++)
                 {
-                    long yy = y * _modules.Emu.SurfacePitch;
-
-                    for (int x = 0; x < _windowSize.X; x++)
-                    {
-                        pSurface32[x + yy] = _color;
-                    }
+                    pSurface32[x + yy] = _color;
                 }
             }
 
@@ -143,10 +140,7 @@ namespace VCCSharp.Modules
 
         public float Static()
         {
-            unsafe
-            {
-                Static(_modules.Graphics.GetGraphicsSurface());
-            }
+            Static(_modules.Graphics.GetGraphicsSurface());
 
             return _modules.Throttle.CalculateFps();
         }
@@ -182,7 +176,7 @@ namespace VCCSharp.Modules
             DisplayFlip();
         }
 
-        private unsafe void Static(IntPointer pSurface32)
+        private void Static(IntPointer pSurface32)
         {
             var random = new Random();
 

@@ -504,9 +504,9 @@ namespace VCCSharp.Modules
             }
         }
 
-        public unsafe void SetGraphicsSurface(IntPtr surface)
+        public void SetGraphicsSurface(IntPtr surface)
         {
-            _surface = new IntPointer((uint*)surface);
+            _surface = new IntPointer(surface);
         }
 
         public void SetupDisplay()
