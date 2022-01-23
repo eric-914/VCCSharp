@@ -37,7 +37,6 @@ namespace VCCSharp.DX8
 
     public class DxSound : IDxSound
     {
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         private delegate int DirectSoundEnumerateCallbackTemplate(IntPtr pGuid, IntPtr pDescription, IntPtr pModule, IntPtr pContext);
 
         private readonly IDSound _sound;
@@ -99,17 +98,23 @@ namespace VCCSharp.DX8
             };
         }
 
-        private static unsafe DSBUFFERDESC CreateBufferDescription(uint length, WAVEFORMATEX* waveFormat)
+        private static DSBUFFERDESC CreateBufferDescription(uint length, ref WAVEFORMATEX waveFormat)
         {
             int flags = Define.DSBCAPS_GETCURRENTPOSITION2 | Define.DSBCAPS_LOCSOFTWARE | Define.DSBCAPS_STATIC | Define.DSBCAPS_GLOBALFOCUS;
 
-            return new DSBUFFERDESC
+            unsafe
             {
-                dwSize = (uint)DSBUFFERDESC.Size,
-                dwFlags = (uint)flags,
-                dwBufferBytes = length,
-                lpwfxFormat = (IntPtr)waveFormat
-            };
+                fixed (WAVEFORMATEX* p = &waveFormat)
+                {
+                    return new DSBUFFERDESC
+                    {
+                        dwSize = (uint)DSBUFFERDESC.Size,
+                        dwFlags = (uint)flags,
+                        dwBufferBytes = length,
+                        lpwfxFormat = (IntPtr)p
+                    };
+                }
+            }
         }
 
         public List<string> EnumerateSoundCards()
@@ -153,7 +158,7 @@ namespace VCCSharp.DX8
             LPVOID s1 = SndPointer1;
             LPVOID s2 = SndPointer2;
 
-            var result = _buffer.Lock(offset, length, ref s1, ref _sndLength1, ref s2, ref _sndLength2, 0);
+            long result = _buffer.Lock(offset, length, ref s1, ref _sndLength1, ref s2, ref _sndLength2, 0);
 
             SndPointer1 = s1;
             SndPointer2 = s2;
@@ -166,10 +171,10 @@ namespace VCCSharp.DX8
             return _buffer.Unlock(SndPointer1, _sndLength1, SndPointer2, _sndLength2) == Define.S_OK;
         }
 
-        public unsafe bool CreateDirectSoundBuffer(ushort bitRate, uint length)
+        public bool CreateDirectSoundBuffer(ushort bitRate, uint length)
         {
             WAVEFORMATEX waveFormat = CreateWaveFormat(bitRate);
-            DSBUFFERDESC soundBuffer = CreateBufferDescription(length, &waveFormat);
+            DSBUFFERDESC soundBuffer = CreateBufferDescription(length, ref waveFormat);
 
             return CreateDirectSoundBuffer(soundBuffer);
         }
