@@ -15,12 +15,14 @@
 
             uint[] palette = graphics.GetGraphicsColors().Palette32Bit;
             uint* szSurface32 = graphics.GetGraphicsSurface();
-            ushort* wMemory = (ushort*) model.Memory;
             int xPitch = (int)emu.SurfacePitch;
+            var memory = model.ShortPointer;
 
             for (ushort beam = 0; beam < graphics.BytesPerRow; beam += 2) //4bbp Stretch=4
             {
-                uint widePixel = wMemory[(graphics.VidMask & (start + (byte)(graphics.HorizontalOffset + beam))) >> 1];
+                long index = (graphics.VidMask & (start + (byte)(graphics.HorizontalOffset + beam))) >> 1;
+                ushort widePixel = memory[index];
+
                 szSurface32[yStride += 1] = palette[15 & (widePixel >> 4)];
                 szSurface32[yStride += 1] = palette[15 & (widePixel >> 4)];
                 szSurface32[yStride += 1] = palette[15 & (widePixel >> 4)];

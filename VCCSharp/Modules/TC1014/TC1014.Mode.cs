@@ -275,11 +275,11 @@ namespace VCCSharp.Modules.TC1014
 
         private static void NA(ModeModel model, int start, int yStride) { throw new NotImplementedException(); }
 
-        public unsafe void SwitchMasterMode(byte masterMode, int start, int yStride)
+        public void SwitchMasterMode(byte masterMode, int start, int yStride)
         {
             var model = new ModeModel
             {
-                Memory = _ram.GetPointer(),
+                BytePointer = _ram,
                 Modules = _modules
             };
 

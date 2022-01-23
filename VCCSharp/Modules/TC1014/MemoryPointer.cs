@@ -55,4 +55,16 @@ namespace VCCSharp.Modules.TC1014
             return (byte*)Marshal.AllocHGlobal((int)size); //malloc(size);
         }
     }
+
+    public class WideMemoryPointer
+    {
+        private readonly MemoryPointer _source;
+
+        public ushort this[long index] => (ushort)((_source[(int)(index << 1) + 1] << 8) | _source[(int)(index << 1)]);
+
+        public WideMemoryPointer(MemoryPointer source)
+        {
+            _source = source;
+        }
+    }
 }

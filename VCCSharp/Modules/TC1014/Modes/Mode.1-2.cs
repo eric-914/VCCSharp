@@ -15,18 +15,19 @@
 
             uint[] palette = graphics.GetGraphicsColors().Palette32Bit;
             uint* szSurface32 = graphics.GetGraphicsSurface();
-            byte* memory = model.Memory;
             ushort y = (ushort)emu.LineCounter;
             int xPitch = (int)emu.SurfacePitch;
 
             for (ushort beam = 0; beam < graphics.BytesPerRow * graphics.ExtendedText; beam += graphics.ExtendedText)
             {
-                byte character = memory[start + (byte)(beam + graphics.HorizontalOffset)];
+                int index = start + (byte)(beam + graphics.HorizontalOffset);
+                byte character = model.BytePointer[index];
+
                 byte pixel = Fonts.CC3FontData8X12[character * 12 + (y % graphics.LinesPerRow)];
 
                 if (graphics.ExtendedText == 2)
                 {
-                    attributes = memory[start + (byte)(beam + graphics.HorizontalOffset) + 1];
+                    attributes = model.BytePointer[start + (byte)(beam + graphics.HorizontalOffset) + 1];
 
                     if (((attributes & 64) != 0) && (y % graphics.LinesPerRow == (graphics.LinesPerRow - 1)))
                     {   //UnderLine

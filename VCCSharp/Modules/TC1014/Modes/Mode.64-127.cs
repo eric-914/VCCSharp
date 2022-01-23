@@ -21,7 +21,8 @@
 
             for (ushort beam = 0; beam < graphics.BytesPerRow; beam++)
             {
-                byte character = model.Memory[start + (byte)(beam + graphics.HorizontalOffset)];
+                int index = start + (byte)(beam + graphics.HorizontalOffset);
+                byte character = model.BytePointer[index];
 
                 switch ((character & 192) >> 6)
                 {

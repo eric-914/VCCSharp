@@ -1,4 +1,6 @@
-﻿namespace VCCSharp.Modules.TC1014.Modes
+﻿using System;
+
+namespace VCCSharp.Modules.TC1014.Modes
 {
     // ReSharper disable once InconsistentNaming
 #pragma warning disable IDE1006 // Naming Styles
@@ -17,12 +19,13 @@
             uint[] palette = graphics.GetGraphicsColors().Palette32Bit;
             uint[] artifacts = graphics.GetGraphicsColors().Artifacts32;
             uint* szSurface32 = graphics.GetGraphicsSurface();
-            ushort* wMemory = (ushort*) model.Memory;
             int xPitch = (int)emu.SurfacePitch;
+            var memory = model.ShortPointer;
 
             for (ushort beam = 0; beam < graphics.BytesPerRow; beam += 2) //1bbp Stretch=2
             {
-                uint widePixel = wMemory[(graphics.VidMask & (start + (byte)(graphics.HorizontalOffset + beam))) >> 1];
+                long index = (graphics.VidMask & (start + (byte)(graphics.HorizontalOffset + beam))) >> 1;
+                ushort widePixel = memory[index];
 
                 if (graphics.MonitorType == 0)
                 { //Pcolor
