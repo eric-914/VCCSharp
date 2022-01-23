@@ -177,7 +177,7 @@ Could not locate {rom} in any of these locations:
 
             for (int index = 0; index < 1024; index++)
             {
-                _memPages[index] = _ram.GetMemoryPointer((index & _ramMask[_currentRamConfig]) * 0x2000);
+                _memPages[index] = _ram.GetBytePointer((index & _ramMask[_currentRamConfig]) * 0x2000);
                 _memPageOffsets[index] = 1;
             }
 
@@ -196,10 +196,7 @@ Could not locate {rom} in any of these locations:
 
             _currentRamConfig = ramSizeOption;
 
-            if (!_ram.Reset(ramSize))
-            {
-                return Define.FALSE;
-            }
+            _ram.Reset(ramSize);
 
             //--Well, this explains the vertical bands when you start a graphics mode in BASIC w/out PCLS
             for (int index = 0; index < ramSize; index++)
@@ -209,10 +206,7 @@ Could not locate {rom} in any of these locations:
 
             Graphics.SetVidMask(_vidMask[_currentRamConfig]);
 
-            if (!_irb.Reset(0x8001)) //--TODO: Weird that the extra byte is needed here
-            {
-                return Define.FALSE;
-            }
+            _irb.Reset(0x8001); //--TODO: Weird that the extra byte is needed here
 
             for (int index = 0; index <= 0x8000; index++)
             {
@@ -641,10 +635,10 @@ Could not locate {rom} in any of these locations:
         {
             if (_mapType != 0)
             {
-                _memPages[_vectorMask[_currentRamConfig] - 3] = _ram.GetMemoryPointer(0x2000 * (_vectorMask[_currentRamConfig] - 3));
-                _memPages[_vectorMask[_currentRamConfig] - 2] = _ram.GetMemoryPointer(0x2000 * (_vectorMask[_currentRamConfig] - 2));
-                _memPages[_vectorMask[_currentRamConfig] - 1] = _ram.GetMemoryPointer(0x2000 * (_vectorMask[_currentRamConfig] - 1));
-                _memPages[_vectorMask[_currentRamConfig]] = _ram.GetMemoryPointer(0x2000 * _vectorMask[_currentRamConfig]);
+                _memPages[_vectorMask[_currentRamConfig] - 3] = _ram.GetBytePointer(0x2000 * (_vectorMask[_currentRamConfig] - 3));
+                _memPages[_vectorMask[_currentRamConfig] - 2] = _ram.GetBytePointer(0x2000 * (_vectorMask[_currentRamConfig] - 2));
+                _memPages[_vectorMask[_currentRamConfig] - 1] = _ram.GetBytePointer(0x2000 * (_vectorMask[_currentRamConfig] - 1));
+                _memPages[_vectorMask[_currentRamConfig]] = _ram.GetBytePointer(0x2000 * _vectorMask[_currentRamConfig]);
 
                 _memPageOffsets[_vectorMask[_currentRamConfig] - 3] = 1;
                 _memPageOffsets[_vectorMask[_currentRamConfig] - 2] = 1;
@@ -658,8 +652,8 @@ Could not locate {rom} in any of these locations:
             {
                 case 0:
                 case 1: //16K Internal 16K External
-                    _memPages[_vectorMask[_currentRamConfig] - 3] = _irb.GetMemoryPointer(0x0000);
-                    _memPages[_vectorMask[_currentRamConfig] - 2] = _irb.GetMemoryPointer(0x2000);
+                    _memPages[_vectorMask[_currentRamConfig] - 3] = _irb.GetBytePointer(0x0000);
+                    _memPages[_vectorMask[_currentRamConfig] - 2] = _irb.GetBytePointer(0x2000);
                     _memPages[_vectorMask[_currentRamConfig] - 1] = null;
                     _memPages[_vectorMask[_currentRamConfig]] = null;
 
@@ -671,10 +665,10 @@ Could not locate {rom} in any of these locations:
                     return;
 
                 case 2: // 32K Internal
-                    _memPages[_vectorMask[_currentRamConfig] - 3] = _irb.GetMemoryPointer(0x0000);
-                    _memPages[_vectorMask[_currentRamConfig] - 2] = _irb.GetMemoryPointer(0x2000);
-                    _memPages[_vectorMask[_currentRamConfig] - 1] = _irb.GetMemoryPointer(0x4000);
-                    _memPages[_vectorMask[_currentRamConfig]] = _irb.GetMemoryPointer(0x6000);
+                    _memPages[_vectorMask[_currentRamConfig] - 3] = _irb.GetBytePointer(0x0000);
+                    _memPages[_vectorMask[_currentRamConfig] - 2] = _irb.GetBytePointer(0x2000);
+                    _memPages[_vectorMask[_currentRamConfig] - 1] = _irb.GetBytePointer(0x4000);
+                    _memPages[_vectorMask[_currentRamConfig]] = _irb.GetBytePointer(0x6000);
 
                     _memPageOffsets[_vectorMask[_currentRamConfig] - 3] = 1;
                     _memPageOffsets[_vectorMask[_currentRamConfig] - 2] = 1;
