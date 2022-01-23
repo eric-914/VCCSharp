@@ -55,13 +55,13 @@ namespace VCCSharp.DX8
         public bool CreateDirectSound(int index) => _sound.CreateDirectSound(index);
         public bool SetCooperativeLevel(IntPtr hWnd) => _sound.SetCooperativeLevel(hWnd);
         public List<string> EnumerateSoundCards() => _sound.EnumerateSoundCards();
-        public bool CreateDirectSoundBuffer(ushort bitRate, uint length) => _sound.CreateDirectSoundBuffer(bitRate, length);
+        public bool CreateDirectSoundBuffer(ushort bitRate, int length) => _sound.CreateDirectSoundBuffer(bitRate, length);
         public void Stop() => _sound.Stop();
         public void Play() => _sound.Play();
         public void Reset() => _sound.Reset();
-        public uint ReadPlayCursor() => _sound.ReadPlayCursor();
-        public void CopyBuffer(uint[] buffer) => _sound.CopyBuffer(buffer);
-        public bool Lock(uint offset, ushort length) => _sound.Lock(offset, length);
+        public int ReadPlayCursor() => _sound.ReadPlayCursor();
+        public void CopyBuffer(int[] buffer) => _sound.CopyBuffer(buffer);
+        public bool Lock(int offset, int length) => _sound.Lock(offset, length);
         public bool Unlock() => _sound.Unlock();
 
         #endregion

@@ -15,7 +15,7 @@ namespace VCCSharp.Modules
 
         bool PauseAudio(bool pause);
         void ResetAudio();
-        void FlushAudioBuffer(uint[] buffer, ushort length);
+        void FlushAudioBuffer(int[] buffer, int length);
         int GetFreeBlockCount();
 
         AudioSpectrum Spectrum { get; set; }
@@ -38,8 +38,8 @@ namespace VCCSharp.Modules
 
         private readonly ushort[] _rateList = { 0, 11025, 22050, 44100 };
 
-        private uint _sndBuffLength;
-        private uint _buffOffset;
+        private int _sndBuffLength;
+        private int _buffOffset;
 
         private bool _mute;
 
@@ -79,7 +79,7 @@ namespace VCCSharp.Modules
                 // Clear out sound buffers
                 if (!_sound.Lock(_buffOffset, (ushort)_sndBuffLength)) return;
 
-                _sound.CopyBuffer(new uint[_sndBuffLength >> 2]);
+                _sound.CopyBuffer(new int[_sndBuffLength >> 2]);
 
                 if (!_sound.Unlock()) return;
 
@@ -123,12 +123,12 @@ namespace VCCSharp.Modules
             _buffOffset = 0;
         }
 
-        public void FlushAudioBuffer(uint[] buffer, ushort length)
+        public void FlushAudioBuffer(int[] buffer, int length)
         {
-            uint leftAverage = buffer[0] >> 16;
-            uint rightAverage = buffer[0] & 0xFFFF;
+            int leftAverage = buffer[0] >> 16;
+            int rightAverage = buffer[0] & 0xFFFF;
 
-            _modules.Audio.Spectrum?.UpdateSoundBar((int)leftAverage, (int)rightAverage);
+            _modules.Audio.Spectrum?.UpdateSoundBar(leftAverage, rightAverage);
 
             if (!_initialized || _audioPause || length == 0 || _mute)
             {
@@ -151,7 +151,7 @@ namespace VCCSharp.Modules
 
         public int GetFreeBlockCount()
         {
-            ulong playCursor = 0;
+            int playCursor = 0;
 
             if (!_initialized || _audioPause || _mute)
             {

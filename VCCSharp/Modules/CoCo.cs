@@ -71,7 +71,7 @@ namespace VCCSharp.Modules
         private bool _intEnable;
         private bool _sndEnable = true;
 
-        private readonly uint[] _audioBuffer = new uint[16384];
+        private readonly int[] _audioBuffer = new int[16384];
         private readonly byte[] _cassetteBuffer = new byte[8192];
 
         private readonly DACSample _dacSample = new DACSample();

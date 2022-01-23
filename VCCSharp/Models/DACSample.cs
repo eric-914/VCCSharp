@@ -31,6 +31,6 @@
         public Channel Left { get; } = new Channel();
         public Channel Right { get; } = new Channel();
 
-        public uint Sample => (uint)((Left.Out << 16) + Right.Out);
+        public int Sample => (int)((Left.Out << 16) + Right.Out);
     }
 }

@@ -21,16 +21,16 @@ namespace VCCSharp.DX8
 
         List<string> EnumerateSoundCards();
 
-        bool CreateDirectSoundBuffer(ushort bitRate, uint length);
+        bool CreateDirectSoundBuffer(ushort bitRate, int length);
 
         void Stop();
         void Play();
         void Reset();
-        uint ReadPlayCursor();
+        int ReadPlayCursor();
 
-        void CopyBuffer(uint[] buffer);
+        void CopyBuffer(int[] buffer);
 
-        bool Lock(uint offset, ushort length);
+        bool Lock(int offset, int length);
         bool Unlock();
     }
 
@@ -100,7 +100,7 @@ namespace VCCSharp.DX8
             };
         }
 
-        private static DSBUFFERDESC CreateBufferDescription(uint length, ref WAVEFORMATEX waveFormat)
+        private static DSBUFFERDESC CreateBufferDescription(int length, ref WAVEFORMATEX waveFormat)
         {
             int flags = Define.DSBCAPS_GETCURRENTPOSITION2 | Define.DSBCAPS_LOCSOFTWARE | Define.DSBCAPS_STATIC | Define.DSBCAPS_GLOBALFOCUS;
 
@@ -108,7 +108,7 @@ namespace VCCSharp.DX8
             {
                 dwSize = (uint)DSBUFFERDESC.Size,
                 dwFlags = (uint)flags,
-                dwBufferBytes = length,
+                dwBufferBytes = (uint)length,
                 lpwfxFormat = IntPtrConverter.Convert(ref waveFormat)
             };
         }
@@ -139,22 +139,22 @@ namespace VCCSharp.DX8
         public void Play() => _buffer.Play(0, 0, Define.DSBPLAY_LOOPING);
         public void Reset() => _buffer.SetCurrentPosition(0);
 
-        public uint ReadPlayCursor()
+        public int ReadPlayCursor()
         {
             uint playCursor = 0, writeCursor = 0;
 
             _buffer.GetCurrentPosition(ref playCursor, ref writeCursor);
 
-            return playCursor;
+            return (int)playCursor;
         }
 
-        public bool Lock(uint offset, ushort length)
+        public bool Lock(int offset, int length)
         {
             //--TODO: I'm not really sure why I can't inline s1/s2 here...   "Variable has write usage"
             LPVOID s1 = SndPointer1;
             LPVOID s2 = SndPointer2;
 
-            long result = _buffer.Lock(offset, length, ref s1, ref _sndLength1, ref s2, ref _sndLength2, 0);
+            long result = _buffer.Lock((uint)offset, (uint)length, ref s1, ref _sndLength1, ref s2, ref _sndLength2, 0);
 
             SndPointer1 = s1;
             SndPointer2 = s2;
@@ -167,7 +167,7 @@ namespace VCCSharp.DX8
             return _buffer.Unlock(SndPointer1, _sndLength1, SndPointer2, _sndLength2) == Define.S_OK;
         }
 
-        public bool CreateDirectSoundBuffer(ushort bitRate, uint length)
+        public bool CreateDirectSoundBuffer(ushort bitRate, int length)
         {
             WAVEFORMATEX waveFormat = CreateWaveFormat(bitRate);
             DSBUFFERDESC soundBuffer = CreateBufferDescription(length, ref waveFormat);
@@ -175,10 +175,13 @@ namespace VCCSharp.DX8
             return CreateDirectSoundBuffer(soundBuffer);
         }
 
-        public unsafe void CopyBuffer(uint[] buffer)
+        public unsafe void CopyBuffer(int[] buffer)
         {
+            //Marshal.Copy(buffer, 0, SndPointer1, (int)_sndLength1);
+            //Marshal.Copy(buffer, (int)_sndLength1, SndPointer2, (int)_sndLength2);
+
             byte* byteBuffer;
-            fixed (uint* p = buffer)
+            fixed (int* p = buffer)
             {
                 byteBuffer = (byte*)p;
             }
