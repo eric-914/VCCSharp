@@ -391,52 +391,49 @@ namespace VCCSharp.Modules
 
         public void MC6821_CaptureBit(byte sample)
         {
-            unsafe
+            byte data = 0;
+
+            if ((long)(_hPrintFile) == -1)
+            { //INVALID_HANDLE_VALUE
+                return;
+            }
+
+            if ((_startWait & sample) != 0)
+            { //Waiting for start bit
+                return;
+            }
+
+            if (_startWait != 0)
             {
-                byte data = 0;
+                _startWait = 0;
 
-                if ((long)(_hPrintFile) == -1)
-                { //INVALID_HANDLE_VALUE
-                    return;
-                }
+                return;
+            }
 
-                if ((_startWait & sample) != 0)
-                { //Waiting for start bit
-                    return;
-                }
+            if (sample != 0)
+            {
+                data |= _bitMask;
+            }
 
-                if (_startWait != 0)
+            _bitMask = (byte)(_bitMask << 1);
+
+            if (_bitMask == 0)
+            {
+                _bitMask = 1;
+                _startWait = 1;
+
+                //WritePrint(data);
+
+                if (_monState)
                 {
-                    _startWait = 0;
-
-                    return;
+                    MC6821_WritePrintMon(data);
                 }
 
-                if (sample != 0)
+                if ((data == 0x0D) && (_addLf != 0))
                 {
-                    data |= _bitMask;
-                }
-
-                _bitMask = (byte)(_bitMask << 1);
-
-                if (_bitMask == 0)
-                {
-                    _bitMask = 1;
-                    _startWait = 1;
+                    //data = 0x0A;
 
                     //WritePrint(data);
-
-                    if (_monState)
-                    {
-                        MC6821_WritePrintMon(&data);
-                    }
-
-                    if ((data == 0x0D) && (_addLf != 0))
-                    {
-                        //data = 0x0A;
-
-                        //WritePrint(data);
-                    }
                 }
             }
         }
@@ -455,20 +452,20 @@ namespace VCCSharp.Modules
             return (byte)(((_rega[1] & 8) >> 3) + ((_rega[3] & 8) >> 2));
         }
 
-        public unsafe void MC6821_WritePrintMon(byte* data)
+        public void MC6821_WritePrintMon(byte data)
         {
             //WriteConsole(data);
 
-            if (data[0] == 0x0D)
+            if (data == 0x0D)
             {
-                data[0] = 0x0A;
+                data = 0x0A;
 
                 //WriteConsole(data);
             }
         }
 
         //// ReSharper disable once UnusedParameter.Local
-        //private unsafe void WriteConsole(byte* data)
+        //private un/safe void WriteConsole(byte* data)
         //{
         //    //ulong dummy = 0;
 

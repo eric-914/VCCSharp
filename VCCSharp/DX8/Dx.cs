@@ -6,7 +6,7 @@ using System.Drawing;
 namespace VCCSharp.DX8
 {
     /// <summary>
-    /// Final wrapper of the DX8 objects, with no unsafe in interface
+    /// Final wrapper of the DX8 objects, with no un/safe in interface
     /// </summary>
     public class Dx : IDxDraw, IDxSound, IDxInput
     {

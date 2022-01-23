@@ -61,7 +61,7 @@ namespace VCCSharp.Modules
             _kernel = kernel;
         }
 
-        //public unsafe PakInterfaceDelegates* GetPakInterfaceDelegates()
+        //public un/safe PakInterfaceDelegates* GetPakInterfaceDelegates()
         //{
         //    return Library.PAKInterface.GetPakInterfaceDelegates();
         //}
@@ -289,16 +289,20 @@ namespace VCCSharp.Modules
             return 0;
         }
 
-        public unsafe void GetModuleStatus()
+        public void GetModuleStatus()
         {
             if (HasModuleStatus())
             {
                 //TODO: Things break here if the status line is empty.
                 string text = (_modules.Emu.StatusLine ?? "") + "...";
                 byte[] status = Converter.ToByteArray(text);
-                fixed (byte* p = status)
+
+                unsafe
                 {
-                    InvokeModuleStatus(p);
+                    fixed (byte* p = status)
+                    {
+                        InvokeModuleStatus(p);
+                    }
                 }
             }
             else
