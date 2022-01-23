@@ -624,14 +624,11 @@ namespace VCCSharp.Modules
             _intEnable = _masterTickCounter != 0;
         }
 
-        private unsafe void FlushCassetteBuffer(byte[] buffer, uint length)
+        private void FlushCassetteBuffer(byte[] buffer, uint length)
         {
-            fixed (byte* p = buffer)
-            {
-                uint offset = _modules.Cassette.FlushCassetteBuffer(p, length);
+            uint offset = _modules.Cassette.FlushCassetteBuffer(buffer, length);
 
-                UpdateTapeDialog((int)offset);
-            }
+            UpdateTapeDialog((int)offset);
         }
 
         private void LoadCassetteBuffer()

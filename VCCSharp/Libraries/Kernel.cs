@@ -26,7 +26,9 @@ namespace VCCSharp.Libraries
         uint ReadFile(HANDLE hFile, byte[] lpBuffer, ulong nNumberOfBytesToRead, ref ulong lpNumberOfBytesRead);
         HANDLE CreateFile(string filename, uint desiredAccess, uint dwCreationDisposition);
         uint WriteFile(HANDLE hFile, string lpBuffer, uint nNumberOfBytesToWrite);
-        unsafe uint WriteFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToWrite);
+        uint WriteFile(HANDLE hFile, byte[] lpBuffer, uint nNumberOfBytesToWrite);
+        uint WriteFile(HANDLE hFile, uint data);
+        uint WriteFile(HANDLE hFile, ushort data);
     }
 
     public class Kernel : IKernel
@@ -83,10 +85,35 @@ namespace VCCSharp.Libraries
             return KernelDll.WriteFile(hFile, lpBuffer, nNumberOfBytesToWrite, ref temp, Zero);
         }
 
-        public unsafe uint WriteFile(HANDLE hFile, byte* lpBuffer, uint nNumberOfBytesToWrite)
+        public uint WriteFile(HANDLE hFile, byte[] lpBuffer, uint nNumberOfBytesToWrite)
         {
             return WriteFile(hFile, Converter.ToString(lpBuffer), nNumberOfBytesToWrite);
         }
 
+        public uint WriteFile(HANDLE hFile, byte[] lpBuffer)
+        {
+            return WriteFile(hFile, Converter.ToString(lpBuffer), (uint)lpBuffer.Length);
+        }
+
+        public uint WriteFile(IntPtr hFile, uint data)
+        {
+            ushort high = (ushort)(data >> 16);
+            ushort low = (ushort)(data & 0xFFFF);
+
+            uint value = WriteFile(hFile, high);
+            value += WriteFile(hFile, low);
+
+            return value;
+        }
+
+        public uint WriteFile(IntPtr hFile, ushort data)
+        {
+            byte b1 = (byte)((data >> 8) & 0xFF);
+            byte b0 = (byte)(data & 0xFF);
+
+            byte[] lpBuffer = { b1, b0 };
+
+            return WriteFile(hFile, lpBuffer);
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace VCCSharp.Modules
     {
         HANDLE TapeHandle { get; set; }
 
-        unsafe uint FlushCassetteBuffer(byte* buffer, uint length);
+        uint FlushCassetteBuffer(byte[] buffer, uint length);
         void LoadCassetteBuffer(byte[] buffer);
         void Motor(byte state);
 
@@ -295,7 +295,7 @@ namespace VCCSharp.Modules
             _totalSize = 0;
         }
 
-        public unsafe uint FlushCassetteBuffer(byte* buffer, uint length)
+        public uint FlushCassetteBuffer(byte[] buffer, uint length)
         {
             if (TapeMode == Define.REC)
             {
@@ -314,7 +314,7 @@ namespace VCCSharp.Modules
             return TapeOffset;
         }
 
-        public unsafe void FlushCassetteCas(byte* buffer, uint length)
+        public void FlushCassetteCas(byte[] buffer, uint length)
         {
             for (int index = 0; index < length; index++)
             {
@@ -372,7 +372,7 @@ namespace VCCSharp.Modules
         }
 
         //Return 1 on success 0 on fail
-        public unsafe int MountTape(string filename)
+        public int MountTape(string filename)
         {
             if (TapeHandle != Zero)
             {
@@ -453,20 +453,14 @@ namespace VCCSharp.Modules
 
         public void SyncFileBufferCas()
         {
-            unsafe
-            {
-                CasBuffer[TapeOffset] = _byte;	//capture the last byte
-                LastTrans = 0;	//reset all static inter-call variables
-                _mask = 0;
-                _byte = 0;
-                _lastSample = 0;
-                TempIndex = 0;
+            CasBuffer[TapeOffset] = _byte;	//capture the last byte
+            LastTrans = 0;	//reset all static inter-call variables
+            _mask = 0;
+            _byte = 0;
+            _lastSample = 0;
+            TempIndex = 0;
 
-                fixed (byte* p = CasBuffer)
-                {
-                    _kernel.WriteFile(TapeHandle, p, TapeOffset);
-                }
-            }
+            _kernel.WriteFile(TapeHandle, CasBuffer, TapeOffset);
         }
 
         public void SyncFileBufferWav()
@@ -476,34 +470,34 @@ namespace VCCSharp.Modules
             ushort channels = 1;		//mono/stereo
             uint bitRate = Define.TAPEAUDIORATE;		//sample rate
             ushort bitsPerSample = 8;	//Bits/sample
+
+            // ReSharper disable UselessBinaryOperation
             uint bytesPerSec = (uint)(bitRate * channels * (bitsPerSample / 8));	//bytes/sec
             ushort blockAlign = (ushort)((bitsPerSample * channels) / 8);		    //Block alignment
+            // ReSharper restore UselessBinaryOperation
 
-            unsafe
-            {
-                uint fileSize = _totalSize + 40 - 8;
-                uint chunkSize = fileSize;
+            uint fileSize = _totalSize + 40 - 8;
+            uint chunkSize = fileSize;
 
-                _kernel.WriteFile(TapeHandle, "RIFF", TapeOffset);
-                _kernel.WriteFile(TapeHandle, (byte*)&fileSize, 4);
+            _kernel.WriteFile(TapeHandle, "RIFF", TapeOffset);
+            _kernel.WriteFile(TapeHandle, fileSize);
 
-                _kernel.WriteFile(TapeHandle, "WAVE", TapeOffset);
+            _kernel.WriteFile(TapeHandle, "WAVE", TapeOffset);
 
-                _kernel.WriteFile(TapeHandle, "fmt ", TapeOffset);
-                _kernel.WriteFile(TapeHandle, (byte*)(&formatSize), 4);
-                _kernel.WriteFile(TapeHandle, (byte*)(&waveType), 2);
-                _kernel.WriteFile(TapeHandle, (byte*)(&channels), 2);
-                _kernel.WriteFile(TapeHandle, (byte*)(&bitRate), 4);
-                _kernel.WriteFile(TapeHandle, (byte*)(&bytesPerSec), 4);
-                _kernel.WriteFile(TapeHandle, (byte*)(&blockAlign), 2);
-                _kernel.WriteFile(TapeHandle, (byte*)(&bitsPerSample), 2);
+            _kernel.WriteFile(TapeHandle, "fmt ", TapeOffset);
+            _kernel.WriteFile(TapeHandle, formatSize);
+            _kernel.WriteFile(TapeHandle, waveType);
+            _kernel.WriteFile(TapeHandle, channels);
+            _kernel.WriteFile(TapeHandle, bitRate);
+            _kernel.WriteFile(TapeHandle, bytesPerSec);
+            _kernel.WriteFile(TapeHandle, blockAlign);
+            _kernel.WriteFile(TapeHandle, bitsPerSample);
 
-                _kernel.WriteFile(TapeHandle, "data", TapeOffset);
-                _kernel.WriteFile(TapeHandle, (byte*)(&chunkSize), 4);
-            }
+            _kernel.WriteFile(TapeHandle, "data", TapeOffset);
+            _kernel.WriteFile(TapeHandle, chunkSize);
         }
 
-        public unsafe void FlushCassetteWav(byte* buffer, uint length)
+        private void FlushCassetteWav(byte[] buffer, uint length)
         {
             _kernel.SetFilePointer(TapeHandle, Define.FILE_BEGIN, TapeOffset + 44);
 
