@@ -12,13 +12,13 @@
         //Bpp=2 Sr=12 
         //Bpp=2 Sr=13 
         //Bpp=2 Sr=14 
-        public static unsafe void Mode(ModeModel model, int start, int yStride)
+        public static void Mode(ModeModel model, int start, int yStride)
         {
             IGraphics graphics = model.Modules.Graphics;
             IEmu emu = model.Modules.Emu;
 
             uint[] palette = graphics.GetGraphicsColors().Palette32Bit;
-            uint* szSurface32 = graphics.GetGraphicsSurface();
+            var szSurface32 = graphics.GetGraphicsSurface();
             int xPitch = (int)emu.SurfacePitch;
             var memory = model.ShortPointer;
 

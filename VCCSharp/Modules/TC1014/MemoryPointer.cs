@@ -46,4 +46,27 @@
             _source = source;
         }
     }
+
+    public unsafe class IntPointer
+    {
+        private readonly uint* _pointer;
+
+        public IntPointer(uint* pointer)
+        {
+            _pointer = pointer;
+        }
+
+        public uint this[int index]
+        {
+            get => _pointer[index];
+            set => _pointer[index] = value;
+        }
+
+        public uint this[long index]
+        {
+            get => _pointer[index];
+            set => _pointer[index] = value;
+        }
+
+    }
 }

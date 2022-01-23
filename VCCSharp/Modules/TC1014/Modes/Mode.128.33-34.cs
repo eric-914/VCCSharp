@@ -4,13 +4,13 @@
 #pragma warning disable IDE1006 // Naming Styles
     public static class _128_33_34
     {
-        public static unsafe void Mode(ModeModel model, int start, int yStride)
+        public static void Mode(ModeModel model, int start, int yStride)
         {
             IGraphics graphics = model.Modules.Graphics;
             IEmu emu = model.Modules.Emu;
 
             uint[] palette = graphics.GetGraphicsColors().Palette32Bit;
-            uint* szSurface32 = graphics.GetGraphicsSurface();
+            var szSurface32 = graphics.GetGraphicsSurface();
             int xPitch = (int)emu.SurfacePitch;
             var memory = model.ShortPointer;
 

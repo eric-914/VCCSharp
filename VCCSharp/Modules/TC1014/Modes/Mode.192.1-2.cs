@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace VCCSharp.Modules.TC1014.Modes
+﻿namespace VCCSharp.Modules.TC1014.Modes
 {
     // ReSharper disable once InconsistentNaming
 #pragma warning disable IDE1006 // Naming Styles
@@ -8,7 +6,7 @@ namespace VCCSharp.Modules.TC1014.Modes
     {
         //Bpp=0 Sr=1 1BPP Stretch=2
         //Bpp=0 Sr=2 
-        public static unsafe void Mode(ModeModel model, int start, int yStride)
+        public static void Mode(ModeModel model, int start, int yStride)
         {
             byte carry1 = 1, carry2 = 0;
             byte color = 0;
@@ -18,7 +16,7 @@ namespace VCCSharp.Modules.TC1014.Modes
 
             uint[] palette = graphics.GetGraphicsColors().Palette32Bit;
             uint[] artifacts = graphics.GetGraphicsColors().Artifacts32;
-            uint* szSurface32 = graphics.GetGraphicsSurface();
+            var szSurface32 = graphics.GetGraphicsSurface();
             int xPitch = (int)emu.SurfacePitch;
             var memory = model.ShortPointer;
 

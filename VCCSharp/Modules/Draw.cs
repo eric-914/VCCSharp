@@ -5,6 +5,7 @@ using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Libraries.Models;
 using VCCSharp.Models;
+using VCCSharp.Modules.TC1014;
 using static System.IntPtr;
 using Point = System.Drawing.Point;
 
@@ -97,7 +98,7 @@ namespace VCCSharp.Modules
 
             unsafe
             {
-                uint* pSurface32 = _modules.Graphics.GetGraphicsSurface();
+                IntPointer pSurface32 = _modules.Graphics.GetGraphicsSurface();
 
                 for (int y = 0; y < _windowSize.Y; y++)
                 {
@@ -181,7 +182,7 @@ namespace VCCSharp.Modules
             DisplayFlip();
         }
 
-        private unsafe void Static(uint* pSurface32)
+        private unsafe void Static(IntPointer pSurface32)
         {
             var random = new Random();
 

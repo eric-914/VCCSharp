@@ -6,13 +6,13 @@
     {
         //Bpp=0 Sr=15 1BPP Stretch=16
         //BPP=1 Sr=0  2BPP Stretch=1
-        public static unsafe void Mode(ModeModel model, int start, int yStride)
+        public static void Mode(ModeModel model, int start, int yStride)
         {
             IGraphics graphics = model.Modules.Graphics;
             IEmu emu = model.Modules.Emu;
             
             uint[] palette = graphics.GetGraphicsColors().Palette32Bit;
-            uint* szSurface32 = graphics.GetGraphicsSurface();
+            var szSurface32 = graphics.GetGraphicsSurface();
             int xPitch = (int)emu.SurfacePitch;
             var memory = model.ShortPointer;
 

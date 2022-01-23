@@ -3,6 +3,7 @@ using System.Diagnostics;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
+using VCCSharp.Modules.TC1014;
 
 namespace VCCSharp.Modules
 {
@@ -10,7 +11,7 @@ namespace VCCSharp.Modules
     {
         GraphicsColors GetGraphicsColors();
 
-        unsafe uint* GetGraphicsSurface();
+        IntPointer GetGraphicsSurface();
 
         void ResetGraphicsState();
         void MakeRgbPalette();
@@ -156,14 +157,14 @@ namespace VCCSharp.Modules
         public byte[] Lpf { get; } = { 192, 225 }; 
         public byte[] VerticalCenterTable { get; } = { 29, 12 };
 
-        private unsafe uint* _surface;
+        private IntPointer _surface;
 
         public Graphics(IModules modules)
         {
             _modules = modules;
         }
 
-        public unsafe uint* GetGraphicsSurface() => _surface;
+        public IntPointer GetGraphicsSurface() => _surface;
 
         public GraphicsColors GetGraphicsColors() => _colors;
 
@@ -505,7 +506,7 @@ namespace VCCSharp.Modules
 
         public unsafe void SetGraphicsSurface(IntPtr surface)
         {
-            _surface = (uint*)surface;
+            _surface = new IntPointer((uint*)surface);
         }
 
         public void SetupDisplay()

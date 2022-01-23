@@ -17,18 +17,15 @@
             long sp = emu.SurfacePitch;
             long lc = lineCounter * 2 * sp;
 
-            unsafe
+            var surface = Graphics.GetGraphicsSurface();
+
+            for (ushort x = 0; x < wsx; x++)
             {
-                uint* surface = Graphics.GetGraphicsSurface();
+                surface[x + lc] = bc;
 
-                for (ushort x = 0; x < wsx; x++)
+                if (!emu.ScanLines)
                 {
-                    surface[x + lc] = bc;
-
-                    if (!emu.ScanLines)
-                    {
-                        surface[x + lc + sp] = bc;
-                    }
+                    surface[x + lc + sp] = bc;
                 }
             }
         }
@@ -47,18 +44,15 @@
             long sp = emu.SurfacePitch;
             long lc = (lineCounter + Graphics.LinesPerScreen + Graphics.VerticalCenter) * 2 * sp;
 
-            unsafe
+            var surface = Graphics.GetGraphicsSurface();
+
+            for (ushort x = 0; x < wsx; x++)
             {
-                uint* surface = Graphics.GetGraphicsSurface();
+                surface[x + lc] = bc;
 
-                for (ushort x = 0; x < wsx; x++)
+                if (!_modules.Emu.ScanLines)
                 {
-                    surface[x + lc] = bc;
-
-                    if (!_modules.Emu.ScanLines)
-                    {
-                        surface[x + lc + sp] = bc;
-                    }
+                    surface[x + lc + sp] = bc;
                 }
             }
         }
@@ -76,27 +70,24 @@
                 uint bc = Graphics.BorderColor;
                 int hx = Graphics.PixelsPerLine * (Graphics.Stretch + 1) + Graphics.HorizontalCenter;
 
-                unsafe
+                var surface = Graphics.GetGraphicsSurface();
+
+                for (ushort x = 0; x < Graphics.HorizontalCenter; x++)
                 {
-                    uint* surface = Graphics.GetGraphicsSurface();
+                    //--Left border
+                    surface[x + vyx] = bc;
 
-                    for (ushort x = 0; x < Graphics.HorizontalCenter; x++)
+                    if (!_modules.Emu.ScanLines)
                     {
-                        //--Left border
-                        surface[x + vyx] = bc;
+                        surface[x + vyx + xPitch] = bc;
+                    }
 
-                        if (!_modules.Emu.ScanLines)
-                        {
-                            surface[x + vyx + xPitch] = bc;
-                        }
+                    //--Right border
+                    surface[x + hx + vyx] = bc;
 
-                        //--Right border
-                        surface[x + hx + vyx] = bc;
-
-                        if (!_modules.Emu.ScanLines)
-                        {
-                            surface[x + hx + vyx + xPitch] = bc;
-                        }
+                    if (!_modules.Emu.ScanLines)
+                    {
+                        surface[x + hx + vyx + xPitch] = bc;
                     }
                 }
             }

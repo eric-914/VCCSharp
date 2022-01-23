@@ -4,7 +4,7 @@
     // ReSharper disable once InconsistentNaming
     public static class _0
     {
-        public static unsafe void Mode(ModeModel model, int start, int yStride)
+        public static void Mode(ModeModel model, int start, int yStride)
         {
             uint[] textPalette = { 0, 0 };
             byte attributes = 0;
@@ -13,7 +13,7 @@
             IEmu emu = model.Modules.Emu;
 
             uint[] palette = graphics.GetGraphicsColors().Palette32Bit;
-            uint* szSurface32 = graphics.GetGraphicsSurface();
+            var szSurface32 = graphics.GetGraphicsSurface();
             ushort y = (ushort)emu.LineCounter;
             int xPitch = (int)emu.SurfacePitch;
             var memory = model.BytePointer;
