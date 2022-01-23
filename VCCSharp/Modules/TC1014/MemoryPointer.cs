@@ -5,28 +5,41 @@ namespace VCCSharp.Modules.TC1014
 {
     public class MemoryPointer
     {
-        private unsafe byte* Pointer { get; set; }
+        private unsafe byte* _pointer;
+        private readonly int _offset;
 
-        public unsafe byte* GetPointer(int offset) => Pointer + offset;
+        public MemoryPointer()
+        {
+            _offset = 0;
+        }
+
+        private unsafe MemoryPointer(byte* pointer, int offset)
+        {
+            _pointer = pointer;
+            _offset = offset;
+        }
+
+        public unsafe byte* GetPointer() => _pointer;
+        public unsafe MemoryPointer GetMemoryPointer(int offset) => new MemoryPointer(_pointer, offset);
 
         public unsafe byte this[int index]
         {
-            get => Pointer[index];
-            set => Pointer[index] = value;
+            get => _pointer[index + _offset];
+            set => _pointer[index + _offset] = value;
         }
 
         public unsafe bool Reset(uint size)
         {
-            FreeMemory(Pointer);
+            FreeMemory(_pointer);
 
-            Pointer = AllocateMemory(size);
+            _pointer = AllocateMemory(size);
 
-            return Pointer != null;
+            return _pointer != null;
         }
 
         public unsafe void Reset(MemoryPointer source)
         {
-            Pointer = source.Pointer;
+            _pointer = source.GetPointer();
         }
 
         private static unsafe void FreeMemory(byte* target)

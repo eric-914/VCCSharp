@@ -78,7 +78,7 @@ namespace VCCSharp.Modules.TC1014
         private readonly byte[] _gimeRegisters = new byte[256];
         private readonly ushort[] _memPageOffsets = new ushort[1024];
         private readonly ushort[,] _mmuRegisters = new ushort[4, 8];	// $FFA0 - FFAF
-        private readonly unsafe byte*[] _memPages = new byte*[1024];
+        private readonly MemoryPointer[] _memPages = new MemoryPointer[1024];
 
         public TC1014(IModules modules)
         {
@@ -152,41 +152,37 @@ Could not locate {rom} in any of these locations:
 
         public void MmuReset()
         {
-            unsafe
+            _mmuTask = 0;
+            _mmuEnabled = false;
+            _ramVectors = 0;
+            _mmuState = 0;
+            _romMap = 0;
+            _mapType = 0;
+            _mmuPrefix = 0;
+
+            //ushort[,] MmuRegisters = new ushort[4, 8];
+
+            for (ushort index1 = 0; index1 < 8; index1++)
             {
-                _mmuTask = 0;
-                _mmuEnabled = false;
-                _ramVectors = 0;
-                _mmuState = 0;
-                _romMap = 0;
-                _mapType = 0;
-                _mmuPrefix = 0;
-
-                //ushort[,] MmuRegisters = new ushort[4, 8];
-
-                for (ushort index1 = 0; index1 < 8; index1++)
+                for (ushort index2 = 0; index2 < 4; index2++)
                 {
-                    for (ushort index2 = 0; index2 < 4; index2++)
-                    {
-                        _mmuRegisters[index2, index1] = (ushort)(index1 + _stateSwitch[_currentRamConfig]);
-                    }
+                    _mmuRegisters[index2, index1] = (ushort)(index1 + _stateSwitch[_currentRamConfig]);
                 }
-
-                //for (int index = 0; index < 32; index++)
-                //{
-                //    instance->MmuRegisters[index] = MmuRegisters[index >> 3, index & 7];
-                //}
-
-                for (int index = 0; index < 1024; index++)
-                {
-                    byte* offset = _ram.GetPointer((index & _ramMask[_currentRamConfig]) * 0x2000);
-                    _memPages[index] = offset;
-                    _memPageOffsets[index] = 1;
-                }
-
-                SetRomMap(0);
-                SetMapType(0);
             }
+
+            //for (int index = 0; index < 32; index++)
+            //{
+            //    instance->MmuRegisters[index] = MmuRegisters[index >> 3, index & 7];
+            //}
+
+            for (int index = 0; index < 1024; index++)
+            {
+                _memPages[index] = _ram.GetMemoryPointer((index & _ramMask[_currentRamConfig]) * 0x2000);
+                _memPageOffsets[index] = 1;
+            }
+
+            SetRomMap(0);
+            SetMapType(0);
         }
 
         /*****************************************************************************************
@@ -272,15 +268,10 @@ Could not locate {rom} in any of these locations:
 
                 if (_memPageOffsets[mmu] == 1)
                 {
-                    unsafe
-                    {
-                        return _memPages[mmu][mask];
-                    }
+                    return _memPages[mmu][mask];
                 }
-                else
-                {
-                    return _modules.PAKInterface.PakMem8Read((ushort)(_memPageOffsets[mmu] + mask));
-                }
+
+                return _modules.PAKInterface.PakMem8Read((ushort)(_memPageOffsets[mmu] + mask));
             }
 
             if (address > 0xFEFF)
@@ -316,10 +307,7 @@ Could not locate {rom} in any of these locations:
 
                 if ((_mapType != 0) || (mmu < maskA) || (mmu > maskB))
                 {
-                    unsafe
-                    {
-                        _memPages[mmu][mask] = data;
-                    }
+                    _memPages[mmu][mask] = data;
                 }
 
                 return;
@@ -649,14 +637,14 @@ Could not locate {rom} in any of these locations:
             UpdateMmuArray();
         }
 
-        public unsafe void UpdateMmuArray()
+        public void UpdateMmuArray()
         {
             if (_mapType != 0)
             {
-                _memPages[_vectorMask[_currentRamConfig] - 3] = _ram.GetPointer(0x2000 * (_vectorMask[_currentRamConfig] - 3));
-                _memPages[_vectorMask[_currentRamConfig] - 2] = _ram.GetPointer(0x2000 * (_vectorMask[_currentRamConfig] - 2));
-                _memPages[_vectorMask[_currentRamConfig] - 1] = _ram.GetPointer(0x2000 * (_vectorMask[_currentRamConfig] - 1));
-                _memPages[_vectorMask[_currentRamConfig]] = _ram.GetPointer(0x2000 * _vectorMask[_currentRamConfig]);
+                _memPages[_vectorMask[_currentRamConfig] - 3] = _ram.GetMemoryPointer(0x2000 * (_vectorMask[_currentRamConfig] - 3));
+                _memPages[_vectorMask[_currentRamConfig] - 2] = _ram.GetMemoryPointer(0x2000 * (_vectorMask[_currentRamConfig] - 2));
+                _memPages[_vectorMask[_currentRamConfig] - 1] = _ram.GetMemoryPointer(0x2000 * (_vectorMask[_currentRamConfig] - 1));
+                _memPages[_vectorMask[_currentRamConfig]] = _ram.GetMemoryPointer(0x2000 * _vectorMask[_currentRamConfig]);
 
                 _memPageOffsets[_vectorMask[_currentRamConfig] - 3] = 1;
                 _memPageOffsets[_vectorMask[_currentRamConfig] - 2] = 1;
@@ -670,8 +658,8 @@ Could not locate {rom} in any of these locations:
             {
                 case 0:
                 case 1: //16K Internal 16K External
-                    _memPages[_vectorMask[_currentRamConfig] - 3] = _irb.GetPointer(0x0000);
-                    _memPages[_vectorMask[_currentRamConfig] - 2] = _irb.GetPointer(0x2000);
+                    _memPages[_vectorMask[_currentRamConfig] - 3] = _irb.GetMemoryPointer(0x0000);
+                    _memPages[_vectorMask[_currentRamConfig] - 2] = _irb.GetMemoryPointer(0x2000);
                     _memPages[_vectorMask[_currentRamConfig] - 1] = null;
                     _memPages[_vectorMask[_currentRamConfig]] = null;
 
@@ -683,10 +671,10 @@ Could not locate {rom} in any of these locations:
                     return;
 
                 case 2: // 32K Internal
-                    _memPages[_vectorMask[_currentRamConfig] - 3] = _irb.GetPointer(0x0000);
-                    _memPages[_vectorMask[_currentRamConfig] - 2] = _irb.GetPointer(0x2000);
-                    _memPages[_vectorMask[_currentRamConfig] - 1] = _irb.GetPointer(0x4000);
-                    _memPages[_vectorMask[_currentRamConfig]] = _irb.GetPointer(0x6000);
+                    _memPages[_vectorMask[_currentRamConfig] - 3] = _irb.GetMemoryPointer(0x0000);
+                    _memPages[_vectorMask[_currentRamConfig] - 2] = _irb.GetMemoryPointer(0x2000);
+                    _memPages[_vectorMask[_currentRamConfig] - 1] = _irb.GetMemoryPointer(0x4000);
+                    _memPages[_vectorMask[_currentRamConfig]] = _irb.GetMemoryPointer(0x6000);
 
                     _memPageOffsets[_vectorMask[_currentRamConfig] - 3] = 1;
                     _memPageOffsets[_vectorMask[_currentRamConfig] - 2] = 1;
