@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Windows;
 using VCCSharp.IoC;
+using VCCSharp.Models;
 
 namespace VCCSharp.Modules
 {
@@ -217,8 +218,8 @@ namespace VCCSharp.Modules
                 // ReSharper disable once InconsistentNaming
                 bool LCNTRL = GetLCNTRL(letter);
 
-                if (CSHIFT) { result.Append((char)0x36); }
-                if (LCNTRL) { result.Append((char)0x1D); }
+                if (CSHIFT) { result.Append((char)Define.DIK_LSHIFT); }
+                if (LCNTRL) { result.Append((char)Define.DIK_LCONTROL); }
 
                 result.Append(sc);
             }
@@ -433,13 +434,17 @@ namespace VCCSharp.Modules
                 '`' => false,
                 '~' => true,
                 '_' => true,
-                '\t' => false // TAB
-                ,
+                '\t' => false, // TAB
+
                 _ => false
             };
         }
 
         // ReSharper disable once InconsistentNaming
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>TRUE when { [, ], \ }</returns>
         public bool GetLCNTRL(char letter)
         {
             return letter switch
@@ -540,8 +545,8 @@ namespace VCCSharp.Modules
                 '`' => false,
                 '~' => false,
                 '_' => false,
-                '\t' => false // TAB
-                ,
+                '\t' => false, // TAB
+
                 _ => false
             };
         }

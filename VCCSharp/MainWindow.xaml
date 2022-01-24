@@ -36,7 +36,7 @@
       <Menu.ItemTemplate>
         <HierarchicalDataTemplate DataType="{x:Type menu:MenuItemViewModel}" ItemsSource="{Binding Path=MenuItems}">
           <Grid>
-            <TextBlock Text="{Binding Header}" Visibility="{Binding IsHeader, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <Label Content="{Binding Header}" Visibility="{Binding IsHeader, Converter={StaticResource BooleanToVisibilityConverter}}"></Label>
             <Separator Width="100" Visibility="{Binding IsSeparator, Converter={StaticResource BooleanToVisibilityConverter}}"/>
           </Grid>
         </HierarchicalDataTemplate>

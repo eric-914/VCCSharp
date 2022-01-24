@@ -32,7 +32,7 @@ namespace VCCSharp.Menu
 
         private static MenuItemViewModel File(Actions actions) => new MenuItemViewModel
         {
-            Header = "File",
+            Header = "_File",
             MenuItems = new MenuItems
             {
                 new MenuItemViewModel {Header = "Run", Action = actions.Run},
@@ -42,13 +42,13 @@ namespace VCCSharp.Menu
                 new MenuItemViewModel {Header = "[F9] Hard Reset", Action = actions.HardReset},
                 new MenuItemViewModel {Header = "[F5] Soft Reset", Action = actions.SoftReset},
                 Separator,
-                new MenuItemViewModel {Header = "Exit", Action = actions.ApplicationExit}
+                new MenuItemViewModel {Header = "E_xit", Action = actions.ApplicationExit}
             }
         };
 
         private static MenuItemViewModel Edit(Actions actions) => new MenuItemViewModel
         {
-            Header = "Edit",
+            Header = "_Edit",
             MenuItems = new MenuItems
             {
                 new MenuItemViewModel {Header = "Copy Text", Action = actions.CopyText},
@@ -60,7 +60,7 @@ namespace VCCSharp.Menu
 
         private static MenuItemViewModel Configuration(Actions actions) => new MenuItemViewModel
         {
-            Header = "Options",
+            Header = "_Options",
             MenuItems = new MenuItems
             {
                 new MenuItemViewModel {Header = "Flip Artifact Colors", Action = actions.FlipArtifactColors},
@@ -74,13 +74,13 @@ namespace VCCSharp.Menu
 
         private static MenuItemViewModel Cartridge() => new MenuItemViewModel
         {
-            Header = "Cartridge",
+            Header = "_Cartridge",
             MenuItems = new ObservableCollection<MenuItemViewModel>()
         };
 
         private static MenuItemViewModel Help(Actions actions) => new MenuItemViewModel
         {
-            Header = "Help",
+            Header = "_Help",
             MenuItems = new MenuItems
             {
                 new MenuItemViewModel {Header = "About Vcc", Action = actions.AboutVcc}

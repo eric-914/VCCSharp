@@ -308,38 +308,13 @@ namespace VCCSharp.Modules
         */
         public void KeyboardHandleKey(byte scanCode, KeyStates keyState)
         {
-            scanCode = KeyboardHandleScanCode(scanCode);
-            KeyboardHandleKeyState(keyState, scanCode);
-        }
-
-        public byte KeyboardHandleScanCode(byte scanCode)
-        {
-            //char c = key == 0 ? '0' : (char)key;
-
-            //Key  : S ( 83 / 0x53)  Scan : 31 / 0x1F
-            //Debug.WriteLine($">>Key  : {c} ({key:###} / 0x{key:X})  Scan : {scanCode:###} / 0x{scanCode:X}", c, c, c, scanCode, scanCode);
-
-            switch (scanCode)
+            // check for shift key
+            // Left and right shift generate different scan codes
+            if (scanCode == Define.DIK_RSHIFT)
             {
-                // check for shift key
-                // Left and right shift generate different scan codes
-                case Define.DIK_RSHIFT:
-                    return Define.DIK_LSHIFT;
-
-                // CTRL key - right -> left
-                case Define.DIK_RCONTROL:
-                    return Define.DIK_LCONTROL;
-
-                // ALT key - right -> left
-                case Define.DIK_RMENU:
-                    return Define.DIK_LMENU;
+                scanCode = Define.DIK_LSHIFT;
             }
 
-            return scanCode;
-        }
-
-        public void KeyboardHandleKeyState(KeyStates keyState, byte scanCode)
-        {
             switch (keyState)
             {
                 // Key Down

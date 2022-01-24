@@ -271,9 +271,9 @@ namespace VCCSharp.Modules
             {
                 key = _modules.Clipboard.PeekClipboard();
 
-                if (key == Define.DIK_RSHIFT)
+                if (key == Define.DIK_LSHIFT)
                 {
-                    _modules.Keyboard.KeyboardHandleKey(Define.DIK_RSHIFT, KeyStates.kEventKeyDown);  //Press shift and...
+                    _modules.Keyboard.KeyboardHandleKey(Define.DIK_LSHIFT, KeyStates.kEventKeyDown);  //Press shift and...
                     _modules.Clipboard.PopClipboard();
 
                     key = _modules.Clipboard.PeekClipboard();
@@ -287,7 +287,7 @@ namespace VCCSharp.Modules
             {
                 key = _modules.Clipboard.PeekClipboard();
 
-                _modules.Keyboard.KeyboardHandleKey(Define.DIK_RSHIFT, KeyStates.kEventKeyUp);
+                _modules.Keyboard.KeyboardHandleKey(Define.DIK_LSHIFT, KeyStates.kEventKeyUp);
                 _modules.Keyboard.KeyboardHandleKey((byte)key, KeyStates.kEventKeyUp);
 
                 _modules.Clipboard.PopClipboard();
