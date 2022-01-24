@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
-using VCCSharp.Libraries.Models;
 using VCCSharp.Models;
 using KeyStates = VCCSharp.Enums.KeyStates;
 
@@ -161,26 +160,6 @@ namespace VCCSharp.Modules
                     SendSavedKeyEvents();
                     break;
 
-                case Define.WM_LBUTTONDOWN:
-                    _modules.Joystick.SetButtonStatus(0, 1);
-                    break;
-
-                case Define.WM_LBUTTONUP:
-                    _modules.Joystick.SetButtonStatus(0, 0);
-                    break;
-
-                case Define.WM_MOUSEMOVE:
-                    MouseMove(lParam);
-                    break;
-
-                case Define.WM_RBUTTONDOWN:
-                    _modules.Joystick.SetButtonStatus(1, 1);
-                    break;
-
-                case Define.WM_RBUTTONUP:
-                    _modules.Joystick.SetButtonStatus(1, 0);
-                    break;
-
                 case Define.WM_SYSCOMMAND:
                     ProcessSysCommandMessage(wParam);
                     break;
@@ -238,26 +217,6 @@ namespace VCCSharp.Modules
             byte oemScan = (byte)((lParam & 0x00FF0000) >> 16);
 
             _modules.Keyboard.KeyboardHandleKey((byte)wParam, oemScan, KeyStates.kEventKeyUp);
-        }
-
-        private void MouseMove(long lParam)
-        {
-            if (_modules.Emu.EmulationRunning)
-            {
-                uint x = (uint)(lParam & 0xFFFF); // LOWORD(lParam);
-                uint y = (uint)((lParam >> 16) & 0xFFFF); // HIWORD(lParam);
-
-                var clientSize = new RECT();
-                _user32.GetClientRect(_modules.Emu.WindowHandle, ref clientSize);
-
-                uint dx = (uint) ((clientSize.right - clientSize.left) >> 6);
-                uint dy = (uint)(((clientSize.bottom - clientSize.top) - 20) >> 6);
-
-                if (dx > 0) x /= dx;
-                if (dy > 0) y /= dy;
-
-                _modules.Joystick.SetJoystick((ushort)x, (ushort)y);
-            }
         }
 
         private void ProcessSysKeyDownMessage(long wParam, long lParam)

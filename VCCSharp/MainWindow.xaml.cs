@@ -2,8 +2,10 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Interop;
 using VCCSharp.IoC;
+using VCCSharp.Libraries.Models;
 using VCCSharp.Menu;
 using VCCSharp.Modules;
 
@@ -20,11 +22,16 @@ namespace VCCSharp
         private MainWindowViewModel ViewModel { get; } = new MainWindowViewModel();
 
         private readonly IFactory _factory = Factory.Instance;
-        private IEvents Events => _factory.Get<IModules>().Events;
+        private readonly IEvents _events;
+        private readonly IJoystick _joystick;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            var modules = _factory.Get<IModules>();
+            _events = modules.Events;
+            _joystick = modules.Joystick;
 
             var bindings = _factory.MainWindowCommands;
 
@@ -53,7 +60,44 @@ namespace VCCSharp
 
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
-            Events.EmuExit();
+            _events.EmuExit();
+        }
+
+        private void MainWindow_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            _joystick.SetButtonStatus(0, 0);
+        }
+
+        private void MainWindow_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            _joystick.SetButtonStatus(0, 1);
+        }
+
+        private void MainWindow_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            _joystick.SetButtonStatus(1, 0);
+        }
+
+        private void MainWindow_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            _joystick.SetButtonStatus(1, 1);
+        }
+
+        private void MainWindow_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            Point mouse = Mouse.GetPosition(this);
+
+            var point = new System.Drawing.Point((int)mouse.X, (int)mouse.Y);
+
+            var clientSize = new RECT
+            {
+                top = (int)Top,
+                left = (int)Left,
+                right = (int)Left + (int)Width,
+                bottom = (int)Top + (int)Height
+            };
+
+            _joystick.SetJoystick(clientSize, point);
         }
     }
 }

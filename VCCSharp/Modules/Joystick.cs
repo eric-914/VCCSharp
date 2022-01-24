@@ -1,8 +1,9 @@
-﻿using System;
+﻿using DX8;
+using System;
 using System.Collections.Generic;
-using DX8;
-using VCCSharp.DX8;
+using System.Drawing;
 using VCCSharp.Libraries;
+using VCCSharp.Libraries.Models;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
@@ -19,7 +20,7 @@ namespace VCCSharp.Modules
 
         void SetStickNumbers(byte leftStickNumber, byte rightStickNumber);
         void SetButtonStatus(byte side, byte state);
-        void SetJoystick(ushort x, ushort y);
+        void SetJoystick(RECT clientSize, Point point);
         byte SetMouseStatus(byte scanCode, byte phase);
 
         int get_pot_value(byte pot);
@@ -169,8 +170,17 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void SetJoystick(ushort x, ushort y)
+        public void SetJoystick(RECT clientSize, Point point)
         {
+            int dx = (clientSize.right - clientSize.left) >> 6;
+            int dy = (clientSize.bottom - clientSize.top - 20) >> 6;
+
+            if (dx > 0) point.X /= dx;
+            if (dy > 0) point.Y /= dy;
+
+            ushort x = (ushort)point.X;
+            ushort y = (ushort)point.Y;
+
             JoystickModel left = GetLeftJoystick();
             JoystickModel right = GetRightJoystick();
 
