@@ -20,6 +20,7 @@ namespace VCCSharp.Modules
         void ToggleThrottle();
         void ToggleFullScreen();
         void ToggleInfoBand();
+        void Cancel();
         void ProcessMessage(int message, long wParam, long lParam);
     }
 
@@ -114,6 +115,11 @@ namespace VCCSharp.Modules
                 _modules.Vcc.RunState = (byte)EmuRunStates.ReqWait;
                 _modules.Emu.FullScreen = !_modules.Emu.FullScreen;
             }
+        }
+
+        public void Cancel() //ESC
+        {
+            _modules.Clipboard.Abort = true; //--Abort clipboard (paste) actions
         }
 
         //----------------------------------------------------------------------------------------

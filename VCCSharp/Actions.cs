@@ -137,6 +137,11 @@ namespace VCCSharp
             _modules.Events.ToggleFullScreen();
         }
 
+        public void Cancel() //ESC
+        {
+            _modules.Events.Cancel();
+        }
+
         public void OpenBitBanger()
         {
             throw new System.NotImplementedException();

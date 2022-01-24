@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -15,6 +16,7 @@ namespace VCCSharp
     {
         public MenuItems MenuItems { get; set; }
         public IStatus Status { get; set; }
+        public ICommand Cancel { get; set; }
     }
 
     public partial class MainWindow

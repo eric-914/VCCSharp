@@ -321,11 +321,6 @@ namespace VCCSharp.Modules
 
             switch (scanCode)
             {
-                //If requested, abort pasting operation.
-                case Define.DIK_ESCAPE:
-                    _modules.Clipboard.Abort = true;
-                    break;
-
                 // check for shift key
                 // Left and right shift generate different scan codes
                 case Define.DIK_RSHIFT:
