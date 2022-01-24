@@ -15,8 +15,9 @@ namespace VCCSharp.Modules
         void PasteClipboard();
         void PasteBasic();
         void PasteBasicWithNew();
+        void SetClipboardText(string text);
         int CurrentKeyMap { get; set; }
-        void Abort();
+        bool Abort { get; set; }
     }
 
     public class Clipboard : IClipboard
@@ -54,22 +55,21 @@ namespace VCCSharp.Modules
         #endregion
 
         private string _clipboardText;
-        private bool _abort;
 
         private readonly IModules _modules;
         private IGraphics Graphics => _modules.Graphics;
 
         public bool CodePaste;
         public bool PasteWithNew;
+
         public int CurrentKeyMap { get; set; }
+        public bool Abort { get; set; }
 
         public Clipboard(IModules modules)
         {
             _modules = modules;
         }
-
-        public void Abort() => _abort = true;
-
+        
         public void PasteBasic()
         {
             CodePaste = true;
@@ -139,7 +139,7 @@ namespace VCCSharp.Modules
 
         public void PasteText(string text)
         {
-            _abort = false;
+            Abort = false;
 
             if (PasteWithNew)
             {
@@ -553,7 +553,7 @@ namespace VCCSharp.Modules
 
         public bool ClipboardEmpty()
         {
-            return _abort || string.IsNullOrEmpty(_clipboardText);
+            return string.IsNullOrEmpty(_clipboardText);
         }
 
         public char PeekClipboard()

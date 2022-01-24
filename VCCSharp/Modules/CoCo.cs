@@ -255,7 +255,6 @@ namespace VCCSharp.Modules
 
         private void CpuCycleClipboard(IVcc vcc)
         {
-            const byte shift = 0x36;
             char key;
 
             //Remember the original throttle setting.
@@ -272,10 +271,11 @@ namespace VCCSharp.Modules
             {
                 key = _modules.Clipboard.PeekClipboard();
 
-                if (key == shift)
+                if (key == Define.DIK_RSHIFT)
                 {
-                    _modules.Keyboard.KeyboardHandleKey(shift, KeyStates.kEventKeyDown);  //Press shift and...
+                    _modules.Keyboard.KeyboardHandleKey(Define.DIK_RSHIFT, KeyStates.kEventKeyDown);  //Press shift and...
                     _modules.Clipboard.PopClipboard();
+
                     key = _modules.Clipboard.PeekClipboard();
                 }
 
@@ -287,9 +287,15 @@ namespace VCCSharp.Modules
             {
                 key = _modules.Clipboard.PeekClipboard();
 
-                _modules.Keyboard.KeyboardHandleKey(shift, KeyStates.kEventKeyUp);
+                _modules.Keyboard.KeyboardHandleKey(Define.DIK_RSHIFT, KeyStates.kEventKeyUp);
                 _modules.Keyboard.KeyboardHandleKey((byte)key, KeyStates.kEventKeyUp);
+
                 _modules.Clipboard.PopClipboard();
+
+                if (_modules.Clipboard.Abort)
+                {
+                    _modules.Clipboard.SetClipboardText(null);
+                }
 
                 //Finished?
                 if (_modules.Clipboard.ClipboardEmpty())

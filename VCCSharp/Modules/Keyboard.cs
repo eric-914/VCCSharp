@@ -323,7 +323,7 @@ namespace VCCSharp.Modules
             {
                 //If requested, abort pasting operation.
                 case Define.DIK_ESCAPE:
-                    _modules.Clipboard.Abort();
+                    _modules.Clipboard.Abort = true;
                     break;
 
                 // check for shift key

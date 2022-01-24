@@ -56,7 +56,7 @@ namespace VCCSharp.Modules
         {
             if (_modules.Emu.EmulationRunning)
             {
-                _modules.Clipboard.Abort(); //--Abort Pasting if happening
+                _modules.Clipboard.Abort = true; //--Abort Pasting if happening
 
                 _modules.Emu.ResetPending = (byte)state;
             }
