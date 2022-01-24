@@ -9,13 +9,11 @@ namespace VCCSharp.Modules
 {
     public interface IKeyboard
     {
-        void KeyboardHandleKeyDown(byte key, byte scanCode);
-        void KeyboardHandleKeyUp(byte key, byte scanCode);
+        void KeyboardHandleKey(byte scanCode, KeyStates keyState);
         void KeyboardBuildRuntimeTable(byte keyMapIndex);
         void GimeSetKeyboardInterruptState(byte state);
         byte KeyboardGetScan(byte column);
         void SetKeyTranslations();
-        void KeyboardHandleKey(byte scanCode, KeyStates keyState);
     }
 
     public class Keyboard : IKeyboard
@@ -45,16 +43,6 @@ namespace VCCSharp.Modules
         public Keyboard(IModules modules)
         {
             _modules = modules;
-        }
-
-        public void KeyboardHandleKeyDown(byte key, byte scanCode)
-        {
-            KeyboardHandleKey(scanCode, KeyStates.kEventKeyDown);
-        }
-
-        public void KeyboardHandleKeyUp(byte key, byte scanCode)
-        {
-            KeyboardHandleKey(scanCode, KeyStates.kEventKeyUp);
         }
 
         /*

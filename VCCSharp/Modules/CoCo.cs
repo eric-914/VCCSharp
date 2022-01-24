@@ -27,6 +27,12 @@ namespace VCCSharp.Modules
     // ReSharper disable once InconsistentNaming
     public class CoCo : ICoCo
     {
+        private enum ThrottleStates
+        {
+            Idle,
+            Active
+        }
+
         public const double CyclesPerSecond = (Define.COLORBURST / 4) * (Define.TARGETFRAMERATE / Define.FRAMESPERSECORD);
         public const double LinesPerSecond = Define.TARGETFRAMERATE * (double)Define.LINESPERFIELD;
         public const double PicosPerLine = Define.PICOSECOND / LinesPerSecond;
@@ -58,7 +64,8 @@ namespace VCCSharp.Modules
         private byte _topBorder;
         private byte _bottomBorder;
         private byte _linesPerScreen;
-        private byte _throttle;
+        private ThrottleStates _throttleState = ThrottleStates.Idle;
+        private bool _throttle;
 
         private ushort _timerClockRate;
         private ushort _soundRate;
@@ -253,14 +260,10 @@ namespace VCCSharp.Modules
 
             //Remember the original throttle setting.
             //Set it to off. We need speed for this!
-            if (_throttle == 0)
+            if (_throttleState == ThrottleStates.Idle)
             {
-                _throttle = vcc.Throttle ? Define.TRUE : Define.FALSE;
-
-                if (_throttle == 0)
-                {
-                    _throttle = 2; // 2 = No throttle.
-                }
+                _throttle = vcc.Throttle;
+                _throttleState = ThrottleStates.Active;
             }
 
             vcc.Throttle = false;
@@ -271,12 +274,12 @@ namespace VCCSharp.Modules
 
                 if (key == shift)
                 {
-                    _modules.Keyboard.KeyboardHandleKeyDown(shift, shift);  //Press shift and...
+                    _modules.Keyboard.KeyboardHandleKey(shift, KeyStates.kEventKeyDown);  //Press shift and...
                     _modules.Clipboard.PopClipboard();
                     key = _modules.Clipboard.PeekClipboard();
                 }
 
-                _modules.Keyboard.KeyboardHandleKeyDown((byte)key, (byte)key);
+                _modules.Keyboard.KeyboardHandleKey((byte)key, KeyStates.kEventKeyDown);
 
                 _waitCycle = key == 0x1c ? 6000 : 2000;
             }
@@ -284,20 +287,20 @@ namespace VCCSharp.Modules
             {
                 key = _modules.Clipboard.PeekClipboard();
 
-                _modules.Keyboard.KeyboardHandleKeyUp(shift, shift);
-                _modules.Keyboard.KeyboardHandleKeyUp(0x42, (byte)key); //TODO: What is 0x42?
+                _modules.Keyboard.KeyboardHandleKey(shift, KeyStates.kEventKeyUp);
+                _modules.Keyboard.KeyboardHandleKey((byte)key, KeyStates.kEventKeyUp);
                 _modules.Clipboard.PopClipboard();
 
                 //Finished?
                 if (_modules.Clipboard.ClipboardEmpty())
                 {
                     //Done pasting. Reset throttle to original state
-                    vcc.Throttle = _throttle != 2;
+                    vcc.Throttle = _throttle;
 
                     //...and reset the keymap to the original state
                     ResetKeyMap();
 
-                    _throttle = 0;
+                    _throttleState = ThrottleStates.Idle;
                 }
             }
 
@@ -307,7 +310,6 @@ namespace VCCSharp.Modules
             {
                 _clipCycle = 1;
             }
-
         }
 
         private void CpuCyclePicos()
