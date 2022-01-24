@@ -56,6 +56,8 @@ namespace VCCSharp.Modules
         {
             if (_modules.Emu.EmulationRunning)
             {
+                _modules.Clipboard.Abort(); //--Abort Pasting if happening
+
                 _modules.Emu.ResetPending = (byte)state;
             }
         }
@@ -93,14 +95,9 @@ namespace VCCSharp.Modules
         {
             _modules.Emu.EmulationRunning = !_modules.Emu.EmulationRunning;
 
-            if (_modules.Emu.EmulationRunning)
-            {
-                _modules.Emu.ResetPending = (byte)ResetPendingStates.Hard;
-            }
-            else
-            {
-                _modules.Draw.SetStatusBarText("");
-            }
+            EmuReset(ResetPendingStates.Hard);
+
+            _modules.Draw.SetStatusBarText("");
         }
 
         public void ToggleInfoBand() //F10

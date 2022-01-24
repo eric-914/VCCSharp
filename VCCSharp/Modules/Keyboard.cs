@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
@@ -13,7 +12,6 @@ namespace VCCSharp.Modules
         void KeyboardHandleKeyDown(byte key, byte scanCode);
         void KeyboardHandleKeyUp(byte key, byte scanCode);
         void KeyboardBuildRuntimeTable(byte keyMapIndex);
-        void SetPaste(bool flag);
         void GimeSetKeyboardInterruptState(byte state);
         byte KeyboardGetScan(byte column);
         void SetKeyTranslations();
@@ -30,7 +28,6 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
 
         public byte KeyboardInterruptEnabled;
-        public int Pasting;  //Are the keyboard functions in the middle of a paste operation?
 
         /** run-time 'rollover' table to pass to the MC6821 when a key is pressed */
         public byte[] RolloverTable = new byte[8];	// CoCo 'keys' for emulator
@@ -58,11 +55,6 @@ namespace VCCSharp.Modules
         public void KeyboardHandleKeyUp(byte key, byte scanCode)
         {
             KeyboardHandleKey(scanCode, KeyStates.kEventKeyUp);
-        }
-
-        public void SetPaste(bool flag)
-        {
-            Pasting = flag ? Define.TRUE : Define.FALSE;
         }
 
         /*
@@ -328,38 +320,43 @@ namespace VCCSharp.Modules
         */
         public void KeyboardHandleKey(byte scanCode, KeyStates keyState)
         {
+            scanCode = KeyboardHandleScanCode(scanCode);
+            KeyboardHandleKeyState(keyState, scanCode);
+        }
+
+        public byte KeyboardHandleScanCode(byte scanCode)
+        {
             //char c = key == 0 ? '0' : (char)key;
 
             //Key  : S ( 83 / 0x53)  Scan : 31 / 0x1F
             //Debug.WriteLine($">>Key  : {c} ({key:###} / 0x{key:X})  Scan : {scanCode:###} / 0x{scanCode:X}", c, c, c, scanCode, scanCode);
 
-            //If requested, abort pasting operation.
-            if (scanCode == 0x01 || scanCode == 0x43 || scanCode == 0x3F)
+            switch (scanCode)
             {
-                Pasting = Define.FALSE;
+                //If requested, abort pasting operation.
+                case Define.DIK_ESCAPE:
+                    _modules.Clipboard.Abort();
+                    break;
 
-                Debug.WriteLine("ABORT PASTING!!!");
+                // check for shift key
+                // Left and right shift generate different scan codes
+                case Define.DIK_RSHIFT:
+                    return Define.DIK_LSHIFT;
+
+                // CTRL key - right -> left
+                case Define.DIK_RCONTROL:
+                    return Define.DIK_LCONTROL;
+
+                // ALT key - right -> left
+                case Define.DIK_RMENU:
+                    return Define.DIK_LMENU;
             }
 
-            // check for shift key
-            // Left and right shift generate different scan codes
-            if (scanCode == Define.DIK_RSHIFT)
-            {
-                scanCode = Define.DIK_LSHIFT;
-            }
+            return scanCode;
+        }
 
-            //// TODO: CTRL and/or ALT?
-            //// CTRL key - right -> left
-            //if (ScanCode == DIK_RCONTROL)
-            //{
-            //    ScanCode = DIK_LCONTROL;
-            //}
-            //// ALT key - right -> left
-            //if (ScanCode == DIK_RMENU)
-            //{
-            //    ScanCode = DIK_LMENU;
-            //}
-
+        public void KeyboardHandleKeyState(KeyStates keyState, byte scanCode)
+        {
             switch (keyState)
             {
                 // Key Down

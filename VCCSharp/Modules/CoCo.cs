@@ -291,8 +291,6 @@ namespace VCCSharp.Modules
                 //Finished?
                 if (_modules.Clipboard.ClipboardEmpty())
                 {
-                    _modules.Keyboard.SetPaste(false);
-
                     //Done pasting. Reset throttle to original state
                     vcc.Throttle = _throttle != 2;
 

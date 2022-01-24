@@ -16,6 +16,7 @@ namespace VCCSharp.Modules
         void PasteBasic();
         void PasteBasicWithNew();
         int CurrentKeyMap { get; set; }
+        void Abort();
     }
 
     public class Clipboard : IClipboard
@@ -53,6 +54,7 @@ namespace VCCSharp.Modules
         #endregion
 
         private string _clipboardText;
+        private bool _abort;
 
         private readonly IModules _modules;
         private IGraphics Graphics => _modules.Graphics;
@@ -65,6 +67,8 @@ namespace VCCSharp.Modules
         {
             _modules = modules;
         }
+
+        public void Abort() => _abort = true;
 
         public void PasteBasic()
         {
@@ -112,8 +116,6 @@ namespace VCCSharp.Modules
                 }
             }
 
-            _modules.Keyboard.SetPaste(true);
-
             //This sets the keyboard to Natural,
             //but we need to read it first so we can set it back
             CurrentKeyMap = _modules.Config.GetCurrentKeyboardLayout();
@@ -137,6 +139,8 @@ namespace VCCSharp.Modules
 
         public void PasteText(string text)
         {
+            _abort = false;
+
             if (PasteWithNew)
             {
                 text = $"NEW\n{text}";
@@ -549,7 +553,7 @@ namespace VCCSharp.Modules
 
         public bool ClipboardEmpty()
         {
-            return string.IsNullOrEmpty(_clipboardText);
+            return _abort || string.IsNullOrEmpty(_clipboardText);
         }
 
         public char PeekClipboard()
