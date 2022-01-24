@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using VCCSharp.IoC;
 using VCCSharp.Menu;
+using VCCSharp.Modules;
 
 namespace VCCSharp
 {
@@ -18,6 +20,7 @@ namespace VCCSharp
         private MainWindowViewModel ViewModel { get; } = new MainWindowViewModel();
 
         private readonly IFactory _factory = Factory.Instance;
+        private IEvents Events => _factory.Get<IModules>().Events;
 
         public MainWindow()
         {
@@ -46,6 +49,11 @@ namespace VCCSharp
             IVccThread thread = _factory.Get<IVccThread>();
 
             Task.Run(() => thread.Run(hWnd));
+        }
+
+        private void MainWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            Events.EmuExit();
         }
     }
 }

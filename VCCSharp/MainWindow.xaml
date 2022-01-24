@@ -7,7 +7,8 @@
         xmlns:converters="clr-namespace:VCCSharp.Converters"
         xmlns:vccSharp="clr-namespace:VCCSharp"
         mc:Ignorable="d"
-        Title="VCCSharp" Height="519" Width="821">
+        Title="VCCSharp" Height="519" Width="821"
+        Closing="MainWindow_OnClosing">
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     <converters:FrameSkipConverter x:Key="FrameSkipConverter"/>

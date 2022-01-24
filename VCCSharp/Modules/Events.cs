@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
@@ -64,6 +65,8 @@ namespace VCCSharp.Modules
 
         public void EmuExit()
         {
+            Debug.WriteLine("Exiting...");
+
             _modules.Vcc.BinaryRunning = false;
         }
 
@@ -139,11 +142,6 @@ namespace VCCSharp.Modules
         {
             switch (message)
             {
-                //TODO: This is Events.EmuExit()
-                case Define.WM_CLOSE:
-                    _modules.Vcc.BinaryRunning = false;
-                    break;
-
                 case Define.WM_COMMAND:
                     ProcessCommandMessage(wParam);
                     break;
@@ -152,7 +150,7 @@ namespace VCCSharp.Modules
                     break;
 
                 case Define.WM_KEYDOWN:
-                    ProcessKeyDownMessage(wParam, lParam);
+                    KeyDown(wParam, lParam);
                     break;
 
                 case Define.WM_KEYUP:
@@ -268,32 +266,6 @@ namespace VCCSharp.Modules
             if ((lParam >> 30) != 0)
             {
                 KeyDown(wParam, lParam);
-            }
-        }
-
-        private void ProcessKeyDownMessage(long wParam, long lParam)
-        {
-            // get key scan code for emulator control keys
-            byte oemScan = (byte)((lParam & 0x00FF0000) >> 16); // just get the scan code
-
-            switch (oemScan)
-            {
-                case Define.DIK_F11:
-                    ToggleFullScreenState();
-                    break;
-
-                default:
-                    KeyDown(wParam, lParam);
-                    break;
-            }
-        }
-
-        private void ToggleFullScreenState()
-        {
-            if (_modules.Vcc.RunState == 0)
-            {
-                _modules.Vcc.RunState = 1;
-                _modules.Emu.FullScreen = !_modules.Emu.FullScreen;
             }
         }
 

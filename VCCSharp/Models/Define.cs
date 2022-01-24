@@ -236,7 +236,7 @@ namespace VCCSharp.Models
 
         public const int WM_CREATE = 0x0001;
         public const int WM_KILLFOCUS = 0x0008;
-        public const int WM_CLOSE = 0x0010;
+        //public const int WM_CLOSE = 0x0010;
         public const int WM_KEYDOWN = 0x0100;
         public const int WM_KEYUP = 0x0101;
         public const int WM_SYSKEYDOWN = 0x0104;
