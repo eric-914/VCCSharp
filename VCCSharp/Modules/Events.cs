@@ -36,8 +36,6 @@ namespace VCCSharp.Modules
         //--------------------------------------------------------------------------
         private byte _scSave1;
         private byte _scSave2;
-        private byte _kbSave1;
-        private byte _kbSave2;
 
         private bool _keySaveToggle;
 
@@ -145,15 +143,12 @@ namespace VCCSharp.Modules
                     ProcessCommandMessage(wParam);
                     break;
 
-                case Define.WM_CREATE:
-                    break;
-
                 case Define.WM_KEYDOWN:
-                    KeyDown(wParam, lParam);
+                    KeyDown(lParam);
                     break;
 
                 case Define.WM_KEYUP:
-                    KeyUp(wParam, lParam);
+                    KeyUp(lParam);
                     break;
 
                 case Define.WM_KILLFOCUS:
@@ -165,11 +160,13 @@ namespace VCCSharp.Modules
                     break;
 
                 case Define.WM_SYSKEYDOWN:
-                    ProcessSysKeyDownMessage(wParam, lParam);
+                    // Ignore repeated system keys
+                    if (lParam >> 30 == 0) return;
+                    KeyDown(lParam);
                     break;
 
                 case Define.WM_SYSKEYUP:
-                    KeyUp(wParam, lParam);
+                    KeyUp(lParam);
                     break;
             }
         }
@@ -209,36 +206,27 @@ namespace VCCSharp.Modules
             }
         }
 
-        private void KeyUp(long wParam, long lParam)
+        private void KeyUp(long lParam)
         {
             // send emulator key up event to the emulator
             // TODO: Key up checks whether the emulation is running, this does not
 
             byte oemScan = (byte)((lParam & 0x00FF0000) >> 16);
 
-            _modules.Keyboard.KeyboardHandleKey((byte)wParam, oemScan, KeyStates.kEventKeyUp);
+            _modules.Keyboard.KeyboardHandleKey(oemScan, KeyStates.kEventKeyUp);
         }
 
-        private void ProcessSysKeyDownMessage(long wParam, long lParam)
-        {
-            // Ignore repeated system keys
-            if ((lParam >> 30) != 0)
-            {
-                KeyDown(wParam, lParam);
-            }
-        }
-
-        private void KeyDown(long wParam, long lParam)
+        private void KeyDown(long lParam)
         {
             byte oemScan = (byte)((lParam & 0x00FF0000) >> 16); // just get the scan code
 
             // send other keystrokes to the emulator if it is active
             if (_modules.Emu.EmulationRunning)
             {
-                _modules.Keyboard.KeyboardHandleKey((byte)wParam, oemScan, KeyStates.kEventKeyDown);
+                _modules.Keyboard.KeyboardHandleKey(oemScan, KeyStates.kEventKeyDown);
 
                 // Save key down in case focus is lost
-                SaveLastTwoKeyDownEvents((byte)wParam, oemScan);
+                SaveLastTwoKeyDownEvents(oemScan);
             }
         }
 
@@ -249,7 +237,7 @@ namespace VCCSharp.Modules
         //--------------------------------------------------------------------------
 
         // Save last two key down events
-        private void SaveLastTwoKeyDownEvents(byte kbChar, byte oemScan)
+        private void SaveLastTwoKeyDownEvents(byte oemScan)
         {
             // Ignore zero scan code
             if (oemScan == 0)
@@ -262,12 +250,10 @@ namespace VCCSharp.Modules
 
             if (_keySaveToggle)
             {
-                _kbSave1 = kbChar;
                 _scSave1 = oemScan;
             }
             else
             {
-                _kbSave2 = kbChar;
                 _scSave2 = oemScan;
             }
         }
@@ -279,12 +265,12 @@ namespace VCCSharp.Modules
         {
             if (_scSave1 != 0)
             {
-                _modules.Keyboard.KeyboardHandleKey(_kbSave1, _scSave1, KeyStates.kEventKeyUp);
+                _modules.Keyboard.KeyboardHandleKey(_scSave1, KeyStates.kEventKeyUp);
             }
 
             if (_scSave2 != 0)
             {
-                _modules.Keyboard.KeyboardHandleKey(_kbSave2, _scSave2, KeyStates.kEventKeyUp);
+                _modules.Keyboard.KeyboardHandleKey(_scSave2, KeyStates.kEventKeyUp);
             }
 
             _scSave1 = 0;

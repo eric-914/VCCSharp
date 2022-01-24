@@ -24,6 +24,7 @@ namespace VCCSharp
         private readonly IFactory _factory = Factory.Instance;
         private readonly IEvents _events;
         private readonly IJoystick _joystick;
+        private readonly IKeyboard _keyboard;
 
         public MainWindow()
         {
@@ -32,6 +33,7 @@ namespace VCCSharp
             var modules = _factory.Get<IModules>();
             _events = modules.Events;
             _joystick = modules.Joystick;
+            _keyboard = modules.Keyboard;
 
             var bindings = _factory.MainWindowCommands;
 
@@ -98,6 +100,16 @@ namespace VCCSharp
             };
 
             _joystick.SetJoystick(clientSize, point);
+        }
+
+        private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void MainWindow_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            //throw new NotImplementedException();
         }
     }
 }

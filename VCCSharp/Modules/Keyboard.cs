@@ -17,7 +17,7 @@ namespace VCCSharp.Modules
         void GimeSetKeyboardInterruptState(byte state);
         byte KeyboardGetScan(byte column);
         void SetKeyTranslations();
-        void KeyboardHandleKey(byte key, byte scanCode, KeyStates keyState);
+        void KeyboardHandleKey(byte scanCode, KeyStates keyState);
     }
 
     public class Keyboard : IKeyboard
@@ -52,12 +52,12 @@ namespace VCCSharp.Modules
 
         public void KeyboardHandleKeyDown(byte key, byte scanCode)
         {
-            KeyboardHandleKey(key, scanCode, KeyStates.kEventKeyDown);
+            KeyboardHandleKey(scanCode, KeyStates.kEventKeyDown);
         }
 
         public void KeyboardHandleKeyUp(byte key, byte scanCode)
         {
-            KeyboardHandleKey(key, scanCode, KeyStates.kEventKeyUp);
+            KeyboardHandleKey(scanCode, KeyStates.kEventKeyUp);
         }
 
         public void SetPaste(bool flag)
@@ -326,7 +326,7 @@ namespace VCCSharp.Modules
           @param ScanCode keyboard scan code (DIK_XXXX - DirectInput)
           @param Status Key status - kEventKeyDown/kEventKeyUp
         */
-        public void KeyboardHandleKey(byte key, byte scanCode, KeyStates keyState)
+        public void KeyboardHandleKey(byte scanCode, KeyStates keyState)
         {
             //char c = key == 0 ? '0' : (char)key;
 
