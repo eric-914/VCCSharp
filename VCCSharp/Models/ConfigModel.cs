@@ -5,48 +5,48 @@ namespace VCCSharp.Models
     public class ConfigModel
     {
         //[Version]
-        public string Release; //## WRITE-ONLY ##//
+        public string Release { get; set; } //## WRITE-ONLY ##//
 
         //[CPU]
-        public byte CPUMultiplier;
-        public byte FrameSkip;
-        public byte SpeedThrottle;
-        public byte CpuType;
+        public byte CPUMultiplier { get; set; }
+        public byte FrameSkip { get; set; }
+        public byte SpeedThrottle { get; set; }
+        public byte CpuType { get; set; }
 
-        public ushort MaxOverclock;
+        public ushort MaxOverclock { get; set; }
 
         //[Audio]
-        public string SoundCardName;
-        public ushort AudioRate;
+        public string SoundCardName { get; set; }
+        public ushort AudioRate { get; set; }
 
         //[Video]
-        public MonitorTypes MonitorType;
-        public byte PaletteType;
-        public byte ScanLines;
-        public bool ForceAspect;
-        public bool RememberSize;
+        public MonitorTypes MonitorType { get; set; }
+        public byte PaletteType { get; set; }
+        public byte ScanLines { get; set; }
+        public bool ForceAspect { get; set; }
+        public bool RememberSize { get; set; }
 
-        public short WindowSizeX;
-        public short WindowSizeY;
+        public short WindowSizeX { get; set; }
+        public short WindowSizeY { get; set; }
 
         //[Memory]
-        public byte RamSize;
-        public string ExternalBasicImage; //## READ-ONLY ##//
+        public byte RamSize { get; set; }
+        public string ExternalBasicImage { get; set; } //## READ-ONLY ##//
 
         //[Misc]
-        public bool AutoStart;
-        public byte CartAutoStart;
-        public KeyboardLayouts KeyMapIndex;
+        public bool AutoStart { get; set; }
+        public byte CartAutoStart { get; set; }
+        public KeyboardLayouts KeyboardLayout { get; set; }
 
         //[Module]
-        public string ModulePath;
+        public string ModulePath { get; set; }
 
         //[DefaultPaths]
-        public string CassPath;
-        public string PakPath;
-        public string FloppyPath;
-        public string CoCoRomPath; //## READ-ONLY ##//
-        public string SerialCaptureFilePath;
+        public string CassPath { get; set; }
+        public string PakPath { get; set; }
+        public string FloppyPath { get; set; }
+        public string CoCoRomPath { get; set; } //## READ-ONLY ##//
+        public string SerialCaptureFilePath { get; set; }
  
         //[FD-502]  //### MODULE SPECIFIC ###//
         //DiskRom=1

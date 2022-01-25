@@ -269,7 +269,7 @@ namespace VCCSharp.Modules
 
             ValidateModel(ConfigModel);
 
-            _modules.Keyboard.KeyboardBuildRuntimeTable(ConfigModel.KeyMapIndex);
+            _modules.Keyboard.KeyboardBuildRuntimeTable(ConfigModel.KeyboardLayout);
 
             ConfigModel.PakPath = _modules.Emu.PakPath;
             _modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, ConfigModel.ModulePath);   // Should this be here?
@@ -374,7 +374,7 @@ namespace VCCSharp.Modules
             //[Misc]
             model.AutoStart = _kernel.GetPrivateProfileIntA("Misc", "AutoStart", 1, iniFilePath) != 0;
             model.CartAutoStart = (byte)_kernel.GetPrivateProfileIntA("Misc", "CartAutoStart", 1, iniFilePath);
-            model.KeyMapIndex = (KeyboardLayouts)_kernel.GetPrivateProfileIntA("Misc", "KeyMapIndex", 0, iniFilePath);
+            model.KeyboardLayout = (KeyboardLayouts)_kernel.GetPrivateProfileIntA("Misc", "KeyboardLayout", 0, iniFilePath);
 
             //[Module]
             _kernel.GetPrivateProfileStringA("Module", "ModulePath", "", buffer, Define.MAX_PATH, iniFilePath);
@@ -463,7 +463,7 @@ namespace VCCSharp.Modules
 
         public KeyboardLayouts GetCurrentKeyboardLayout()
         {
-            return ConfigModel.KeyMapIndex;
+            return ConfigModel.KeyboardLayout;
         }
 
         public void WriteIniFile()
@@ -564,7 +564,7 @@ namespace VCCSharp.Modules
             //[Misc]
             SaveInt("Misc", "AutoStart", model.AutoStart ? 1 : 0);
             SaveInt("Misc", "CartAutoStart", model.CartAutoStart);
-            SaveInt("Misc", "KeyMapIndex", (int)model.KeyMapIndex);
+            SaveInt("Misc", "KeyboardLayout", (int)model.KeyboardLayout);
 
             //[Module]
             SaveText("Module", "ModulePath", model.ModulePath);

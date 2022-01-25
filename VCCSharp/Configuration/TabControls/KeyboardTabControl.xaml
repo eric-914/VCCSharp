@@ -23,7 +23,7 @@
         <RowDefinition Height="30"/>
       </Grid.RowDefinitions>
       <Label Grid.Row="0" Content="Keyboard Mapping"/>
-      <ComboBox Grid.Row="1" ItemsSource="{Binding KeyboardLayouts}" SelectedIndex="{Binding KeyMapIndex}"/>
+      <ComboBox Grid.Row="1" ItemsSource="{Binding KeyboardLayouts}" SelectedIndex="{Binding KeyboardLayout}"/>
       <Label Grid.Row="3" HorizontalContentAlignment="Center">Edit Custom Keyboard</Label>
       <!-- Doesn't look like this was ever implemented -->
       <Button Grid.Row="4" Content="EDIT" IsEnabled="False"/>

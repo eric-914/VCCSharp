@@ -184,7 +184,7 @@ namespace VCCSharp.Modules
 
             _modules.Audio.SoundInit(_modules.Emu.WindowHandle, soundCardIndex, configModel.AudioRate);
 
-            _modules.Keyboard.KeyboardBuildRuntimeTable(configModel.KeyMapIndex);
+            _modules.Keyboard.KeyboardBuildRuntimeTable(configModel.KeyboardLayout);
 
             _modules.Joystick.SetStickNumbers(left.DiDevice, right.DiDevice);
         }
