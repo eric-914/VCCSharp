@@ -196,6 +196,7 @@ namespace VCCSharp.Modules
                 }
             }
 
+            //TODO: Might be a problem here if multiline, but last line not CR-terminated
             if (!string.IsNullOrEmpty(parsed)) return parsed;
             return line;
         }

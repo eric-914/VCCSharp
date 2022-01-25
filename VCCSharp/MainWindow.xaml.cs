@@ -8,6 +8,7 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries.Models;
 using VCCSharp.Menu;
+using VCCSharp.Models;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Modules;
 using KeyStates = VCCSharp.Enums.KeyStates;
@@ -119,8 +120,11 @@ namespace VCCSharp
             {
                 _keyboard.SwapKeyboardLayout(KeyboardLayouts.kKBLayoutNatural); //Natural (OS9)
 
-                var scanCode = _keyboardScanCodes.ConvertScanCodes("@");
-                _clipboard.SetClipboardText(scanCode);
+                //--On standard keyboard, @ is Shift-2
+                _keyboard.KeyboardHandleKey(Define.DIK_LSHIFT, KeyStates.kEventKeyDown);
+                _keyboard.KeyboardHandleKey(Define.DIK_2, KeyStates.kEventKeyDown);
+
+                _keyboard.ResetKeyboardLayout();
             }
             else
             {
@@ -130,7 +134,16 @@ namespace VCCSharp
 
         private void MainWindow_OnKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Oem5)
+            if (e.Key == Key.Oem5)
+            {
+                _keyboard.SwapKeyboardLayout(KeyboardLayouts.kKBLayoutNatural); //Natural (OS9)
+
+                _keyboard.KeyboardHandleKey(Define.DIK_2, KeyStates.kEventKeyUp);
+                _keyboard.KeyboardHandleKey(Define.DIK_LSHIFT, KeyStates.kEventKeyUp);
+
+                _keyboard.ResetKeyboardLayout();
+            }
+            else
             {
                 KeyboardHandleKey(e.Key, KeyStates.kEventKeyUp);
             }
