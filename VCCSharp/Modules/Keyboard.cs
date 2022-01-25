@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows.Input;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
@@ -355,7 +354,7 @@ namespace VCCSharp.Modules
         */
         public void KeyboardHandleKey(byte scanCode, KeyStates keyState)
         {
-            Debug.WriteLine($"scan={scanCode}, state={(keyState == KeyStates.kEventKeyUp ? "up" : "down")}");
+            //System.Diagnostics.Debug.WriteLine($"scan={scanCode}, state={(keyState == KeyStates.kEventKeyUp ? "up" : "down")}");
 
             // check for shift key
             // Left and right shift generate different scan codes

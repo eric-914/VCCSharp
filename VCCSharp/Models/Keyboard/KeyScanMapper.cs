@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows.Input;
 
 namespace VCCSharp.Models.Keyboard
@@ -61,19 +60,21 @@ namespace VCCSharp.Models.Keyboard
             { Key.Space, Define.DIK_SPACE },
             { Key.LeftShift, Define.DIK_LSHIFT },
             { Key.RightShift, Define.DIK_LSHIFT }, //--Intentional
-            { Key.Return, Define.DIK_RETURN }, 
+            { Key.Return, Define.DIK_RETURN }, //--Enter key
             { Key.Back, Define.DIK_LEFTARROW }, 
             { Key.Left, Define.DIK_LEFTARROW }, 
             { Key.Right, Define.DIK_RIGHTARROW }, 
             { Key.Up, Define.DIK_UPARROW }, 
             { Key.Down, Define.DIK_DOWNARROW }, 
+            { Key.Home, Define.DIK_HOME },  //--Clear button
+            { Key.CapsLock, Define.DIK_CAPSLOCK }, //--Alternate for SHIFT-0
 
             //{ Key.Oem5, 0 }  //--Substituting the backslash (\) for @
         };
 
         public byte ToScanCode(Key key)
         {
-            Debug.WriteLine($"key={key}");
+            //System.Diagnostics.Debug.WriteLine($"key={key}");
 
             if (_map.ContainsKey(key))
             {

@@ -283,7 +283,6 @@ namespace VCCSharp.Modules
                 }
 
                 _modules.Keyboard.KeyboardHandleKey((byte)key, KeyStates.kEventKeyDown);
-                //_modules.Keyboard.KeyboardHandleKey(3, KeyStates.kEventKeyDown);
 
                 _waitCycle = key == 0x1c ? 6000 : 2000;
             }
@@ -298,7 +297,6 @@ namespace VCCSharp.Modules
                 }
 
                 _modules.Keyboard.KeyboardHandleKey((byte)key, KeyStates.kEventKeyUp);
-                //_modules.Keyboard.KeyboardHandleKey(3, KeyStates.kEventKeyUp);
 
                 _modules.Clipboard.PopClipboard();
 
