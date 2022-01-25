@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
@@ -37,6 +38,7 @@ namespace VCCSharp.Modules
         void SetVideoBank(byte data);
         void SetGimeVdgMode2(byte mode);
         void SetGraphicsSurface(IntPtr surface);
+        bool InTextMode();
 
         byte BorderChange { get; set; }
         byte BytesPerRow { get; set; }
@@ -110,6 +112,7 @@ namespace VCCSharp.Modules
         private readonly GraphicsColors _colors = new GraphicsColors();
 
         public byte BlinkState { get; set; }
+
         public byte BorderChange { get; set; } = 3;
         public byte Bpp { get; set; }
         public byte BytesPerRow { get; set; } = 32;
@@ -635,6 +638,25 @@ namespace VCCSharp.Modules
 
             NewStartOfVidRam = (NewStartOfVidRam & VidMask) + VidRamOffset; //Dist Offset for 2M configuration
             MasterMode = (byte)((GraphicsMode << 7) | ((int)CompatibilityMode << 6) | ((Bpp & 3) << 4) | (Stretch & 15));
+        }
+
+        public bool InTextMode()
+        {
+            int graphicsMode = GraphicsMode;
+
+            if (graphicsMode != 0)
+            {
+                const string warning = "Warning: You are not in text mode. Continue Pasting?";
+
+                var result = MessageBox.Show(warning, "Clipboard", MessageBoxButton.YesNo);
+
+                if (result == MessageBoxResult.No)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

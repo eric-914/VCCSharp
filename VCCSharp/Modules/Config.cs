@@ -27,7 +27,7 @@ namespace VCCSharp.Modules
         void DecreaseOverclockSpeed();
         void IncreaseOverclockSpeed();
         void LoadIniFile();
-        short GetCurrentKeyboardLayout();
+        KeyboardLayouts GetCurrentKeyboardLayout();
         void SaveConfig();
         bool GetRememberSize();
 
@@ -374,7 +374,7 @@ namespace VCCSharp.Modules
             //[Misc]
             model.AutoStart = _kernel.GetPrivateProfileIntA("Misc", "AutoStart", 1, iniFilePath) != 0;
             model.CartAutoStart = (byte)_kernel.GetPrivateProfileIntA("Misc", "CartAutoStart", 1, iniFilePath);
-            model.KeyMapIndex = (byte)_kernel.GetPrivateProfileIntA("Misc", "KeyMapIndex", 0, iniFilePath);
+            model.KeyMapIndex = (KeyboardLayouts)_kernel.GetPrivateProfileIntA("Misc", "KeyMapIndex", 0, iniFilePath);
 
             //[Module]
             _kernel.GetPrivateProfileStringA("Module", "ModulePath", "", buffer, Define.MAX_PATH, iniFilePath);
@@ -461,7 +461,7 @@ namespace VCCSharp.Modules
             }
         }
 
-        public short GetCurrentKeyboardLayout()
+        public KeyboardLayouts GetCurrentKeyboardLayout()
         {
             return ConfigModel.KeyMapIndex;
         }
@@ -489,11 +489,6 @@ namespace VCCSharp.Modules
 
         public void ValidateModel(ConfigModel model)
         {
-            if (model.KeyMapIndex > 3)
-            {
-                model.KeyMapIndex = 0;	//Default to DECB Mapping
-            }
-
             string exePath = Path.GetDirectoryName(_modules.Vcc.GetExecPath());
 
             if (string.IsNullOrEmpty(exePath))
@@ -569,7 +564,7 @@ namespace VCCSharp.Modules
             //[Misc]
             SaveInt("Misc", "AutoStart", model.AutoStart ? 1 : 0);
             SaveInt("Misc", "CartAutoStart", model.CartAutoStart);
-            SaveInt("Misc", "KeyMapIndex", model.KeyMapIndex);
+            SaveInt("Misc", "KeyMapIndex", (int)model.KeyMapIndex);
 
             //[Module]
             SaveText("Module", "ModulePath", model.ModulePath);

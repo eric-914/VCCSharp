@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -8,7 +7,9 @@ using System.Windows.Interop;
 using VCCSharp.IoC;
 using VCCSharp.Libraries.Models;
 using VCCSharp.Menu;
+using VCCSharp.Models.Keyboard;
 using VCCSharp.Modules;
+using KeyStates = VCCSharp.Enums.KeyStates;
 
 namespace VCCSharp
 {
@@ -27,6 +28,9 @@ namespace VCCSharp
         private readonly IEvents _events;
         private readonly IJoystick _joystick;
         private readonly IKeyboard _keyboard;
+        private readonly IClipboard _clipboard;
+
+        private readonly KeyScanMapper _mapper = new KeyScanMapper();
 
         public MainWindow()
         {
@@ -36,6 +40,7 @@ namespace VCCSharp
             _events = modules.Events;
             _joystick = modules.Joystick;
             _keyboard = modules.Keyboard;
+            _clipboard = modules.Clipboard;
 
             var bindings = _factory.MainWindowCommands;
 
@@ -106,12 +111,27 @@ namespace VCCSharp
 
         private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
         {
-            //throw new NotImplementedException();
+            if (e.Key == Key.Oem5)
+            {
+                _clipboard.PasteClipboard("@");
+            }
+            else
+            {
+                KeyboardHandleKey(e.Key, KeyStates.kEventKeyDown);
+            }
         }
 
         private void MainWindow_OnKeyUp(object sender, KeyEventArgs e)
         {
-            //throw new NotImplementedException();
+            if (e.Key != Key.Oem5)
+            {
+                KeyboardHandleKey(e.Key, KeyStates.kEventKeyUp);
+            }
+        }
+
+        private void KeyboardHandleKey(Key key, KeyStates keyState)
+        {
+            _keyboard.KeyboardHandleKey(_mapper.ToScanCode(key), keyState);
         }
     }
 }

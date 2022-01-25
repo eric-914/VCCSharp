@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 using System.Windows;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
 
@@ -14,10 +15,13 @@ namespace VCCSharp.Modules
         void PopClipboard();
         void CopyText();
         void PasteClipboard();
+        void PasteClipboard(string text);
         void PasteBasic();
         void PasteBasicWithNew();
         void SetClipboardText(string text);
-        int CurrentKeyMap { get; set; }
+
+        KeyboardLayouts CurrentKeyMap { get; set; }
+
         bool Abort { get; set; }
     }
 
@@ -63,7 +67,7 @@ namespace VCCSharp.Modules
         public bool CodePaste;
         public bool PasteWithNew;
 
-        public int CurrentKeyMap { get; set; }
+        public KeyboardLayouts CurrentKeyMap { get; set; }
         public bool Abort { get; set; }
 
         public Clipboard(IModules modules)
@@ -103,26 +107,6 @@ namespace VCCSharp.Modules
 
         public void PasteClipboard()
         {
-            int graphicsMode = Graphics.GraphicsMode;
-
-            if (graphicsMode != 0)
-            {
-                const string warning = "Warning: You are not in text mode. Continue Pasting?";
-
-                var result = MessageBox.Show(warning, "Clipboard", MessageBoxButton.YesNo);
-
-                if (result == MessageBoxResult.No)
-                {
-                    return;
-                }
-            }
-
-            //This sets the keyboard to Natural,
-            //but we need to read it first so we can set it back
-            CurrentKeyMap = _modules.Config.GetCurrentKeyboardLayout();
-
-            _modules.Keyboard.KeyboardBuildRuntimeTable(1); //Natural (OS9)
-
             var text = System.Windows.Clipboard.GetText();
 
             if (string.IsNullOrEmpty(text))
@@ -131,6 +115,22 @@ namespace VCCSharp.Modules
 
                 return;
             }
+
+            PasteClipboard(text);
+        }
+
+        public void PasteClipboard(string text)
+        {
+            if (!Graphics.InTextMode())
+            {
+                return;
+            }
+
+            //This sets the keyboard to Natural,
+            //but we need to read it first so we can set it back
+            CurrentKeyMap = _modules.Config.GetCurrentKeyboardLayout();
+
+            _modules.Keyboard.KeyboardBuildRuntimeTable(KeyboardLayouts.kKBLayoutNatural); //Natural (OS9)
 
             PasteText(text);
 
@@ -156,21 +156,21 @@ namespace VCCSharp.Modules
 
         private static string ParseText(string text, bool codePaste)
         {
-            const char result = '\n';
+            const char cr = '\n';
 
             string line = "";
             string parsed = "";
 
             foreach (var c in text)
             {
-                if (c != result)
+                if (c != cr)
                 {
                     line += c;
                 }
                 else if (line.Length <= 249 || !codePaste) //...the character is a <CR>
                 {
                     // Just a regular line.
-                    parsed += line + result;
+                    parsed += line + cr;
                     line = "";
                 }
                 //TODO: Look at this later.  Some of the 256 is used by line number.
@@ -203,7 +203,8 @@ namespace VCCSharp.Modules
                 }
             }
 
-            return parsed;
+            if (!string.IsNullOrEmpty(parsed)) return parsed;
+            return line;
         }
 
         private string ConvertScanCodes(string text)

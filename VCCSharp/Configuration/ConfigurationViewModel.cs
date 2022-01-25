@@ -280,10 +280,10 @@ namespace VCCSharp.Configuration
             set => Model.CartAutoStart = (byte)(value ? 1 : 0);
         }
 
-        public int KeyMapIndex
+        public KeyboardLayouts KeyMapIndex
         {
             get => Model.KeyMapIndex;
-            set => Model.KeyMapIndex = (byte)value;
+            set => Model.KeyMapIndex = value;
         }
 
         //[Module]

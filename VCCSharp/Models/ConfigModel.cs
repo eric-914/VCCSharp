@@ -36,7 +36,7 @@ namespace VCCSharp.Models
         //[Misc]
         public bool AutoStart;
         public byte CartAutoStart;
-        public byte KeyMapIndex;
+        public KeyboardLayouts KeyMapIndex;
 
         //[Module]
         public string ModulePath;

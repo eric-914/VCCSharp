@@ -216,7 +216,7 @@ namespace VCCSharp.Modules
 
             byte oemScan = (byte)((lParam & 0x00FF0000) >> 16);
 
-            _modules.Keyboard.KeyboardHandleKey(oemScan, KeyStates.kEventKeyUp);
+            KeyboardHandleKey(oemScan, KeyStates.kEventKeyUp);
         }
 
         private void KeyDown(long lParam)
@@ -226,11 +226,16 @@ namespace VCCSharp.Modules
             // send other keystrokes to the emulator if it is active
             if (_modules.Emu.EmulationRunning)
             {
-                _modules.Keyboard.KeyboardHandleKey(oemScan, KeyStates.kEventKeyDown);
+                KeyboardHandleKey(oemScan, KeyStates.kEventKeyDown);
 
                 // Save key down in case focus is lost
                 SaveLastTwoKeyDownEvents(oemScan);
             }
+        }
+
+        private void KeyboardHandleKey(byte oemScan, KeyStates keyState)
+        {
+            //_modules.Keyboard.KeyboardHandleKey(oemScan, keyState);
         }
 
         //--------------------------------------------------------------------------

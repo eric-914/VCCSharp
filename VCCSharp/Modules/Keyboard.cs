@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
 using VCCSharp.Models.Keyboard;
+using KeyStates = VCCSharp.Enums.KeyStates;
 
 namespace VCCSharp.Modules
 {
     public interface IKeyboard
     {
         void KeyboardHandleKey(byte scanCode, KeyStates keyState);
-        void KeyboardBuildRuntimeTable(byte keyMapIndex);
+        void KeyboardBuildRuntimeTable(KeyboardLayouts keyMapIndex);
         void GimeSetKeyboardInterruptState(byte state);
         byte KeyboardGetScan(byte column);
         void SetKeyTranslations();
@@ -154,12 +156,11 @@ namespace VCCSharp.Modules
 
           The entries are sorted.  Any SHIFT + [char] entries need to be placed first
         */
-        public void KeyboardBuildRuntimeTable(byte keyMapIndex)
+        public void KeyboardBuildRuntimeTable(KeyboardLayouts keyBoardLayout)
         {
             //int index1 = 0;
             //int index2 = 0;
             KeyTranslationEntry[] keyTranslationTable = null;
-            KeyboardLayouts keyBoardLayout = (KeyboardLayouts)keyMapIndex;
 
             switch (keyBoardLayout)
             {
@@ -308,6 +309,8 @@ namespace VCCSharp.Modules
         */
         public void KeyboardHandleKey(byte scanCode, KeyStates keyState)
         {
+            Debug.WriteLine($"scan={scanCode}, state={(keyState == KeyStates.kEventKeyUp ? "up" : "down")}");
+
             // check for shift key
             // Left and right shift generate different scan codes
             if (scanCode == Define.DIK_RSHIFT)

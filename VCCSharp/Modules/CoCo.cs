@@ -66,6 +66,7 @@ namespace VCCSharp.Modules
         private byte _linesPerScreen;
         private ThrottleStates _throttleState = ThrottleStates.Idle;
         private bool _throttle;
+        private bool _shiftActive;
 
         private ushort _timerClockRate;
         private ushort _soundRate;
@@ -273,6 +274,8 @@ namespace VCCSharp.Modules
 
                 if (key == Define.DIK_LSHIFT)
                 {
+                    _shiftActive = true;
+
                     _modules.Keyboard.KeyboardHandleKey(Define.DIK_LSHIFT, KeyStates.kEventKeyDown);  //Press shift and...
                     _modules.Clipboard.PopClipboard();
 
@@ -280,6 +283,7 @@ namespace VCCSharp.Modules
                 }
 
                 _modules.Keyboard.KeyboardHandleKey((byte)key, KeyStates.kEventKeyDown);
+                //_modules.Keyboard.KeyboardHandleKey(3, KeyStates.kEventKeyDown);
 
                 _waitCycle = key == 0x1c ? 6000 : 2000;
             }
@@ -287,8 +291,14 @@ namespace VCCSharp.Modules
             {
                 key = _modules.Clipboard.PeekClipboard();
 
-                _modules.Keyboard.KeyboardHandleKey(Define.DIK_LSHIFT, KeyStates.kEventKeyUp);
+                if (_shiftActive)
+                {
+                    _modules.Keyboard.KeyboardHandleKey(Define.DIK_LSHIFT, KeyStates.kEventKeyUp);
+                    _shiftActive = false;
+                }
+
                 _modules.Keyboard.KeyboardHandleKey((byte)key, KeyStates.kEventKeyUp);
+                //_modules.Keyboard.KeyboardHandleKey(3, KeyStates.kEventKeyUp);
 
                 _modules.Clipboard.PopClipboard();
 
@@ -516,9 +526,9 @@ namespace VCCSharp.Modules
 
         private void ResetKeyMap()
         {
-            int currentKeyMap = _modules.Clipboard.CurrentKeyMap;
+            KeyboardLayouts currentKeyMap = _modules.Clipboard.CurrentKeyMap;
 
-            _modules.Keyboard.KeyboardBuildRuntimeTable((byte)currentKeyMap);
+            _modules.Keyboard.KeyboardBuildRuntimeTable(currentKeyMap);
         }
 
         //--TODO: what is the purpose to this variable?
