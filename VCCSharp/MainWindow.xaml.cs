@@ -4,11 +4,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries.Models;
 using VCCSharp.Menu;
-using VCCSharp.Models;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Modules;
 using KeyStates = VCCSharp.Enums.KeyStates;
@@ -32,8 +30,6 @@ namespace VCCSharp
         private readonly IKeyboard _keyboard;
         private readonly IClipboard _clipboard;
         private readonly IKeyboardScanCodes _keyboardScanCodes;
-
-        private readonly KeyScanMapper _mapper = new KeyScanMapper();
 
         public MainWindow()
         {
@@ -59,7 +55,7 @@ namespace VCCSharp
 
             //TODO: Seems to get parent window, not surface container
             Window window = GetWindow(Surface);
-            
+
             if (window == null)
             {
                 throw new Exception("Failed to get window object?");
@@ -116,42 +112,12 @@ namespace VCCSharp
 
         private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Oem5)
-            {
-                _keyboard.SwapKeyboardLayout(KeyboardLayouts.kKBLayoutNatural); //Natural (OS9)
-
-                //--On standard keyboard, @ is Shift-2
-                _keyboard.KeyboardHandleKey(Define.DIK_LSHIFT, KeyStates.kEventKeyDown);
-                _keyboard.KeyboardHandleKey(Define.DIK_2, KeyStates.kEventKeyDown);
-
-                _keyboard.ResetKeyboardLayout();
-            }
-            else
-            {
-                KeyboardHandleKey(e.Key, KeyStates.kEventKeyDown);
-            }
+            _keyboard.KeyboardHandleKey(e.Key, KeyStates.kEventKeyDown);
         }
 
         private void MainWindow_OnKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Oem5)
-            {
-                _keyboard.SwapKeyboardLayout(KeyboardLayouts.kKBLayoutNatural); //Natural (OS9)
-
-                _keyboard.KeyboardHandleKey(Define.DIK_2, KeyStates.kEventKeyUp);
-                _keyboard.KeyboardHandleKey(Define.DIK_LSHIFT, KeyStates.kEventKeyUp);
-
-                _keyboard.ResetKeyboardLayout();
-            }
-            else
-            {
-                KeyboardHandleKey(e.Key, KeyStates.kEventKeyUp);
-            }
-        }
-
-        private void KeyboardHandleKey(Key key, KeyStates keyState)
-        {
-            _keyboard.KeyboardHandleKey(_mapper.ToScanCode(key), keyState);
+            _keyboard.KeyboardHandleKey(e.Key, KeyStates.kEventKeyUp);
         }
     }
 }

@@ -4,10 +4,15 @@ using System.Windows.Input;
 
 namespace VCCSharp.Models.Keyboard
 {
+    public interface IKeyScanMapper
+    {
+        byte ToScanCode(Key key);
+    }
+
     /// <summary>
     /// For now, a way to map the Input.Key to the Define.DIK_(scan-code)
     /// </summary>
-    public class KeyScanMapper
+    public class KeyScanMapper : IKeyScanMapper
     {
         private readonly Dictionary<Key, byte> _map = new Dictionary<Key, byte>
         {
@@ -52,11 +57,18 @@ namespace VCCSharp.Models.Keyboard
             { Key.OemComma, Define.DIK_COMMA },
             { Key.OemPeriod, Define.DIK_PERIOD },
             { Key.OemQuestion, Define.DIK_SLASH },
+            { Key.OemSemicolon, Define.DIK_SEMICOLON },
             { Key.Space, Define.DIK_SPACE },
             { Key.LeftShift, Define.DIK_LSHIFT },
             { Key.RightShift, Define.DIK_LSHIFT }, //--Intentional
             { Key.Return, Define.DIK_RETURN }, 
-            { Key.Oem5, (byte)((char)3) },  //--Substituting the backslash (\) for @
+            { Key.Back, Define.DIK_LEFTARROW }, 
+            { Key.Left, Define.DIK_LEFTARROW }, 
+            { Key.Right, Define.DIK_RIGHTARROW }, 
+            { Key.Up, Define.DIK_UPARROW }, 
+            { Key.Down, Define.DIK_DOWNARROW }, 
+
+            //{ Key.Oem5, 0 }  //--Substituting the backslash (\) for @
         };
 
         public byte ToScanCode(Key key)

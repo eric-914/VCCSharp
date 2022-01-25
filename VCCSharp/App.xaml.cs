@@ -28,6 +28,7 @@ namespace VCCSharp
 
                 //--Utilities
                 .Singleton<IKeyboardScanCodes, KeyboardScanCodes>()
+                .Singleton<IKeyScanMapper, KeyScanMapper>()
 
                 //--Modules
                 .Singleton<IAudio, Audio>()

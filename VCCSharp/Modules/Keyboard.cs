@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Windows.Input;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
@@ -11,6 +12,7 @@ namespace VCCSharp.Modules
 {
     public interface IKeyboard
     {
+        void KeyboardHandleKey(Key key, KeyStates keyState);
         void KeyboardHandleKey(byte scanCode, KeyStates keyState);
         void KeyboardBuildRuntimeTable(KeyboardLayouts keyMapIndex);
         void GimeSetKeyboardInterruptState(byte state);
@@ -31,6 +33,7 @@ namespace VCCSharp.Modules
         public const int MaxCustom = 89;
 
         private readonly IModules _modules;
+        private readonly IKeyScanMapper _keyScanMapper;
 
         public byte KeyboardInterruptEnabled { get; set; }
 
@@ -50,9 +53,10 @@ namespace VCCSharp.Modules
 
         private KeyTranslationEntry[] _keyTransTable = new KeyTranslationEntry[Define.KBTABLE_ENTRY_COUNT];
 
-        public Keyboard(IModules modules)
+        public Keyboard(IModules modules, IKeyScanMapper keyScanMapper)
         {
             _modules = modules;
+            _keyScanMapper = keyScanMapper;
         }
 
         /*
@@ -319,6 +323,25 @@ namespace VCCSharp.Modules
             IComparer<KeyTranslationEntry> comparer = new KeyTranslationEntryIComparer();
 
             Array.Sort(_keyTransTable, comparer);
+        }
+
+        public void KeyboardHandleKey(Key key, KeyStates keyState)
+        {
+            //--Substituting the backslash for the "@" character.
+            if (key == Key.Oem5)
+            {
+                SwapKeyboardLayout(KeyboardLayouts.kKBLayoutNatural); //Natural (OS9)
+
+                //--On standard keyboard, @ is Shift-2
+                KeyboardHandleKey(Define.DIK_2, keyState);
+                KeyboardHandleKey(Define.DIK_LSHIFT, keyState);
+
+                ResetKeyboardLayout();
+            }
+            else
+            {
+                KeyboardHandleKey(_keyScanMapper.ToScanCode(key), keyState);
+            }
         }
 
         /*
