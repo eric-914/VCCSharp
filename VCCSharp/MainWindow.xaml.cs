@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries.Models;
 using VCCSharp.Menu;
@@ -29,6 +30,7 @@ namespace VCCSharp
         private readonly IJoystick _joystick;
         private readonly IKeyboard _keyboard;
         private readonly IClipboard _clipboard;
+        private readonly IKeyboardScanCodes _keyboardScanCodes;
 
         private readonly KeyScanMapper _mapper = new KeyScanMapper();
 
@@ -41,6 +43,8 @@ namespace VCCSharp
             _joystick = modules.Joystick;
             _keyboard = modules.Keyboard;
             _clipboard = modules.Clipboard;
+
+            _keyboardScanCodes = _factory.Get<IKeyboardScanCodes>();
 
             var bindings = _factory.MainWindowCommands;
 
@@ -113,7 +117,10 @@ namespace VCCSharp
         {
             if (e.Key == Key.Oem5)
             {
-                _clipboard.PasteClipboard("@");
+                _keyboard.SwapKeyboardLayout(KeyboardLayouts.kKBLayoutNatural); //Natural (OS9)
+
+                var scanCode = _keyboardScanCodes.ConvertScanCodes("@");
+                _clipboard.SetClipboardText(scanCode);
             }
             else
             {

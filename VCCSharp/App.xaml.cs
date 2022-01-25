@@ -8,6 +8,7 @@ using VCCSharp.Libraries;
 using VCCSharp.Menu;
 using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
+using VCCSharp.Models.Keyboard;
 using VCCSharp.Modules;
 using VCCSharp.Modules.TC1014;
 using VCCSharp.TapePlayer;
@@ -24,6 +25,9 @@ namespace VCCSharp
 
             Factory.Instance
                 .SelfBind()
+
+                //--Utilities
+                .Singleton<IKeyboardScanCodes, KeyboardScanCodes>()
 
                 //--Modules
                 .Singleton<IAudio, Audio>()
