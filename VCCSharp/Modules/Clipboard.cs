@@ -20,8 +20,6 @@ namespace VCCSharp.Modules
         void PasteBasicWithNew();
         void SetClipboardText(string text);
 
-        KeyboardLayouts CurrentKeyMap { get; set; }
-
         bool Abort { get; set; }
     }
 
@@ -67,7 +65,6 @@ namespace VCCSharp.Modules
         public bool CodePaste;
         public bool PasteWithNew;
 
-        public KeyboardLayouts CurrentKeyMap { get; set; }
         public bool Abort { get; set; }
 
         public Clipboard(IModules modules)
@@ -126,16 +123,11 @@ namespace VCCSharp.Modules
                 return;
             }
 
-            //This sets the keyboard to Natural,
-            //but we need to read it first so we can set it back
-            CurrentKeyMap = _modules.Config.GetCurrentKeyboardLayout();
-
-            _modules.Keyboard.KeyboardBuildRuntimeTable(KeyboardLayouts.kKBLayoutNatural); //Natural (OS9)
-
-            PasteText(text);
+            //This sets the keyboard to Natural (keyboard stores previous to retrieve later)
+            _modules.Keyboard.SwapKeyboardLayout(KeyboardLayouts.kKBLayoutNatural); //Natural (OS9)
 
             //--This process is asynchronous.  The text will finish pasting long after here.
-            //_modules.Keyboard.KeyboardBuildRuntimeTable((byte)clipboardState->CurrentKeyMap);
+            PasteText(text);
         }
 
         public void PasteText(string text)

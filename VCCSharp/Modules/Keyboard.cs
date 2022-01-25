@@ -16,6 +16,11 @@ namespace VCCSharp.Modules
         void GimeSetKeyboardInterruptState(byte state);
         byte KeyboardGetScan(byte column);
         void SetKeyTranslations();
+        void SwapKeyboardLayout(KeyboardLayouts newLayout);
+        void ResetKeyboardLayout();
+
+        KeyboardLayouts CurrentKeyBoardLayout { get; }
+        KeyboardLayouts PreviousKeyBoardLayout { get; }
     }
 
     public class Keyboard : IKeyboard
@@ -27,7 +32,10 @@ namespace VCCSharp.Modules
 
         private readonly IModules _modules;
 
-        public byte KeyboardInterruptEnabled;
+        public byte KeyboardInterruptEnabled { get; set; }
+
+        public KeyboardLayouts CurrentKeyBoardLayout { get; private set; }
+        public KeyboardLayouts PreviousKeyBoardLayout { get; private set; }
 
         /** run-time 'rollover' table to pass to the MC6821 when a key is pressed */
         public byte[] RolloverTable = new byte[8];	// CoCo 'keys' for emulator
@@ -145,9 +153,22 @@ namespace VCCSharp.Modules
             _keyTranslationsCustom = KeyboardLayout.GetKeyTranslationsCompact();
         }
 
+
         public void GimeSetKeyboardInterruptState(byte state)
         {
             KeyboardInterruptEnabled = state != 0 ? Define.TRUE : Define.FALSE;
+        }
+
+        public void SwapKeyboardLayout(KeyboardLayouts newLayout)
+        {
+            PreviousKeyBoardLayout = CurrentKeyBoardLayout;
+
+            KeyboardBuildRuntimeTable(newLayout);
+        }
+
+        public void ResetKeyboardLayout()
+        {
+            SwapKeyboardLayout(PreviousKeyBoardLayout);
         }
 
         /*
@@ -158,6 +179,8 @@ namespace VCCSharp.Modules
         */
         public void KeyboardBuildRuntimeTable(KeyboardLayouts keyBoardLayout)
         {
+            CurrentKeyBoardLayout = keyBoardLayout;
+
             //int index1 = 0;
             //int index2 = 0;
             KeyTranslationEntry[] keyTranslationTable = null;

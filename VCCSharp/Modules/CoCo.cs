@@ -314,7 +314,7 @@ namespace VCCSharp.Modules
                     vcc.Throttle = _throttle;
 
                     //...and reset the keymap to the original state
-                    ResetKeyMap();
+                    _modules.Keyboard.ResetKeyboardLayout();
 
                     _throttleState = ThrottleStates.Idle;
                 }
@@ -523,13 +523,6 @@ namespace VCCSharp.Modules
         }
 
         #endregion
-
-        private void ResetKeyMap()
-        {
-            KeyboardLayouts currentKeyMap = _modules.Clipboard.CurrentKeyMap;
-
-            _modules.Keyboard.KeyboardBuildRuntimeTable(currentKeyMap);
-        }
 
         //--TODO: what is the purpose to this variable?
         private ushort _primarySoundRate;
