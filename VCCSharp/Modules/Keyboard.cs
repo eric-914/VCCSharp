@@ -20,8 +20,8 @@ namespace VCCSharp.Modules
         void SwapKeyboardLayout(KeyboardLayouts newLayout);
         void ResetKeyboardLayout();
 
-        KeyboardLayouts CurrentKeyBoardLayout { get; }
-        KeyboardLayouts PreviousKeyBoardLayout { get; }
+        void SaveLastTwoKeyDownEvents(byte oemScan);
+        void SendSavedKeyEvents();
     }
 
     public class Keyboard : IKeyboard
@@ -51,6 +51,15 @@ namespace VCCSharp.Modules
         private KeyTranslationEntry[] _keyTranslationsCustom = new KeyTranslationEntry[MaxCustom + 1];
 
         private KeyTranslationEntry[] _keyTransTable = new KeyTranslationEntry[Define.KBTABLE_ENTRY_COUNT];
+
+        //--------------------------------------------------------------------------
+        // When the main window is about to lose keyboard focus there are one
+        // or two keys down in the emulation that must be raised.  These routines
+        // track the last two key down events so they can be raised when needed.
+        //--------------------------------------------------------------------------
+        private byte _scSave1;
+        private byte _scSave2;
+        private bool _keySaveToggle;
 
         public Keyboard(IModules modules, IKeyScanMapper keyScanMapper)
         {
@@ -350,11 +359,11 @@ namespace VCCSharp.Modules
 
           @param key Windows virtual key code (VK_XXXX - not used)
           @param ScanCode keyboard scan code (DIK_XXXX - DirectInput)
-          @param Status Key status - kEventKeyDown/kEventKeyUp
+          @param Status Key status - Down/Up
         */
         public void KeyboardHandleKey(byte scanCode, KeyStates keyState)
         {
-            //System.Diagnostics.Debug.WriteLine($"scan={scanCode}, state={(keyState == KeyStates.kEventKeyUp ? "up" : "down")}");
+            //System.Diagnostics.Debug.WriteLine($"scan={scanCode}, state={(keyState == KeyStates.Up ? "up" : "down")}");
 
             // check for shift key
             // Left and right shift generate different scan codes
@@ -366,12 +375,12 @@ namespace VCCSharp.Modules
             switch (keyState)
             {
                 // Key Down
-                case KeyStates.kEventKeyDown:
+                case KeyStates.Down:
                     KeyboardHandleKeyDown(scanCode);
                     break;
 
                 // Key Up
-                case KeyStates.kEventKeyUp:
+                case KeyStates.Up:
                     KeyboardHandleKeyUp(scanCode);
                     break;
             }
@@ -379,6 +388,9 @@ namespace VCCSharp.Modules
 
         private void KeyboardHandleKeyDown(byte scanCode)
         {
+            // Save key down in case focus is lost
+            SaveLastTwoKeyDownEvents(scanCode);
+
             JoystickModel left = _modules.Joystick.GetLeftJoystick();
             JoystickModel right = _modules.Joystick.GetRightJoystick();
 
@@ -497,38 +509,52 @@ namespace VCCSharp.Modules
                 }
             }
         }
-    }
 
-    public class KeyTranslationEntryIComparer : IComparer<KeyTranslationEntry>
-    {
-        public int Compare(KeyTranslationEntry entry1, KeyTranslationEntry entry2)
+        //--------------------------------------------------------------------------
+        // When the main window is about to lose keyboard focus there are one
+        // or two keys down in the emulation that must be raised.  These routines
+        // track the last two key down events so they can be raised when needed.
+        //--------------------------------------------------------------------------
+
+        // Save last two key down events
+        public void SaveLastTwoKeyDownEvents(byte oemScan)
         {
-            // empty listing push to end
-            if (entry1.ScanCode1 == 0 && entry1.ScanCode2 == 0 && entry2.ScanCode1 != 0) return 1;
-            if (entry2.ScanCode1 == 0 && entry2.ScanCode2 == 0 && entry1.ScanCode1 != 0) return -1;
+            // Ignore zero scan code
+            if (oemScan == 0)
+            {
+                return;
+            }
 
-            // push shift/alt/control by themselves to the end
-            if (entry1.ScanCode2 == 0 && (entry1.ScanCode1 == Define.DIK_LSHIFT || entry1.ScanCode1 == Define.DIK_LMENU || entry1.ScanCode1 == Define.DIK_LCONTROL)) return 1;
-            // push shift/alt/control by themselves to the end
-            if (entry2.ScanCode2 == 0 && (entry2.ScanCode1 == Define.DIK_LSHIFT || entry2.ScanCode1 == Define.DIK_LMENU || entry2.ScanCode1 == Define.DIK_LCONTROL)) return -1;
+            // Remember it
+            _keySaveToggle = !_keySaveToggle;
 
-            // move double key combos in front of single ones
-            if (entry1.ScanCode2 == 0 && entry2.ScanCode2 != 0) return 1;
+            if (_keySaveToggle)
+            {
+                _scSave1 = oemScan;
+            }
+            else
+            {
+                _scSave2 = oemScan;
+            }
+        }
 
-            // move double key combos in front of single ones
-            if (entry2.ScanCode2 == 0 && entry1.ScanCode2 != 0) return -1;
+        // Force keys up if main widow keyboard focus is lost.  Otherwise
+        // down keys will cause issues with OS-9 on return
+        // Send key up events to keyboard handler for saved keys
+        public void SendSavedKeyEvents()
+        {
+            if (_scSave1 != 0)
+            {
+                _modules.Keyboard.KeyboardHandleKey(_scSave1, KeyStates.Up);
+            }
 
-            var result = entry1.ScanCode1 - entry2.ScanCode1;
+            if (_scSave2 != 0)
+            {
+                _modules.Keyboard.KeyboardHandleKey(_scSave2, KeyStates.Up);
+            }
 
-            if (result == 0) result = entry1.Row1 - entry2.Row1;
-
-            if (result == 0) result = entry1.Col1 - entry2.Col1;
-
-            if (result == 0) result = entry1.Row2 - entry2.Row2;
-
-            if (result == 0) result = entry1.Col2 - entry2.Col2;
-
-            return result;
+            _scSave1 = 0;
+            _scSave2 = 0;
         }
     }
 }

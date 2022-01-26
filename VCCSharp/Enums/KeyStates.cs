@@ -1,10 +1,8 @@
 ﻿namespace VCCSharp.Enums
 {
-    // ReSharper disable InconsistentNaming
     public enum KeyStates
     {
-        kEventKeyUp = 0,
-        kEventKeyDown = 1
+        Up = 0,
+        Down = 1
     }
-    // ReSharper restore InconsistentNaming
 }

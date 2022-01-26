@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
@@ -29,16 +30,6 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
         private readonly IUser32 _user32;
         private IGraphics Graphics => _modules.Graphics;
-
-        //--------------------------------------------------------------------------
-        // When the main window is about to lose keyboard focus there are one
-        // or two keys down in the emulation that must be raised.  These routines
-        // track the last two key down events so they can be raised when needed.
-        //--------------------------------------------------------------------------
-        private byte _scSave1;
-        private byte _scSave2;
-
-        private bool _keySaveToggle;
 
         public Events(IModules modules, IUser32 user32)
         {
@@ -154,10 +145,6 @@ namespace VCCSharp.Modules
                     KeyUp(lParam);
                     break;
 
-                case Define.WM_KILLFOCUS:
-                    SendSavedKeyEvents();
-                    break;
-
                 case Define.WM_SYSCOMMAND:
                     ProcessSysCommandMessage(wParam);
                     break;
@@ -194,7 +181,7 @@ namespace VCCSharp.Modules
         private void ProcessCommandMessage(long wParam)
         {
             // Force all keys up to prevent key repeats
-            SendSavedKeyEvents();
+            _modules.Keyboard.SendSavedKeyEvents();
 
             int wmId = (int)(wParam & 0xFFFF); //LOWORD(wParam);
 
@@ -216,7 +203,7 @@ namespace VCCSharp.Modules
 
             byte oemScan = (byte)((lParam & 0x00FF0000) >> 16);
 
-            KeyboardHandleKey(oemScan, KeyStates.kEventKeyUp);
+            KeyboardHandleKey(oemScan, KeyStates.Up);
         }
 
         private void KeyDown(long lParam)
@@ -226,10 +213,7 @@ namespace VCCSharp.Modules
             // send other keystrokes to the emulator if it is active
             if (_modules.Emu.EmulationRunning)
             {
-                KeyboardHandleKey(oemScan, KeyStates.kEventKeyDown);
-
-                // Save key down in case focus is lost
-                SaveLastTwoKeyDownEvents(oemScan);
+                KeyboardHandleKey(oemScan, KeyStates.Down);
             }
         }
 
@@ -238,51 +222,5 @@ namespace VCCSharp.Modules
             //_modules.Keyboard.KeyboardHandleKey(oemScan, keyState);
         }
 
-        //--------------------------------------------------------------------------
-        // When the main window is about to lose keyboard focus there are one
-        // or two keys down in the emulation that must be raised.  These routines
-        // track the last two key down events so they can be raised when needed.
-        //--------------------------------------------------------------------------
-
-        // Save last two key down events
-        private void SaveLastTwoKeyDownEvents(byte oemScan)
-        {
-            // Ignore zero scan code
-            if (oemScan == 0)
-            {
-                return;
-            }
-
-            // Remember it
-            _keySaveToggle = !_keySaveToggle;
-
-            if (_keySaveToggle)
-            {
-                _scSave1 = oemScan;
-            }
-            else
-            {
-                _scSave2 = oemScan;
-            }
-        }
-
-        // Force keys up if main widow keyboard focus is lost.  Otherwise
-        // down keys will cause issues with OS-9 on return
-        // Send key up events to keyboard handler for saved keys
-        private void SendSavedKeyEvents()
-        {
-            if (_scSave1 != 0)
-            {
-                _modules.Keyboard.KeyboardHandleKey(_scSave1, KeyStates.kEventKeyUp);
-            }
-
-            if (_scSave2 != 0)
-            {
-                _modules.Keyboard.KeyboardHandleKey(_scSave2, KeyStates.kEventKeyUp);
-            }
-
-            _scSave1 = 0;
-            _scSave2 = 0;
-        }
     }
 }

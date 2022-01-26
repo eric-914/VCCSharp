@@ -1,9 +1,8 @@
 ﻿using DX8;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+using VCCSharp.Enums;
 using VCCSharp.Libraries;
-using VCCSharp.Libraries.Models;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
@@ -19,8 +18,8 @@ namespace VCCSharp.Modules
         void SetRightJoystick(JoystickModel model);
 
         void SetStickNumbers(byte leftStickNumber, byte rightStickNumber);
-        void SetButtonStatus(byte side, byte state);
-        void SetJoystick(RECT clientSize, Point point);
+        void SetButtonStatus(MouseButtonStates state);
+        void SetJoystick(System.Windows.Size clientSize, System.Windows.Point point);
         byte SetMouseStatus(byte scanCode, byte phase);
 
         int get_pot_value(byte pot);
@@ -117,8 +116,22 @@ namespace VCCSharp.Modules
             return 0;
         }
 
+        public void SetButtonStatus(MouseButtonStates state)
+        {
+            var map =
+                new Dictionary<MouseButtonStates, Action>
+                {
+                    { MouseButtonStates.LeftUp, () => SetButtonStatus(0, 0) },
+                    { MouseButtonStates.LeftDown, () => SetButtonStatus(0, 1) },
+                    { MouseButtonStates.RightUp, () => SetButtonStatus(1, 0) },
+                    { MouseButtonStates.RightDown, () => SetButtonStatus(1, 1) },
+                };
+
+            map[state]();
+        }
+
         //0=left 1=right
-        public void SetButtonStatus(byte side, byte state)
+        private void SetButtonStatus(byte side, byte state)
         {
             byte buttonStatus = (byte)((side << 1) | state);
 
@@ -170,10 +183,10 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void SetJoystick(RECT clientSize, Point point)
+        public void SetJoystick(System.Windows.Size clientSize, System.Windows.Point point)
         {
-            int dx = (clientSize.right - clientSize.left) >> 6;
-            int dy = (clientSize.bottom - clientSize.top - 20) >> 6;
+            int dx = (int)clientSize.Width >> 6;
+            int dy = (int)clientSize.Height >> 6;
 
             if (dx > 0) point.X /= dx;
             if (dy > 0) point.Y /= dy;

@@ -276,13 +276,13 @@ namespace VCCSharp.Modules
                 {
                     _shiftActive = true;
 
-                    _modules.Keyboard.KeyboardHandleKey(Define.DIK_LSHIFT, KeyStates.kEventKeyDown);  //Press shift and...
+                    _modules.Keyboard.KeyboardHandleKey(Define.DIK_LSHIFT, KeyStates.Down);  //Press shift and...
                     _modules.Clipboard.PopClipboard();
 
                     key = _modules.Clipboard.PeekClipboard();
                 }
 
-                _modules.Keyboard.KeyboardHandleKey((byte)key, KeyStates.kEventKeyDown);
+                _modules.Keyboard.KeyboardHandleKey((byte)key, KeyStates.Down);
 
                 _waitCycle = key == 0x1c ? 6000 : 2000;
             }
@@ -292,11 +292,11 @@ namespace VCCSharp.Modules
 
                 if (_shiftActive)
                 {
-                    _modules.Keyboard.KeyboardHandleKey(Define.DIK_LSHIFT, KeyStates.kEventKeyUp);
+                    _modules.Keyboard.KeyboardHandleKey(Define.DIK_LSHIFT, KeyStates.Up);
                     _shiftActive = false;
                 }
 
-                _modules.Keyboard.KeyboardHandleKey((byte)key, KeyStates.kEventKeyUp);
+                _modules.Keyboard.KeyboardHandleKey((byte)key, KeyStates.Up);
 
                 _modules.Clipboard.PopClipboard();
 

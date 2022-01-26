@@ -7,15 +7,7 @@
         xmlns:converters="clr-namespace:VCCSharp.Converters"
         xmlns:vccSharp="clr-namespace:VCCSharp"
         mc:Ignorable="d"
-        Title="VCCSharp" Height="519" Width="821"
-        Closing="MainWindow_OnClosing"
-        MouseLeftButtonUp="MainWindow_OnMouseLeftButtonUp"
-        MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
-        MouseRightButtonUp="MainWindow_OnMouseRightButtonUp"
-        MouseRightButtonDown="MainWindow_OnMouseRightButtonDown"
-        MouseMove="MainWindow_OnMouseMove"
-        KeyDown="MainWindow_OnKeyDown"
-        KeyUp="MainWindow_OnKeyUp">
+        Title="VCCSharp" Height="519" Width="821">
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     <converters:FrameSkipConverter x:Key="FrameSkipConverter"/>
