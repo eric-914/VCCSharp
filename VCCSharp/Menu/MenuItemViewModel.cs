@@ -5,12 +5,22 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using VCCSharp.Annotations;
 using VCCSharp.Enums;
+using VCCSharp.IoC;
 
 namespace VCCSharp.Menu
 {
     public class MenuItemViewModel : INotifyPropertyChanged
     {
         public MenuActions Id { get; set; }
+
+        private readonly IViewModelFactory _factory;
+
+        public MenuItemViewModel()
+        {
+            _factory = Factory.Instance.Get<IViewModelFactory>();
+
+            Command = _factory.CreateCommandViewModel();
+        }
 
         private string _header;
         public string Header
@@ -25,7 +35,7 @@ namespace VCCSharp.Menu
             }
         }
 
-        public ICommand Command { get; set; } = new CommandViewModel(() => { });
+        public ICommand Command { get; set; }
         public bool IsCheckable { get; set; } = false;
 
         public bool IsSeparator => string.IsNullOrEmpty(Header);
@@ -38,7 +48,7 @@ namespace VCCSharp.Menu
             set
             {
                 _action = value;
-                Command = new CommandViewModel(value);
+                Command = _factory.CreateCommandViewModel(value);
             }
         }
 

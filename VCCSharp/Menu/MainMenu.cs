@@ -10,7 +10,7 @@ namespace VCCSharp.Menu
 
     public class MainMenu : MenuItems, IMainMenu
     {
-        public static readonly MenuItemViewModel Separator = new SeparatorItemViewModel();
+        public static readonly MenuItemViewModel ______________ = new SeparatorItemViewModel(); //--Separator
 
         public MenuItemViewModel Plugins { get; }
 
@@ -35,14 +35,14 @@ namespace VCCSharp.Menu
             Header = "_File",
             MenuItems = new MenuItems
             {
-                new MenuItemViewModel {Header = "Run", Action = actions.Run},
-                new MenuItemViewModel {Header = "Save Config", Action = actions.SaveConfiguration},
-                new MenuItemViewModel {Header = "Load Config", Action = actions.LoadConfiguration},
-                Separator,
-                new MenuItemViewModel {Header = "[F9] Hard Reset", Action = actions.HardReset},
-                new MenuItemViewModel {Header = "[F5] Soft Reset", Action = actions.SoftReset},
-                Separator,
-                new MenuItemViewModel {Header = "E_xit", Action = actions.ApplicationExit}
+                new MenuItemViewModel { Header = "Run", Action = actions.Run },
+                new MenuItemViewModel { Header = "Save Config", Action = actions.SaveConfiguration },
+                new MenuItemViewModel { Header = "Load Config", Action = actions.LoadConfiguration }, 
+                ______________,
+                new MenuItemViewModel { Header = "[F9] Hard Reset", Action = actions.HardReset },
+                new MenuItemViewModel { Header = "[F5] Soft Reset", Action = actions.SoftReset }, 
+                ______________,
+                new MenuItemViewModel { Header = "E_xit", Action = actions.ApplicationExit }
             }
         };
 
@@ -63,12 +63,12 @@ namespace VCCSharp.Menu
             Header = "_Options",
             MenuItems = new MenuItems
             {
-                new MenuItemViewModel {Header = "Flip Artifact Colors", Action = actions.FlipArtifactColors},
-                new MenuItemViewModel {Header = "Tape Recorder", Action = actions.TapeRecorder},
-                Separator,
-                new MenuItemViewModel {Header = "Configuration", Action = actions.OpenConfiguration},
-                Separator,
-                new MenuItemViewModel {Header = "Bit Banger", Action = actions.BitBanger}
+                new MenuItemViewModel { Header = "Flip Artifact Colors", Action = actions.FlipArtifactColors },
+                new MenuItemViewModel { Header = "Tape Recorder", Action = actions.TapeRecorder }, 
+                ______________,
+                new MenuItemViewModel { Header = "Configuration", Action = actions.OpenConfiguration }, 
+                ______________,
+                new MenuItemViewModel { Header = "Bit Banger", Action = actions.BitBanger }
             }
         };
 

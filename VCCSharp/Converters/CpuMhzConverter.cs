@@ -8,10 +8,16 @@ namespace VCCSharp.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            string cpu = (string)values[0];
-            double mhz = (double) values[1];
+            //--Values may not be string/double during the XAML editor
+            if (values[0] is string && values[1] is double)
+            {
+                string cpu = (string)values[0];
+                double mhz = (double) values[1];
 
-            return $"{cpu} @ {mhz:0.000}Mhz";
+                return $"{cpu} @ {mhz:0.000}Mhz";
+            }
+
+            return string.Empty;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

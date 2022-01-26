@@ -33,7 +33,7 @@ namespace VCCSharp.Menu
             if (string.IsNullOrEmpty(menuName))
             {
                 AddMenuItem separatorAdd = _menuItems.Plugins.MenuItems.Add;
-                Application.Current.Dispatcher.BeginInvoke(separatorAdd, MainMenu.Separator);
+                Application.Current.Dispatcher.BeginInvoke(separatorAdd, MainMenu.______________);
                 return;
             }
 

@@ -56,7 +56,9 @@
       </Grid>
     </DockPanel>
     <Grid Name="Surface" Background="{DynamicResource {x:Static SystemColors.ActiveCaptionTextBrushKey}}">
+      <!--
       <Image Margin="36,4,36,10" Stretch="Fill" Source="/Resources/Television.png"/>
+      -->
     </Grid>
   </DockPanel>
 </Window>

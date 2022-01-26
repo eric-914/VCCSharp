@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using DX8;
+﻿using DX8;
+using System.Windows;
 using VCCSharp.BitBanger;
 using VCCSharp.Configuration;
 using VCCSharp.DX8;
@@ -26,9 +26,13 @@ namespace VCCSharp
             Factory.Instance
                 .SelfBind()
 
+                //--Specialized Factories
+                .Singleton<IViewModelFactory, ViewModelFactory>()
+
                 //--Utilities
                 .Singleton<IKeyboardScanCodes, KeyboardScanCodes>()
                 .Singleton<IKeyScanMapper, KeyScanMapper>()
+                .Singleton<IWindowEvents, WindowEvents>()
 
                 //--Modules
                 .Singleton<IAudio, Audio>()
