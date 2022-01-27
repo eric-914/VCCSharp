@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using VCCSharp.Configuration;
+using VCCSharp.Main;
 using VCCSharp.Menu;
 using VCCSharp.Modules;
 

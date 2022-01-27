@@ -1,9 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using VCCSharp.Annotations;
 
-namespace VCCSharp
+namespace VCCSharp.Main
 {
     public interface IStatus : INotifyPropertyChanged
     {
@@ -12,9 +13,11 @@ namespace VCCSharp
         double Mhz { get; set; }
         string Status { get; set; }
         float Fps { get; set; }
+        Size WindowSize { get; set; }
+        Size SurfaceSize { get; set; }
     }
 
-    public class StatusManager : IStatus
+    public class StatusViewModel : IStatus
     {
         private int _frameSkip = 5;
         private string _cpuName;
@@ -78,6 +81,32 @@ namespace VCCSharp
                 if (Math.Abs(_fps - value) < .001) return;
 
                 _fps = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Size _windowSize;
+        public Size WindowSize
+        {
+            get => _windowSize;
+            set
+            {
+                if ((int)_windowSize.Width == (int)value.Width && (int)_windowSize.Height == (int)value.Height) return;
+
+                _windowSize = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Size _surfaceSize;
+        public Size SurfaceSize
+        {
+            get => _surfaceSize;
+            set
+            {
+                if ((int)_surfaceSize.Width == (int)value.Width && (int)_surfaceSize.Height == (int)value.Height) return;
+
+                _surfaceSize = value;
                 OnPropertyChanged();
             }
         }

@@ -3,12 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:models="clr-namespace:VCCSharp.Models"
-             xmlns:converters="clr-namespace:VCCSharp.Converters"
+             xmlns:model="clr-namespace:VCCSharp.Models"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="100">
   <UserControl.DataContext>
-    <models:AudioSpectrum />
+    <model:AudioSpectrum />
   </UserControl.DataContext>
   <UserControl.Resources>
     <Style TargetType="ProgressBar">

@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="VCCSharp.Main.Controls.StatusControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:VCCSharp.Converters"
+             xmlns:model="clr-namespace:VCCSharp.Main"
+             mc:Ignorable="d" 
+             d:DesignHeight="45" d:DesignWidth="600">
+  <UserControl.Resources>
+    <converters:FrameSkipConverter x:Key="FrameSkipConverter"/>
+    <converters:FpsConverter x:Key="FpsConverter"/>
+    <converters:CpuMhzConverter x:Key="CpuMhzConverter"/>
+    <converters:SizeConverter x:Key="SizeConverter"/>
+  </UserControl.Resources>
+  <UserControl.DataContext>
+    <model:StatusViewModel/>
+  </UserControl.DataContext>
+  <StatusBar DockPanel.Dock="Bottom" Height="30">
+    <StatusBar.ItemsPanel>
+      <ItemsPanelTemplate>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/><!--FrameSkip-->
+            <ColumnDefinition Width="*"/><!--FPS-->
+            <ColumnDefinition Width="2*"/><!--CPU/Mhz-->
+            <ColumnDefinition Width="3*"/><!--Status-->
+            <ColumnDefinition Width="75"/><!--SurfaceSize-->
+            <ColumnDefinition Width="75"/><!--WindowSize-->
+          </Grid.ColumnDefinitions>
+        </Grid>
+      </ItemsPanelTemplate>
+    </StatusBar.ItemsPanel>
+    <StatusBarItem Grid.Column="0" >
+      <Label Content="{Binding FrameSkip, Converter={StaticResource FrameSkipConverter}}" />
+    </StatusBarItem>
+    <StatusBarItem Grid.Column="1" >
+      <Label Content="{Binding Fps, Converter={StaticResource FpsConverter}}"/>
+    </StatusBarItem>
+    <StatusBarItem Grid.Column="2">
+      <Label>
+        <Label.Content>
+          <MultiBinding Converter="{StaticResource CpuMhzConverter}">
+            <Binding Path="CpuName" />
+            <Binding Path="Mhz" />
+          </MultiBinding>
+        </Label.Content>
+      </Label>
+    </StatusBarItem>
+    <StatusBarItem Grid.Column="3" >
+      <Label Content="{Binding Status}"/>
+    </StatusBarItem>
+    <StatusBarItem Grid.Column="4">
+      <Label Content="{Binding SurfaceSize, Converter={StaticResource SizeConverter}}"/>
+    </StatusBarItem>
+    <StatusBarItem Grid.Column="5">
+      <Label Content="{Binding WindowSize, Converter={StaticResource SizeConverter}}"/>
+    </StatusBarItem>
+  </StatusBar></UserControl>

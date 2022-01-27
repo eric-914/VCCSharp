@@ -102,7 +102,7 @@ namespace VCCSharp.Modules
             int height = size.bottom - size.top;
 
             //--TODO: Not 100% sure the calculation part with surface height is correct, or just a coincidence
-            _user32.MoveWindow(hWnd, size.left, size.top, width, height + (height - SurfaceHeight), 1);
+            _user32.MoveWindow(hWnd, size.left, size.top, width, height, 1);
 
             _user32.ShowWindow(hWnd, Define.SW_SHOWDEFAULT);
             _user32.UpdateWindow(hWnd);

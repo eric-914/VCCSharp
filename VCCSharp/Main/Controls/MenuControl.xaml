@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="VCCSharp.Main.Controls.MenuControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:model="clr-namespace:VCCSharp.Menu"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+  <UserControl.Resources>
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+  </UserControl.Resources>
+  <UserControl.DataContext>
+    <model:MenuItems/>
+  </UserControl.DataContext>
+  <Menu Name="Menu" ItemsSource="{Binding}">
+    <Menu.ItemContainerStyle>
+      <Style TargetType="{x:Type MenuItem}">
+        <Setter Property="Command" Value="{Binding Command}" />
+        <Setter Property="IsCheckable" Value="{Binding IsCheckable}" />
+      </Style>
+    </Menu.ItemContainerStyle>
+    <Menu.ItemTemplate>
+      <HierarchicalDataTemplate DataType="{x:Type model:MenuItemViewModel}" ItemsSource="{Binding Path=MenuItems}">
+        <Grid>
+          <Label Content="{Binding Header}" Visibility="{Binding IsHeader, Converter={StaticResource BooleanToVisibilityConverter}}"></Label>
+          <Separator Width="100" Visibility="{Binding IsSeparator, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        </Grid>
+      </HierarchicalDataTemplate>
+    </Menu.ItemTemplate>
+  </Menu>
+</UserControl>

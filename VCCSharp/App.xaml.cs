@@ -5,6 +5,7 @@ using VCCSharp.Configuration;
 using VCCSharp.DX8;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
+using VCCSharp.Main;
 using VCCSharp.Menu;
 using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
@@ -88,7 +89,7 @@ namespace VCCSharp
                 .Bind<IBitBanger, BitBangerManager>()
 
                 //--Status Bar
-                .Singleton<IStatus, StatusManager>()
+                .Singleton<IStatus, StatusViewModel>()
 
                 //--Options container/accessor
                 .Singleton<IOptions, Options>()

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
+using VCCSharp.Main;
 using VCCSharp.Models;
 
 namespace VCCSharp.Modules
