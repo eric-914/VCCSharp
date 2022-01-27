@@ -102,16 +102,7 @@ namespace VCCSharp
 
         public void SetWindow(IntPtr hWnd)
         {
-            IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-            {
-                _modules.Events.ProcessMessage(msg, (long)wParam, (long)lParam);
-
-                return Zero;
-            }
-
             _modules.Emu.WindowHandle = hWnd;
-
-            HwndSource.FromHwnd(hWnd)?.AddHook(WndProc);
         }
     }
 }
