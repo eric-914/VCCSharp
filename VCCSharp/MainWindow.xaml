@@ -18,8 +18,7 @@
   <Window.DataContext>
     <vccSharp:MainWindowViewModel/>
   </Window.DataContext>
-  <DockPanel>
-    <!--Menu-->
+  <DockPanel Background="Black">
     <Menu Name="Menu" DockPanel.Dock="Top" ItemsSource="{Binding MenuItems}">
       <Menu.ItemContainerStyle>
         <Style TargetType="{x:Type MenuItem}">
@@ -36,19 +35,28 @@
         </HierarchicalDataTemplate>
       </Menu.ItemTemplate>
     </Menu>
-    
-    <!--Status-->
-    <DockPanel DockPanel.Dock="Bottom" DataContext="{Binding Status}" Height="30" Background="{x:Static SystemColors.MenuBarBrush}">
-      <Grid>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*"/>
-          <ColumnDefinition Width="*"/>
-          <ColumnDefinition Width="2*"/>
-          <ColumnDefinition Width="4*"/>
-        </Grid.ColumnDefinitions>
-        <Label Grid.Column="0" Content="{Binding FrameSkip, Converter={StaticResource FrameSkipConverter}}" />
-        <Label Grid.Column="1" Content="{Binding Fps, Converter={StaticResource FpsConverter}}"/>
-        <Label Grid.Column="2">
+
+    <StatusBar DockPanel.Dock="Bottom" DataContext="{Binding Status}" Height="30">
+      <StatusBar.ItemsPanel>
+        <ItemsPanelTemplate>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="2*"/>
+              <ColumnDefinition Width="4*"/>
+            </Grid.ColumnDefinitions>
+          </Grid>
+        </ItemsPanelTemplate>
+      </StatusBar.ItemsPanel>
+      <StatusBarItem Grid.Column="0" >
+        <Label Content="{Binding FrameSkip, Converter={StaticResource FrameSkipConverter}}" />
+      </StatusBarItem>
+      <StatusBarItem Grid.Column="1" >
+        <Label Content="{Binding Fps, Converter={StaticResource FpsConverter}}"/>
+      </StatusBarItem>
+      <StatusBarItem Grid.Column="2">
+        <Label>
           <Label.Content>
             <MultiBinding Converter="{StaticResource CpuMhzConverter}">
               <Binding Path="CpuName" />
@@ -56,11 +64,12 @@
             </MultiBinding>
           </Label.Content>
         </Label>
-        <Label Grid.Column="3" Content="{Binding Status}"/>
-      </Grid>
-    </DockPanel>
-    
-    <!--Surface-->
-    <Grid Name="Surface" Background="Black"/>
+      </StatusBarItem>
+      <StatusBarItem Grid.Column="3" >
+        <Label Content="{Binding Status}"/>
+      </StatusBarItem>
+    </StatusBar>
+
+    <Viewbox Name="Surface"/>
   </DockPanel>
 </Window>

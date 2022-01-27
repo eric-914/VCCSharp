@@ -69,6 +69,7 @@ namespace VCCSharp.Modules
             _color = 0;
         }
 
+        //--Called once on startup
         public bool CreateDirectDrawWindow()
         {
             var p = new Point(Define.DEFAULT_WIDTH, Define.DEFAULT_HEIGHT);
@@ -83,7 +84,7 @@ namespace VCCSharp.Modules
 
             //TODO: Add full screen mode back some day...
 
-            if (!CreateDirectDrawWindowedMode())
+            if (!CreateDirectDrawWindowedMode(_modules.Emu.WindowHandle))
             {
                 return false;
             }
@@ -91,6 +92,31 @@ namespace VCCSharp.Modules
             _modules.Emu.WindowSize = new System.Windows.Point(_windowSize.X, _windowSize.Y);
 
             return true;
+        }
+
+        private bool CreateDirectDrawWindowedMode(IntPtr hWnd)
+        {
+            var size = GetWindowSize(hWnd);
+
+            int width = size.right - size.left;
+            int height = size.bottom - size.top;
+
+            //--TODO: Not 100% sure the calculation part with surface height is correct, or just a coincidence
+            _user32.MoveWindow(hWnd, size.left, size.top, width, height + (height - SurfaceHeight), 1);
+
+            _user32.ShowWindow(hWnd, Define.SW_SHOWDEFAULT);
+            _user32.UpdateWindow(hWnd);
+
+            return _draw.CreateDirectDraw(_windowSize) // Initialize the DirectDraw object
+                   && _draw.SetCooperativeLevel(hWnd, Define.DDSCL_NORMAL) // Set to use windowed mode
+                   && _draw.CreatePrimarySurface()  // Create our primary surface
+                   && _draw.CreateBackSurface() // Create our back surface
+                   && _draw.CreateClipper()
+                   && _draw.SetClipper(hWnd)   // Assign your window's HWND to the clipper
+                   && _draw.SetSurfaceClipper() // Attach the clipper to the primary surface
+                   && _draw.LockSurface() // Make sure lock works
+                   && _draw.UnlockSurface() // And unlock
+                ;
         }
 
         public void DoCls()
@@ -338,35 +364,9 @@ namespace VCCSharp.Modules
         {
             var size = new RECT();
 
-            _user32.GetWindowRect(_modules.Emu.WindowHandle, ref size); // And save the Final size of the Window 
+            _user32.GetWindowRect(hWnd, ref size);
 
             return size;
-        }
-
-        //--Called once on startup
-        private bool CreateDirectDrawWindowedMode()
-        {
-            var size = GetWindowSize(_modules.Emu.WindowHandle);
-
-            int width = size.right - size.left;
-            int height = size.bottom - size.top;
-
-            //--TODO: Not 100% sure the calculation part with surface height is correct, or just a coincidence
-            _user32.MoveWindow(_modules.Emu.WindowHandle, size.left, size.top, width, height + (height - SurfaceHeight), 1);
-
-            _user32.ShowWindow(_modules.Emu.WindowHandle, Define.SW_SHOWDEFAULT);
-            _user32.UpdateWindow(_modules.Emu.WindowHandle);
-
-            return _draw.CreateDirectDraw(_windowSize) // Initialize the DirectDraw object
-                   && _draw.SetCooperativeLevel(_modules.Emu.WindowHandle, Define.DDSCL_NORMAL) // Set to use windowed mode
-                   && _draw.CreatePrimarySurface()  // Create our primary surface
-                   && _draw.CreateBackSurface() // Create our back surface
-                   && _draw.CreateClipper()
-                   && _draw.SetClipper(_modules.Emu.WindowHandle)   // Assign your window's HWND to the clipper
-                   && _draw.SetSurfaceClipper() // Attach the clipper to the primary surface
-                   && _draw.LockSurface() // Make sure lock works
-                   && _draw.UnlockSurface() // And unlock
-                ;
         }
 
         // Checks if the memory associated with surfaces is lost and restores if necessary.
