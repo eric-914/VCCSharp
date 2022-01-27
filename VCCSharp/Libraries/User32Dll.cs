@@ -49,8 +49,5 @@ namespace VCCSharp.Libraries
 
         [DllImport(Dll)]
         public static extern int UpdateWindow(HWND hWnd);
-
-        [DllImport(Dll)]
-        public static extern short GetKeyState(int nVirtualKey);
     }
 }

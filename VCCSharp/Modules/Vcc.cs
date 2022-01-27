@@ -109,6 +109,8 @@ namespace VCCSharp.Modules
                     _modules.Throttle.FrameWait();
                 }
             }
+
+            _modules.Events.Shutdown();
         }
 
         private float Render()

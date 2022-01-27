@@ -1,4 +1,5 @@
-﻿using VCCSharp.IoC;
+﻿using System.Windows;
+using VCCSharp.IoC;
 using VCCSharp.Menu;
 
 namespace VCCSharp
@@ -11,18 +12,19 @@ namespace VCCSharp
 
     public partial class MainWindow
     {
+        private readonly IFactory _factory = Factory.Instance;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            Initialize(Factory.Instance);
+            DataContext = _factory.Get<IViewModelFactory>().CreateMainWindowViewModel(this);
         }
 
-        private void Initialize(IFactory factory)
+        //--This occurs some time after the menu has a proper render size giving us a valid surface height
+        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            DataContext = factory.Get<IViewModelFactory>().CreateMainWindowViewModel(this);
-
-            factory.Get<IVccThread>().Run(this);
+            _factory.Get<IVccThread>().Run(this, (int)Surface.ActualHeight);
         }
     }
 }

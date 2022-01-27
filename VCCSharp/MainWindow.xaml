@@ -7,7 +7,8 @@
         xmlns:converters="clr-namespace:VCCSharp.Converters"
         xmlns:vccSharp="clr-namespace:VCCSharp"
         mc:Ignorable="d"
-        Title="VCCSharp" Height="519" Width="821">
+        Title="VCCSharp" Height="519" Width="821"
+        Loaded="MainWindow_OnLoaded">
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     <converters:FrameSkipConverter x:Key="FrameSkipConverter"/>
@@ -19,7 +20,7 @@
   </Window.DataContext>
   <DockPanel>
     <!--Menu-->
-    <Menu DockPanel.Dock="Top" ItemsSource="{Binding MenuItems}">
+    <Menu Name="Menu" DockPanel.Dock="Top" ItemsSource="{Binding MenuItems}">
       <Menu.ItemContainerStyle>
         <Style TargetType="{x:Type MenuItem}">
           <Setter Property="Command" Value="{Binding Command}" />

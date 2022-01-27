@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Libraries;
 
 namespace VCCSharp.Modules
 {
@@ -19,6 +18,7 @@ namespace VCCSharp.Modules
         void EmuRun();
         void EmuReset(ResetPendingStates state);
         void EmuExit();
+        void Shutdown();
         void ToggleOnOff();
         void SlowDown();
         void SpeedUp();
@@ -32,13 +32,11 @@ namespace VCCSharp.Modules
     public class Events : IEvents
     {
         private readonly IModules _modules;
-        private readonly IUser32 _user32;
         private IGraphics Graphics => _modules.Graphics;
 
-        public Events(IModules modules, IUser32 user32)
+        public Events(IModules modules)
         {
             _modules = modules;
-            _user32 = user32;
         }
 
         public void EmuRun()
@@ -63,6 +61,14 @@ namespace VCCSharp.Modules
             Debug.WriteLine("Exiting...");
 
             _modules.Vcc.BinaryRunning = false;
+        }
+
+        public void Shutdown()
+        {
+            _modules.PAKInterface.UnloadDll(false);
+            _modules.Audio.SoundDeInit();
+
+            _modules.Config.WriteIniFile(); //Save any changes to ini File
         }
 
         public void SlowDown() //F3

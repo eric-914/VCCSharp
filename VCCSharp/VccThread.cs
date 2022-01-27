@@ -8,8 +8,7 @@ namespace VCCSharp
 {
     public interface IVccThread
     {
-        void Run(Window window);
-        void Run(IntPtr hWnd);
+        void Run(Window window, int surfaceHeight);
     }
 
     public class VccThread : IVccThread
@@ -23,14 +22,14 @@ namespace VCCSharp
             _commandLineParser = commandLineParser;
         }
 
-        public void Run(Window window)
+        public void Run(Window window, int surfaceHeight)
         {
             IntPtr hWnd = new WindowInteropHelper(window).EnsureHandle(); //--Note: Still on UI thread
 
-            Task.Run(() => Run(hWnd));
+            Task.Run(() => Run(hWnd, surfaceHeight));
         }
 
-        public void Run(IntPtr hWnd)
+        public void Run(IntPtr hWnd, int surfaceHeight)
         {
             CmdLineArguments args = _commandLineParser.Parse();
             if (args == null)
@@ -38,15 +37,14 @@ namespace VCCSharp
                 return;
             }
 
-            _vccApp.SetWindow(hWnd);
+            _vccApp.SetWindow(hWnd, surfaceHeight);
 
             _vccApp.Startup(args);
 
+            //--The emulation runs on a different thread
             _vccApp.Threading();
 
             _vccApp.Run();
-
-            _vccApp.Shutdown();
         }
     }
 }

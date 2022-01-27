@@ -24,7 +24,10 @@ namespace VCCSharp.Modules
         bool LockScreen();
         void UnlockScreen();
 
+        RECT GetWindowSize(IntPtr hWnd);
+
         bool InfoBand { get; set; }
+        int SurfaceHeight { get; set; }
     }
 
     public class Draw : IDraw
@@ -49,6 +52,7 @@ namespace VCCSharp.Modules
         private string _statusText;
 
         public bool InfoBand { get; set; }
+        public int SurfaceHeight { get; set; }
 
         #endregion
 
@@ -67,15 +71,15 @@ namespace VCCSharp.Modules
 
         public bool CreateDirectDrawWindow()
         {
-            var pp = new Point(Define.DEFAULT_WIDTH, Define.DEFAULT_HEIGHT);
+            var p = new Point(Define.DEFAULT_WIDTH, Define.DEFAULT_HEIGHT);
 
             if (_modules.Config.GetRememberSize())
             {
-                pp = _modules.Config.GetIniWindowSize();
+                p = _modules.Config.GetWindowSize();
             }
 
-            _windowSize.X = pp.X;
-            _windowSize.Y = pp.Y;
+            _windowSize.X = p.X;
+            _windowSize.Y = p.Y;
 
             //TODO: Add full screen mode back some day...
 
@@ -306,11 +310,9 @@ namespace VCCSharp.Modules
                     float dstY = (clientHeight - dstHeight) / 2;
 
                     Point pDstLeftTop = new Point { X = (int)dstX, Y = (int)dstY };
-
-                    _user32.ClientToScreen(_modules.Emu.WindowHandle, ref pDstLeftTop);
-
                     Point pDstRightBottom = new Point { X = (int)(dstX + dstWidth), Y = (int)(dstY + dstHeight) };
 
+                    _user32.ClientToScreen(_modules.Emu.WindowHandle, ref pDstLeftTop);
                     _user32.ClientToScreen(_modules.Emu.WindowHandle, ref pDstRightBottom);
 
                     _user32.SetRect(ref rcDest, (short)pDstLeftTop.X, (short)pDstLeftTop.Y, (short)pDstRightBottom.X, (short)pDstRightBottom.Y);
@@ -324,7 +326,7 @@ namespace VCCSharp.Modules
                 _draw.SurfaceBlt(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, rcSrc.left, rcSrc.top, rcSrc.right, rcSrc.bottom);
             }
 
-            //--Store the updated WindowSizeX/Y for configuration, later.
+            //--Emu.WindowSize is what get's stored in configuration file.
             var windowSize = new RECT();
 
             _user32.GetClientRect(_modules.Emu.WindowHandle, ref windowSize);
@@ -332,17 +334,25 @@ namespace VCCSharp.Modules
             _modules.Emu.WindowSize = new System.Windows.Point(windowSize.right, windowSize.bottom);
         }
 
-        private bool CreateDirectDrawWindowedMode()
+        public RECT GetWindowSize(IntPtr hWnd)
         {
             var size = new RECT();
 
             _user32.GetWindowRect(_modules.Emu.WindowHandle, ref size); // And save the Final size of the Window 
 
+            return size;
+        }
+
+        //--Called once on startup
+        private bool CreateDirectDrawWindowedMode()
+        {
+            var size = GetWindowSize(_modules.Emu.WindowHandle);
+
             int width = size.right - size.left;
             int height = size.bottom - size.top;
 
-            //TODO: Figure out how to replace magic # 175
-            _user32.MoveWindow(_modules.Emu.WindowHandle, size.left, size.top, width, height + 175, 1);
+            //--TODO: Not 100% sure the calculation part with surface height is correct, or just a coincidence
+            _user32.MoveWindow(_modules.Emu.WindowHandle, size.left, size.top, width, height + (height - SurfaceHeight), 1);
 
             _user32.ShowWindow(_modules.Emu.WindowHandle, Define.SW_SHOWDEFAULT);
             _user32.UpdateWindow(_modules.Emu.WindowHandle);

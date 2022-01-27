@@ -14,9 +14,8 @@ namespace VCCSharp
         void Startup(CmdLineArguments cmdLineArgs);
         void Threading();
         void Run();
-        void Shutdown();
 
-        void SetWindow(IntPtr hWnd);
+        void SetWindow(IntPtr hWnd, int surfaceHeight);
     }
 
     public class VccApp : IVccApp
@@ -54,10 +53,6 @@ namespace VCCSharp
                 _modules.Emu.EmulationRunning = true;
             }
 
-            //NOTE: Sound is lost if this isn't done after CreatePrimaryWindow();
-            //Loads the default config file Vcc.ini from the exec directory
-            //_modules.Config.InitConfig(ref cmdLineArgs);
-
             _modules.Draw.ClearScreen();
 
             _modules.Emu.ResetPending = (byte)ResetPendingStates.Cls;
@@ -92,17 +87,10 @@ namespace VCCSharp
             }
         }
 
-        public void Shutdown()
-        {
-            _modules.PAKInterface.UnloadDll(false);
-            _modules.Audio.SoundDeInit();
-
-            _modules.Config.WriteIniFile(); //Save any changes to ini File
-        }
-
-        public void SetWindow(IntPtr hWnd)
+        public void SetWindow(IntPtr hWnd, int surfaceHeight)
         {
             _modules.Emu.WindowHandle = hWnd;
+            _modules.Draw.SurfaceHeight = surfaceHeight;
         }
     }
 }

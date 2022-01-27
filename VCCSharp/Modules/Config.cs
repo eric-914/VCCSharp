@@ -31,7 +31,7 @@ namespace VCCSharp.Modules
         void SaveConfig();
         bool GetRememberSize();
 
-        Point GetIniWindowSize();
+        Point GetWindowSize();
         string AppTitle { get; }
         byte TextMode { get; set; }
         bool PrintMonitorWindow { get; set; }
@@ -609,11 +609,9 @@ namespace VCCSharp.Modules
             return ConfigModel.RememberSize;
         }
 
-        public Point GetIniWindowSize()
+        public Point GetWindowSize()
         {
-            Point p = new Point { X = ConfigModel.WindowSizeX, Y = ConfigModel.WindowSizeY };
-
-            return p;
+            return new Point { X = ConfigModel.WindowSizeX, Y = ConfigModel.WindowSizeY };
         }
     }
 }
