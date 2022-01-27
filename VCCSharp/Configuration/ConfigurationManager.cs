@@ -1,5 +1,4 @@
 ﻿using VCCSharp.IoC;
-using VCCSharp.Models;
 using VCCSharp.Modules;
 
 namespace VCCSharp.Configuration
@@ -7,22 +6,17 @@ namespace VCCSharp.Configuration
     public class ConfigurationManager : IConfiguration
     {
         private readonly IModules _modules;
+        private readonly IViewModelFactory _factory;
 
-        public ConfigurationManager(IModules modules)
+        public ConfigurationManager(IModules modules, IViewModelFactory factory)
         {
             _modules = modules;
+            _factory = factory;
         }
 
-        public void ShowDialog(IConfig state, ConfigModel model, JoystickModel left, JoystickModel right)
+        public void ShowDialog(IConfig config)
         {
-            var viewModel = new ConfigurationViewModel
-            {
-                Config = _modules.Config,
-                State = state, 
-                Model = model,
-                LeftModel = left, 
-                RightModel = right
-            };
+            var viewModel = _factory.CreateConfigurationViewModel(config);
 
             var view = new ConfigurationWindow(viewModel) { Apply = ApplyChanges };
 

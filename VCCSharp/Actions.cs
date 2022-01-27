@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Models;
 
 namespace VCCSharp
 {
@@ -39,7 +38,6 @@ namespace VCCSharp
 
         public void HardReset() //F9
         {
-            //_modules.Events.EmuReset(ResetPendingStates.Hard);
             _modules.Events.ToggleOnOff();
         }
 
@@ -85,11 +83,7 @@ namespace VCCSharp
 
         public void OpenConfiguration()
         {
-            ConfigModel configModel = _modules.Config.ConfigModel;
-            JoystickModel leftJoystickModel = _modules.Config.GetLeftJoystick();
-            JoystickModel rightJoystickModel = _modules.Config.GetRightJoystick();
-
-            _options.Configuration.ShowDialog(_modules.Config, configModel, leftJoystickModel, rightJoystickModel);
+            _options.Configuration.ShowDialog(_modules.Config);
         }
 
         public void LoadCartridge()

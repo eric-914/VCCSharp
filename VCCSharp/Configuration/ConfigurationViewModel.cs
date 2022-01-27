@@ -11,7 +11,6 @@ namespace VCCSharp.Configuration
     public class ConfigurationViewModel : INotifyPropertyChanged
     {
         //TODO: Remove STATIC once safe
-        private static IConfig _state;
         private static ConfigModel _model;
         private static JoystickModel _left;
         private static JoystickModel _right;
@@ -68,17 +67,6 @@ namespace VCCSharp.Configuration
                 if (_config != null) return;
 
                 _config = value;
-            }
-        }
-
-        public IConfig State
-        {
-            get => _state;
-            set
-            {
-                if (_state != null) return;
-
-                _state = value;
             }
         }
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows.Interop;
-using VCCSharp.IoC;
+﻿using VCCSharp.IoC;
 using VCCSharp.Menu;
 
 namespace VCCSharp
@@ -25,11 +22,7 @@ namespace VCCSharp
         {
             DataContext = factory.Get<IViewModelFactory>().CreateMainWindowViewModel(this);
 
-            IntPtr hWnd = new WindowInteropHelper(this).EnsureHandle(); //--Note: This is UI thread
-
-            //TODO: Figure out how to pass in "Surface" control instead of Main Window
-
-            Task.Run(() => factory.Get<IVccThread>().Run(hWnd));
+            factory.Get<IVccThread>().Run(this);
         }
     }
 }

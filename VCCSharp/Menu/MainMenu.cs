@@ -1,5 +1,7 @@
-﻿using Ninject;
+﻿using System;
+using Ninject;
 using System.Collections.ObjectModel;
+using VCCSharp.IoC;
 
 namespace VCCSharp.Menu
 {
@@ -10,15 +12,23 @@ namespace VCCSharp.Menu
 
     public class MainMenu : MenuItems, IMainMenu
     {
-        public static readonly MenuItemViewModel ______________ = new SeparatorItemViewModel(); //--Separator
+        /// <summary>
+        /// Menu Separator
+        /// </summary>
+        public static readonly MenuItemViewModel ______________ = new SeparatorItemViewModel();
 
         public MenuItemViewModel Plugins { get; }
 
+        private readonly IViewModelFactory _factory;
+
         //--Here for XAML template purposes only
-        public MainMenu() { }
+        public MainMenu()
+        {
+            _factory = Factory.Instance.Get<IViewModelFactory>();
+        }
 
         [Inject]
-        public MainMenu(Actions actions)
+        public MainMenu(Actions actions) : this()
         {
             //--The "plug-ins" menu is dynamic that plug-ins can customize it
             Plugins = Cartridge();
@@ -30,45 +40,47 @@ namespace VCCSharp.Menu
             Add(Help(actions));
         }
 
-        private static MenuItemViewModel File(Actions actions) => new MenuItemViewModel
+        private MenuItemViewModel Menu(string header, Action action) => _factory.CreateMenuItemViewModel(header, action);
+
+        private MenuItemViewModel File(Actions actions) => new MenuItemViewModel
         {
             Header = "_File",
             MenuItems = new MenuItems
             {
-                new MenuItemViewModel { Header = "Run", Action = actions.Run },
-                new MenuItemViewModel { Header = "Save Config", Action = actions.SaveConfiguration },
-                new MenuItemViewModel { Header = "Load Config", Action = actions.LoadConfiguration }, 
+                Menu("Run", actions.Run),
+                Menu("Save Config", actions.SaveConfiguration),
+                Menu("Load Config", actions.LoadConfiguration),
                 ______________,
-                new MenuItemViewModel { Header = "[F9] Hard Reset", Action = actions.HardReset },
-                new MenuItemViewModel { Header = "[F5] Soft Reset", Action = actions.SoftReset }, 
+                Menu("[F9] Hard Reset", actions.HardReset ),
+                Menu("[F5] Soft Reset", actions.SoftReset ),
                 ______________,
-                new MenuItemViewModel { Header = "E_xit", Action = actions.ApplicationExit }
+                Menu("E_xit", actions.ApplicationExit)
             }
         };
 
-        private static MenuItemViewModel Edit(Actions actions) => new MenuItemViewModel
+        private MenuItemViewModel Edit(Actions actions) => new MenuItemViewModel
         {
             Header = "_Edit",
             MenuItems = new MenuItems
             {
-                new MenuItemViewModel {Header = "Copy Text", Action = actions.CopyText},
-                new MenuItemViewModel {Header = "Paste Text", Action = actions.PasteText},
-                new MenuItemViewModel {Header = "Paste BASIC Code (Merge)", Action = actions.PasteBasicCodeMerge},
-                new MenuItemViewModel {Header = "Paste BASIC Code (with NEW)", Action = actions.PasteBasicCodeNew}
+                Menu("Copy Text", actions.CopyText),
+                Menu("Paste Text", actions.PasteText),
+                Menu("Paste BASIC Code (Merge)", actions.PasteBasicCodeMerge),
+                Menu("Paste BASIC Code (with NEW)", actions.PasteBasicCodeNew)
             }
         };
 
-        private static MenuItemViewModel Configuration(Actions actions) => new MenuItemViewModel
+        private MenuItemViewModel Configuration(Actions actions) => new MenuItemViewModel
         {
             Header = "_Options",
             MenuItems = new MenuItems
             {
-                new MenuItemViewModel { Header = "Flip Artifact Colors", Action = actions.FlipArtifactColors },
-                new MenuItemViewModel { Header = "Tape Recorder", Action = actions.TapeRecorder }, 
+                Menu("Flip Artifact Colors", actions.FlipArtifactColors),
+                Menu("Tape Recorder", actions.TapeRecorder),
                 ______________,
-                new MenuItemViewModel { Header = "Configuration", Action = actions.OpenConfiguration }, 
+                Menu("Configuration", actions.OpenConfiguration),
                 ______________,
-                new MenuItemViewModel { Header = "Bit Banger", Action = actions.BitBanger }
+                Menu("Bit Banger", actions.BitBanger)
             }
         };
 
@@ -78,12 +90,12 @@ namespace VCCSharp.Menu
             MenuItems = new ObservableCollection<MenuItemViewModel>()
         };
 
-        private static MenuItemViewModel Help(Actions actions) => new MenuItemViewModel
+        private MenuItemViewModel Help(Actions actions) => new MenuItemViewModel
         {
             Header = "_Help",
             MenuItems = new MenuItems
             {
-                new MenuItemViewModel {Header = "About Vcc", Action = actions.AboutVcc}
+                Menu("About Vcc", actions.AboutVcc)
             }
         };
     }
