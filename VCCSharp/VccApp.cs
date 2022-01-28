@@ -15,7 +15,7 @@ namespace VCCSharp
         void Threading();
         void Run();
 
-        void SetWindow(IntPtr hWnd, int surfaceHeight);
+        void SetWindow(IntPtr hWnd);
     }
 
     public class VccApp : IVccApp
@@ -87,10 +87,9 @@ namespace VCCSharp
             }
         }
 
-        public void SetWindow(IntPtr hWnd, int surfaceHeight)
+        public void SetWindow(IntPtr hWnd)
         {
             _modules.Emu.WindowHandle = hWnd;
-            _modules.Draw.SurfaceHeight = surfaceHeight;
         }
     }
 }

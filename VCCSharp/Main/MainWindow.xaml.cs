@@ -23,7 +23,7 @@ namespace VCCSharp.Main
         //--This occurs some time after the menu has a proper render size giving us a valid surface height
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            _factory.Get<IVccThread>().Run(this, (int)Surface.ActualHeight);
+            _factory.Get<IVccThread>().Run(this);
         }
 
         private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)

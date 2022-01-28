@@ -8,7 +8,7 @@ namespace VCCSharp
 {
     public interface IVccThread
     {
-        void Run(Window window, int surfaceHeight);
+        void Run(Window window);
     }
 
     public class VccThread : IVccThread
@@ -22,14 +22,14 @@ namespace VCCSharp
             _commandLineParser = commandLineParser;
         }
 
-        public void Run(Window window, int surfaceHeight)
+        public void Run(Window window)
         {
             IntPtr hWnd = new WindowInteropHelper(window).EnsureHandle(); //--Note: Still on UI thread
 
-            Task.Run(() => Run(hWnd, surfaceHeight));
+            Task.Run(() => Run(hWnd));
         }
 
-        public void Run(IntPtr hWnd, int surfaceHeight)
+        public void Run(IntPtr hWnd)
         {
             CmdLineArguments args = _commandLineParser.Parse();
             if (args == null)
@@ -37,7 +37,7 @@ namespace VCCSharp
                 return;
             }
 
-            _vccApp.SetWindow(hWnd, surfaceHeight);
+            _vccApp.SetWindow(hWnd);
 
             _vccApp.Startup(args);
 

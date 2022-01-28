@@ -27,7 +27,6 @@ namespace VCCSharp.Modules
         RECT GetWindowSize(IntPtr hWnd);
 
         bool InfoBand { get; set; }
-        int SurfaceHeight { get; set; }
     }
 
     public class Draw : IDraw
@@ -52,7 +51,6 @@ namespace VCCSharp.Modules
         private string _statusText;
 
         public bool InfoBand { get; set; }
-        public int SurfaceHeight { get; set; }
 
         #endregion
 
