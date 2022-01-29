@@ -4,16 +4,17 @@ using System.Windows.Interop;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
-using VCCSharp.Models;
 using static System.IntPtr;
 
 namespace VCCSharp
 {
     public interface IVccApp
     {
-        void Startup(CmdLineArguments cmdLineArgs);
+        void LoadConfiguration(string iniFile);
+        void Startup(string qLoadFile);
+        void Startup();
         void Threading();
-        void Run();
+        void Run(string qLoadFile);
 
         void SetWindow(IntPtr hWnd);
     }
@@ -23,15 +24,31 @@ namespace VCCSharp
         private readonly IModules _modules;
         private readonly IUser32 _user32;
 
-        public MSG Msg;
-
         public VccApp(IModules modules, IUser32 user32)
         {
             _modules = modules;
             _user32 = user32;
         }
 
-        public void Startup(CmdLineArguments cmdLineArgs)
+        public void LoadConfiguration(string iniFile)
+        {
+            _modules.Config.InitConfig(iniFile);
+        }
+
+        public void Startup(string qLoadFile)
+        {
+            if (!string.IsNullOrEmpty(qLoadFile))
+            {
+                if (_modules.QuickLoad.QuickStart(qLoadFile) == (int)QuickStartStatuses.Ok)
+                {
+                    _modules.Vcc.SetAppTitle(qLoadFile); //TODO: No app title if no quick load
+                }
+
+                _modules.Emu.EmulationRunning = true;
+            }
+        }
+
+        public void Startup()
         {
             _modules.CoCo.SetAudioEventAudioOut();
 
@@ -39,19 +56,7 @@ namespace VCCSharp
 
             _modules.CoCo.OverClock = 1;  //Default clock speed .89 MHZ	
 
-            _modules.Config.InitConfig(ref cmdLineArgs);
-
             _modules.Vcc.CreatePrimaryWindow();
-
-            if (!string.IsNullOrEmpty(cmdLineArgs.QLoadFile))
-            {
-                if (_modules.QuickLoad.QuickStart(cmdLineArgs.QLoadFile) == (int)QuickStartStatuses.Ok)
-                {
-                    _modules.Vcc.SetAppTitle(cmdLineArgs.QLoadFile); //TODO: No app title if no quick load
-                }
-
-                _modules.Emu.EmulationRunning = true;
-            }
 
             _modules.Draw.ClearScreen();
 
@@ -73,17 +78,21 @@ namespace VCCSharp
             Task.Run(_modules.Vcc.EmuLoop);
         }
 
-        public void Run()
+        public void Run(string qLoadFile)
         {
+            Startup(qLoadFile);
+
             while (_modules.Vcc.BinaryRunning)
             {
                 _modules.Vcc.CheckScreenModeChange();
 
-                _user32.GetMessageA(ref Msg, Zero, 0, 0);   //Seems if the main loop stops polling for Messages the child threads stall
+                MSG msg;
 
-                _user32.TranslateMessage(ref Msg);
+                _user32.GetMessageA(ref msg, Zero, 0, 0);   //Seems if the main loop stops polling for Messages the child threads stall
 
-                _user32.DispatchMessageA(ref Msg);
+                _user32.TranslateMessage(ref msg);
+
+                _user32.DispatchMessageA(ref msg);
             }
         }
 

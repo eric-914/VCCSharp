@@ -6,20 +6,20 @@ using VCCSharp.Menu;
 using VCCSharp.Modules;
 using KeyStates = VCCSharp.Enums.KeyStates;
 
-namespace VCCSharp
+namespace VCCSharp.Main
 {
-    public interface IWindowEvents
+    public interface IMainWindowEvents
     {
-        void Bind(Window window, MainWindowCommands commands);
+        void Bind(IMainWindow window, MainWindowCommands commands);
     }
 
-    public class WindowEvents : IWindowEvents
+    public class MainWindowEvents : IMainWindowEvents
     {
         private readonly IEvents _events;
         private readonly IKeyboard _keyboard;
         private readonly IJoystick _joystick;
 
-        public WindowEvents(IModules modules)
+        public MainWindowEvents(IModules modules)
         {
             _events = modules.Events;
             _keyboard = modules.Keyboard;
@@ -29,7 +29,13 @@ namespace VCCSharp
         /// <summary>
         /// Bind a bunch of of the main window's events
         /// </summary>
-        public void Bind(Window window, MainWindowCommands commands)
+        public void Bind(IMainWindow main, MainWindowCommands commands)
+        {
+            Bind(main.Window, commands);
+            Bind(main.View, main.ViewModel);
+        }
+
+        private void Bind(Window window, MainWindowCommands commands)
         {
             window.CommandBindings.AddRange(commands.CommandBindings);
             window.InputBindings.AddRange(commands.InputBindings);
@@ -45,6 +51,11 @@ namespace VCCSharp
             window.MouseRightButtonUp += (o, e) => _joystick.SetButtonStatus(MouseButtonStates.RightUp);
             window.MouseRightButtonDown += (o, e) => _joystick.SetButtonStatus(MouseButtonStates.RightDown);
             window.MouseMove += (o, e) => _joystick.SetJoystick(window.RenderSize, Mouse.GetPosition(window));
+        }
+
+        private static void Bind(FrameworkElement view, MainWindowViewModel viewModel)
+        {
+            view.SizeChanged += (o, e) => viewModel.SurfaceSize = e.NewSize;
         }
     }
 }

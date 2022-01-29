@@ -20,7 +20,7 @@ namespace VCCSharp.Modules
         JoystickModel GetLeftJoystick();
         JoystickModel GetRightJoystick();
 
-        void InitConfig(ref CmdLineArguments cmdLineArgs);
+        void InitConfig(string iniFile);
         void WriteIniFile();
         void SynchSystemWithConfig();
         int GetPaletteType();
@@ -87,9 +87,9 @@ namespace VCCSharp.Modules
             return _right;
         }
 
-        public void InitConfig(ref CmdLineArguments cmdLineArgs)
+        public void InitConfig(string iniFile)
         {
-            string iniFile = GetIniFilePath(cmdLineArgs.IniFile);
+            iniFile = GetIniFilePath(iniFile);  //--Use default if needed
 
             ConfigModel.Release = AppTitle; //--A kind of "version" I guess
             IniFilePath = iniFile;

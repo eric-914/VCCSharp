@@ -33,7 +33,7 @@ namespace VCCSharp
                 //--Utilities
                 .Singleton<IKeyboardScanCodes, KeyboardScanCodes>()
                 .Singleton<IKeyScanMapper, KeyScanMapper>()
-                .Singleton<IWindowEvents, WindowEvents>()
+                .Singleton<IMainWindowEvents, MainWindowEvents>()
 
                 //--Modules
                 .Singleton<IAudio, Audio>()
@@ -78,6 +78,7 @@ namespace VCCSharp
                 .Bind<ICommandLineParser, CommandLineParser>()
                 .Bind<IVccApp, VccApp>()
                 .Bind<IVccThread, VccThread>()
+                .Bind<IVccMainWindow, VccMainWindow>()
 
                 //--Menu
                 .Singleton<IMainMenu, MainMenu>()

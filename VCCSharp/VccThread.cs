@@ -1,50 +1,39 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Interop;
 using VCCSharp.Models;
 
 namespace VCCSharp
 {
     public interface IVccThread
     {
-        void Run(Window window);
+        void Run(IntPtr hWnd, CmdLineArguments args);
     }
 
     public class VccThread : IVccThread
     {
-        private readonly ICommandLineParser _commandLineParser;
         private readonly IVccApp _vccApp;
 
-        public VccThread(IVccApp vccApp, ICommandLineParser commandLineParser)
+        public VccThread(IVccApp vccApp)
         {
             _vccApp = vccApp;
-            _commandLineParser = commandLineParser;
         }
 
-        public void Run(Window window)
+        public void Run(IntPtr hWnd, CmdLineArguments args)
         {
-            IntPtr hWnd = new WindowInteropHelper(window).EnsureHandle(); //--Note: Still on UI thread
-
-            Task.Run(() => Run(hWnd));
-        }
-
-        public void Run(IntPtr hWnd)
-        {
-            CmdLineArguments args = _commandLineParser.Parse();
-            if (args == null)
-            {
-                return;
-            }
-
             _vccApp.SetWindow(hWnd);
 
-            _vccApp.Startup(args);
+            Task.Run(() => Run(args));
+        }
+
+        public void Run(CmdLineArguments args)
+        {
+            _vccApp.LoadConfiguration(args.IniFile);
+            _vccApp.Startup();
 
             //--The emulation runs on a different thread
             _vccApp.Threading();
 
-            _vccApp.Run();
+            _vccApp.Run(args.QLoadFile);
         }
     }
 }

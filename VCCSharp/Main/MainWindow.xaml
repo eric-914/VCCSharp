@@ -8,8 +8,7 @@
         mc:Ignorable="d"
         Title="VCCSharp"
         Width="{Binding WindowWidth, Mode=TwoWay}"
-        Height="{Binding WindowHeight, Mode=TwoWay}"
-        SizeChanged="MainWindow_OnSizeChanged">
+        Height="{Binding WindowHeight, Mode=TwoWay}">
   <Window.DataContext>
     <model:MainWindowViewModel/>
   </Window.DataContext>
@@ -18,6 +17,6 @@
 
     <controls:StatusControl DockPanel.Dock="Bottom" DataContext="{Binding }"/>
 
-    <Viewbox Name="Surface"/>
+    <Viewbox Name="MainView"/>
   </DockPanel>
 </Window>
