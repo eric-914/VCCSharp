@@ -7,12 +7,17 @@ using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Main;
 using VCCSharp.Menu;
+using VCCSharp.Models.Configuration;
 using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Modules;
 using VCCSharp.Modules.TC1014;
 using VCCSharp.TapePlayer;
+using Audio = VCCSharp.Modules.Audio;
+using CPU = VCCSharp.Modules.CPU;
+using Joystick = VCCSharp.Modules.Joystick;
+using Keyboard = VCCSharp.Modules.Keyboard;
 
 namespace VCCSharp
 {
@@ -42,6 +47,8 @@ namespace VCCSharp
                 .Singleton<IClipboard, Modules.Clipboard>()
                 .Singleton<ICoCo, CoCo>()
                 .Singleton<IConfig, Config>()
+                .Singleton<IConfigPersistence, ConfigPersistence>()
+                .Singleton<IPersistence, Persistence>()
                 .Singleton<IDraw, Draw>()
                 .Singleton<IEmu, Emu>()
                 .Singleton<IEvents, Events>()

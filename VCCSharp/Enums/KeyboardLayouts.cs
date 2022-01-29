@@ -3,12 +3,12 @@
     // ReSharper disable InconsistentNaming
     public enum KeyboardLayouts
     {
-        kKBLayoutCoCo = 0,
-        kKBLayoutNatural = 1,
-        kKBLayoutCompact = 2,
-        kKBLayoutCustom = 3,
+        CoCo = 0,
+        Natural = 1,
+        Compact = 2,
+        Custom = 3,
 
-        kKBLayoutCount
+        Count
     }
     // ReSharper restore InconsistentNaming
 }

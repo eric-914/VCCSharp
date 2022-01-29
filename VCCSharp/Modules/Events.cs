@@ -59,6 +59,7 @@ namespace VCCSharp.Modules
         public void EmuExit()
         {
             Debug.WriteLine("Exiting...");
+            _modules.Config.Save(); //Save any changes to ini File
 
             _modules.Vcc.BinaryRunning = false;
         }
@@ -67,8 +68,6 @@ namespace VCCSharp.Modules
         {
             _modules.PAKInterface.UnloadDll(false);
             _modules.Audio.SoundDeInit();
-
-            _modules.Config.WriteIniFile(); //Save any changes to ini File
         }
 
         public void SlowDown() //F3

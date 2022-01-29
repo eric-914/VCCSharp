@@ -5,7 +5,8 @@ namespace VCCSharp.Models
     public class ConfigModel
     {
         //[Version]
-        public string Release { get; set; } //## WRITE-ONLY ##//
+        public string Release { private get; set; } //## WRITE-ONLY ##//
+        public string GetRelease() => Release;
 
         //[CPU]
         public byte CPUMultiplier { get; set; }
@@ -31,7 +32,8 @@ namespace VCCSharp.Models
 
         //[Memory]
         public byte RamSize { get; set; }
-        public string ExternalBasicImage { get; set; } //## READ-ONLY ##//
+        public string ExternalBasicImage { get; private set; } //## READ-ONLY ##//
+        public void SetExternalBasicImage(string value) => ExternalBasicImage = value;
 
         //[Misc]
         public bool AutoStart { get; set; }
@@ -45,9 +47,10 @@ namespace VCCSharp.Models
         public string CassPath { get; set; }
         public string PakPath { get; set; }
         public string FloppyPath { get; set; }
-        public string CoCoRomPath { get; set; } //## READ-ONLY ##//
+        public string CoCoRomPath { get; private set; } //## READ-ONLY ##//
         public string SerialCaptureFilePath { get; set; }
- 
+        public string SetCoCoRomPath(string value) => CoCoRomPath = value;
+
         //[FD-502]  //### MODULE SPECIFIC ###//
         //DiskRom=1
         //RomPath=

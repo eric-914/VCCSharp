@@ -199,19 +199,19 @@ namespace VCCSharp.Modules
 
             switch (keyBoardLayout)
             {
-                case KeyboardLayouts.kKBLayoutCoCo:
+                case KeyboardLayouts.CoCo:
                     keyTranslationTable = _keyTranslationsCoCo;
                     break;
 
-                case KeyboardLayouts.kKBLayoutNatural:
+                case KeyboardLayouts.Natural:
                     keyTranslationTable = _keyTranslationsNatural;
                     break;
 
-                case KeyboardLayouts.kKBLayoutCompact:
+                case KeyboardLayouts.Compact:
                     keyTranslationTable = _keyTranslationsCompact;
                     break;
 
-                case KeyboardLayouts.kKBLayoutCustom:
+                case KeyboardLayouts.Custom:
                     keyTranslationTable = _keyTranslationsCustom;
                     break;
             }
@@ -338,7 +338,7 @@ namespace VCCSharp.Modules
             //--Substituting the backslash for the "@" character.
             if (key == Key.Oem5)
             {
-                SwapKeyboardLayout(KeyboardLayouts.kKBLayoutNatural); //Natural (OS9)
+                SwapKeyboardLayout(KeyboardLayouts.Natural); //Natural (OS9)
 
                 //--On standard keyboard, @ is Shift-2
                 KeyboardHandleKey(Define.DIK_2, keyState);
