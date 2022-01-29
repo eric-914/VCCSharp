@@ -8,6 +8,7 @@ namespace VCCSharp.Menu
     {
         public Action Action { get; set; }
         public Key Key { get; set; }
+        public ModifierKeys Modifier { get; set; } = ModifierKeys.None;
 
         public MenuCommand(string name) : base(name, typeof(MainWindow)) { }
     }

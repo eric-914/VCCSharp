@@ -131,6 +131,11 @@ namespace VCCSharp
             _modules.Events.ToggleFullScreen();
         }
 
+        public void TestIt() //Ctrl-F12 -- Might keep this around
+        {
+            _modules.Emu.TestIt();
+        }
+
         public void Cancel() //ESC
         {
             _modules.Events.Cancel();

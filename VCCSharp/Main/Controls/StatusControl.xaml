@@ -12,32 +12,33 @@
     <converters:FpsConverter x:Key="FpsConverter"/>
     <converters:CpuMhzConverter x:Key="CpuMhzConverter"/>
     <converters:SizeConverter x:Key="SizeConverter"/>
+    <converters:DimensionConverter x:Key="DimensionConverter"/>
   </UserControl.Resources>
   <UserControl.DataContext>
-    <model:StatusViewModel/>
+    <model:MainWindowViewModel/>
   </UserControl.DataContext>
   <StatusBar DockPanel.Dock="Bottom" Height="30">
     <StatusBar.ItemsPanel>
       <ItemsPanelTemplate>
         <Grid>
           <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/><!--FrameSkip-->
-            <ColumnDefinition Width="*"/><!--FPS-->
-            <ColumnDefinition Width="2*"/><!--CPU/Mhz-->
-            <ColumnDefinition Width="3*"/><!--Status-->
-            <ColumnDefinition Width="75"/><!--SurfaceSize-->
-            <ColumnDefinition Width="75"/><!--WindowSize-->
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="75"/>
+            <ColumnDefinition Width="75"/>
           </Grid.ColumnDefinitions>
         </Grid>
       </ItemsPanelTemplate>
     </StatusBar.ItemsPanel>
-    <StatusBarItem Grid.Column="0" >
+    <StatusBarItem Grid.Column="0" DataContext="{Binding Status}">
       <Label Content="{Binding FrameSkip, Converter={StaticResource FrameSkipConverter}}" />
     </StatusBarItem>
-    <StatusBarItem Grid.Column="1" >
+    <StatusBarItem Grid.Column="1" DataContext="{Binding Status}">
       <Label Content="{Binding Fps, Converter={StaticResource FpsConverter}}"/>
     </StatusBarItem>
-    <StatusBarItem Grid.Column="2">
+    <StatusBarItem Grid.Column="2" DataContext="{Binding Status}">
       <Label>
         <Label.Content>
           <MultiBinding Converter="{StaticResource CpuMhzConverter}">
@@ -47,13 +48,21 @@
         </Label.Content>
       </Label>
     </StatusBarItem>
-    <StatusBarItem Grid.Column="3" >
+    <StatusBarItem Grid.Column="3" DataContext="{Binding Status}">
       <Label Content="{Binding Status}"/>
     </StatusBarItem>
     <StatusBarItem Grid.Column="4">
       <Label Content="{Binding SurfaceSize, Converter={StaticResource SizeConverter}}"/>
     </StatusBarItem>
     <StatusBarItem Grid.Column="5">
-      <Label Content="{Binding WindowSize, Converter={StaticResource SizeConverter}}"/>
+      <Label>
+        <Label.Content>
+          <MultiBinding Converter="{StaticResource DimensionConverter}">
+            <Binding Path="WindowWidth" />
+            <Binding Path="WindowHeight" />
+          </MultiBinding>
+        </Label.Content>
+      </Label>
     </StatusBarItem>
-  </StatusBar></UserControl>
+  </StatusBar>
+</UserControl>

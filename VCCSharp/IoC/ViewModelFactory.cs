@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using VCCSharp.Configuration;
 using VCCSharp.Main;
 using VCCSharp.Menu;
@@ -9,7 +8,7 @@ namespace VCCSharp.IoC
 {
     public interface IViewModelFactory
     {
-        MainWindowViewModel CreateMainWindowViewModel(Window window);
+        MainWindowViewModel CreateMainWindowViewModel(IMainMenu menuItems);
         CommandViewModel CreateCommandViewModel(Action action = null);
         MenuItemViewModel CreateMenuItemViewModel(string header, Action action);
         ConfigurationViewModel CreateConfigurationViewModel(IConfig config);
@@ -24,11 +23,11 @@ namespace VCCSharp.IoC
             _factory = factory;
         }
 
-        public MainWindowViewModel CreateMainWindowViewModel(Window window)
+        public MainWindowViewModel CreateMainWindowViewModel(IMainMenu menuItems)
         {
             return new MainWindowViewModel
             {
-                MenuItems = _factory.Get<IWindowEvents>().Bind(window),
+                MenuItems = menuItems,
                 Status = _factory.Get<IStatus>()
             };
         }

@@ -35,6 +35,8 @@ namespace VCCSharp.Modules
         string PakPath { get; set; }
 
         Point WindowSize { get; set; }
+
+        Action TestIt { get; set; }
     }
 
     public class Emu : IEmu
@@ -183,6 +185,14 @@ namespace VCCSharp.Modules
             {
                 CpuCurrentSpeed *= (DoubleSpeedMultiplier * (double)TurboSpeedFlag);
             }
+        }
+
+        //--Just a way to be able to trigger some elsewhere defined action by hitting Ctrl-F12
+        private static Action _testIt = () => { System.Diagnostics.Debug.WriteLine("Ctrl-F12"); };
+        public Action TestIt
+        {
+            get => _testIt;
+            set => _testIt = value;
         }
     }
 }

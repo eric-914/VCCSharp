@@ -6,8 +6,9 @@
         xmlns:model="clr-namespace:VCCSharp.Main"
         xmlns:controls="clr-namespace:VCCSharp.Main.Controls"
         mc:Ignorable="d"
-        Title="VCCSharp" Height="575" Width="654"
-        Loaded="MainWindow_OnLoaded"
+        Title="VCCSharp"
+        Width="{Binding WindowWidth, Mode=TwoWay}"
+        Height="{Binding WindowHeight, Mode=TwoWay}"
         SizeChanged="MainWindow_OnSizeChanged">
   <Window.DataContext>
     <model:MainWindowViewModel/>
@@ -15,7 +16,7 @@
   <DockPanel Background="DarkBlue">
     <controls:MenuControl DockPanel.Dock="Top" DataContext="{Binding MenuItems}"/>
 
-    <controls:StatusControl DockPanel.Dock="Bottom" DataContext="{Binding Status}"/>
+    <controls:StatusControl DockPanel.Dock="Bottom" DataContext="{Binding }"/>
 
     <Viewbox Name="Surface"/>
   </DockPanel>

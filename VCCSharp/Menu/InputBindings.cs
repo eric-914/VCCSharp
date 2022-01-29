@@ -7,7 +7,7 @@ namespace VCCSharp.Menu
     {
         public void Add(MenuCommand command)
         {
-            Add(new KeyBinding(command, command.Key, ModifierKeys.None));
+            Add(new KeyBinding(command, command.Key, command.Modifier));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using VCCSharp.IoC;
+using VCCSharp.Menu;
 
 namespace VCCSharp.Main
 {
@@ -17,19 +18,24 @@ namespace VCCSharp.Main
         {
             InitializeComponent();
 
-            ViewModel = _factory.Get<IViewModelFactory>().CreateMainWindowViewModel(this);
-        }
+            var commands = _factory.Get<MainWindowCommands>();
 
-        //--This occurs some time after the menu has a proper render size giving us a valid surface height
-        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
-        {
+            ViewModel = _factory.Get<IViewModelFactory>().CreateMainWindowViewModel(commands.MenuItems);
+
+            _factory.Get<IModules>().Emu.TestIt = () =>
+            {
+                ViewModel.WindowHeight += 20;
+                ViewModel.WindowWidth += 30;
+            };
+
+            _factory.Get<IWindowEvents>().Bind(this, commands);
+
             _factory.Get<IVccThread>().Run(this);
         }
 
         private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ViewModel.Status.WindowSize = e.NewSize;
-            ViewModel.Status.SurfaceSize = Surface.RenderSize;
+            ViewModel.SurfaceSize = Surface.RenderSize;
         }
     }
 }

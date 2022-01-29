@@ -7,11 +7,13 @@ namespace VCCSharp.Menu
     {
         public MainCommands(Actions actions)
         {
-            MenuCommand F(Key key, Action action) => new MenuCommand(key.ToString()) { Key = key, Action = action };
+            MenuCommand F(Key key, Action action, ModifierKeys modifier = ModifierKeys.None) 
+                => new MenuCommand(key.ToString()) { Key = key, Action = action, Modifier = modifier};
 
             AddRange(new[]
             {
                 F(Key.Escape, actions.Cancel),
+                //--F1/F2 are reserved for actual function keys on CoCo3 keyboard
                 F(Key.F3, actions.SlowDown),
                 F(Key.F4, actions.SpeedUp),
                 F(Key.F5, actions.SoftReset),
@@ -20,7 +22,10 @@ namespace VCCSharp.Menu
                 F(Key.F8, actions.ToggleThrottle),
                 F(Key.F9, actions.HardReset),
                 F(Key.F10, actions.ToggleInfoBand),
-                F(Key.F11, actions.ToggleFullScreen)
+                F(Key.F11, actions.ToggleFullScreen),
+                //--F12 is reserved by Visual Studio --> BREAK (debug mode)
+
+                F(Key.F12, actions.TestIt, ModifierKeys.Control)
             });
         }
     }

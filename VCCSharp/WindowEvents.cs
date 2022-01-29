@@ -10,19 +10,17 @@ namespace VCCSharp
 {
     public interface IWindowEvents
     {
-        MenuItems Bind(Window window);
+        void Bind(Window window, MainWindowCommands commands);
     }
 
     public class WindowEvents : IWindowEvents
     {
-        private readonly MainWindowCommands _commands;
         private readonly IEvents _events;
         private readonly IKeyboard _keyboard;
         private readonly IJoystick _joystick;
 
-        public WindowEvents(IModules modules, MainWindowCommands commands)
+        public WindowEvents(IModules modules)
         {
-            _commands = commands;
             _events = modules.Events;
             _keyboard = modules.Keyboard;
             _joystick = modules.Joystick;
@@ -31,10 +29,10 @@ namespace VCCSharp
         /// <summary>
         /// Bind a bunch of of the main window's events
         /// </summary>
-        public MenuItems Bind(Window window)
+        public void Bind(Window window, MainWindowCommands commands)
         {
-            window.CommandBindings.AddRange(_commands.CommandBindings);
-            window.InputBindings.AddRange(_commands.InputBindings);
+            window.CommandBindings.AddRange(commands.CommandBindings);
+            window.InputBindings.AddRange(commands.InputBindings);
 
             window.Closing += (o, e) => _events.EmuExit();
 
@@ -47,8 +45,6 @@ namespace VCCSharp
             window.MouseRightButtonUp += (o, e) => _joystick.SetButtonStatus(MouseButtonStates.RightUp);
             window.MouseRightButtonDown += (o, e) => _joystick.SetButtonStatus(MouseButtonStates.RightDown);
             window.MouseMove += (o, e) => _joystick.SetJoystick(window.RenderSize, Mouse.GetPosition(window));
-
-            return (MenuItems)_commands.MenuItems;
         }
     }
 }
