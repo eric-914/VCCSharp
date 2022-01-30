@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
+using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
+using VCCSharp.Main;
 
 namespace VCCSharp.Modules
 {
@@ -27,6 +29,7 @@ namespace VCCSharp.Modules
         void ToggleFullScreen();
         void ToggleInfoBand();
         void Cancel();
+        void ResetWindow(IMainWindow window);
     }
 
     public class Events : IEvents
@@ -120,6 +123,20 @@ namespace VCCSharp.Modules
         public void Cancel() //ESC
         {
             _modules.Clipboard.Abort = true; //--Abort clipboard (paste) actions
+        }
+
+        /// <summary>
+        /// Resize main window such that the view size is exactly 640x480
+        /// </summary>
+        /// <param name="window"></param>
+        public void ResetWindow(IMainWindow window)
+        {
+            Size wSize = window.Window.RenderSize;
+            Size vSize = window.View.RenderSize;
+            Size size = new Size(wSize.Width + 640 - vSize.Width, wSize.Height + 480 - vSize.Height);
+
+            window.ViewModel.WindowHeight = size.Height;
+            window.ViewModel.WindowWidth = size.Width;
         }
     }
 }

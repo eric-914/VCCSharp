@@ -30,10 +30,11 @@ namespace VCCSharp.Main
 
             window.ViewModel = _factory.Get<IViewModelFactory>().CreateMainWindowViewModel(commands.MenuItems);
 
-            _factory.Get<IModules>().Emu.TestIt = () =>
+            var modules = _factory.Get<IModules>();
+
+            modules.Emu.TestIt = () =>
             {
-                window.ViewModel.WindowHeight += 20;
-                window.ViewModel.WindowWidth += 30;
+                modules.Events.ResetWindow(window);
             };
 
             _factory.Get<IMainWindowEvents>().Bind(window, commands);
