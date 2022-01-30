@@ -264,50 +264,50 @@ namespace VCCSharp.Models.CPU.HD6309
 
         public bool MD_NATIVE6309
         {
-            get => _cpu.md[(int)MDFlagMasks.NATIVE6309] == Define.TRUE;
-            set => _cpu.md[(int)MDFlagMasks.NATIVE6309] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.md[(int)MDFlagMasks.NATIVE6309];
+            set => _cpu.md[(int)MDFlagMasks.NATIVE6309] = value;
         }
 
         public bool MD_FIRQMODE
         {
-            get => _cpu.md[(int)MDFlagMasks.FIRQMODE] == Define.TRUE;
-            set => _cpu.md[(int)MDFlagMasks.FIRQMODE] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.md[(int)MDFlagMasks.FIRQMODE];
+            set => _cpu.md[(int)MDFlagMasks.FIRQMODE] = value;
         }
 
         public bool MD_UNDEFINED2
         {
-            get => _cpu.md[(int)MDFlagMasks.MD_UNDEF2] == Define.TRUE;
-            set => _cpu.md[(int)MDFlagMasks.MD_UNDEF2] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.md[(int)MDFlagMasks.MD_UNDEF2];
+            set => _cpu.md[(int)MDFlagMasks.MD_UNDEF2] = value;
         }
 
         public bool MD_UNDEFINED3
         {
-            get => _cpu.md[(int)MDFlagMasks.MD_UNDEF3] == Define.TRUE;
-            set => _cpu.md[(int)MDFlagMasks.MD_UNDEF3] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.md[(int)MDFlagMasks.MD_UNDEF3];
+            set => _cpu.md[(int)MDFlagMasks.MD_UNDEF3] = value;
         }
 
         public bool MD_UNDEFINED4
         {
-            get => _cpu.md[(int)MDFlagMasks.MD_UNDEF4] == Define.TRUE;
-            set => _cpu.md[(int)MDFlagMasks.MD_UNDEF4] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.md[(int)MDFlagMasks.MD_UNDEF4];
+            set => _cpu.md[(int)MDFlagMasks.MD_UNDEF4] = value;
         }
 
         public bool MD_UNDEFINED5
         {
-            get => _cpu.md[(int)MDFlagMasks.MD_UNDEF5] == Define.TRUE;
-            set => _cpu.md[(int)MDFlagMasks.MD_UNDEF5] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.md[(int)MDFlagMasks.MD_UNDEF5];
+            set => _cpu.md[(int)MDFlagMasks.MD_UNDEF5] = value;
         }
 
         public bool MD_ILLEGAL
         {
-            get => _cpu.md[(int)MDFlagMasks.ILLEGAL] == Define.TRUE;
-            set => _cpu.md[(int)MDFlagMasks.ILLEGAL] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.md[(int)MDFlagMasks.ILLEGAL];
+            set => _cpu.md[(int)MDFlagMasks.ILLEGAL] = value;
         }
 
         public bool MD_ZERODIV
         {
-            get => _cpu.md[(int)MDFlagMasks.ZERODIV] == Define.TRUE;
-            set => _cpu.md[(int)MDFlagMasks.ZERODIV] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.md[(int)MDFlagMasks.ZERODIV];
+            set => _cpu.md[(int)MDFlagMasks.ZERODIV] = value;
         }
 
         #endregion

@@ -23,7 +23,7 @@ namespace VCCSharp.Models.CPU.HD6309
         public byte mdbits;
 
         public bool[] cc = new bool[8];
-        public uint[] md = new uint[8];
+        public bool[] md = new bool[8];
 
         public Reg8 ureg8 { get; }
         public Reg16 xfreg16 { get; }

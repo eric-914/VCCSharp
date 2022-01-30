@@ -162,7 +162,7 @@ namespace VCCSharp.Models.CPU.HD6309
             MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
             MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
 
-            if (_cpu.md[(int)MDFlagMasks.NATIVE6309] != 0)
+            if (!_cpu.md[(int)MDFlagMasks.NATIVE6309] )
             {
                 MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
                 MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
@@ -189,7 +189,7 @@ namespace VCCSharp.Models.CPU.HD6309
 
                 switch (_cpu.md[(int)MDFlagMasks.FIRQMODE])
                 {
-                    case 0:
+                    case false:
                         _cpu.cc[(int)CCFlagMasks.E] = false; // Turn E flag off
 
                         MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
@@ -204,7 +204,7 @@ namespace VCCSharp.Models.CPU.HD6309
 
                         break;
 
-                    case 1:		//6309
+                    case true:		//6309
                         _cpu.cc[(int)CCFlagMasks.E] = true;
 
                         MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
@@ -217,7 +217,7 @@ namespace VCCSharp.Models.CPU.HD6309
                         MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
                         MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
 
-                        if (_cpu.md[(int)MDFlagMasks.NATIVE6309] != 0)
+                        if (!_cpu.md[(int)MDFlagMasks.NATIVE6309] )
                         {
                             MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
                             MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
@@ -262,7 +262,7 @@ namespace VCCSharp.Models.CPU.HD6309
                 MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
                 MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
 
-                if (_cpu.md[(int)MDFlagMasks.NATIVE6309] != 0)
+                if (!_cpu.md[(int)MDFlagMasks.NATIVE6309] )
                 {
                     MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
                     MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
@@ -360,7 +360,7 @@ namespace VCCSharp.Models.CPU.HD6309
 
             for (int i = 0; i < 24; i++)
             {
-                uint insCyclesIndex = _cpu.md[(int)MDFlagMasks.NATIVE6309];
+                int insCyclesIndex = _cpu.md[(int)MDFlagMasks.NATIVE6309] ? 1 : 0;
                 _instance[i] = _instance.InsCycles[insCyclesIndex, i];
             }
         }

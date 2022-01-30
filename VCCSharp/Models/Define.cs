@@ -8,9 +8,6 @@ namespace VCCSharp.Models
     {
         public static readonly IntPtr INVALID_HANDLE_VALUE = IntPtr.Add(IntPtr.Zero, -1);
 
-        public const byte TRUE = 1;     //--Need to be careful, as TRUE doesn't necessarily mean NOT FALSE
-        public const byte FALSE = 0;
-
         public const int IGNORE = 0;
 
         public const ushort FRAMEINTERVAL = 120;
