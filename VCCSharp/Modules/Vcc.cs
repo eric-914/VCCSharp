@@ -171,7 +171,7 @@ namespace VCCSharp.Modules
 
         public void ApplyConfigurationChanges()
         {
-            ConfigModel configModel = _modules.Config.ConfigModel;
+            ConfigModel configModel = _modules.Config.Model;
 
             JoystickModel left = _modules.Config.GetLeftJoystick();
             JoystickModel right = _modules.Config.GetRightJoystick();

@@ -140,7 +140,7 @@ namespace VCCSharp.TapePlayer
 
         public int LoadTape()
         {
-            ConfigModel configModel = _modules.Config.ConfigModel;
+            ConfigModel configModel = _modules.Config.Model;
 
             string szFileName = _modules.Config.TapeFileName;
             string appPath = configModel.CassPath ?? "C:\\";

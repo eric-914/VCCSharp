@@ -18,7 +18,7 @@ namespace VCCSharp.Modules
 {
     public interface IConfig
     {
-        ConfigModel ConfigModel { get; }
+        ConfigModel Model { get; }
         JoystickModel GetLeftJoystick();
         JoystickModel GetRightJoystick();
 
@@ -69,7 +69,7 @@ namespace VCCSharp.Modules
 
         public List<string> SoundDevices { get; set; } = new List<string>();
 
-        public ConfigModel ConfigModel { get; set; } = new ConfigModel();
+        public ConfigModel Model { get; set; } = new ConfigModel();
 
         public string IniFilePath { get; set; }
 
@@ -95,7 +95,7 @@ namespace VCCSharp.Modules
         {
             iniFile = GetIniFilePath(iniFile);  //--Use default if needed
 
-            ConfigModel.Release = AppTitle; //--A kind of "version" I guess
+            Model.Release = AppTitle; //--A kind of "version" I guess
             IniFilePath = iniFile;
 
             SoundDevices = _modules.Audio.FindSoundDevices();
@@ -110,10 +110,10 @@ namespace VCCSharp.Modules
 
             ConfigureJoysticks();
 
-            string soundCardName = ConfigModel.SoundCardName;
+            string soundCardName = Model.SoundCardName;
             int soundCardIndex = SoundDevices.IndexOf(soundCardName);
 
-            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, soundCardIndex, ConfigModel.AudioRate);
+            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, soundCardIndex, Model.AudioRate);
 
             //  Try to open the config file.  Create it if necessary.  Abort if failure.
             if (File.Exists(iniFile))
@@ -137,21 +137,21 @@ namespace VCCSharp.Modules
 
         public void SynchSystemWithConfig()
         {
-            _modules.Vcc.AutoStart = ConfigModel.AutoStart;
-            _modules.Vcc.Throttle = ConfigModel.SpeedThrottle != Define.FALSE;
+            _modules.Vcc.AutoStart = Model.AutoStart;
+            _modules.Vcc.Throttle = Model.SpeedThrottle != Define.FALSE;
 
-            _modules.Emu.RamSize = ConfigModel.RamSize;
-            _modules.Emu.FrameSkip = ConfigModel.FrameSkip;
+            _modules.Emu.RamSize = Model.RamSize;
+            _modules.Emu.FrameSkip = Model.FrameSkip;
 
             _modules.Graphics.SetPaletteType();
-            _modules.Draw.SetAspect(ConfigModel.ForceAspect);
-            _modules.Graphics.SetScanLines(ConfigModel.ScanLines);
-            _modules.Emu.SetCpuMultiplier(ConfigModel.CPUMultiplier);
+            _modules.Draw.SetAspect(Model.ForceAspect);
+            _modules.Graphics.SetScanLines(Model.ScanLines);
+            _modules.Emu.SetCpuMultiplier(Model.CPUMultiplier);
 
-            SetCpuType(ConfigModel.CpuType);
+            SetCpuType(Model.CpuType);
 
-            _modules.Graphics.SetMonitorType(ConfigModel.MonitorType);
-            _modules.MC6821.SetCartAutoStart(ConfigModel.CartAutoStart);
+            _modules.Graphics.SetMonitorType(Model.MonitorType);
+            _modules.MC6821.SetCartAutoStart(Model.CartAutoStart);
         }
 
         // LoadIniFile allows user to browse for an ini file and reloads the config from it.
@@ -267,20 +267,22 @@ namespace VCCSharp.Modules
 
         public void ReadIniFile()
         {
+            var root = _io.Load(@"C:\CoCo\coco.json");
+
             string iniFilePath = IniFilePath;
 
-            _persistence.Load(ConfigModel, GetLeftJoystick(), GetRightJoystick(), iniFilePath);
+            _persistence.Load(Model, GetLeftJoystick(), GetRightJoystick(), iniFilePath);
 
-            ValidateModel(ConfigModel);
+            ValidateModel(Model);
 
-            _modules.Keyboard.KeyboardBuildRuntimeTable(ConfigModel.KeyboardLayout);
+            _modules.Keyboard.KeyboardBuildRuntimeTable(Model.KeyboardLayout);
 
-            ConfigModel.PakPath = _modules.Emu.PakPath;
-            _modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, ConfigModel.ModulePath);   // Should this be here?
+            Model.PakPath = _modules.Emu.PakPath;
+            _modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, Model.ModulePath);   // Should this be here?
 
-            if (ConfigModel.RememberSize)
+            if (Model.RememberSize)
             {
-                SetWindowSize(ConfigModel.WindowSizeX, ConfigModel.WindowSizeY);
+                SetWindowSize(Model.WindowSizeX, Model.WindowSizeY);
             }
             else
             {
@@ -308,9 +310,9 @@ namespace VCCSharp.Modules
 
         private void AdjustOverclockSpeed(byte change)
         {
-            byte cpuMultiplier = (byte)(ConfigModel.CPUMultiplier + change);
+            byte cpuMultiplier = (byte)(Model.CPUMultiplier + change);
 
-            if (cpuMultiplier < 2 || cpuMultiplier > ConfigModel.MaxOverclock)
+            if (cpuMultiplier < 2 || cpuMultiplier > Model.MaxOverclock)
             {
                 return;
             }
@@ -324,7 +326,7 @@ namespace VCCSharp.Modules
             //    _modules.Callbacks.SetDialogCpuMultiplier(hDlg, cpuMultiplier);
             //}
 
-            ConfigModel.CPUMultiplier = cpuMultiplier;
+            Model.CPUMultiplier = cpuMultiplier;
 
             _modules.Emu.ResetPending = (byte)ResetPendingStates.ClsSynch; // Without this, changing the config does nothing.
         }
@@ -379,30 +381,30 @@ namespace VCCSharp.Modules
 
         public void Save()
         {
-            ConfigModel.WindowSizeX = (short)_modules.Emu.WindowSize.X;
-            ConfigModel.WindowSizeY = (short)_modules.Emu.WindowSize.Y;
+            Model.WindowSizeX = (short)_modules.Emu.WindowSize.X;
+            Model.WindowSizeY = (short)_modules.Emu.WindowSize.Y;
 
-            string modulePath = ConfigModel.ModulePath;
+            string modulePath = Model.ModulePath;
 
             if (string.IsNullOrEmpty(modulePath))
             {
                 modulePath = _modules.PAKInterface.GetCurrentModule();
             }
 
-            ConfigModel.ModulePath = modulePath;
+            Model.ModulePath = modulePath;
 
-            ValidateModel(ConfigModel);
+            ValidateModel(Model);
 
             string iniFilePath = IniFilePath;
 
-            _persistence.Save(ConfigModel, GetLeftJoystick(), GetRightJoystick(), iniFilePath);
+            _persistence.Save(Model, GetLeftJoystick(), GetRightJoystick(), iniFilePath);
 
             _io.Save(@"C:\CoCo\coco.json", new Root());
         }
 
         public KeyboardLayouts GetCurrentKeyboardLayout()
         {
-            return ConfigModel.KeyboardLayout;
+            return Model.KeyboardLayout;
         }
 
         public void ValidateModel(ConfigModel model)
@@ -437,18 +439,18 @@ namespace VCCSharp.Modules
 
         public int GetPaletteType()
         {
-            return ConfigModel.PaletteType;
+            return Model.PaletteType;
         }
 
 
         public bool GetRememberSize()
         {
-            return ConfigModel.RememberSize;
+            return Model.RememberSize;
         }
 
         public Point GetWindowSize()
         {
-            return new Point { X = ConfigModel.WindowSizeX, Y = ConfigModel.WindowSizeY };
+            return new Point { X = Model.WindowSizeX, Y = Model.WindowSizeY };
         }
     }
 

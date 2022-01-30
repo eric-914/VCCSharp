@@ -47,7 +47,7 @@ namespace VCCSharp.IoC
             return new ConfigurationViewModel
             {
                 Config = config,
-                Model = config.ConfigModel,
+                Model = config.Model,
                 LeftModel = config.GetLeftJoystick(), 
                 RightModel = config.GetRightJoystick()
             };
