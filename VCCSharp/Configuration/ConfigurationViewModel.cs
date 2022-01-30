@@ -11,9 +11,9 @@ namespace VCCSharp.Configuration
     public class ConfigurationViewModel : INotifyPropertyChanged
     {
         //TODO: Remove STATIC once safe
-        private static ConfigModel _model;
-        private static JoystickModel _left;
-        private static JoystickModel _right;
+        private static Models.Configuration.IConfiguration _model;
+        private static Models.Configuration.Joystick _left;
+        private static Models.Configuration.Joystick _right;
         private static IConfig _config;
 
         public AudioSpectrum Spectrum { get; }
@@ -27,7 +27,7 @@ namespace VCCSharp.Configuration
             Spectrum = new AudioSpectrum();
         }
 
-        public ConfigModel Model
+        public Models.Configuration.IConfiguration Model
         {
             get => _model;
             set
@@ -37,7 +37,7 @@ namespace VCCSharp.Configuration
             }
         }
 
-        public JoystickModel LeftModel
+        public Models.Configuration.Joystick LeftModel
         {
             get => _left;
             set
@@ -48,7 +48,7 @@ namespace VCCSharp.Configuration
             }
         }
 
-        public JoystickModel RightModel
+        public Models.Configuration.Joystick RightModel
         {
             get => _right;
             set
@@ -92,7 +92,7 @@ namespace VCCSharp.Configuration
             "Custom"
         };
 
-        public List<string> SoundRates { get; } = new List<string> { "Mute", "11025 Hz", "22050 Hz", "44100 Hz" };
+        public List<string> SoundRates { get; } = new List<string> { "Disabled", "11025 Hz", "22050 Hz", "44100 Hz" };
 
         #endregion
 
@@ -102,44 +102,44 @@ namespace VCCSharp.Configuration
         //[CPU]
         public int CpuMultiplier
         {
-            get => Model.CPUMultiplier;
+            get => Model.CPU.CpuMultiplier;
             set
             {
-                if (value == Model.CPUMultiplier) return;
+                if (value == Model.CPU.CpuMultiplier) return;
 
-                Model.CPUMultiplier = (byte)value;
+                Model.CPU.CpuMultiplier = (byte)value;
                 OnPropertyChanged();
             }
         }
 
         public int FrameSkip
         {
-            get => Model.FrameSkip;
+            get => Model.CPU.FrameSkip;
             set
             {
-                if (Model.FrameSkip == (byte)value) return;
+                if (Model.CPU.FrameSkip == (byte)value) return;
 
-                Model.FrameSkip = (byte)value;
+                Model.CPU.FrameSkip = (byte)value;
                 OnPropertyChanged();
             }
         }
 
         public bool SpeedThrottle
         {
-            get => Model.SpeedThrottle != 0;
+            get => Model.CPU.ThrottleSpeed;
             set
             {
-                if (value == (Model.SpeedThrottle != 0)) return;
+                if (value == (Model.CPU.ThrottleSpeed)) return;
 
-                Model.SpeedThrottle = (byte)(value ? 1 : 0);
+                Model.CPU.ThrottleSpeed = value;
                 OnPropertyChanged();
             }
         }
 
-        public int CpuType
+        public CPUTypes CpuType
         {
-            get => Model.CpuType;
-            set => Model.CpuType = (byte)value;
+            get => Model.CPU.Type.Value;
+            set => Model.CPU.Type.Value = value;
         }
 
         public CPUTypes? Cpu
@@ -149,86 +149,86 @@ namespace VCCSharp.Configuration
             {
                 if (value.HasValue)
                 {
-                    CpuType = (int)value.Value;
+                    CpuType = value.Value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        public int MaxOverclock => Model.MaxOverclock;
+        public int MaxOverclock => Model.CPU.MaxOverclock;
 
         //[Audio]
         public List<string> SoundCards => Config.SoundDevices;
 
         public string SoundCardName
         {
-            get => Model.SoundCardName;
-            set => Model.SoundCardName = value;
+            get => Model.Audio.SoundDevice;
+            set => Model.Audio.SoundDevice = value;
         }
 
-        public int AudioRate
+        public AudioRates AudioRate
         {
-            get => (int)(AudioRates)Model.AudioRate;
-            set => Model.AudioRate = (ushort)value;
+            get => (AudioRates)Model.Audio.Rate.Value;
+            set => Model.Audio.Rate.Value = value;
         }
 
         //[Video]
         public MonitorTypes? MonitorType
         {
-            get => Model.MonitorType;
+            get => Model.Video.Monitor.Value;
             set
             {
-                if (!value.HasValue || Model.MonitorType == value.Value) return;
+                if (!value.HasValue || Model.Video.Monitor.Value == value.Value) return;
 
-                Model.MonitorType = value.Value;
+                Model.Video.Monitor.Value = value.Value;
                 OnPropertyChanged();
             }
         }
 
         public PaletteTypes? PaletteType
         {
-            get => (PaletteTypes)(Model.PaletteType);
+            get => (PaletteTypes)(Model.Video.Palette.Value);
             set
             {
-                if (!value.HasValue || Model.PaletteType == (byte)value.Value) return;
+                if (!value.HasValue || Model.Video.Palette.Value == value.Value) return;
 
-                Model.PaletteType = (byte)value.Value;
+                Model.Video.Palette.Value = value.Value;
                 OnPropertyChanged();
             }
         }
 
         public bool ScanLines
         {
-            get => Model.ScanLines != 0;
+            get => Model.Video.ScanLines;
             set
             {
-                if (value == (Model.ScanLines != 0)) return;
+                if (value == (Model.Video.ScanLines)) return;
 
-                Model.ScanLines = (byte)(value ? 1 : 0);
+                Model.Video.ScanLines = value;
                 OnPropertyChanged();
             }
         }
 
         public bool ForceAspect
         {
-            get => Model.ForceAspect ;
+            get => Model.Video.ForceAspect;
             set
             {
-                if (value == Model.ForceAspect) return;
+                if (value == Model.Video.ForceAspect) return;
 
-                Model.ForceAspect = value;
+                Model.Video.ForceAspect = value;
                 OnPropertyChanged();
             }
         }
 
         public bool RememberSize
         {
-            get => Model.RememberSize;
+            get => Model.Window.RememberSize;
             set
             {
-                if (value == Model.RememberSize) return;
+                if (value == Model.Window.RememberSize) return;
 
-                Model.RememberSize = value;
+                Model.Window.RememberSize = value;
                 OnPropertyChanged();
             }
         }
@@ -240,17 +240,17 @@ namespace VCCSharp.Configuration
             {
                 if (value.HasValue)
                 {
-                    RamSize = (int)value.Value;
+                    RamSize = value.Value;
                     OnPropertyChanged();
                 }
             }
         }
 
         //[Memory]
-        public int RamSize
+        public MemorySizes RamSize
         {
-            get => Model.RamSize;
-            set => Model.RamSize = (byte)value;
+            get => Model.Memory.Ram.Value;
+            set => Model.Memory.Ram.Value = value;
         }
 
         public string ExternalBasicImage { get; set; } = "External Basic Image";
@@ -258,20 +258,20 @@ namespace VCCSharp.Configuration
         //[Misc]
         public bool AutoStart
         {
-            get => Model.AutoStart;
-            set => Model.AutoStart = value;
+            get => Model.Startup.AutoStart;
+            set => Model.Startup.AutoStart = value;
         }
 
         public bool CartAutoStart
         {
-            get => Model.CartAutoStart != 0;
-            set => Model.CartAutoStart = (byte)(value ? 1 : 0);
+            get => Model.Startup.CartridgeAutoStart;
+            set => Model.Startup.CartridgeAutoStart = value;
         }
 
-        public int KeyboardLayout
+        public KeyboardLayouts KeyboardLayout
         {
-            get => (int)Model.KeyboardLayout;
-            set => Model.KeyboardLayout = (KeyboardLayouts)value;
+            get => Model.Keyboard.Layout.Value;
+            set => Model.Keyboard.Layout.Value = (KeyboardLayouts)value;
         }
 
         //[Module]

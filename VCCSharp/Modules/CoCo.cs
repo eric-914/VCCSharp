@@ -649,7 +649,7 @@ namespace VCCSharp.Modules
             _audioIndex = 0;
 
             if (rate != 0)
-            {	//Force Mute or 44100Hz
+            {	//Force Disabled or 44100Hz
                 rate = 44100;
             }
 

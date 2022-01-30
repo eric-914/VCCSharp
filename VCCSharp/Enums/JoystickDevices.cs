@@ -4,7 +4,6 @@
     {
         Keyboard = 0,
         Mouse = 1,
-        Audio = 2,
-        Joystick = 3
+        Joystick = 2
     }
 }

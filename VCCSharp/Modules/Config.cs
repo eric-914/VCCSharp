@@ -18,22 +18,19 @@ namespace VCCSharp.Modules
 {
     public interface IConfig
     {
-        ConfigModel Model { get; }
+        IConfiguration Model { get; }
         JoystickModel GetLeftJoystick();
         JoystickModel GetRightJoystick();
 
         void InitConfig(string iniFile);
+        void LoadIniFile();
         void Save();
+        void SaveAs();
+
         void SynchSystemWithConfig();
-        int GetPaletteType();
         void DecreaseOverclockSpeed();
         void IncreaseOverclockSpeed();
-        void LoadIniFile();
-        KeyboardLayouts GetCurrentKeyboardLayout();
-        void SaveAs();
-        bool GetRememberSize();
 
-        Point GetWindowSize();
         string AppTitle { get; }
         byte TextMode { get; set; }
         bool PrintMonitorWindow { get; set; }
@@ -50,8 +47,7 @@ namespace VCCSharp.Modules
     {
         private readonly IModules _modules;
         private readonly IUser32 _user32;
-        private readonly IConfigPersistence _persistence;
-        private readonly IPersistence _io;
+        private readonly IConfigurationPersistence _persistence;
 
         public string AppTitle { get; } = Resources.ResourceManager.GetString("AppTitle");
 
@@ -69,16 +65,15 @@ namespace VCCSharp.Modules
 
         public List<string> SoundDevices { get; set; } = new List<string>();
 
-        public ConfigModel Model { get; set; } = new ConfigModel();
+        public IConfiguration Model { get; set; }
 
         public string IniFilePath { get; set; }
 
-        public Config(IModules modules, IUser32 user32, IConfigPersistence persistence, IPersistence io)
+        public Config(IModules modules, IUser32 user32, IConfigurationPersistence persistence)
         {
             _modules = modules;
             _user32 = user32;
             _persistence = persistence;
-            _io = io;
         }
 
         public JoystickModel GetLeftJoystick()
@@ -93,10 +88,11 @@ namespace VCCSharp.Modules
 
         public void InitConfig(string iniFile)
         {
-            iniFile = GetIniFilePath(iniFile);  //--Use default if needed
+            IniFilePath = GetConfigurationFilePath(iniFile);  //--Use default if needed
 
-            Model.Release = AppTitle; //--A kind of "version" I guess
-            IniFilePath = iniFile;
+            ReadIniFile();
+
+            Model.Version.Release = AppTitle; //--A kind of "version" I guess
 
             SoundDevices = _modules.Audio.FindSoundDevices();
 
@@ -104,30 +100,28 @@ namespace VCCSharp.Modules
             _modules.Joystick.SetLeftJoystick(_left);
             _modules.Joystick.SetRightJoystick(_right);
 
-            ReadIniFile();
-
             SynchSystemWithConfig();
 
             ConfigureJoysticks();
 
-            string soundCardName = Model.SoundCardName;
+            string soundCardName = Model.Audio.SoundDevice;
             int soundCardIndex = SoundDevices.IndexOf(soundCardName);
 
-            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, soundCardIndex, Model.AudioRate);
+            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, soundCardIndex, (ushort)Model.Audio.Rate.Value);
 
             //  Try to open the config file.  Create it if necessary.  Abort if failure.
-            if (File.Exists(iniFile))
+            if (File.Exists(IniFilePath))
             {
                 return;
             }
 
             try
             {
-                File.WriteAllText(iniFile, "");
+                File.WriteAllText(IniFilePath, "");
             }
             catch (Exception)
             {
-                MessageBox.Show("Could not open ini file", "Error");
+                MessageBox.Show($"Could not write configuration to: {IniFilePath}", "Error");
 
                 Environment.Exit(0);
             }
@@ -137,21 +131,21 @@ namespace VCCSharp.Modules
 
         public void SynchSystemWithConfig()
         {
-            _modules.Vcc.AutoStart = Model.AutoStart;
-            _modules.Vcc.Throttle = Model.SpeedThrottle != Define.FALSE;
+            _modules.Vcc.AutoStart = Model.Startup.AutoStart;
+            _modules.Vcc.Throttle = Model.CPU.ThrottleSpeed;
 
-            _modules.Emu.RamSize = Model.RamSize;
-            _modules.Emu.FrameSkip = Model.FrameSkip;
+            _modules.Emu.RamSize = (byte)Model.Memory.Ram.Value;
+            _modules.Emu.FrameSkip = (byte)Model.CPU.FrameSkip;
 
             _modules.Graphics.SetPaletteType();
-            _modules.Draw.SetAspect(Model.ForceAspect);
-            _modules.Graphics.SetScanLines(Model.ScanLines);
-            _modules.Emu.SetCpuMultiplier(Model.CPUMultiplier);
+            _modules.Draw.SetAspect(Model.Video.ForceAspect);
+            _modules.Graphics.SetScanLines(Model.Video.ScanLines ? Define.TRUE : Define.FALSE);
+            _modules.Emu.SetCpuMultiplier((byte)Model.CPU.CpuMultiplier);
 
-            SetCpuType(Model.CpuType);
+            SetCpuType((byte)Model.CPU.Type.Value);
 
-            _modules.Graphics.SetMonitorType(Model.MonitorType);
-            _modules.MC6821.SetCartAutoStart(Model.CartAutoStart);
+            _modules.Graphics.SetMonitorType(Model.Video.Monitor.Value);
+            _modules.MC6821.SetCartAutoStart(Model.Startup.CartridgeAutoStart ? Define.TRUE : Define.FALSE);
         }
 
         // LoadIniFile allows user to browse for an ini file and reloads the config from it.
@@ -187,159 +181,26 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void ConfigureJoysticks()
-        {
-            var joystick = _modules.Joystick;
-
-            var joysticks = joystick.FindJoysticks();
-
-            JoystickModel left = GetLeftJoystick();
-            JoystickModel right = GetRightJoystick();
-
-            if (right.DiDevice >= joysticks.Count)
-            {
-                right.DiDevice = 0;
-            }
-
-            if (left.DiDevice >= joysticks.Count)
-            {
-                left.DiDevice = 0;
-            }
-
-            joystick.SetStickNumbers(left.DiDevice, right.DiDevice);
-
-            if (joysticks.Count == 0)	//Use Mouse input if no Joysticks present
-            {
-                if (left.UseMouse == 3)
-                {
-                    left.UseMouse = 1;
-                }
-
-                if (right.UseMouse == 3)
-                {
-                    right.UseMouse = 1;
-                }
-            }
-        }
-
-        public string GetIniFilePath(string argIniFile)
-        {
-            if (!string.IsNullOrEmpty(argIniFile))
-            {
-                IniFilePath = argIniFile;
-
-                return argIniFile;
-            }
-
-            const string vccFolder = "VCC";
-            const string iniFileName = "Vcc.ini";
-
-            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-
-            appDataPath = Path.Combine(appDataPath, vccFolder);
-
-            if (!Directory.Exists(appDataPath))
-            {
-                try
-                {
-                    Directory.CreateDirectory(appDataPath);
-                }
-                catch (Exception)
-                {
-                    Debug.WriteLine("Unable to create VCC config folder.");
-                }
-            }
-
-            return Path.Combine(appDataPath, iniFileName);
-        }
-
-        public void SetCpuType(byte cpuType)
-        {
-            var cpu = new Dictionary<CPUTypes, string>
-            {
-                {CPUTypes.MC6809, "MC6809"},
-                {CPUTypes.HD6309, "HD6309"}
-            };
-
-            _modules.Emu.CpuType = cpuType;
-            _modules.Vcc.CpuName = cpu[(CPUTypes)cpuType];
-        }
-
         public void ReadIniFile()
         {
-            var root = _io.Load(@"C:\CoCo\coco.json");
-
-            string iniFilePath = IniFilePath;
-
-            _persistence.Load(Model, GetLeftJoystick(), GetRightJoystick(), iniFilePath);
+            Model = _persistence.Load(IniFilePath);
 
             ValidateModel(Model);
 
-            _modules.Keyboard.KeyboardBuildRuntimeTable(Model.KeyboardLayout);
+            _modules.Keyboard.KeyboardBuildRuntimeTable(Model.Keyboard.Layout.Value);
 
-            Model.PakPath = _modules.Emu.PakPath;
-            _modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, Model.ModulePath);   // Should this be here?
+            Model.Accessories.MultiPak.FilePath = _modules.Emu.PakPath;
+            _modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, Model.Accessories.ModulePath);   // Should this be here?
 
-            if (Model.RememberSize)
+            if (Model.Window.RememberSize)
             {
-                SetWindowSize(Model.WindowSizeX, Model.WindowSizeY);
+                SetWindowSize((short)Model.Window.Width, (short)Model.Window.Height);
             }
             else
             {
                 SetWindowSize(Define.DEFAULT_WIDTH, Define.DEFAULT_HEIGHT);
             }
         }
-
-        /**
-         * Decrease the overclock speed, as seen after a POKE 65497,0.
-         * Setting this value to 0 will make the emulator pause.  Hence the minimum of 2.
-         */
-        public void DecreaseOverclockSpeed()
-        {
-            AdjustOverclockSpeed(0xFF); //--Stupid compiler can't figure out (byte)(-1) = 0xFF
-        }
-
-        /**
-         * Increase the overclock speed, as seen after a POKE 65497,0.
-         * Valid values are [2,100].
-         */
-        public void IncreaseOverclockSpeed()
-        {
-            AdjustOverclockSpeed(1);
-        }
-
-        private void AdjustOverclockSpeed(byte change)
-        {
-            byte cpuMultiplier = (byte)(Model.CPUMultiplier + change);
-
-            if (cpuMultiplier < 2 || cpuMultiplier > Model.MaxOverclock)
-            {
-                return;
-            }
-
-            // Send updates to the dialog if it's open.
-            //TODO: Apply this to new configuration dialog
-            //if (emuState->ConfigDialog != Zero)
-            //{
-            //    HWND hDlg = configState->hWndConfig[1];
-
-            //    _modules.Callbacks.SetDialogCpuMultiplier(hDlg, cpuMultiplier);
-            //}
-
-            Model.CPUMultiplier = cpuMultiplier;
-
-            _modules.Emu.ResetPending = (byte)ResetPendingStates.ClsSynch; // Without this, changing the config does nothing.
-        }
-
-        public void SetWindowSize(short width, short height)
-        {
-            HWND handle = _user32.GetActiveWindow();
-
-            SetWindowPosFlags flags = SetWindowPosFlags.NoMove | SetWindowPosFlags.NoOwnerZOrder | SetWindowPosFlags.NoZOrder;
-
-            _user32.SetWindowPos(handle, Zero, 0, 0, width + 16, height + 81, (ushort)flags);
-        }
-
 
         public void SaveAs()
         {
@@ -381,33 +242,165 @@ namespace VCCSharp.Modules
 
         public void Save()
         {
-            Model.WindowSizeX = (short)_modules.Emu.WindowSize.X;
-            Model.WindowSizeY = (short)_modules.Emu.WindowSize.Y;
+            Model.Window.Width = (short)_modules.Emu.WindowSize.X;
+            Model.Window.Height = (short)_modules.Emu.WindowSize.Y;
 
-            string modulePath = Model.ModulePath;
+            string modulePath = Model.Accessories.ModulePath;
 
             if (string.IsNullOrEmpty(modulePath))
             {
                 modulePath = _modules.PAKInterface.GetCurrentModule();
             }
 
-            Model.ModulePath = modulePath;
+            Model.Accessories.ModulePath = modulePath;
 
             ValidateModel(Model);
 
-            string iniFilePath = IniFilePath;
-
-            _persistence.Save(Model, GetLeftJoystick(), GetRightJoystick(), iniFilePath);
-
-            _io.Save(@"C:\CoCo\coco.json", new Root());
+            _persistence.Save(IniFilePath, Model);
         }
 
+        public void ConfigureJoysticks()
+        {
+            var joystick = _modules.Joystick;
+
+            var joysticks = joystick.FindJoysticks();
+
+            JoystickModel left = GetLeftJoystick();
+            JoystickModel right = GetRightJoystick();
+
+            if (right.DiDevice >= joysticks.Count)
+            {
+                right.DiDevice = 0;
+            }
+
+            if (left.DiDevice >= joysticks.Count)
+            {
+                left.DiDevice = 0;
+            }
+
+            joystick.SetStickNumbers(left.DiDevice, right.DiDevice);
+
+            if (joysticks.Count == 0)	//Use Mouse input if no Joysticks present
+            {
+                if (left.UseMouse == 3)
+                {
+                    left.UseMouse = 1;
+                }
+
+                if (right.UseMouse == 3)
+                {
+                    right.UseMouse = 1;
+                }
+            }
+        }
+
+        private static string GetConfigurationFilePath(string argIniFile)
+        {
+            if (!string.IsNullOrEmpty(argIniFile))
+            {
+                return argIniFile;
+            }
+
+            const string iniFileName = "coco.json";
+
+            string appDataPath = GetApplicationFolder();
+
+            return Path.Combine(appDataPath, iniFileName);
+        }
+
+        private static string GetApplicationFolder()
+        {
+            const string vccFolder = "VCCSharp";
+
+            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+            //==> C:\Users\erich\AppData\Roaming\VCC
+            appDataPath = Path.Combine(appDataPath, vccFolder);
+
+            if (!Directory.Exists(appDataPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(appDataPath);
+                }
+                catch (Exception)
+                {
+                    Debug.WriteLine($"Unable to create application data folder: {appDataPath}");
+                    //TODO: And still use appDataPath?
+                }
+            }
+
+            return appDataPath;
+        }
+
+        public void SetCpuType(byte cpuType)
+        {
+            var cpu = new Dictionary<CPUTypes, string>
+            {
+                {CPUTypes.MC6809, "MC6809"},
+                {CPUTypes.HD6309, "HD6309"}
+            };
+
+            _modules.Emu.CpuType = cpuType;
+            _modules.Vcc.CpuName = cpu[(CPUTypes)cpuType];
+        }
+
+        /**
+         * Decrease the overclock speed, as seen after a POKE 65497,0.
+         * Setting this value to 0 will make the emulator pause.  Hence the minimum of 2.
+         */
+        public void DecreaseOverclockSpeed()
+        {
+            AdjustOverclockSpeed(0xFF); //--Stupid compiler can't figure out (byte)(-1) = 0xFF
+        }
+
+        /**
+         * Increase the overclock speed, as seen after a POKE 65497,0.
+         * Valid values are [2,100].
+         */
+        public void IncreaseOverclockSpeed()
+        {
+            AdjustOverclockSpeed(1);
+        }
+
+        private void AdjustOverclockSpeed(byte change)
+        {
+            byte cpuMultiplier = (byte)(Model.CPU.CpuMultiplier + change);
+
+            if (cpuMultiplier < 2 || cpuMultiplier > Model.CPU.MaxOverclock)
+            {
+                return;
+            }
+
+            // Send updates to the dialog if it's open.
+            //TODO: Apply this to new configuration dialog
+            //if (emuState->ConfigDialog != Zero)
+            //{
+            //    HWND hDlg = configState->hWndConfig[1];
+
+            //    _modules.Callbacks.SetDialogCpuMultiplier(hDlg, cpuMultiplier);
+            //}
+
+            Model.CPU.CpuMultiplier = cpuMultiplier;
+
+            _modules.Emu.ResetPending = (byte)ResetPendingStates.ClsSynch; // Without this, changing the config does nothing.
+        }
+
+        public void SetWindowSize(short width, short height)
+        {
+            HWND handle = _user32.GetActiveWindow();
+
+            SetWindowPosFlags flags = SetWindowPosFlags.NoMove | SetWindowPosFlags.NoOwnerZOrder | SetWindowPosFlags.NoZOrder;
+
+            _user32.SetWindowPos(handle, Zero, 0, 0, width + 16, height + 81, (ushort)flags);
+        }
+        
         public KeyboardLayouts GetCurrentKeyboardLayout()
         {
-            return Model.KeyboardLayout;
+            return Model.Keyboard.Layout.Value;
         }
 
-        public void ValidateModel(ConfigModel model)
+        public void ValidateModel(IConfiguration model)
         {
             string exePath = Path.GetDirectoryName(_modules.Vcc.GetExecPath());
 
@@ -416,8 +409,8 @@ namespace VCCSharp.Modules
                 throw new Exception("Invalid exePath");
             }
 
-            string modulePath = model.ModulePath;
-            string externalBasicImage = model.ExternalBasicImage;
+            string modulePath = model.Accessories.ModulePath;
+            string externalBasicImage = model.Memory.ExternalBasicImage;
 
             //--If module is in same location as .exe, strip off path portion, leaving only module name
 
@@ -433,25 +426,8 @@ namespace VCCSharp.Modules
                 externalBasicImage = externalBasicImage[exePath.Length..];
             }
 
-            model.ModulePath = modulePath;
-            model.SetExternalBasicImage(externalBasicImage);
-        }
-
-        public int GetPaletteType()
-        {
-            return Model.PaletteType;
-        }
-
-
-        public bool GetRememberSize()
-        {
-            return Model.RememberSize;
-        }
-
-        public Point GetWindowSize()
-        {
-            return new Point { X = Model.WindowSizeX, Y = Model.WindowSizeY };
+            model.Accessories.ModulePath = modulePath;
+            model.Memory.SetExternalBasicImage(externalBasicImage);
         }
     }
-
 }

@@ -48,8 +48,8 @@ namespace VCCSharp.IoC
             {
                 Config = config,
                 Model = config.Model,
-                LeftModel = config.GetLeftJoystick(), 
-                RightModel = config.GetRightJoystick()
+                LeftModel = config.Model.Joysticks.Left, 
+                RightModel = config.Model.Joysticks.Right
             };
         }
     }

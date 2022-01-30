@@ -15,10 +15,6 @@ using VCCSharp.Models.Keyboard;
 using VCCSharp.Modules;
 using VCCSharp.Modules.TC1014;
 using VCCSharp.TapePlayer;
-using Audio = VCCSharp.Modules.Audio;
-using CPU = VCCSharp.Modules.CPU;
-using Joystick = VCCSharp.Modules.Joystick;
-using Keyboard = VCCSharp.Modules.Keyboard;
 
 namespace VCCSharp
 {
@@ -40,23 +36,23 @@ namespace VCCSharp
                 .Singleton<IKeyboardScanCodes, KeyboardScanCodes>()
                 .Singleton<IKeyScanMapper, KeyScanMapper>()
                 .Singleton<IMainWindowEvents, MainWindowEvents>()
+                .Singleton<IConfigurationPersistence, ConfigurationPersistence>()
+                .Singleton<Models.Configuration.IConfiguration, Root>()
 
                 //--Modules
-                .Singleton<IAudio, Audio>()
-                .Singleton<ICPU, CPU>()
+                .Singleton<IAudio, Modules.Audio>()
+                .Singleton<ICPU, Modules.CPU>()
                 .Singleton<ICassette, Cassette>()
                 .Singleton<IClipboard, Modules.Clipboard>()
                 .Singleton<ICoCo, CoCo>()
                 .Singleton<IConfig, Config>()
-                .Singleton<IConfigPersistence, ConfigPersistence>()
-                .Singleton<IPersistence, Persistence>()
                 .Singleton<IDraw, Draw>()
                 .Singleton<IEmu, Emu>()
                 .Singleton<IEvents, Events>()
                 .Singleton<IGraphics, Graphics>()
                 .Singleton<IIOBus, IOBus>()
-                .Singleton<IJoystick, Joystick>()
-                .Singleton<IKeyboard, Keyboard>()
+                .Singleton<IJoystick, Modules.Joystick>()
+                .Singleton<IKeyboard, Modules.Keyboard>()
                 .Singleton<IMC6821, MC6821>()
                 .Singleton<IMenuCallbacks, MenuCallbacks>()
                 .Singleton<IPAKInterface, PAKInterface>()
@@ -93,7 +89,7 @@ namespace VCCSharp
 
                 //--Options
                 .Bind<ICartridge, MenuManager>()
-                .Bind<IConfiguration, ConfigurationManager>()
+                .Bind<Configuration.IConfiguration, ConfigurationManager>()
                 .Bind<ITapePlayer, TapePlayerManager>()
                 .Bind<IBitBanger, BitBangerManager>()
 

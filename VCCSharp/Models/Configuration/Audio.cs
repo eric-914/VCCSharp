@@ -1,8 +1,12 @@
-﻿namespace VCCSharp.Models.Configuration
+﻿using VCCSharp.Enums;
+using VCCSharp.Models.Configuration.Support;
+
+namespace VCCSharp.Models.Configuration
 {
     public class Audio
     {
         public string SoundDevice { get; set; } = "Primary Sound Driver";
-        public int AudioRate { get; set; } = 3;
+
+        public RangeSelect<AudioRates> Rate { get; } = new RangeSelect<AudioRates>(true) { Value = AudioRates._44100Hz };
     }
 }

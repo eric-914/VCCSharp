@@ -1,33 +1,36 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
+using VCCSharp.IoC;
 
 namespace VCCSharp.Models.Configuration.Support
 {
-    public interface IPersistence
+    /// <summary>
+    /// Load/Save an object via the given path.
+    /// </summary>
+    public interface IPersistence<out T>
     {
-        Root Load(string path);
-        void Save(string path, Root model);
+        T Load(string path);
+        void Save(string path, IConfiguration model);
     }
 
-    public class Persistence : IPersistence
+    public abstract class Persistence<T> : IPersistence<T>
     {
-        public Root Load(string path)
+        private readonly IFactory _factory;
+
+        protected Persistence(IFactory factory)
         {
-            if (File.Exists(path))
-            {
-                var json = File.ReadAllText(path);
-
-                return JsonConvert.DeserializeObject<Root>(json);
-            }
-
-            return new Root(); //TODO: Define defaults
+            _factory = factory;
         }
 
-        public void Save(string path, Root model)
-        {
-            var json = JsonConvert.SerializeObject(model, Formatting.Indented);
+        public T Load(string path) 
+            => Load(_factory.Get<T>(), path);
 
-            File.WriteAllText(path, json);
-        }
+        private static T Load(T instance, string path) =>
+            File.Exists(path)
+                ? JsonConvert.DeserializeAnonymousType(File.ReadAllText(path), instance)
+                : instance;
+
+        public void Save(string path, IConfiguration model) 
+            => File.WriteAllText(path, JsonConvert.SerializeObject(model, Formatting.Indented));
     }
 }

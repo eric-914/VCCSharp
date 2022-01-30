@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using VCCSharp.Annotations;
 using VCCSharp.Enums;
-using VCCSharp.Models;
 
 namespace VCCSharp.Configuration
 {
@@ -20,7 +19,7 @@ namespace VCCSharp.Configuration
             _parent = parent;
         }
 
-        public JoystickModel Model => _parent == null ? null : Side == JoystickSides.Left ? _parent.LeftModel : _parent.RightModel;
+        public Models.Configuration.Joystick Model => _parent == null ? null : Side == JoystickSides.Left ? _parent.LeftModel : _parent.RightModel;
 
         #region Constants
 
@@ -56,16 +55,16 @@ namespace VCCSharp.Configuration
             {
                 if (value.HasValue)
                 {
-                    UseMouse = (int)value.Value;
+                    UseMouse = value.Value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        public int UseMouse
+        public JoystickDevices UseMouse
         {
-            get => Model?.UseMouse ?? 0;
-            set => Model.UseMouse = (byte)value;
+            get => Model?.InputSource.Value ?? JoystickDevices.Mouse;
+            set => Model.InputSource.Value = value;
         }
 
         public JoystickEmulations? Emulation
@@ -75,89 +74,89 @@ namespace VCCSharp.Configuration
             {
                 if (value.HasValue)
                 {
-                    HiRes = (int)value.Value;
+                    HiRes = value.Value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        public int HiRes
+        public JoystickEmulations HiRes
         {
-            get => Model?.HiRes ?? 0;
-            set => Model.HiRes = (byte)value;
+            get => Model?.Type.Value ?? JoystickEmulations.Standard;
+            set => Model.Type.Value = value;
         }
 
         // Index of which Joystick is selected
         public int DiDevice { get; set; } = 0;
 
-        public byte Up
+        public char Up
         {
-            get => Model?.Up ?? 0;
+            get => Model?.KeyMap.Up ?? (char)0;
             set
             {
-                if (Model.Up == value) return;
+                if (Model.KeyMap.Up == value) return;
 
-                Model.Up = value;
+                Model.KeyMap.Up = value;
                 OnPropertyChanged();
             }
         }
 
-        public byte Down
+        public char Down
         {
-            get => Model?.Down ?? 0;
+            get => Model?.KeyMap.Down ?? (char)0;
             set
             {
-                if (Model.Down == value) return;
+                if (Model.KeyMap.Down == value) return;
 
-                Model.Down = value;
+                Model.KeyMap.Down = value;
                 OnPropertyChanged();
             }
         }
 
-        public byte Left
+        public char Left
         {
-            get => Model?.Left ?? 0;
+            get => Model?.KeyMap.Left ?? (char)0;
             set
             {
-                if (Model.Left == value) return;
+                if (Model.KeyMap.Left == value) return;
 
-                Model.Left = value;
+                Model.KeyMap.Left = value;
                 OnPropertyChanged();
             }
         }
 
-        public byte Right
+        public char Right
         {
-            get => Model?.Right ?? 0;
+            get => Model?.KeyMap.Right ?? (char)0;
             set
             {
-                if (Model.Right == value) return;
+                if (Model.KeyMap.Right == value) return;
 
-                Model.Right = value;
+                Model.KeyMap.Right = value;
                 OnPropertyChanged();
             }
         }
 
-        public byte Fire1
+        public char Fire1
         {
-            get => Model?.Fire1 ?? 0;
+            get => Model?.KeyMap.Buttons[0] ?? (char)0;
             set
             {
-                if (Model.Fire1 == value) return;
+                if (Model.KeyMap.Buttons[0] == value) return;
 
-                Model.Fire1 = value;
+                Model.KeyMap.Buttons[0] = value;
                 OnPropertyChanged();
             }
         }
 
-        public byte Fire2
+        public char Fire2
         {
-            get => Model?.Fire2 ?? 0;
+            get => Model?.KeyMap.Buttons[1] ?? (char)0;
             set
             {
-                if (Model.Fire2 == value) return;
+                if (Model.KeyMap.Buttons[1] == value) return;
 
-                Model.Fire2 = value;
+                Model.KeyMap.Buttons[1] = value;
                 OnPropertyChanged();
             }
         }

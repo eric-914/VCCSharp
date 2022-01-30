@@ -1,6 +1,4 @@
-﻿using VCCSharp.Models.Configuration.Support;
-
-namespace VCCSharp.Models.Configuration
+﻿namespace VCCSharp.Models.Configuration.Support
 {
     public class JoystickKeyMapping
     {

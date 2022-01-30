@@ -133,9 +133,9 @@ namespace VCCSharp.Modules
             _modules.Graphics.ResetGraphicsState();
             _modules.Graphics.MakeRgbPalette();
 
-            int paletteType = _modules.Config.GetPaletteType();
+            var paletteType = _modules.Config.Model.Video.Palette.Value;
 
-            _modules.Graphics.MakeCmpPalette(paletteType);
+            _modules.Graphics.MakeCmpPalette((int)paletteType);
 
             _modules.CoCo.CocoReset();
 

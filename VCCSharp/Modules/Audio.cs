@@ -57,7 +57,7 @@ namespace VCCSharp.Modules
             if (rate != 0)
             {
                 //TODO: Since there is only 44100 or mute, remove the other options and make this a boolean
-                //Force 44100 or Mute
+                //Force 44100 or Disabled
                 rate = 3;
             }
 

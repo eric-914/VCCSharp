@@ -171,7 +171,7 @@ namespace VCCSharp.Modules
 
         public void ApplyConfigurationChanges()
         {
-            ConfigModel configModel = _modules.Config.Model;
+            var configModel = _modules.Config.Model;
 
             JoystickModel left = _modules.Config.GetLeftJoystick();
             JoystickModel right = _modules.Config.GetRightJoystick();
@@ -182,12 +182,12 @@ namespace VCCSharp.Modules
             //emuState->ResetPending = (byte)ResetPendingStates.Hard;
             //}
 
-            string soundCardName = configModel.SoundCardName;
+            string soundCardName = configModel.Audio.SoundDevice;
             int soundCardIndex = _modules.Config.SoundDevices.IndexOf(soundCardName);
 
-            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, soundCardIndex, configModel.AudioRate);
+            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, soundCardIndex, (ushort)configModel.Audio.Rate.Value);
 
-            _modules.Keyboard.KeyboardBuildRuntimeTable(configModel.KeyboardLayout);
+            _modules.Keyboard.KeyboardBuildRuntimeTable(configModel.Keyboard.Layout.Value);
 
             _modules.Joystick.SetStickNumbers(left.DiDevice, right.DiDevice);
         }

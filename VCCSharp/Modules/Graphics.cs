@@ -316,7 +316,7 @@ namespace VCCSharp.Modules
             byte borderColor = CC3BorderColor;
 
             SetGimeBorderColor(0);
-            MakeCmpPalette(_modules.Config.GetPaletteType());
+            MakeCmpPalette((int)_modules.Config.Model.Video.Palette.Value);
             SetGimeBorderColor(borderColor);
         }
 

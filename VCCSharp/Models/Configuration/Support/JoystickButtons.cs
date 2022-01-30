@@ -6,33 +6,33 @@ namespace VCCSharp.Models.Configuration.Support
 {
     public class JoystickButtons
     {
-        private readonly Dictionary<int, Func<string>> _get;
-        private readonly Dictionary<int, Action<string>> _set;
+        private readonly Dictionary<int, Func<char>> _get;
+        private readonly Dictionary<int, Action<char>> _set;
 
         public JoystickButtons()
         {
-            _get = new Dictionary<int, Func<string>>
+            _get = new Dictionary<int, Func<char>>
             {
                 { 0, () => _1 },
                 { 1, () => _2 },
             };
-            _set = new Dictionary<int, Action<string>>
+            _set = new Dictionary<int, Action<char>>
             {
                 { 0, v => _1 = v },
                 { 1, v => _2 = v },
             };
         }
 
-        public string this[int index]
+        public char this[int index]
         {
             get => _get[index]();
             set => _set[index](value);
         }
 
         [JsonProperty("1")]
-        public string _1 { get; set; } = "0";
+        public char _1 { get; set; } = '0';
 
         [JsonProperty("2")]
-        public string _2 { get; set; } = ".";
+        public char _2 { get; set; } = '.';
     }
 }

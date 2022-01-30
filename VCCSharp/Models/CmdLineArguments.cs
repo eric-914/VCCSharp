@@ -2,7 +2,7 @@
 {
     public class CmdLineArguments
     {
-        public string QLoadFile;
-        public string IniFile;
+        public string QLoadFile { get; set; }
+        public string IniFile { get; set; }
     }
 }

@@ -4,7 +4,6 @@ using System.IO;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Models;
 
 namespace VCCSharp.Modules.TC1014
 {
@@ -100,12 +99,12 @@ namespace VCCSharp.Modules.TC1014
         {
             const string rom = "coco3.rom";
 
-            ConfigModel configModel = _modules.Config.Model;
+            var configModel = _modules.Config.Model;
 
             //--Try loading from Vcc.ini >> CoCoRomPath
-            string cocoRomPath = configModel.CoCoRomPath;
+            string cocoRomPath = configModel.FilePaths.Rom;
 
-            string path = Path.Combine(configModel.CoCoRomPath, rom);
+            string path = Path.Combine(configModel.FilePaths.Rom, rom);
 
             if (LoadInternalRom(path))
             {
@@ -114,7 +113,7 @@ namespace VCCSharp.Modules.TC1014
             }
 
             //--Try loading from Vcc.ini >> ExternalBasicImage
-            string externalBasicImage = _modules.Config.Model.ExternalBasicImage;
+            string externalBasicImage = _modules.Config.Model.Memory.ExternalBasicImage;
 
             if (!string.IsNullOrEmpty(externalBasicImage) && LoadInternalRom(externalBasicImage))
             {
