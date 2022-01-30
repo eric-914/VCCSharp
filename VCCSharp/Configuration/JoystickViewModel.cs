@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using VCCSharp.Annotations;
 using VCCSharp.Enums;
+using VCCSharp.Models.Keyboard;
 
 namespace VCCSharp.Configuration
 {
@@ -23,10 +25,7 @@ namespace VCCSharp.Configuration
 
         #region Constants
 
-        //for displaying key name
-        private static readonly string[] _keyNames = { "", "ESC", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BackSp", "Tab", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "]", "Bkslash", ";", "'", "Comma", ".", "/", "CapsLk", "Shift", "Ctrl", "Alt", "Space", "Enter", "Insert", "Delete", "Home", "End", "PgUp", "PgDown", "Left", "Right", "Up", "Down", "F1", "F2" };
-
-        public string[] KeyNames => _keyNames;
+        public IEnumerable<string> KeyNames => KeyScanMapper.KeyNames;
 
         public List<string> JoystickNames { get; set; } = new List<string> { "A", "B", "C" };
 
@@ -50,7 +49,7 @@ namespace VCCSharp.Configuration
 
         public JoystickDevices? Device
         {
-            get => (JoystickDevices)UseMouse;
+            get => UseMouse;
             set
             {
                 if (value.HasValue)
@@ -69,7 +68,7 @@ namespace VCCSharp.Configuration
 
         public JoystickEmulations? Emulation
         {
-            get => (JoystickEmulations)HiRes;
+            get => HiRes;
             set
             {
                 if (value.HasValue)
@@ -89,74 +88,74 @@ namespace VCCSharp.Configuration
         // Index of which Joystick is selected
         public int DiDevice { get; set; } = 0;
 
-        public char Up
+        public Key Up
         {
-            get => Model?.KeyMap.Up ?? (char)0;
+            get => Model?.KeyMap.Up.Value ?? Key.None;
             set
             {
-                if (Model.KeyMap.Up == value) return;
+                if (Model.KeyMap.Up.Value == value) return;
 
-                Model.KeyMap.Up = value;
+                Model.KeyMap.Up.Value = value;
                 OnPropertyChanged();
             }
         }
 
-        public char Down
+        public Key Down
         {
-            get => Model?.KeyMap.Down ?? (char)0;
+            get => Model?.KeyMap.Down.Value ?? Key.None;
             set
             {
-                if (Model.KeyMap.Down == value) return;
+                if (Model.KeyMap.Down.Value == value) return;
 
-                Model.KeyMap.Down = value;
+                Model.KeyMap.Down.Value = value;
                 OnPropertyChanged();
             }
         }
 
-        public char Left
+        public Key Left
         {
-            get => Model?.KeyMap.Left ?? (char)0;
+            get => Model?.KeyMap.Left.Value ?? Key.None;
             set
             {
-                if (Model.KeyMap.Left == value) return;
+                if (Model.KeyMap.Left.Value == value) return;
 
-                Model.KeyMap.Left = value;
+                Model.KeyMap.Left.Value = value;
                 OnPropertyChanged();
             }
         }
 
-        public char Right
+        public Key Right
         {
-            get => Model?.KeyMap.Right ?? (char)0;
+            get => Model?.KeyMap.Right.Value ?? Key.None;
             set
             {
-                if (Model.KeyMap.Right == value) return;
+                if (Model.KeyMap.Right.Value == value) return;
 
-                Model.KeyMap.Right = value;
+                Model.KeyMap.Right.Value = value;
                 OnPropertyChanged();
             }
         }
 
-        public char Fire1
+        public Key Fire1
         {
-            get => Model?.KeyMap.Buttons[0] ?? (char)0;
+            get => Model?.KeyMap.Buttons[0].Value ?? Key.None;
             set
             {
-                if (Model.KeyMap.Buttons[0] == value) return;
+                if (Model.KeyMap.Buttons[0].Value == value) return;
 
-                Model.KeyMap.Buttons[0] = value;
+                Model.KeyMap.Buttons[0].Value = value;
                 OnPropertyChanged();
             }
         }
 
-        public char Fire2
+        public Key Fire2
         {
-            get => Model?.KeyMap.Buttons[1] ?? (char)0;
+            get => Model?.KeyMap.Buttons[1].Value ?? Key.None;
             set
             {
-                if (Model.KeyMap.Buttons[1] == value) return;
+                if (Model.KeyMap.Buttons[1].Value == value) return;
 
-                Model.KeyMap.Buttons[1] = value;
+                Model.KeyMap.Buttons[1].Value = value;
                 OnPropertyChanged();
             }
         }

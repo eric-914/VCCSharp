@@ -12,7 +12,6 @@ using VCCSharp.Models.Configuration.Support;
 using VCCSharp.Properties;
 using static System.IntPtr;
 using HWND = System.IntPtr;
-using Point = System.Drawing.Point;
 
 namespace VCCSharp.Modules
 {
@@ -104,10 +103,10 @@ namespace VCCSharp.Modules
 
             ConfigureJoysticks();
 
-            string soundCardName = Model.Audio.SoundDevice;
-            int soundCardIndex = SoundDevices.IndexOf(soundCardName);
+            string device = Model.Audio.Device;
+            int deviceIndex = SoundDevices.IndexOf(device);
 
-            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, soundCardIndex, (ushort)Model.Audio.Rate.Value);
+            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, deviceIndex, (ushort)Model.Audio.Rate.Value);
 
             //  Try to open the config file.  Create it if necessary.  Abort if failure.
             if (File.Exists(IniFilePath))
@@ -189,7 +188,11 @@ namespace VCCSharp.Modules
 
             _modules.Keyboard.KeyboardBuildRuntimeTable(Model.Keyboard.Layout.Value);
 
-            Model.Accessories.MultiPak.FilePath = _modules.Emu.PakPath;
+            if (!string.IsNullOrEmpty(_modules.Emu.PakPath))
+            {
+                Model.Accessories.MultiPak.FilePath = _modules.Emu.PakPath;
+            }
+
             _modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, Model.Accessories.ModulePath);   // Should this be here?
 
             if (Model.Window.RememberSize)
@@ -252,7 +255,10 @@ namespace VCCSharp.Modules
                 modulePath = _modules.PAKInterface.GetCurrentModule();
             }
 
-            Model.Accessories.ModulePath = modulePath;
+            if (!string.IsNullOrEmpty(modulePath))
+            {
+                Model.Accessories.ModulePath = modulePath;
+            }
 
             ValidateModel(Model);
 
@@ -426,7 +432,11 @@ namespace VCCSharp.Modules
                 externalBasicImage = externalBasicImage[exePath.Length..];
             }
 
-            model.Accessories.ModulePath = modulePath;
+            if (!string.IsNullOrEmpty(modulePath))
+            {
+                model.Accessories.ModulePath = modulePath;
+            }
+
             model.Memory.SetExternalBasicImage(externalBasicImage);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 
 namespace VCCSharp.Models.Keyboard
@@ -13,7 +14,86 @@ namespace VCCSharp.Models.Keyboard
     /// </summary>
     public class KeyScanMapper : IKeyScanMapper
     {
-        private readonly Dictionary<Key, byte> _map = new Dictionary<Key, byte>
+        //for displaying key name
+        public static IEnumerable<string> KeyNames => KeyNamesMap.Select(x => x.Value);
+        public static IEnumerable<Key> KeyIndexes => KeyNamesMap.Select(x => x.Key);
+
+        public static readonly Dictionary<Key, string> KeyNamesMap = new Dictionary<Key, string>
+        {
+            { Key.None, "None" },
+            { Key.Escape, "Esc"},
+            { Key.D1, "1"},
+            { Key.D2, "2"},
+            { Key.D3, "3"},
+            { Key.D4, "4"},
+            { Key.D5, "5"},
+            { Key.D6, "6"},
+            { Key.D7, "7"},
+            { Key.D8, "8"},
+            { Key.D9, "9"},
+            { Key.D0, "0"},
+            { Key.OemMinus, "-"},
+            { Key.OemPlus, "="}, //--Yeah, really
+            { Key.Back, "Backspace"},
+            { Key.Tab, "Tab"},
+            { Key.A, "A"},
+            { Key.B, "B"},
+            { Key.C, "C"},
+            { Key.D, "D"},
+            { Key.E, "E"},
+            { Key.F, "F"},
+            { Key.G, "G"},
+            { Key.H, "H"},
+            { Key.I, "I"},
+            { Key.J, "J"},
+            { Key.K, "K"},
+            { Key.L, "L"},
+            { Key.M, "M"},
+            { Key.N, "N"},
+            { Key.O, "O"},
+            { Key.P, "P"},
+            { Key.Q, "Q"},
+            { Key.R, "R"},
+            { Key.S, "S"},
+            { Key.T, "T"},
+            { Key.U, "U"},
+            { Key.V, "V"},
+            { Key.W, "W"},
+            { Key.X, "X"},
+            { Key.Y, "Y"},
+            { Key.Z, "Z"},
+            { Key.OemOpenBrackets, "["},
+            { Key.OemCloseBrackets, "]"},
+            { Key.OemBackslash, "\\"},
+            { Key.OemSemicolon, ";"},
+            { Key.OemQuotes, "'"}, //--Another weird one
+            { Key.OemComma, ","},
+            { Key.Decimal, "."},
+            { Key.Divide, "/"},
+            { Key.CapsLock, "Caps Lock"},
+            { Key.LeftShift, "Shift"},  //--Processing will consider left/right shift same
+            //{ Key.RightShift, "Shift"},  
+            //{ Key.LeftAlt, "Alt"},
+            //{ Key.RightAlt, "Alt"},
+            //{ Key.LeftCtrl, "Ctrl"},
+            //{ Key.RightCtrl, "Ctrl"},
+            { Key.Space, "Space"},
+            { Key.Enter, "Enter"},
+            { Key.Insert, "Insert"},
+            { Key.Delete, "Delete"},
+            { Key.Home, "Home"},
+            { Key.End, "End"},
+            { Key.PageUp, "PgUp"},
+            { Key.PageDown, "PgDn"},
+            { Key.Left, "Left"},
+            { Key.Right, "Right"},
+            { Key.Up, "Up"},
+            { Key.Down, "Down"}
+            //{ Key.F1, "F1"},
+            //{ Key.F2, "F2"},
+        };
+
+        private readonly Dictionary<Key, byte> _mapKeyDIK = new Dictionary<Key, byte>
         {
             { Key.A, Define.DIK_A },
             { Key.B, Define.DIK_B },
@@ -76,12 +156,22 @@ namespace VCCSharp.Models.Keyboard
         {
             //System.Diagnostics.Debug.WriteLine($"key={key}");
 
-            if (_map.ContainsKey(key))
+            if (_mapKeyDIK.ContainsKey(key))
             {
-                return _map[key]; 
+                return _mapKeyDIK[key]; 
             }
             
             return 0;
+        }
+
+        public static string ToText(Key key)
+        {
+            if (KeyNamesMap.ContainsKey(key))
+            {
+                return KeyNamesMap[key];
+            }
+
+            return "???";
         }
     }
 }

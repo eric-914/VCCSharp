@@ -144,7 +144,7 @@ namespace VCCSharp.Configuration
 
         public CPUTypes? Cpu
         {
-            get => (CPUTypes)CpuType;
+            get => CpuType;
             set
             {
                 if (value.HasValue)
@@ -158,17 +158,17 @@ namespace VCCSharp.Configuration
         public int MaxOverclock => Model.CPU.MaxOverclock;
 
         //[Audio]
-        public List<string> SoundCards => Config.SoundDevices;
+        public List<string> SoundDevices => Config.SoundDevices;
 
-        public string SoundCardName
+        public string SoundDevice
         {
-            get => Model.Audio.SoundDevice;
-            set => Model.Audio.SoundDevice = value;
+            get => Model.Audio.Device;
+            set => Model.Audio.Device = value;
         }
 
         public AudioRates AudioRate
         {
-            get => (AudioRates)Model.Audio.Rate.Value;
+            get => Model.Audio.Rate.Value;
             set => Model.Audio.Rate.Value = value;
         }
 
@@ -187,7 +187,7 @@ namespace VCCSharp.Configuration
 
         public PaletteTypes? PaletteType
         {
-            get => (PaletteTypes)(Model.Video.Palette.Value);
+            get => Model.Video.Palette.Value;
             set
             {
                 if (!value.HasValue || Model.Video.Palette.Value == value.Value) return;
@@ -202,7 +202,7 @@ namespace VCCSharp.Configuration
             get => Model.Video.ScanLines;
             set
             {
-                if (value == (Model.Video.ScanLines)) return;
+                if (value == Model.Video.ScanLines) return;
 
                 Model.Video.ScanLines = value;
                 OnPropertyChanged();
@@ -235,7 +235,7 @@ namespace VCCSharp.Configuration
 
         public MemorySizes? Memory
         {
-            get => (MemorySizes)RamSize;
+            get => RamSize;
             set
             {
                 if (value.HasValue)
@@ -271,7 +271,7 @@ namespace VCCSharp.Configuration
         public KeyboardLayouts KeyboardLayout
         {
             get => Model.Keyboard.Layout.Value;
-            set => Model.Keyboard.Layout.Value = (KeyboardLayouts)value;
+            set => Model.Keyboard.Layout.Value = value;
         }
 
         //[Module]
@@ -305,7 +305,7 @@ namespace VCCSharp.Configuration
 
         //[MPI]     //### MODULE SPECIFIC ###//
         //SWPOSITION=3
-        //PesistPaks=1
+        //PersistPaks=1
         //SLOT1=
         //SLOT2=
         //SLOT3=

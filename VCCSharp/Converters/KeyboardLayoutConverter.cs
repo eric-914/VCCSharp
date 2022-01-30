@@ -1,22 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Data;
-using System.Windows.Input;
-using VCCSharp.Models.Keyboard;
+using VCCSharp.Enums;
 
 namespace VCCSharp.Converters
 {
-    public class ScanCodeToDisplayTextConverter : IValueConverter
+    public class KeyboardLayoutConverter : IValueConverter
     {
-        private static readonly List<Key> Keys = KeyScanMapper.KeyIndexes.ToList();
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Key k)
+            if (value is KeyboardLayouts layout)
             {
-                return Keys.IndexOf(k);
+                return (int)layout;
             }
 
             return 0;
@@ -26,10 +21,10 @@ namespace VCCSharp.Converters
         {
             if (value is int i)
             {
-                return Keys[i];
+                return (KeyboardLayouts)i;
             }
 
-            return Key.None;
+            return KeyboardLayouts.CoCo;
         }
     }
 }

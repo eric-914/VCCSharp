@@ -25,6 +25,7 @@ namespace VCCSharp.Menu
                 F(Key.F11, actions.ToggleFullScreen),
                 //--F12 is reserved by Visual Studio --> BREAK (debug mode)
 
+                F(Key.F10, actions.OpenConfiguration, ModifierKeys.Control),
                 F(Key.F12, actions.TestIt, ModifierKeys.Control)
             });
         }

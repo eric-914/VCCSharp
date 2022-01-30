@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Windows;
 using Newtonsoft.Json;
 using VCCSharp.IoC;
 
@@ -22,15 +23,26 @@ namespace VCCSharp.Models.Configuration.Support
             _factory = factory;
         }
 
-        public T Load(string path) 
+        public T Load(string path)
             => Load(_factory.Get<T>(), path);
 
-        private static T Load(T instance, string path) =>
-            File.Exists(path)
-                ? JsonConvert.DeserializeAnonymousType(File.ReadAllText(path), instance)
-                : instance;
+        private static T Load(T instance, string path)
+        {
+            try
+            {
+                return File.Exists(path)
+                    ? JsonConvert.DeserializeAnonymousType(File.ReadAllText(path), instance)
+                    : instance;
+            }
+            catch (System.Exception e)
+            {
+                MessageBox.Show($"An error occurred trying to read configuration file: {e.Message} -- Using default configuration");
 
-        public void Save(string path, IConfiguration model) 
+                return instance;
+            }
+        }
+
+        public void Save(string path, IConfiguration model)
             => File.WriteAllText(path, JsonConvert.SerializeObject(model, Formatting.Indented));
     }
 }

@@ -182,10 +182,10 @@ namespace VCCSharp.Modules
             //emuState->ResetPending = (byte)ResetPendingStates.Hard;
             //}
 
-            string soundCardName = configModel.Audio.SoundDevice;
-            int soundCardIndex = _modules.Config.SoundDevices.IndexOf(soundCardName);
+            string device = configModel.Audio.Device;
+            int deviceIndex = _modules.Config.SoundDevices.IndexOf(device);
 
-            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, soundCardIndex, (ushort)configModel.Audio.Rate.Value);
+            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, deviceIndex, (ushort)configModel.Audio.Rate.Value);
 
             _modules.Keyboard.KeyboardBuildRuntimeTable(configModel.Keyboard.Layout.Value);
 

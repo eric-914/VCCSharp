@@ -1,38 +1,43 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Windows.Input;
 
 namespace VCCSharp.Models.Configuration.Support
 {
     public class JoystickButtons
     {
-        private readonly Dictionary<int, Func<char>> _get;
-        private readonly Dictionary<int, Action<char>> _set;
+        private readonly Dictionary<int, Func<KeySelect>> _get;
 
         public JoystickButtons()
         {
-            _get = new Dictionary<int, Func<char>>
+            _get = new Dictionary<int, Func<KeySelect>>
             {
-                { 0, () => _1 },
-                { 1, () => _2 },
-            };
-            _set = new Dictionary<int, Action<char>>
-            {
-                { 0, v => _1 = v },
-                { 1, v => _2 = v },
+                { 0, () => _1},
+                { 1, () => _2},
             };
         }
 
-        public char this[int index]
-        {
-            get => _get[index]();
-            set => _set[index](value);
-        }
+        public KeySelect this[int index] => _get[index]();
+
+        [JsonIgnore]
+        public KeySelect _1 { get; } = new KeySelect { Value = Key.D0 };
 
         [JsonProperty("1")]
-        public char _1 { get; set; } = '0';
+        public virtual string _1Text
+        {
+            get => _1.Selected;
+            set => _1.Selected = value;
+        }
+
+        [JsonIgnore]
+        public KeySelect _2 { get; } = new KeySelect { Value = Key.Decimal };
 
         [JsonProperty("2")]
-        public char _2 { get; set; } = '.';
+        public virtual string _2Text
+        {
+            get => _2.Selected;
+            set => _2.Selected = value;
+        }
     }
 }

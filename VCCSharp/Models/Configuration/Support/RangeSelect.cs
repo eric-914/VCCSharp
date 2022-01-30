@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Input;
 using Newtonsoft.Json;
 
 namespace VCCSharp.Models.Configuration.Support
@@ -17,7 +18,7 @@ namespace VCCSharp.Models.Configuration.Support
         }
 
         [JsonProperty("(Options)")]
-        public string Comments => $"{{{string.Join(',', _range.Select(Clean))}}}";
+        public virtual string Options => $"{{{string.Join(',', _range.Select(Clean))}}}";
 
         [JsonIgnore]
         public T Value { get; set; }
@@ -55,4 +56,9 @@ namespace VCCSharp.Models.Configuration.Support
         }
     }
 
+    public class KeySelect : RangeSelect<Key>
+    {
+        [JsonIgnore]
+        public override string Options => "See System.Windows.Input.Key";
+    }
 }
