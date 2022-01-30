@@ -52,19 +52,17 @@ namespace VCCSharp
         {
             _modules.CoCo.SetAudioEventAudioOut();
 
-            _modules.Keyboard.SetKeyTranslations();
-
             _modules.CoCo.OverClock = 1;  //Default clock speed .89 MHZ	
 
             _modules.Vcc.CreatePrimaryWindow();
 
             _modules.Draw.ClearScreen();
 
-            _modules.Emu.ResetPending = (byte)ResetPendingStates.Cls;
+            _modules.Emu.ResetPending = ResetPendingStates.Cls;
 
             _modules.MenuCallbacks.RefreshCartridgeMenu();
 
-            _modules.Emu.ResetPending = (byte)ResetPendingStates.Hard;
+            _modules.Emu.ResetPending = ResetPendingStates.Hard;
 
             _modules.Emu.EmulationRunning = _modules.Vcc.AutoStart;
 

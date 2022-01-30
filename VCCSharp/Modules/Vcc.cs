@@ -120,13 +120,13 @@ namespace VCCSharp.Modules
 
             float fps = 0;
 
-            var resetActions = new Dictionary<byte, Action>
+            var resetActions = new Dictionary<ResetPendingStates, Action>
             {
-                {(byte) ResetPendingStates.None, () => { }},
+                {ResetPendingStates.None, () => { }},
 
-                {(byte) ResetPendingStates.Soft, () => { _modules.Emu.SoftReset(); }},
+                {ResetPendingStates.Soft, () => { _modules.Emu.SoftReset(); }},
 
-                {(byte) ResetPendingStates.Hard, () =>
+                {ResetPendingStates.Hard, () =>
                 {
                     _modules.Config.SynchSystemWithConfig();
                     _modules.Draw.DoCls();
@@ -134,9 +134,9 @@ namespace VCCSharp.Modules
 
                 }},
 
-                {(byte) ResetPendingStates.Cls, () => { _modules.Draw.DoCls();}},
+                {ResetPendingStates.Cls, () => { _modules.Draw.DoCls();}},
 
-                {(byte) ResetPendingStates.ClsSynch, () =>
+                {ResetPendingStates.ClsSynch, () =>
                 {
                     _modules.Config.SynchSystemWithConfig();
                     _modules.Draw.DoCls();
@@ -176,7 +176,7 @@ namespace VCCSharp.Modules
             JoystickModel left = _modules.Config.GetLeftJoystick();
             JoystickModel right = _modules.Config.GetRightJoystick();
 
-            _modules.Emu.ResetPending = (byte)ResetPendingStates.ClsSynch;
+            _modules.Emu.ResetPending = ResetPendingStates.ClsSynch;
 
             //if ((configState->Model->RamSize != configModel->RamSize) || (configState->Model->CpuType != configModel->CpuType)) {
             //emuState->ResetPending = (byte)ResetPendingStates.Hard;

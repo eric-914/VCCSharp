@@ -1,5 +1,6 @@
 ﻿// ReSharper disable CommentTypo
 // ReSharper disable InvalidXmlDocComment
+
 namespace VCCSharp.Models.Keyboard
 {
     /**
@@ -147,7 +148,7 @@ namespace VCCSharp.Models.Keyboard
             //new byte[] { Define.DIK_RALT, 0, 1, 0, 0, 0 }, //   @
         };
 
-        public static KeyTranslationEntry[] GetKeyTranslationsCoCo()
+        private static KeyTranslationEntry[] GetKeyTranslationsCoCo()
         {
             return _keyTranslationsCoCo ??= ToArray(KeyTranslationsCoCoRaw);
         }

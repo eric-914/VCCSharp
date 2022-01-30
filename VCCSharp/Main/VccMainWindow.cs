@@ -30,12 +30,8 @@ namespace VCCSharp.Main
 
             window.ViewModel = _factory.Get<IViewModelFactory>().CreateMainWindowViewModel(commands.MenuItems);
 
-            var modules = _factory.Get<IModules>();
-
-            modules.Emu.TestIt = () =>
-            {
-                modules.Events.ResetWindow(window);
-            };
+            //TODO: Figure out how to get Actions instance and do this right.
+            Actions.TestItAction = () => _factory.Get<IModules>().Events.ResetWindow(window);
 
             _factory.Get<IMainWindowEvents>().Bind(window, commands);
 

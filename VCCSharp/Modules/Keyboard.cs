@@ -16,25 +16,18 @@ namespace VCCSharp.Modules
         void KeyboardBuildRuntimeTable(KeyboardLayouts keyMapIndex);
         void GimeSetKeyboardInterruptState(byte state);
         byte KeyboardGetScan(byte column);
-        void SetKeyTranslations();
         void SwapKeyboardLayout(KeyboardLayouts newLayout);
         void ResetKeyboardLayout();
 
-        void SaveLastTwoKeyDownEvents(byte oemScan);
         void SendSavedKeyEvents();
     }
 
     public class Keyboard : IKeyboard
     {
-        public const int MaxCoco = 80;
-        public const int MaxNatural = 89;
-        public const int MaxCompact = 84;
-        public const int MaxCustom = 89;
-
         private readonly IModules _modules;
         private readonly IKeyScanMapper _keyScanMapper;
 
-        public byte KeyboardInterruptEnabled { get; set; }
+        public bool KeyboardInterruptEnabled { get; set; }
 
         public KeyboardLayouts CurrentKeyBoardLayout { get; private set; }
         public KeyboardLayouts PreviousKeyBoardLayout { get; private set; }
@@ -44,11 +37,6 @@ namespace VCCSharp.Modules
 
         /** track all keyboard scan codes state (up/down) */
         public int[] ScanTable = new int[256];
-
-        private KeyTranslationEntry[] _keyTranslationsCoCo = new KeyTranslationEntry[MaxCoco + 1];
-        private KeyTranslationEntry[] _keyTranslationsNatural = new KeyTranslationEntry[MaxNatural + 1];
-        private KeyTranslationEntry[] _keyTranslationsCompact = new KeyTranslationEntry[MaxCompact + 1];
-        private KeyTranslationEntry[] _keyTranslationsCustom = new KeyTranslationEntry[MaxCustom + 1];
 
         private KeyTranslationEntry[] _keyTransTable = new KeyTranslationEntry[Define.KBTABLE_ENTRY_COUNT];
 
@@ -157,18 +145,9 @@ namespace VCCSharp.Modules
             return retVal;
         }
 
-        public void SetKeyTranslations()
-        {
-            _keyTranslationsCoCo = KeyboardLayout.GetKeyTranslationsCoCo();
-            _keyTranslationsNatural = KeyboardLayout.GetKeyTranslationsNatural();
-            _keyTranslationsCompact = KeyboardLayout.GetKeyTranslationsCompact();
-            _keyTranslationsCustom = KeyboardLayout.GetKeyTranslationsCompact();
-        }
-
-
         public void GimeSetKeyboardInterruptState(byte state)
         {
-            KeyboardInterruptEnabled = state != 0 ? Define.TRUE : Define.FALSE;
+            KeyboardInterruptEnabled = state != 0;
         }
 
         public void SwapKeyboardLayout(KeyboardLayouts newLayout)
@@ -193,30 +172,7 @@ namespace VCCSharp.Modules
         {
             CurrentKeyBoardLayout = keyBoardLayout;
 
-            //int index1 = 0;
-            //int index2 = 0;
-            KeyTranslationEntry[] keyTranslationTable = null;
-
-            switch (keyBoardLayout)
-            {
-                case KeyboardLayouts.CoCo:
-                    keyTranslationTable = _keyTranslationsCoCo;
-                    break;
-
-                case KeyboardLayouts.Natural:
-                    keyTranslationTable = _keyTranslationsNatural;
-                    break;
-
-                case KeyboardLayouts.Compact:
-                    keyTranslationTable = _keyTranslationsCompact;
-                    break;
-
-                case KeyboardLayouts.Custom:
-                    keyTranslationTable = _keyTranslationsCustom;
-                    break;
-            }
-
-            //XTRACE("Building run-time key table for layout # : %d - %s\n", keyBoardLayout, k_keyboardLayoutNames[keyBoardLayout]);
+            KeyTranslationEntry[] keyTranslationTable = KeyboardLayout.GetKeyboardLayout(keyBoardLayout);
 
             KeyboardClear();
 
@@ -404,7 +360,7 @@ namespace VCCSharp.Modules
 
             KeyboardUpdateRolloverTable();
 
-            if (KeyboardInterruptEnabled != 0)
+            if (KeyboardInterruptEnabled)
             {
                 _modules.TC1014.GimeAssertKeyboardInterrupt();
             }
@@ -454,7 +410,7 @@ namespace VCCSharp.Modules
                 byte scanCode2 = entry.ScanCode2;
 
                 // stop at last entry
-                if ((scanCode1 == 0) && (scanCode2 == 0))
+                if (scanCode1 == 0 && scanCode2 == 0)
                 {
                     break;
                 }
@@ -462,7 +418,7 @@ namespace VCCSharp.Modules
                 if (lockOut != scanCode1)
                 {
                     // Single input key 
-                    if ((scanCode1 != 0) && (scanCode2 == 0))
+                    if (scanCode1 != 0 && scanCode2 == 0)
                     {
                         // check if key pressed
                         if (ScanTable[scanCode1] == Define.KEY_DOWN)
@@ -482,10 +438,10 @@ namespace VCCSharp.Modules
                     }
 
                     // Double Input Key
-                    if ((scanCode1 != 0) && (scanCode2 != 0))
+                    if (scanCode1 != 0 && scanCode2 != 0)
                     {
                         // check if both keys pressed
-                        if ((ScanTable[scanCode1] == Define.KEY_DOWN) && (ScanTable[scanCode2] == Define.KEY_DOWN))
+                        if (ScanTable[scanCode1] == Define.KEY_DOWN && ScanTable[scanCode2] == Define.KEY_DOWN)
                         {
                             int col = entry.Col1;
 

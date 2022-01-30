@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 
@@ -133,8 +134,11 @@ namespace VCCSharp
 
         public void TestIt() //Ctrl-F12 -- Might keep this around
         {
-            _modules.Emu.TestIt();
+            TestItAction();
         }
+
+        //--Just a way to be able to trigger some elsewhere defined action by hitting Ctrl-F12
+        public static Action TestItAction { get; set; } = () => { System.Diagnostics.Debug.WriteLine("Ctrl-F12"); };
 
         public void Cancel() //ESC
         {

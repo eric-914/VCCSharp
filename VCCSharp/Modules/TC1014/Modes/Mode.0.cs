@@ -20,7 +20,7 @@
 
             if ((graphics.HorizontalOffsetReg & 128) != 0)
             {
-                start = (int)(graphics.StartOfVidRam + (graphics.TagY / graphics.LinesPerRow) * (graphics.VPitch)); //Fix for Horizontal Offset Register in text mode.
+                start = (int)(graphics.StartOfVidRam + graphics.TagY / graphics.LinesPerRow * graphics.VPitch); //Fix for Horizontal Offset Register in text mode.
             }
 
             for (ushort beam = 0; beam < graphics.BytesPerRow * graphics.ExtendedText; beam += graphics.ExtendedText)
@@ -58,7 +58,7 @@
 
                 if (!emu.ScanLines)
                 {
-                    yStride -= (8);
+                    yStride -= 8;
                     yStride += xPitch;
                     szSurface32[yStride += 1] = textPalette[pixel >> 7];
                     szSurface32[yStride += 1] = textPalette[(pixel >> 6) & 1];

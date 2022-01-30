@@ -13,14 +13,14 @@ namespace VCCSharp.Modules
 
         void SoftReset();
         void HardReset();
-        void SetCpuMultiplier(byte multiplier);
+        void SetCpuMultiplier(int multiplier);
         void SetCpuMultiplierFlag(byte doubleSpeed);
         void SetTurboMode(byte data);
 
-        byte CpuType { get; set; }
-        byte FrameSkip { get; set; }
+        CPUTypes CpuType { get; set; }
+        int FrameSkip { get; set; }
         bool FullScreen { get; set; }
-        byte RamSize { get; set; }
+        MemorySizes RamSize { get; set; }
         bool ScanLines { get; set; }
         short FrameCounter { get; set; }
         short LineCounter { get; set; } //--Still used in text modes
@@ -28,15 +28,13 @@ namespace VCCSharp.Modules
         double CpuCurrentSpeed { get; set; }
 
         bool EmulationRunning { get; set; }
-        byte ResetPending { get; set; }
+        ResetPendingStates ResetPending { get; set; }
 
         string StatusLine { get; set; }
 
         string PakPath { get; set; }
 
         Point WindowSize { get; set; }
-
-        Action TestIt { get; set; }
     }
 
     public class Emu : IEmu
@@ -45,12 +43,12 @@ namespace VCCSharp.Modules
 
         public HWND WindowHandle { get; set; }
 
-        public byte CpuType { get; set; }
+        public CPUTypes CpuType { get; set; }
 
-        public byte FrameSkip { get; set; }
+        public int FrameSkip { get; set; }
         public bool FullScreen { get; set; }
 
-        public byte RamSize { get; set; }
+        public MemorySizes RamSize { get; set; }
         public bool ScanLines { get; set; }
 
         public short FrameCounter { get; set; }
@@ -61,7 +59,7 @@ namespace VCCSharp.Modules
         public string StatusLine { get; set; }
 
         public byte DoubleSpeedFlag;
-        public byte DoubleSpeedMultiplier = 2;
+        public int DoubleSpeedMultiplier = 2;
 
         public double CpuCurrentSpeed { get; set; } = .894;
         public byte TurboSpeedFlag = 1;
@@ -69,7 +67,7 @@ namespace VCCSharp.Modules
         public Point WindowSize { get; set; }
 
         public bool EmulationRunning { get; set; }
-        public byte ResetPending { get; set; } = Define.RESET_NONE;
+        public ResetPendingStates ResetPending { get; set; } = ResetPendingStates.None;
 
         public string PakPath { get; set; }
 
@@ -95,14 +93,14 @@ namespace VCCSharp.Modules
 
         public void HardReset()
         {
-            if (_modules.TC1014.MmuInit(RamSize) == Define.FALSE)
+            if (_modules.TC1014.MmuInit((byte)RamSize) == Define.FALSE)
             {
                 MessageBox.Show("Can't allocate enough RAM, out of memory", "Error");
 
                 Environment.Exit(0);
             }
 
-            if (CpuType == (byte)CPUTypes.HD6309)
+            if (CpuType == CPUTypes.HD6309)
             {
                 _modules.CPU.SetHD6309();
             }
@@ -142,7 +140,7 @@ namespace VCCSharp.Modules
             _modules.Audio.ResetAudio();
         }
 
-        public void SetCpuMultiplier(byte multiplier)
+        public void SetCpuMultiplier(int multiplier)
         {
             DoubleSpeedMultiplier = multiplier;
 
@@ -183,16 +181,9 @@ namespace VCCSharp.Modules
 
             if (DoubleSpeedFlag != 0)
             {
-                CpuCurrentSpeed *= (DoubleSpeedMultiplier * (double)TurboSpeedFlag);
+                CpuCurrentSpeed *= DoubleSpeedMultiplier * (double)TurboSpeedFlag;
             }
         }
 
-        //--Just a way to be able to trigger some elsewhere defined action by hitting Ctrl-F12
-        private static Action _testIt = () => { System.Diagnostics.Debug.WriteLine("Ctrl-F12"); };
-        public Action TestIt
-        {
-            get => _testIt;
-            set => _testIt = value;
-        }
     }
 }

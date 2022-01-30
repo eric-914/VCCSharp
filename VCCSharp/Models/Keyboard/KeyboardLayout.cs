@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using VCCSharp.Enums;
 
 namespace VCCSharp.Models.Keyboard
 {
@@ -66,6 +68,19 @@ namespace VCCSharp.Models.Keyboard
             };
 
             return raw.Select(CreateKeyTranslationEntry).Concat(new List<KeyTranslationEntry> { terminator }).ToArray();
+        }
+
+        public static KeyTranslationEntry[] GetKeyboardLayout(KeyboardLayouts keyBoardLayout)
+        {
+            var map = new Dictionary<KeyboardLayouts, Func<KeyTranslationEntry[]>>
+            {
+                { KeyboardLayouts.CoCo, GetKeyTranslationsCoCo },
+                { KeyboardLayouts.Natural, GetKeyTranslationsNatural },
+                { KeyboardLayouts.Compact, GetKeyTranslationsCompact },
+                { KeyboardLayouts.Custom, GetKeyTranslationsCompact },
+            };
+
+            return map[keyBoardLayout]();
         }
     }
 }

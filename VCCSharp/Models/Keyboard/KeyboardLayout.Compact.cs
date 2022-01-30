@@ -138,7 +138,7 @@
             new byte[] {Define.DIK_LSHIFT, 0, 64, 7, 0, 0}, 
         };
 
-        public static KeyTranslationEntry[] GetKeyTranslationsCompact()
+        private static KeyTranslationEntry[] GetKeyTranslationsCompact()
         {
             return _keyTranslationsCompact ??= ToArray(KeyTranslationsCompactRaw);
         }

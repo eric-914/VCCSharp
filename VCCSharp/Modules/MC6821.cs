@@ -12,7 +12,7 @@ namespace VCCSharp.Modules
         void PiaReset();
         void IrqFs(PhaseStates phase);
         void IrqHs(PhaseStates phase);
-        void SetCartAutoStart(byte autoStart);
+        void SetCartAutoStart(bool autoStart);
         void ClosePrintFile();
         void SetMonState(bool state);
         void SetSerialParams(byte textMode);
@@ -53,7 +53,7 @@ namespace VCCSharp.Modules
         private byte _singleBitSample;
         private byte _cassetteSample;
 
-        public byte CartAutoStart;
+        public bool CartAutoStart;
 
         public MC6821(IModules modules, IKernel kernel)
         {
@@ -61,7 +61,7 @@ namespace VCCSharp.Modules
             _kernel = kernel;
         }
 
-        public void SetCartAutoStart(byte autoStart)
+        public void SetCartAutoStart(bool autoStart)
         {
             CartAutoStart = autoStart;
         }
@@ -115,7 +115,7 @@ namespace VCCSharp.Modules
 
         public void IrqFs(PhaseStates phase) //60HZ Vertical sync pulse 16.667 mS
         {
-            if (_modules.PAKInterface.CartInserted == 1 && CartAutoStart == 1)
+            if (_modules.PAKInterface.CartInserted == 1 && CartAutoStart)
             {
                 MC6821_AssertCart();
             }

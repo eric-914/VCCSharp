@@ -11,7 +11,7 @@ namespace VCCSharp.Modules
         void CalibrateThrottle();
         void FrameWait();
         void StartRender();
-        void EndRender(byte skip);
+        void EndRender(int skip);
         float CalculateFps();
     }
 
@@ -33,7 +33,7 @@ namespace VCCSharp.Modules
         private static ushort _frameCount;
         private static float _fps, _fNow, _fLast;
         private float _fMasterClock;
-        private byte _frameSkip;
+        private int _frameSkip;
 
         public Throttle(IModules modules, IKernel kernel, IWinmm winMm)
         {
@@ -127,7 +127,7 @@ namespace VCCSharp.Modules
             _kernel.QueryPerformanceCounter(ref _startTime);
         }
 
-        public void EndRender(byte skip)
+        public void EndRender(int skip)
         {
             _frameSkip = skip;
             _targetTime.QuadPart = _startTime.QuadPart + _oneFrame.QuadPart * _frameSkip;

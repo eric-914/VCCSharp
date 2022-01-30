@@ -31,7 +31,7 @@ namespace VCCSharp.Modules
             //Calls to the loaded DLL so it can do the right thing
             if (CartridgeMenuItemClicked((MenuActions) menuItem))
             {
-                _modules.Emu.ResetPending = Define.RESET_HARD;
+                _modules.Emu.ResetPending = ResetPendingStates.Hard;
             }
         }
 

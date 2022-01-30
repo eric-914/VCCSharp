@@ -133,29 +133,28 @@ namespace VCCSharp.Modules
             _modules.Vcc.AutoStart = Model.Startup.AutoStart;
             _modules.Vcc.Throttle = Model.CPU.ThrottleSpeed;
 
-            _modules.Emu.RamSize = (byte)Model.Memory.Ram.Value;
-            _modules.Emu.FrameSkip = (byte)Model.CPU.FrameSkip;
+            _modules.Emu.RamSize = Model.Memory.Ram.Value;
+            _modules.Emu.FrameSkip = Model.CPU.FrameSkip;
 
             _modules.Graphics.SetPaletteType();
             _modules.Draw.SetAspect(Model.Video.ForceAspect);
-            _modules.Graphics.SetScanLines(Model.Video.ScanLines ? Define.TRUE : Define.FALSE);
-            _modules.Emu.SetCpuMultiplier((byte)Model.CPU.CpuMultiplier);
+            _modules.Graphics.SetScanLines(Model.Video.ScanLines);
+            _modules.Emu.SetCpuMultiplier(Model.CPU.CpuMultiplier);
 
-            SetCpuType((byte)Model.CPU.Type.Value);
+            SetCpuType(Model.CPU.Type.Value);
 
             _modules.Graphics.SetMonitorType(Model.Video.Monitor.Value);
-            _modules.MC6821.SetCartAutoStart(Model.Startup.CartridgeAutoStart ? Define.TRUE : Define.FALSE);
+            _modules.MC6821.SetCartAutoStart(Model.Startup.CartridgeAutoStart);
         }
 
         // LoadIniFile allows user to browse for an ini file and reloads the config from it.
         public void LoadIniFile()
         {
-            string szFileName = IniFilePath;
-            string appPath = Path.GetDirectoryName(szFileName) ?? "C:\\";
+            string appPath = Path.GetDirectoryName(IniFilePath) ?? "C:\\";
 
             var openFileDlg = new Microsoft.Win32.OpenFileDialog
             {
-                FileName = szFileName,
+                FileName = IniFilePath,
                 DefaultExt = ".ini",
                 Filter = "INI files (.ini)|*.ini",
                 InitialDirectory = appPath,
@@ -176,7 +175,7 @@ namespace VCCSharp.Modules
 
                 SynchSystemWithConfig();
 
-                _modules.Emu.ResetPending = (byte)ResetPendingStates.Hard;
+                _modules.Emu.ResetPending = ResetPendingStates.Hard;
             }
         }
 
@@ -339,7 +338,7 @@ namespace VCCSharp.Modules
             return appDataPath;
         }
 
-        public void SetCpuType(byte cpuType)
+        public void SetCpuType(CPUTypes cpuType)
         {
             var cpu = new Dictionary<CPUTypes, string>
             {
@@ -348,7 +347,7 @@ namespace VCCSharp.Modules
             };
 
             _modules.Emu.CpuType = cpuType;
-            _modules.Vcc.CpuName = cpu[(CPUTypes)cpuType];
+            _modules.Vcc.CpuName = cpu[cpuType];
         }
 
         /**
@@ -389,7 +388,7 @@ namespace VCCSharp.Modules
 
             Model.CPU.CpuMultiplier = cpuMultiplier;
 
-            _modules.Emu.ResetPending = (byte)ResetPendingStates.ClsSynch; // Without this, changing the config does nothing.
+            _modules.Emu.ResetPending = ResetPendingStates.ClsSynch; // Without this, changing the config does nothing.
         }
 
         public void SetWindowSize(short width, short height)
