@@ -15,8 +15,7 @@ namespace VCCSharp.Modules
         IntPointer GetGraphicsSurface();
 
         void ResetGraphicsState();
-        void MakeRgbPalette();
-        void MakeCmpPalette(int paletteType);
+        void ResetPalettte();
         void SetBlinkState(byte state);
         void SetBorderChange();
         void SetVidMask(uint mask);
@@ -188,6 +187,12 @@ namespace VCCSharp.Modules
             VerticalOffsetRegister = 0;
         }
 
+        public void ResetPalettte()
+        {
+            MakeRgbPalette();
+            MakeCmpPalette(_modules.Config.Model.Video.Palette.Value);
+        }
+
         public void SetBlinkState(byte state)
         {
             BlinkState = state;
@@ -222,9 +227,9 @@ namespace VCCSharp.Modules
             BorderChange = 3;
         }
 
-        public void MakeCmpPalette(int paletteType)
+        public void MakeCmpPalette(PaletteTypes paletteType)
         {
-            Debug.WriteLine(paletteType == 1 ? "Loading new CMP palette." : "Loading old CMP palette.");
+            Debug.WriteLine(paletteType == PaletteTypes.Original ? "Loading original CMP palette." : "Loading updated CMP palette.");
 
             float gamma = 1.4f;
 
@@ -232,7 +237,7 @@ namespace VCCSharp.Modules
             {
                 double r, g, b;
 
-                if (paletteType == 1)
+                if (paletteType == PaletteTypes.Original)
                 {
                     if (index > 39) { gamma = 1.1f; }
 
@@ -305,7 +310,7 @@ namespace VCCSharp.Modules
                     }
                 }
 
-                SetPaletteLookup(index, (byte)r, (byte)g, (byte)b);
+                _colors.PaletteLookup32[MonitorTypes.Composite][index] = (uint)(((byte)r << 16) | ((byte)g << 8) | (byte)b);
             }
         }
 
@@ -314,7 +319,9 @@ namespace VCCSharp.Modules
             byte borderColor = CC3BorderColor;
 
             SetGimeBorderColor(0);
-            MakeCmpPalette((int)_modules.Config.Model.Video.Palette.Value);
+            
+            ResetPalettte();
+
             SetGimeBorderColor(borderColor);
         }
 
@@ -348,15 +355,13 @@ namespace VCCSharp.Modules
                 byte g = _colors.ColorTable32Bit[(index & 16) >> 3 | (index & 2) >> 1];
                 byte b = _colors.ColorTable32Bit[(index & 8) >> 2 | (index & 1)];
 
-                _colors.PaletteLookup32[1 * 64 + index] = (uint)(r << 16 | g << 8 | b);
+                _colors.PaletteLookup32[MonitorTypes.RGB][index] = (uint)(r << 16 | g << 8 | b);
             }
         }
 
         public void SetMonitorTypePalettes(MonitorTypes monitorType, byte palIndex)
         {
-            int offset = (monitorType == MonitorTypes.Composite ? 0 : 64) + palIndex;
-
-            _colors.Palette32Bit[palIndex] = _colors.PaletteLookup32[offset];
+            _colors.Palette32Bit[palIndex] = _colors.PaletteLookup32[monitorType][palIndex];
         }
 
         public void SetGimeBorderColor(byte data)
@@ -369,28 +374,8 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void SetPaletteLookup(byte index, byte r, byte g, byte b)
-        {
-            byte rr = r;
-            byte gg = g;
-            byte bb = b;
-
-            _colors.PaletteLookup32[0 * 64 + index] = (uint)((rr << 16) | (gg << 8) | bb);
-
-            //rr >>= 3;
-            //gg >>= 3;
-            //bb >>= 3;
-            //colors->PaletteLookup16[0][index] = (rr << 11) | (gg << 6) | bb;
-
-            //rr >>= 3;
-            //gg >>= 3;
-            //bb >>= 3;
-            //colors->PaletteLookup8[0][index] = 0x80 | ((rr & 2) << 4) | ((gg & 2) << 3) | ((bb & 2) << 2) | ((rr & 1) << 2) | ((gg & 1) << 1) | (bb & 1);
-        }
-
         public bool CheckState(byte attributes)
         {
-            //return (!instance->BlinkState) & !!(attributes & 128);
             return BlinkState == 0 && (attributes & 128) != 0;
         }
 
@@ -459,13 +444,12 @@ namespace VCCSharp.Modules
         public void SetGimePalette(byte palette, byte color)
         {
             byte offset = (byte)(color & 63);
-            int index = (MonitorType == MonitorTypes.Composite ? 0 : 64) + offset;
 
             // ReSharper disable CommentTypo
             // Convert the 6bit rgbrgb value to rrrrrggggggbbbbb for the Real video hardware.
             // ReSharper restore CommentTypo
             _colors.Palette[palette] = offset;
-            _colors.Palette32Bit[palette] = _colors.PaletteLookup32[index];
+            _colors.Palette32Bit[palette] = _colors.PaletteLookup32[MonitorType][offset];
         }
 
         public void SetCompatMode(CompatibilityModes mode)
@@ -621,9 +605,8 @@ namespace VCCSharp.Modules
             }
 
             byte offset = (byte)(CC3BorderColor & 63);
-            int index = (MonitorType == MonitorTypes.Composite ? 0 : 64) + offset;
 
-            BorderColor = _colors.PaletteLookup32[index];
+            BorderColor = _colors.PaletteLookup32[MonitorType][offset];
 
             NewStartOfVidRam = (NewStartOfVidRam & VidMask) + VidRamOffset; //Dist Offset for 2M configuration
             MasterMode = (byte)((GraphicsMode << 7) | ((int)CompatibilityMode << 6) | ((Bpp & 3) << 4) | (Stretch & 15));

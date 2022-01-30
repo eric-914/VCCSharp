@@ -128,11 +128,8 @@ namespace VCCSharp.Modules
         private void GimeReset()
         {
             _modules.Graphics.ResetGraphicsState();
-            _modules.Graphics.MakeRgbPalette();
 
-            var paletteType = _modules.Config.Model.Video.Palette.Value;
-
-            _modules.Graphics.MakeCmpPalette((int)paletteType);
+            _modules.Graphics.SetPaletteType();
 
             _modules.CoCo.CocoReset();
 

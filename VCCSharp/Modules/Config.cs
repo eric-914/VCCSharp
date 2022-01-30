@@ -27,6 +27,7 @@ namespace VCCSharp.Modules
         void SaveAs();
 
         void SynchSystemWithConfig();
+        void SynchSystemWithConfigAlt();
         void DecreaseOverclockSpeed();
         void IncreaseOverclockSpeed();
 
@@ -144,6 +145,26 @@ namespace VCCSharp.Modules
             SetCpuType(Model.CPU.Type.Value);
 
             _modules.Graphics.SetMonitorType(Model.Video.Monitor.Value);
+            _modules.MC6821.SetCartAutoStart(Model.Startup.CartridgeAutoStart);
+        }
+
+        public void SynchSystemWithConfigAlt()
+        {
+            _modules.Vcc.AutoStart = Model.Startup.AutoStart;
+            _modules.Vcc.Throttle = Model.CPU.ThrottleSpeed;
+
+            _modules.Emu.RamSize = Model.Memory.Ram.Value;
+            _modules.Emu.FrameSkip = Model.CPU.FrameSkip;
+            _modules.Emu.SetCpuMultiplier(Model.CPU.CpuMultiplier);
+
+            _modules.Draw.SetAspect(Model.Video.ForceAspect);
+
+            _modules.Graphics.SetPaletteType();
+            _modules.Graphics.SetMonitorType(Model.Video.Monitor.Value);
+            _modules.Graphics.SetScanLines(Model.Video.ScanLines);
+
+            SetCpuType(Model.CPU.Type.Value);
+
             _modules.MC6821.SetCartAutoStart(Model.Startup.CartridgeAutoStart);
         }
 

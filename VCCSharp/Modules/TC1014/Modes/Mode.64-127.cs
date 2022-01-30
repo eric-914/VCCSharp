@@ -1,4 +1,8 @@
 ﻿// ReSharper disable once InconsistentNaming
+
+using System.Diagnostics;
+using VCCSharp.IoC;
+
 #pragma warning disable IDE1006 // Naming Styles
 namespace VCCSharp.Modules.TC1014.Modes
 {
@@ -47,18 +51,21 @@ namespace VCCSharp.Modules.TC1014.Modes
                 byte character = memory[index];
                 int yOffset = y % 12;
 
-                switch ((character & 192) >> 6)
+                if (character != 0 && character != 255 && character != 96)
+                {
+                    
+                }
+
+                switch (character >> 6)
                 {
                     case 0:
                         character &= 63;
                         textPalette[0] = palette[graphics.TextBgPalette];
                         textPalette[1] = palette[graphics.TextFgPalette];
 
-                        //pixel = Fonts.NTSCRoundFontData8x12[(character + lowerCaseOffset) * 12 + yOffset];
-                        if (graphics.LowerCase && character < 32)
-                            pixel = Fonts.NTSCRoundFontData8x12[(character + 80) * 12 + yOffset];
-                        else
-                            pixel = (byte)~Fonts.NTSCRoundFontData8x12[character * 12 + yOffset];
+                        pixel = graphics.LowerCase && character < 32
+                            ? Fonts.NTSCRoundFontData8x12[(character + 80) * 12 + yOffset]
+                            : (byte)~Fonts.NTSCRoundFontData8x12[character * 12 + yOffset];
 
                         break;
 
@@ -86,7 +93,7 @@ namespace VCCSharp.Modules.TC1014.Modes
                     yStride += xPitch;
 
                     Render();
-                    
+
                     yStride -= xPitch;
                 }
             }

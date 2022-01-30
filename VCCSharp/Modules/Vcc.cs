@@ -131,14 +131,13 @@ namespace VCCSharp.Modules
                     _modules.Config.SynchSystemWithConfig();
                     _modules.Draw.DoCls();
                     _modules.Emu.HardReset();
-
                 }},
 
                 {ResetPendingStates.Cls, () => { _modules.Draw.DoCls();}},
 
                 {ResetPendingStates.ClsSynch, () =>
                 {
-                    _modules.Config.SynchSystemWithConfig();
+                    _modules.Config.SynchSystemWithConfigAlt();
                     _modules.Draw.DoCls();
                 }}
             };
