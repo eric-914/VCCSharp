@@ -8,6 +8,7 @@ using VCCSharp.Libraries;
 using VCCSharp.Main;
 using VCCSharp.Menu;
 using VCCSharp.Models.Configuration;
+using VCCSharp.Models.Configuration.Support;
 using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
 using VCCSharp.Models.Keyboard;

@@ -1,24 +1,13 @@
-﻿using System;
-using Newtonsoft.Json;
-using VCCSharp.Enums;
+﻿using VCCSharp.Enums;
+using VCCSharp.Models.Configuration.Support;
 
 namespace VCCSharp.Models.Configuration
 {
     public class Video
     {
-        [JsonProperty("#Monitor")]
-        public string MonitorTypeComment { get; } = $"{{{MonitorTypes.Composite},{MonitorTypes.RGB}}}";
+        public RangeSelect<MonitorTypes> Monitor { get; } = new RangeSelect<MonitorTypes>();
 
-        [JsonIgnore]
-        public MonitorTypes MonitorType { get; set; } = MonitorTypes.Composite;
-
-        public string Monitor
-        {
-            get => MonitorType.ToString();
-            set => MonitorType = Enum.Parse<MonitorTypes>(value);
-        }
-
-        public byte PaletteType { get; set; } = 1;
+        public RangeSelect<PaletteTypes> Palette { get; } = new RangeSelect<PaletteTypes> { Value = PaletteTypes.Updated };
 
         public bool ScanLines { get; set; } = false;
         public bool ForceAspect { get; set; } = true;

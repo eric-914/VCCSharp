@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using VCCSharp.Models.Configuration.Support;
 
 namespace VCCSharp.Models.Configuration
 {
@@ -12,16 +12,10 @@ namespace VCCSharp.Models.Configuration
     /// <see href="https://colorcomputerarchive.com/repo/Documents/Manuals/Hardware/Multi-Pak%20Interface%20Owners%20Manual%20%28Tandy%29.pdf"/>
     public class MultiPak
     {
+        public RangeSelect SwitchPosition { get; } = new RangeSelect(1, 2, 3, 4);
+
         //"C:\Users\erich\source\repos\VCC\bin\Debug\x64\mpi"
         public string FilePath { get; set; } = "";//C:\CoCo
-
-        [JsonProperty("#SwitchPosition")]
-        public string SwitchPositionComment { get; } = "{1,2,3,4}";
-
-        [JsonIgnore]
-        public int SwitchIndex { get; set; } = 0;
-
-        public int SwitchPosition { get => SwitchIndex + 1; set => SwitchIndex = value - 1; }
 
         public MultiSlots Slots { get; } = new MultiSlots();
     }

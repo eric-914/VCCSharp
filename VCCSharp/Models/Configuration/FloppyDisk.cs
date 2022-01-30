@@ -1,4 +1,6 @@
-﻿namespace VCCSharp.Models.Configuration
+﻿using VCCSharp.Models.Configuration.Support;
+
+namespace VCCSharp.Models.Configuration
 {
     //[FD-502] ### MODULE SPECIFIC ###
     public class FloppyDisk

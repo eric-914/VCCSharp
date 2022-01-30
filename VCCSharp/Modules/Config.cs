@@ -8,6 +8,7 @@ using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using VCCSharp.Models.Configuration;
+using VCCSharp.Models.Configuration.Support;
 using VCCSharp.Properties;
 using static System.IntPtr;
 using HWND = System.IntPtr;
@@ -396,7 +397,7 @@ namespace VCCSharp.Modules
 
             _persistence.Save(ConfigModel, GetLeftJoystick(), GetRightJoystick(), iniFilePath);
 
-            _io.Save(@"C:\CoCo\coco.json", new ConfigurationModel());
+            _io.Save(@"C:\CoCo\coco.json", new Root());
         }
 
         public KeyboardLayouts GetCurrentKeyboardLayout()

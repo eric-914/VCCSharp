@@ -2,6 +2,6 @@
 {
     public class HardDisk
     {
-        public string FilePath;
+        public string FilePath { get; set; } = "";
     }
 }
