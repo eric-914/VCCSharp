@@ -2,7 +2,6 @@
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Models;
 using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules
@@ -93,7 +92,7 @@ namespace VCCSharp.Modules
 
         public void HardReset()
         {
-            if (_modules.TC1014.MmuInit((byte)RamSize) == Define.FALSE)
+            if (!_modules.TC1014.MmuInit((byte)RamSize))
             {
                 MessageBox.Show("Can't allocate enough RAM, out of memory", "Error");
 

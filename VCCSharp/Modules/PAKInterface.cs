@@ -44,8 +44,8 @@ namespace VCCSharp.Modules
 
         public byte CartInserted { get; set; }
         public string ModuleName { get; set; } = "Blank";
-        public int RomPackLoaded;
-        public uint BankedCartOffset;
+        public bool RomPackLoaded { get; set; }
+        public uint BankedCartOffset { get; set; }
 
         // Storage for Pak ROMs
         public byte[] ExternalRomBuffer = new byte[Define.PAK_MAX_MEM];
@@ -314,7 +314,7 @@ namespace VCCSharp.Modules
         {
             if (ModulePortWrite(port, data) == 1)
             {
-                if (port == 0x40 && RomPackLoaded != 0)
+                if (port == 0x40 && RomPackLoaded)
                 {
                     BankedCartOffset = (uint)((data & 15) << 14);
                 }
@@ -359,7 +359,7 @@ namespace VCCSharp.Modules
             UnloadDll(emulationRunning);
 
             BankedCartOffset = 0;
-            RomPackLoaded = Define.TRUE;
+            RomPackLoaded = true;
 
             return rom.Length;
         }
@@ -371,7 +371,7 @@ namespace VCCSharp.Modules
             _dllPath = "";
             ModuleName = "Blank";
 
-            RomPackLoaded = Define.FALSE;
+            RomPackLoaded = false;
 
             SetCart(0);
 

@@ -14,7 +14,7 @@ namespace VCCSharp.Modules.TC1014
         void MC6883Reset();
         void CopyRom();
         void MmuReset();
-        byte MmuInit(byte ramSizeOption);
+        bool MmuInit(byte ramSizeOption);
         byte MemRead8(ushort address);
         void MemWrite8(byte data, ushort address);
         void GimeAssertVerticalInterrupt();
@@ -189,7 +189,7 @@ Could not locate {rom} in any of these locations:
         * Copy Rom Images to buffer space and reset GIME MMU registers to 0                      *
         * Returns NULL if any of the above fail.                                                 *
         *****************************************************************************************/
-        public byte MmuInit(byte ramSizeOption)
+        public bool MmuInit(byte ramSizeOption)
         {
             uint ramSize = _memConfig[ramSizeOption];
 
@@ -215,7 +215,7 @@ Could not locate {rom} in any of these locations:
             CopyRom();
             MmuReset();
 
-            return 1;
+            return true;
         }
 
         public bool LoadInternalRom(string filename)

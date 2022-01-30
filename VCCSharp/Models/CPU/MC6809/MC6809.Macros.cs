@@ -10,50 +10,50 @@ namespace VCCSharp.Models.CPU.MC6809
 
         public bool CC_E
         {
-            get => _cpu.cc[(int)CCFlagMasks.E] == Define.TRUE;
-            set => _cpu.cc[(int)CCFlagMasks.E] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.E];
+            set => _cpu.cc[(int)CCFlagMasks.E] = value;
         }
 
         public bool CC_F
         {
-            get => _cpu.cc[(int)CCFlagMasks.F] == Define.TRUE;
-            set => _cpu.cc[(int)CCFlagMasks.F] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.F];
+            set => _cpu.cc[(int)CCFlagMasks.F] = value;
         }
 
         public bool CC_H
         {
-            get => _cpu.cc[(int)CCFlagMasks.H] == Define.TRUE;
-            set => _cpu.cc[(int)CCFlagMasks.H] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.H];
+            set => _cpu.cc[(int)CCFlagMasks.H] = value;
         }
 
         public bool CC_I
         {
-            get => _cpu.cc[(int)CCFlagMasks.I] == Define.TRUE;
-            set => _cpu.cc[(int)CCFlagMasks.I] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.I];
+            set => _cpu.cc[(int)CCFlagMasks.I] = value;
         }
 
         public bool CC_N
         {
-            get => _cpu.cc[(int)CCFlagMasks.N] == Define.TRUE;
-            set => _cpu.cc[(int)CCFlagMasks.N] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.N];
+            set => _cpu.cc[(int)CCFlagMasks.N] = value;
         }
 
         public bool CC_Z
         {
-            get => _cpu.cc[(int)CCFlagMasks.Z] == Define.TRUE;
-            set => _cpu.cc[(int)CCFlagMasks.Z] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.Z];
+            set => _cpu.cc[(int)CCFlagMasks.Z] = value;
         }
 
         public bool CC_V
         {
-            get => _cpu.cc[(int)CCFlagMasks.V] == Define.TRUE;
-            set => _cpu.cc[(int)CCFlagMasks.V] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.V];
+            set => _cpu.cc[(int)CCFlagMasks.V] = value;
         }
 
         public bool CC_C
         {
-            get => _cpu.cc[(int)CCFlagMasks.C] == Define.TRUE;
-            set => _cpu.cc[(int)CCFlagMasks.C] = value ? Define.TRUE : Define.FALSE;
+            get => _cpu.cc[(int)CCFlagMasks.C];
+            set => _cpu.cc[(int)CCFlagMasks.C] = value;
         }
 
         #endregion

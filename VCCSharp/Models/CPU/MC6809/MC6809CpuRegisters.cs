@@ -18,7 +18,7 @@ namespace VCCSharp.Models.CPU.MC6809
 
         public byte ccbits;
 
-        public byte[] cc = new byte[8];
+        public bool[] cc = new bool[8];
 
         public Reg8 ureg8 { get; }
         public Reg16 xfreg16 { get; }
