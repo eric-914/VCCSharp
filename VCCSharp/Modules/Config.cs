@@ -31,7 +31,7 @@ namespace VCCSharp.Modules
         void IncreaseOverclockSpeed();
 
         string AppTitle { get; }
-        byte TextMode { get; set; }
+        bool TextMode { get; set; }
         bool PrintMonitorWindow { get; set; }
         ushort TapeCounter { get; set; }
         byte TapeMode { get; set; }
@@ -50,7 +50,7 @@ namespace VCCSharp.Modules
 
         public string AppTitle { get; } = Resources.ResourceManager.GetString("AppTitle");
 
-        public byte TextMode { get; set; } = 1;  //--Add LF to CR
+        public bool TextMode { get; set; } = true;  //--Add LF to CR
         public bool PrintMonitorWindow { get; set; }
 
         public ushort TapeCounter { get; set; }

@@ -135,7 +135,7 @@ namespace VCCSharp.Models.CPU.HD6309
                 {
                     //Abort the run nothing happens asynchronously from the CPU
                     // WDZ - Experimental SyncWaiting should still return used cycles (and not zero) by breaking from loop
-                    break; 
+                    break;
                 }
 
                 _gCycleFor = cycleFor;
@@ -150,7 +150,7 @@ namespace VCCSharp.Models.CPU.HD6309
 
         public void Cpu_Nmi()
         {
-            _cpu.cc[(int)CCFlagMasks.E] = 1;
+            _cpu.cc[(int)CCFlagMasks.E] = true;
 
             MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
             MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
@@ -173,8 +173,8 @@ namespace VCCSharp.Models.CPU.HD6309
 
             MemWrite8(GetCC(), --_cpu.s.Reg);
 
-            _cpu.cc[(int)CCFlagMasks.I] = 1;
-            _cpu.cc[(int)CCFlagMasks.F] = 1;
+            _cpu.cc[(int)CCFlagMasks.I] = true;
+            _cpu.cc[(int)CCFlagMasks.F] = true;
 
             _cpu.pc.Reg = MemRead16(Define.VNMI);
 
@@ -183,29 +183,29 @@ namespace VCCSharp.Models.CPU.HD6309
 
         public void Cpu_Firq()
         {
-            if (_cpu.cc[(int)CCFlagMasks.F] == 0)
+            if (!_cpu.cc[(int)CCFlagMasks.F])
             {
                 _inInterrupt = 1; //Flag to indicate FIRQ has been asserted
 
                 switch (_cpu.md[(int)MDFlagMasks.FIRQMODE])
                 {
                     case 0:
-                        _cpu.cc[(int)CCFlagMasks.E] = 0; // Turn E flag off
+                        _cpu.cc[(int)CCFlagMasks.E] = false; // Turn E flag off
 
                         MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
                         MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
 
                         MemWrite8(GetCC(), --_cpu.s.Reg);
 
-                        _cpu.cc[(int)CCFlagMasks.I] = 1;
-                        _cpu.cc[(int)CCFlagMasks.F] = 1;
+                        _cpu.cc[(int)CCFlagMasks.I] = true;
+                        _cpu.cc[(int)CCFlagMasks.F] = true;
 
                         _cpu.pc.Reg = MemRead16(Define.VFIRQ);
 
                         break;
 
                     case 1:		//6309
-                        _cpu.cc[(int)CCFlagMasks.E] = 1;
+                        _cpu.cc[(int)CCFlagMasks.E] = true;
 
                         MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
                         MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
@@ -228,8 +228,8 @@ namespace VCCSharp.Models.CPU.HD6309
 
                         MemWrite8(GetCC(), --_cpu.s.Reg);
 
-                        _cpu.cc[(int)CCFlagMasks.I] = 1;
-                        _cpu.cc[(int)CCFlagMasks.F] = 1;
+                        _cpu.cc[(int)CCFlagMasks.I] = true;
+                        _cpu.cc[(int)CCFlagMasks.F] = true;
 
                         _cpu.pc.Reg = MemRead16(Define.VFIRQ);
 
@@ -248,9 +248,9 @@ namespace VCCSharp.Models.CPU.HD6309
                 return;
             }
 
-            if (_cpu.cc[(int)CCFlagMasks.I] == 0)
+            if (!_cpu.cc[(int)CCFlagMasks.I])
             {
-                _cpu.cc[(int)CCFlagMasks.E] = 1;
+                _cpu.cc[(int)CCFlagMasks.E] = true;
 
                 MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
                 MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
@@ -273,7 +273,7 @@ namespace VCCSharp.Models.CPU.HD6309
 
                 MemWrite8(GetCC(), --_cpu.s.Reg);
 
-                _cpu.cc[(int)CCFlagMasks.I] = 1;
+                _cpu.cc[(int)CCFlagMasks.I] = true;
 
                 _cpu.pc.Reg = MemRead16(Define.VIRQ);
             }

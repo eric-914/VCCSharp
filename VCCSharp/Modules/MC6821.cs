@@ -15,7 +15,7 @@ namespace VCCSharp.Modules
         void SetCartAutoStart(bool autoStart);
         void ClosePrintFile();
         void SetMonState(bool state);
-        void SetSerialParams(byte textMode);
+        void SetSerialParams(bool textMode);
         int OpenPrintFile(string filename);
 
         byte Pia0_Read(byte port);
@@ -36,7 +36,7 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
         private readonly IKernel _kernel;
 
-        private byte _addLf;
+        private bool _addLf;
         private bool _monState;
 
         private HANDLE _hPrintFile;
@@ -429,7 +429,7 @@ namespace VCCSharp.Modules
                     MC6821_WritePrintMon(data);
                 }
 
-                if ((data == 0x0D) && (_addLf != 0))
+                if (data == 0x0D && _addLf)
                 {
                     //data = 0x0A;
 
@@ -494,7 +494,7 @@ namespace VCCSharp.Modules
             return _hPrintFile == Define.INVALID_HANDLE_VALUE ? 0 : 1;
         }
 
-        public void SetSerialParams(byte textMode)
+        public void SetSerialParams(bool textMode)
         {
             _addLf = textMode;
         }

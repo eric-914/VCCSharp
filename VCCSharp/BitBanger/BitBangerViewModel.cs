@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using VCCSharp.Annotations;
-using VCCSharp.Models;
 using VCCSharp.Modules;
 
 namespace VCCSharp.BitBanger
@@ -44,7 +43,7 @@ namespace VCCSharp.BitBanger
             {
                 if (Config == null) return string.Empty;
 
-                string file = Config.SerialCaptureFile ;
+                string file = Config.SerialCaptureFile;
 
                 _serialCaptureFile = string.IsNullOrEmpty(file) ? NoFile : file;
 
@@ -64,19 +63,19 @@ namespace VCCSharp.BitBanger
 
         public bool AddLineFeed
         {
-            get => Config != null && Config.TextMode != Define.FALSE;
+            get => Config is { TextMode: true };
             set
             {
-                if (value == (Config.TextMode != Define.FALSE)) return;
+                if (value == Config.TextMode) return;
 
-                Config.TextMode = (value ? Define.TRUE : Define.FALSE);
+                Config.TextMode = value;
                 OnPropertyChanged();
             }
         }
 
         public bool Print
         {
-            get => Config is {PrintMonitorWindow: true};
+            get => Config is { PrintMonitorWindow: true };
             set
             {
                 if (value == Config.PrintMonitorWindow) return;
