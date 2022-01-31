@@ -1,7 +1,5 @@
 ﻿// ReSharper disable once InconsistentNaming
 
-using System.Diagnostics;
-using VCCSharp.IoC;
 
 #pragma warning disable IDE1006 // Naming Styles
 namespace VCCSharp.Modules.TC1014.Modes
@@ -21,7 +19,7 @@ namespace VCCSharp.Modules.TC1014.Modes
             uint[] textPalette = { 0, 0 };
             byte pixel = 0;
 
-            uint[] palette = graphics.GetGraphicsColors().Palette32Bit;
+            var palette = graphics.GetGraphicsColors().Palette32Bit;
             ushort y = (ushort)emu.LineCounter;
             int xPitch = (int)emu.SurfacePitch;
             BytePointer memory = model.BytePointer;
@@ -51,7 +49,7 @@ namespace VCCSharp.Modules.TC1014.Modes
                 byte character = memory[index];
                 int yOffset = y % 12;
 
-                if (character != 0 && character != 255 && character != 96)
+                if (character == 88)
                 {
                     
                 }

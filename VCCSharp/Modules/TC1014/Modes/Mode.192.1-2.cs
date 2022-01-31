@@ -14,7 +14,7 @@
             IGraphics graphics = model.Modules.Graphics;
             IEmu emu = model.Modules.Emu;
 
-            uint[] palette = graphics.GetGraphicsColors().Palette32Bit;
+            var palette = graphics.GetGraphicsColors().Palette32Bit;
             uint[] artifacts = graphics.GetGraphicsColors().Artifacts32;
             var szSurface32 = graphics.GetGraphicsSurface();
             int xPitch = (int)emu.SurfacePitch;

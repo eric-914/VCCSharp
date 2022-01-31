@@ -4,6 +4,7 @@ using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
+using VCCSharp.Models.Graphics;
 using VCCSharp.Modules.TC1014;
 
 namespace VCCSharp.Modules
@@ -15,7 +16,7 @@ namespace VCCSharp.Modules
         IntPointer GetGraphicsSurface();
 
         void ResetGraphicsState();
-        void ResetPalettte();
+        void ResetPalette();
         void SetBlinkState(byte state);
         void SetBorderChange();
         void SetVidMask(uint mask);
@@ -185,9 +186,11 @@ namespace VCCSharp.Modules
             CC2Offset = 0;
             HorizontalOffset = 0;
             VerticalOffsetRegister = 0;
+
+            _colors.Palette32Bit.Reset();
         }
 
-        public void ResetPalettte()
+        public void ResetPalette()
         {
             MakeRgbPalette();
             MakeCmpPalette(_modules.Config.Model.Video.Palette.Value);
@@ -319,24 +322,24 @@ namespace VCCSharp.Modules
             byte borderColor = CC3BorderColor;
 
             SetGimeBorderColor(0);
-            
-            ResetPalettte();
+
+            MakeRgbPalette();
+            MakeCmpPalette(_modules.Config.Model.Video.Palette.Value);
 
             SetGimeBorderColor(borderColor);
         }
 
         public void SetMonitorType(MonitorTypes type)
         {
+            MonitorType = type;
+
+            Debug.WriteLine($"Monitor Type={MonitorType}");
+
             byte borderColor = CC3BorderColor;
 
             SetGimeBorderColor(0);
 
-            MonitorType = type;
-
-            for (byte palIndex = 0; palIndex < 16; palIndex++)
-            {
-                SetMonitorTypePalettes(MonitorType, palIndex);
-            }
+            _colors.Palette32Bit.Map(_colors.PaletteLookup32[MonitorType]);
 
             SetGimeBorderColor(borderColor);
         }
@@ -357,11 +360,6 @@ namespace VCCSharp.Modules
 
                 _colors.PaletteLookup32[MonitorTypes.RGB][index] = (uint)(r << 16 | g << 8 | b);
             }
-        }
-
-        public void SetMonitorTypePalettes(MonitorTypes monitorType, byte palIndex)
-        {
-            _colors.Palette32Bit[palIndex] = _colors.PaletteLookup32[monitorType][palIndex];
         }
 
         public void SetGimeBorderColor(byte data)
@@ -449,7 +447,9 @@ namespace VCCSharp.Modules
             // Convert the 6bit rgbrgb value to rrrrrggggggbbbbb for the Real video hardware.
             // ReSharper restore CommentTypo
             _colors.Palette[palette] = offset;
-            _colors.Palette32Bit[palette] = _colors.PaletteLookup32[MonitorType][offset];
+
+            //--This is swapping out palette indexes
+            _colors.Palette32Bit.Map(_colors.PaletteLookup32[MonitorType], palette, offset);
         }
 
         public void SetCompatMode(CompatibilityModes mode)

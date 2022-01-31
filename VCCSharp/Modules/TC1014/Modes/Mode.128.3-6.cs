@@ -13,7 +13,7 @@
             IGraphics graphics = model.Modules.Graphics;
             IEmu emu = model.Modules.Emu;
 
-            uint[] palette = graphics.GetGraphicsColors().Palette32Bit;
+            var palette = graphics.GetGraphicsColors().Palette32Bit;
             var szSurface32 = graphics.GetGraphicsSurface();
             int xPitch = (int)emu.SurfacePitch;
             var memory = model.ShortPointer;
