@@ -30,8 +30,8 @@ namespace VCCSharp.Modules
         private LARGE_INTEGER _oneMs;
         private LARGE_INTEGER _oneFrame;
 
-        private static ushort _frameCount;
-        private static float _fps, _fNow, _fLast;
+        private ushort _frameCount;
+        private float _fps, _fNow, _fLast;
         private float _fMasterClock;
         private int _frameSkip;
 

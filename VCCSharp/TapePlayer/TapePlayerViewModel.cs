@@ -84,7 +84,7 @@ namespace VCCSharp.TapePlayer
                 if (value == _counter) return;
                 _counter = value;
 
-                Config.TapeCounter = (ushort)value;
+                Config.TapeCounter = value;
 
                 OnPropertyChanged();
             }

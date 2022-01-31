@@ -34,7 +34,7 @@ namespace VCCSharp.Modules
         string AppTitle { get; }
         bool TextMode { get; set; }
         bool PrintMonitorWindow { get; set; }
-        ushort TapeCounter { get; set; }
+        int TapeCounter { get; set; }
         TapeModes TapeMode { get; set; }
         string TapeFileName { get; set; }
         string SerialCaptureFile { get; set; }
@@ -54,7 +54,7 @@ namespace VCCSharp.Modules
         public bool TextMode { get; set; } = true;  //--Add LF to CR
         public bool PrintMonitorWindow { get; set; }
 
-        public ushort TapeCounter { get; set; }
+        public int TapeCounter { get; set; }
         public TapeModes TapeMode { get; set; } = TapeModes.Stop;
 
         public string TapeFileName { get; set; }
