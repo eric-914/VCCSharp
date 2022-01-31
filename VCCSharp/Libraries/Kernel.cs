@@ -1,10 +1,10 @@
 ﻿using System;
 using VCCSharp.Libraries.Models;
 using VCCSharp.Models;
-using HMODULE = System.IntPtr;
-using HANDLE = System.IntPtr;
-using LPVOID = System.IntPtr;
 using static System.IntPtr;
+using HANDLE = System.IntPtr;
+using HMODULE = System.IntPtr;
+using LPVOID = System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
@@ -12,9 +12,6 @@ namespace VCCSharp.Libraries
     {
         HMODULE LoadLibrary(string dllToLoad);
         bool FreeLibrary(HMODULE hModule);
-        ushort GetPrivateProfileIntA(string lpAppName, string lpKeyName, short nDefault, string lpFileName);
-        uint GetPrivateProfileStringA(string lpAppName, string lpKeyName, string lpDefault, byte[] lpReturnedString, uint nSize, string lpFileName);
-        int WritePrivateProfileStringA(string lpAppName, string lpKeyName, string lpString, string lpFileName);
         int QueryPerformanceCounter(ref LARGE_INTEGER lpPerformanceCount);
         int QueryPerformanceFrequency(ref LARGE_INTEGER lpFrequency);
         int ReadFile(HANDLE hFile, byte[] lpBuffer, uint nNumberOfBytesToRead, ref uint lpNumberOfBytesRead, LPVOID lpOverlapped);
@@ -38,15 +35,6 @@ namespace VCCSharp.Libraries
 
         public bool FreeLibrary(HMODULE hModule)
             => KernelDll.FreeLibrary(hModule);
-
-        public ushort GetPrivateProfileIntA(string lpAppName, string lpKeyName, short nDefault, string lpFileName)
-            => KernelDll.GetPrivateProfileIntA(lpAppName, lpKeyName, nDefault, lpFileName);
-
-        public uint GetPrivateProfileStringA(string lpAppName, string lpKeyName, string lpDefault, byte[] lpReturnedString, uint nSize, string lpFileName)
-            => KernelDll.GetPrivateProfileStringA(lpAppName, lpKeyName, lpDefault, lpReturnedString, nSize, lpFileName);
-
-        public int WritePrivateProfileStringA(string lpAppName, string lpKeyName, string lpString, string lpFileName)
-            => KernelDll.WritePrivateProfileStringA(lpAppName, lpKeyName, lpString, lpFileName);
 
         public int QueryPerformanceCounter(ref LARGE_INTEGER lpPerformanceCount)
             => KernelDll.QueryPerformanceCounter(ref lpPerformanceCount);

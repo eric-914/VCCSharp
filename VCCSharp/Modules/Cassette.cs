@@ -27,7 +27,7 @@ namespace VCCSharp.Modules
         Action<int> UpdateTapeDialog { get; set; }
 
         byte MotorState { get; set; }
-        byte TapeMode { get; set; }
+        TapeModes TapeMode { get; set; }
         string TapeFileName { get; set; }
         uint TapeOffset { get; set; }
     }
@@ -38,7 +38,7 @@ namespace VCCSharp.Modules
         private readonly IKernel _kernel;
 
         public byte MotorState { get; set; }
-        public byte TapeMode { get; set; } = Define.STOP;
+        public TapeModes TapeMode { get; set; } = TapeModes.Stop;
 
         private readonly byte[] _one = { 0x80, 0xA8, 0xC8, 0xE8, 0xE8, 0xF8, 0xF8, 0xE8, 0xC8, 0xA8, 0x78, 0x50, 0x50, 0x30, 0x10, 0x00, 0x00, 0x10, 0x30, 0x30, 0x50 };
         private readonly byte[] _zero = { 0x80, 0x90, 0xA8, 0xB8, 0xC8, 0xD8, 0xE8, 0xE8, 0xF0, 0xF8, 0xF8, 0xF8, 0xF0, 0xE8, 0xD8, 0xC8, 0xB8, 0xA8, 0x90, 0x78, 0x78, 0x68, 0x50, 0x40, 0x30, 0x20, 0x10, 0x08, 0x00, 0x00, 0x00, 0x08, 0x10, 0x10, 0x20, 0x30, 0x40, 0x50, 0x68, 0x68 };
@@ -80,7 +80,7 @@ namespace VCCSharp.Modules
         {
             uint bytesMoved = 0;
 
-            if (TapeMode != (byte)TapeModes.PLAY)
+            if (TapeMode != TapeModes.Play)
             {
                 return;
             }
@@ -127,7 +127,7 @@ namespace VCCSharp.Modules
                     buffer[index] = 0;
                 }
 
-                TapeMode = (byte)TapeModes.STOP; //Stop at end of tape
+                TapeMode = (byte)TapeModes.Stop; //Stop at end of tape
 
                 return;
             }
@@ -221,19 +221,19 @@ namespace VCCSharp.Modules
 
                     switch (TapeMode)
                     {
-                        case Define.STOP:
+                        case TapeModes.Stop:
                             break;
 
-                        case Define.PLAY:
+                        case TapeModes.Play:
                             _quiet = 30;
                             TempIndex = 0;
                             break;
 
-                        case Define.REC:
+                        case TapeModes.Record:
                             SyncFileBuffer();
                             break;
 
-                        case Define.EJECT:
+                        case TapeModes.Eject:
                             break;
                     }
 
@@ -242,19 +242,19 @@ namespace VCCSharp.Modules
                 case 1:
                     switch (TapeMode)
                     {
-                        case Define.STOP:
+                        case TapeModes.Stop:
                             _modules.CoCo.SetSndOutMode(0);
                             break;
 
-                        case Define.PLAY:
+                        case TapeModes.Play:
                             _modules.CoCo.SetSndOutMode(2);
                             break;
 
-                        case Define.REC:
+                        case TapeModes.Record:
                             _modules.CoCo.SetSndOutMode(1);
                             break;
 
-                        case Define.EJECT:
+                        case TapeModes.Eject:
                             _modules.CoCo.SetSndOutMode(0);
                             break;
                     }
@@ -292,7 +292,7 @@ namespace VCCSharp.Modules
 
         public uint FlushCassetteBuffer(byte[] buffer, uint length)
         {
-            if (TapeMode == Define.REC)
+            if (TapeMode == TapeModes.Record)
             {
                 switch (FileType)
                 {
@@ -347,7 +347,7 @@ namespace VCCSharp.Modules
                             //Don't blow past the end of the buffer
                             if (TapeOffset >= Define.WRITEBUFFERSIZE)
                             {
-                                TapeMode = Define.STOP;
+                                TapeMode = TapeModes.Stop;
                             }
                         }
                     }
@@ -371,7 +371,7 @@ namespace VCCSharp.Modules
         {
             if (TapeHandle != Zero)
             {
-                TapeMode = Define.STOP;
+                TapeMode = TapeModes.Stop;
 
                 CloseTapeFile();
             }

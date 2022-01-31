@@ -10,10 +10,10 @@ namespace VCCSharp.Converters
     {
         public static readonly Dictionary<TapeModes, string> ModeTexts = new Dictionary<TapeModes, string>
         {
-            {TapeModes.EJECT, "EJECT"},
-            {TapeModes.PLAY, "PLAY"},
-            {TapeModes.REC, "RECORD"},
-            {TapeModes.STOP, "STOP"},
+            {TapeModes.Eject, "Eject"},
+            {TapeModes.Play, "Play"},
+            {TapeModes.Record, "Record"},
+            {TapeModes.Stop, "Stop"},
         };
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

@@ -14,7 +14,7 @@ namespace VCCSharp.TapePlayer
         private static IConfig _config;
 
         private string _filePath = "Sample Browse File Text";
-        private TapeModes _mode = TapeModes.STOP;
+        private TapeModes _mode = TapeModes.Stop;
         private int _counter;
 
         #region INotifyPropertyChanged

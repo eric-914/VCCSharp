@@ -54,38 +54,38 @@ namespace VCCSharp.TapePlayer
 
         public void Record()
         {
-            _viewModel.Mode = TapeModes.REC;
+            _viewModel.Mode = TapeModes.Record;
 
-            _modules.Config.TapeMode = Define.REC;
+            _modules.Config.TapeMode = TapeModes.Record;
 
-            SetTapeMode(Define.REC);
+            SetTapeMode(TapeModes.Record);
         }
 
         public void Play()
         {
-            _viewModel.Mode = TapeModes.PLAY;
+            _viewModel.Mode = TapeModes.Play;
 
-            _modules.Config.TapeMode = Define.PLAY;
+            _modules.Config.TapeMode = TapeModes.Play;
 
-            SetTapeMode(Define.PLAY);
+            SetTapeMode(TapeModes.Play);
         }
 
         public void Stop()
         {
-            _viewModel.Mode = TapeModes.STOP;
+            _viewModel.Mode = TapeModes.Stop;
 
-            _modules.Config.TapeMode = Define.STOP;
+            _modules.Config.TapeMode = TapeModes.Stop;
 
-            SetTapeMode(Define.STOP);
+            SetTapeMode(TapeModes.Stop);
         }
 
         public void Eject()
         {
-            _viewModel.Mode = TapeModes.EJECT;
+            _viewModel.Mode = TapeModes.Eject;
 
-            _modules.Config.TapeMode = Define.EJECT;
+            _modules.Config.TapeMode = TapeModes.Eject;
 
-            SetTapeMode(Define.EJECT);
+            SetTapeMode(TapeModes.Eject);
         }
 
         public void Rewind()
@@ -97,19 +97,19 @@ namespace VCCSharp.TapePlayer
             SetTapeCounter(0);
         }
 
-        public void SetTapeMode(byte mode)
+        public void SetTapeMode(TapeModes mode)
         {
             _modules.Cassette.TapeMode = mode;
 
             switch (_modules.Cassette.TapeMode)
             {
-                case Define.STOP:
+                case TapeModes.Stop:
                     break;
 
-                case Define.PLAY:
+                case TapeModes.Play:
                     if (_modules.Cassette.TapeHandle == IntPtr.Zero)
                     {
-                        _modules.Cassette.TapeMode = LoadTape() == 0 ? Define.STOP : Define.PLAY;
+                        _modules.Cassette.TapeMode = LoadTape() == 0 ? TapeModes.Stop : TapeModes.Play;
                     }
 
                     if (_modules.Cassette.MotorState != 0)
@@ -119,14 +119,14 @@ namespace VCCSharp.TapePlayer
 
                     break;
 
-                case Define.REC:
+                case TapeModes.Record:
                     if (_modules.Cassette.TapeHandle == IntPtr.Zero)
                     {
-                        _modules.Cassette.TapeMode = LoadTape() == 0 ? Define.STOP : Define.REC;
+                        _modules.Cassette.TapeMode = LoadTape() == 0 ? TapeModes.Stop : TapeModes.Record;
                     }
                     break;
 
-                case Define.EJECT:
+                case TapeModes.Eject:
                     _modules.Cassette.CloseTapeFile();
                     _modules.Cassette.TapeFileName = "EMPTY";
 

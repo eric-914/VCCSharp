@@ -3,10 +3,10 @@
     // ReSharper disable InconsistentNaming
     public enum TapeModes : byte
     {
-        STOP = 0,
-        PLAY = 1,
-        REC = 2,
-        EJECT = 3
+        Stop = 0,
+        Play = 1,
+        Record = 2,
+        Eject = 3
     }
     // ReSharper restore InconsistentNaming
 }

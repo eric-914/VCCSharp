@@ -35,7 +35,7 @@ namespace VCCSharp.Modules
         bool TextMode { get; set; }
         bool PrintMonitorWindow { get; set; }
         ushort TapeCounter { get; set; }
-        byte TapeMode { get; set; }
+        TapeModes TapeMode { get; set; }
         string TapeFileName { get; set; }
         string SerialCaptureFile { get; set; }
         string IniFilePath { get; set; }
@@ -55,7 +55,7 @@ namespace VCCSharp.Modules
         public bool PrintMonitorWindow { get; set; }
 
         public ushort TapeCounter { get; set; }
-        public byte TapeMode { get; set; } = Define.STOP;
+        public TapeModes TapeMode { get; set; } = TapeModes.Stop;
 
         public string TapeFileName { get; set; }
         public string SerialCaptureFile { get; set; }

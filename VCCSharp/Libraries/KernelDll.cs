@@ -3,8 +3,8 @@ using System.Runtime.InteropServices;
 using VCCSharp.Libraries.Models;
 using HANDLE = System.IntPtr;
 using HMODULE = System.IntPtr;
-using LPVOID = System.IntPtr;
 using LPUINT = System.IntPtr;
+using LPVOID = System.IntPtr;
 
 namespace VCCSharp.Libraries
 {
@@ -17,15 +17,6 @@ namespace VCCSharp.Libraries
 
         [DllImport(Dll)]
         public static extern bool FreeLibrary(HMODULE hModule);
-
-        [DllImport(Dll)]
-        public static extern ushort GetPrivateProfileIntA(string lpAppName, string lpKeyName, short nDefault, string lpFileName);
-
-        [DllImport(Dll)]
-        public static extern uint GetPrivateProfileStringA(string lpAppName, string lpKeyName, string lpDefault, byte[] lpReturnedString, uint nSize, string lpFileName);
-
-        [DllImport(Dll)]
-        public static extern int WritePrivateProfileStringA(string lpAppName, string lpKeyName, string lpString, string lpFileName);
 
         [DllImport(Dll)]
         public static extern int QueryPerformanceCounter(ref LARGE_INTEGER lpPerformanceCount);

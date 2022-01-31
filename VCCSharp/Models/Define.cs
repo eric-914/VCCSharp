@@ -36,11 +36,6 @@ namespace VCCSharp.Models
         public const ushort VNMI = 0xFFFC;
         public const ushort VRESET = 0xFFFE;
 
-        public const byte STOP = 0;
-        public const byte PLAY = 1;
-        public const byte REC = 2;
-        public const byte EJECT = 3;
-
         #region ScanCodes (1)
 
         /****************************************************************************
