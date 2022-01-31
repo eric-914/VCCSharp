@@ -99,12 +99,12 @@ namespace VCCSharp.Modules.TC1014
         {
             const string rom = "coco3.rom";
 
-            var configModel = _modules.Config.Model;
+            var configuration = _modules.Configuration;
 
             //--Try loading from Vcc.ini >> CoCoRomPath
-            string cocoRomPath = configModel.FilePaths.Rom;
+            string cocoRomPath = configuration.FilePaths.Rom;
 
-            string path = Path.Combine(configModel.FilePaths.Rom, rom);
+            string path = Path.Combine(configuration.FilePaths.Rom, rom);
 
             if (LoadInternalRom(path))
             {
@@ -113,7 +113,7 @@ namespace VCCSharp.Modules.TC1014
             }
 
             //--Try loading from Vcc.ini >> ExternalBasicImage
-            string externalBasicImage = _modules.Config.Model.Memory.ExternalBasicImage;
+            string externalBasicImage = _modules.Configuration.Memory.ExternalBasicImage;
 
             if (!string.IsNullOrEmpty(externalBasicImage) && LoadInternalRom(externalBasicImage))
             {

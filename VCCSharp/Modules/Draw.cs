@@ -72,7 +72,7 @@ namespace VCCSharp.Modules
         {
             var p = new Point(Define.DEFAULT_WIDTH, Define.DEFAULT_HEIGHT);
 
-            var window = _modules.Config.Model.Window;
+            var window = _modules.Configuration.Window;
 
             if (window.RememberSize)
             {

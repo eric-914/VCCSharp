@@ -17,7 +17,7 @@ namespace VCCSharp.Modules
         void SetLeftJoystick(JoystickModel model);
         void SetRightJoystick(JoystickModel model);
 
-        void SetStickNumbers(byte leftStickNumber, byte rightStickNumber);
+        void SetStickNumbers(int leftStickNumber, int rightStickNumber);
         void SetButtonStatus(MouseButtonStates state);
         void SetJoystick(System.Windows.Size clientSize, System.Windows.Point point);
         byte SetMouseStatus(byte scanCode, byte phase);
@@ -77,7 +77,7 @@ namespace VCCSharp.Modules
             _right = model;
         }
 
-        public void SetStickNumbers(byte leftStickNumber, byte rightStickNumber)
+        public void SetStickNumbers(int leftStickNumber, int rightStickNumber)
         {
             _leftId = leftStickNumber;
             _rightId = rightStickNumber;
@@ -85,8 +85,8 @@ namespace VCCSharp.Modules
 
         public int get_pot_value(byte pot)
         {
-            bool useLeft = _left.UseMouse == 3;
-            bool useRight = _right.UseMouse == 3;
+            bool useLeft = _left.InputSource == JoystickDevices.Joystick;
+            bool useRight = _right.InputSource == JoystickDevices.Joystick;
 
             if (useLeft)
             {
@@ -138,7 +138,7 @@ namespace VCCSharp.Modules
             JoystickModel left = GetLeftJoystick();
             JoystickModel right = GetRightJoystick();
 
-            if (left.UseMouse == 1)
+            if (left.InputSource == JoystickDevices.Mouse)
             {
                 switch (buttonStatus)
                 {
@@ -160,7 +160,7 @@ namespace VCCSharp.Modules
                 }
             }
 
-            if (right.UseMouse == 1)
+            if (right.InputSource == JoystickDevices.Mouse)
             {
                 switch (buttonStatus)
                 {
@@ -207,13 +207,13 @@ namespace VCCSharp.Modules
                 y = 63;
             }
 
-            if (left.UseMouse == 1)
+            if (left.InputSource == JoystickDevices.Mouse)
             {
                 Left.X = x;
                 Left.Y = y;
             }
 
-            if (right.UseMouse == 1)
+            if (right.InputSource == JoystickDevices.Mouse)
             {
                 Right.X = x;
                 Right.Y = y;
@@ -230,7 +230,7 @@ namespace VCCSharp.Modules
             switch (phase)
             {
                 case 0:
-                    if (left.UseMouse == 0)
+                    if (left.InputSource == 0)
                     {
                         if (scanCode == left.Left)
                         {
@@ -269,7 +269,7 @@ namespace VCCSharp.Modules
                         }
                     }
 
-                    if (right.UseMouse == 0)
+                    if (right.InputSource == 0)
                     {
                         if (scanCode == right.Left)
                         {
@@ -310,7 +310,7 @@ namespace VCCSharp.Modules
                     break;
 
                 case 1:
-                    if (left.UseMouse == 0)
+                    if (left.InputSource == 0)
                     {
                         if (scanCode == left.Left)
                         {
@@ -349,7 +349,7 @@ namespace VCCSharp.Modules
                         }
                     }
 
-                    if (right.UseMouse == 0)
+                    if (right.InputSource == 0)
                     {
                         if (scanCode == right.Left)
                         {

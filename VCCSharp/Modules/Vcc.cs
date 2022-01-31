@@ -170,10 +170,7 @@ namespace VCCSharp.Modules
 
         public void ApplyConfigurationChanges()
         {
-            var configModel = _modules.Config.Model;
-
-            JoystickModel left = _modules.Config.GetLeftJoystick();
-            JoystickModel right = _modules.Config.GetRightJoystick();
+            var configuration = _modules.Configuration;
 
             _modules.Emu.ResetPending = ResetPendingStates.ClsSynch;
 
@@ -181,14 +178,20 @@ namespace VCCSharp.Modules
             //emuState->ResetPending = (byte)ResetPendingStates.Hard;
             //}
 
-            string device = configModel.Audio.Device;
-            int deviceIndex = _modules.Config.SoundDevices.IndexOf(device);
+            string audioDevice = configuration.Audio.Device;
+            int audioDeviceIndex = _modules.Config.SoundDevices.IndexOf(audioDevice);
 
-            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, deviceIndex, configModel.Audio.Rate.Value);
+            string leftDevice = configuration.Joysticks.Left.Device;
+            int leftDeviceIndex = _modules.Config.JoystickDevices.IndexOf(leftDevice);
 
-            _modules.Keyboard.KeyboardBuildRuntimeTable(configModel.Keyboard.Layout.Value);
+            string rightDevice = configuration.Joysticks.Left.Device;
+            int rightDeviceIndex = _modules.Config.JoystickDevices.IndexOf(rightDevice);
 
-            _modules.Joystick.SetStickNumbers(left.DiDevice, right.DiDevice);
+            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, audioDeviceIndex, configuration.Audio.Rate.Value);
+
+            _modules.Keyboard.KeyboardBuildRuntimeTable(configuration.Keyboard.Layout.Value);
+
+            _modules.Joystick.SetStickNumbers(leftDeviceIndex, rightDeviceIndex);
         }
     }
 }

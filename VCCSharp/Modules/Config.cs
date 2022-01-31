@@ -18,11 +18,9 @@ namespace VCCSharp.Modules
     public interface IConfig
     {
         IConfiguration Model { get; }
-        JoystickModel GetLeftJoystick();
-        JoystickModel GetRightJoystick();
 
-        void InitConfig(string iniFile);
-        void LoadIniFile();
+        void Load(string iniFile);
+        void LoadFrom();
         void Save();
         void SaveAs();
 
@@ -38,9 +36,10 @@ namespace VCCSharp.Modules
         TapeModes TapeMode { get; set; }
         string TapeFileName { get; set; }
         string SerialCaptureFile { get; set; }
-        string IniFilePath { get; set; }
+        string FilePath { get; }
 
-        List<string> SoundDevices { get; set; }
+        List<string> SoundDevices { get; }
+        List<string> JoystickDevices { get; }
     }
 
     public class Config : IConfig
@@ -63,11 +62,12 @@ namespace VCCSharp.Modules
         private readonly JoystickModel _left = new JoystickModel();
         private readonly JoystickModel _right = new JoystickModel();
 
-        public List<string> SoundDevices { get; set; } = new List<string>();
+        public List<string> SoundDevices { get; private set; } = new List<string>();
+        public List<string> JoystickDevices { get; private set; } = new List<string>();
 
-        public IConfiguration Model { get; set; }
+        public IConfiguration Model { get; private set; }
 
-        public string IniFilePath { get; set; }
+        public string FilePath { get; set; }
 
         public Config(IModules modules, IUser32 user32, IConfigurationPersistence persistence)
         {
@@ -76,25 +76,16 @@ namespace VCCSharp.Modules
             _persistence = persistence;
         }
 
-        public JoystickModel GetLeftJoystick()
+        public void Load(string iniFile)
         {
-            return _left;
-        }
+            FilePath = GetConfigurationFilePath(iniFile);  //--Use default if needed
 
-        public JoystickModel GetRightJoystick()
-        {
-            return _right;
-        }
-
-        public void InitConfig(string iniFile)
-        {
-            IniFilePath = GetConfigurationFilePath(iniFile);  //--Use default if needed
-
-            ReadIniFile();
+            Load();
 
             Model.Version.Release = AppTitle; //--A kind of "version" I guess
 
             SoundDevices = _modules.Audio.FindSoundDevices();
+            JoystickDevices = _modules.Joystick.FindJoysticks();
 
             //--Synch joysticks to config instance
             _modules.Joystick.SetLeftJoystick(_left);
@@ -110,18 +101,18 @@ namespace VCCSharp.Modules
             _modules.Audio.SoundInit(_modules.Emu.WindowHandle, deviceIndex, Model.Audio.Rate.Value);
 
             //  Try to open the config file.  Create it if necessary.  Abort if failure.
-            if (File.Exists(IniFilePath))
+            if (File.Exists(FilePath))
             {
                 return;
             }
 
             try
             {
-                File.WriteAllText(IniFilePath, "");
+                File.WriteAllText(FilePath, "");
             }
             catch (Exception)
             {
-                MessageBox.Show($"Could not write configuration to: {IniFilePath}", "Error");
+                MessageBox.Show($"Could not write configuration to: {FilePath}", "Error");
 
                 Environment.Exit(0);
             }
@@ -168,14 +159,14 @@ namespace VCCSharp.Modules
             _modules.MC6821.SetCartAutoStart(Model.Startup.CartridgeAutoStart);
         }
 
-        // LoadIniFile allows user to browse for an ini file and reloads the config from it.
-        public void LoadIniFile()
+        // LoadFrom allows user to browse for an ini file and reloads the config from it.
+        public void LoadFrom()
         {
-            string appPath = Path.GetDirectoryName(IniFilePath) ?? "C:\\";
+            string appPath = Path.GetDirectoryName(FilePath) ?? "C:\\";
 
             var openFileDlg = new Microsoft.Win32.OpenFileDialog
             {
-                FileName = IniFilePath,
+                FileName = FilePath,
                 DefaultExt = ".ini",
                 Filter = "INI files (.ini)|*.ini",
                 InitialDirectory = appPath,
@@ -189,10 +180,10 @@ namespace VCCSharp.Modules
                 // Flush current profile
                 Save();
 
-                IniFilePath = openFileDlg.FileName;
+                FilePath = openFileDlg.FileName;
 
                 // Load it
-                ReadIniFile();
+                Load();
 
                 SynchSystemWithConfig();
 
@@ -200,9 +191,9 @@ namespace VCCSharp.Modules
             }
         }
 
-        public void ReadIniFile()
+        public void Load()
         {
-            Model = _persistence.Load(IniFilePath);
+            Model = _persistence.Load(FilePath);
 
             ValidateModel(Model);
 
@@ -228,7 +219,7 @@ namespace VCCSharp.Modules
         public void SaveAs()
         {
             // EJJ get current ini file path
-            string curIni = IniFilePath;
+            string curIni = FilePath;
 
             // Let SaveFileDialog suggest it
             var saveFileDialog = new Microsoft.Win32.SaveFileDialog
@@ -282,7 +273,7 @@ namespace VCCSharp.Modules
 
             ValidateModel(Model);
 
-            _persistence.Save(IniFilePath, Model);
+            _persistence.Save(FilePath, Model);
         }
 
         public void ConfigureJoysticks()
@@ -291,31 +282,28 @@ namespace VCCSharp.Modules
 
             var joysticks = joystick.FindJoysticks();
 
-            JoystickModel left = GetLeftJoystick();
-            JoystickModel right = GetRightJoystick();
-
-            if (right.DiDevice >= joysticks.Count)
+            if (_right.DeviceIndex >= joysticks.Count)
             {
-                right.DiDevice = 0;
+                _right.DeviceIndex = 0;
             }
 
-            if (left.DiDevice >= joysticks.Count)
+            if (_left.DeviceIndex >= joysticks.Count)
             {
-                left.DiDevice = 0;
+                _left.DeviceIndex = 0;
             }
 
-            joystick.SetStickNumbers(left.DiDevice, right.DiDevice);
+            joystick.SetStickNumbers(_left.DeviceIndex, _right.DeviceIndex);
 
             if (joysticks.Count == 0)	//Use Mouse input if no Joysticks present
             {
-                if (left.UseMouse == 3)
+                if (Model.Joysticks.Left.InputSource.Value == Enums.JoystickDevices.Joystick)
                 {
-                    left.UseMouse = 1;
+                    _left.InputSource = Enums.JoystickDevices.Mouse;
                 }
 
-                if (right.UseMouse == 3)
+                if (Model.Joysticks.Right.InputSource.Value == Enums.JoystickDevices.Joystick)
                 {
-                    right.UseMouse = 1;
+                    _right.InputSource = Enums.JoystickDevices.Mouse;
                 }
             }
         }
@@ -419,11 +407,6 @@ namespace VCCSharp.Modules
             SetWindowPosFlags flags = SetWindowPosFlags.NoMove | SetWindowPosFlags.NoOwnerZOrder | SetWindowPosFlags.NoZOrder;
 
             _user32.SetWindowPos(handle, Zero, 0, 0, width + 16, height + 81, (ushort)flags);
-        }
-        
-        public KeyboardLayouts GetCurrentKeyboardLayout()
-        {
-            return Model.Keyboard.Layout.Value;
         }
 
         public void ValidateModel(IConfiguration model)

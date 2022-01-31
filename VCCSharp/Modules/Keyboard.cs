@@ -350,7 +350,7 @@ namespace VCCSharp.Modules
             JoystickModel left = _modules.Joystick.GetLeftJoystick();
             JoystickModel right = _modules.Joystick.GetRightJoystick();
 
-            if (left.UseMouse == 0 || right.UseMouse == 0)
+            if (left.InputSource == JoystickDevices.Keyboard || right.InputSource == JoystickDevices.Keyboard)
             {
                 scanCode = _modules.Joystick.SetMouseStatus(scanCode, 1);
             }
@@ -371,7 +371,7 @@ namespace VCCSharp.Modules
             JoystickModel left = _modules.Joystick.GetLeftJoystick();
             JoystickModel right = _modules.Joystick.GetRightJoystick();
 
-            if (left.UseMouse == 0 || right.UseMouse == 0)
+            if (left.InputSource == JoystickDevices.Keyboard || right.InputSource == JoystickDevices.Keyboard)
             {
                 scanCode = _modules.Joystick.SetMouseStatus(scanCode, 0);
             }

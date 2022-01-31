@@ -1,26 +1,19 @@
-﻿namespace VCCSharp.Models
+﻿using VCCSharp.Enums;
+
+namespace VCCSharp.Models
 {
     public class JoystickModel
     {
-        // 0 -- Keyboard
-        // 1 -- Mouse
-        // 2 -- Audio 
-        // 3 -- Joystick 
-        public byte UseMouse;
+        public JoystickDevices InputSource { get; set; }
 
         // Index of which Joystick is selected
-        public byte DiDevice; //TODO: Rename as "Index" -- Including .cfg
+        public byte DeviceIndex { get; set; }
 
-        // 0 -- Standard,
-        // 1 -- TandyHiRes,
-        // 2 -- CCMAX
-        public byte HiRes;  //TODO: This doesn't seem bound to anything
-
-        public byte Up;
-        public byte Down;
-        public byte Left;
-        public byte Right;
-        public byte Fire1;
-        public byte Fire2;
+        public byte Up { get; set; }
+        public byte Down { get; set; }
+        public byte Left { get; set; }
+        public byte Right { get; set; }
+        public byte Fire1 { get; set; }
+        public byte Fire2 { get; set; }
     }
 }

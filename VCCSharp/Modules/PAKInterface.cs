@@ -252,7 +252,7 @@ namespace VCCSharp.Modules
             {
                 moduleParams |= 2048;
 
-                InvokeSetIniPath(_modules.Config.IniFilePath);
+                InvokeSetIniPath(_modules.Config.FilePath);
             }
 
             if (HasPakSetCart())

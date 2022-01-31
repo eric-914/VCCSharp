@@ -34,7 +34,7 @@ namespace VCCSharp
 
         public void LoadConfiguration()
         {
-            _modules.Config.LoadIniFile();
+            _modules.Config.LoadFrom();
         }
 
         public void HardReset() //F9

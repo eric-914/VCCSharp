@@ -32,7 +32,7 @@ namespace VCCSharp
 
         public void LoadConfiguration(string iniFile)
         {
-            _modules.Config.InitConfig(iniFile);
+            _modules.Config.Load(iniFile);
         }
 
         public void Startup(string qLoadFile)

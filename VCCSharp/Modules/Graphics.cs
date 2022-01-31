@@ -193,7 +193,7 @@ namespace VCCSharp.Modules
         public void ResetPalette()
         {
             MakeRgbPalette();
-            MakeCmpPalette(_modules.Config.Model.Video.Palette.Value);
+            MakeCmpPalette(_modules.Configuration.Video.Palette.Value);
         }
 
         public void SetBlinkState(byte state)
@@ -324,7 +324,7 @@ namespace VCCSharp.Modules
             SetGimeBorderColor(0);
 
             MakeRgbPalette();
-            MakeCmpPalette(_modules.Config.Model.Video.Palette.Value);
+            MakeCmpPalette(_modules.Configuration.Video.Palette.Value);
 
             SetGimeBorderColor(borderColor);
         }

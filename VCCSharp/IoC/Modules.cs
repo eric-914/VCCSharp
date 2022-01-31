@@ -1,4 +1,5 @@
-﻿using VCCSharp.Models.CPU.HD6309;
+﻿using VCCSharp.Models.Configuration;
+using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
 using VCCSharp.Modules;
 using VCCSharp.Modules.TC1014;
@@ -14,6 +15,7 @@ namespace VCCSharp.IoC
         IClipboard Clipboard { get; }
         ICoCo CoCo { get; }
         IConfig Config { get; }
+        IConfiguration Configuration { get; }
         IDraw Draw { get; }
         IEmu Emu { get; }
         IEvents Events { get; }
@@ -44,6 +46,7 @@ namespace VCCSharp.IoC
         public IClipboard Clipboard { get; private set; }
         public ICoCo CoCo { get; private set; }
         public IConfig Config { get; private set; }
+        public IConfiguration Configuration => Config.Model;
         public IDraw Draw { get; private set; }
         public IEmu Emu { get; private set; }
         public IEvents Events { get; private set; }
