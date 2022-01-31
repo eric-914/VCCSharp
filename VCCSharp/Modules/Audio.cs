@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using DX8;
-using VCCSharp.DX8;
+﻿using DX8;
+using System.Collections.Generic;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
 using HWND = System.IntPtr;
@@ -11,7 +11,7 @@ namespace VCCSharp.Modules
     {
         List<string> FindSoundDevices();
 
-        void SoundInit(HWND hWnd, int index, ushort rate);
+        void SoundInit(HWND hWnd, int index, AudioRates rate);
         short SoundDeInit();
 
         bool PauseAudio(bool pause);
@@ -20,7 +20,7 @@ namespace VCCSharp.Modules
         int GetFreeBlockCount();
 
         AudioSpectrum Spectrum { get; set; }
-        ushort CurrentRate { get; set; }
+        AudioRates CurrentRate { get; set; }
     }
 
     public class Audio : IAudio
@@ -29,7 +29,7 @@ namespace VCCSharp.Modules
         private readonly IDxSound _sound;
 
         public AudioSpectrum Spectrum { get; set; }
-        public ushort CurrentRate { get; set; }
+        public AudioRates CurrentRate { get; set; }
 
         private bool _initialized;
         private bool _audioPause;
@@ -37,7 +37,7 @@ namespace VCCSharp.Modules
         private ushort _bitRate;
         private ushort _blockSize;
 
-        private readonly ushort[] _rateList = { 0, 11025, 22050, 44100 };
+        private readonly ushort[] _kHzRate = { 0, 11025, 22050, 44100 };
 
         private int _sndBuffLength;
         private int _buffOffset;
@@ -50,21 +50,19 @@ namespace VCCSharp.Modules
             _sound = sound;
         }
 
-        public void SoundInit(HWND hWnd, int index, ushort rate)
+        public void SoundInit(HWND hWnd, int index, AudioRates rate)
         {
-            rate &= 3;
-
-            if (rate != 0)
+            if (rate != AudioRates.Disabled)
             {
                 //TODO: Since there is only 44100 or mute, remove the other options and make this a boolean
                 //Force 44100 or Disabled
-                rate = 3;
+                rate = AudioRates._44100Hz;
             }
 
             CurrentRate = rate;
 
             _buffOffset = 0;
-            _bitRate = _rateList[rate];
+            _bitRate = _kHzRate[(int)rate];
             _blockSize = (ushort)(_bitRate * 4 / Define.TARGETFRAMERATE);
             _sndBuffLength = (ushort)(_blockSize * Define.AUDIOBUFFERS);
 
@@ -95,7 +93,7 @@ namespace VCCSharp.Modules
             }
 
             _audioPause = false;
-            _modules.CoCo.SetAudioRate(_rateList[rate]);
+            _modules.CoCo.SetAudioRate(_kHzRate[(int)rate]);
 
             _mute = (rate == 0);
         }
@@ -114,7 +112,7 @@ namespace VCCSharp.Modules
 
         public void ResetAudio()
         {
-            _modules.CoCo.SetAudioRate(_rateList[CurrentRate]);
+            _modules.CoCo.SetAudioRate(_kHzRate[(int)CurrentRate]);
 
             if (_initialized)
             {

@@ -107,7 +107,7 @@ namespace VCCSharp.Modules
             string device = Model.Audio.Device;
             int deviceIndex = SoundDevices.IndexOf(device);
 
-            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, deviceIndex, (ushort)Model.Audio.Rate.Value);
+            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, deviceIndex, Model.Audio.Rate.Value);
 
             //  Try to open the config file.  Create it if necessary.  Abort if failure.
             if (File.Exists(IniFilePath))

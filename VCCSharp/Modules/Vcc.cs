@@ -184,7 +184,7 @@ namespace VCCSharp.Modules
             string device = configModel.Audio.Device;
             int deviceIndex = _modules.Config.SoundDevices.IndexOf(device);
 
-            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, deviceIndex, (ushort)configModel.Audio.Rate.Value);
+            _modules.Audio.SoundInit(_modules.Emu.WindowHandle, deviceIndex, configModel.Audio.Rate.Value);
 
             _modules.Keyboard.KeyboardBuildRuntimeTable(configModel.Keyboard.Layout.Value);
 
