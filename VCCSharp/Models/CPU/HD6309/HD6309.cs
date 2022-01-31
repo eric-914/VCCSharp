@@ -162,7 +162,7 @@ namespace VCCSharp.Models.CPU.HD6309
             MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
             MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
 
-            if (!_cpu.md[(int)MDFlagMasks.NATIVE6309] )
+            if (MD_NATIVE6309)
             {
                 MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
                 MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
@@ -187,7 +187,7 @@ namespace VCCSharp.Models.CPU.HD6309
             {
                 _inInterrupt = 1; //Flag to indicate FIRQ has been asserted
 
-                switch (_cpu.md[(int)MDFlagMasks.FIRQMODE])
+                switch (MD_FIRQMODE)
                 {
                     case false:
                         _cpu.cc[(int)CCFlagMasks.E] = false; // Turn E flag off
@@ -217,7 +217,7 @@ namespace VCCSharp.Models.CPU.HD6309
                         MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
                         MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
 
-                        if (!_cpu.md[(int)MDFlagMasks.NATIVE6309] )
+                        if (MD_NATIVE6309)
                         {
                             MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
                             MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
@@ -262,7 +262,7 @@ namespace VCCSharp.Models.CPU.HD6309
                 MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
                 MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
 
-                if (!_cpu.md[(int)MDFlagMasks.NATIVE6309] )
+                if (MD_NATIVE6309)
                 {
                     MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
                     MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
@@ -360,7 +360,7 @@ namespace VCCSharp.Models.CPU.HD6309
 
             for (int i = 0; i < 24; i++)
             {
-                int insCyclesIndex = _cpu.md[(int)MDFlagMasks.NATIVE6309] ? 1 : 0;
+                var insCyclesIndex = MD_NATIVE6309 ? 1 : 0;
                 _instance[i] = _instance.InsCycles[insCyclesIndex, i];
             }
         }
