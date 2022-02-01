@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
+using VCCSharp.Models.Keyboard;
+using VCCSharp.Models.Keyboard.Definitions;
 
 namespace VCCSharp.Modules
 {
@@ -272,11 +274,11 @@ namespace VCCSharp.Modules
             {
                 key = _modules.Clipboard.PeekClipboard();
 
-                if (key == Define.DIK_LSHIFT)
+                if (key == DIK.DIK_LSHIFT)
                 {
                     _shiftActive = true;
 
-                    _modules.Keyboard.KeyboardHandleKey(Define.DIK_LSHIFT, KeyStates.Down);  //Press shift and...
+                    _modules.Keyboard.KeyboardHandleKey(DIK.DIK_LSHIFT, KeyStates.Down);  //Press shift and...
                     _modules.Clipboard.PopClipboard();
 
                     key = _modules.Clipboard.PeekClipboard();
@@ -292,7 +294,7 @@ namespace VCCSharp.Modules
 
                 if (_shiftActive)
                 {
-                    _modules.Keyboard.KeyboardHandleKey(Define.DIK_LSHIFT, KeyStates.Up);
+                    _modules.Keyboard.KeyboardHandleKey(DIK.DIK_LSHIFT, KeyStates.Up);
                     _shiftActive = false;
                 }
 

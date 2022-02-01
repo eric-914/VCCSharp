@@ -5,6 +5,7 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
 using VCCSharp.Models.Keyboard;
+using VCCSharp.Models.Keyboard.Definitions;
 using KeyStates = VCCSharp.Enums.KeyStates;
 
 namespace VCCSharp.Modules
@@ -204,10 +205,10 @@ namespace VCCSharp.Modules
                 //
                 // swaps ScanCode1 with ScanCode2 if ScanCode2 == DIK_LSHIFT
                 //
-                if (keyTransEntry.ScanCode2 == Define.DIK_LSHIFT)
+                if (keyTransEntry.ScanCode2 == DIK.DIK_LSHIFT)
                 {
                     keyTransEntry.ScanCode2 = keyTransEntry.ScanCode1;
-                    keyTransEntry.ScanCode1 = Define.DIK_LSHIFT;
+                    keyTransEntry.ScanCode1 = DIK.DIK_LSHIFT;
                 }
 
                 //
@@ -297,8 +298,8 @@ namespace VCCSharp.Modules
                 SwapKeyboardLayout(KeyboardLayouts.Natural); //Natural (OS9)
 
                 //--On standard keyboard, @ is Shift-2
-                KeyboardHandleKey(Define.DIK_2, keyState);
-                KeyboardHandleKey(Define.DIK_LSHIFT, keyState);
+                KeyboardHandleKey(DIK.DIK_2, keyState);
+                KeyboardHandleKey(DIK.DIK_LSHIFT, keyState);
 
                 ResetKeyboardLayout();
             }
@@ -323,9 +324,9 @@ namespace VCCSharp.Modules
 
             // check for shift key
             // Left and right shift generate different scan codes
-            if (scanCode == Define.DIK_RSHIFT)
+            if (scanCode == DIK.DIK_RSHIFT)
             {
-                scanCode = Define.DIK_LSHIFT;
+                scanCode = DIK.DIK_LSHIFT;
             }
 
             switch (keyState)
@@ -381,7 +382,7 @@ namespace VCCSharp.Modules
 
             // TODO: verify this is accurate emulation
             // Clean out rollover table on shift release
-            if (scanCode == Define.DIK_LSHIFT)
+            if (scanCode == DIK.DIK_LSHIFT)
             {
                 for (int index = 0; index < Define.KBTABLE_ENTRY_COUNT; index++)
                 {
