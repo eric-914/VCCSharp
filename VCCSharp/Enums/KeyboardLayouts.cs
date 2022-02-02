@@ -5,8 +5,6 @@
     {
         CoCo = 0,
         Natural = 1,
-        Compact = 2,
-        Custom = 3,
 
         Count
     }

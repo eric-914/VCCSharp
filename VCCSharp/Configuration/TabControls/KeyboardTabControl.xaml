@@ -47,12 +47,6 @@
       <TextBlock TextWrapping="Wrap">
         Natural (OS-9): Standard PC keyboard layout.
       </TextBlock>
-      <TextBlock TextWrapping="Wrap">
-        Compact (OS-9): Natural PC layout with no numberpad (laptops, Macs, etc).
-      </TextBlock>
-      <TextBlock TextWrapping="Wrap">
-        Custom: User designed custom keyboard layout.
-      </TextBlock>
     </StackPanel>
   </Grid>
 </UserControl>

@@ -66,7 +66,6 @@ namespace VCCSharp.Models.Keyboard
             private static byte[] Y => Key(DIK.DIK_Y, 0, 8, 1, 0, 0 ,Chr.Y);
             private static byte[] Z => Key(DIK.DIK_Z, 0, 8, 2, 0, 0 ,Chr.Z);
 
-            private static byte[] _0 => Key(DIK.DIK_0, 0, 16, 0, 0, 0 ,Chr.D0);
             private static byte[] _1 => Key(DIK.DIK_1, 0, 16, 1, 0, 0 ,Chr.D1);
             private static byte[] _2 => Key(DIK.DIK_2, 0, 16, 2, 0, 0 ,Chr.D2);
             private static byte[] _3 => Key(DIK.DIK_3, 0, 16, 3, 0, 0 ,Chr.D3);
@@ -76,12 +75,14 @@ namespace VCCSharp.Models.Keyboard
             private static byte[] _7 => Key(DIK.DIK_7, 0, 16, 7, 0, 0 ,Chr.D7);
             private static byte[] _8 => Key(DIK.DIK_8, 0, 32, 0, 0, 0 ,Chr.D8);
             private static byte[] _9 => Key(DIK.DIK_9, 0, 32, 1, 0, 0 ,Chr.D9);
+            private static byte[] _0 => Key(DIK.DIK_0, 0, 16, 0, 0, 0 ,Chr.D0);
 
             private static byte[] Exclamation => Key(DIK.DIK_1, DIK.DIK_LSHIFT, 16, 1, 64, 7, Chr.Exclamation);
             private static byte[] AtSign => Key(DIK.DIK_2, DIK.DIK_LSHIFT, 1, 0, 0, 0, Chr.AtSign);
             private static byte[] NumberSign => Key(DIK.DIK_3, DIK.DIK_LSHIFT, 16, 3, 64, 7, Chr.NumberSign);
             private static byte[] DollarSign => Key(DIK.DIK_4, DIK.DIK_LSHIFT, 16, 4, 64, 7, Chr.DollarSign);
             private static byte[] Percent => Key(DIK.DIK_5, DIK.DIK_LSHIFT, 16, 5, 64, 7, Chr.Percent);
+            private static byte[] Caret => Key(DIK.DIK_6, DIK.DIK_LSHIFT, 16, 7, 64, 4, Chr.Caret);
             private static byte[] Ampersand => Key(DIK.DIK_7, DIK.DIK_LSHIFT, 16, 6, 64, 7, Chr.Ampersand);
             private static byte[] Multiply => Key(DIK.DIK_8, DIK.DIK_LSHIFT, 32, 2, 64, 7, Chr.Multiply);
             private static byte[] LeftParenthesis => Key(DIK.DIK_9, DIK.DIK_LSHIFT, 32, 0, 64, 7, Chr.LeftParenthesis);
@@ -89,7 +90,6 @@ namespace VCCSharp.Models.Keyboard
 
             private static byte[] SemiColon => Key(DIK.DIK_SEMICOLON, 0, 32, 3, 0, 0, Chr.Semicolon);
             private static byte[] Colon => Key(DIK.DIK_SEMICOLON, DIK.DIK_LSHIFT, 32, 2, 0, 0, Chr.Colon);
-
             private static byte[] SingleQuote => Key(DIK.DIK_APOSTROPHE, 0, 16, 7, 64, 7, Chr.SingleQuote);
             private static byte[] DoubleQuote => Key(DIK.DIK_APOSTROPHE, DIK.DIK_LSHIFT, 16, 2, 64, 7, Chr.DoubleQuotes);
 
@@ -100,7 +100,6 @@ namespace VCCSharp.Models.Keyboard
             private static byte[] Plus => Key(DIK.DIK_EQUALS, DIK.DIK_LSHIFT, 32, 3, 64, 7, Chr.Plus);
             private static byte[] Equal => Key(DIK.DIK_EQUALS, 0, 32, 5, 64, 7, Chr.Equal);
             private static byte[] Minus => Key(DIK.DIK_MINUS, 0, 32, 5, 0, 0, Chr.Minus);
-
             private static byte[] Underscore => Key(DIK.DIK_MINUS, DIK.DIK_LSHIFT, 32, 5, 64, 4, Chr.Underscore); //(CoCo CTRL -)
 
             private static byte[] ArrowUp => Key(DIK.DIK_UPARROW, 0, 8, 3, 0, 0, Chr.Up);
@@ -113,8 +112,9 @@ namespace VCCSharp.Models.Keyboard
             private static byte[] NumPadLeft => Key(DIK.DIK_NUMPAD4, 0, 8, 5, 0, 0, Chr.Left);
             private static byte[] NumPadRight => Key(DIK.DIK_NUMPAD6, 0, 8, 6, 0, 0, Chr.Right);
 
-            //ENTER/Return-Key
-            private static byte[] Enter => Key(DIK.DIK_RETURN, 0, 64, 0, 0, 0);
+            private static byte[] Space => Key(DIK.DIK_SPACE, 0, 8, 7, 0, 0, Chr.Space);
+            private static byte[] Enter => Key(DIK.DIK_RETURN, 0, 64, 0, 0, 0); //--Enter/Return
+            private static byte[] Tab => Key(DIK.DIK_TAB, 0, 64, 1, 0, 0, Chr.Tab);
             private static byte[] Escape => Key(DIK.DIK_ESCAPE, 0, 64, 2, 0, 0); //--Break
 
             private static byte[] NumPadHome => Key(DIK.DIK_NUMPAD7, 0, 64, 1, 0, 0); //--Clear
@@ -150,11 +150,11 @@ namespace VCCSharp.Models.Keyboard
             {
                 A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
                 _0, _1, _2, _3, _4, _5, _6, _7, _8, _9,
-                Exclamation, AtSign, NumberSign, DollarSign, Percent, Ampersand, Multiply,
-                LeftParenthesis, RightParenthesis, SemiColon, Colon, SingleQuote, DoubleQuote,
+                Exclamation, AtSign, NumberSign, DollarSign, Percent, Caret, Ampersand, Multiply, LeftParenthesis, RightParenthesis, 
+                SemiColon, Colon, SingleQuote, DoubleQuote,
                 Comma, Period, QuestionMark, ForwardSlash, Plus, Equal, Minus, Underscore,
                 ArrowUp, ArrowDown, ArrowLeft, ArrowRight, NumPadUp, NumPadDown, NumPadLeft, NumPadRight,
-                Enter, NumPadHome, Escape, NumPadEnd, NumPadDelete, NumPadInsert, NumPadPageUp, NumPadPageDown,
+                Space, Enter, Tab, NumPadHome, Escape, NumPadEnd, NumPadDelete, NumPadInsert, NumPadPageUp, NumPadPageDown,
                 F1, F2, BackSpace, OpenBracket, CloseBracket, OpenBrace, CloseBrace,
                 BackSlash, Pipe, Tilde, CapsLock, Alt, Control, Shift
             };

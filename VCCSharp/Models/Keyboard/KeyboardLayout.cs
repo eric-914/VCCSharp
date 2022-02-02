@@ -76,9 +76,7 @@ namespace VCCSharp.Models.Keyboard
             var map = new Dictionary<KeyboardLayouts, Func<KeyTranslationEntry[]>>
             {
                 { KeyboardLayouts.CoCo, GetKeyTranslationsCoCo },
-                { KeyboardLayouts.Natural, GetKeyTranslationsNatural },
-                { KeyboardLayouts.Compact, GetKeyTranslationsCompact },
-                { KeyboardLayouts.Custom, GetKeyTranslationsCompact },
+                { KeyboardLayouts.Natural, GetKeyTranslationsNatural }
             };
 
             return map[keyBoardLayout]();
