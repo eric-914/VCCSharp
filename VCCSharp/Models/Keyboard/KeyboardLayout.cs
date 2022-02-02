@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using VCCSharp.Enums;
+using VCCSharp.Models.Keyboard.Definitions;
 
 namespace VCCSharp.Models.Keyboard
 {
@@ -82,5 +83,10 @@ namespace VCCSharp.Models.Keyboard
 
             return map[keyBoardLayout]();
         }
+
+        //--Character isn't used, but included for debugging purposes
+        private static byte[] Key(byte scanCode1, byte scanCode2, byte row1, byte col1, byte row2, byte col2, char character = Chr.None) 
+            => new[] { scanCode1, scanCode2, row1, col1, row2, col2, (byte)character };
+
     }
 }

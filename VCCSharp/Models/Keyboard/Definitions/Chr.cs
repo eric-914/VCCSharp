@@ -106,5 +106,10 @@
         public const char y = 'y';
         public const char z = 'z';
         // ReSharper restore InconsistentNaming
+
+        public const char Up = '↑';
+        public const char Down = '↓';
+        public const char Left = '←';
+        public const char Right = '→';
     }
 }
