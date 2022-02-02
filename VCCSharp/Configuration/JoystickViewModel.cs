@@ -25,7 +25,7 @@ namespace VCCSharp.Configuration
 
         #region Constants
 
-        public IEnumerable<string> KeyNames => KeyScanMapper.KeyNames;
+        public IEnumerable<string> KeyNames => KeyScanMapper.KeyText;
 
         public List<string> JoystickNames { get; set; } = new List<string> { "A", "B", "C" };
 

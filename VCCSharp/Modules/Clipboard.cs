@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Models.Keyboard;
+using VCCSharp.Models.Keyboard.Mappings;
 
 namespace VCCSharp.Modules
 {
@@ -11,13 +13,13 @@ namespace VCCSharp.Modules
     {
         void PasteText(string text);
         bool ClipboardEmpty();
-        char PeekClipboard();
+        IKey PeekClipboard();
         void PopClipboard();
         void CopyText();
         void PasteClipboard();
         void PasteBasic();
         void PasteBasicWithNew();
-        void SetClipboardText(string text);
+        void ClearClipboard();
 
         bool Abort { get; set; }
     }
@@ -56,10 +58,9 @@ namespace VCCSharp.Modules
 
         #endregion
 
-        private string _clipboardText;
+        private List<IKey> _clipboardText = new List<IKey>();
 
         private readonly IModules _modules;
-        private readonly IKeyboardScanCodes _keyboardScanCodes;
         private IGraphics Graphics => _modules.Graphics;
 
         public bool CodePaste;
@@ -67,10 +68,9 @@ namespace VCCSharp.Modules
 
         public bool Abort { get; set; }
 
-        public Clipboard(IModules modules, IKeyboardScanCodes keyboardScanCodes)
+        public Clipboard(IModules modules)
         {
             _modules = modules;
-            _keyboardScanCodes = keyboardScanCodes;
         }
         
         public void PasteBasic()
@@ -142,9 +142,9 @@ namespace VCCSharp.Modules
 
             text = ParseText(text, CodePaste);
 
-            string codes = _keyboardScanCodes.ConvertScanCodes(text);
+            var data = text.Select(x => KeyDefinitions.Instance.ByCharacter(x));
 
-            SetClipboardText(codes);
+            _clipboardText = data.ToList();
         }
 
         private static string ParseText(string text, bool codePaste)
@@ -202,24 +202,24 @@ namespace VCCSharp.Modules
         }
 
 
-        public void SetClipboardText(string text)
+        public void ClearClipboard()
         {
-            _clipboardText = text;
+            _clipboardText = new List<IKey>();
         }
 
         public bool ClipboardEmpty()
         {
-            return string.IsNullOrEmpty(_clipboardText);
+            return !_clipboardText.Any();
         }
 
-        public char PeekClipboard()
+        public IKey PeekClipboard()
         {
-            return _clipboardText[0]; // get the next key in the string
+            return _clipboardText.First(); // get the next key in the string
         }
 
         public void PopClipboard()
         {
-            _clipboardText = _clipboardText[1..];
+            _clipboardText = _clipboardText.Skip(1).ToList();
         }
 
         public void CopyText()

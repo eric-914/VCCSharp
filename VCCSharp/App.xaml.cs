@@ -33,7 +33,6 @@ namespace VCCSharp
                 .Singleton<IViewModelFactory, ViewModelFactory>()
 
                 //--Utilities
-                .Singleton<IKeyboardScanCodes, KeyboardScanCodes>()
                 .Singleton<IKeyScanMapper, KeyScanMapper>()
                 .Singleton<IMainWindowEvents, MainWindowEvents>()
                 .Singleton<IConfigurationPersistence, ConfigurationPersistence>()

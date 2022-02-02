@@ -4,10 +4,9 @@ namespace VCCSharp.Models.Keyboard.Mappings
 {
     public interface IKey
     {
-        byte ASCII { get; }
         Key Key { get; }
         byte DIK { get; }
-        char ScanCode { get; }
+        byte ScanCode { get; }
         bool Shift { get; }
         bool Control { get; }
         string Text { get; }
@@ -21,7 +20,7 @@ namespace VCCSharp.Models.Keyboard.Mappings
         public byte ASCII { get; set; } //--Not directly used.  More an index.
         public Key Key { get; set; }
         public byte DIK { get; set; }
-        public char ScanCode { get; set; }
+        public byte ScanCode { get; set; }
         public bool Shift { get; set; }
         public bool Control { get; set; }
         public string Text { get; set; }

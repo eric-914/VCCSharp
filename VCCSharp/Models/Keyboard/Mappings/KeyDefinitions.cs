@@ -28,9 +28,17 @@ namespace VCCSharp.Models.Keyboard.Mappings
         private const string Numeric = "1234567890";
         private const string LowerSymbols = "`-=[]\\;',./"; //--All non-shifted symbols
 
+        private static KeyDefinition Null => new KeyDefinition
+        {
+            Key = Key.None, DIK = DIK.DIK_NONE, ScanCode = ScanCodes.Undefined, Text = ChrText.None
+        };
+
+        public static IKey Shift => Instance.ByKey(Key.LeftShift);
+        public static IKey Return => Instance.ByKey(Key.Return);
+
         private KeyDefinitions()
         {
-            void K(byte ascii, char character, string text, char scanCode, Key key, byte dik, bool shift = false, bool ctrl = false)
+            void K(byte ascii, char character, string text, byte scanCode, Key key, byte dik, bool shift = false, bool ctrl = false)
             {
                 Add(new KeyDefinition { ASCII = ascii, Key = key, DIK = dik, ScanCode = scanCode, Shift = shift, Control = ctrl, Character = character, Text = text });
             }
@@ -189,5 +197,8 @@ namespace VCCSharp.Models.Keyboard.Mappings
             || Arrows.Contains(item.Key)
             || Control.Contains(item.Key)
             || ExtendedControl.Contains(item.Key);
+
+        public IKey ByKey(Key key) => this.FirstOrDefault(x => x.Key == key) ?? Null;
+        public IKey ByCharacter(char c) => this.FirstOrDefault(x => x.Character == c) ?? Null;
     }
 }

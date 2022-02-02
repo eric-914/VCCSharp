@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
-using VCCSharp.Models.Keyboard;
-using VCCSharp.Models.Keyboard.Definitions;
+using VCCSharp.Models.Keyboard.Mappings;
 
 namespace VCCSharp.Modules
 {
@@ -87,6 +86,9 @@ namespace VCCSharp.Modules
         private readonly DACSample _dacSample = new DACSample();
 
         public int OverClock { get; set; }
+
+        private static readonly IKey ShiftKey = KeyDefinitions.Shift;
+        private static readonly IKey ReturnKey = KeyDefinitions.Return;
 
         public CoCo(IModules modules)
         {
@@ -258,8 +260,7 @@ namespace VCCSharp.Modules
 
         private void CpuCycleClipboard(IVcc vcc)
         {
-            char key;
-
+            IKey key;
             //Remember the original throttle setting.
             //Set it to off. We need speed for this!
             if (_throttleState == ThrottleStates.Idle)
@@ -274,19 +275,16 @@ namespace VCCSharp.Modules
             {
                 key = _modules.Clipboard.PeekClipboard();
 
-                if (key == DIK.DIK_LSHIFT)
+                if (key.Shift)
                 {
                     _shiftActive = true;
 
-                    _modules.Keyboard.KeyboardHandleKey(DIK.DIK_LSHIFT, KeyStates.Down);  //Press shift and...
-                    _modules.Clipboard.PopClipboard();
-
-                    key = _modules.Clipboard.PeekClipboard();
+                    _modules.Keyboard.KeyboardHandleKey(ShiftKey.DIK, KeyStates.Down);  //Press shift and...
                 }
 
-                _modules.Keyboard.KeyboardHandleKey((byte)key, KeyStates.Down);
+                _modules.Keyboard.KeyboardHandleKey(key.DIK, KeyStates.Down);
 
-                _waitCycle = key == 0x1c ? 6000 : 2000;
+                _waitCycle = key.ScanCode == ReturnKey.ScanCode ? 6000 : 2000;
             }
             else if (_clipCycle == 500)
             {
@@ -294,17 +292,17 @@ namespace VCCSharp.Modules
 
                 if (_shiftActive)
                 {
-                    _modules.Keyboard.KeyboardHandleKey(DIK.DIK_LSHIFT, KeyStates.Up);
+                    _modules.Keyboard.KeyboardHandleKey(ShiftKey.DIK, KeyStates.Up);
                     _shiftActive = false;
                 }
 
-                _modules.Keyboard.KeyboardHandleKey((byte)key, KeyStates.Up);
+                _modules.Keyboard.KeyboardHandleKey(key.DIK, KeyStates.Up);
 
                 _modules.Clipboard.PopClipboard();
 
                 if (_modules.Clipboard.Abort)
                 {
-                    _modules.Clipboard.SetClipboardText(null);
+                    _modules.Clipboard.ClearClipboard();
                 }
 
                 //Finished?
