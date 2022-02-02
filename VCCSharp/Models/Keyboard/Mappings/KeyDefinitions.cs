@@ -1,135 +1,193 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 using VCCSharp.Models.Keyboard.Definitions;
 
 namespace VCCSharp.Models.Keyboard.Mappings
 {
+    /// <summary>
+    /// There are different ways to represent a character, and this is an attempt to bring them all together in matrix form.
+    /// ASCII code
+    /// The actual character displayed when typed.
+    /// The text description of the character.
+    /// The scan-code as interpreted by the CoCo.
+    /// How .NET represents: Key
+    /// How Windows represents: DIK
+    /// And if you need to hit the SHIFT key as part of the key-press
+    /// TODO: Not sure what's happening with the CTRL key press flag.
+    /// </summary>
     public class KeyDefinitions : List<IKey>
     {
         public static KeyDefinitions Instance { get; } = new KeyDefinitions();
 
+        private static IEnumerable<Key> Arrows => new[] { Key.Left, Key.Right, Key.Up, Key.Down };
+        private static IEnumerable<Key> Control => new[] { Key.Tab, Key.Back, Key.Enter, Key.Escape };
+        private static IEnumerable<Key> ExtendedControl => new[] { Key.Insert, Key.Delete, Key.Home, Key.End, Key.PageUp, Key.PageDown };
+
+        private const string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private const string Numeric = "1234567890";
+        private const string LowerSymbols = "`-=[]\\;',./"; //--All non-shifted symbols
+
         private KeyDefinitions()
         {
-            void Add(byte ascii, char scanCode, Key key, byte dik, string text, bool shift = false, bool ctrl = false)
+            void K(byte ascii, char character, string text, char scanCode, Key key, byte dik, bool shift = false, bool ctrl = false)
             {
-                this.Add(new KeyDefinition { ASCII = ascii, Key = key, DIK = dik, ScanCode = scanCode, Shift = shift, Control = ctrl, Text = text });
+                Add(new KeyDefinition { ASCII = ascii, Key = key, DIK = dik, ScanCode = scanCode, Shift = shift, Control = ctrl, Character = character, Text = text });
             }
 
-            Add(0x00, ScanCodes.Null, Key.None, DIK.DIK_NONE, Chr.None);
-            Add(0x09, ScanCodes.Tab, Key.Tab, DIK.DIK_TAB, Chr.Tab);
-            Add(0x0D, ScanCodes.Return, Key.Return, DIK.DIK_RETURN, Chr.Return);
-            Add(0x1B, ScanCodes.Undefined, Key.Escape, DIK.DIK_ESCAPE, "Esc"); //--Aka Cancel
+            //--Special keys
+            void S(Key key, byte dik, string text)
+            {
+                Add(new KeyDefinition { ASCII = 0xFF, Key = key, DIK = dik, ScanCode = ScanCodes.Null, Shift = false, Control = false, Character = Chr.None, Text = text });
+            }
 
-            Add(0x20, ScanCodes.Space, Key.Space, DIK.DIK_SPACE, Chr.Space);
+            K(0x00, Chr.None, ChrText.None, ScanCodes.Null, Key.None, DIK.DIK_NONE);
+            K(0x09, Chr.Tab, ChrText.Tab, ScanCodes.Tab, Key.Tab, DIK.DIK_TAB);
+            K(0x0D, Chr.Return, ChrText.Return, ScanCodes.Return, Key.Return, DIK.DIK_RETURN);
 
-            Add(0x21 /*!*/, ScanCodes.D1, Key.D1, DIK.DIK_1, Chr.Exclamation, true);
-            Add(0x22 /*"*/, ScanCodes.Quotes, Key.OemQuotes, DIK.DIK_APOSTROPHE, Chr.DoubleQuotes, true);
-            Add(0x23 /*#*/, ScanCodes.D3, Key.D3, DIK.DIK_3, Chr.NumberSign, true);
-            Add(0x24 /*$*/, ScanCodes.D4, Key.D4, DIK.DIK_4, Chr.DollarSign, true);
-            Add(0x25 /*%*/, ScanCodes.D4, Key.D5, DIK.DIK_5, Chr.Percent, true);
-            Add(0x26 /*&*/, ScanCodes.D7, Key.D7, DIK.DIK_7, Chr.Ampersand, true);
-            Add(0x27 /*'*/, ScanCodes.Quotes, Key.OemQuotes, DIK.DIK_APOSTROPHE, Chr.SingleQuote);
-            Add(0x28 /*(*/, ScanCodes.D9, Key.D9, DIK.DIK_9, Chr.LeftParenthesis, true);
-            Add(0x29 /*)*/, ScanCodes.D0, Key.D0, DIK.DIK_0, Chr.RightParenthesis, true);
+            K(0x20, Chr.Space, ChrText.Space, ScanCodes.Space, Key.Space, DIK.DIK_SPACE);
 
-            Add(0x2A /***/, ScanCodes.D8, Key.D8, DIK.DIK_8, Chr.Multiply, true);
-            Add(0x2B /*+*/, ScanCodes.Plus, Key.OemPlus, DIK.DIK_EQUALS, Chr.Plus, true);  //--Weird key name
-            Add(0x2C /*,*/, ScanCodes.Comma, Key.OemComma, DIK.DIK_COMMA, Chr.Comma);
-            Add(0x2D /*-*/, ScanCodes.Minus, Key.OemMinus, DIK.DIK_MINUS, Chr.Minus);
-            Add(0x2E /*.*/, ScanCodes.Period, Key.OemPeriod, DIK.DIK_PERIOD, Chr.Period);
-            Add(0x2F /*/*/, ScanCodes.Slash, Key.OemQuestion, DIK.DIK_SLASH, Chr.Slash); //--Weird key name
+            K(0x21 /*!*/, Chr.Exclamation, ChrText.Exclamation, ScanCodes.D1, Key.D1, DIK.DIK_1, true);
+            K(0x22 /*"*/, Chr.DoubleQuotes, ChrText.DoubleQuotes, ScanCodes.Quotes, Key.OemQuotes, DIK.DIK_APOSTROPHE, true);
+            K(0x23 /*#*/, Chr.NumberSign, ChrText.NumberSign, ScanCodes.D3, Key.D3, DIK.DIK_3, true);
+            K(0x24 /*$*/, Chr.DollarSign, ChrText.DollarSign, ScanCodes.D4, Key.D4, DIK.DIK_4, true);
+            K(0x25 /*%*/, Chr.Percent, ChrText.Percent, ScanCodes.D4, Key.D5, DIK.DIK_5, true);
+            K(0x26 /*&*/, Chr.Ampersand, ChrText.Ampersand, ScanCodes.D7, Key.D7, DIK.DIK_7, true);
+            K(0x27 /*'*/, Chr.SingleQuote, ChrText.SingleQuote, ScanCodes.Quotes, Key.OemQuotes, DIK.DIK_APOSTROPHE);
+            K(0x28 /*(*/, Chr.LeftParenthesis, ChrText.LeftParenthesis, ScanCodes.D9, Key.D9, DIK.DIK_9, true);
+            K(0x29 /*)*/, Chr.RightParenthesis, ChrText.RightParenthesis, ScanCodes.D0, Key.D0, DIK.DIK_0, true);
 
-            Add(0x30 /*0*/, ScanCodes.D0, Key.D0, DIK.DIK_0, Chr.D0);
-            Add(0x31 /*1*/, ScanCodes.D1, Key.D1, DIK.DIK_1, Chr.D1);
-            Add(0x32 /*2*/, ScanCodes.D2, Key.D2, DIK.DIK_2, Chr.D2);
-            Add(0x33 /*3*/, ScanCodes.D3, Key.D3, DIK.DIK_3, Chr.D3);
-            Add(0x34 /*4*/, ScanCodes.D4, Key.D4, DIK.DIK_4, Chr.D4);
-            Add(0x35 /*5*/, ScanCodes.D5, Key.D5, DIK.DIK_5, Chr.D5);
-            Add(0x36 /*6*/, ScanCodes.D6, Key.D6, DIK.DIK_6, Chr.D6);
-            Add(0x37 /*7*/, ScanCodes.D7, Key.D7, DIK.DIK_7, Chr.D7);
-            Add(0x38 /*8*/, ScanCodes.D8, Key.D8, DIK.DIK_8, Chr.D8);
-            Add(0x39 /*9*/, ScanCodes.D9, Key.D9, DIK.DIK_9, Chr.D9);
+            K(0x2A /***/, Chr.Multiply, ChrText.Multiply, ScanCodes.D8, Key.D8, DIK.DIK_8, true);
+            K(0x2B /*+*/, Chr.Plus, ChrText.Plus, ScanCodes.Plus, Key.OemPlus, DIK.DIK_EQUALS, true);  //--Weird key name
+            K(0x2C /*,*/, Chr.Comma, ChrText.Comma, ScanCodes.Comma, Key.OemComma, DIK.DIK_COMMA);
+            K(0x2D /*-*/, Chr.Minus, ChrText.Minus, ScanCodes.Minus, Key.OemMinus, DIK.DIK_MINUS);
+            K(0x2E /*.*/, Chr.Period, ChrText.Period, ScanCodes.Period, Key.OemPeriod, DIK.DIK_PERIOD);
+            K(0x2F /*/*/, Chr.Slash, ChrText.Slash, ScanCodes.Slash, Key.OemQuestion, DIK.DIK_SLASH); //--Weird key name
 
-            Add(0x3A /*:*/, ScanCodes.Semicolon, Key.OemSemicolon, DIK.DIK_SEMICOLON, Chr.Colon, true);
-            Add(0x3B /*;*/, ScanCodes.Semicolon, Key.OemSemicolon, DIK.DIK_SEMICOLON, Chr.Semicolon);
-            Add(0x3C /*<*/, ScanCodes.Comma, Key.OemComma, DIK.DIK_COMMA, Chr.LessThan, true);
-            Add(0x3D /*=*/, ScanCodes.Plus, Key.OemPlus, DIK.DIK_EQUALS, Chr.Equal); //--Weird key name
-            Add(0x3E /*>*/, ScanCodes.Period, Key.OemPeriod, DIK.DIK_PERIOD, Chr.GreaterThan, true);
-            Add(0x3F /*?*/, ScanCodes.Slash, Key.OemQuestion, DIK.DIK_SLASH, Chr.Question, true);
-            Add(0x40 /*@*/, ScanCodes.D2, Key.D2, DIK.DIK_2, Chr.AtSign, true); //--This key is a pain
+            K(0x30 /*0*/, Chr.D0, ChrText.D0, ScanCodes.D0, Key.D0, DIK.DIK_0);
+            K(0x31 /*1*/, Chr.D1, ChrText.D1, ScanCodes.D1, Key.D1, DIK.DIK_1);
+            K(0x32 /*2*/, Chr.D2, ChrText.D2, ScanCodes.D2, Key.D2, DIK.DIK_2);
+            K(0x33 /*3*/, Chr.D3, ChrText.D3, ScanCodes.D3, Key.D3, DIK.DIK_3);
+            K(0x34 /*4*/, Chr.D4, ChrText.D4, ScanCodes.D4, Key.D4, DIK.DIK_4);
+            K(0x35 /*5*/, Chr.D5, ChrText.D5, ScanCodes.D5, Key.D5, DIK.DIK_5);
+            K(0x36 /*6*/, Chr.D6, ChrText.D6, ScanCodes.D6, Key.D6, DIK.DIK_6);
+            K(0x37 /*7*/, Chr.D7, ChrText.D7, ScanCodes.D7, Key.D7, DIK.DIK_7);
+            K(0x38 /*8*/, Chr.D8, ChrText.D8, ScanCodes.D8, Key.D8, DIK.DIK_8);
+            K(0x39 /*9*/, Chr.D9, ChrText.D9, ScanCodes.D9, Key.D9, DIK.DIK_9);
 
-            Add(0x41 /*A*/, ScanCodes.A, Key.A, DIK.DIK_A, Chr.A, true);
-            Add(0x42 /*B*/, ScanCodes.B, Key.B, DIK.DIK_B, Chr.B, true);
-            Add(0x43 /*C*/, ScanCodes.C, Key.C, DIK.DIK_C, Chr.C, true);
-            Add(0x44 /*D*/, ScanCodes.D, Key.D, DIK.DIK_D, Chr.D, true);
-            Add(0x45 /*E*/, ScanCodes.E, Key.E, DIK.DIK_E, Chr.E, true);
-            Add(0x46 /*F*/, ScanCodes.F, Key.F, DIK.DIK_F, Chr.F, true);
-            Add(0x47 /*G*/, ScanCodes.G, Key.G, DIK.DIK_G, Chr.G, true);
-            Add(0x48 /*H*/, ScanCodes.H, Key.H, DIK.DIK_H, Chr.H, true);
-            Add(0x49 /*I*/, ScanCodes.I, Key.I, DIK.DIK_I, Chr.I, true);
-            Add(0x4A /*J*/, ScanCodes.J, Key.J, DIK.DIK_J, Chr.J, true);
-            Add(0x4B /*K*/, ScanCodes.K, Key.K, DIK.DIK_K, Chr.K, true);
-            Add(0x4C /*L*/, ScanCodes.L, Key.L, DIK.DIK_L, Chr.L, true);
-            Add(0x4D /*M*/, ScanCodes.M, Key.M, DIK.DIK_M, Chr.M, true);
-            Add(0x4E /*N*/, ScanCodes.N, Key.N, DIK.DIK_N, Chr.N, true);
-            Add(0x4F /*O*/, ScanCodes.O, Key.O, DIK.DIK_O, Chr.O, true);
-            Add(0x50 /*P*/, ScanCodes.P, Key.P, DIK.DIK_P, Chr.P, true);
-            Add(0x51 /*Q*/, ScanCodes.Q, Key.Q, DIK.DIK_Q, Chr.Q, true);
-            Add(0x52 /*R*/, ScanCodes.R, Key.R, DIK.DIK_R, Chr.R, true);
-            Add(0x53 /*S*/, ScanCodes.S, Key.S, DIK.DIK_S, Chr.S, true);
-            Add(0x54 /*T*/, ScanCodes.T, Key.T, DIK.DIK_T, Chr.T, true);
-            Add(0x55 /*U*/, ScanCodes.U, Key.U, DIK.DIK_U, Chr.U, true);
-            Add(0x56 /*V*/, ScanCodes.V, Key.V, DIK.DIK_V, Chr.V, true);
-            Add(0x57 /*W*/, ScanCodes.W, Key.W, DIK.DIK_W, Chr.W, true);
-            Add(0x58 /*X*/, ScanCodes.X, Key.X, DIK.DIK_X, Chr.X, true);
-            Add(0x59 /*Y*/, ScanCodes.Y, Key.Y, DIK.DIK_Y, Chr.Y, true);
-            Add(0x5A /*Z*/, ScanCodes.Z, Key.Z, DIK.DIK_Z, Chr.Z, true);
+            K(0x3A /*:*/, Chr.Colon, ChrText.Colon, ScanCodes.Semicolon, Key.OemSemicolon, DIK.DIK_SEMICOLON, true);
+            K(0x3B /*;*/, Chr.Semicolon, ChrText.Semicolon, ScanCodes.Semicolon, Key.OemSemicolon, DIK.DIK_SEMICOLON);
+            K(0x3C /*<*/, Chr.LessThan, ChrText.LessThan, ScanCodes.Comma, Key.OemComma, DIK.DIK_COMMA, true);
+            K(0x3D /*=*/, Chr.Equal, ChrText.Equal, ScanCodes.Plus, Key.OemPlus, DIK.DIK_EQUALS); //--Weird key name
+            K(0x3E /*>*/, Chr.GreaterThan, ChrText.GreaterThan, ScanCodes.Period, Key.OemPeriod, DIK.DIK_PERIOD, true);
+            K(0x3F /*?*/, Chr.Question, ChrText.Question, ScanCodes.Slash, Key.OemQuestion, DIK.DIK_SLASH, true);
+            K(0x40 /*@*/, Chr.AtSign, ChrText.AtSign, ScanCodes.D2, Key.D2, DIK.DIK_2, true); //--This key is a pain
+
+            K(0x41 /*A*/, Chr.A, ChrText.A, ScanCodes.A, Key.A, DIK.DIK_A, true);
+            K(0x42 /*B*/, Chr.B, ChrText.B, ScanCodes.B, Key.B, DIK.DIK_B, true);
+            K(0x43 /*C*/, Chr.C, ChrText.C, ScanCodes.C, Key.C, DIK.DIK_C, true);
+            K(0x44 /*D*/, Chr.D, ChrText.D, ScanCodes.D, Key.D, DIK.DIK_D, true);
+            K(0x45 /*E*/, Chr.E, ChrText.E, ScanCodes.E, Key.E, DIK.DIK_E, true);
+            K(0x46 /*F*/, Chr.F, ChrText.F, ScanCodes.F, Key.F, DIK.DIK_F, true);
+            K(0x47 /*G*/, Chr.G, ChrText.G, ScanCodes.G, Key.G, DIK.DIK_G, true);
+            K(0x48 /*H*/, Chr.H, ChrText.H, ScanCodes.H, Key.H, DIK.DIK_H, true);
+            K(0x49 /*I*/, Chr.I, ChrText.I, ScanCodes.I, Key.I, DIK.DIK_I, true);
+            K(0x4A /*J*/, Chr.J, ChrText.J, ScanCodes.J, Key.J, DIK.DIK_J, true);
+            K(0x4B /*K*/, Chr.K, ChrText.K, ScanCodes.K, Key.K, DIK.DIK_K, true);
+            K(0x4C /*L*/, Chr.L, ChrText.L, ScanCodes.L, Key.L, DIK.DIK_L, true);
+            K(0x4D /*M*/, Chr.M, ChrText.M, ScanCodes.M, Key.M, DIK.DIK_M, true);
+            K(0x4E /*N*/, Chr.N, ChrText.N, ScanCodes.N, Key.N, DIK.DIK_N, true);
+            K(0x4F /*O*/, Chr.O, ChrText.O, ScanCodes.O, Key.O, DIK.DIK_O, true);
+            K(0x50 /*P*/, Chr.P, ChrText.P, ScanCodes.P, Key.P, DIK.DIK_P, true);
+            K(0x51 /*Q*/, Chr.Q, ChrText.Q, ScanCodes.Q, Key.Q, DIK.DIK_Q, true);
+            K(0x52 /*R*/, Chr.R, ChrText.R, ScanCodes.R, Key.R, DIK.DIK_R, true);
+            K(0x53 /*S*/, Chr.S, ChrText.S, ScanCodes.S, Key.S, DIK.DIK_S, true);
+            K(0x54 /*T*/, Chr.T, ChrText.T, ScanCodes.T, Key.T, DIK.DIK_T, true);
+            K(0x55 /*U*/, Chr.U, ChrText.U, ScanCodes.U, Key.U, DIK.DIK_U, true);
+            K(0x56 /*V*/, Chr.V, ChrText.V, ScanCodes.V, Key.V, DIK.DIK_V, true);
+            K(0x57 /*W*/, Chr.W, ChrText.W, ScanCodes.W, Key.W, DIK.DIK_W, true);
+            K(0x58 /*X*/, Chr.X, ChrText.X, ScanCodes.X, Key.X, DIK.DIK_X, true);
+            K(0x59 /*Y*/, Chr.Y, ChrText.Y, ScanCodes.Y, Key.Y, DIK.DIK_Y, true);
+            K(0x5A /*Z*/, Chr.Z, ChrText.Z, ScanCodes.Z, Key.Z, DIK.DIK_Z, true);
 
             //--Not sure why these turn on Ctrl
-            Add(0x5B /*[*/, ScanCodes.LBracket, Key.OemOpenBrackets, DIK.DIK_LBRACKET, Chr.LeftBracket, false, true);
-            Add(0x5C /*\*/, ScanCodes.Backslash, Key.OemBackslash, DIK.DIK_BACKSLASH, Chr.Backslash, false, true); //--Might be Oem5
-            Add(0x5D /*]*/, ScanCodes.RBracket, Key.OemCloseBrackets, DIK.DIK_RBRACKET, Chr.RightBracket, false, true);
-            Add(0x5E /*^*/, ScanCodes.D6, Key.D6, DIK.DIK_6, Chr.Caret, true);
-            Add(0x5F /*_*/, ScanCodes.Minus, Key.OemMinus, DIK.DIK_MINUS, Chr.Underscore, true);
-            Add(0x60 /*`*/, ScanCodes.Tilde, Key.OemTilde, DIK.DIK_GRAVE, Chr.Grave); //--TODO: Verify
+            K(0x5B /*[*/, Chr.LeftBracket, ChrText.LeftBracket, ScanCodes.LBracket, Key.OemOpenBrackets, DIK.DIK_LBRACKET, false, true);
+            K(0x5C /*\*/, Chr.Backslash, ChrText.Backslash, ScanCodes.Backslash, Key.OemBackslash, DIK.DIK_BACKSLASH, false, true); //--Might be Oem5
+            K(0x5D /*]*/, Chr.RightBracket, ChrText.RightBracket, ScanCodes.RBracket, Key.OemCloseBrackets, DIK.DIK_RBRACKET, false, true);
+            K(0x5E /*^*/, Chr.Caret, ChrText.Caret, ScanCodes.D6, Key.D6, DIK.DIK_6, true);
+            K(0x5F /*_*/, Chr.Underscore, ChrText.Underscore, ScanCodes.Minus, Key.OemMinus, DIK.DIK_MINUS, true);
+            K(0x60 /*`*/, Chr.Grave, ChrText.Grave, ScanCodes.Tilde, Key.OemTilde, DIK.DIK_GRAVE); //--TODO: Verify
 
-            Add(0x61 /*a*/, ScanCodes.A, Key.A, DIK.DIK_A, Chr.a);
-            Add(0x62 /*b*/, ScanCodes.B, Key.B, DIK.DIK_B, Chr.b);
-            Add(0x63 /*c*/, ScanCodes.C, Key.C, DIK.DIK_C, Chr.c);
-            Add(0x64 /*d*/, ScanCodes.D, Key.D, DIK.DIK_D, Chr.d);
-            Add(0x65 /*e*/, ScanCodes.E, Key.E, DIK.DIK_E, Chr.e);
-            Add(0x66 /*f*/, ScanCodes.F, Key.F, DIK.DIK_F, Chr.f);
-            Add(0x67 /*g*/, ScanCodes.G, Key.G, DIK.DIK_G, Chr.g);
-            Add(0x68 /*h*/, ScanCodes.H, Key.H, DIK.DIK_H, Chr.h);
-            Add(0x69 /*i*/, ScanCodes.I, Key.I, DIK.DIK_I, Chr.i);
-            Add(0x6A /*j*/, ScanCodes.J, Key.J, DIK.DIK_J, Chr.j);
-            Add(0x6B /*k*/, ScanCodes.K, Key.K, DIK.DIK_K, Chr.k);
-            Add(0x6C /*l*/, ScanCodes.L, Key.L, DIK.DIK_L, Chr.l);
-            Add(0x6D /*m*/, ScanCodes.M, Key.M, DIK.DIK_M, Chr.m);
-            Add(0x6E /*n*/, ScanCodes.N, Key.N, DIK.DIK_N, Chr.n);
-            Add(0x6F /*o*/, ScanCodes.O, Key.O, DIK.DIK_O, Chr.o);
-            Add(0x70 /*p*/, ScanCodes.P, Key.P, DIK.DIK_P, Chr.p);
-            Add(0x71 /*q*/, ScanCodes.Q, Key.Q, DIK.DIK_Q, Chr.q);
-            Add(0x72 /*r*/, ScanCodes.R, Key.R, DIK.DIK_R, Chr.r);
-            Add(0x73 /*s*/, ScanCodes.S, Key.S, DIK.DIK_S, Chr.s);
-            Add(0x74 /*t*/, ScanCodes.T, Key.T, DIK.DIK_T, Chr.t);
-            Add(0x75 /*u*/, ScanCodes.U, Key.U, DIK.DIK_U, Chr.u);
-            Add(0x76 /*v*/, ScanCodes.V, Key.V, DIK.DIK_V, Chr.v);
-            Add(0x77 /*w*/, ScanCodes.W, Key.W, DIK.DIK_W, Chr.w);
-            Add(0x78 /*x*/, ScanCodes.X, Key.X, DIK.DIK_X, Chr.x);
-            Add(0x79 /*y*/, ScanCodes.Y, Key.Y, DIK.DIK_Y, Chr.y);
-            Add(0x7A /*z*/, ScanCodes.Z, Key.Z, DIK.DIK_Z, Chr.z);
+            K(0x61 /*a*/, Chr.a, ChrText.a, ScanCodes.A, Key.A, DIK.DIK_A);
+            K(0x62 /*b*/, Chr.b, ChrText.b, ScanCodes.B, Key.B, DIK.DIK_B);
+            K(0x63 /*c*/, Chr.c, ChrText.c, ScanCodes.C, Key.C, DIK.DIK_C);
+            K(0x64 /*d*/, Chr.d, ChrText.d, ScanCodes.D, Key.D, DIK.DIK_D);
+            K(0x65 /*e*/, Chr.e, ChrText.e, ScanCodes.E, Key.E, DIK.DIK_E);
+            K(0x66 /*f*/, Chr.f, ChrText.f, ScanCodes.F, Key.F, DIK.DIK_F);
+            K(0x67 /*g*/, Chr.g, ChrText.g, ScanCodes.G, Key.G, DIK.DIK_G);
+            K(0x68 /*h*/, Chr.h, ChrText.h, ScanCodes.H, Key.H, DIK.DIK_H);
+            K(0x69 /*i*/, Chr.i, ChrText.i, ScanCodes.I, Key.I, DIK.DIK_I);
+            K(0x6A /*j*/, Chr.j, ChrText.j, ScanCodes.J, Key.J, DIK.DIK_J);
+            K(0x6B /*k*/, Chr.k, ChrText.k, ScanCodes.K, Key.K, DIK.DIK_K);
+            K(0x6C /*l*/, Chr.l, ChrText.l, ScanCodes.L, Key.L, DIK.DIK_L);
+            K(0x6D /*m*/, Chr.m, ChrText.m, ScanCodes.M, Key.M, DIK.DIK_M);
+            K(0x6E /*n*/, Chr.n, ChrText.n, ScanCodes.N, Key.N, DIK.DIK_N);
+            K(0x6F /*o*/, Chr.o, ChrText.o, ScanCodes.O, Key.O, DIK.DIK_O);
+            K(0x70 /*p*/, Chr.p, ChrText.p, ScanCodes.P, Key.P, DIK.DIK_P);
+            K(0x71 /*q*/, Chr.q, ChrText.q, ScanCodes.Q, Key.Q, DIK.DIK_Q);
+            K(0x72 /*r*/, Chr.r, ChrText.r, ScanCodes.R, Key.R, DIK.DIK_R);
+            K(0x73 /*s*/, Chr.s, ChrText.s, ScanCodes.S, Key.S, DIK.DIK_S);
+            K(0x74 /*t*/, Chr.t, ChrText.t, ScanCodes.T, Key.T, DIK.DIK_T);
+            K(0x75 /*u*/, Chr.u, ChrText.u, ScanCodes.U, Key.U, DIK.DIK_U);
+            K(0x76 /*v*/, Chr.v, ChrText.v, ScanCodes.V, Key.V, DIK.DIK_V);
+            K(0x77 /*w*/, Chr.w, ChrText.w, ScanCodes.W, Key.W, DIK.DIK_W);
+            K(0x78 /*x*/, Chr.x, ChrText.x, ScanCodes.X, Key.X, DIK.DIK_X);
+            K(0x79 /*y*/, Chr.y, ChrText.y, ScanCodes.Y, Key.Y, DIK.DIK_Y);
+            K(0x7A /*z*/, Chr.z, ChrText.z, ScanCodes.Z, Key.Z, DIK.DIK_Z);
 
-            Add(0x7B /*{*/, ScanCodes.LBracket, Key.OemOpenBrackets, DIK.DIK_LBRACKET, Chr.LeftBrace, true);
-            Add(0x7C /*|*/, ScanCodes.Backslash, Key.OemBackslash, DIK.DIK_BACKSLASH, Chr.Pipe, true);
-            Add(0x7D /*}*/, ScanCodes.RBracket, Key.OemCloseBrackets, DIK.DIK_RBRACKET, Chr.RightBrace, true);
-            Add(0x7E /*~*/, ScanCodes.Tilde, Key.OemTilde, DIK.DIK_GRAVE, Chr.Tilde, true);
+            K(0x7B /*{*/, Chr.LeftBrace, ChrText.LeftBrace, ScanCodes.LBracket, Key.OemOpenBrackets, DIK.DIK_LBRACKET, true);
+            K(0x7C /*|*/, Chr.Pipe, ChrText.Pipe, ScanCodes.Backslash, Key.OemBackslash, DIK.DIK_BACKSLASH, true);
+            K(0x7D /*}*/, Chr.RightBrace, ChrText.RightBrace, ScanCodes.RBracket, Key.OemCloseBrackets, DIK.DIK_RBRACKET, true);
+            K(0x7E /*~*/, Chr.Tilde, ChrText.Tilde, ScanCodes.Tilde, Key.OemTilde, DIK.DIK_GRAVE, true);
 
-            Add(0x7F, ScanCodes.Undefined, Key.Delete, DIK.DIK_DELETE, Chr.Delete);
+            //--Other keys used.
+            S(Key.LeftShift, DIK.DIK_LSHIFT, ChrText.Shift);
+            S(Key.RightShift, DIK.DIK_LSHIFT, ChrText.Shift); //--Intentional
+
+            S(Key.Left, DIK.DIK_LEFTARROW, ChrText.Left);
+            S(Key.Right, DIK.DIK_RIGHTARROW, ChrText.Right);
+            S(Key.Up, DIK.DIK_UPARROW, ChrText.Up);
+            S(Key.Down, DIK.DIK_DOWNARROW, ChrText.Down);
+
+            S(Key.Escape, DIK.DIK_ESCAPE, ChrText.Escape); //--Aka Cancel
+            S(Key.Back, DIK.DIK_LEFTARROW, ChrText.Backspace);
+            S(Key.CapsLock, DIK.DIK_CAPSLOCK, ChrText.CapsLock); //--Alternate for SHIFT-0
+
+            S(Key.Insert, DIK.DIK_INSERT, ChrText.Insert);
+            S(Key.Delete, DIK.DIK_DELETE, ChrText.Delete);
+            S(Key.Home, DIK.DIK_HOME, ChrText.Home); //--Clear button
+            S(Key.End, DIK.DIK_END, ChrText.End);
+            S(Key.PageUp, DIK.DIK_PGUP, ChrText.PageUp);
+            S(Key.PageDown, DIK.DIK_PGDN, ChrText.PageDown);
 
             //TODO:
             //Break-Key
             //Cancel-Key
+
+            foreach (var key in this)
+            {
+                var item = (KeyDefinition)key;
+
+                if (CanMap(item)) item.IsMappable = true;
+            }
         }
+
+        private static bool CanMap(IKey item) =>
+            Alphabet.Contains(item.Character)
+            || Numeric.Contains(item.Character)
+            || LowerSymbols.Contains(item.Character)
+            || Arrows.Contains(item.Key)
+            || Control.Contains(item.Key)
+            || ExtendedControl.Contains(item.Key);
     }
 }

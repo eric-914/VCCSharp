@@ -20,9 +20,9 @@ namespace VCCSharp.Models.Keyboard.Definitions
         public const byte DIK_8 = 0x09;
         public const byte DIK_9 = 0x0A;
         public const byte DIK_0 = 0x0B;
-        public const byte DIK_MINUS = 0x0C;    /* - on main keyboard */
+        public const byte DIK_MINUS = 0x0C;         /* - on main keyboard */
         public const byte DIK_EQUALS = 0x0D;
-        public const byte DIK_BACK = 0x0E;    /* backspace */
+        public const byte DIK_BACK = 0x0E;          /* backspace */
         public const byte DIK_TAB = 0x0F;
         public const byte DIK_Q = 0x10;
         public const byte DIK_W = 0x11;
@@ -95,87 +95,55 @@ namespace VCCSharp.Models.Keyboard.Definitions
         public const byte DIK_OEM_102 = 0x56;       /* <> or \| on RT 102-key keyboard (Non-U.S.) */
         public const byte DIK_F11 = 0x57;
         public const byte DIK_F12 = 0x58;
-        public const byte DIK_F13 = 0x64;           /*                     (NEC PC98) */
-        public const byte DIK_F14 = 0x65;           /*                     (NEC PC98) */
-        public const byte DIK_F15 = 0x66;           /*                     (NEC PC98) */
-        public const byte DIK_KANA = 0x70;          /* (Japanese keyboard)            */
-        public const byte DIK_ABNT_C1 = 0x73;       /* /? on Brazilian keyboard */
-        public const byte DIK_CONVERT = 0x79;       /* (Japanese keyboard)            */
-        public const byte DIK_NOCONVERT = 0x7B;     /* (Japanese keyboard)            */
-        public const byte DIK_YEN = 0x7D;           /* (Japanese keyboard)            */
-        public const byte DIK_ABNT_C2 = 0x7E;       /* Numpad . on Brazilian keyboard */
         public const byte DIK_NUMPADEQUALS = 0x8D;  /* = on numeric keypad (NEC PC98) */
-        public const byte DIK_PREVTRACK = 0x90;     /* Previous Track (DIK_CIRCUMFLEX on Japanese keyboard) */
         public const byte DIK_AT = 0x91;            /*        (NEC PC98) */
-        public const byte DIK_COLON = 0x92;    /*                     (NEC PC98) */
-        public const byte DIK_UNDERLINE = 0x93;    /*                     (NEC PC98) */
-        public const byte DIK_KANJI = 0x94;    /* (Japanese keyboard)            */
-        public const byte DIK_STOP = 0x95;    /*                     (NEC PC98) */
-        public const byte DIK_AX = 0x96;    /*                     (Japan AX) */
-        public const byte DIK_UNLABELED = 0x97;    /*                        (J3100) */
-        public const byte DIK_NEXTTRACK = 0x99;    /* Next Track */
-        public const byte DIK_NUMPADENTER = 0x9C;    /* Enter on numeric keypad */
+        public const byte DIK_COLON = 0x92;         /*        (NEC PC98) */
+        public const byte DIK_UNDERLINE = 0x93;     /*        (NEC PC98) */
+        public const byte DIK_NUMPADENTER = 0x9C;   /* Enter on numeric keypad */
         public const byte DIK_RCONTROL = 0x9D;
-        public const byte DIK_MUTE = 0xA0;    /* Mute */
+        public const byte DIK_MUTE = 0xA0;          /* Mute */
         public const byte DIK_CALCULATOR = 0xA1;    /* Calculator */
-        public const byte DIK_PLAYPAUSE = 0xA2;    /* Play / Pause */
-        public const byte DIK_MEDIASTOP = 0xA4;    /* Media Stop */
+        public const byte DIK_PLAYPAUSE = 0xA2;     /* Play / Pause */
+        public const byte DIK_MEDIASTOP = 0xA4;     /* Media Stop */
         public const byte DIK_VOLUMEDOWN = 0xAE;    /* Volume - */
-        public const byte DIK_VOLUMEUP = 0xB0;    /* Volume + */
-        public const byte DIK_WEBHOME = 0xB2;    /* Web home */
-        public const byte DIK_NUMPADCOMMA = 0xB3;    /* , on numeric keypad (NEC PC98) */
-        public const byte DIK_DIVIDE = 0xB5;    /* / on numeric keypad */
+        public const byte DIK_VOLUMEUP = 0xB0;      /* Volume + */
+        public const byte DIK_WEBHOME = 0xB2;       /* Web home */
+        public const byte DIK_NUMPADCOMMA = 0xB3;   /* , on numeric keypad (NEC PC98) */
+        public const byte DIK_DIVIDE = 0xB5;        /* / on numeric keypad */
         public const byte DIK_SYSRQ = 0xB7;
-        public const byte DIK_RMENU = 0xB8;    /* right Alt */
-        public const byte DIK_PAUSE = 0xC5;    /* Pause */
-        public const byte DIK_HOME = 0xC7;    /* Home on arrow keypad */
-        public const byte DIK_UP = 0xC8;    /* UpArrow on arrow keypad */
-        public const byte DIK_PRIOR = 0xC9;    /* PgUp on arrow keypad */
-        public const byte DIK_LEFT = 0xCB;    /* LeftArrow on arrow keypad */
-        public const byte DIK_RIGHT = 0xCD;    /* RightArrow on arrow keypad */
-        public const byte DIK_END = 0xCF;    /* End on arrow keypad */
-        public const byte DIK_DOWN = 0xD0;    /* DownArrow on arrow keypad */
-        public const byte DIK_NEXT = 0xD1;    /* PgDn on arrow keypad */
-        public const byte DIK_INSERT = 0xD2;    /* Insert on arrow keypad */
-        public const byte DIK_DELETE = 0xD3;    /* Delete on arrow keypad */
-        public const byte DIK_LWIN = 0xDB;    /* Left Windows key */
-        public const byte DIK_RWIN = 0xDC;    /* Right Windows key */
-        public const byte DIK_APPS = 0xDD;    /* AppMenu key */
-        public const byte DIK_POWER = 0xDE;    /* System Power */
-        public const byte DIK_SLEEP = 0xDF;    /* System Sleep */
-        public const byte DIK_WAKE = 0xE3;    /* System Wake */
-        public const byte DIK_WEBSEARCH = 0xE5;    /* Web Search */
-        public const byte DIK_WEBFAVORITES = 0xE6;    /* Web Favorites */
-        public const byte DIK_WEBREFRESH = 0xE7;    /* Web Refresh */
-        public const byte DIK_WEBSTOP = 0xE8;    /* Web Stop */
-        public const byte DIK_WEBFORWARD = 0xE9;    /* Web Forward */
-        public const byte DIK_WEBBACK = 0xEA;    /* Web Back */
-        public const byte DIK_MYCOMPUTER = 0xEB;    /* My Computer */
-        public const byte DIK_MAIL = 0xEC;    /* Mail */
-        public const byte DIK_MEDIASELECT = 0xED;    /* Media Select */
+        public const byte DIK_RMENU = 0xB8;         /* right Alt */
+        public const byte DIK_PAUSE = 0xC5;         /* Pause */
+        public const byte DIK_HOME = 0xC7;          /* Home on arrow keypad */
+        public const byte DIK_UP = 0xC8;            /* UpArrow on arrow keypad */
+        public const byte DIK_PRIOR = 0xC9;         /* PgUp on arrow keypad */
+        public const byte DIK_LEFT = 0xCB;          /* LeftArrow on arrow keypad */
+        public const byte DIK_RIGHT = 0xCD;         /* RightArrow on arrow keypad */
+        public const byte DIK_END = 0xCF;           /* End on arrow keypad */
+        public const byte DIK_DOWN = 0xD0;          /* DownArrow on arrow keypad */
+        public const byte DIK_NEXT = 0xD1;          /* PgDn on arrow keypad */
+        public const byte DIK_INSERT = 0xD2;        /* Insert on arrow keypad */
+        public const byte DIK_DELETE = 0xD3;        /* Delete on arrow keypad */
+        public const byte DIK_LWIN = 0xDB;          /* Left Windows key */
+        public const byte DIK_RWIN = 0xDC;          /* Right Windows key */
+        public const byte DIK_APPS = 0xDD;          /* AppMenu key */
 
         /*
          *  Alternate names for keys, to facilitate transition from DOS.
          */
-        public const byte DIK_BACKSPACE = DIK_BACK;   /* backspace */
-        public const byte DIK_NUMPADSTAR = DIK_MULTIPLY;   /* * on numeric keypad */
-        public const byte DIK_LALT = DIK_LMENU;   /* left Alt */
-        public const byte DIK_CAPSLOCK = DIK_CAPITAL;   /* CapsLock */
+        public const byte DIK_BACKSPACE = DIK_BACK;         /* backspace */
+        public const byte DIK_NUMPADSTAR = DIK_MULTIPLY;    /* * on numeric keypad */
+        public const byte DIK_LALT = DIK_LMENU;             /* left Alt */
+        public const byte DIK_CAPSLOCK = DIK_CAPITAL;       /* CapsLock */
         public const byte DIK_NUMPADMINUS = DIK_SUBTRACT;   /* - on numeric keypad */
-        public const byte DIK_NUMPADPLUS = DIK_ADD;   /* + on numeric keypad */
+        public const byte DIK_NUMPADPLUS = DIK_ADD;         /* + on numeric keypad */
         public const byte DIK_NUMPADPERIOD = DIK_DECIMAL;   /* . on numeric keypad */
-        public const byte DIK_NUMPADSLASH = DIK_DIVIDE;   /* / on numeric keypad */
-        public const byte DIK_RALT = DIK_RMENU;   /* right Alt */
-        public const byte DIK_UPARROW = DIK_UP;   /* UpArrow on arrow keypad */
-        public const byte DIK_PGUP = DIK_PRIOR;   /* PgUp on arrow keypad */
-        public const byte DIK_LEFTARROW = DIK_LEFT;   /* LeftArrow on arrow keypad */
-        public const byte DIK_RIGHTARROW = DIK_RIGHT;   /* RightArrow on arrow keypad */
-        public const byte DIK_DOWNARROW = DIK_DOWN;   /* DownArrow on arrow keypad */
-        public const byte DIK_PGDN = DIK_NEXT;   /* PgDn on arrow keypad */
-
-        /*
-         *  Alternate names for keys originally not used on US keyboards.
-         */
-        public const byte DIK_CIRCUMFLEX = DIK_PREVTRACK; /* Japanese keyboard */
+        public const byte DIK_NUMPADSLASH = DIK_DIVIDE;     /* / on numeric keypad */
+        public const byte DIK_RALT = DIK_RMENU;             /* right Alt */
+        public const byte DIK_UPARROW = DIK_UP;             /* UpArrow on arrow keypad */
+        public const byte DIK_PGUP = DIK_PRIOR;             /* PgUp on arrow keypad */
+        public const byte DIK_LEFTARROW = DIK_LEFT;         /* LeftArrow on arrow keypad */
+        public const byte DIK_RIGHTARROW = DIK_RIGHT;       /* RightArrow on arrow keypad */
+        public const byte DIK_DOWNARROW = DIK_DOWN;         /* DownArrow on arrow keypad */
+        public const byte DIK_PGDN = DIK_NEXT;              /* PgDn on arrow keypad */
     }
 }

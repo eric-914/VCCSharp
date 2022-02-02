@@ -36,31 +36,7 @@ namespace VCCSharp.Models
         public const ushort VNMI = 0xFFFC;
         public const ushort VRESET = 0xFFFE;
 
-        #region ScanCodes (1)
-
-
-
-        #endregion
-
         public const int KBTABLE_ENTRY_COUNT = 100; //< key translation table maximum size, (arbitrary) most of the layouts are < 80 entries
-
-        public const int WM_CREATE = 0x0001;
-        public const int WM_KILLFOCUS = 0x0008;
-        //public const int WM_CLOSE = 0x0010;
-        public const int WM_KEYDOWN = 0x0100;
-        public const int WM_KEYUP = 0x0101;
-        public const int WM_SYSKEYDOWN = 0x0104;
-        public const int WM_SYSKEYUP = 0x0105;
-        public const int WM_COMMAND = 0x0111;
-        public const int WM_SYSCOMMAND = 0x0112;
-        public const int WM_MOUSEMOVE = 0x0200;
-        public const int WM_LBUTTONDOWN = 0x0201;
-        public const int WM_LBUTTONUP = 0x0202;
-        public const int WM_RBUTTONDOWN = 0x0204;
-        public const int WM_RBUTTONUP = 0x0205;
-
-        public const uint SC_KEYMENU = 0xF100;
-        public const uint VK_LMENU = 0xA4;
 
         //Defines the start and end IDs for the dynamic menus
         public const int ID_DYNAMENU_START = 5000;
