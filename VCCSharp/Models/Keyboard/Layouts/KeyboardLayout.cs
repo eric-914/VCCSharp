@@ -6,8 +6,7 @@ using VCCSharp.Models.Keyboard.Definitions;
 
 namespace VCCSharp.Models.Keyboard.Layouts
 {
-    /*****************************************************************************/
-    /*
+    /*****************************************************************************
       Keyboard layout data
 
       key translation tables used to convert keyboard oem scan codes / key
@@ -24,10 +23,7 @@ namespace VCCSharp.Models.Keyboard.Layouts
       These do not need to be in any particular order,
       the code sorts them after they are copied to the run-time table
       each table is terminated at the first entry with ScanCode1+2 == 0
-
-
-    */
-    /*****************************************************************************/
+    *****************************************************************************/
 
     public partial class KeyboardLayout
     {
@@ -73,8 +69,21 @@ namespace VCCSharp.Models.Keyboard.Layouts
         }
 
         //--Character isn't used, but included for debugging purposes
-        private static byte[] Key(byte scanCode1, byte scanCode2, byte row1, byte col1, byte row2, byte col2, char character = Chr.None) 
-            => new[] { scanCode1, scanCode2, row1, col1, row2, col2, (byte)character };
+        private static byte[] Key(char character, byte scanCode1, byte scanCode2, byte[] matrix)
+        {
+            bool hasPlus = matrix.Length > 2;
+            byte row = (byte)(1 << (matrix[0] - 1));
+            byte column = matrix[1];
+            byte rowPlus = hasPlus ? (byte)(1 << (matrix[2] - 1)) : (byte)0;
+            byte columnPlus = hasPlus ? matrix[3] : (byte)0;
 
+            return new[]
+            {
+                scanCode1, scanCode2, row, column, rowPlus, columnPlus, (byte)character
+            };
+        }
+
+        private static byte[] Key(byte scanCode1, byte scanCode2, byte[] matrix) 
+            => Key(Chr.None, scanCode1, scanCode2, matrix);
     }
 }
