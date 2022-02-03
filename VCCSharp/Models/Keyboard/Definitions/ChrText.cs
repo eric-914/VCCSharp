@@ -14,10 +14,10 @@
         public const string PageUp = "PgUp";
         public const string PageDown = "PgDn";
         public const string NumberLock = "NumLock";
-        public const string Left = "Left";
-        public const string Right = "Right";
-        public const string Up = "Up";
-        public const string Down = "Down";
+        public const string Left = "←";
+        public const string Right = "→";
+        public const string Up = "↑";
+        public const string Down = "↓";
         public const string CapsLock = "CapsLock";
 
         public const string Shift = "Shift";

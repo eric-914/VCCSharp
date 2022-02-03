@@ -1,26 +1,21 @@
 ﻿// ReSharper disable CommentTypo
 // ReSharper disable InvalidXmlDocComment
-
 using VCCSharp.Models.Keyboard.Definitions;
 
-namespace VCCSharp.Models.Keyboard
+namespace VCCSharp.Models.Keyboard.Layouts
 {
-    /**
-      Original VCC key translation table for DECB
-
-      VCC BASIC Keyboard:
-
-      +--------------------------------------------------------------------------------+
-      [  ][F1][F2][  ][  ][Rst][RGB][  ][Thr][Pwr][StB][FSc][  ]   [    ][   ][    ]   |
-      |                                                                                |
-      | [ ][1!][2"][3#][4$][5%][6&][7'][8(][9)][0 ][:*][-=][BkSpc]   [    ][Clr][    ] |
-      | [    ][Qq][Ww][Ee][Rr][Tt][Yy][Uu][Ii][Oo][Pp][[{][]}][\|]   [    ][Esc][    ] |
-      | [ Caps][Aa][Ss][Dd][Ff][Gg][Hh][Jj][Kk][Ll][;:][  ][Enter]                     |
-      | [ Shift ][Zz][Xx][Cc][Vv][Bb][Nn][Mm][,<][.>][/?][ Shift ]         [UpA]       |
-      | [Cntl][   ][Alt][       Space       ][ @ ][   ][   ][Cntl]   [LftA][DnA][RgtA] |
-      +--------------------------------------------------------------------------------+
+    /*
+      Color Computer 1/2 Keyboard:
+      ┌─────────────────────────────────────────────────────────────────────────────────────────────────────┐
+      | [  ]    [  ][  ][  ][  ][  ][  ][  ][  ][  ][   ][   ][   ]          [ ][ ][ ]         [ ][ ][ ][ ] |
+      |                                                                                                     |
+      |  [ ][1!][2"][3#][4$][5%][6&][7'][8(][9)][0 ][:*][-=][  ←  ]        [ ][Clear][ ]       [ ][ ][ ][ ] |
+      |  [    ][Qq][Ww][Ee][Rr][Tt][Yy][Uu][Ii][Oo][Pp][  ][  ][@ ]        [ ][Break][ ]       [ ][↑][ ][ ] |
+      |  [ Caps][Aa][Ss][Dd][Ff][Gg][Hh][Jj][Kk][Ll][;+][  ][Enter]                            [←][ ][→][ ] |
+      |  [ Shift ][Zz][Xx][Cc][Vv][Bb][Nn][Mm][,<][.>][/?][ Shift ]             [↑]            [ ][↓][ ][↵] |
+      |  [    ][   ][   ][       Space       ][   ][   ][   ][    ]          [←][↓][→]         [    ][ ][↵] |
+      └─────────────────────────────────────────────────────────────────────────────────────────────────────┘
      */
-
     public partial class KeyboardLayout
     {
         private static KeyTranslationEntry[] _keyTranslationsCoCo;

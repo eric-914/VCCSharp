@@ -124,8 +124,8 @@ namespace VCCSharp.Modules
                 return;
             }
 
-            //This sets the keyboard to Natural (keyboard stores previous to retrieve later)
-            _modules.Keyboard.SwapKeyboardLayout(KeyboardLayouts.Natural); //Natural (OS9)
+            //This sets the keyboard to PC (keyboard stores previous to retrieve later)
+            _modules.Keyboard.SwapKeyboardLayout(KeyboardLayouts.PC);
 
             //--This process is asynchronous.  The text will finish pasting long after here.
             PasteText(text);

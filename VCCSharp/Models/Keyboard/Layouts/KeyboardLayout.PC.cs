@@ -1,41 +1,27 @@
 ﻿#pragma warning disable IDE1006 // Naming Styles
+// ReSharper disable InconsistentNaming
+// ReSharper disable InvalidXmlDocComment
 using VCCSharp.Models.Keyboard.Definitions;
 
-namespace VCCSharp.Models.Keyboard
+namespace VCCSharp.Models.Keyboard.Layouts
 {
-
-    /**
-      Original VCC key translation table for OS-9
-
+    /*
       PC Keyboard:
-      +---------------------------------------------------------------------------------+
-      | [Esc]   [F1][F2][F3][F4][F5][F6][F7][F8][F9][F10][F11][F12]   [Prnt][Scr][Paus] |
-      |                                                                                 |
-      | [`~][1!][2@][3#][4$][5%][6^][7&][8*][9(][0]][-_][=+][BkSpc]   [Inst][Hom][PgUp] |
-      | [  Tab][Qq][Ww][Ee][Rr][Tt][Yy][Uu][Ii][Oo][Pp][[{][]}][\|]   [Dlet][End][PgDn] |
-      | [  Caps][Aa][Ss][Dd][Ff][Gg][Hh][Jj][Kk][Ll][;:]['"][Enter]                     |
-      | [  Shift ][Zz][Xx][Cc][Vv][Bb][Nn][Mm][,<][.>][/?][ Shift ]         [UpA]       |
-      | [Cntl][Win][Alt][        Space       ][Alt][Win][Prp][Cntl]   [LftA][DnA][RgtA] |
-      +---------------------------------------------------------------------------------+
-
-      VCC OS-9 Keyboard
-
-      +---------------------------------------------------------------------------------+
-      | [Esc][F1][F2][  ][  ][Rst][RGB][  ][Thr][Pwr][StB][FSc][  ]  [    ][   ][    ]  |
-      |                                                                                 |
-      | [`][1!][2@][3#][4$][5%][6^][7&][8*][9(][0]][-_][=+][BkSpc]   [INST][Clr][PgUp]  |
-      | [    ][Qq][Ww][Ee][Rr][Tt][Yy][Uu][Ii][Oo][Pp][[{][]}][\|]   [DEL ][EOL][PgDn]  |
-      | [ Caps][Aa][Ss][Dd][Ff][Gg][Hh][Jj][Kk][Ll][;:]['"][Enter]                      |
-      | [ Shift ][Zz][Xx][Cc][Vv][Bb][Nn][Mm][,<][.>][/?][ Shift ]         [UpA]        |
-      | [Cntl][   ][Alt][       Space       ][Alt][   ][   ][Cntl]   [LftA][DnA][RgtA]  |
-      +---------------------------------------------------------------------------------+
+      ┌─────────────────────────────────────────────────────────────────────────────────────────────────────┐
+      │ [Esc]   [F1][F2][F3][F4][F5][F6][F7][F8][F9][F10][F11][F12]   [PrtScn][ScrLk][Pause]   [=][(][)][<] │
+      │                                                                                                     │
+      │ [`~][1!][2@][3#][4$][5%][6^][7&][8*][9(][0]][-_][=+][BkSpc]       [Ins][Hom][PgUp]   [Num][/][*][-] │
+      │ [  Tab][Qq][Ww][Ee][Rr][Tt][Yy][Uu][Ii][Oo][Pp][[{][]}][\|]       [Del][End][PgDn]     [7][8][9][+] │
+      │ [  Caps][Aa][Ss][Dd][Ff][Gg][Hh][Jj][Kk][Ll][;:]['"][Enter]                            [4][5][6][+] │
+      │ [  Shift ][Zz][Xx][Cc][Vv][Bb][Nn][Mm][,<][.>][/?][ Shift ]             [↑]            [1][2][3][↵] │
+      │ [Ctrl][Win][Alt][        Space       ][Alt][Win][Prp][Ctrl]          [←][↓][→]         [ 0  ][.][↵] │
+      └─────────────────────────────────────────────────────────────────────────────────────────────────────┘
      */
-
     public partial class KeyboardLayout
     {
         private static KeyTranslationEntry[] _keyTranslationsNatural;
 
-        public class Natural
+        public class PC
         {
             #region Key Definitions
 
@@ -162,7 +148,7 @@ namespace VCCSharp.Models.Keyboard
 
         private static KeyTranslationEntry[] GetKeyTranslationsNatural()
         {
-            return _keyTranslationsNatural ??= ToArray(Natural.KeyTranslations);
+            return _keyTranslationsNatural ??= ToArray(PC.KeyTranslations);
         }
     }
 }

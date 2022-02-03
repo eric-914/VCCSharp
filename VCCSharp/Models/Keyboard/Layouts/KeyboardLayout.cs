@@ -4,7 +4,7 @@ using System.Linq;
 using VCCSharp.Enums;
 using VCCSharp.Models.Keyboard.Definitions;
 
-namespace VCCSharp.Models.Keyboard
+namespace VCCSharp.Models.Keyboard.Layouts
 {
     /*****************************************************************************/
     /*
@@ -25,18 +25,7 @@ namespace VCCSharp.Models.Keyboard
       the code sorts them after they are copied to the run-time table
       each table is terminated at the first entry with ScanCode1+2 == 0
 
-      PC Keyboard:
-      +---------------------------------------------------------------------------------+
-      | [Esc]   [F1][F2][F3][F4][F5][F6][F7][F8][F9][F10][F11][F12]   [Prnt][Scr][Paus] |
-      |                                                                                 |
-      | [`~][1!][2@][3#][4$][5%][6^][7&][8*][9(][0]][-_][=+][BkSpc]   [Inst][Hom][PgUp] |
-      | [  Tab][Qq][Ww][Ee][Rr][Tt][Yy][Uu][Ii][Oo][Pp][[{][]}][\|]   [Dlet][End][PgDn] |
-      | [  Caps][Aa][Ss][Dd][Ff][Gg][Hh][Jj][Kk][Ll][;:]['"][Enter]                     |
-      | [  Shift ][Zz][Xx][Cc][Vv][Bb][Nn][Mm][,<][.>][/?][ Shift ]         [UpA]       |
-      | [Cntl][Win][Alt][        Space       ][Alt][Win][Prp][Cntl]   [LftA][DnA][RgtA] |
-      +---------------------------------------------------------------------------------+
 
-      TODO: explain and add link or reference to CoCo 'scan codes' for each key
     */
     /*****************************************************************************/
 
@@ -76,7 +65,8 @@ namespace VCCSharp.Models.Keyboard
             var map = new Dictionary<KeyboardLayouts, Func<KeyTranslationEntry[]>>
             {
                 { KeyboardLayouts.CoCo, GetKeyTranslationsCoCo },
-                { KeyboardLayouts.Natural, GetKeyTranslationsNatural }
+                { KeyboardLayouts.CoCo3, GetKeyTranslationsCoCo3 },
+                { KeyboardLayouts.PC, GetKeyTranslationsNatural }
             };
 
             return map[keyBoardLayout]();

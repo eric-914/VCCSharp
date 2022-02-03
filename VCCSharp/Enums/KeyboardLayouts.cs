@@ -4,7 +4,8 @@
     public enum KeyboardLayouts
     {
         CoCo = 0,
-        Natural = 1,
+        CoCo3 = 1,
+        PC = 2,
 
         Count
     }

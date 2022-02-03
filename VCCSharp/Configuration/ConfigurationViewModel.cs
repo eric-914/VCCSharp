@@ -86,8 +86,9 @@ namespace VCCSharp.Configuration
 
         public List<string> KeyboardLayouts { get; } = new List<string>
         {
-            "CoCo (DECB)",
-            "Natural (OS-9)"
+            "Color Computer 1/2",
+            "Color Computer 3",
+            "PC"
         };
 
         public List<string> SoundRates { get; } = new List<string> { "Disabled", "11025 Hz", "22050 Hz", "44100 Hz" };

@@ -6,6 +6,7 @@ using VCCSharp.IoC;
 using VCCSharp.Models;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Models.Keyboard.Definitions;
+using VCCSharp.Models.Keyboard.Layouts;
 using KeyStates = VCCSharp.Enums.KeyStates;
 
 namespace VCCSharp.Modules
@@ -295,7 +296,7 @@ namespace VCCSharp.Modules
             //--Substituting the backslash for the "@" character.
             if (key == Key.Oem5)
             {
-                SwapKeyboardLayout(KeyboardLayouts.Natural); //Natural (OS9)
+                SwapKeyboardLayout(KeyboardLayouts.PC);
 
                 //--On standard keyboard, @ is Shift-2
                 KeyboardHandleKey(DIK.DIK_2, keyState);

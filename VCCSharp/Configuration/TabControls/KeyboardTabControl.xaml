@@ -42,10 +42,16 @@
         Keyboard Map Descriptions
       </TextBlock>
       <TextBlock TextWrapping="Wrap">
-        Coco (DECB): Layout physically resembles the Coco keyboard as close as possible.
+        Coco 1/2: Layout physically resembles the Coco 1/2 keyboard as close as possible.
       </TextBlock>
       <TextBlock TextWrapping="Wrap">
-        Natural (OS-9): Standard PC keyboard layout.
+        Coco 1/2: Layout physically resembles the Coco 1/2 keyboard as close as possible.
+      </TextBlock>
+      <TextBlock TextWrapping="Wrap">
+        Coco 3: Layout physically resembles the Coco 3 keyboard as close as possible.
+      </TextBlock>
+      <TextBlock TextWrapping="Wrap">
+        Standard PC keyboard layout.
       </TextBlock>
     </StackPanel>
   </Grid>
