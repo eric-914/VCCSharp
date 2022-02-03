@@ -100,11 +100,6 @@ namespace VCCSharp.Models.Keyboard.Layouts
             private static byte[] ArrowLeft => Key(Chr.Left, DIK.DIK_LEFTARROW, 0, Matrix.Left);
             private static byte[] ArrowRight => Key(Chr.Right, DIK.DIK_RIGHTARROW, 0, Matrix.Right);
 
-            private static byte[] NumPadUp => Key(Chr.Up, DIK.DIK_NUMPAD8, 0, Matrix.Up);
-            private static byte[] NumPadDown => Key(Chr.Down, DIK.DIK_NUMPAD2, 0, Matrix.Down);
-            private static byte[] NumPadLeft => Key(Chr.Left, DIK.DIK_NUMPAD4, 0, Matrix.Left);
-            private static byte[] NumPadRight => Key(Chr.Right, DIK.DIK_NUMPAD6, 0, Matrix.Right);
-
             private static byte[] Tab => Key(Chr.Tab, DIK.DIK_TAB, 0, Matrix.Clear);
             private static byte[] Enter => Key(Chr.Return, DIK.DIK_RETURN, 0, Matrix.Enter); //--Enter/Return
 
@@ -114,10 +109,10 @@ namespace VCCSharp.Models.Keyboard.Layouts
 
             private static byte[] Escape => Key(DIK.DIK_ESCAPE, 0, Matrix.Break); //--BREAK
 
-            private static byte[] NumPadHome => Key(DIK.DIK_NUMPAD7, 0, Matrix.Clear); //--CLEAR
-            private static byte[] NumPadEnd => Key(DIK.DIK_NUMPAD1, 0, Matrix.ShiftRight); //--END OF LINE
-            private static byte[] NumPadPageUp => Key(DIK.DIK_NUMPAD9, 0, Matrix.ShiftUp); //--PAGE-UP
-            private static byte[] NumPadPageDown => Key(DIK.DIK_NUMPAD3, 0, Matrix.ShiftDown); //--PAGE-DOWN
+            private static byte[] Home => Key(DIK.DIK_HOME, 0, Matrix.Clear); //--CLEAR
+            private static byte[] End => Key(DIK.DIK_END, 0, Matrix.ShiftRight); //--END OF LINE
+            private static byte[] PageUp => Key(DIK.DIK_PGUP, 0, Matrix.ShiftUp); //--PAGE-UP
+            private static byte[] PageDown => Key(DIK.DIK_PGDN, 0, Matrix.ShiftDown); //--PAGE-DOWN
 
             private static byte[] F1 => Key(DIK.DIK_F1, 0, Matrix.F1); //--F1 - CoCo3
             private static byte[] F2 => Key(DIK.DIK_F2, 0, Matrix.F2); //--F2 - CoCo3
@@ -141,8 +136,8 @@ namespace VCCSharp.Models.Keyboard.Layouts
                 Exclamation, AtSign, NumberSign, DollarSign, Percent, Caret, Ampersand, Multiply, LeftParenthesis, RightParenthesis,
                 SemiColon, Colon, SingleQuote, DoubleQuotes,
                 Comma, Period, QuestionMark, ForwardSlash, Plus, Equal, Minus,
-                ArrowUp, ArrowDown, ArrowLeft, ArrowRight, NumPadUp, NumPadDown, NumPadLeft, NumPadRight,
-                Space, Enter, Tab, NumPadHome, Escape, NumPadEnd, NumPadPageUp, NumPadPageDown,
+                ArrowUp, ArrowDown, ArrowLeft, ArrowRight, 
+                Space, Enter, Tab, Home, Escape, End, PageUp, PageDown,
                 F1, F2, BackSpace,
                 CapsLock, Alt, Control, Shift
             };
