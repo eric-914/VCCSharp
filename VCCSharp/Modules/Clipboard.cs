@@ -58,7 +58,7 @@ namespace VCCSharp.Modules
 
         #endregion
 
-        private List<IKey> _clipboardText = new List<IKey>();
+        private List<IKey> _clipboardText = new();
 
         private readonly IModules _modules;
         private IGraphics Graphics => _modules.Graphics;

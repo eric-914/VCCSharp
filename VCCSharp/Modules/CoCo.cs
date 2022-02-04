@@ -83,7 +83,7 @@ namespace VCCSharp.Modules
         private readonly int[] _audioBuffer = new int[16384];
         private readonly byte[] _cassetteBuffer = new byte[8192];
 
-        private readonly DACSample _dacSample = new DACSample();
+        private readonly DACSample _dacSample = new();
 
         public int OverClock { get; set; }
 
@@ -94,7 +94,7 @@ namespace VCCSharp.Modules
         {
             _modules = modules;
 
-            UpdateTapeDialog = offset => { }; //_modules.Config.UpdateTapeDialog((uint)offset);
+            UpdateTapeDialog = _ => { }; //_modules.Config.UpdateTapeDialog((uint)offset);
         }
 
         public void CocoReset()

@@ -22,10 +22,10 @@ namespace VCCSharp.Models
 
     public class JoystickStates
     {
-        public byte LeftStickNumber;
-        public JoystickState Left = new JoystickState();
+        public byte LeftStickNumber { get; set; }
+        public JoystickState Left = new();
 
-        public byte RightStickNumber;
-        public JoystickState Right = new JoystickState();
+        public byte RightStickNumber { get; set; }
+        public JoystickState Right = new();
     }
 }

@@ -12,7 +12,7 @@ namespace VCCSharp.Models.Configuration.Support
         //--Mainly just mapping 'default' to the number-pad.
 
         [JsonIgnore]
-        public KeySelect Left { get; } = new KeySelect { Value = Key.D4 };
+        public KeySelect Left { get; } = new() { Value = Key.D4 };
 
         [JsonProperty("Left")]
         public virtual string LeftText
@@ -22,7 +22,7 @@ namespace VCCSharp.Models.Configuration.Support
         }
 
         [JsonIgnore]
-        public KeySelect Right { get; } = new KeySelect { Value = Key.D6 };
+        public KeySelect Right { get; } = new() { Value = Key.D6 };
 
         [JsonProperty("Right")]
         public virtual string RightText
@@ -32,7 +32,7 @@ namespace VCCSharp.Models.Configuration.Support
         }
 
         [JsonIgnore]
-        public KeySelect Up { get; } = new KeySelect { Value = Key.D8 };
+        public KeySelect Up { get; } = new() { Value = Key.D8 };
 
         [JsonProperty("Up")]
         public virtual string UpText
@@ -42,7 +42,7 @@ namespace VCCSharp.Models.Configuration.Support
         }
 
         [JsonIgnore]
-        public KeySelect Down { get; } = new KeySelect { Value = Key.D6 };
+        public KeySelect Down { get; } = new() { Value = Key.D6 };
 
         [JsonProperty("Down")]
         public virtual string DownText
@@ -51,6 +51,6 @@ namespace VCCSharp.Models.Configuration.Support
             set => Down.Selected = value;
         }
 
-        public JoystickButtons Buttons { get; } = new JoystickButtons();
+        public JoystickButtons Buttons { get; } = new();
     }
 }

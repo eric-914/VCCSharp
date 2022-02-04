@@ -8,13 +8,13 @@ namespace VCCSharp.Models.CPU.MC6809
         // ReSharper disable InconsistentNaming
         // ReSharper disable IdentifierTypo
 
-        public MC6809CpuRegister pc { get; } = new MC6809CpuRegister();
-        public MC6809CpuRegister d { get; } = new MC6809CpuRegister();
-        public MC6809CpuRegister x { get; } = new MC6809CpuRegister();
-        public MC6809CpuRegister y { get; } = new MC6809CpuRegister();
-        public MC6809CpuRegister u { get; } = new MC6809CpuRegister();
-        public MC6809CpuRegister s { get; } = new MC6809CpuRegister();
-        public MC6809CpuRegister dp { get; } = new MC6809CpuRegister();
+        public MC6809CpuRegister pc { get; } = new();
+        public MC6809CpuRegister d { get; } = new();
+        public MC6809CpuRegister x { get; } = new();
+        public MC6809CpuRegister y { get; } = new();
+        public MC6809CpuRegister u { get; } = new();
+        public MC6809CpuRegister s { get; } = new();
+        public MC6809CpuRegister dp { get; } = new();
 
         public byte ccbits;
 

@@ -31,7 +31,7 @@ namespace DX8.Models
         private uint _sndLength2;
 
         // ReSharper disable once IdentifierTypo
-        private readonly List<_GUID> _guids = new List<_GUID>();
+        private readonly List<_GUID> _guids = new();
 
         internal DxSound(IDSound sound, IDxFactoryInternal factory)
         {

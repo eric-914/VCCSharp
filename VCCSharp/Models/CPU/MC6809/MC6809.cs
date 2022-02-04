@@ -13,7 +13,7 @@ namespace VCCSharp.Models.CPU.MC6809
     {
         private readonly IModules _modules;
 
-        private readonly MC6809CpuRegisters _cpu = new MC6809CpuRegisters();
+        private readonly MC6809CpuRegisters _cpu = new();
 
         private byte _inInterrupt;
         private int _cycleCounter;

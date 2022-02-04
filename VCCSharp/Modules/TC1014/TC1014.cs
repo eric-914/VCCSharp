@@ -60,9 +60,9 @@ namespace VCCSharp.Modules.TC1014
 
         private ushort _mmuPrefix;
 
-        private readonly BytePointer _ram = new BytePointer();
-        private readonly BytePointer _rom = new BytePointer();
-        private readonly BytePointer _irb = new BytePointer(); //--Internal ROM buffer
+        private readonly BytePointer _ram = new();
+        private readonly BytePointer _rom = new();
+        private readonly BytePointer _irb = new(); //--Internal ROM buffer
 
         private byte _enhancedFIRQFlag;
         private byte _enhancedIRQFlag;
@@ -351,7 +351,7 @@ Could not locate {rom} in any of these locations:
             byte mask;
             byte reg;
 
-            if ((port >= 0xC6) && (port <= 0xD3))   //VDG Display offset Section
+            if (port is >= 0xC6 and <= 0xD3)   //VDG Display offset Section
             {
                 port -= 0xC6;
                 reg = (byte)((port & 0x0E) >> 1);
@@ -367,7 +367,7 @@ Could not locate {rom} in any of these locations:
                 Graphics.SetGimeVdgOffset(_disOffset);
             }
 
-            if ((port >= 0xC0) && (port <= 0xC5))   //VDG Mode
+            if (port is >= 0xC0 and <= 0xC5)   //VDG Mode
             {
                 port -= 0xC0;
                 reg = (byte)((port & 0x0E) >> 1);

@@ -5,6 +5,6 @@ namespace VCCSharp.Models.Configuration
 {
     public class Keyboard
     {
-        public RangeSelect<KeyboardLayouts> Layout { get; } = new RangeSelect<KeyboardLayouts>();
+        public RangeSelect<KeyboardLayouts> Layout { get; } = new();
     }
 }

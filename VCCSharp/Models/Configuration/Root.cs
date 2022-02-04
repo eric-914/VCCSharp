@@ -17,19 +17,19 @@
 
     public class Root : IConfiguration
     {
-        public Version Version { get; } = new Version();
-        public Window Window { get; } = new Window();
+        public Version Version { get; } = new();
+        public Window Window { get; } = new();
 
-        public CPU CPU { get; } = new CPU();
-        public Audio Audio { get; } = new Audio();
-        public Video Video { get; } = new Video();
-        public Memory Memory { get; } = new Memory();
-        public Keyboard Keyboard { get; } = new Keyboard();
-        public Joysticks Joysticks { get; } = new Joysticks();
+        public CPU CPU { get; } = new();
+        public Audio Audio { get; } = new();
+        public Video Video { get; } = new();
+        public Memory Memory { get; } = new();
+        public Keyboard Keyboard { get; } = new();
+        public Joysticks Joysticks { get; } = new();
 
-        public FilePaths FilePaths { get; } = new FilePaths();
-        public Startup Startup { get; } = new Startup();
+        public FilePaths FilePaths { get; } = new();
+        public Startup Startup { get; } = new();
 
-        public Accessories Accessories { get; } = new Accessories();
+        public Accessories Accessories { get; } = new();
     }
 }

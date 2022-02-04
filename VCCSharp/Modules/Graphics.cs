@@ -109,7 +109,7 @@ namespace VCCSharp.Modules
 
         private readonly IModules _modules;
 
-        private readonly GraphicsColors _colors = new GraphicsColors();
+        private readonly GraphicsColors _colors = new();
 
         public byte BlinkState { get; set; }
 

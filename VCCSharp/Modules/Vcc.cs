@@ -137,7 +137,7 @@ namespace VCCSharp.Modules
 
                 {ResetPendingStates.ClsSynch, () =>
                 {
-                    _modules.Config.SynchSystemWithConfigAlt();
+                    _modules.Config.SynchSystemWithConfig();
                     _modules.Draw.DoCls();
                 }}
             };
@@ -148,14 +148,9 @@ namespace VCCSharp.Modules
 
                 _modules.Emu.ResetPending = (byte)ResetPendingStates.None;
 
-                if (_modules.Emu.EmulationRunning)
-                {
-                    fps += _modules.CoCo.RenderFrame();
-                }
-                else
-                {
-                    fps += _modules.Draw.Static();
-                }
+                fps += _modules.Emu.EmulationRunning 
+                    ? _modules.CoCo.RenderFrame() 
+                    : _modules.Draw.Static();
             }
 
             _modules.Throttle.EndRender(_modules.Emu.FrameSkip);

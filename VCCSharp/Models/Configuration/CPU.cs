@@ -5,7 +5,7 @@ namespace VCCSharp.Models.Configuration
 {
     public class CPU
     {
-        public RangeSelect<CPUTypes> Type { get; } = new RangeSelect<CPUTypes>();
+        public RangeSelect<CPUTypes> Type { get; } = new();
 
         public bool ThrottleSpeed { get; set; } = true;
         public int CpuMultiplier { get; set; } = 227;

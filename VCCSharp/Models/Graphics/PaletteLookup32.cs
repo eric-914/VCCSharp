@@ -7,8 +7,8 @@ namespace VCCSharp.Models.Graphics
     /// </summary>
     public class PaletteLookup32
     {
-        private readonly UintArray _composite = new UintArray(64);
-        private readonly UintArray _rgb = new UintArray(64);
+        private readonly UintArray _composite = new(64);
+        private readonly UintArray _rgb = new(64);
 
         public UintArray this[MonitorTypes monitorType]
         {

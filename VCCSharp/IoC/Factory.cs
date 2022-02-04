@@ -22,12 +22,12 @@ namespace VCCSharp.IoC
     /// </summary>
     public class Factory : IFactory
     {
-        public static Factory Instance { get; } = new Factory();
+        public static Factory Instance { get; } = new();
         private readonly IKernel _kernel = new StandardKernel();
 
         public IFactory SelfBind()
         {
-            _kernel.Bind<IFactory>().ToMethod(context  => Instance);
+            _kernel.Bind<IFactory>().ToMethod(_ => Instance);
 
             return this;
         }

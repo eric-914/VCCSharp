@@ -11,8 +11,8 @@ namespace VCCSharp.Models.CPU.HD6309
     {
         private readonly IModules _modules;
 
-        private readonly HD6309CpuRegisters _cpu = new HD6309CpuRegisters();
-        private readonly HD6309NatEmuCycles _instance = new HD6309NatEmuCycles();
+        private readonly HD6309CpuRegisters _cpu = new();
+        private readonly HD6309NatEmuCycles _instance = new();
 
         private byte _inInterrupt;
         private int _cycleCounter;

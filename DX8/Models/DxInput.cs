@@ -16,7 +16,7 @@ namespace DX8.Models
         private readonly IDxFactoryInternal _factory;
 
         private IDirectInput _di;
-        private readonly List<IDirectInputDevice> _devices = new List<IDirectInputDevice>();
+        private readonly List<IDirectInputDevice> _devices = new();
 
         internal DxInput(IDInput input, IDxFactoryInternal factory)
         {

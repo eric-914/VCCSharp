@@ -38,7 +38,7 @@ namespace VCCSharp.Modules
         private readonly IKernel _kernel;
 
         // ReSharper disable once InconsistentNaming
-        private static readonly object _lock = new object();
+        private static readonly object _lock = new();
 
         private string _dllPath;
 
@@ -53,7 +53,7 @@ namespace VCCSharp.Modules
         // ReSharper disable once InconsistentNaming
         public HINSTANCE hInstLib;
 
-        private readonly PakInterfaceDelegates _d = new PakInterfaceDelegates();
+        private readonly PakInterfaceDelegates _d = new();
 
         public PAKInterface(IModules modules, IKernel kernel)
         {

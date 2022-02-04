@@ -36,7 +36,8 @@ namespace VCCSharp
                 .Singleton<IKeyScanMapper, KeyScanMapper>()
                 .Singleton<IMainWindowEvents, MainWindowEvents>()
                 .Singleton<IConfigurationPersistence, ConfigurationPersistence>()
-                .Singleton<Models.Configuration.IConfiguration, Root>()
+                .Singleton<IConfiguration, Root>()
+                .Singleton<IConfigPersistence, ConfigPersistence>()
 
                 //--Modules
                 .Singleton<IAudio, Modules.Audio>()
@@ -88,7 +89,7 @@ namespace VCCSharp
 
                 //--Options
                 .Bind<ICartridge, MenuManager>()
-                .Bind<Configuration.IConfiguration, ConfigurationManager>()
+                .Bind<IConfigurationWindow, ConfigurationManager>()
                 .Bind<ITapePlayer, TapePlayerManager>()
                 .Bind<IBitBanger, BitBangerManager>()
 

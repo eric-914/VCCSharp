@@ -3,7 +3,7 @@ using VCCSharp.Modules;
 
 namespace VCCSharp.Configuration
 {
-    public class ConfigurationManager : IConfiguration
+    public class ConfigurationManager : IConfigurationWindow
     {
         private readonly IModules _modules;
         private readonly IViewModelFactory _factory;

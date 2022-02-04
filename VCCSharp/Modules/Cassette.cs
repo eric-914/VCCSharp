@@ -73,7 +73,7 @@ namespace VCCSharp.Modules
             _modules = modules;
             _kernel = kernel;
 
-            UpdateTapeDialog = offset => { }; //_modules.Config.UpdateTapeDialog((uint) offset);
+            UpdateTapeDialog = _ => { }; //_modules.Config.UpdateTapeDialog((uint) offset);
         }
 
         public void LoadCassetteBuffer(byte[] buffer)

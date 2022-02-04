@@ -42,7 +42,7 @@ namespace VCCSharp.Menu
 
         private MenuItemViewModel Menu(string header, Action action) => _factory.CreateMenuItemViewModel(header, action);
 
-        private MenuItemViewModel File(Actions actions) => new MenuItemViewModel
+        private MenuItemViewModel File(Actions actions) => new()
         {
             Header = "_File",
             MenuItems = new MenuItems
@@ -58,7 +58,7 @@ namespace VCCSharp.Menu
             }
         };
 
-        private MenuItemViewModel Edit(Actions actions) => new MenuItemViewModel
+        private MenuItemViewModel Edit(Actions actions) => new()
         {
             Header = "_Edit",
             MenuItems = new MenuItems
@@ -70,7 +70,7 @@ namespace VCCSharp.Menu
             }
         };
 
-        private MenuItemViewModel Configuration(Actions actions) => new MenuItemViewModel
+        private MenuItemViewModel Configuration(Actions actions) => new()
         {
             Header = "_Options",
             MenuItems = new MenuItems
@@ -84,13 +84,13 @@ namespace VCCSharp.Menu
             }
         };
 
-        private static MenuItemViewModel Cartridge() => new MenuItemViewModel
+        private static MenuItemViewModel Cartridge() => new()
         {
             Header = "_Cartridge",
             MenuItems = new ObservableCollection<MenuItemViewModel>()
         };
 
-        private MenuItemViewModel Help(Actions actions) => new MenuItemViewModel
+        private MenuItemViewModel Help(Actions actions) => new()
         {
             Header = "_Help",
             MenuItems = new MenuItems

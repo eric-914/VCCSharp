@@ -21,7 +21,7 @@ namespace VCCSharp.Models.Configuration.Support
         public KeySelect this[int index] => _get[index]();
 
         [JsonIgnore]
-        public KeySelect _1 { get; } = new KeySelect { Value = Key.D0 };
+        public KeySelect _1 { get; } = new() { Value = Key.D0 };
 
         [JsonProperty("1")]
         public virtual string _1Text
@@ -31,7 +31,7 @@ namespace VCCSharp.Models.Configuration.Support
         }
 
         [JsonIgnore]
-        public KeySelect _2 { get; } = new KeySelect { Value = Key.Decimal };
+        public KeySelect _2 { get; } = new() { Value = Key.Decimal };
 
         [JsonProperty("2")]
         public virtual string _2Text

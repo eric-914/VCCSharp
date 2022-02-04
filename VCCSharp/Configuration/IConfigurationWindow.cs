@@ -2,7 +2,7 @@
 
 namespace VCCSharp.Configuration
 {
-    public interface IConfiguration
+    public interface IConfigurationWindow
     {
         void ShowDialog(IConfig config);
     }

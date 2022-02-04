@@ -8,7 +8,7 @@ namespace VCCSharp.Converters
 {
     public class TapeModeToTextConverter : IValueConverter
     {
-        public static readonly Dictionary<TapeModes, string> ModeTexts = new Dictionary<TapeModes, string>
+        public static readonly Dictionary<TapeModes, string> ModeTexts = new()
         {
             {TapeModes.Eject, "Eject"},
             {TapeModes.Play, "Play"},

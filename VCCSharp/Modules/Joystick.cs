@@ -36,11 +36,11 @@ namespace VCCSharp.Modules
 
         public ushort StickValue { get; set; }
 
-        public JoystickState Left { get; private set; } = new JoystickState();
-        public JoystickState Right { get; private set; } = new JoystickState();
+        public JoystickState Left { get; private set; } = new();
+        public JoystickState Right { get; private set; } = new();
 
-        private JoystickModel _left = new JoystickModel();
-        private JoystickModel _right = new JoystickModel();
+        private JoystickModel _left = new();
+        private JoystickModel _right = new();
 
         private int _leftId;
         private int _rightId;

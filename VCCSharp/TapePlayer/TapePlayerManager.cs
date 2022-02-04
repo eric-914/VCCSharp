@@ -3,7 +3,6 @@ using System.IO;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Models;
 using VCCSharp.Modules;
 
 namespace VCCSharp.TapePlayer
@@ -12,14 +11,14 @@ namespace VCCSharp.TapePlayer
     {
         private readonly IModules _modules;
 
-        private readonly TapePlayerViewModel _viewModel = new TapePlayerViewModel();
+        private readonly TapePlayerViewModel _viewModel = new();
         private TapePlayerWindow _view;
 
         public TapePlayerManager(IModules modules)
         {
             _modules = modules;
 
-            _viewModel.PropertyChanged += (sender, args) =>
+            _viewModel.PropertyChanged += (_, args) =>
             {
                 switch (args.PropertyName)
                 {

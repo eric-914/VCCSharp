@@ -7,7 +7,7 @@ namespace VCCSharp.Models.Configuration
     {
         public string FilePath { get; set; } = "";
 
-        public MultiSlots Slots { get; } = new MultiSlots();
+        public MultiSlots Slots { get; } = new();
 
         //DiskRom=1
         //RomPath=

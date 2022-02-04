@@ -187,14 +187,15 @@ namespace VCCSharp.Modules
                     throw new NullReferenceException("Missing Key Translation Table");
                 }
 
-                KeyTranslationEntry keyTransEntry = new KeyTranslationEntry();
-
-                keyTransEntry.Col1 = keyTranslationTable[index1].Col1;
-                keyTransEntry.Col2 = keyTranslationTable[index1].Col2;
-                keyTransEntry.Row1 = keyTranslationTable[index1].Row1;
-                keyTransEntry.Row2 = keyTranslationTable[index1].Row2;
-                keyTransEntry.ScanCode1 = keyTranslationTable[index1].ScanCode1;
-                keyTransEntry.ScanCode2 = keyTranslationTable[index1].ScanCode2;
+                KeyTranslationEntry keyTransEntry = new()
+                {
+                    Col1 = keyTranslationTable[index1].Col1,
+                    Col2 = keyTranslationTable[index1].Col2,
+                    Row1 = keyTranslationTable[index1].Row1,
+                    Row2 = keyTranslationTable[index1].Row2,
+                    ScanCode1 = keyTranslationTable[index1].ScanCode1,
+                    ScanCode2 = keyTranslationTable[index1].ScanCode2
+                };
 
                 //
                 // Change entries to what the code expects

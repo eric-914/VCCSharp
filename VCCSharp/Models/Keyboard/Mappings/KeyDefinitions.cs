@@ -18,7 +18,7 @@ namespace VCCSharp.Models.Keyboard.Mappings
     /// </summary>
     public class KeyDefinitions : List<IKey>
     {
-        public static KeyDefinitions Instance { get; } = new KeyDefinitions();
+        public static KeyDefinitions Instance { get; } = new();
 
         private static IEnumerable<Key> Arrows => new[] { Key.Left, Key.Right, Key.Up, Key.Down };
         private static IEnumerable<Key> Control => new[] { Key.Tab, Key.Back, Key.Enter, Key.Escape };
@@ -28,7 +28,7 @@ namespace VCCSharp.Models.Keyboard.Mappings
         private const string Numeric = "1234567890";
         private const string LowerSymbols = "`-=[]\\;',./"; //--All non-shifted symbols
 
-        private static KeyDefinition Null => new KeyDefinition
+        private static KeyDefinition Null => new()
         {
             Key = Key.None,
             DIK = DIK.DIK_NONE,
@@ -204,10 +204,9 @@ namespace VCCSharp.Models.Keyboard.Mappings
             || Control.Contains(item.Key)
             || ExtendedControl.Contains(item.Key);
 
-        private static bool IsAscii(IKey item) => (char)32 < item.Character && item.Character < (char)127;
+        private static bool IsAscii(IKey item) => item.Character is > (char)32 and < (char)127;
             
         public IKey ByKey(Key key) => this.FirstOrDefault(x => x.Key == key) ?? Null;
         public IKey ByCharacter(char c) => this.FirstOrDefault(x => x.Character == c) ?? Null;
-        public IKey ByByte(byte b) => this.FirstOrDefault(x => x.Character == (char)b) ?? Null;
     }
 }

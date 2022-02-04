@@ -8,14 +8,14 @@ namespace VCCSharp.BitBanger
     {
         private readonly IModules _modules;
 
-        private readonly BitBangerViewModel _viewModel = new BitBangerViewModel();
+        private readonly BitBangerViewModel _viewModel = new();
         private BitBangerWindow _view;
 
         public BitBangerManager(IModules modules)
         {
             _modules = modules;
 
-            _viewModel.PropertyChanged += (sender, args) =>
+            _viewModel.PropertyChanged += (_, args) =>
             {
                 switch (args.PropertyName)
                 {

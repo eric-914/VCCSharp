@@ -2,7 +2,7 @@
 {
     public class Joysticks
     {
-        public Joystick Left { get; } = new Joystick();
-        public Joystick Right { get; } = new Joystick();
+        public Joystick Left { get; } = new();
+        public Joystick Right { get; } = new();
     }
 }

@@ -84,14 +84,14 @@ namespace VCCSharp.Configuration
 
         #region Constants
 
-        public List<string> KeyboardLayouts { get; } = new List<string>
+        public List<string> KeyboardLayouts { get; } = new()
         {
             "Color Computer 1/2",
             "Color Computer 3",
             "PC"
         };
 
-        public List<string> SoundRates { get; } = new List<string> { "Disabled", "11025 Hz", "22050 Hz", "44100 Hz" };
+        public List<string> SoundRates { get; } = new() { "Disabled", "11025 Hz", "22050 Hz", "44100 Hz" };
 
         #endregion
 

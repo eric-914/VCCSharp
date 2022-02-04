@@ -6,7 +6,7 @@ namespace VCCSharp.IoC
 {
     public interface IOptions
     {
-        IConfiguration Configuration { get; }
+        IConfigurationWindow Configuration { get; }
         ITapePlayer TapePlayer { get; }
         IBitBanger BitBanger { get; }
     }
@@ -20,7 +20,7 @@ namespace VCCSharp.IoC
             _factory = factory;
         }
 
-        public IConfiguration Configuration => _factory.Get<IConfiguration>();
+        public IConfigurationWindow Configuration => _factory.Get<IConfigurationWindow>();
         public ITapePlayer TapePlayer => _factory.Get<ITapePlayer>();
         public IBitBanger BitBanger => _factory.Get<IBitBanger>();
     }

@@ -12,11 +12,11 @@ namespace VCCSharp.Models.Configuration
     /// <see href="https://colorcomputerarchive.com/repo/Documents/Manuals/Hardware/Multi-Pak%20Interface%20Owners%20Manual%20%28Tandy%29.pdf"/>
     public class MultiPak
     {
-        public RangeSelect SwitchPosition { get; } = new RangeSelect(1, 2, 3, 4);
+        public RangeSelect SwitchPosition { get; } = new(1, 2, 3, 4);
 
         //"C:\Users\erich\source\repos\VCC\bin\Debug\x64\mpi"
         public string FilePath { get; set; } = "";//C:\CoCo
 
-        public MultiSlots Slots { get; } = new MultiSlots();
+        public MultiSlots Slots { get; } = new();
     }
 }

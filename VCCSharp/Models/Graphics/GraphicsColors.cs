@@ -8,8 +8,8 @@
 
         public byte[] Palette { get; } = new byte[16];  //Coco 3 6 bit colors
 
-        public Palette32 Palette32Bit { get; } = new Palette32(); //Color values translated to 24/32 bits
+        public Palette32 Palette32Bit { get; } = new(); //Color values translated to 24/32 bits
 
-        public PaletteLookup32 PaletteLookup32 { get; } = new PaletteLookup32();
+        public PaletteLookup32 PaletteLookup32 { get; } = new();
     }
 }

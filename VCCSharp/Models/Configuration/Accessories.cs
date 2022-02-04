@@ -4,9 +4,9 @@
     {
         public string ModulePath { get; set; } = "";
 
-        public MultiPak MultiPak { get; } = new MultiPak();
-        public FloppyDisk FloppyDisk { get; } = new FloppyDisk();
-        public HardDisk HardDisk { get; } = new HardDisk();
-        public SuperIDE SuperIDE { get; } = new SuperIDE();
+        public MultiPak MultiPak { get; } = new();
+        public FloppyDisk FloppyDisk { get; } = new();
+        public HardDisk HardDisk { get; } = new();
+        public SuperIDE SuperIDE { get; } = new();
     }
 }

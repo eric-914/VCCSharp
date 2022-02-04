@@ -8,16 +8,16 @@ namespace VCCSharp.Models.CPU.HD6309
         // ReSharper disable InconsistentNaming
         // ReSharper disable IdentifierTypo
 
-        public HD6309CpuRegister pc { get; } = new HD6309CpuRegister();
-        public HD6309CpuRegister x { get; } = new HD6309CpuRegister();
-        public HD6309CpuRegister y { get; } = new HD6309CpuRegister();
-        public HD6309CpuRegister u { get; } = new HD6309CpuRegister();
-        public HD6309CpuRegister s { get; } = new HD6309CpuRegister();
-        public HD6309CpuRegister dp { get; } = new HD6309CpuRegister();
-        public HD6309CpuRegister v { get; } = new HD6309CpuRegister();
-        public HD6309CpuRegister z { get; } = new HD6309CpuRegister();
+        public HD6309CpuRegister pc { get; } = new();
+        public HD6309CpuRegister x { get; } = new();
+        public HD6309CpuRegister y { get; } = new();
+        public HD6309CpuRegister u { get; } = new();
+        public HD6309CpuRegister s { get; } = new();
+        public HD6309CpuRegister dp { get; } = new();
+        public HD6309CpuRegister v { get; } = new();
+        public HD6309CpuRegister z { get; } = new();
 
-        public HD6309WideRegister q { get; } = new HD6309WideRegister();
+        public HD6309WideRegister q { get; } = new();
 
         public byte ccbits;
         public byte mdbits;

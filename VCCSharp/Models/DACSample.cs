@@ -28,9 +28,9 @@
             }
         }
 
-        public Channel Left { get; } = new Channel();
-        public Channel Right { get; } = new Channel();
+        public Channel Left { get; } = new();
+        public Channel Right { get; } = new();
 
-        public int Sample => (int)((Left.Out << 16) + Right.Out);
+        public int Sample => (Left.Out << 16) + Right.Out;
     }
 }
