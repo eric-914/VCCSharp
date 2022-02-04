@@ -297,13 +297,18 @@ namespace VCCSharp.Modules
         {
             //System.Diagnostics.Debug.WriteLine($"scan={scanCode}, state={(keyState == KeyStates.Up ? "up" : "down")}");
 
-            // check for shift key
-            // Left and right shift generate different scan codes
-            if (scanCode == DIK.DIK_RSHIFT)
+            switch (scanCode)
             {
-                scanCode = DIK.DIK_LSHIFT;
-            }
+                case DIK.DIK_NONE:
+                    return;
 
+                // check for shift key
+                // Left and right shift generate different scan codes
+                case DIK.DIK_RSHIFT:
+                    scanCode = DIK.DIK_LSHIFT;
+                    break;
+            }
+            
             switch (keyState)
             {
                 // Key Down
@@ -475,15 +480,8 @@ namespace VCCSharp.Modules
         // Send key up events to keyboard handler for saved keys
         public void SendSavedKeyEvents()
         {
-            if (_scSave1 != 0)
-            {
-                _modules.Keyboard.KeyboardHandleKey(_scSave1, KeyStates.Up);
-            }
-
-            if (_scSave2 != 0)
-            {
-                _modules.Keyboard.KeyboardHandleKey(_scSave2, KeyStates.Up);
-            }
+            _modules.Keyboard.KeyboardHandleKey(_scSave1, KeyStates.Up);
+            _modules.Keyboard.KeyboardHandleKey(_scSave2, KeyStates.Up);
 
             _scSave1 = 0;
             _scSave2 = 0;

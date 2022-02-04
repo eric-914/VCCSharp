@@ -70,7 +70,7 @@ namespace VCCSharp.Menu
         /// </summary>
         public void Reset()
         {
-            Application.Current.Dispatcher.BeginInvoke((ClearMenuItems) _menuItems.Plugins.MenuItems.Clear);
+            Application.Current?.Dispatcher.BeginInvoke((ClearMenuItems) _menuItems.Plugins.MenuItems.Clear);
         }
     }
 }
