@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using VCCSharp.Models;
-using VCCSharp.Models.Keyboard;
 using VCCSharp.Models.Keyboard.Definitions;
 
 namespace VCCSharp.Modules
@@ -9,6 +9,9 @@ namespace VCCSharp.Modules
     {
         public int Compare(KeyTranslationEntry entry1, KeyTranslationEntry entry2)
         {
+            if (entry1 == null) return 1;
+            if (entry2 == null) return -1;
+
             // empty listing push to end
             if (entry1.ScanCode1 == 0 && entry1.ScanCode2 == 0 && entry2.ScanCode1 != 0) return 1;
             if (entry2.ScanCode1 == 0 && entry2.ScanCode2 == 0 && entry1.ScanCode1 != 0) return -1;

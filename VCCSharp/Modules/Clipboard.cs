@@ -72,7 +72,7 @@ namespace VCCSharp.Modules
         {
             _modules = modules;
         }
-        
+
         public void PasteBasic()
         {
             CodePaste = true;
@@ -224,98 +224,112 @@ namespace VCCSharp.Modules
 
         public void CopyText()
         {
-            byte bytesPerRow = Graphics.BytesPerRow;
-            byte graphicsMode = Graphics.GraphicsMode;
-            uint startOfVidRam = Graphics.StartOfVidRam;
+            var text = GetText();
 
-            if (graphicsMode != 0)
+            System.Windows.Clipboard.SetText(text);
+        }
+
+        private string GetText()
+        {
+            if (Graphics.GraphicsMode != 0)
             {
                 const string error = "ERROR: Graphics screen can not be copied.\nCopy can ONLY use a hardware text screen.";
                 MessageBox.Show(error, "Clipboard");
 
-                return;
+                return null;
             }
 
-            Debug.WriteLine($"StartOfVidRam is: {startOfVidRam}\nGraphicsMode is: {graphicsMode}");
+            Debug.WriteLine($"GraphicsMode is: {Graphics.GraphicsMode}");
 
-            int lines = bytesPerRow == 32 ? 15 : 23;
+            switch (Graphics.BytesPerRow)
+            {
+                // Read the lo-res text screen...
+                case 32:
+                    return ParseCoCoScreen();
+                case 40:
+                case 80:
+                    return ParseCoCo3Screen();
+            }
+
+            return null;
+        }
+
+        //TODO: This is untested since C# conversion
+        private string ParseCoCo3Screen()
+        {
+            const int lines = 23;
+            byte bytesPerRow = Graphics.BytesPerRow;
+            int offset = 32;
             string clipOut = "";
 
-            // Read the lo-res text screen...
-            if (bytesPerRow == 32)
+            uint startOfVidRam = Graphics.StartOfVidRam;
+
+            Debug.WriteLine($"StartOfVidRam is: {startOfVidRam}");
+
+            for (int y = 0; y <= lines; y++)
             {
-                for (int y = 0; y <= lines; y++)
+                int lastChar = 0;
+                string tmpLine = "";
+
+                for (int idx = 0; idx < bytesPerRow * 2; idx += 2)
                 {
-                    int lastChar = 0;
-                    string tmpLine = "";
+                    int address = (int)(startOfVidRam + y * (bytesPerRow * 2) + idx);
+                    int tmp = _modules.TC1014.GetMem(address);
 
-                    for (int idx = 0; idx < bytesPerRow; idx++)
+                    if (tmp is 32 or 64 or 96)
                     {
-                        ushort address = (ushort)(0x0400 + y * bytesPerRow + idx);
-                        byte tmp = _modules.TC1014.MemRead8(address);
-
-                        if (tmp != 32 && tmp != 64 && tmp != 96)
-                        {
-                            lastChar = idx + 1;
-                        }
-
-                        if (tmp < 128) //--Ignore anything beyond ASCII 
-                        {
-                            tmpLine += _pcChars32[tmp];
-                        }
+                        tmp = offset;
+                    }
+                    else
+                    {
+                        lastChar = idx / 2 + 1;
                     }
 
-                    tmpLine = tmpLine[..lastChar];
-
-                    if (lastChar != 0)
-                    {
-                        clipOut += tmpLine + "\n";
-                    }
+                    tmpLine += _pcChars40[tmp - offset];
                 }
 
-                if (string.IsNullOrEmpty(clipOut))
+                tmpLine = tmpLine[..lastChar];
+
+                if (lastChar != 0)
                 {
-                    MessageBox.Show("No text found on screen.", "Clipboard");
-                }
-
-            }
-            //TODO: This is untested since C# conversion
-            else if (bytesPerRow == 40 || bytesPerRow == 80)
-            {
-                int offset = 32;
-
-                for (int y = 0; y <= lines; y++)
-                {
-                    int lastChar = 0;
-                    string tmpLine = "";
-
-                    for (int idx = 0; idx < bytesPerRow * 2; idx += 2)
-                    {
-                        int address = (int)(startOfVidRam + y * (bytesPerRow * 2) + idx);
-                        int tmp = _modules.TC1014.GetMem(address);
-
-                        if (tmp == 32 || tmp == 64 || tmp == 96)
-                        {
-                            tmp = offset;
-                        }
-                        else
-                        {
-                            lastChar = idx / 2 + 1;
-                        }
-
-                        tmpLine += _pcChars40[tmp - offset];
-                    }
-
-                    tmpLine = tmpLine[..lastChar];
-
-                    if (lastChar != 0)
-                    {
-                        clipOut += tmpLine; clipOut += "\n";
-                    }
+                    clipOut += tmpLine;
+                    clipOut += "\n";
                 }
             }
 
-            System.Windows.Clipboard.SetText(clipOut);
+            return clipOut;
+        }
+
+        private string ParseCoCoScreen()
+        {
+            const uint startAddress = 0x0400;
+            const int rows = 16;
+            byte cols = Graphics.BytesPerRow;
+
+            char Ascii(byte value) => value < 127 ? _pcChars32[value] : ' ';
+            string AsString(IEnumerable<char> line) => string.Concat(line).Trim();
+
+            var lines = 
+                ReadMemoryBlock(startAddress, cols * rows)
+                    .Chunk(cols)
+                    .Select(line => line.Select(Ascii))
+                    .Select(AsString);
+
+            var text = string.Join(Environment.NewLine, lines).Trim();
+
+            if (string.IsNullOrEmpty(text))
+            {
+                MessageBox.Show("No text found on screen.", "Clipboard");
+            }
+
+            return $"{text}{Environment.NewLine}";
+        }
+
+        public IEnumerable<byte> ReadMemoryBlock(uint startAddress, int range)
+        {
+            return from index in Enumerable.Range(0, range - 1)
+                   let address = (ushort)(startAddress + index)
+                   select _modules.TC1014.MemRead8(address);
         }
     }
 }

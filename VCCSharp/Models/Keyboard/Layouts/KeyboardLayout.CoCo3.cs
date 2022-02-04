@@ -27,13 +27,13 @@ namespace VCCSharp.Models.Keyboard.Layouts
         {
             #region Key Definitions
 
-            private static byte[] Escape => Key(DIK.DIK_ESCAPE, DIK.DIK_LSHIFT, Matrix.Break);
+            private static byte[] Escape => Key(Matrix.Break, DIK.DIK_ESCAPE, SHIFT);
 
-            private static byte[] Control => Key(DIK.DIK_LCONTROL, 0, Matrix.Control);
-            private static byte[] Alt => Key(DIK.DIK_LALT, 0, Matrix.Alt);
+            private static byte[] Control => Key(Matrix.Control, DIK.DIK_LCONTROL);
+            private static byte[] Alt => Key(Matrix.Alt, DIK.DIK_LALT);
 
-            private static byte[] F1 => Key(DIK.DIK_F1, 0, Matrix.F1);
-            private static byte[] F2 => Key(DIK.DIK_F2, 0, Matrix.F2);
+            private static byte[] F1 => Key(Matrix.F1, DIK.DIK_F1);
+            private static byte[] F2 => Key(Matrix.F2, DIK.DIK_F2);
 
             #endregion
 

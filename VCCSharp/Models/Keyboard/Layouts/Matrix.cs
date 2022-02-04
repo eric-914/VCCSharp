@@ -132,21 +132,9 @@ namespace VCCSharp.Models.Keyboard.Layouts
         public static byte[] ShiftDown /*       */ = Add(Shift, Down); //--PAGE DOWN
         public static byte[] ShiftAt /*         */ = Add(Shift, AtSign); //--PAUSE (BASIC)
 
-        //--I'm guessing these are special combos for the CoCo3 - But I see no reason they can't be done as is.
-        //public static byte[] ControlD1 /*       */ = Add(Control, D1);
-        //public static byte[] ControlD3 /*       */ = Add(Control, D3);
-        //public static byte[] ControlMinus /*    */ = Add(Control, Minus);
-        //public static byte[] ControlSlash /*    */ = Add(Control, ForwardSlash);
-        //public static byte[] ControlLeft /*     */ = Add(Control, Left);
-        //public static byte[] ControlRight /*    */ = Add(Control, Right);
-        //public static byte[] ControlD8 /*       */ = Add(Control, D8);
-        //public static byte[] ControlD9 /*       */ = Add(Control, D9);
-        //public static byte[] ControlComma /*    */ = Add(Control, Comma);
-        //public static byte[] ControlPeriod /*   */ = Add(Control, Period);
-
         //--Some aliases
-        public static byte[] Caret => SingleQuote; //--There is no caret on the CoCo, so make it the single quote
         public static byte[] Backspace => Left;
         public static byte[] CapsLock => ShiftZero;
+        public static byte[] Caret => SingleQuote; //--There is no caret on the CoCo, so make it the single quote
     }
 }

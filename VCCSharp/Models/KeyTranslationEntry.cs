@@ -1,12 +1,12 @@
 ﻿namespace VCCSharp.Models
 {
-    public struct KeyTranslationEntry
+    public class KeyTranslationEntry
     {
-        public byte ScanCode1;
-        public byte ScanCode2;
-        public byte Row1;
-        public byte Col1;
-        public byte Row2;
-        public byte Col2;
+        public byte ScanCode1 { get; set; }
+        public byte ScanCode2 { get; set; }
+        public byte Row1 { get; set; }
+        public byte Col1 { get; set; }
+        public byte Row2 { get; set; }
+        public byte Col2 { get; set; }
     }
 }

@@ -27,6 +27,9 @@ namespace VCCSharp.Models.Keyboard.Layouts
 
     public partial class KeyboardLayout
     {
+        // ReSharper disable once InconsistentNaming
+        private const bool SHIFT = true;
+
         //--Shared by all Keyboard Layouts
         private static KeyTranslationEntry CreateKeyTranslationEntry(byte[] bytes)
         {
@@ -69,21 +72,25 @@ namespace VCCSharp.Models.Keyboard.Layouts
         }
 
         //--Character isn't used, but included for debugging purposes
-        private static byte[] Key(char character, byte scanCode1, byte scanCode2, byte[] matrix)
+        private static byte[] Key(char character, byte[] matrix, byte scanCode, bool shift = false)
         {
-            bool hasPlus = matrix.Length > 2;
-            byte row = (byte)(1 << (matrix[0] - 1));
+            byte ShiftLeft(byte amount) => (byte)(1 << (amount - 1)); //--Transform 1,2,3,4,5,6 -> 1,2,4,8,16,32,64
+
+            bool hasPlus = matrix.Length > 2; //--TRUE when key combo
+            byte row = ShiftLeft(matrix[0]);
             byte column = matrix[1];
-            byte rowPlus = hasPlus ? (byte)(1 << (matrix[2] - 1)) : (byte)0;
+            byte rowPlus = hasPlus ? ShiftLeft(matrix[2]) : (byte)0;
             byte columnPlus = hasPlus ? matrix[3] : (byte)0;
+
+            byte scanShift = shift ? DIK.DIK_LSHIFT : DIK.DIK_NONE;
 
             return new[]
             {
-                scanCode1, scanCode2, row, column, rowPlus, columnPlus, (byte)character
+                scanCode, scanShift, row, column, rowPlus, columnPlus, (byte)character
             };
         }
 
-        private static byte[] Key(byte scanCode1, byte scanCode2, byte[] matrix) 
-            => Key(Chr.None, scanCode1, scanCode2, matrix);
+        private static byte[] Key(byte[] matrix, byte scanCode, bool shift = false)
+            => Key(Chr.None, matrix, scanCode, shift);
     }
 }

@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Resources\coco.ico</ApplicationIcon>
   </PropertyGroup>
@@ -12,41 +12,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\3guys.bmp" />
-    <None Remove="Resources\audio.ico" />
-    <None Remove="Resources\composite.ico" />
-    <None Remove="Resources\hitachi.ico" />
-    <None Remove="Resources\joystick.ico" />
-    <None Remove="Resources\Keyboard.ico" />
-    <None Remove="Resources\moto.ico" />
-    <None Remove="Resources\mouse.ico" />
-    <None Remove="Resources\rgb.ico" />
-    <None Remove="Resources\vcc.bmp" />
-    <None Remove="Television.png" />
-    <None Remove="VCCSharp.sln.DotSettings" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Ninject" Version="3.3.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DX8\DX8.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Resources\3guys.bmp" />
-    <Resource Include="Resources\audio.ico" />
-    <Resource Include="Resources\composite.ico" />
-    <Resource Include="Resources\hitachi.ico" />
-    <Resource Include="Resources\joystick.ico" />
-    <Resource Include="Resources\Keyboard.ico" />
-    <Resource Include="Resources\moto.ico" />
-    <Resource Include="Resources\mouse.ico" />
-    <Resource Include="Resources\rgb.ico" />
-    <Resource Include="Resources\Television.png" />
-    <Resource Include="Resources\vcc.bmp" />
   </ItemGroup>
 
   <ItemGroup>

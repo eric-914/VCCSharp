@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
@@ -178,8 +179,6 @@ namespace VCCSharp.Modules
 
             KeyboardClear();
 
-            KeyTranslationEntry keyTransEntry = new KeyTranslationEntry();
-
             int index2 = 0;
             for (var index1 = 0; ; index1++)
             {
@@ -187,6 +186,8 @@ namespace VCCSharp.Modules
                 {
                     throw new NullReferenceException("Missing Key Translation Table");
                 }
+
+                KeyTranslationEntry keyTransEntry = new KeyTranslationEntry();
 
                 keyTransEntry.Col1 = keyTranslationTable[index1].Col1;
                 keyTransEntry.Col2 = keyTranslationTable[index1].Col2;
@@ -227,48 +228,21 @@ namespace VCCSharp.Modules
                     break;
                 }
 
-                _keyTransTable[index2].Col1 = keyTransEntry.Col1;
-                _keyTransTable[index2].Col2 = keyTransEntry.Col2;
-                _keyTransTable[index2].Row1 = keyTransEntry.Row1;
-                _keyTransTable[index2].Row2 = keyTransEntry.Row2;
-                _keyTransTable[index2].ScanCode1 = keyTransEntry.ScanCode1;
-                _keyTransTable[index2].ScanCode2 = keyTransEntry.ScanCode2;
+                _keyTransTable[index2] = keyTransEntry;
+                //_keyTransTable[index2].Col1 = keyTransEntry.Col1;
+                //_keyTransTable[index2].Col2 = keyTransEntry.Col2;
+                //_keyTransTable[index2].Row1 = keyTransEntry.Row1;
+                //_keyTransTable[index2].Row2 = keyTransEntry.Row2;
+                //_keyTransTable[index2].ScanCode1 = keyTransEntry.ScanCode1;
+                //_keyTransTable[index2].ScanCode2 = keyTransEntry.ScanCode2;
 
                 index2++;
             }
 
+            //--Get rid of null entries
+            _keyTransTable = _keyTransTable.Where(x => x != null).ToArray();
+
             KeyboardSort();
-
-            #region DEBUG
-
-#if DEBUG
-            ////
-            //// Debug dump the table
-            ////
-            //for (int index1 = 0; index1 < Define.KBTABLE_ENTRY_COUNT; index1++)
-            //{
-            //    // check for null entry
-            //    if (instance->KeyTransTable[index1].ScanCode1 == 0 && instance->KeyTransTable[index1].ScanCode2 == 0)
-            //    {
-            //        // done
-            //        break;
-            //    }
-            //}
-#endif
-
-            #endregion
-
-            //XTRACE("Key: %3d - 0x%02X (%3d) 0x%02X (%3d) - %2d %2d  %2d %2d\n",
-            //  Index1,
-            //  KeyTransTable[Index1].ScanCode1,
-            //  KeyTransTable[Index1].ScanCode1,
-            //  KeyTransTable[Index1].ScanCode2,
-            //  KeyTransTable[Index1].ScanCode2,
-            //  KeyTransTable[Index1].Row1,
-            //  KeyTransTable[Index1].Col1,
-            //  KeyTransTable[Index1].Row2,
-            //  KeyTransTable[Index1].Col2
-            //);
         }
 
         private void KeyboardClear()
@@ -405,7 +379,7 @@ namespace VCCSharp.Modules
             }
 
             // set rollover table based on ScanTable key status
-            for (int index = 0; index < Define.KBTABLE_ENTRY_COUNT; index++)
+            for (int index = 0; index < _keyTransTable.Length; index++)
             {
                 KeyTranslationEntry entry = _keyTransTable[index];
                 byte scanCode1 = entry.ScanCode1;

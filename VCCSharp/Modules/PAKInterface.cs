@@ -618,7 +618,7 @@ namespace VCCSharp.Modules
             _d.SetIniPath = _kernel.GetProcAddress(hInstLib, "SetIniPath");
             _d.PakSetCart = _kernel.GetProcAddress(hInstLib, "SetCart");
 
-            return _d.GetModuleName == null;
+            return true; //_d.GetModuleName == null;
         }
 
         public int ModulePortWrite(byte port, byte data)
