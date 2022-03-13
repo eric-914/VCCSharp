@@ -75,7 +75,5 @@ namespace VCCSharp.Models
 
         public const uint CREATE_ALWAYS = 2;
         public const uint OPEN_ALWAYS = 4;
-
-        public const uint FILE_ATTRIBUTE_NORMAL = 0x00000080;
     }
 }

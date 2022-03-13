@@ -8,7 +8,7 @@ namespace VCCSharp.Menu
         public MainCommands(Actions actions)
         {
             MenuCommand F(Key key, Action action, ModifierKeys modifier = ModifierKeys.None) 
-                => new MenuCommand(key.ToString()) { Key = key, Action = action, Modifier = modifier};
+                => new(key.ToString()) { Key = key, Action = action, Modifier = modifier};
 
             AddRange(new[]
             {

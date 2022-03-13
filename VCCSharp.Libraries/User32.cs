@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Windows.Interop;
 using VCCSharp.Libraries.Models;
 using HWND = System.IntPtr;
 using LRESULT = System.IntPtr;

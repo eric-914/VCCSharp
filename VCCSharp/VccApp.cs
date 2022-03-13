@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Windows.Interop;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
+using VCCSharp.Libraries.Models;
 using static System.IntPtr;
 
 namespace VCCSharp
@@ -84,7 +84,7 @@ namespace VCCSharp
             {
                 _modules.Vcc.CheckScreenModeChange();
 
-                MSG msg;
+                var msg = new MSG();
 
                 _user32.GetMessageA(ref msg, Zero, 0, 0);   //Seems if the main loop stops polling for Messages the child threads stall
 

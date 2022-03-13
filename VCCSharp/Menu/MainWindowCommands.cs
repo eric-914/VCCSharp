@@ -7,7 +7,7 @@ namespace VCCSharp.Menu
     {
         public IMainMenu MenuItems { get; }
         public CommandBindings CommandBindings { get; }
-        public InputBindings InputBindings { get; } = new InputBindings();
+        public InputBindings InputBindings { get; } = new();
 
         public MainWindowCommands(IMainMenu menuItems, MainCommands commandBindings)
         {

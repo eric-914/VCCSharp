@@ -1,6 +1,4 @@
-﻿using System;
-using VCCSharp.Libraries.Models;
-using VCCSharp.Models;
+﻿using VCCSharp.Libraries.Models;
 using static System.IntPtr;
 using HANDLE = System.IntPtr;
 using HMODULE = System.IntPtr;
@@ -30,6 +28,8 @@ namespace VCCSharp.Libraries
 
     public class Kernel : IKernel
     {
+        public const uint FILE_ATTRIBUTE_NORMAL = 0x00000080;
+        
         public HMODULE LoadLibrary(string dllToLoad)
             => KernelDll.LoadLibrary(dllToLoad);
 
@@ -64,7 +64,7 @@ namespace VCCSharp.Libraries
             => KernelDll.ReadFile(hFile, lpBuffer, nNumberOfBytesToRead, ref lpNumberOfBytesRead, Zero);
 
         public HANDLE CreateFile(string filename, uint desiredAccess, uint dwCreationDisposition)
-            => KernelDll.CreateFileA(filename, desiredAccess, 0, Zero, dwCreationDisposition, Define.FILE_ATTRIBUTE_NORMAL, Zero);
+            => KernelDll.CreateFileA(filename, desiredAccess, 0, Zero, dwCreationDisposition, FILE_ATTRIBUTE_NORMAL, Zero);
 
         public uint WriteFile(HANDLE hFile, string lpBuffer, uint nNumberOfBytesToWrite)
         {

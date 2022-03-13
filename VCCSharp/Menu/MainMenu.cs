@@ -51,8 +51,8 @@ namespace VCCSharp.Menu
                 Menu("Save Config", actions.SaveConfiguration),
                 Menu("Load Config", actions.LoadConfiguration),
                 ______________,
-                Menu("[F9] Hard Reset", actions.HardReset ),
-                Menu("[F5] Soft Reset", actions.SoftReset ),
+                Menu("[F9] Hard Reset", actions.HardReset),
+                Menu("[F5] Soft Reset", actions.SoftReset),
                 ______________,
                 Menu("E_xit", actions.ApplicationExit)
             }
