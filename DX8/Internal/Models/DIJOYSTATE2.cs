@@ -47,7 +47,7 @@ namespace DX8.Internal.Models
         /// </summary>
         [FieldOffset(20)]
         public int lRz; // z-axis rotation 
-
+        
         /// <summary>
         /// Two additional axis values (formerly called the u-axis and v-axis) whose semantics depend on the joystick. Use the GetObjectInfo method to obtain semantic information about these values.
         /// </summary>
@@ -63,137 +63,144 @@ namespace DX8.Internal.Models
         /// <summary>
         /// Array of buttons. The high-order bit of the byte is set if the corresponding button is down, and clear if the button is up or does not exist.
         /// </summary>
-        [FieldOffset(40)]
-        //[MarshalAs(UnmanagedType.I1, SizeConst = 128)]
+        [FieldOffset(48)]
         [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.I1, SizeConst = 128)]
         public byte[] rgbButtons;   // 128 buttons 
 
         /// <summary>
         /// X-axis velocity.
         /// </summary>
-        [FieldOffset(168)]
+        [FieldOffset(176)]
         public int lVX;
 
         /// <summary>
         /// Y-axis velocity.
         /// </summary>
-        [FieldOffset(172)]
+        [FieldOffset(180)]
         public int lVY;
 
         /// <summary>
         /// Z-axis velocity.
         /// </summary>
-        [FieldOffset(176)]
+        [FieldOffset(184)]
         public int lVZ;
 
         /// <summary>
         /// X-axis angular velocity.
         /// </summary>
-        [FieldOffset(180)]
+        [FieldOffset(188)]
         public int lVRx;
 
         /// <summary>
         /// Y-axis angular velocity.
         /// </summary>
-        [FieldOffset(184)]
+        [FieldOffset(192)]
         public int lVRy;
 
         /// <summary>
         /// Z-axis angular velocity.
         /// </summary>
-        [FieldOffset(188)]
+        [FieldOffset(196)]
         public int lVRz;
 
         /// <summary>
         /// Extra axis velocities.
         /// </summary>
-        [FieldOffset(192)]
+        [FieldOffset(200)]
         public INT2 rglVSlider;
 
         /// <summary>
         /// X-axis acceleration.
         /// </summary>
-        [FieldOffset(200)]
+        [FieldOffset(208)]
         public int lAX;
 
         /// <summary>
         /// Y-axis acceleration.
         /// </summary>
-        [FieldOffset(204)]
+        [FieldOffset(212)]
         public int lAY;
 
         /// <summary>
         /// Z-axis acceleration.
         /// </summary>
-        [FieldOffset(208)]
+        [FieldOffset(216)]
         public int lAZ;
 
         /// <summary>
         /// X-axis angular acceleration.
         /// </summary>
-        [FieldOffset(212)]
+        [FieldOffset(220)]
         public int lARx;
 
         /// <summary>
         /// Y-axis angular acceleration.
         /// </summary>
-        [FieldOffset(216)]
+        [FieldOffset(224)]
         public int lARy;
 
         /// <summary>
         /// Z-axis angular acceleration.
         /// </summary>
-        [FieldOffset(220)]
+        [FieldOffset(228)]
         public int lARz;
 
         /// <summary>
         /// Extra axis accelerations.
         /// </summary>
-        [FieldOffset(224)]
+        [FieldOffset(232)]
         public INT2 rglASlider;
 
         /// <summary>
         /// X-axis force.
         /// </summary>
-        [FieldOffset(232)]
+        [FieldOffset(240)]
         public int lFX;
 
         /// <summary>
         /// Y-axis force.
         /// </summary>
-        [FieldOffset(236)]
+        [FieldOffset(244)]
         public int lFY;
 
         /// <summary>
         /// Z-axis force.
         /// </summary>
-        [FieldOffset(240)]
+        [FieldOffset(248)]
         public int lFZ;
 
         /// <summary>
         /// X-axis torque.
         /// </summary>
-        [FieldOffset(244)]
+        [FieldOffset(252)]
         public int lFRx;
 
         /// <summary>
         /// Y-axis torque.
         /// </summary>
-        [FieldOffset(248)]
+        [FieldOffset(256)]
         public int lFRy;
 
         /// <summary>
         /// Z-axis torque.
         /// </summary>
-        [FieldOffset(252)]
+        [FieldOffset(260)]
         public int lFRz;
 
         /// <summary>
         /// Extra axis forces.
         /// </summary>
-        [FieldOffset(256)]
+        [FieldOffset(268)]
         public INT2 rglFSlider;
 
-        public static int Size => MEMBLOCK.DIJOYSTATE2;
+        public static int Size => MEMBLOCK.DIJOYSTATE2; //272
+
+        public static DIJOYSTATE2 Create()
+        {
+            return new DIJOYSTATE2
+            {
+                rgbButtons = new byte[128]
+            };
+        }
     }
 }

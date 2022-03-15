@@ -4,13 +4,35 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:tester="clr-namespace:DX8.Tester"
+        xmlns:converters="clr-namespace:DX8.Tester.Converters"
         mc:Ignorable="d"
-        Title="DirectX 8 Tester" Height="450" Width="800">
+        Title="DirectX 8 Tester" Height="250" Width="800">
     <Window.DataContext>
         <tester:TestWindowViewModel/>
     </Window.DataContext>
+    <Window.Resources>
+        <converters:ListToCountConverter x:Key="ListToCountConverter"/>
+    </Window.Resources>
 
-    <Grid>
-
-    </Grid>
+    <StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Label>Joysticks:</Label>
+            <Label Content="{Binding Joysticks, Converter={StaticResource ListToCountConverter}}"/>
+        </StackPanel>
+        <ListBox ItemsSource="{Binding Joysticks}"/>
+        <StackPanel Orientation="Horizontal">
+            <Label>D-Pad:</Label>
+            <CheckBox IsChecked="{Binding DPad.Left}">Left</CheckBox>
+            <CheckBox IsChecked="{Binding DPad.Up}">Up</CheckBox>
+            <CheckBox IsChecked="{Binding DPad.Right}">Right</CheckBox>
+            <CheckBox IsChecked="{Binding DPad.Down}">Down</CheckBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Label>Buttons:</Label>
+            <CheckBox IsChecked="{Binding Button.X}">X</CheckBox>
+            <CheckBox IsChecked="{Binding Button.Y}">Y</CheckBox>
+            <CheckBox IsChecked="{Binding Button.A}">A</CheckBox>
+            <CheckBox IsChecked="{Binding Button.B}">B</CheckBox>
+        </StackPanel>
+    </StackPanel>
 </Window>

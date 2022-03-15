@@ -179,7 +179,7 @@ namespace VCCSharp.Modules
             string leftDevice = configuration.Joysticks.Left.Device;
             int leftDeviceIndex = _modules.Config.JoystickDevices.IndexOf(leftDevice);
 
-            string rightDevice = configuration.Joysticks.Left.Device;
+            string rightDevice = configuration.Joysticks.Right.Device;
             int rightDeviceIndex = _modules.Config.JoystickDevices.IndexOf(rightDevice);
 
             _modules.Audio.SoundInit(_modules.Emu.WindowHandle, audioDeviceIndex, configuration.Audio.Rate.Value);

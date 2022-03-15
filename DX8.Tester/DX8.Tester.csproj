@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DX8\DX8.csproj" />
+    <ProjectReference Include="..\VCCSharp.Libraries\VCCSharp.Libraries.csproj" />
   </ItemGroup>
 
 </Project>

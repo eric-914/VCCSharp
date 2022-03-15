@@ -9,6 +9,6 @@ namespace DX8
 
         List<string> EnumerateDevices();
 
-        IDxJoystickState JoystickPoll(int id);
+        IDxJoystickState JoystickPoll(int index);
     }
 }

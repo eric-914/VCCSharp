@@ -14,7 +14,7 @@ namespace DX8.Internal.Models
     internal static class MEMBLOCK
     {
         public const int DDSURFACEDESC = 120; //sizeof(DDSURFACEDESC);
-        public const int DIJOYSTATE2 = 264; //sizeof(DIJOYSTATE2);
+        public const int DIJOYSTATE2 = 272; //sizeof(DIJOYSTATE2);
         public const int DIPROPHEADER = 16; //sizeof(DIPROPHEADER);
         public const int DIPROPRANGE = 24; //sizeof(DIPROPRANGE);
         public const int DSBUFFERDESC = 40; //sizeof(DSBUFFERDESC);
@@ -99,13 +99,13 @@ namespace DX8.Internal.Models
         [FieldOffset(0)]
         public uint UI0;
         
-        [FieldOffset(0)]
+        [FieldOffset(4)]
         public uint UI1;
         
-        [FieldOffset(0)]
+        [FieldOffset(8)]
         public uint UI2;
 
-        [FieldOffset(0)]
+        [FieldOffset(12)]
         public uint UI3;
     }
 }

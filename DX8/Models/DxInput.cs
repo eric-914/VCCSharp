@@ -116,6 +116,8 @@ namespace DX8.Models
                 throw new Exception("Failed to set data format on joystick");
             }
 
+            device.Acquire();
+
             hr = device.EnumObjects(Callback, IntPtr.Zero, DxDefine.DIDFT_AXIS);
 
             if (hr < 0)
@@ -124,11 +126,11 @@ namespace DX8.Models
             }
         }
 
-        public IDxJoystickState JoystickPoll(int id)
+        public IDxJoystickState JoystickPoll(int index)
         {
-            DIJOYSTATE2 state = new DIJOYSTATE2();
+            DIJOYSTATE2 state = DIJOYSTATE2.Create();
 
-            long hr = JoystickPoll(state, _devices[id]);
+            long hr = JoystickPoll(state, _devices[index]);
 
             if (hr != DxDefine.S_OK)
             {
@@ -138,9 +140,9 @@ namespace DX8.Models
             //TODO: Need to confirm reading the button array works before deleting this.
             //unsafe
             //{
-                //byte* p = &state.rgbButtons;
-                //int b1 = p[0];
-                //int b2 = p[1];
+            //byte* p = &state.rgbButtons;
+            //int b1 = p[0];
+            //int b2 = p[1];
             //}
 
             int b1 = state.rgbButtons[0];

@@ -52,7 +52,9 @@ namespace VCCSharp.Modules
 
         public List<string> FindJoysticks()
         {
-            _input.CreateDirectInput(KernelDll.GetModuleHandleA(IntPtr.Zero));
+            var handle = KernelDll.GetModuleHandleA(IntPtr.Zero);
+
+            _input.CreateDirectInput(handle);
 
             return _input.EnumerateDevices();
         }
@@ -135,10 +137,7 @@ namespace VCCSharp.Modules
         {
             byte buttonStatus = (byte)((side << 1) | state);
 
-            JoystickModel left = GetLeftJoystick();
-            JoystickModel right = GetRightJoystick();
-
-            if (left.InputSource == JoystickDevices.Mouse)
+            if (_left.InputSource == JoystickDevices.Mouse)
             {
                 switch (buttonStatus)
                 {
@@ -160,7 +159,7 @@ namespace VCCSharp.Modules
                 }
             }
 
-            if (right.InputSource == JoystickDevices.Mouse)
+            if (_right.InputSource == JoystickDevices.Mouse)
             {
                 switch (buttonStatus)
                 {
@@ -194,9 +193,6 @@ namespace VCCSharp.Modules
             ushort x = (ushort)point.X;
             ushort y = (ushort)point.Y;
 
-            JoystickModel left = GetLeftJoystick();
-            JoystickModel right = GetRightJoystick();
-
             if (x > 63)
             {
                 x = 63;
@@ -207,13 +203,13 @@ namespace VCCSharp.Modules
                 y = 63;
             }
 
-            if (left.InputSource == JoystickDevices.Mouse)
+            if (_left.InputSource == JoystickDevices.Mouse)
             {
                 Left.X = x;
                 Left.Y = y;
             }
 
-            if (right.InputSource == JoystickDevices.Mouse)
+            if (_right.InputSource == JoystickDevices.Mouse)
             {
                 Right.X = x;
                 Right.Y = y;
@@ -224,84 +220,81 @@ namespace VCCSharp.Modules
         {
             byte retValue = scanCode;
 
-            JoystickModel left = GetLeftJoystick();
-            JoystickModel right = GetRightJoystick();
-
             switch (phase)
             {
                 case 0:
-                    if (left.InputSource == 0)
+                    if (_left.InputSource == 0)
                     {
-                        if (scanCode == left.Left)
+                        if (scanCode == _left.Left)
                         {
                             Left.X = 32;
                             retValue = 0;
                         }
 
-                        if (scanCode == left.Right)
+                        if (scanCode == _left.Right)
                         {
                             Left.X = 32;
                             retValue = 0;
                         }
 
-                        if (scanCode == left.Up)
+                        if (scanCode == _left.Up)
                         {
                             Left.Y = 32;
                             retValue = 0;
                         }
 
-                        if (scanCode == left.Down)
+                        if (scanCode == _left.Down)
                         {
                             Left.Y = 32;
                             retValue = 0;
                         }
 
-                        if (scanCode == left.Fire1)
+                        if (scanCode == _left.Fire1)
                         {
                             Left.Button1 = 0;
                             retValue = 0;
                         }
 
-                        if (scanCode == left.Fire2)
+                        if (scanCode == _left.Fire2)
                         {
                             Left.Button2 = 0;
                             retValue = 0;
                         }
                     }
 
-                    if (right.InputSource == 0)
+                    if (_right.InputSource == 0)
                     {
-                        if (scanCode == right.Left)
+                        if (scanCode == _right.Left)
                         {
                             Right.X = 32;
                             retValue = 0;
                         }
 
-                        if (scanCode == right.Right)
+                        if (scanCode == _right.Right)
                         {
                             Right.X = 32;
                             retValue = 0;
                         }
 
-                        if (scanCode == right.Up)
+                        if (scanCode == _right.Up)
                         {
                             Right.Y = 32;
                             retValue = 0;
                         }
 
-                        if (scanCode == right.Down)
+                        if (scanCode == _right.Down)
                         {
                             Right.Y = 32;
                             retValue = 0;
                         }
 
-                        if (scanCode == right.Fire1)
+                        if (scanCode == _right.Fire1)
                         {
                             Right.Button1 = 0;
                             retValue = 0;
                         }
 
-                        if (scanCode == right.Fire2)
+                        if (scanCode == _right.Fire2)
                         {
                             Right.Button2 = 0;
                             retValue = 0;
@@ -310,78 +303,78 @@ namespace VCCSharp.Modules
                     break;
 
                 case 1:
-                    if (left.InputSource == 0)
+                    if (_left.InputSource == 0)
                     {
-                        if (scanCode == left.Left)
+                        if (scanCode == _left.Left)
                         {
                             Left.X = 0;
                             retValue = 0;
                         }
 
-                        if (scanCode == left.Right)
+                        if (scanCode == _left.Right)
                         {
                             Left.X = 63;
                             retValue = 0;
                         }
 
-                        if (scanCode == left.Up)
+                        if (scanCode == _left.Up)
                         {
                             Left.Y = 0;
                             retValue = 0;
                         }
 
-                        if (scanCode == left.Down)
+                        if (scanCode == _left.Down)
                         {
                             Left.Y = 63;
                             retValue = 0;
                         }
 
-                        if (scanCode == left.Fire1)
+                        if (scanCode == _left.Fire1)
                         {
                             Left.Button1 = 1;
                             retValue = 0;
                         }
 
-                        if (scanCode == left.Fire2)
+                        if (scanCode == _left.Fire2)
                         {
                             Left.Button2 = 1;
                             retValue = 0;
                         }
                     }
 
-                    if (right.InputSource == 0)
+                    if (_right.InputSource == 0)
                     {
-                        if (scanCode == right.Left)
+                        if (scanCode == _right.Left)
                         {
                             retValue = 0;
                             Right.X = 0;
                         }
 
-                        if (scanCode == right.Right)
+                        if (scanCode == _right.Right)
                         {
                             Right.X = 63;
                             retValue = 0;
                         }
 
-                        if (scanCode == right.Up)
+                        if (scanCode == _right.Up)
                         {
                             Right.Y = 0;
                             retValue = 0;
                         }
 
-                        if (scanCode == right.Down)
+                        if (scanCode == _right.Down)
                         {
                             Right.Y = 63;
                             retValue = 0;
                         }
 
-                        if (scanCode == right.Fire1)
+                        if (scanCode == _right.Fire1)
                         {
                             Right.Button1 = 1;
                             retValue = 0;
                         }
 
-                        if (scanCode == right.Fire2)
+                        if (scanCode == _right.Fire2)
                         {
                             Right.Button2 = 1;
                             retValue = 0;
