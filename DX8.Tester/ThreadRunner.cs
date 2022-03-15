@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Threading;
+using System.Windows;
 
-namespace DX8.Tester
+namespace DX8.Tester;
+
+internal class ThreadRunner
 {
-    internal class ThreadRunner
-    {
-        public bool IsRunning = true;
+    public bool IsRunning = true;
 
-        public void Run(Action callback)
+    public void Run(Action callback)
+    {
+        while (IsRunning)
         {
-            while (IsRunning)
-            {
-                Thread.Sleep(100);
-                callback();
-            }
+            Thread.Sleep(100);
+            Application.Current.Dispatcher.Invoke(callback);
         }
     }
 }

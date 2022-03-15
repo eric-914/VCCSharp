@@ -32,6 +32,11 @@ namespace VCCSharp.Modules
 
     public class Joystick : IJoystick
     {
+        //--Goal is to bring the horizontal/vertical direction to within CoCo's 0-63 range.
+        private const int MIN = 0;
+        private const int MAX = 63;
+        private const int CENTER = 32;
+
         private readonly IDxInput _input;
 
         public ushort StickValue { get; set; }
@@ -142,19 +147,19 @@ namespace VCCSharp.Modules
                 switch (buttonStatus)
                 {
                     case 0:
-                        Left.Button1 = 0;
+                        Left.Button1 = false;
                         break;
 
                     case 1:
-                        Left.Button1 = 1;
+                        Left.Button1 = true;
                         break;
 
                     case 2:
-                        Left.Button2 = 0;
+                        Left.Button2 = false;
                         break;
 
                     case 3:
-                        Left.Button2 = 1;
+                        Left.Button2 = true;
                         break;
                 }
             }
@@ -164,19 +169,19 @@ namespace VCCSharp.Modules
                 switch (buttonStatus)
                 {
                     case 0:
-                        Right.Button1 = 0;
+                        Right.Button1 = false;
                         break;
 
                     case 1:
-                        Right.Button1 = 1;
+                        Right.Button1 = true;
                         break;
 
                     case 2:
-                        Right.Button2 = 0;
+                        Right.Button2 = false;
                         break;
 
                     case 3:
-                        Right.Button2 = 1;
+                        Right.Button2 = true;
                         break;
                 }
             }
@@ -193,14 +198,14 @@ namespace VCCSharp.Modules
             ushort x = (ushort)point.X;
             ushort y = (ushort)point.Y;
 
-            if (x > 63)
+            if (x > MAX)
             {
-                x = 63;
+                x = MAX;
             }
 
-            if (y > 63)
+            if (y > MAX)
             {
-                y = 63;
+                y = MAX;
             }
 
             if (_left.InputSource == JoystickDevices.Mouse)
@@ -227,37 +232,37 @@ namespace VCCSharp.Modules
                     {
                         if (scanCode == _left.Left)
                         {
-                            Left.X = 32;
+                            Left.X = CENTER;
                             retValue = 0;
                         }
 
                         if (scanCode == _left.Right)
                         {
-                            Left.X = 32;
+                            Left.X = CENTER;
                             retValue = 0;
                         }
 
                         if (scanCode == _left.Up)
                         {
-                            Left.Y = 32;
+                            Left.Y = CENTER;
                             retValue = 0;
                         }
 
                         if (scanCode == _left.Down)
                         {
-                            Left.Y = 32;
+                            Left.Y = CENTER;
                             retValue = 0;
                         }
 
                         if (scanCode == _left.Fire1)
                         {
-                            Left.Button1 = 0;
+                            Left.Button1 = false;
                             retValue = 0;
                         }
 
                         if (scanCode == _left.Fire2)
                         {
-                            Left.Button2 = 0;
+                            Left.Button2 = false;
                             retValue = 0;
                         }
                     }
@@ -266,37 +271,37 @@ namespace VCCSharp.Modules
                     {
                         if (scanCode == _right.Left)
                         {
-                            Right.X = 32;
+                            Right.X = CENTER;
                             retValue = 0;
                         }
 
                         if (scanCode == _right.Right)
                         {
-                            Right.X = 32;
+                            Right.X = CENTER;
                             retValue = 0;
                         }
 
                         if (scanCode == _right.Up)
                         {
-                            Right.Y = 32;
+                            Right.Y = CENTER;
                             retValue = 0;
                         }
 
                         if (scanCode == _right.Down)
                         {
-                            Right.Y = 32;
+                            Right.Y = CENTER;
                             retValue = 0;
                         }
 
                         if (scanCode == _right.Fire1)
                         {
-                            Right.Button1 = 0;
+                            Right.Button1 = false;
                             retValue = 0;
                         }
 
                         if (scanCode == _right.Fire2)
                         {
-                            Right.Button2 = 0;
+                            Right.Button2 = false;
                             retValue = 0;
                         }
                     }
@@ -307,37 +312,37 @@ namespace VCCSharp.Modules
                     {
                         if (scanCode == _left.Left)
                         {
-                            Left.X = 0;
+                            Left.X = MIN;
                             retValue = 0;
                         }
 
                         if (scanCode == _left.Right)
                         {
-                            Left.X = 63;
+                            Left.X = MAX;
                             retValue = 0;
                         }
 
                         if (scanCode == _left.Up)
                         {
-                            Left.Y = 0;
+                            Left.Y = MIN;
                             retValue = 0;
                         }
 
                         if (scanCode == _left.Down)
                         {
-                            Left.Y = 63;
+                            Left.Y = MAX;
                             retValue = 0;
                         }
 
                         if (scanCode == _left.Fire1)
                         {
-                            Left.Button1 = 1;
+                            Left.Button1 = true;
                             retValue = 0;
                         }
 
                         if (scanCode == _left.Fire2)
                         {
-                            Left.Button2 = 1;
+                            Left.Button2 = true;
                             retValue = 0;
                         }
                     }
@@ -346,37 +351,37 @@ namespace VCCSharp.Modules
                     {
                         if (scanCode == _right.Left)
                         {
+                            Right.X = MIN;
                             retValue = 0;
-                            Right.X = 0;
                         }
 
                         if (scanCode == _right.Right)
                         {
-                            Right.X = 63;
+                            Right.X = MAX;
                             retValue = 0;
                         }
 
                         if (scanCode == _right.Up)
                         {
-                            Right.Y = 0;
+                            Right.Y = MIN;
                             retValue = 0;
                         }
 
                         if (scanCode == _right.Down)
                         {
-                            Right.Y = 63;
+                            Right.Y = MAX;
                             retValue = 0;
                         }
 
                         if (scanCode == _right.Fire1)
                         {
-                            Right.Button1 = 1;
+                            Right.Button1 = true;
                             retValue = 0;
                         }
 
                         if (scanCode == _right.Fire2)
                         {
-                            Right.Button2 = 1;
+                            Right.Button2 = true;
                             retValue = 0;
                         }
                     }

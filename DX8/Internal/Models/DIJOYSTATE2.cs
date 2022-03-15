@@ -64,7 +64,7 @@ namespace DX8.Internal.Models
         /// Array of buttons. The high-order bit of the byte is set if the corresponding button is down, and clear if the button is up or does not exist.
         /// </summary>
         [FieldOffset(48)]
-        [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.I1, SizeConst = 128)]
+        [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 128)]
         public byte[] rgbButtons;   // 128 buttons 
 
         /// <summary>
@@ -201,6 +201,11 @@ namespace DX8.Internal.Models
             {
                 rgbButtons = new byte[128]
             };
+        }
+
+        public override string ToString()
+        {
+            return $"{lX},{lY} {rgbButtons[0]},{rgbButtons[1]},{rgbButtons[2]},{rgbButtons[3]},{rgbButtons[4]},{rgbButtons[5]},{rgbButtons[6]},{rgbButtons[7]} {rgdwPOV.UI0},{rgdwPOV.UI1},{rgdwPOV.UI2},{rgdwPOV.UI3}";
         }
     }
 }

@@ -99,25 +99,25 @@ namespace VCCSharp.Modules
                 }
             }
 
-            if (_modules.Joystick.Left.Button1 == 1)
+            if (_modules.Joystick.Left.Button1)
             {
                 //Left Joystick Button 1 Down?
                 retVal &= 0xFD;
             }
 
-            if (_modules.Joystick.Right.Button1 == 1)
+            if (_modules.Joystick.Right.Button1)
             {
                 //Right Joystick Button 1 Down?
                 retVal &= 0xFE;
             }
 
-            if (_modules.Joystick.Left.Button2 == 1)
+            if (_modules.Joystick.Left.Button2)
             {
                 //Left Joystick Button 2 Down?
                 retVal &= 0xF7;
             }
 
-            if (_modules.Joystick.Right.Button2 == 1)
+            if (_modules.Joystick.Right.Button2)
             {
                 //Right Joystick Button 2 Down?
                 retVal &= 0xFB;

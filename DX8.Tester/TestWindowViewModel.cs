@@ -1,47 +1,28 @@
-﻿using DX8.Tester.Annotations;
-using DX8.Tester.Model;
+﻿using DX8.Tester.Model;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows;
 
-namespace DX8.Tester
+namespace DX8.Tester;
+
+internal class TestWindowViewModel : NotifyViewModel
 {
-    internal class TestWindowViewModel : INotifyPropertyChanged
+    private readonly TestWindowModel _model = new();
+
+    public List<string> Joysticks { get; }
+
+    public DPadModel DPad => _model.DPad;
+
+    public ButtonModel Button => _model.Button;
+
+    public TestWindowViewModel()
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
+        Joysticks = _model.FindJoysticks();
+    }
 
-        private readonly TestWindowModel _model = new();
-        private readonly ThreadRunner _runner = new();
+    public void Refresh()
+    {
+        _model.Refresh();
 
-        public List<string> Joysticks { get; }
-
-        public DPadModel DPad => _model.DPad;
-
-        public ButtonModel Button => _model.Button;
-
-        public TestWindowViewModel()
-        {
-            Application.Current.Exit += (_, _) => _runner.IsRunning = false;
-
-            Joysticks = _model.FindJoysticks();
-
-            //Task.Run(() => _runner.Run(Refresh));
-            Refresh();
-        }
-
-        public void Refresh()
-        {
-            _model.Refresh();
-
-            OnPropertyChanged(nameof(DPad));
-            OnPropertyChanged(nameof(Button));
-        }
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        OnPropertyChanged(nameof(DPad));
+        OnPropertyChanged(nameof(Button));
     }
 }

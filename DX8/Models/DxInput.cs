@@ -130,40 +130,20 @@ namespace DX8.Models
         {
             DIJOYSTATE2 state = DIJOYSTATE2.Create();
 
-            long hr = JoystickPoll(state, _devices[index]);
+            long hr = JoystickPoll(ref state, _devices[index]);
 
             if (hr != DxDefine.S_OK)
             {
                 Debug.WriteLine($"Bad joystick poll: {hr}");
             }
 
-            //TODO: Need to confirm reading the button array works before deleting this.
-            //unsafe
-            //{
-            //byte* p = &state.rgbButtons;
-            //int b1 = p[0];
-            //int b2 = p[1];
-            //}
+            var xbox = new DxXboxControllerState(state);
+            Debug.WriteLine(xbox);
 
-            int b1 = state.rgbButtons[0];
-            int b2 = state.rgbButtons[1];
-
-            return new DxJoystickState
-            {
-                X = state.lX,
-                Y = state.lY,
-                Buttons = new[] { b1, b2 }
-            };
-            //return new JoystickState
-            //{
-            //    X = state.lX >> 10,
-            //    Y = state.lY >> 10,
-            //    Button1 = b1 >> 7,
-            //    Button2 = b2 >> 7,
-            //};
+            return xbox;
         }
 
-        private static long JoystickPoll(DIJOYSTATE2 state, IDirectInputDevice stick)
+        private static long JoystickPoll(ref DIJOYSTATE2 state, IDirectInputDevice stick)
         {
             if (stick == null)
             {
@@ -192,12 +172,6 @@ namespace DX8.Models
             }
 
             hr = stick.GetDeviceState((uint)DIJOYSTATE2.Size, ref state);
-
-            //TODO: Need to verify change works before deleting this
-            //unsafe
-            //{
-            //    hr = stick.GetDeviceState((uint)DIJOYSTATE2.Size, &state);
-            //}
 
             //TODO: un-acquire?
 
