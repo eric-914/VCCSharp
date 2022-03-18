@@ -9,9 +9,7 @@ internal class TestWindowViewModel : NotifyViewModel
 
     public List<string> Joysticks { get; }
 
-    public DPadModel DPad => _model.DPad;
-
-    public ButtonModel Button => _model.Button;
+    public IDxJoystickState Joystick => _model.Joystick;
 
     public TestWindowViewModel()
     {
@@ -22,7 +20,6 @@ internal class TestWindowViewModel : NotifyViewModel
     {
         _model.Refresh();
 
-        OnPropertyChanged(nameof(DPad));
-        OnPropertyChanged(nameof(Button));
+        OnPropertyChanged(nameof(Joystick));
     }
 }

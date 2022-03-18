@@ -10,9 +10,7 @@ internal class TestWindowModel
     private readonly Dx _dx = new();
     private readonly IDxInput _input;
 
-    public DPadModel DPad { get; } = new();
-
-    public ButtonModel Button { get; } = new();
+    public IDxJoystickState Joystick { get; private set; } = new NullDxJoystickState();
 
     public TestWindowModel()
     {
@@ -30,6 +28,11 @@ internal class TestWindowModel
 
     public void Refresh()
     {
-        var state = _input.JoystickPoll(0);
+        IDxJoystickState? state = _input.JoystickPoll(0);
+
+        if (state != null)
+        {
+            Joystick = state;
+        }
     }
 }
