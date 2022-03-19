@@ -138,7 +138,7 @@ namespace DX8.Models
             }
 
             var xbox = new DxXboxControllerState(state);
-            Debug.WriteLine(xbox);
+            //Debug.WriteLine(xbox);
 
             return xbox;
         }

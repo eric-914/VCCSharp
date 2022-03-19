@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace DX8.Tester.Model;
 
-internal class NotifyViewModel : INotifyPropertyChanged
+public class NotifyViewModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 

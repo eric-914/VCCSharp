@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DX8.Tester;
 
-internal class TestWindowViewModel : NotifyViewModel
+internal class TestWindowViewModel : NotifyViewModel, IJoystickStateViewModel
 {
     private readonly TestWindowModel _model = new();
 
