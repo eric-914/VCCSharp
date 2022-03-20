@@ -8,7 +8,7 @@ namespace VCCSharp.Modules.TC1014
     // ReSharper disable once InconsistentNaming
     public partial class TC1014
     {
-        public Mode[] Modes;
+        public Mode[] Modes { get; private set; } = Array.Empty<Mode>();
 
         private void InitializeModes()
         {
@@ -277,12 +277,7 @@ namespace VCCSharp.Modules.TC1014
 
         public void SwitchMasterMode(byte masterMode, int start, int yStride)
         {
-            var model = new ModeModel
-            {
-                BytePointer = _ram,
-                ShortPointer = new ShortPointer(_ram),
-                Modules = _modules
-            };
+            var model = new ModeModel(_ram, _modules);
 
             // (GraphicsMode << 7) | (CompatibilityMode << 6)  | ((Bpp & 3) << 4) | (Stretch & 15);
             Modes[masterMode](model, start, yStride);

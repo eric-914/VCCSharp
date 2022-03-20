@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
@@ -33,9 +32,9 @@ namespace VCCSharp.Modules
         bool PrintMonitorWindow { get; set; }
         int TapeCounter { get; set; }
         TapeModes TapeMode { get; set; }
-        string TapeFileName { get; set; }
-        string SerialCaptureFile { get; set; }
-        string FilePath { get; }
+        string? TapeFileName { get; set; }
+        string? SerialCaptureFile { get; set; }
+        string? FilePath { get; }
 
         List<string> SoundDevices { get; }
         List<string> JoystickDevices { get; }
@@ -47,7 +46,7 @@ namespace VCCSharp.Modules
         private readonly IUser32 _user32;
         private readonly IConfigPersistence _persistence;
 
-        public string AppTitle { get; } = Resources.ResourceManager.GetString("AppTitle");
+        public string AppTitle { get; } = Resources.ResourceManager.GetString("AppTitle") ?? "<Unable to read AppTitle>";
 
         public bool TextMode { get; set; } = true;  //--Add LF to CR
         public bool PrintMonitorWindow { get; set; }
@@ -55,8 +54,8 @@ namespace VCCSharp.Modules
         public int TapeCounter { get; set; }
         public TapeModes TapeMode { get; set; } = TapeModes.Stop;
 
-        public string TapeFileName { get; set; }
-        public string SerialCaptureFile { get; set; }
+        public string? TapeFileName { get; set; }
+        public string? SerialCaptureFile { get; set; }
 
         private readonly JoystickModel _left = new();
         private readonly JoystickModel _right = new();
@@ -64,9 +63,9 @@ namespace VCCSharp.Modules
         public List<string> SoundDevices => _modules.Audio.FindSoundDevices();
         public List<string> JoystickDevices => _modules.Joystick.FindJoysticks();
 
-        public IConfiguration Model { get; private set; }
+        public IConfiguration Model { get; private set; } = default!;
 
-        public string FilePath { get; set; }
+        public string? FilePath { get; set; }
 
         public Config(IModules modules, IUser32 user32, IConfigPersistence persistence)
         {
@@ -176,7 +175,7 @@ namespace VCCSharp.Modules
             Model.Window.Width = (short)_modules.Emu.WindowSize.X;
             Model.Window.Height = (short)_modules.Emu.WindowSize.Y;
 
-            string modulePath = Model.Accessories.ModulePath;
+            string? modulePath = Model.Accessories.ModulePath;
 
             if (string.IsNullOrEmpty(modulePath))
             {

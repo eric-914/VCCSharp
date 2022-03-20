@@ -1,93 +1,89 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using VCCSharp.Annotations;
+﻿using System;
 using VCCSharp.Enums;
+using VCCSharp.Main.ViewModels;
 using VCCSharp.Modules;
 
-namespace VCCSharp.TapePlayer
+namespace VCCSharp.TapePlayer;
+
+public class TapePlayerViewModel : NotifyViewModel
 {
-    public class TapePlayerViewModel : INotifyPropertyChanged
+    private const string NoFile = "EMPTY";
+
+    //TODO: Remove STATIC once safe
+    private static IConfig? _config;
+
+    private string _filePath = "Sample Browse File Text";
+    private TapeModes _mode = TapeModes.Stop;
+    private int _counter;
+
+    public IConfig? Config
     {
-        private const string NoFile = "EMPTY";
-
-        //TODO: Remove STATIC once safe
-        private static IConfig _config;
-
-        private string _filePath = "Sample Browse File Text";
-        private TapeModes _mode = TapeModes.Stop;
-        private int _counter;
-
-        #region INotifyPropertyChanged
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        get => _config;
+        set
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (_config != null) return;
+
+            _config = value;
         }
+    }
 
-        #endregion
-
-        public IConfig Config
+    public string FilePath
+    {
+        get
         {
-            get => _config;
-            set
-            {
-                if (_config != null) return;
+            if (Config == null) return string.Empty;
 
-                _config = value;
-            }
+            string? file = Config.TapeFileName;
+
+            _filePath = string.IsNullOrEmpty(file) ? NoFile : file;
+
+            return _filePath;
         }
-
-        public string FilePath
+        set
         {
-            get
+            if (value == _filePath) return;
+
+            _filePath = value;
+
+            if (Config == null)
             {
-                if (Config == null) return string.Empty;
-
-                string file = Config.TapeFileName;
-
-                _filePath = string.IsNullOrEmpty(file) ? NoFile : file;
-
-                return _filePath;
+                throw new Exception("Configuration is undefined");
             }
-            set
-            {
-                if (value == _filePath) return;
 
-                _filePath = value;
+            Config.TapeFileName = value;
 
-                Config.TapeFileName = value;
-
-                OnPropertyChanged();
-            }
+            OnPropertyChanged();
         }
+    }
 
-        public TapeModes Mode
+    public TapeModes Mode
+    {
+        get => _mode;
+        set
         {
-            get => _mode;
-            set
-            {
-                if (value == _mode) return;
+            if (value == _mode) return;
 
-                _mode = value;
-                OnPropertyChanged();
-            }
+            _mode = value;
+            OnPropertyChanged();
         }
+    }
 
-        public int Counter
+    public int Counter
+    {
+        get => _counter;
+        set
         {
-            get => _counter;
-            set
+            if (value == _counter) return;
+            _counter = value;
+
+            if (Config == null)
             {
-                if (value == _counter) return;
-                _counter = value;
-
-                Config.TapeCounter = value;
-
-                OnPropertyChanged();
+                throw new Exception("Configuration is undefined");
             }
+
+            Config.TapeCounter = value;
+
+            OnPropertyChanged();
         }
     }
 }

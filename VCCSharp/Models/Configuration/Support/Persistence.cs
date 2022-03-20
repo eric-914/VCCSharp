@@ -1,48 +1,55 @@
-﻿using System.IO;
+﻿using Newtonsoft.Json;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Windows;
-using Newtonsoft.Json;
 using VCCSharp.IoC;
 
-namespace VCCSharp.Models.Configuration.Support
+namespace VCCSharp.Models.Configuration.Support;
+
+/// <summary>
+/// Load/Save an object via the given path.
+/// </summary>
+public interface IPersistence<out T>
 {
-    /// <summary>
-    /// Load/Save an object via the given path.
-    /// </summary>
-    public interface IPersistence<out T>
+    T Load(string path);
+    void Save(string path, IConfiguration model);
+}
+
+public abstract class Persistence<T> : IPersistence<T>
+{
+    private readonly IFactory _factory;
+
+    protected Persistence(IFactory factory)
     {
-        T Load(string path);
-        void Save(string path, IConfiguration model);
+        _factory = factory;
     }
 
-    public abstract class Persistence<T> : IPersistence<T>
+    public T Load(string path)
+        => Load(_factory.Get<T>(), path);
+
+    private static T Load([NotNull] T instance, string path)
     {
-        private readonly IFactory _factory;
-
-        protected Persistence(IFactory factory)
+        if (instance == null)
         {
-            _factory = factory;
+            throw new ArgumentNullException(nameof(instance));
         }
 
-        public T Load(string path)
-            => Load(_factory.Get<T>(), path);
-
-        private static T Load(T instance, string path)
+        try
         {
-            try
+            if (File.Exists(path))
             {
-                return File.Exists(path)
-                    ? JsonConvert.DeserializeAnonymousType(File.ReadAllText(path), instance)
-                    : instance;
-            }
-            catch (System.Exception e)
-            {
-                MessageBox.Show($"An error occurred trying to read configuration file: {e.Message} -- Using default configuration");
-
-                return instance;
+                return JsonConvert.DeserializeAnonymousType(File.ReadAllText(path), instance) ?? instance;
             }
         }
+        catch (Exception e)
+        {
+            MessageBox.Show($"An error occurred trying to read configuration file: {e.Message} -- Using default configuration");
+        }
 
-        public void Save(string path, IConfiguration model)
-            => File.WriteAllText(path, JsonConvert.SerializeObject(model, Formatting.Indented));
+        return instance;
     }
+
+    public void Save(string path, IConfiguration model)
+        => File.WriteAllText(path, JsonConvert.SerializeObject(model, Formatting.Indented));
 }

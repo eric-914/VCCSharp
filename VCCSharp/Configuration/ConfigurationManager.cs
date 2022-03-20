@@ -20,7 +20,7 @@ namespace VCCSharp.Configuration
 
             var view = new ConfigurationWindow(viewModel) { Apply = ApplyChanges };
 
-            view.Closing += (sender, args) => _modules.Audio.Spectrum = null;
+            view.Closing += (_, _) => _modules.Audio.Spectrum = null;
             view.Show();
 
             _modules.Audio.Spectrum = viewModel.Spectrum;

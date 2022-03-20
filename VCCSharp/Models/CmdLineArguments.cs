@@ -1,8 +1,7 @@
-﻿namespace VCCSharp.Models
+﻿namespace VCCSharp.Models;
+
+public class CmdLineArguments
 {
-    public class CmdLineArguments
-    {
-        public string QLoadFile { get; set; }
-        public string IniFile { get; set; }
-    }
+    public string? QLoadFile { get; set; }
+    public string? IniFile { get; set; }
 }

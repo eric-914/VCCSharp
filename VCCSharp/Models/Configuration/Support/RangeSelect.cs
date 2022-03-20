@@ -25,11 +25,11 @@ namespace VCCSharp.Models.Configuration.Support
 
         public virtual string Selected
         {
-            get => _usesUnderscore ? Clean(Value) : Value.ToString();
+            get => _usesUnderscore ? Clean(Value) : Value.ToString() ?? string.Empty;
             set => Value = Enum.Parse<T>(_usesUnderscore ? $"_{value}" : value);
         }
 
-        private static string Clean(T value) => Clean(value.ToString());
+        private static string Clean(T value) => Clean(value.ToString() ?? string.Empty);
         private static string Clean(string value) => value.StartsWith("_") ? value[1..] : value;
     }
 

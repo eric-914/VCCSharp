@@ -1,48 +1,71 @@
-﻿namespace VCCSharp.Modules.TC1014.Modes
+﻿#pragma warning disable IDE1006 // Naming Styles
+// ReSharper disable once InconsistentNaming
+
+namespace VCCSharp.Modules.TC1014.Modes;
+
+public static class _1_2
 {
     //Width 40
-    // ReSharper disable once InconsistentNaming
-#pragma warning disable IDE1006 // Naming Styles
-    public static class _1_2
+    public static void Mode(ModeModel model, int start, int yStride)
     {
-        public static void Mode(ModeModel model, int start, int yStride)
+        uint[] textPalette = { 0, 0 };
+        byte attributes = 0;
+
+        IGraphics graphics = model.Modules.Graphics;
+        IEmu emu = model.Modules.Emu;
+
+        var palette = graphics.GetGraphicsColors().Palette32Bit;
+        var szSurface32 = graphics.GetGraphicsSurface();
+
+        ushort y = (ushort)emu.LineCounter;
+        int xPitch = (int)emu.SurfacePitch;
+        var memory = model.BytePointer;
+
+        for (ushort beam = 0; beam < graphics.BytesPerRow * graphics.ExtendedText; beam += graphics.ExtendedText)
         {
-            uint[] textPalette = { 0, 0 };
-            byte attributes = 0;
+            int index = start + (byte)(beam + graphics.HorizontalOffset);
+            byte character = memory[index];
 
-            IGraphics graphics = model.Modules.Graphics;
-            IEmu emu = model.Modules.Emu;
+            byte pixel = Fonts.CC3FontData8X12[character * 12 + (y % graphics.LinesPerRow)];
 
-            var palette = graphics.GetGraphicsColors().Palette32Bit;
-            var szSurface32 = graphics.GetGraphicsSurface();
-            ushort y = (ushort)emu.LineCounter;
-            int xPitch = (int)emu.SurfacePitch;
-            var memory = model.BytePointer;
-
-            for (ushort beam = 0; beam < graphics.BytesPerRow * graphics.ExtendedText; beam += graphics.ExtendedText)
+            if (graphics.ExtendedText == 2)
             {
-                int index = start + (byte)(beam + graphics.HorizontalOffset);
-                byte character = memory[index];
+                attributes = memory[start + (byte)(beam + graphics.HorizontalOffset) + 1];
 
-                byte pixel = Fonts.CC3FontData8X12[character * 12 + (y % graphics.LinesPerRow)];
-
-                if (graphics.ExtendedText == 2)
-                {
-                    attributes = memory[start + (byte)(beam + graphics.HorizontalOffset) + 1];
-
-                    if (((attributes & 64) != 0) && (y % graphics.LinesPerRow == (graphics.LinesPerRow - 1)))
-                    {   //UnderLine
-                        pixel = 255;
-                    }
-
-                    if (graphics.CheckState(attributes))
-                    {
-                        pixel = 0;
-                    }
+                if (((attributes & 64) != 0) && (y % graphics.LinesPerRow == (graphics.LinesPerRow - 1)))
+                {   //UnderLine
+                    pixel = 255;
                 }
 
-                textPalette[1] = palette[8 + ((attributes & 56) >> 3)];
-                textPalette[0] = palette[attributes & 7];
+                if (graphics.CheckState(attributes))
+                {
+                    pixel = 0;
+                }
+            }
+
+            textPalette[1] = palette[8 + ((attributes & 56) >> 3)];
+            textPalette[0] = palette[attributes & 7];
+            szSurface32[yStride += 1] = textPalette[pixel >> 7];
+            szSurface32[yStride += 1] = textPalette[pixel >> 7];
+            szSurface32[yStride += 1] = textPalette[(pixel >> 6) & 1];
+            szSurface32[yStride += 1] = textPalette[(pixel >> 6) & 1];
+            szSurface32[yStride += 1] = textPalette[(pixel >> 5) & 1];
+            szSurface32[yStride += 1] = textPalette[(pixel >> 5) & 1];
+            szSurface32[yStride += 1] = textPalette[(pixel >> 4) & 1];
+            szSurface32[yStride += 1] = textPalette[(pixel >> 4) & 1];
+            szSurface32[yStride += 1] = textPalette[(pixel >> 3) & 1];
+            szSurface32[yStride += 1] = textPalette[(pixel >> 3) & 1];
+            szSurface32[yStride += 1] = textPalette[(pixel >> 2) & 1];
+            szSurface32[yStride += 1] = textPalette[(pixel >> 2) & 1];
+            szSurface32[yStride += 1] = textPalette[(pixel >> 1) & 1];
+            szSurface32[yStride += 1] = textPalette[(pixel >> 1) & 1];
+            szSurface32[yStride += 1] = textPalette[(pixel & 1)];
+            szSurface32[yStride += 1] = textPalette[(pixel & 1)];
+
+            if (!emu.ScanLines)
+            {
+                yStride -= (16);
+                yStride += xPitch;
                 szSurface32[yStride += 1] = textPalette[pixel >> 7];
                 szSurface32[yStride += 1] = textPalette[pixel >> 7];
                 szSurface32[yStride += 1] = textPalette[(pixel >> 6) & 1];
@@ -59,29 +82,7 @@
                 szSurface32[yStride += 1] = textPalette[(pixel >> 1) & 1];
                 szSurface32[yStride += 1] = textPalette[(pixel & 1)];
                 szSurface32[yStride += 1] = textPalette[(pixel & 1)];
-
-                if (!emu.ScanLines)
-                {
-                    yStride -= (16);
-                    yStride += xPitch;
-                    szSurface32[yStride += 1] = textPalette[pixel >> 7];
-                    szSurface32[yStride += 1] = textPalette[pixel >> 7];
-                    szSurface32[yStride += 1] = textPalette[(pixel >> 6) & 1];
-                    szSurface32[yStride += 1] = textPalette[(pixel >> 6) & 1];
-                    szSurface32[yStride += 1] = textPalette[(pixel >> 5) & 1];
-                    szSurface32[yStride += 1] = textPalette[(pixel >> 5) & 1];
-                    szSurface32[yStride += 1] = textPalette[(pixel >> 4) & 1];
-                    szSurface32[yStride += 1] = textPalette[(pixel >> 4) & 1];
-                    szSurface32[yStride += 1] = textPalette[(pixel >> 3) & 1];
-                    szSurface32[yStride += 1] = textPalette[(pixel >> 3) & 1];
-                    szSurface32[yStride += 1] = textPalette[(pixel >> 2) & 1];
-                    szSurface32[yStride += 1] = textPalette[(pixel >> 2) & 1];
-                    szSurface32[yStride += 1] = textPalette[(pixel >> 1) & 1];
-                    szSurface32[yStride += 1] = textPalette[(pixel >> 1) & 1];
-                    szSurface32[yStride += 1] = textPalette[(pixel & 1)];
-                    szSurface32[yStride += 1] = textPalette[(pixel & 1)];
-                    yStride -= xPitch;
-                }
+                yStride -= xPitch;
             }
         }
     }

@@ -48,7 +48,7 @@ namespace VCCSharp.Modules
 
         private uint _color;
 
-        private string _statusText;
+        private string? _statusText;
 
         public bool InfoBand { get; set; }
 
@@ -138,7 +138,6 @@ namespace VCCSharp.Modules
                 }
             }
 
-
             UnlockScreen();
         }
 
@@ -198,7 +197,7 @@ namespace VCCSharp.Modules
         {
             if (_modules.Emu.FullScreen && InfoBand)
             {
-                WriteStatusText(_statusText);
+                WriteStatusText(_statusText ?? string.Empty);
             }
 
             _draw.UnlockSurface();
@@ -211,11 +210,6 @@ namespace VCCSharp.Modules
             var random = new Random();
 
             LockScreen();
-
-            if (pSurface32 == null)
-            {
-                return; //TODO: Seems bad to exit w/out unlocking first
-            }
 
             for (int y = 0; y < _windowSize.Y; y++)
             {

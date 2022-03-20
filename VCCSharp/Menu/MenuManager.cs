@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
@@ -8,7 +9,7 @@ namespace VCCSharp.Menu
 {
     public interface ICartridge
     {
-        void SetMenuItem(string menuName, MenuActions menuId, int type);
+        void SetMenuItem(string? menuName, MenuActions menuId, int type);
         void Reset();
     }
 
@@ -20,15 +21,15 @@ namespace VCCSharp.Menu
         private readonly IModules _modules;
         private readonly IMainMenu _menuItems;
 
+        private MenuItemViewModel? _parent;
+
         public MenuManager(IModules modules, IMainMenu menuItems)
         {
             _modules = modules;
             _menuItems = menuItems;
         }
-
-        private MenuItemViewModel _parent;
-
-        public void SetMenuItem(string menuName, MenuActions menuId, int type)
+        
+        public void SetMenuItem(string? menuName, MenuActions menuId, int type)
         {
             if (string.IsNullOrEmpty(menuName))
             {
@@ -54,6 +55,10 @@ namespace VCCSharp.Menu
                     break;
 
                 case Define.MENU_CHILD: //--Attach to last parent
+                    if (_parent == null)
+                    {
+                        throw new Exception("No parent menu defined");
+                    }
                     AddMenuItem childAdd = _parent.MenuItems.Add;
                     Application.Current.Dispatcher.BeginInvoke(childAdd, item);
                     break;

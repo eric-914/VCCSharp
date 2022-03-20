@@ -16,91 +16,90 @@ using VCCSharp.Modules;
 using VCCSharp.Modules.TC1014;
 using VCCSharp.TapePlayer;
 
-namespace VCCSharp
+namespace VCCSharp;
+
+public partial class App
 {
-    public partial class App
+    protected override void OnStartup(StartupEventArgs e)
     {
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
+        base.OnStartup(e);
 
-            //ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        //ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
-            Factory.Instance
-                .SelfBind()
+        Factory.Instance
+            .SelfBind()
 
-                //--Specialized Factories
-                .Singleton<IViewModelFactory, ViewModelFactory>()
+            //--Specialized Factories
+            .Singleton<IViewModelFactory, ViewModelFactory>()
 
-                //--Utilities
-                .Singleton<IKeyScanMapper, KeyScanMapper>()
-                .Singleton<IMainWindowEvents, MainWindowEvents>()
-                .Singleton<IConfigurationPersistence, ConfigurationPersistence>()
-                .Singleton<IConfiguration, Root>()
-                .Singleton<IConfigPersistence, ConfigPersistence>()
+            //--Utilities
+            .Singleton<IKeyScanMapper, KeyScanMapper>()
+            .Singleton<IMainWindowEvents, MainWindowEvents>()
+            .Singleton<IConfigurationPersistence, ConfigurationPersistence>()
+            .Singleton<IConfiguration, Root>()
+            .Singleton<IConfigPersistence, ConfigPersistence>()
 
-                //--Modules
-                .Singleton<IAudio, Modules.Audio>()
-                .Singleton<ICPU, Modules.CPU>()
-                .Singleton<ICassette, Cassette>()
-                .Singleton<IClipboard, Modules.Clipboard>()
-                .Singleton<ICoCo, CoCo>()
-                .Singleton<IConfig, Config>()
-                .Singleton<IDraw, Draw>()
-                .Singleton<IEmu, Emu>()
-                .Singleton<IEvents, Events>()
-                .Singleton<IGraphics, Graphics>()
-                .Singleton<IIOBus, IOBus>()
-                .Singleton<IJoystick, Modules.Joystick>()
-                .Singleton<IKeyboard, Modules.Keyboard>()
-                .Singleton<IMC6821, MC6821>()
-                .Singleton<IMenuCallbacks, MenuCallbacks>()
-                .Singleton<IPAKInterface, PAKInterface>()
-                .Singleton<IQuickLoad, QuickLoad>()
-                .Singleton<ITC1014, TC1014>()
-                .Singleton<IThrottle, Throttle>()
-                .Singleton<IVcc, Vcc>()
+            //--Modules
+            .Singleton<IAudio, Modules.Audio>()
+            .Singleton<ICPU, Modules.CPU>()
+            .Singleton<ICassette, Cassette>()
+            .Singleton<IClipboard, Modules.Clipboard>()
+            .Singleton<ICoCo, CoCo>()
+            .Singleton<IConfig, Config>()
+            .Singleton<IDraw, Draw>()
+            .Singleton<IEmu, Emu>()
+            .Singleton<IEvents, Events>()
+            .Singleton<IGraphics, Graphics>()
+            .Singleton<IIOBus, IOBus>()
+            .Singleton<IJoystick, Modules.Joystick>()
+            .Singleton<IKeyboard, Modules.Keyboard>()
+            .Singleton<IMC6821, MC6821>()
+            .Singleton<IMenuCallbacks, MenuCallbacks>()
+            .Singleton<IPAKInterface, PAKInterface>()
+            .Singleton<IQuickLoad, QuickLoad>()
+            .Singleton<ITC1014, TC1014>()
+            .Singleton<IThrottle, Throttle>()
+            .Singleton<IVcc, Vcc>()
 
-                .Singleton<IHD6309, HD6309>()
-                .Singleton<IMC6809, MC6809>()
+            .Singleton<IHD6309, HD6309>()
+            .Singleton<IMC6809, MC6809>()
 
-                //--Modules container/accessor
-                .Singleton<IModules, IoC.Modules>()
+            //--Modules container/accessor
+            .Singleton<IModules, IoC.Modules>()
 
-                //--Windows Libraries
-                .Bind<IKernel, Kernel>()
-                .Bind<IUser32, User32>()
-                .Bind<IGdi32, Gdi32>()
-                .Bind<IWinmm, Winmm>()
+            //--Windows Libraries
+            .Bind<IKernel, Kernel>()
+            .Bind<IUser32, User32>()
+            .Bind<IGdi32, Gdi32>()
+            .Bind<IWinmm, Winmm>()
 
-                //--Bind to DX8 library
-                .Bind<IDxDraw, Dx>()
-                .Bind<IDxSound, Dx>()
-                .Bind<IDxInput, Dx>()
+            //--Bind to DX8 library
+            .Bind<IDxDraw, Dx>()
+            .Bind<IDxSound, Dx>()
+            .Bind<IDxInput, Dx>()
 
-                //--Main
-                .Bind<ICommandLineParser, CommandLineParser>()
-                .Bind<IVccApp, VccApp>()
-                .Bind<IVccThread, VccThread>()
-                .Bind<IVccMainWindow, VccMainWindow>()
+            //--Main
+            .Bind<ICommandLineParser, CommandLineParser>()
+            .Bind<IVccApp, VccApp>()
+            .Bind<IVccThread, VccThread>()
+            .Bind<IVccMainWindow, VccMainWindow>()
 
-                //--Menu
-                .Singleton<IMainMenu, MainMenu>()
+            //--Menu
+            .Singleton<IMainMenu, MainMenu>()
 
-                //--Options
-                .Bind<ICartridge, MenuManager>()
-                .Bind<IConfigurationWindow, ConfigurationManager>()
-                .Bind<ITapePlayer, TapePlayerManager>()
-                .Bind<IBitBanger, BitBangerManager>()
+            //--Options
+            .Bind<ICartridge, MenuManager>()
+            .Bind<IConfigurationWindow, ConfigurationManager>()
+            .Bind<ITapePlayer, TapePlayerManager>()
+            .Bind<IBitBanger, BitBangerManager>()
 
-                //--Status Bar
-                .Singleton<IStatus, StatusViewModel>()
+            //--Status Bar
+            .Singleton<IStatus, StatusViewModel>()
 
-                //--Options container/accessor
-                .Singleton<IOptions, Options>()
+            //--Options container/accessor
+            .Singleton<IOptions, Options>()
 
-                .InitializeModules()
-                ;
-        }
+            .InitializeModules()
+            ;
     }
 }

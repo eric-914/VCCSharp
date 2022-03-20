@@ -1,32 +1,31 @@
 ﻿using System;
 using System.Windows;
 
-namespace VCCSharp.Configuration
+namespace VCCSharp.Configuration;
+
+public partial class ConfigurationWindow
 {
-    public partial class ConfigurationWindow
+    public Action Apply { get; set; } = () => throw new NotImplementedException();
+
+    public ConfigurationWindow(ConfigurationViewModel model)
     {
-        public Action Apply { get; set; }
+        InitializeComponent();
+        DataContext = model;
+    }
 
-        public ConfigurationWindow(ConfigurationViewModel model)
-        {
-            InitializeComponent();
-            DataContext = model;
-        }
+    private void OnOkClick(object sender, RoutedEventArgs e)
+    {
+        OnApplyClick(sender, e);
+        OnCancelClick(sender, e);
+    }
 
-        private void OnOkClick(object sender, RoutedEventArgs e)
-        {
-            OnApplyClick(sender, e);
-            OnCancelClick(sender, e);
-        }
+    private void OnApplyClick(object sender, RoutedEventArgs e)
+    {
+        Apply();
+    }
 
-        private void OnApplyClick(object sender, RoutedEventArgs e)
-        {
-            Apply();
-        }
-
-        private void OnCancelClick(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
+    private void OnCancelClick(object sender, RoutedEventArgs e)
+    {
+        Close();
     }
 }

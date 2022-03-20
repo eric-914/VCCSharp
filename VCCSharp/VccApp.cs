@@ -6,97 +6,98 @@ using VCCSharp.Libraries;
 using VCCSharp.Libraries.Models;
 using static System.IntPtr;
 
-namespace VCCSharp
-{
-    public interface IVccApp
-    {
-        void LoadConfiguration(string iniFile);
-        void Startup(string qLoadFile);
-        void Startup();
-        void Threading();
-        void Run(string qLoadFile);
+namespace VCCSharp;
 
-        void SetWindow(IntPtr hWnd);
+public interface IVccApp
+{
+    void LoadConfiguration(string? iniFile);
+    void Startup(string qLoadFile);
+    void Startup();
+    void Threading();
+    void Run(string? qLoadFile);
+
+    void SetWindow(IntPtr hWnd);
+}
+
+public class VccApp : IVccApp
+{
+    private readonly IModules _modules;
+    private readonly IUser32 _user32;
+
+    public VccApp(IModules modules, IUser32 user32)
+    {
+        _modules = modules;
+        _user32 = user32;
     }
 
-    public class VccApp : IVccApp
+    public void LoadConfiguration(string? iniFile)
     {
-        private readonly IModules _modules;
-        private readonly IUser32 _user32;
+        if (iniFile == null) throw new ArgumentNullException(nameof(iniFile));
 
-        public VccApp(IModules modules, IUser32 user32)
-        {
-            _modules = modules;
-            _user32 = user32;
-        }
+        _modules.Config.Load(iniFile);
+    }
 
-        public void LoadConfiguration(string iniFile)
+    public void Startup(string? qLoadFile)
+    {
+        if (!string.IsNullOrEmpty(qLoadFile))
         {
-            _modules.Config.Load(iniFile);
-        }
-
-        public void Startup(string qLoadFile)
-        {
-            if (!string.IsNullOrEmpty(qLoadFile))
+            if (_modules.QuickLoad.QuickStart(qLoadFile) == (int)QuickStartStatuses.Ok)
             {
-                if (_modules.QuickLoad.QuickStart(qLoadFile) == (int)QuickStartStatuses.Ok)
-                {
-                    _modules.Vcc.SetAppTitle(qLoadFile); //TODO: No app title if no quick load
-                }
-
-                _modules.Emu.EmulationRunning = true;
+                _modules.Vcc.SetAppTitle(qLoadFile); //TODO: No app title if no quick load
             }
-        }
 
-        public void Startup()
+            _modules.Emu.EmulationRunning = true;
+        }
+    }
+
+    public void Startup()
+    {
+        _modules.CoCo.SetAudioEventAudioOut();
+
+        _modules.CoCo.OverClock = 1;  //Default clock speed .89 MHZ	
+
+        _modules.Vcc.CreatePrimaryWindow();
+
+        _modules.Draw.ClearScreen();
+
+        _modules.Emu.ResetPending = ResetPendingStates.Cls;
+
+        _modules.MenuCallbacks.RefreshCartridgeMenu();
+
+        _modules.Emu.ResetPending = ResetPendingStates.Hard;
+
+        _modules.Emu.EmulationRunning = _modules.Vcc.AutoStart;
+
+        _modules.Vcc.BinaryRunning = true;
+
+        _modules.Throttle.CalibrateThrottle();
+    }
+
+    public void Threading()
+    {
+        Task.Run(_modules.Vcc.EmuLoop);
+    }
+
+    public void Run(string? qLoadFile)
+    {
+        Startup(qLoadFile);
+
+        while (_modules.Vcc.BinaryRunning)
         {
-            _modules.CoCo.SetAudioEventAudioOut();
+            _modules.Vcc.CheckScreenModeChange();
 
-            _modules.CoCo.OverClock = 1;  //Default clock speed .89 MHZ	
+            var msg = new MSG();
 
-            _modules.Vcc.CreatePrimaryWindow();
+            _user32.GetMessageA(ref msg, Zero, 0, 0);   //Seems if the main loop stops polling for Messages the child threads stall
 
-            _modules.Draw.ClearScreen();
+            _user32.TranslateMessage(ref msg);
 
-            _modules.Emu.ResetPending = ResetPendingStates.Cls;
-
-            _modules.MenuCallbacks.RefreshCartridgeMenu();
-
-            _modules.Emu.ResetPending = ResetPendingStates.Hard;
-
-            _modules.Emu.EmulationRunning = _modules.Vcc.AutoStart;
-
-            _modules.Vcc.BinaryRunning = true;
-
-            _modules.Throttle.CalibrateThrottle();
+            _user32.DispatchMessageA(ref msg);
         }
+    }
 
-        public void Threading()
-        {
-            Task.Run(_modules.Vcc.EmuLoop);
-        }
-
-        public void Run(string qLoadFile)
-        {
-            Startup(qLoadFile);
-
-            while (_modules.Vcc.BinaryRunning)
-            {
-                _modules.Vcc.CheckScreenModeChange();
-
-                var msg = new MSG();
-
-                _user32.GetMessageA(ref msg, Zero, 0, 0);   //Seems if the main loop stops polling for Messages the child threads stall
-
-                _user32.TranslateMessage(ref msg);
-
-                _user32.DispatchMessageA(ref msg);
-            }
-        }
-
-        public void SetWindow(IntPtr hWnd)
-        {
-            _modules.Emu.WindowHandle = hWnd;
-        }
+    public void SetWindow(IntPtr hWnd)
+    {
+        _modules.Emu.WindowHandle = hWnd;
     }
 }

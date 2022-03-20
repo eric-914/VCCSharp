@@ -1,88 +1,91 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using VCCSharp.Annotations;
+﻿using System;
+using VCCSharp.Main.ViewModels;
 using VCCSharp.Modules;
 
-namespace VCCSharp.BitBanger
+namespace VCCSharp.BitBanger;
+
+public class BitBangerViewModel : NotifyViewModel
 {
-    public class BitBangerViewModel : INotifyPropertyChanged
+    private const string NoFile = "No Capture File";
+
+    //TODO: Remove STATIC once safe
+    private static IConfig? _config;
+
+    private string _serialCaptureFile = NoFile;
+
+    public IConfig? Config
     {
-        private const string NoFile = "No Capture File";
-
-        //TODO: Remove STATIC once safe
-        private static IConfig _config;
-
-        private string _serialCaptureFile = NoFile;
-
-        #region INotifyPropertyChanged
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        get => _config;
+        set
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (_config != null) return;
+
+            _config = value;
         }
+    }
 
-        #endregion
-
-        public IConfig Config
+    public string? SerialCaptureFile
+    {
+        get
         {
-            get => _config;
-            set
-            {
-                if (_config != null) return;
+            if (Config == null) return string.Empty;
 
-                _config = value;
-            }
+            string? file = Config.SerialCaptureFile;
+
+            _serialCaptureFile = string.IsNullOrEmpty(file) ? NoFile : file;
+
+            return _serialCaptureFile;
         }
-
-        public string SerialCaptureFile
+        set
         {
-            get
+            if (value == null)
             {
-                if (Config == null) return string.Empty;
-
-                string file = Config.SerialCaptureFile;
-
-                _serialCaptureFile = string.IsNullOrEmpty(file) ? NoFile : file;
-
-                return _serialCaptureFile;
+                throw new ArgumentNullException();
             }
-            set
+
+            if (value == _serialCaptureFile) return;
+
+            _serialCaptureFile = value;
+
+            if (Config == null)
             {
-                if (value == _serialCaptureFile) return;
-
-                _serialCaptureFile = value;
-
-                Config.SerialCaptureFile = value;
-
-                OnPropertyChanged();
+                throw new Exception("Configuration is missing");
             }
+            Config.SerialCaptureFile = value;
+
+            OnPropertyChanged();
         }
+    }
 
-        public bool AddLineFeed
+    public bool AddLineFeed
+    {
+        get => Config is { TextMode: true };
+        set
         {
-            get => Config is { TextMode: true };
-            set
+            if (Config == null)
             {
-                if (value == Config.TextMode) return;
-
-                Config.TextMode = value;
-                OnPropertyChanged();
+                throw new Exception("Configuration is missing");
             }
+            if (value == Config.TextMode) return;
+
+            Config.TextMode = value;
+            OnPropertyChanged();
         }
+    }
 
-        public bool Print
+    public bool Print
+    {
+        get => Config is { PrintMonitorWindow: true };
+        set
         {
-            get => Config is { PrintMonitorWindow: true };
-            set
+            if (Config == null)
             {
-                if (value == Config.PrintMonitorWindow) return;
-
-                Config.PrintMonitorWindow = value;
-                OnPropertyChanged();
+                throw new Exception("Configuration is missing");
             }
+            if (value == Config.PrintMonitorWindow) return;
+
+            Config.PrintMonitorWindow = value;
+            OnPropertyChanged();
         }
     }
 }

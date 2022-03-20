@@ -37,9 +37,12 @@ namespace VCCSharp.Main
 
             IntPtr hWnd = new WindowInteropHelper(window.Window).EnsureHandle(); //--Note: Still on UI thread
 
-            CmdLineArguments args = _commandLineParser.Parse();
+            CmdLineArguments? args = _commandLineParser.Parse();
 
-            _thread.Run(hWnd, args);
+            if (args != null)
+            {
+                _thread.Run(hWnd, args);
+            }
         }
     }
 }

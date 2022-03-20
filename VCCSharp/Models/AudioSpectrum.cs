@@ -1,52 +1,37 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using VCCSharp.Annotations;
+﻿using VCCSharp.Main.ViewModels;
 
-namespace VCCSharp.Models
+namespace VCCSharp.Models;
+
+public class AudioSpectrum : NotifyViewModel
 {
-    public class AudioSpectrum : INotifyPropertyChanged
+    private int _left = 500;
+    private int _right = 600;
+
+    public int LeftSpeaker
     {
-        #region INotifyPropertyChanged
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        get => _left;
+        set
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            _left = value;
+            OnPropertyChanged();
         }
+    }
 
-        #endregion
-
-        private int _left = 500;
-        private int _right = 600;
-
-        public int LeftSpeaker
+    public int RightSpeaker
+    {
+        get => _right;
+        set
         {
-            get => _left;
-            set
-            {
-                _left = value;
-                OnPropertyChanged();
-            }
+            _right = value;
+            OnPropertyChanged();
         }
+    }
 
-        public int RightSpeaker
-        {
-            get => _right;
-            set
-            {
-                _right = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public void UpdateSoundBar(int left, int right)
-        {
-            LeftSpeaker = left;
-            RightSpeaker = right;
-            //OnPropertyChanged("LeftSpeaker");
-            //OnPropertyChanged("RightSpeaker");
-        }
+    public void UpdateSoundBar(int left, int right)
+    {
+        LeftSpeaker = left;
+        RightSpeaker = right;
+        //OnPropertyChanged("LeftSpeaker");
+        //OnPropertyChanged("RightSpeaker");
     }
 }

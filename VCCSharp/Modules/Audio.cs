@@ -19,7 +19,7 @@ namespace VCCSharp.Modules
         void FlushAudioBuffer(int[] buffer, int length);
         int GetFreeBlockCount();
 
-        AudioSpectrum Spectrum { get; set; }
+        AudioSpectrum? Spectrum { get; set; }
         AudioRates CurrentRate { get; set; }
     }
 
@@ -28,7 +28,7 @@ namespace VCCSharp.Modules
         private readonly IModules _modules;
         private readonly IDxSound _sound;
 
-        public AudioSpectrum Spectrum { get; set; }
+        public AudioSpectrum? Spectrum { get; set; }
         public AudioRates CurrentRate { get; set; }
 
         private bool _initialized;
@@ -162,7 +162,7 @@ namespace VCCSharp.Modules
                 playCursor = _sound.ReadPlayCursor();
             }
 
-            long maxSize = (long)(_buffOffset <= playCursor ? playCursor - _buffOffset : _sndBuffLength - _buffOffset + playCursor);
+            long maxSize = _buffOffset <= playCursor ? playCursor - _buffOffset : _sndBuffLength - _buffOffset + playCursor;
 
             return (int)(maxSize / _blockSize);
         }

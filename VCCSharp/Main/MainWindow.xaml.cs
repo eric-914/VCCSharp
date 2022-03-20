@@ -1,24 +1,23 @@
 ﻿using System.Windows;
 using VCCSharp.IoC;
 
-namespace VCCSharp.Main
+namespace VCCSharp.Main;
+
+public partial class MainWindow : IMainWindow
 {
-    public partial class MainWindow : IMainWindow
+    public Window Window => this;
+    public FrameworkElement View => MainView;
+
+    public MainWindowViewModel ViewModel
     {
-        public Window Window => this;
-        public FrameworkElement View => MainView;
-
-        public MainWindowViewModel ViewModel
-        {
-            get => DataContext as MainWindowViewModel;
-            set => DataContext = value;
-        }
+        get => (MainWindowViewModel)DataContext;
+        set => DataContext = value;
+    }
         
-        public MainWindow()
-        {
-            InitializeComponent();
+    public MainWindow()
+    {
+        InitializeComponent();
 
-            Factory.Instance.Get<IVccMainWindow>().Run(this);
-        }
+        Factory.Instance.Get<IVccMainWindow>().Run(this);
     }
 }

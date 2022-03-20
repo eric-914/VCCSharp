@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Menu;
@@ -29,7 +30,7 @@ namespace VCCSharp.Modules
         public void CartridgeMenuItemClicked(int menuItem)
         {
             //Calls to the loaded DLL so it can do the right thing
-            if (CartridgeMenuItemClicked((MenuActions) menuItem))
+            if (CartridgeMenuItemClicked((MenuActions)menuItem))
             {
                 _modules.Emu.ResetPending = ResetPendingStates.Hard;
             }
@@ -42,7 +43,7 @@ namespace VCCSharp.Modules
                 case MenuActions.Load:
                     return LoadPak();
 
-                case MenuActions.Eject: 
+                case MenuActions.Eject:
                     return _modules.PAKInterface.UnloadPack(_modules.Emu.EmulationRunning);
 
                 default:
@@ -61,7 +62,7 @@ namespace VCCSharp.Modules
             BuildCartridgeMenu(menuName, (MenuActions)menuId, type);
         }
 
-        private void BuildCartridgeMenu(string menuName, MenuActions menuId, int type)
+        private void BuildCartridgeMenu(string? menuName, MenuActions menuId, int type)
         {
             switch (menuId)
             {
@@ -69,7 +70,7 @@ namespace VCCSharp.Modules
                     _cartridge.Reset();
 
                     //Recursion is fun
-                    BuildCartridgeMenu("Cartridge", MenuActions.Cartridge, Define.MENU_PARENT);	
+                    BuildCartridgeMenu("Cartridge", MenuActions.Cartridge, Define.MENU_PARENT);
                     BuildCartridgeMenu("Load Cart", MenuActions.Load, Define.MENU_CHILD);
                     BuildCartridgeMenu($"Eject Cart: {_modules.PAKInterface.ModuleName}", MenuActions.Eject, Define.MENU_CHILD);
 
@@ -116,7 +117,14 @@ namespace VCCSharp.Modules
                     return 0;
                 }
 
-                _modules.Emu.PakPath = Path.GetPathRoot(filename);
+                var pakPath = Path.GetPathRoot(filename);
+
+                if (pakPath == null)
+                {
+                    throw new Exception($"Unable to get path root for: {filename}");
+                }
+
+                _modules.Emu.PakPath = pakPath;
 
                 return 1;
             }

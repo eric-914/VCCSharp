@@ -1,12 +1,11 @@
 ﻿using System.Windows;
 
-namespace VCCSharp.Main
-{
-    public interface IMainWindow
-    {
-        Window Window { get; }
-        FrameworkElement View { get; }
+namespace VCCSharp.Main;
 
-        MainWindowViewModel ViewModel { get; set; }
-    }
+public interface IMainWindow
+{
+    Window Window { get; }
+    FrameworkElement View { get; }
+
+    MainWindowViewModel ViewModel { get; set; }
 }

@@ -158,14 +158,18 @@ namespace VCCSharp.Modules
         public byte[] Lpf { get; } = { 192, 225 };
         public byte[] VerticalCenterTable { get; } = { 29, 12 };
 
-        private IntPointer _surface;
+        private IntPointer? _surface;
 
         public Graphics(IModules modules)
         {
             _modules = modules;
         }
 
-        public IntPointer GetGraphicsSurface() => _surface;
+        public IntPointer GetGraphicsSurface()
+        {
+            if (_surface == null) throw new Exception("Unable to get graphics surface");
+            return _surface;
+        }
 
         public GraphicsColors GetGraphicsColors() => _colors;
 

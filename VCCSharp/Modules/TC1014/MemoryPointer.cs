@@ -10,6 +10,7 @@ namespace VCCSharp.Modules.TC1014
 
         public BytePointer()
         {
+            _buffer = Array.Empty<byte>();
             _offset = 0;
         }
 
@@ -19,7 +20,7 @@ namespace VCCSharp.Modules.TC1014
             _offset = offset;
         }
 
-        public BytePointer GetBytePointer(int offset) => new BytePointer(_buffer, offset);
+        public BytePointer GetBytePointer(int offset) => new(_buffer, offset);
 
         public byte this[int index]
         {

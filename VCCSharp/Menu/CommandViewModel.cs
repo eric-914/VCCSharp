@@ -1,31 +1,30 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace VCCSharp.Menu
+namespace VCCSharp.Menu;
+
+public class CommandViewModel : ICommand
 {
-    public class CommandViewModel : ICommand
+    private readonly Action _action;
+
+    public CommandViewModel(Action action)
     {
-        private readonly Action _action;
+        _action = action;
+    }
 
-        public CommandViewModel(Action action)
-        {
-            _action = action;
-        }
+    public void Execute(object? o)
+    {
+        _action();
+    }
 
-        public void Execute(object o)
-        {
-            _action();
-        }
+    public bool CanExecute(object? o)
+    {
+        return true;
+    }
 
-        public bool CanExecute(object o)
-        {
-            return true;
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { }
-            remove { }
-        }
+    public event EventHandler? CanExecuteChanged
+    {
+        add { }
+        remove { }
     }
 }

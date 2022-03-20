@@ -14,6 +14,7 @@
 
             var palette = graphics.GetGraphicsColors().Palette32Bit;
             var szSurface32 = graphics.GetGraphicsSurface();
+
             ushort y = (ushort)emu.LineCounter;
             int xPitch = (int)emu.SurfacePitch;
             var memory = model.BytePointer;

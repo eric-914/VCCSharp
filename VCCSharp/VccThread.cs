@@ -2,38 +2,37 @@
 using System.Threading.Tasks;
 using VCCSharp.Models;
 
-namespace VCCSharp
+namespace VCCSharp;
+
+public interface IVccThread
 {
-    public interface IVccThread
+    void Run(IntPtr hWnd, CmdLineArguments args);
+}
+
+public class VccThread : IVccThread
+{
+    private readonly IVccApp _vccApp;
+
+    public VccThread(IVccApp vccApp)
     {
-        void Run(IntPtr hWnd, CmdLineArguments args);
+        _vccApp = vccApp;
     }
 
-    public class VccThread : IVccThread
+    public void Run(IntPtr hWnd, CmdLineArguments args)
     {
-        private readonly IVccApp _vccApp;
+        _vccApp.SetWindow(hWnd);
 
-        public VccThread(IVccApp vccApp)
-        {
-            _vccApp = vccApp;
-        }
+        Task.Run(() => Run(args));
+    }
 
-        public void Run(IntPtr hWnd, CmdLineArguments args)
-        {
-            _vccApp.SetWindow(hWnd);
+    public void Run(CmdLineArguments args)
+    {
+        _vccApp.LoadConfiguration(args.IniFile);
+        _vccApp.Startup();
 
-            Task.Run(() => Run(args));
-        }
+        //--The emulation runs on a different thread
+        _vccApp.Threading();
 
-        public void Run(CmdLineArguments args)
-        {
-            _vccApp.LoadConfiguration(args.IniFile);
-            _vccApp.Startup();
-
-            //--The emulation runs on a different thread
-            _vccApp.Threading();
-
-            _vccApp.Run(args.QLoadFile);
-        }
+        _vccApp.Run(args.QLoadFile);
     }
 }

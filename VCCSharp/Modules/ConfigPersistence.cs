@@ -9,13 +9,13 @@ namespace VCCSharp.Modules
 {
     public interface IConfigPersistence
     {
-        IConfiguration Load(string filePath);
-        void LoadFrom(string filePath, Action<string> onContinue);
+        IConfiguration Load(string? filePath);
+        void LoadFrom(string? filePath, Action<string> onContinue);
 
-        void Save(string filePath, IConfiguration model);
-        void SaveAs(string filePath, Action<string> onContinue);
+        void Save(string? filePath, IConfiguration model);
+        void SaveAs(string? filePath, Action<string> onContinue);
 
-        bool IsNew(string filePath);
+        bool IsNew(string? filePath);
     }
 
     /// <summary>
@@ -32,8 +32,10 @@ namespace VCCSharp.Modules
             _persistence = persistence;
         }
 
-        public IConfiguration Load(string filePath)
+        public IConfiguration Load(string? filePath)
         {
+            if (filePath == null) throw new ArgumentNullException(nameof(filePath));
+
             var model = _persistence.Load(filePath);
 
             ValidateModel(model);
@@ -41,24 +43,30 @@ namespace VCCSharp.Modules
             return model;
         }
 
-        public void LoadFrom(string filePath, Action<string> onContinue)
+        public void LoadFrom(string? filePath, Action<string> onContinue)
         {
+            if (filePath == null) throw new ArgumentNullException(nameof(filePath));
+
             Dialog(filePath, LoadFrom, onContinue);
         }
 
-        public void Save(string filePath, IConfiguration model)
+        public void Save(string? filePath, IConfiguration model)
         {
+            if (filePath == null) throw new ArgumentNullException(nameof(filePath));
+
             ValidateModel(model);
 
             _persistence.Save(filePath, model);
         }
 
-        public void SaveAs(string filePath, Action<string> onContinue)
+        public void SaveAs(string? filePath, Action<string> onContinue)
         {
+            if (filePath == null) throw new ArgumentNullException(nameof(filePath));
+
             Dialog(filePath, SaveAs, onContinue);
         }
 
-        public bool IsNew(string filePath)
+        public bool IsNew(string? filePath)
         {
             if (string.IsNullOrEmpty(filePath))
             {
@@ -114,7 +122,7 @@ namespace VCCSharp.Modules
 
         public void ValidateModel(IConfiguration model)
         {
-            string exePath = Path.GetDirectoryName(_modules.Vcc.GetExecPath());
+            string? exePath = Path.GetDirectoryName(_modules.Vcc.GetExecPath());
 
             if (string.IsNullOrEmpty(exePath))
             {

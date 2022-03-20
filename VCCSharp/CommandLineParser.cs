@@ -1,54 +1,53 @@
 ﻿using System;
 using VCCSharp.Models;
 
-namespace VCCSharp
+namespace VCCSharp;
+
+public interface ICommandLineParser
 {
-    public interface ICommandLineParser
-    {
-        CmdLineArguments Parse();
-        void Help();
-    }
+    CmdLineArguments? Parse();
+    void Help();
+}
 
-    public class CommandLineParser : ICommandLineParser
+public class CommandLineParser : ICommandLineParser
+{
+    public CmdLineArguments? Parse()
     {
-        public CmdLineArguments Parse()
+        string[] arguments = Environment.GetCommandLineArgs();
+
+        var args = new CmdLineArguments
         {
-            string[] arguments = Environment.GetCommandLineArgs();
+            IniFile = "",
+            QLoadFile = ""
+        };
 
-            var args = new CmdLineArguments
+        for (int index = 1; index < arguments.Length; index++)
+        {
+            switch (arguments[index])
             {
-                IniFile = "",
-                QLoadFile = ""
-            };
+                case "/?":
+                    Help();
+                    return null;
 
-            for (int index = 1; index < arguments.Length; index++)
-            {
-                switch (arguments[index])
-                {
-                    case "/?":
-                        Help();
-                        return null;
+                case "-i":
+                    args.IniFile = arguments[++index];
+                    break;
 
-                    case "-i":
-                        args.IniFile = arguments[++index];
-                        break;
-
-                    default:
-                        args.QLoadFile = arguments[index];
-                        break;
-                }
+                default:
+                    args.QLoadFile = arguments[index];
+                    break;
             }
-
-            return args;
         }
 
-        public void Help()
-        {
-            const string message = @"
+        return args;
+    }
+
+    public void Help()
+    {
+        const string message = @"
 Usage:
     VCCSharp.exe [-i ConfigFile] [QuickLoadFile] 
 ";
-            Console.WriteLine(message);
-        }
+        Console.WriteLine(message);
     }
 }

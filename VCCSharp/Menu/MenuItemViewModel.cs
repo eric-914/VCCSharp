@@ -1,72 +1,62 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using VCCSharp.Annotations;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
+using VCCSharp.Main.ViewModels;
 
-namespace VCCSharp.Menu
+namespace VCCSharp.Menu;
+
+public class MenuItemViewModel : NotifyViewModel
 {
-    public class MenuItemViewModel : INotifyPropertyChanged
+    public MenuActions Id { get; set; } = MenuActions.Done;
+
+    private readonly IViewModelFactory _factory;
+
+    public MenuItemViewModel()
     {
-        public MenuActions Id { get; set; }
+        _factory = Factory.Instance.Get<IViewModelFactory>();
 
-        private readonly IViewModelFactory _factory;
+        Command = _factory.CreateCommandViewModel();
+    }
 
-        public MenuItemViewModel()
+    private string? _header;
+    public string? Header
+    {
+        get => _header;
+        set
         {
-            _factory = Factory.Instance.Get<IViewModelFactory>();
+            if (_header == value) return;
 
-            Command = _factory.CreateCommandViewModel();
-        }
-
-        private string _header;
-        public string Header
-        {
-            get => _header;
-            set
-            {
-                if (_header == value) return;
-
-                _header = value; 
-                OnPropertyChanged();
-            }
-        }
-
-        public ICommand Command { get; set; }
-        public bool IsCheckable { get; set; } = false;
-
-        public bool IsSeparator => string.IsNullOrEmpty(Header);
-        public bool IsHeader => !IsSeparator;
-
-        private Action _action;
-        public Action Action
-        {
-            get => _action;
-            set
-            {
-                _action = value;
-                Command = _factory.CreateCommandViewModel(value);
-            }
-        }
-
-        public ObservableCollection<MenuItemViewModel> MenuItems { get; set; }
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            _header = value; 
+            OnPropertyChanged();
         }
     }
 
-    public class SeparatorItemViewModel : MenuItemViewModel
+    public ICommand Command { get; set; }
+    public bool IsCheckable { get; set; } = false;
+
+    public bool IsSeparator => string.IsNullOrEmpty(Header);
+    public bool IsHeader => !IsSeparator;
+
+    private Action _action = () => throw new NotImplementedException();
+    public Action Action
     {
-        public SeparatorItemViewModel()
+        get => _action;
+        set
         {
-            Header = null;
+            _action = value;
+            Command = _factory.CreateCommandViewModel(value);
         }
+    }
+
+    public ObservableCollection<MenuItemViewModel> MenuItems { get; set; } = new();
+}
+
+public class SeparatorItemViewModel : MenuItemViewModel
+{
+    public SeparatorItemViewModel()
+    {
+        Header = null;
     }
 }

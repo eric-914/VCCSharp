@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Windows;
 using VCCSharp.IoC;
 
@@ -9,7 +10,7 @@ namespace VCCSharp.BitBanger
         private readonly IModules _modules;
 
         private readonly BitBangerViewModel _viewModel = new();
-        private BitBangerWindow _view;
+        private BitBangerWindow? _view;
 
         public BitBangerManager(IModules modules)
         {
@@ -41,7 +42,7 @@ namespace VCCSharp.BitBanger
 
         public void Open()
         {
-            string szFileName = _modules.Config.SerialCaptureFile;
+            string? szFileName = _modules.Config.SerialCaptureFile;
             string appPath = Path.GetDirectoryName(szFileName) ?? "C:\\";
 
             var openFileDlg = new Microsoft.Win32.OpenFileDialog
@@ -57,7 +58,13 @@ namespace VCCSharp.BitBanger
 
             if (openFileDlg.ShowDialog() == true)
             {
-                string serialCaptureFile = openFileDlg.FileName;
+                string? serialCaptureFile = openFileDlg.FileName;
+
+                if (serialCaptureFile == null)
+                {
+                    throw new Exception("Invalid serial capture file name");
+                }
+
                 if (_modules.MC6821.OpenPrintFile(serialCaptureFile) == 0)
                 {
                     MessageBox.Show($"Can't Open File {serialCaptureFile}", "Can't open the file specified.");
