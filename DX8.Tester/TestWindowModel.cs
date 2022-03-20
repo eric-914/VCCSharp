@@ -12,9 +12,16 @@ internal class TestWindowModel
 
     public IDxJoystickState Joystick { get; private set; } = new NullDxJoystickState();
 
+    public IJoystickStateViewModel LeftJoystick { get; private set; } 
+    public IJoystickStateViewModel RightJoystick { get; private set; } 
+
+    public int Count { get; set; }
+
     public TestWindowModel()
     {
         _input = _dx.Input;
+        LeftJoystick = new JoystickStateViewModel();
+        RightJoystick = new JoystickStateViewModel();
     }
 
     public List<string> FindJoysticks()
@@ -23,7 +30,21 @@ internal class TestWindowModel
 
         _input.CreateDirectInput(handle);
 
-        return _input.EnumerateDevices();
+        var list = _input.EnumerateDevices();
+
+        Count = list.Count;
+
+        if (Count > 0)
+        {
+            LeftJoystick = new JoystickStateViewModel(_input, 0);
+        }
+
+        if (Count > 1)
+        {
+            RightJoystick = new JoystickStateViewModel(_input, 1);
+        }
+
+        return list;
     }
 
     public void Refresh()
@@ -34,5 +55,8 @@ internal class TestWindowModel
         {
             Joystick = state;
         }
+
+        LeftJoystick.Refresh();
+        RightJoystick.Refresh();
     }
 }

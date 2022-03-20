@@ -4,35 +4,34 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:tester="clr-namespace:DX8.Tester"
-        xmlns:converters="clr-namespace:DX8.Tester.Converters"
         xmlns:controls="clr-namespace:DX8.Tester.Controls"
         mc:Ignorable="d"
-        Title="DirectX 8 Tester" Height="150" Width="500">
+        Title="DirectX 8 Tester" Height="550" Width="420">
     <Window.DataContext>
         <tester:TestWindowViewModel/>
     </Window.DataContext>
     <Window.Resources>
-        <converters:ListToCountConverter x:Key="ListToCountConverter"/>
-
         <Style TargetType="{x:Type CheckBox}">
             <Setter Property="Margin" Value="0,6,20,0" />
+        </Style>
+        <Style TargetType="{x:Type controls:JoystickControl}">
+            <Setter Property="Height" Value="200" />
         </Style>
     </Window.Resources>
 
     <StackPanel>
         <StackPanel Orientation="Horizontal">
-            <Label>Joysticks:</Label>
-            <Label Content="{Binding Joysticks, Converter={StaticResource ListToCountConverter}}"/>
+            <Label>Available Joysticks:</Label>
+            <Label Content="{Binding Count}"/>
         </StackPanel>
-        <ListBox ItemsSource="{Binding Joysticks}"/>
+        <ListBox ItemsSource="{Binding AvailableJoysticks}"/>
 
-        <StackPanel Orientation="Horizontal">
-            <Label>Stick:</Label>
-            <Label>Horizontal:</Label>
-            <Label Content="{Binding Joystick.Horizontal}"/>
-            <Label>Vertical:</Label>
-            <Label Content="{Binding Joystick.Vertical}"/>
-        </StackPanel>
-        <controls:ButtonsControl DataContext="{Binding}"/>
+        <Label>First Joystick:</Label>
+        <controls:JoystickControl DataContext="{Binding LeftJoystick}"/>
+
+        <Separator/>
+
+        <Label>Second Joystick:</Label>
+        <controls:JoystickControl DataContext="{Binding RightJoystick}"/>
     </StackPanel>
 </Window>

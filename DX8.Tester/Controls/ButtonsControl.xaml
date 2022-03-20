@@ -6,21 +6,49 @@
              xmlns:local="clr-namespace:DX8.Tester.Controls"
              xmlns:model="clr-namespace:DX8.Tester.Model"
              mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="400">
+             d:DesignHeight="178" d:DesignWidth="400">
     <Control.DataContext>
         <model:JoystickStateViewModel/>
     </Control.DataContext>
 
-    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-        <Label>Buttons:</Label>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="28"/>
+        </Grid.RowDefinitions>
 
-        <local:ButtonControl Text="X" Width="30" DataContext="{Binding Joystick}" Button="{Binding X}"/>
-        <local:ButtonControl Text="Y" Width="30" DataContext="{Binding Joystick}" Button="{Binding Y}"/>
-        <local:ButtonControl Text="A" Width="30" DataContext="{Binding Joystick}" Button="{Binding A}"/>
-        <local:ButtonControl Text="B" Width="30" DataContext="{Binding Joystick}" Button="{Binding B}"/>
-        <local:ButtonControl Text="LB" Width="30" DataContext="{Binding Joystick}" Button="{Binding LB}"/>
-        <local:ButtonControl Text="RB" Width="30" DataContext="{Binding Joystick}" Button="{Binding RB}"/>
-        <local:ButtonControl Text="Back" Width="50" DataContext="{Binding Joystick}" Button="{Binding Back}"/>
-        <local:ButtonControl Text="Start" Width="50" DataContext="{Binding Joystick}" Button="{Binding Start}"/>
-    </StackPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="150"/>
+        </Grid.ColumnDefinitions>
+
+        <local:ButtonControl Grid.Row="0" Grid.Column="0" Text="LB" Width="30" DataContext="{Binding Joystick}" Button="{Binding LB}"/>
+        <local:ButtonControl Grid.Row="0" Grid.Column="3" Text="RB" Width="30" DataContext="{Binding Joystick}" Button="{Binding RB}"/>
+
+        <local:ButtonControl Grid.Row="1" Grid.Column="1" Text="Back" Width="50" DataContext="{Binding Joystick}" Button="{Binding Back}"/>
+        <local:ButtonControl Grid.Row="1" Grid.Column="2" Text="Start" Width="50" DataContext="{Binding Joystick}" Button="{Binding Start}"/>
+
+        <Grid Grid.Row="1" Grid.Column="3" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <local:ButtonControl Grid.Column="0" Grid.Row="1" Text="X" Width="30" DataContext="{Binding Joystick}" Button="{Binding X}"/>
+            <local:ButtonControl Grid.Column="1" Grid.Row="0" Text="Y" Width="30" DataContext="{Binding Joystick}" Button="{Binding Y}"/>
+            <local:ButtonControl Grid.Column="1" Grid.Row="2" Text="A" Width="30" DataContext="{Binding Joystick}" Button="{Binding A}"/>
+            <local:ButtonControl Grid.Column="2" Grid.Row="1" Text="B" Width="30" DataContext="{Binding Joystick}" Button="{Binding B}"/>
+        </Grid>
+
+        <Border Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="2" Width="128" Height="128"/>
+    </Grid>
 </UserControl>

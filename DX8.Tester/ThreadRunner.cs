@@ -13,7 +13,11 @@ internal class ThreadRunner
         while (IsRunning)
         {
             Thread.Sleep(100);
-            Application.Current.Dispatcher.Invoke(callback);
+
+            if (IsRunning)
+            {
+                Application.Current.Dispatcher.Invoke(callback);
+            }
         }
     }
 }
