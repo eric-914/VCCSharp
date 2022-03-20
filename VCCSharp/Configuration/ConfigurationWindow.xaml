@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:tabControls="clr-namespace:VCCSharp.Configuration.TabControls"
         xmlns:configuration="clr-namespace:VCCSharp.Configuration"
+        xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
         mc:Ignorable="d"
         Title="Vcc Options" Height="500" Width="800">
   <Window.DataContext>
@@ -35,6 +36,7 @@
       <Setter Property="BorderBrush" Value="Black" />
     </Style>
   </Window.Resources>
+
   <DockPanel LastChildFill="true">
     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Height="40" Margin="5">
       <Button Content="OK" IsDefault="True" Click="OnOkClick"/>
@@ -60,7 +62,7 @@
         <tabControls:KeyboardTabControl/>
       </TabItem>
       <TabItem Header="Joysticks" >
-        <tabControls:JoystickTabControl/>
+        <joystick:JoystickTabControl/>
       </TabItem>
       <TabItem Header="Misc" >
         <tabControls:MiscellaneousTabControl/>

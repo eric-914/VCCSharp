@@ -1,4 +1,4 @@
-﻿namespace VCCSharp.Configuration.TabControls
+﻿namespace VCCSharp.Configuration.TabControls.Joystick
 {
     public partial class JoystickTabControl
     {

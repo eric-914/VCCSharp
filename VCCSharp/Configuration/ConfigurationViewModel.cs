@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
 using VCCSharp.Models;

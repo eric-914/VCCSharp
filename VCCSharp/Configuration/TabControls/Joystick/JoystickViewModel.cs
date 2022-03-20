@@ -5,7 +5,7 @@ using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
 using VCCSharp.Models.Keyboard;
 
-namespace VCCSharp.Configuration;
+namespace VCCSharp.Configuration.TabControls.Joystick;
 
 public class JoystickViewModel : NotifyViewModel
 {

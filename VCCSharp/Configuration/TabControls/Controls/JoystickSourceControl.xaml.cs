@@ -1,8 +1,8 @@
 ﻿namespace VCCSharp.Configuration.TabControls.Controls
 {
-    public partial class JoystickInputControl
+    public partial class JoystickSourceControl
     {
-        public JoystickInputControl()
+        public JoystickSourceControl()
         {
             InitializeComponent();
         }

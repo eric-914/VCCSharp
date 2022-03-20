@@ -1,15 +1,15 @@
-﻿<UserControl x:Class="VCCSharp.Configuration.TabControls.Controls.JoystickInputControl"
+﻿<UserControl x:Class="VCCSharp.Configuration.TabControls.Controls.JoystickSourceControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:configuration="clr-namespace:VCCSharp.Configuration"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
              xmlns:converters="clr-namespace:VCCSharp.Converters"
              xmlns:enums="clr-namespace:VCCSharp.Enums"
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="300">
   <UserControl.DataContext>
-    <configuration:JoystickViewModel/>
+    <joystick:JoystickViewModel/>
   </UserControl.DataContext>
   <UserControl.Resources>
     <converters:EnumToSelectionConverter x:Key="Selection"/>

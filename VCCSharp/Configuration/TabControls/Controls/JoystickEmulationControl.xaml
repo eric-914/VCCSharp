@@ -6,10 +6,11 @@
              xmlns:configuration="clr-namespace:VCCSharp.Configuration"
              xmlns:converters="clr-namespace:VCCSharp.Converters"
              xmlns:enums="clr-namespace:VCCSharp.Enums"
+             xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
              mc:Ignorable="d" 
              d:DesignHeight="150" d:DesignWidth="200">
   <UserControl.DataContext>
-    <configuration:JoystickViewModel/>
+    <joystick:JoystickViewModel/>
   </UserControl.DataContext>
   <UserControl.Resources>
     <converters:EnumToSelectionConverter x:Key="Converter"/>
