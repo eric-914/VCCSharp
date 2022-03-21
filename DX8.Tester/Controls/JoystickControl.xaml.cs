@@ -1,28 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿namespace DX8.Tester.Controls;
 
-namespace DX8.Tester.Controls
+public partial class JoystickControl 
 {
-    /// <summary>
-    /// Interaction logic for JoystickControl.xaml
-    /// </summary>
-    public partial class JoystickControl : UserControl
+    public JoystickControl()
     {
-        public JoystickControl()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

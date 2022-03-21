@@ -1,28 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿namespace DX8.Tester.Controls;
 
-namespace DX8.Tester.Controls
+public partial class StickControl 
 {
-    /// <summary>
-    /// Interaction logic for StickControl.xaml
-    /// </summary>
-    public partial class StickControl : UserControl
+    public StickControl()
     {
-        public StickControl()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

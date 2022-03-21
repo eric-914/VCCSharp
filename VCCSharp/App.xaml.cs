@@ -2,6 +2,7 @@
 using System.Windows;
 using VCCSharp.BitBanger;
 using VCCSharp.Configuration;
+using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.DX8;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
@@ -38,6 +39,7 @@ public partial class App
             .Singleton<IConfigurationPersistence, ConfigurationPersistence>()
             .Singleton<IConfiguration, Root>()
             .Singleton<IConfigPersistence, ConfigPersistence>()
+            .Singleton<IJoystickServices, JoystickServices>()
 
             //--Modules
             .Singleton<IAudio, Modules.Audio>()

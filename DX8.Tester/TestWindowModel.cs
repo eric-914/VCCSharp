@@ -10,8 +10,6 @@ internal class TestWindowModel
     private readonly Dx _dx = new();
     private readonly IDxInput _input;
 
-    public IDxJoystickState Joystick { get; private set; } = new NullDxJoystickState();
-
     public IJoystickStateViewModel LeftJoystick { get; private set; } 
     public IJoystickStateViewModel RightJoystick { get; private set; } 
 
@@ -49,13 +47,6 @@ internal class TestWindowModel
 
     public void Refresh()
     {
-        IDxJoystickState? state = _input.JoystickPoll(0);
-
-        if (state != null)
-        {
-            Joystick = state;
-        }
-
         LeftJoystick.Refresh();
         RightJoystick.Refresh();
     }

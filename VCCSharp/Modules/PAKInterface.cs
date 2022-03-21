@@ -90,7 +90,10 @@ public class PAKInterface : IPAKInterface
 
         hInstLib = Zero;
 
-        _modules.MenuCallbacks.RefreshCartridgeMenu();
+        if (emulationRunning)
+        {
+            _modules.MenuCallbacks.RefreshCartridgeMenu();
+        }
     }
 
     public void ResetBus()
