@@ -15,6 +15,7 @@
   <UserControl.Resources>
     <converters:EnumToSelectionConverter x:Key="Converter"/>
   </UserControl.Resources>
+
   <StackPanel Orientation="Vertical">
     <StackPanel Orientation="Horizontal">
       <Label Content="{Binding SideText}" />

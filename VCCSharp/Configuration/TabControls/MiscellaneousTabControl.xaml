@@ -1,13 +1,13 @@
 ﻿<UserControl x:Class="VCCSharp.Configuration.TabControls.MiscellaneousTabControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:configuration="clr-namespace:VCCSharp.Configuration"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModel="clr-namespace:VCCSharp.Configuration.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200">
   <UserControl.DataContext>
-    <configuration:ConfigurationViewModel/>
+    <viewModel:NullConfigurationViewModel/>
   </UserControl.DataContext>
   <StackPanel Orientation="Vertical">
     <Label Content="Miscellaneous" />

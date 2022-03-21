@@ -3,56 +3,57 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:configuration="clr-namespace:VCCSharp.Configuration"
              xmlns:converters="clr-namespace:VCCSharp.Converters"
+             xmlns:viewModel="clr-namespace:VCCSharp.Configuration.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-  <UserControl.Resources>
-    <converters:KeyboardLayoutConverter x:Key="KeyboardLayoutConverter"/>
-  </UserControl.Resources>
-  <UserControl.DataContext>
-    <configuration:ConfigurationViewModel/>
-  </UserControl.DataContext>
-  <Grid Margin="10">
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="3*"/>
-      <ColumnDefinition Width="5*"/>
-    </Grid.ColumnDefinitions>
-    <Grid Grid.Column="0" >
-      <Grid.RowDefinitions>
-        <RowDefinition Height="35"/>
-        <RowDefinition Height="35"/>
-        <RowDefinition Height="60"/>
-        <RowDefinition Height="35"/>
-        <RowDefinition Height="30"/>
-      </Grid.RowDefinitions>
-      <Label Grid.Row="0" Content="Keyboard Mapping"/>
-      <ComboBox Grid.Row="1" ItemsSource="{Binding KeyboardLayouts}" SelectedIndex="{Binding KeyboardLayout, Converter={StaticResource KeyboardLayoutConverter}}"/>
-      <Label Grid.Row="3" HorizontalContentAlignment="Center">Edit Custom Keyboard</Label>
-      <!-- Doesn't look like this was ever implemented -->
-      <Button Grid.Row="4" Content="EDIT" IsEnabled="False"/>
-    </Grid>
-    <StackPanel Grid.Column="1">
-      <StackPanel.Resources>
-        <Style TargetType="TextBlock">
-          <Setter Property="Margin" Value="5,0,0,10"/>
-        </Style>
-      </StackPanel.Resources>
-      <TextBlock TextWrapping="Wrap">
+    <UserControl.DataContext>
+        <viewModel:NullConfigurationViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <converters:KeyboardLayoutConverter x:Key="KeyboardLayoutConverter"/>
+    </UserControl.Resources>
+
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Content="Keyboard Mapping"/>
+            <ComboBox Grid.Row="1" ItemsSource="{Binding KeyboardLayouts}" SelectedIndex="{Binding KeyboardLayout, Converter={StaticResource KeyboardLayoutConverter}}"/>
+            <Label Grid.Row="3" HorizontalContentAlignment="Center">Edit Custom Keyboard</Label>
+            <!-- Doesn't look like this was ever implemented -->
+            <Button Grid.Row="4" Content="EDIT" IsEnabled="False"/>
+        </Grid>
+        <StackPanel Grid.Column="1">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Margin" Value="5,0,0,10"/>
+                </Style>
+            </StackPanel.Resources>
+            <TextBlock TextWrapping="Wrap">
         Keyboard Map Descriptions
-      </TextBlock>
-      <TextBlock TextWrapping="Wrap">
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap">
         Coco 1/2: Layout physically resembles the Coco 1/2 keyboard as close as possible.
-      </TextBlock>
-      <TextBlock TextWrapping="Wrap">
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap">
         Coco 1/2: Layout physically resembles the Coco 1/2 keyboard as close as possible.
-      </TextBlock>
-      <TextBlock TextWrapping="Wrap">
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap">
         Coco 3: Layout physically resembles the Coco 3 keyboard as close as possible.
-      </TextBlock>
-      <TextBlock TextWrapping="Wrap">
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap">
         Standard PC keyboard layout.
-      </TextBlock>
-    </StackPanel>
-  </Grid>
+            </TextBlock>
+        </StackPanel>
+    </Grid>
 </UserControl>

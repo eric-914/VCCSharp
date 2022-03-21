@@ -1,4 +1,6 @@
-﻿namespace VCCSharp.Configuration.TabControls
+﻿using VCCSharp.Configuration.ViewModel;
+
+namespace VCCSharp.Configuration.TabControls
 {
     public interface IConfigurationTab
     {

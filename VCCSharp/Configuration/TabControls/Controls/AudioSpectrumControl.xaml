@@ -19,6 +19,7 @@
       <Setter Property="Maximum" Value="2400" />
     </Style>
   </UserControl.Resources>
+
   <StackPanel Orientation="Horizontal">
     <ProgressBar Orientation="Vertical" Value="{Binding LeftSpeaker}" />
     <ProgressBar Orientation="Vertical" Value="{Binding RightSpeaker}" />

@@ -1,5 +1,5 @@
 ﻿using System;
-using VCCSharp.Configuration;
+using VCCSharp.Configuration.ViewModel;
 using VCCSharp.Main;
 using VCCSharp.Menu;
 using VCCSharp.Modules;
@@ -44,12 +44,6 @@ public class ViewModelFactory : IViewModelFactory
 
     public ConfigurationViewModel CreateConfigurationViewModel(IConfig config)
     {
-        return new ConfigurationViewModel
-        {
-            Config = config,
-            Model = config.Model,
-            LeftModel = config.Model.Joysticks.Left, 
-            RightModel = config.Model.Joysticks.Right
-        };
+        return new ConfigurationViewModel(config);
     }
 }

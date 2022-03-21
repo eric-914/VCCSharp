@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using VCCSharp.Configuration.ViewModel;
 using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
 using VCCSharp.Models.Keyboard;

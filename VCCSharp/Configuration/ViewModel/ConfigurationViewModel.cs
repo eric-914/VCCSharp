@@ -1,25 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
 using VCCSharp.Models;
 using VCCSharp.Modules;
 
-namespace VCCSharp.Configuration;
+namespace VCCSharp.Configuration.ViewModel;
 
-public class ConfigurationViewModel : NotifyViewModel
+public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
 {
-    //TODO: Remove STATIC once safe
-    private static Models.Configuration.IConfiguration? _model;
-    private static Models.Configuration.Joystick? _left;
-    private static Models.Configuration.Joystick? _right;
-    private static IConfig? _config;
-
+    public IConfig Config { get; }
     public AudioSpectrum Spectrum { get; }
 
-    public ConfigurationViewModel()
+    public ConfigurationViewModel(IConfig config)
     {
+        Config = config;
+
         //TODO: Left/Right won't set properly.  So hack for the short term.
         Left = new JoystickViewModel(JoystickSides.Left, this);
         Right = new JoystickViewModel(JoystickSides.Right, this);
@@ -27,53 +23,11 @@ public class ConfigurationViewModel : NotifyViewModel
         Spectrum = new AudioSpectrum();
     }
 
-    public Models.Configuration.IConfiguration Model
-    {
-        get => _model!;
-        set
-        {
-            if (_model != null) return;
+    public Models.Configuration.IConfiguration Model => Config.Model;
 
-            _model = value;
-        }
-    }
+    public Models.Configuration.Joystick LeftModel => Model.Joysticks.Left;
 
-    public Models.Configuration.Joystick LeftModel
-    {
-        get => _left!;
-        set
-        {
-            if (_left != null) return;
-
-            _left = value;
-        }
-    }
-
-    public Models.Configuration.Joystick RightModel
-    {
-        get => _right!;
-        set
-        {
-            if (_right != null) return;
-
-            _right = value;
-        }
-    }
-
-    public IConfig Config
-    {
-        get
-        {
-            if (_config == null) throw new Exception("Configuration is undefined");
-            return _config;
-        }
-        set
-        {
-            if (_config != null) return;
-
-            _config = value;
-        }
-    }
+    public Models.Configuration.Joystick RightModel => Model.Joysticks.Right;
 
     #region Constants
 

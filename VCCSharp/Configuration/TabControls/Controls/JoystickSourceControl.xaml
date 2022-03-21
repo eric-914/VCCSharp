@@ -17,6 +17,7 @@
     <converters:ScanCodeToDisplayTextConverter x:Key="ScanCode"/>
     <converters:EnumToVisibilityConverter x:Key="Visibility"/>
   </UserControl.Resources>
+
   <StackPanel Orientation="Vertical">
     <StackPanel Orientation="Horizontal">
       <Label Content="{Binding SideText}" />
