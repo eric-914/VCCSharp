@@ -1,29 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows.Input;
 using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
-using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Keyboard;
 
 namespace VCCSharp.Configuration.TabControls.Joystick;
 
 public class JoystickViewModel : NotifyViewModel
 {
-    private readonly Joysticks? _joysticks;
     private readonly IJoystickServices? _services;
+
+    public Models.Configuration.Joystick Model { get; } = new();
 
     public JoystickViewModel() { }
 
     //--TODO: Holding a local copy of the correct JoystickModel* ends up with bad pointers for reason unknown
-    public JoystickViewModel(JoystickSides side, Joysticks joysticks, IJoystickServices services) : this()
+    public JoystickViewModel(JoystickSides side, Models.Configuration.Joystick model, IJoystickServices services) : this()
     {
         Side = side;
-        _joysticks = joysticks;
+        Model = model;
         _services = services;
     }
-
-    public Models.Configuration.Joystick? Model => _joysticks == null ? null : Side == JoystickSides.Left ? _joysticks.Left : _joysticks.Right;
 
     #region Constants
 
@@ -31,67 +28,41 @@ public class JoystickViewModel : NotifyViewModel
 
     public List<string> JoystickNames => _services?.FindJoysticks() ?? new List<string>();
 
-    #endregion
-
     public string SideText => Side == JoystickSides.Left ? "Left" : "Right";
 
+    #endregion
+    
     public JoystickSides Side { get; set; }
 
-    public JoystickDevices? Device
+    public JoystickDevices Device
     {
-        get => UseMouse;
+        get => Model.InputSource.Value;
         set
         {
-            if (value.HasValue)
-            {
-                UseMouse = value.Value;
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public JoystickDevices UseMouse
-    {
-        get => Model?.InputSource.Value ?? JoystickDevices.Mouse;
-        set
-        {
-            if (Model == null) { throw new Exception("Model not defined"); }
+            if (Model.InputSource.Value == value) return;
+            
             Model.InputSource.Value = value;
+            OnPropertyChanged();
         }
     }
 
-    public JoystickEmulations? Emulation
+    public JoystickEmulations Emulation
     {
-        get => HiRes;
+        get => Model.Type.Value;
         set
         {
-            if (value.HasValue)
-            {
-                HiRes = value.Value;
-                OnPropertyChanged();
-            }
-        }
-    }
+            if (Model.Type.Value == value) return;
 
-    public JoystickEmulations HiRes
-    {
-        get => Model?.Type.Value ?? JoystickEmulations.Standard;
-        set
-        {
-            if (Model == null) { throw new Exception("Model not defined"); }
             Model.Type.Value = value;
+            OnPropertyChanged();
         }
     }
-
-    // Index of which Joystick is selected
-    public int DiDevice { get; set; } = 0;
 
     public Key Up
     {
-        get => Model?.KeyMap.Up.Value ?? Key.None;
+        get => Model.KeyMap.Up.Value;
         set
         {
-            if (Model == null) { throw new Exception("Model not defined"); }
             if (Model.KeyMap.Up.Value == value) return;
 
             Model.KeyMap.Up.Value = value;
@@ -101,10 +72,9 @@ public class JoystickViewModel : NotifyViewModel
 
     public Key Down
     {
-        get => Model?.KeyMap.Down.Value ?? Key.None;
+        get => Model.KeyMap.Down.Value;
         set
         {
-            if (Model == null) { throw new Exception("Model not defined"); }
             if (Model.KeyMap.Down.Value == value) return;
 
             Model.KeyMap.Down.Value = value;
@@ -114,10 +84,9 @@ public class JoystickViewModel : NotifyViewModel
 
     public Key Left
     {
-        get => Model?.KeyMap.Left.Value ?? Key.None;
+        get => Model.KeyMap.Left.Value;
         set
         {
-            if (Model == null) { throw new Exception("Model not defined"); }
             if (Model.KeyMap.Left.Value == value) return;
 
             Model.KeyMap.Left.Value = value;
@@ -127,10 +96,9 @@ public class JoystickViewModel : NotifyViewModel
 
     public Key Right
     {
-        get => Model?.KeyMap.Right.Value ?? Key.None;
+        get => Model.KeyMap.Right.Value;
         set
         {
-            if (Model == null) { throw new Exception("Model not defined"); }
             if (Model.KeyMap.Right.Value == value) return;
 
             Model.KeyMap.Right.Value = value;
@@ -140,10 +108,9 @@ public class JoystickViewModel : NotifyViewModel
 
     public Key Fire1
     {
-        get => Model?.KeyMap.Buttons[0].Value ?? Key.None;
+        get => Model.KeyMap.Buttons[0].Value;
         set
         {
-            if (Model == null) { throw new Exception("Model not defined"); }
             if (Model.KeyMap.Buttons[0].Value == value) return;
 
             Model.KeyMap.Buttons[0].Value = value;
@@ -153,14 +120,16 @@ public class JoystickViewModel : NotifyViewModel
 
     public Key Fire2
     {
-        get => Model?.KeyMap.Buttons[1].Value ?? Key.None;
+        get => Model.KeyMap.Buttons[1].Value;
         set
         {
-            if (Model == null) { throw new Exception("Model not defined"); }
             if (Model.KeyMap.Buttons[1].Value == value) return;
 
             Model.KeyMap.Buttons[1].Value = value;
             OnPropertyChanged();
         }
     }
+
+    // Index of which Joystick is selected
+    public int DiDevice { get; set; } = 0;
 }

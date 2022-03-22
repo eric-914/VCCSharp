@@ -48,8 +48,8 @@ public class ViewModelFactory : IViewModelFactory
     public ConfigurationViewModel CreateConfigurationViewModel(IConfig config)
     {
         var services = _factory.Get<IJoystickServices>();
-        var left = new JoystickViewModel(JoystickSides.Left, config.Model.Joysticks, services);
-        var right = new JoystickViewModel(JoystickSides.Right, config.Model.Joysticks, services);
+        var left = new JoystickViewModel(JoystickSides.Left, config.Model.Joysticks.Left, services);
+        var right = new JoystickViewModel(JoystickSides.Right, config.Model.Joysticks.Right, services);
         var spectrum = new AudioSpectrum();
 
         return new ConfigurationViewModel(config, left, right, spectrum);
