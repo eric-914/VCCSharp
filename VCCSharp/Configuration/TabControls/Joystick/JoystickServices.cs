@@ -5,7 +5,7 @@ using VCCSharp.Libraries;
 
 namespace VCCSharp.Configuration.TabControls.Joystick;
 
-internal interface IJoystickServices
+public interface IJoystickServices
 {
     List<string> FindJoysticks();
     IDxJoystickState Poll(int index);

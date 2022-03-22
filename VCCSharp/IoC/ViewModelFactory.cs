@@ -1,7 +1,10 @@
 ﻿using System;
+using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Configuration.ViewModel;
+using VCCSharp.Enums;
 using VCCSharp.Main;
 using VCCSharp.Menu;
+using VCCSharp.Models;
 using VCCSharp.Modules;
 
 namespace VCCSharp.IoC;
@@ -44,6 +47,11 @@ public class ViewModelFactory : IViewModelFactory
 
     public ConfigurationViewModel CreateConfigurationViewModel(IConfig config)
     {
-        return new ConfigurationViewModel(config);
+        var services = _factory.Get<IJoystickServices>();
+        var left = new JoystickViewModel(JoystickSides.Left, config.Model.Joysticks, services);
+        var right = new JoystickViewModel(JoystickSides.Right, config.Model.Joysticks, services);
+        var spectrum = new AudioSpectrum();
+
+        return new ConfigurationViewModel(config, left, right, spectrum);
     }
 }

@@ -2,7 +2,6 @@
 using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Enums;
 using VCCSharp.Models;
-using VCCSharp.Modules;
 
 namespace VCCSharp.Configuration.ViewModel;
 
@@ -10,9 +9,6 @@ public interface IConfigurationViewModel
 {
     AudioSpectrum Spectrum { get; }
     Models.Configuration.IConfiguration Model { get; }
-    Models.Configuration.Joystick LeftModel { get; }
-    Models.Configuration.Joystick RightModel { get; }
-    IConfig Config { get; }
     List<string> KeyboardLayouts { get; }
     List<string> SoundRates { get; }
     string Release { get; set; }

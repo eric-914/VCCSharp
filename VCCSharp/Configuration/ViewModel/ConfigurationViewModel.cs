@@ -9,25 +9,20 @@ namespace VCCSharp.Configuration.ViewModel;
 
 public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
 {
-    public IConfig Config { get; }
     public AudioSpectrum Spectrum { get; }
 
-    public ConfigurationViewModel(IConfig config)
+    public ConfigurationViewModel(IConfig config, JoystickViewModel left, JoystickViewModel right, AudioSpectrum spectrum)
     {
-        Config = config;
+        Model = config.Model;
 
-        //TODO: Left/Right won't set properly.  So hack for the short term.
-        Left = new JoystickViewModel(JoystickSides.Left, this);
-        Right = new JoystickViewModel(JoystickSides.Right, this);
+        Left = left;
+        Right = right;
 
-        Spectrum = new AudioSpectrum();
+        SoundDevices = config.SoundDevices;
+        Spectrum = spectrum;
     }
 
-    public Models.Configuration.IConfiguration Model => Config.Model;
-
-    public Models.Configuration.Joystick LeftModel => Model.Joysticks.Left;
-
-    public Models.Configuration.Joystick RightModel => Model.Joysticks.Right;
+    public Models.Configuration.IConfiguration Model { get; }
 
     #region Constants
 
@@ -75,7 +70,7 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
         get => Model.CPU.ThrottleSpeed;
         set
         {
-            if (value == (Model.CPU.ThrottleSpeed)) return;
+            if (value == Model.CPU.ThrottleSpeed) return;
 
             Model.CPU.ThrottleSpeed = value;
             OnPropertyChanged();
@@ -104,7 +99,7 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
     public int MaxOverclock => Model.CPU.MaxOverclock;
 
     //[Audio]
-    public List<string> SoundDevices => Config.SoundDevices;
+    public List<string> SoundDevices { get; }
 
     public string SoundDevice
     {

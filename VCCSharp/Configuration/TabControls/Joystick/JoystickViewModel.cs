@@ -1,33 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
-using VCCSharp.Configuration.ViewModel;
 using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
+using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Keyboard;
 
 namespace VCCSharp.Configuration.TabControls.Joystick;
 
 public class JoystickViewModel : NotifyViewModel
 {
-    private readonly ConfigurationViewModel? _parent;
+    private readonly Joysticks? _joysticks;
+    private readonly IJoystickServices? _services;
 
     public JoystickViewModel() { }
 
     //--TODO: Holding a local copy of the correct JoystickModel* ends up with bad pointers for reason unknown
-    public JoystickViewModel(JoystickSides side, ConfigurationViewModel parent) : this()
+    public JoystickViewModel(JoystickSides side, Joysticks joysticks, IJoystickServices services) : this()
     {
         Side = side;
-        _parent = parent;
+        _joysticks = joysticks;
+        _services = services;
     }
 
-    public Models.Configuration.Joystick? Model => _parent == null ? null : Side == JoystickSides.Left ? _parent.LeftModel : _parent.RightModel;
+    public Models.Configuration.Joystick? Model => _joysticks == null ? null : Side == JoystickSides.Left ? _joysticks.Left : _joysticks.Right;
 
     #region Constants
 
     public IEnumerable<string> KeyNames => KeyScanMapper.KeyText;
 
-    public List<string> JoystickNames { get; set; } = new() { "A", "B", "C" };
+    public List<string> JoystickNames => _services?.FindJoysticks() ?? new List<string>();
 
     #endregion
 
