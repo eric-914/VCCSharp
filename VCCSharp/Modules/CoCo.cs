@@ -94,7 +94,7 @@ namespace VCCSharp.Modules
         {
             _modules = modules;
 
-            UpdateTapeDialog = _ => { }; //_modules.Config.UpdateTapeDialog((uint)offset);
+            UpdateTapeDialog = _ => { }; //_modules.ConfigurationModule.UpdateTapeDialog((uint)offset);
         }
 
         public void CocoReset()

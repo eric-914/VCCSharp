@@ -10,13 +10,13 @@ public class TapePlayerViewModel : NotifyViewModel
     private const string NoFile = "EMPTY";
 
     //TODO: Remove STATIC once safe
-    private static IConfig? _config;
+    private static IConfigurationModule? _config;
 
     private string _filePath = "Sample Browse File Text";
     private TapeModes _mode = TapeModes.Stop;
     private int _counter;
 
-    public IConfig? Config
+    public IConfigurationModule? Config
     {
         get => _config;
         set

@@ -13,7 +13,7 @@ namespace VCCSharp.Models.Configuration.Support;
 public interface IPersistence<out T>
 {
     T Load(string path);
-    void Save(string path, IConfiguration model);
+    void Save(string path, IConfigurationRoot model);
 }
 
 public abstract class Persistence<T> : IPersistence<T>
@@ -50,6 +50,6 @@ public abstract class Persistence<T> : IPersistence<T>
         return instance;
     }
 
-    public void Save(string path, IConfiguration model)
+    public void Save(string path, IConfigurationRoot model)
         => File.WriteAllText(path, JsonConvert.SerializeObject(model, Formatting.Indented));
 }

@@ -228,7 +228,7 @@ namespace VCCSharp.Modules
             switch (phase)
             {
                 case 0:
-                    if (_left.InputSource == 0)
+                    if (_left.InputSource == JoystickDevices.Keyboard)
                     {
                         if (scanCode == _left.Left)
                         {
@@ -267,7 +267,7 @@ namespace VCCSharp.Modules
                         }
                     }
 
-                    if (_right.InputSource == 0)
+                    if (_right.InputSource == JoystickDevices.Keyboard)
                     {
                         if (scanCode == _right.Left)
                         {
@@ -308,7 +308,7 @@ namespace VCCSharp.Modules
                     break;
 
                 case 1:
-                    if (_left.InputSource == 0)
+                    if (_left.InputSource == JoystickDevices.Keyboard)
                     {
                         if (scanCode == _left.Left)
                         {
@@ -347,7 +347,7 @@ namespace VCCSharp.Modules
                         }
                     }
 
-                    if (_right.InputSource == 0)
+                    if (_right.InputSource == JoystickDevices.Keyboard)
                     {
                         if (scanCode == _right.Left)
                         {

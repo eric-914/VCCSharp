@@ -11,18 +11,18 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
 {
     public AudioSpectrum Spectrum { get; }
 
-    public ConfigurationViewModel(IConfig config, JoystickViewModel left, JoystickViewModel right, AudioSpectrum spectrum)
+    public ConfigurationViewModel(IConfigurationModule configurationModule, JoystickViewModel left, JoystickViewModel right, AudioSpectrum spectrum)
     {
-        Model = config.Model;
+        Model = configurationModule.Model;
 
         Left = left;
         Right = right;
 
-        SoundDevices = config.SoundDevices;
+        SoundDevices = configurationModule.SoundDevices;
         Spectrum = spectrum;
     }
 
-    public Models.Configuration.IConfiguration Model { get; }
+    public Models.Configuration.IConfigurationRoot Model { get; }
 
     #region Constants
 
@@ -225,7 +225,7 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
     public JoystickViewModel Right { get; }
 
     //[DefaultPaths]
-    public string CassPath { get; set; } = "Cassette Path";
+    public string CassettePath { get; set; } = "Cassette Path";
     public string PakPath { get; set; } = "Pak Path";
     public string FloppyPath { get; set; } = "Floppy Path";
     public string CoCoRomPath { get; set; } = "CoCo ROM Path";

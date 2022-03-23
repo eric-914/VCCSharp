@@ -13,38 +13,11 @@ using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
-    public interface IConfig
-    {
-        IConfiguration Model { get; }
-
-        void Load(string filePath);
-        void LoadFrom();
-        void Save();
-        void SaveAs();
-
-        void SynchSystemWithConfig();
-
-        void DecreaseOverclockSpeed();
-        void IncreaseOverclockSpeed();
-
-        string AppTitle { get; }
-        bool TextMode { get; set; }
-        bool PrintMonitorWindow { get; set; }
-        int TapeCounter { get; set; }
-        TapeModes TapeMode { get; set; }
-        string? TapeFileName { get; set; }
-        string? SerialCaptureFile { get; set; }
-        string? FilePath { get; }
-
-        List<string> SoundDevices { get; }
-        List<string> JoystickDevices { get; }
-    }
-
-    public class Config : IConfig
+    public class ConfigurationModule : IConfigurationModule
     {
         private readonly IModules _modules;
         private readonly IUser32 _user32;
-        private readonly IConfigPersistence _persistence;
+        private readonly IConfigurationModulePersistence _persistence;
 
         public string AppTitle { get; } = Resources.ResourceManager.GetString("AppTitle") ?? "<Unable to read AppTitle>";
 
@@ -63,11 +36,11 @@ namespace VCCSharp.Modules
         public List<string> SoundDevices => _modules.Audio.FindSoundDevices();
         public List<string> JoystickDevices => _modules.Joystick.FindJoysticks();
 
-        public IConfiguration Model { get; private set; } = default!;
+        public IConfigurationRoot Model { get; private set; } = default!;
 
         public string? FilePath { get; set; }
 
-        public Config(IModules modules, IUser32 user32, IConfigPersistence persistence)
+        public ConfigurationModule(IModules modules, IUser32 user32, IConfigurationModulePersistence persistence)
         {
             _modules = modules;
             _user32 = user32;
@@ -82,7 +55,7 @@ namespace VCCSharp.Modules
 
             Model.Version.Release = AppTitle; //--A kind of "version" I guess
 
-            //--Synch joysticks to config instance
+            //--Synch joysticks to configurationModule instance
             _modules.Joystick.SetLeftJoystick(_left);
             _modules.Joystick.SetRightJoystick(_right);
 
@@ -120,7 +93,7 @@ namespace VCCSharp.Modules
             _modules.MC6821.SetCartAutoStart(Model.Startup.CartridgeAutoStart);
         }
 
-        // LoadFrom allows user to browse for an ini file and reloads the config from it.
+        // LoadFrom allows user to browse for an ini file and reloads the configurationModule from it.
         public void LoadFrom() => _persistence.LoadFrom(FilePath, LoadFrom);
 
         private void LoadFrom(string filePath)
@@ -311,7 +284,7 @@ namespace VCCSharp.Modules
 
             Model.CPU.CpuMultiplier = cpuMultiplier;
 
-            _modules.Emu.ResetPending = ResetPendingStates.ClsSynch; // Without this, changing the config does nothing.
+            _modules.Emu.ResetPending = ResetPendingStates.ClsSynch; // Without this, changing the configurationModule does nothing.
         }
 
         public void SetWindowSize(short width, short height)

@@ -21,11 +21,11 @@ namespace VCCSharp.BitBanger
                 switch (args.PropertyName)
                 {
                     case "AddLineFeed":
-                        _modules.MC6821.SetSerialParams(_modules.Config.TextMode);
+                        _modules.MC6821.SetSerialParams(_modules.ConfigurationModule.TextMode);
                         break;
 
                     case "Print":
-                        _modules.MC6821.SetMonState(_modules.Config.PrintMonitorWindow);
+                        _modules.MC6821.SetMonState(_modules.ConfigurationModule.PrintMonitorWindow);
                         break;
                 }
             };
@@ -33,7 +33,7 @@ namespace VCCSharp.BitBanger
 
         public void ShowDialog()
         {
-            _viewModel.Config = _modules.Config;
+            _viewModel.Config = _modules.ConfigurationModule;
 
             _view ??= new BitBangerWindow(_viewModel, this);
 
@@ -42,7 +42,7 @@ namespace VCCSharp.BitBanger
 
         public void Open()
         {
-            string? szFileName = _modules.Config.SerialCaptureFile;
+            string? szFileName = _modules.ConfigurationModule.SerialCaptureFile;
             string appPath = Path.GetDirectoryName(szFileName) ?? "C:\\";
 
             var openFileDlg = new Microsoft.Win32.OpenFileDialog
@@ -74,7 +74,7 @@ namespace VCCSharp.BitBanger
 
                 serialCaptureFile = Path.GetFileName(openFileDlg.FileName);
 
-                _modules.Config.SerialCaptureFile = serialCaptureFile;
+                _modules.ConfigurationModule.SerialCaptureFile = serialCaptureFile;
             }
         }
 
@@ -84,9 +84,9 @@ namespace VCCSharp.BitBanger
 
             _viewModel.SerialCaptureFile = null;
 
-            _modules.Config.PrintMonitorWindow = false;
+            _modules.ConfigurationModule.PrintMonitorWindow = false;
 
-            _modules.MC6821.SetMonState(_modules.Config.PrintMonitorWindow);
+            _modules.MC6821.SetMonState(_modules.ConfigurationModule.PrintMonitorWindow);
 
             _viewModel.Print = false;
         }

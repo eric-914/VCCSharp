@@ -255,7 +255,7 @@ public class PAKInterface : IPAKInterface
         {
             moduleParams |= 2048;
 
-            InvokeSetIniPath(_modules.Config.FilePath);
+            InvokeSetIniPath(_modules.ConfigurationModule.FilePath);
         }
 
         if (HasPakSetCart())

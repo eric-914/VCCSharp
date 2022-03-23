@@ -37,8 +37,8 @@ public partial class App
             .Singleton<IKeyScanMapper, KeyScanMapper>()
             .Singleton<IMainWindowEvents, MainWindowEvents>()
             .Singleton<IConfigurationPersistence, ConfigurationPersistence>()
-            .Singleton<IConfiguration, Root>()
-            .Singleton<IConfigPersistence, ConfigPersistence>()
+            .Singleton<IConfigurationRoot, ConfigurationRoot>()
+            .Singleton<IConfigurationModulePersistence, ConfigurationModulePersistence>()
             .Singleton<IJoystickServices, JoystickServices>()
 
             //--Modules
@@ -47,7 +47,7 @@ public partial class App
             .Singleton<ICassette, Cassette>()
             .Singleton<IClipboard, Modules.Clipboard>()
             .Singleton<ICoCo, CoCo>()
-            .Singleton<IConfig, Config>()
+            .Singleton<IConfigurationModule, ConfigurationModule>()
             .Singleton<IDraw, Draw>()
             .Singleton<IEmu, Emu>()
             .Singleton<IEvents, Events>()

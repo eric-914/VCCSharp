@@ -1,21 +1,6 @@
 ﻿namespace VCCSharp.Models.Configuration
 {
-    public interface IConfiguration
-    {
-        Version Version { get; }
-        Window Window { get; }
-        CPU CPU { get; }
-        Audio Audio { get; }
-        Video Video { get; }
-        Memory Memory { get; }
-        Keyboard Keyboard { get; }
-        Joysticks Joysticks { get; }
-        FilePaths FilePaths { get; }
-        Startup Startup { get; }
-        Accessories Accessories { get; }
-    }
-
-    public class Root : IConfiguration
+    public class ConfigurationRoot : IConfigurationRoot
     {
         public Version Version { get; } = new();
         public Window Window { get; } = new();

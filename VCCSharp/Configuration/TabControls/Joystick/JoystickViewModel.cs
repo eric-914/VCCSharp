@@ -131,5 +131,9 @@ public class JoystickViewModel : NotifyViewModel
     }
 
     // Index of which Joystick is selected
-    public int DiDevice { get; set; } = 0;
+    public int DeviceIndex
+    {
+        get => Model.DeviceIndex;
+        set => Model.DeviceIndex = value;
+    }
 }

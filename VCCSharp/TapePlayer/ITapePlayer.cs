@@ -4,7 +4,7 @@ namespace VCCSharp.TapePlayer
 {
     public interface ITapePlayer
     {
-        void ShowDialog(IConfig state);
+        void ShowDialog(IConfigurationModule state);
 
         void Browse();
         void Record();

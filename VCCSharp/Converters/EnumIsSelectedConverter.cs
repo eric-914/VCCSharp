@@ -10,9 +10,9 @@ namespace VCCSharp.Converters
     /// </summary>
     public class EnumIsSelectedConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            return (value != null && parameter != null) && (int)value == (int)parameter;
+            return value != null && parameter != null && (int)value == (int)parameter;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

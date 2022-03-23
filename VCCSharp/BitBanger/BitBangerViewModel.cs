@@ -9,11 +9,11 @@ public class BitBangerViewModel : NotifyViewModel
     private const string NoFile = "No Capture File";
 
     //TODO: Remove STATIC once safe
-    private static IConfig? _config;
+    private static IConfigurationModule? _config;
 
     private string _serialCaptureFile = NoFile;
 
-    public IConfig? Config
+    public IConfigurationModule? Config
     {
         get => _config;
         set

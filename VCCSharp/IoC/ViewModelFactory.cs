@@ -14,7 +14,7 @@ public interface IViewModelFactory
     MainWindowViewModel CreateMainWindowViewModel(IMainMenu menuItems);
     CommandViewModel CreateCommandViewModel(Action? action = null);
     MenuItemViewModel CreateMenuItemViewModel(string header, Action action);
-    ConfigurationViewModel CreateConfigurationViewModel(IConfig config);
+    ConfigurationViewModel CreateConfigurationViewModel(IConfigurationModule configurationModule);
 }
 
 public class ViewModelFactory : IViewModelFactory
@@ -45,13 +45,13 @@ public class ViewModelFactory : IViewModelFactory
         return new MenuItemViewModel { Header = header, Action = action };
     }
 
-    public ConfigurationViewModel CreateConfigurationViewModel(IConfig config)
+    public ConfigurationViewModel CreateConfigurationViewModel(IConfigurationModule configurationModule)
     {
         var services = _factory.Get<IJoystickServices>();
-        var left = new JoystickViewModel(JoystickSides.Left, config.Model.Joysticks.Left, services);
-        var right = new JoystickViewModel(JoystickSides.Right, config.Model.Joysticks.Right, services);
+        var left = new JoystickViewModel(JoystickSides.Left, configurationModule.Model.Joysticks.Left, services);
+        var right = new JoystickViewModel(JoystickSides.Right, configurationModule.Model.Joysticks.Right, services);
         var spectrum = new AudioSpectrum();
 
-        return new ConfigurationViewModel(config, left, right, spectrum);
+        return new ConfigurationViewModel(configurationModule, left, right, spectrum);
     }
 }

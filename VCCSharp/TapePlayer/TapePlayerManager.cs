@@ -37,9 +37,9 @@ public class TapePlayerManager : ITapePlayer
         _modules.Cassette.UpdateTapeDialog = SetTapeCounter;
     }
 
-    public void ShowDialog(IConfig state)
+    public void ShowDialog(IConfigurationModule state)
     {
-        _viewModel.Config = _modules.Config;
+        _viewModel.Config = _modules.ConfigurationModule;
 
         _view ??= new TapePlayerWindow(_viewModel, this);
 
@@ -55,7 +55,7 @@ public class TapePlayerManager : ITapePlayer
     {
         _viewModel.Mode = TapeModes.Record;
 
-        _modules.Config.TapeMode = TapeModes.Record;
+        _modules.ConfigurationModule.TapeMode = TapeModes.Record;
 
         SetTapeMode(TapeModes.Record);
     }
@@ -64,7 +64,7 @@ public class TapePlayerManager : ITapePlayer
     {
         _viewModel.Mode = TapeModes.Play;
 
-        _modules.Config.TapeMode = TapeModes.Play;
+        _modules.ConfigurationModule.TapeMode = TapeModes.Play;
 
         SetTapeMode(TapeModes.Play);
     }
@@ -73,7 +73,7 @@ public class TapePlayerManager : ITapePlayer
     {
         _viewModel.Mode = TapeModes.Stop;
 
-        _modules.Config.TapeMode = TapeModes.Stop;
+        _modules.ConfigurationModule.TapeMode = TapeModes.Stop;
 
         SetTapeMode(TapeModes.Stop);
     }
@@ -82,7 +82,7 @@ public class TapePlayerManager : ITapePlayer
     {
         _viewModel.Mode = TapeModes.Eject;
 
-        _modules.Config.TapeMode = TapeModes.Eject;
+        _modules.ConfigurationModule.TapeMode = TapeModes.Eject;
 
         SetTapeMode(TapeModes.Eject);
     }
@@ -91,7 +91,7 @@ public class TapePlayerManager : ITapePlayer
     {
         _viewModel.Counter = 0;
 
-        _modules.Config.TapeCounter = 0;
+        _modules.ConfigurationModule.TapeCounter = 0;
 
         SetTapeCounter(0);
     }
@@ -141,7 +141,7 @@ public class TapePlayerManager : ITapePlayer
     {
         var configuration = _modules.Configuration;
 
-        string? szFileName = _modules.Config.TapeFileName;
+        string? szFileName = _modules.ConfigurationModule.TapeFileName;
         string appPath = configuration.FilePaths.Cassette ?? "C:\\";
 
         var openFileDlg = new Microsoft.Win32.OpenFileDialog
@@ -183,7 +183,7 @@ public class TapePlayerManager : ITapePlayer
 
             configuration.FilePaths.Cassette = path;
 
-            _modules.Config.TapeCounter = 0;
+            _modules.ConfigurationModule.TapeCounter = 0;
 
             SetTapeCounter(0);
 
@@ -196,7 +196,7 @@ public class TapePlayerManager : ITapePlayer
     private void SetTapeCounter(int counter)
     {
         //_modules.Cassette.SetTapeCounter((uint)counter);
-        //_modules.Config.UpdateTapeDialog((uint) counter);
+        //_modules.ConfigurationModule.UpdateTapeDialog((uint) counter);
         _viewModel.Counter = counter;
     }
 }

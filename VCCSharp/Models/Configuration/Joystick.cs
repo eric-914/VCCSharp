@@ -5,7 +5,7 @@ namespace VCCSharp.Models.Configuration
 {
     public class Joystick
     {
-        public string Device { get; set; } = "";
+        public int DeviceIndex { get; set; } = -1;
 
         public RangeSelect<JoystickDevices> InputSource { get; } = new() { Value = JoystickDevices.Mouse };
 

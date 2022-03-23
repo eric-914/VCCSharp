@@ -29,12 +29,12 @@ namespace VCCSharp
 
         public void SaveConfiguration()
         {
-            _modules.Config.SaveAs();
+            _modules.ConfigurationModule.SaveAs();
         }
 
         public void LoadConfiguration()
         {
-            _modules.Config.LoadFrom();
+            _modules.ConfigurationModule.LoadFrom();
         }
 
         public void HardReset() //F9
@@ -74,7 +74,7 @@ namespace VCCSharp
 
         public void TapeRecorder()
         {
-            _options.TapePlayer.ShowDialog(_modules.Config);
+            _options.TapePlayer.ShowDialog(_modules.ConfigurationModule);
         }
 
         public void BitBanger()
@@ -84,7 +84,7 @@ namespace VCCSharp
 
         public void OpenConfiguration()
         {
-            _options.Configuration.ShowDialog(_modules.Config);
+            _options.Configuration.ShowDialog(_modules.ConfigurationModule);
         }
 
         public void LoadCartridge()

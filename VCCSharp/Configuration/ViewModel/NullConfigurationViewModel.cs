@@ -3,7 +3,6 @@ using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Enums;
 using VCCSharp.Models;
 using VCCSharp.Models.Configuration;
-using Joystick = VCCSharp.Models.Configuration.Joystick;
 
 namespace VCCSharp.Configuration.ViewModel;
 
@@ -17,7 +16,7 @@ public class NullConfigurationViewModel : IConfigurationViewModel
     public AudioSpectrum Spectrum { get; set; } = new();
     public CPUTypes CpuType { get; set; }
     public CPUTypes? Cpu { get; set; }
-    public IConfiguration Model => default!;
+    public IConfigurationRoot Model => default!;
     public JoystickViewModel Left { get; } = new();
     public JoystickViewModel Right { get; } = new();
     public KeyboardLayouts KeyboardLayout { get; set; }
@@ -37,7 +36,7 @@ public class NullConfigurationViewModel : IConfigurationViewModel
     public int CpuMultiplier { get; set; }
     public int FrameSkip { get; set; }
     public int MaxOverclock => 0;
-    public string CassPath { get; set; } = string.Empty;
+    public string CassettePath { get; set; } = string.Empty;
     public string CoCoRomPath { get; set; } = string.Empty;
     public string ExternalBasicImage { get; set; } = string.Empty;
     public string FloppyPath { get; set; } = string.Empty;

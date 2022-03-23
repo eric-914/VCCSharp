@@ -62,7 +62,7 @@ namespace VCCSharp.Modules
         public void EmuExit()
         {
             Debug.WriteLine("Exiting...");
-            _modules.Config.Save(); //Save any changes to ini File
+            _modules.ConfigurationModule.Save(); //Save any changes to ini File
 
             _modules.Vcc.BinaryRunning = false;
         }
@@ -75,12 +75,12 @@ namespace VCCSharp.Modules
 
         public void SlowDown() //F3
         {
-            _modules.Config.DecreaseOverclockSpeed();
+            _modules.ConfigurationModule.DecreaseOverclockSpeed();
         }
 
         public void SpeedUp() //F4
         {
-            _modules.Config.IncreaseOverclockSpeed();
+            _modules.ConfigurationModule.IncreaseOverclockSpeed();
         }
 
         public void ToggleMonitorType() //F6

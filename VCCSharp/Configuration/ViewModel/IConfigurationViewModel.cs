@@ -8,7 +8,7 @@ namespace VCCSharp.Configuration.ViewModel;
 public interface IConfigurationViewModel
 {
     AudioSpectrum Spectrum { get; }
-    Models.Configuration.IConfiguration Model { get; }
+    Models.Configuration.IConfigurationRoot Model { get; }
     List<string> KeyboardLayouts { get; }
     List<string> SoundRates { get; }
     string Release { get; set; }
@@ -35,7 +35,7 @@ public interface IConfigurationViewModel
     string ModulePath { get; set; }
     JoystickViewModel Left { get; }
     JoystickViewModel Right { get; }
-    string CassPath { get; set; }
+    string CassettePath { get; set; }
     string PakPath { get; set; }
     string FloppyPath { get; set; }
     string CoCoRomPath { get; set; }

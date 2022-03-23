@@ -70,7 +70,7 @@ public class Vcc : IVcc
 
     public void SetAppTitle(string binFileName)
     {
-        string appTitle = _modules.Config.AppTitle;
+        string appTitle = _modules.ConfigurationModule.AppTitle;
 
         if (!string.IsNullOrEmpty(binFileName))
         {
@@ -128,7 +128,7 @@ public class Vcc : IVcc
 
             {ResetPendingStates.Hard, () =>
             {
-                _modules.Config.SynchSystemWithConfig();
+                _modules.ConfigurationModule.SynchSystemWithConfig();
                 _modules.Draw.DoCls();
                 _modules.Emu.HardReset();
             }},
@@ -137,7 +137,7 @@ public class Vcc : IVcc
 
             {ResetPendingStates.ClsSynch, () =>
             {
-                _modules.Config.SynchSystemWithConfig();
+                _modules.ConfigurationModule.SynchSystemWithConfig();
                 _modules.Draw.DoCls();
             }}
         };
@@ -174,13 +174,15 @@ public class Vcc : IVcc
         //}
 
         string audioDevice = configuration.Audio.Device;
-        int audioDeviceIndex = _modules.Config.SoundDevices.IndexOf(audioDevice);
+        int audioDeviceIndex = _modules.ConfigurationModule.SoundDevices.IndexOf(audioDevice);
 
-        string leftDevice = configuration.Joysticks.Left.Device;
-        int leftDeviceIndex = _modules.Config.JoystickDevices.IndexOf(leftDevice);
+        //string leftDevice = configuration.Joysticks.Left.Device;
+        //int leftDeviceIndex = _modules.ConfigurationModule.JoystickDevices.IndexOf(leftDevice);
+        int leftDeviceIndex = configuration.Joysticks.Left.DeviceIndex;
 
-        string rightDevice = configuration.Joysticks.Right.Device;
-        int rightDeviceIndex = _modules.Config.JoystickDevices.IndexOf(rightDevice);
+        //string rightDevice = configuration.Joysticks.Right.Device;
+        //int rightDeviceIndex = _modules.ConfigurationModule.JoystickDevices.IndexOf(rightDevice);
+        int rightDeviceIndex = configuration.Joysticks.Right.DeviceIndex;
 
         _modules.Audio.SoundInit(_modules.Emu.WindowHandle, audioDeviceIndex, configuration.Audio.Rate.Value);
 

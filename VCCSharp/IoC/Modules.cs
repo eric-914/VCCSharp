@@ -14,8 +14,8 @@ public interface IModules
     ICassette Cassette { get; }
     IClipboard Clipboard { get; }
     ICoCo CoCo { get; }
-    IConfig Config { get; }
-    IConfiguration Configuration { get; }
+    IConfigurationModule ConfigurationModule { get; }
+    IConfigurationRoot Configuration { get; }
     IDraw Draw { get; }
     IEmu Emu { get; }
     IEvents Events { get; }
@@ -45,8 +45,8 @@ public class Modules : IModules
     public ICassette Cassette { get; private set; }= default!;
     public IClipboard Clipboard { get; private set; }= default!;
     public ICoCo CoCo { get; private set; }= default!;
-    public IConfig Config { get; private set; }= default!;
-    public IConfiguration Configuration => Config.Model;
+    public IConfigurationModule ConfigurationModule { get; private set; }= default!;
+    public IConfigurationRoot Configuration => ConfigurationModule.Model;
     public IDraw Draw { get; private set; }= default!;
     public IEmu Emu { get; private set; }= default!;
     public IEvents Events { get; private set; }= default!;
@@ -74,7 +74,7 @@ public class Modules : IModules
         Cassette = _factory.Get<ICassette>();
         Clipboard = _factory.Get<IClipboard>();
         CoCo = _factory.Get<ICoCo>();
-        Config = _factory.Get<IConfig>();
+        ConfigurationModule = _factory.Get<IConfigurationModule>();
         Draw = _factory.Get<IDraw>();
         Emu = _factory.Get<IEmu>();
         Events = _factory.Get<IEvents>();
