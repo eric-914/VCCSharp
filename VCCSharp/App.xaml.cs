@@ -53,7 +53,7 @@ public partial class App
             .Singleton<IEvents, Events>()
             .Singleton<IGraphics, Graphics>()
             .Singleton<IIOBus, IOBus>()
-            .Singleton<IJoystick, Modules.Joystick>()
+            .Singleton<IJoysticks, Modules.Joysticks>()
             .Singleton<IKeyboard, Modules.Keyboard>()
             .Singleton<IMC6821, MC6821>()
             .Singleton<IMenuCallbacks, MenuCallbacks>()

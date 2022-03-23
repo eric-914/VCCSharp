@@ -184,6 +184,6 @@ public class Vcc : IVcc
         int leftDeviceIndex = configuration.Joysticks.Left.DeviceIndex;
         int rightDeviceIndex = configuration.Joysticks.Right.DeviceIndex;
 
-        _modules.Joystick.SetStickNumbers(leftDeviceIndex, rightDeviceIndex);
+        _modules.Joysticks.SetStickNumbers(leftDeviceIndex, rightDeviceIndex);
     }
 }

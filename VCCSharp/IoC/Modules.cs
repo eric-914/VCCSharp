@@ -21,7 +21,7 @@ public interface IModules
     IEvents Events { get; }
     IGraphics Graphics { get; }
     IIOBus IOBus { get; }
-    IJoystick Joystick { get; }
+    IJoysticks Joysticks { get; }
     IKeyboard Keyboard { get; }
     IMC6821 MC6821 { get; }
     IMenuCallbacks MenuCallbacks { get; }
@@ -52,7 +52,7 @@ public class Modules : IModules
     public IEvents Events { get; private set; }= default!;
     public IGraphics Graphics { get; private set; }= default!;
     public IIOBus IOBus { get; private set; }= default!;
-    public IJoystick Joystick { get; private set; }= default!;
+    public IJoysticks Joysticks { get; private set; }= default!;
     public IKeyboard Keyboard { get; private set; }= default!;
     public IMC6821 MC6821 { get; private set; }= default!;
     public IMenuCallbacks MenuCallbacks { get; private set; }= default!;
@@ -80,7 +80,7 @@ public class Modules : IModules
         Events = _factory.Get<IEvents>();
         Graphics = _factory.Get<IGraphics>();
         IOBus = _factory.Get<IIOBus>();
-        Joystick = _factory.Get<IJoystick>();
+        Joysticks = _factory.Get<IJoysticks>();
         Keyboard = _factory.Get<IKeyboard>();
         MC6821 = _factory.Get<IMC6821>();
         MenuCallbacks = _factory.Get<IMenuCallbacks>();

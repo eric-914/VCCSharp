@@ -7,7 +7,6 @@ using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using VCCSharp.Models.Configuration;
-using VCCSharp.Properties;
 using static System.IntPtr;
 using HWND = System.IntPtr;
 
@@ -15,22 +14,20 @@ namespace VCCSharp.Modules;
 
 public class ConfigurationModule : IConfigurationModule
 {
+    private static readonly Dictionary<CPUTypes, string> CPULookup = new()
+    {
+        { CPUTypes.MC6809, "MC6809" },
+        { CPUTypes.HD6309, "HD6309" }
+    };
+
     private readonly IModules _modules;
     private readonly IUser32 _user32;
     private readonly IConfigurationModulePersistence _persistence;
 
-    private readonly JoystickModel _left = new();
-    private readonly JoystickModel _right = new();
-
     private string? _filePath;
 
-    public int TapeCounter { get; set; }
-    public TapeModes TapeMode { get; set; } = TapeModes.Stop;
-
-    public string? TapeFileName { get; set; }
-
     public IConfigurationRoot Model { get; private set; } = default!;
-    
+
     public ConfigurationModule(IModules modules, IUser32 user32, IConfigurationModulePersistence persistence)
     {
         _modules = modules;
@@ -46,42 +43,14 @@ public class ConfigurationModule : IConfigurationModule
 
         Load();
 
-        //--Synch joysticks to configurationModule instance
-        _modules.Joystick.SetLeftJoystick(_left);
-        _modules.Joystick.SetRightJoystick(_right);
-
         SynchSystemWithConfig();
 
         ConfigureJoysticks();
-
-        string device = Model.Audio.Device;
-        int deviceIndex = _modules.Audio.FindSoundDevices().IndexOf(device);
-
-        _modules.Audio.SoundInit(_modules.Emu.WindowHandle, deviceIndex, Model.Audio.Rate.Value);
-
+        
         if (_persistence.IsNew(_filePath))
         {
             Save();
         }
-    }
-
-    public void SynchSystemWithConfig()
-    {
-        _modules.Vcc.AutoStart = Model.Startup.AutoStart;
-        _modules.Vcc.Throttle = Model.CPU.ThrottleSpeed;
-
-        _modules.Emu.RamSize = Model.Memory.Ram.Value;
-        _modules.Emu.FrameSkip = Model.CPU.FrameSkip;
-
-        _modules.Graphics.SetPaletteType();
-        _modules.Draw.SetAspect(Model.Video.ForceAspect);
-        _modules.Graphics.SetScanLines(Model.Video.ScanLines);
-        _modules.Emu.SetCpuMultiplier(Model.CPU.CpuMultiplier);
-
-        SetCpuType(Model.CPU.Type.Value);
-
-        _modules.Graphics.SetMonitorType(Model.Video.Monitor.Value);
-        _modules.MC6821.SetCartAutoStart(Model.Startup.CartridgeAutoStart);
     }
 
     // LoadFrom allows user to browse for an ini file and reloads the configurationModule from it.
@@ -96,22 +65,16 @@ public class ConfigurationModule : IConfigurationModule
         Load();
 
         SynchSystemWithConfig();
-
-        _modules.Emu.ResetPending = ResetPendingStates.Hard;
     }
 
     public void Load()
     {
         Model = _persistence.Load(_filePath);
 
-        _modules.Keyboard.KeyboardBuildRuntimeTable(Model.Keyboard.Layout.Value);
-
         if (!string.IsNullOrEmpty(_modules.Emu.PakPath))
         {
             Model.Accessories.MultiPak.FilePath = _modules.Emu.PakPath;
         }
-
-        _modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, Model.Accessories.ModulePath);   // Should this be here?
 
         if (Model.Window.RememberSize)
         {
@@ -156,32 +119,32 @@ public class ConfigurationModule : IConfigurationModule
 
     private void ConfigureJoysticks()
     {
-        var joystick = _modules.Joystick;
+        var joystick = _modules.Joysticks;
 
         var joysticks = joystick.FindJoysticks();
 
-        if (_right.DeviceIndex >= joysticks.Count)
+        if (Model.Joysticks.Left.DeviceIndex >= joysticks.Count)
         {
-            _right.DeviceIndex = 0;
+            Model.Joysticks.Left.DeviceIndex = 0;
         }
 
-        if (_left.DeviceIndex >= joysticks.Count)
+        if (Model.Joysticks.Right.DeviceIndex >= joysticks.Count)
         {
-            _left.DeviceIndex = 0;
+            Model.Joysticks.Right.DeviceIndex = 0;
         }
 
-        joystick.SetStickNumbers(_left.DeviceIndex, _right.DeviceIndex);
+        joystick.SetStickNumbers(Model.Joysticks.Left.DeviceIndex, Model.Joysticks.Right.DeviceIndex);
 
         if (joysticks.Count == 0)	//Use Mouse input if no Joysticks present
         {
             if (Model.Joysticks.Left.InputSource.Value == JoystickDevices.Joystick)
             {
-                _left.InputSource = JoystickDevices.Mouse;
+                Model.Joysticks.Left.InputSource.Value = JoystickDevices.Mouse;
             }
 
             if (Model.Joysticks.Right.InputSource.Value == JoystickDevices.Joystick)
             {
-                _right.InputSource = JoystickDevices.Mouse;
+                Model.Joysticks.Left.InputSource.Value = JoystickDevices.Mouse;
             }
         }
     }
@@ -225,18 +188,6 @@ public class ConfigurationModule : IConfigurationModule
         return appDataPath;
     }
 
-    private void SetCpuType(CPUTypes cpuType)
-    {
-        var cpu = new Dictionary<CPUTypes, string>
-        {
-            {CPUTypes.MC6809, "MC6809"},
-            {CPUTypes.HD6309, "HD6309"}
-        };
-
-        _modules.Emu.CpuType = cpuType;
-        _modules.Vcc.CpuName = cpu[cpuType];
-    }
-
     private void SetWindowSize(short width, short height)
     {
         HWND handle = _user32.GetActiveWindow();
@@ -244,5 +195,34 @@ public class ConfigurationModule : IConfigurationModule
         SetWindowPosFlags flags = SetWindowPosFlags.NoMove | SetWindowPosFlags.NoOwnerZOrder | SetWindowPosFlags.NoZOrder;
 
         _user32.SetWindowPos(handle, Zero, 0, 0, width + 16, height + 81, (ushort)flags);
+    }
+
+    public void SynchSystemWithConfig()
+    {
+        _modules.Vcc.AutoStart = Model.Startup.AutoStart;
+        _modules.Vcc.Throttle = Model.CPU.ThrottleSpeed;
+
+        _modules.Emu.RamSize = Model.Memory.Ram.Value;
+        _modules.Emu.FrameSkip = Model.CPU.FrameSkip;
+
+        _modules.Graphics.SetPaletteType();
+        _modules.Draw.SetAspect(Model.Video.ForceAspect);
+        _modules.Graphics.SetScanLines(Model.Video.ScanLines);
+        _modules.Emu.SetCpuMultiplier(Model.CPU.CpuMultiplier);
+
+        _modules.Emu.CpuType = Model.CPU.Type.Value;
+        _modules.Vcc.CpuName = CPULookup[Model.CPU.Type.Value];
+
+        _modules.Graphics.SetMonitorType(Model.Video.Monitor.Value);
+        _modules.MC6821.SetCartAutoStart(Model.Startup.CartridgeAutoStart);
+
+        //--Synch joysticks to configurationModule instance
+        _modules.Joysticks.SetLeftJoystick(Model.Joysticks.Left);
+        _modules.Joysticks.SetRightJoystick(Model.Joysticks.Right);
+
+        _modules.Keyboard.KeyboardBuildRuntimeTable(Model.Keyboard.Layout.Value);
+        _modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, Model.Accessories.ModulePath);   // Should this be here?
+
+        _modules.Audio.SoundInit(Model);
     }
 }

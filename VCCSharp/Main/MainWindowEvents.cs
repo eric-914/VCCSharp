@@ -17,13 +17,13 @@ namespace VCCSharp.Main
     {
         private readonly IEvents _events;
         private readonly IKeyboard _keyboard;
-        private readonly IJoystick _joystick;
+        private readonly IJoysticks _joysticks;
 
         public MainWindowEvents(IModules modules)
         {
             _events = modules.Events;
             _keyboard = modules.Keyboard;
-            _joystick = modules.Joystick;
+            _joysticks = modules.Joysticks;
         }
 
         /// <summary>
@@ -46,11 +46,11 @@ namespace VCCSharp.Main
             window.KeyUp += (o, e) => _keyboard.KeyboardHandleKey(e.Key, KeyStates.Up);
             window.Deactivated += (o, e) => _keyboard.SendSavedKeyEvents();
 
-            window.MouseLeftButtonUp += (o, e) => _joystick.SetButtonStatus(MouseButtonStates.LeftUp);
-            window.MouseLeftButtonDown += (o, e) => _joystick.SetButtonStatus(MouseButtonStates.LeftDown);
-            window.MouseRightButtonUp += (o, e) => _joystick.SetButtonStatus(MouseButtonStates.RightUp);
-            window.MouseRightButtonDown += (o, e) => _joystick.SetButtonStatus(MouseButtonStates.RightDown);
-            window.MouseMove += (o, e) => _joystick.SetJoystick(window.RenderSize, Mouse.GetPosition(window));
+            window.MouseLeftButtonUp += (o, e) => _joysticks.SetButtonStatus(MouseButtonStates.LeftUp);
+            window.MouseLeftButtonDown += (o, e) => _joysticks.SetButtonStatus(MouseButtonStates.LeftDown);
+            window.MouseRightButtonUp += (o, e) => _joysticks.SetButtonStatus(MouseButtonStates.RightUp);
+            window.MouseRightButtonDown += (o, e) => _joysticks.SetButtonStatus(MouseButtonStates.RightDown);
+            window.MouseMove += (o, e) => _joysticks.SetJoystick(window.RenderSize, Mouse.GetPosition(window));
         }
 
         private static void Bind(FrameworkElement view, MainWindowViewModel viewModel)

@@ -35,6 +35,7 @@ namespace VCCSharp
         public void LoadConfiguration()
         {
             _modules.ConfigurationModule.LoadFrom();
+            _modules.Emu.ResetPending = ResetPendingStates.Hard;
         }
 
         public void HardReset() //F9

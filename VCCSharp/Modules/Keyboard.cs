@@ -5,6 +5,7 @@ using System.Windows.Input;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
+using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Models.Keyboard.Definitions;
 using VCCSharp.Models.Keyboard.Layouts;
@@ -71,10 +72,10 @@ namespace VCCSharp.Modules
             byte mask = 1;
             byte retVal = 0;
 
-            IJoystick joystick = _modules.Joystick;
+            IJoysticks joysticks = _modules.Joysticks;
             IMC6821 mc6821 = _modules.MC6821;
 
-            //JoystickStates joystickState = _modules.Joystick.States;
+            //JoystickStates joystickState = _modules.Joysticks.States;
 
             for (byte x = 0; x < 8; x++)
             {
@@ -89,37 +90,37 @@ namespace VCCSharp.Modules
             retVal = (byte)(127 - retVal);
 
             //Collect CA2 and CB2 from the PIA (1of4 Multiplexer)
-            _modules.Joystick.StickValue = (ushort)joystick.GetPotValue(mc6821.GetMuxState());
+            _modules.Joysticks.StickValue = (ushort)joysticks.GetPotValue(mc6821.GetMuxState());
 
-            if (_modules.Joystick.StickValue != 0)		//OS9 joyin routine needs this (koronis rift works now)
+            if (_modules.Joysticks.StickValue != 0)		//OS9 joyin routine needs this (koronis rift works now)
             {
-                if (_modules.Joystick.StickValue >= mc6821.DACState())		// Set bit of stick >= DAC output $FF20 Bits 7-2
+                if (_modules.Joysticks.StickValue >= mc6821.DACState())		// Set bit of stick >= DAC output $FF20 Bits 7-2
                 {
                     retVal |= 0x80;
                 }
             }
 
-            if (_modules.Joystick.Left.Button1)
+            if (_modules.Joysticks.Left.Button1)
             {
                 //Left Joystick Button 1 Down?
                 retVal &= 0xFD;
             }
 
-            if (_modules.Joystick.Right.Button1)
+            if (_modules.Joysticks.Right.Button1)
             {
-                //Right Joystick Button 1 Down?
+                //Right Joysticks Button 1 Down?
                 retVal &= 0xFE;
             }
 
-            if (_modules.Joystick.Left.Button2)
+            if (_modules.Joysticks.Left.Button2)
             {
-                //Left Joystick Button 2 Down?
+                //Left Joysticks Button 2 Down?
                 retVal &= 0xF7;
             }
 
-            if (_modules.Joystick.Right.Button2)
+            if (_modules.Joysticks.Right.Button2)
             {
-                //Right Joystick Button 2 Down?
+                //Right Joysticks Button 2 Down?
                 retVal &= 0xFB;
             }
 
@@ -329,12 +330,13 @@ namespace VCCSharp.Modules
             // Save key down in case focus is lost
             SaveLastTwoKeyDownEvents(scanCode);
 
-            JoystickModel left = _modules.Joystick.GetLeftJoystick();
-            JoystickModel right = _modules.Joystick.GetRightJoystick();
+            Joystick left = _modules.Joysticks.GetLeftJoystick();
+            Joystick right = _modules.Joysticks.GetRightJoystick();
 
-            if (left.InputSource == JoystickDevices.Keyboard || right.InputSource == JoystickDevices.Keyboard)
+            //TODO: Why check for keyboard only to set mouse?
+            if (left.InputSource.Value == JoystickDevices.Keyboard || right.InputSource.Value == JoystickDevices.Keyboard)
             {
-                scanCode = _modules.Joystick.SetMouseStatus(scanCode, 1);
+                scanCode = _modules.Joysticks.SetMouseStatus(scanCode, 1);
             }
 
             // track key is down
@@ -350,12 +352,13 @@ namespace VCCSharp.Modules
 
         private void KeyboardHandleKeyUp(byte scanCode)
         {
-            JoystickModel left = _modules.Joystick.GetLeftJoystick();
-            JoystickModel right = _modules.Joystick.GetRightJoystick();
+            Joystick left = _modules.Joysticks.GetLeftJoystick();
+            Joystick right = _modules.Joysticks.GetRightJoystick();
 
-            if (left.InputSource == JoystickDevices.Keyboard || right.InputSource == JoystickDevices.Keyboard)
+            //TODO: Why check for keyboard only to set mouse?
+            if (left.InputSource.Value == JoystickDevices.Keyboard || right.InputSource.Value == JoystickDevices.Keyboard)
             {
-                scanCode = _modules.Joystick.SetMouseStatus(scanCode, 0);
+                scanCode = _modules.Joysticks.SetMouseStatus(scanCode, 0);
             }
 
             // reset key (released)

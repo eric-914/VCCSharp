@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
+using VCCSharp.Models.Configuration;
 using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules
@@ -11,6 +12,7 @@ namespace VCCSharp.Modules
     {
         List<string> FindSoundDevices();
 
+        void SoundInit(IConfigurationRoot model);
         void SoundInit(HWND hWnd, int index, AudioRates rate);
         short SoundDeInit();
 
@@ -48,6 +50,13 @@ namespace VCCSharp.Modules
         {
             _modules = modules;
             _sound = sound;
+        }
+
+        public void SoundInit(IConfigurationRoot model)
+        {
+            int deviceIndex = FindSoundDevices().IndexOf(model.Audio.Device);
+
+            SoundInit(_modules.Emu.WindowHandle, deviceIndex, model.Audio.Rate.Value);
         }
 
         public void SoundInit(HWND hWnd, int index, AudioRates rate)
