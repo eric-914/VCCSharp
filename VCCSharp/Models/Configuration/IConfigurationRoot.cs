@@ -13,4 +13,6 @@ public interface IConfigurationRoot
     FilePaths FilePaths { get; }
     Startup Startup { get; }
     Accessories Accessories { get; }
+    CassetteRecorder CassetteRecorder { get; }
+    SerialPort SerialPort { get; }
 }

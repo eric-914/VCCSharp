@@ -255,7 +255,7 @@ public class PAKInterface : IPAKInterface
         {
             moduleParams |= 2048;
 
-            InvokeSetIniPath(_modules.ConfigurationModule.FilePath);
+            InvokeSetIniPath(_modules.ConfigurationModule.GetFilePath());
         }
 
         if (HasPakSetCart())
@@ -329,7 +329,7 @@ public class PAKInterface : IPAKInterface
         return HasModuleAudioSample() ? ReadModuleAudioSample() : (ushort)0;
     }
 
-    public int FileId(string filename)
+    private static int FileId(string filename)
     {
         if (!File.Exists(filename)) return 0;   //File Doesn't exist
 

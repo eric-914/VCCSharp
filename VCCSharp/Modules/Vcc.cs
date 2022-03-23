@@ -6,6 +6,7 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Main;
 using VCCSharp.Models;
+using VCCSharp.Properties;
 
 namespace VCCSharp.Modules;
 
@@ -70,7 +71,7 @@ public class Vcc : IVcc
 
     public void SetAppTitle(string binFileName)
     {
-        string appTitle = _modules.ConfigurationModule.AppTitle;
+        string appTitle = Resources.ResourceManager.GetString("AppTitle") ?? "VCCSharp";
 
         if (!string.IsNullOrEmpty(binFileName))
         {
@@ -174,19 +175,14 @@ public class Vcc : IVcc
         //}
 
         string audioDevice = configuration.Audio.Device;
-        int audioDeviceIndex = _modules.ConfigurationModule.SoundDevices.IndexOf(audioDevice);
-
-        //string leftDevice = configuration.Joysticks.Left.Device;
-        //int leftDeviceIndex = _modules.ConfigurationModule.JoystickDevices.IndexOf(leftDevice);
-        int leftDeviceIndex = configuration.Joysticks.Left.DeviceIndex;
-
-        //string rightDevice = configuration.Joysticks.Right.Device;
-        //int rightDeviceIndex = _modules.ConfigurationModule.JoystickDevices.IndexOf(rightDevice);
-        int rightDeviceIndex = configuration.Joysticks.Right.DeviceIndex;
+        int audioDeviceIndex = _modules.Audio.FindSoundDevices().IndexOf(audioDevice);
 
         _modules.Audio.SoundInit(_modules.Emu.WindowHandle, audioDeviceIndex, configuration.Audio.Rate.Value);
 
         _modules.Keyboard.KeyboardBuildRuntimeTable(configuration.Keyboard.Layout.Value);
+
+        int leftDeviceIndex = configuration.Joysticks.Left.DeviceIndex;
+        int rightDeviceIndex = configuration.Joysticks.Right.DeviceIndex;
 
         _modules.Joystick.SetStickNumbers(leftDeviceIndex, rightDeviceIndex);
     }

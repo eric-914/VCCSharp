@@ -22,7 +22,7 @@ namespace VCCSharp.Modules
         void SetJoystick(System.Windows.Size clientSize, System.Windows.Point point);
         byte SetMouseStatus(byte scanCode, byte phase);
 
-        int get_pot_value(byte pot);
+        int GetPotValue(byte pot);
 
         ushort StickValue { get; set; }
 
@@ -90,7 +90,7 @@ namespace VCCSharp.Modules
             _rightId = rightStickNumber;
         }
 
-        public int get_pot_value(byte pot)
+        public int GetPotValue(byte pot)
         {
             bool useLeft = _left.InputSource == JoystickDevices.Joystick;
             bool useRight = _right.InputSource == JoystickDevices.Joystick;
@@ -105,22 +105,14 @@ namespace VCCSharp.Modules
                 Right = new JoystickState(_input.JoystickPoll(_rightId));
             }
 
-            switch (pot)
+            return pot switch
             {
-                case 0:
-                    return Right.X;
-
-                case 1:
-                    return Right.Y;
-
-                case 2:
-                    return Left.X;
-
-                case 3:
-                    return Left.Y;
-            }
-
-            return 0;
+                0 => Right.X,
+                1 => Right.Y,
+                2 => Left.X,
+                3 => Left.Y,
+                _ => 0
+            };
         }
 
         public void SetButtonStatus(MouseButtonStates state)

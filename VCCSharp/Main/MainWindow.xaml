@@ -6,7 +6,7 @@
         xmlns:model="clr-namespace:VCCSharp.Main"
         xmlns:controls="clr-namespace:VCCSharp.Main.Controls"
         mc:Ignorable="d"
-        Title="VCCSharp"
+        Title="{Binding Title}"
         Width="{Binding WindowWidth, Mode=TwoWay}"
         Height="{Binding WindowHeight, Mode=TwoWay}">
   <Window.DataContext>

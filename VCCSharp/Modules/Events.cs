@@ -75,12 +75,14 @@ namespace VCCSharp.Modules
 
         public void SlowDown() //F3
         {
-            _modules.ConfigurationModule.DecreaseOverclockSpeed();
+            _modules.ConfigurationModule.Model.CPU.AdjustOverclockSpeed(-1);
+            _modules.Emu.ResetPending = ResetPendingStates.ClsSynch; // Without this, changing the configurationModule does nothing.
         }
 
         public void SpeedUp() //F4
         {
-            _modules.ConfigurationModule.IncreaseOverclockSpeed();
+            _modules.ConfigurationModule.Model.CPU.AdjustOverclockSpeed(1);
+            _modules.Emu.ResetPending = ResetPendingStates.ClsSynch; // Without this, changing the configurationModule does nothing.
         }
 
         public void ToggleMonitorType() //F6
@@ -133,7 +135,7 @@ namespace VCCSharp.Modules
         {
             Size wSize = window.Window.RenderSize;
             Size vSize = window.View.RenderSize;
-            Size size = new Size(wSize.Width + 640 - vSize.Width, wSize.Height + 480 - vSize.Height);
+            Size size = new(wSize.Width + 640 - vSize.Width, wSize.Height + 480 - vSize.Height);
 
             window.ViewModel.WindowHeight = size.Height;
             window.ViewModel.WindowWidth = size.Width;

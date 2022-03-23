@@ -1,5 +1,6 @@
 ﻿using System;
 using VCCSharp.Main.ViewModels;
+using VCCSharp.Models.Configuration;
 using VCCSharp.Modules;
 
 namespace VCCSharp.BitBanger;
@@ -8,29 +9,20 @@ public class BitBangerViewModel : NotifyViewModel
 {
     private const string NoFile = "No Capture File";
 
-    //TODO: Remove STATIC once safe
-    private static IConfigurationModule? _config;
-
     private string _serialCaptureFile = NoFile;
 
-    public IConfigurationModule? Config
-    {
-        get => _config;
-        set
-        {
-            if (_config != null) return;
+    public SerialPort Model { get; set; } = new();
 
-            _config = value;
-        }
+    public IConfigurationModule ConfigurationModule
+    {
+        set => Model = value.Model.SerialPort;
     }
 
     public string? SerialCaptureFile
     {
         get
         {
-            if (Config == null) return string.Empty;
-
-            string? file = Config.SerialCaptureFile;
+            string? file = Model.SerialCaptureFile;
 
             _serialCaptureFile = string.IsNullOrEmpty(file) ? NoFile : file;
 
@@ -40,18 +32,14 @@ public class BitBangerViewModel : NotifyViewModel
         {
             if (value == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(value));
             }
 
             if (value == _serialCaptureFile) return;
 
             _serialCaptureFile = value;
 
-            if (Config == null)
-            {
-                throw new Exception("Configuration is missing");
-            }
-            Config.SerialCaptureFile = value;
+            Model.SerialCaptureFile = value;
 
             OnPropertyChanged();
         }
@@ -59,32 +47,24 @@ public class BitBangerViewModel : NotifyViewModel
 
     public bool AddLineFeed
     {
-        get => Config is { TextMode: true };
+        get => Model is { TextMode: true };
         set
         {
-            if (Config == null)
-            {
-                throw new Exception("Configuration is missing");
-            }
-            if (value == Config.TextMode) return;
+            if (value == Model.TextMode) return;
 
-            Config.TextMode = value;
+            Model.TextMode = value;
             OnPropertyChanged();
         }
     }
 
     public bool Print
     {
-        get => Config is { PrintMonitorWindow: true };
+        get => Model is { PrintMonitorWindow: true };
         set
         {
-            if (Config == null)
-            {
-                throw new Exception("Configuration is missing");
-            }
-            if (value == Config.PrintMonitorWindow) return;
+            if (value == Model.PrintMonitorWindow) return;
 
-            Config.PrintMonitorWindow = value;
+            Model.PrintMonitorWindow = value;
             OnPropertyChanged();
         }
     }

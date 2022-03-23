@@ -52,6 +52,8 @@ public class ViewModelFactory : IViewModelFactory
         var right = new JoystickViewModel(JoystickSides.Right, configurationModule.Model.Joysticks.Right, services);
         var spectrum = new AudioSpectrum();
 
-        return new ConfigurationViewModel(configurationModule, left, right, spectrum);
+        var soundDevices = _factory.Get<IModules>().Audio.FindSoundDevices();
+
+        return new ConfigurationViewModel(configurationModule, left, right, spectrum, soundDevices);
     }
 }

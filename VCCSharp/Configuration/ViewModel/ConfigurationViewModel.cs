@@ -11,14 +11,14 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
 {
     public AudioSpectrum Spectrum { get; }
 
-    public ConfigurationViewModel(IConfigurationModule configurationModule, JoystickViewModel left, JoystickViewModel right, AudioSpectrum spectrum)
+    public ConfigurationViewModel(IConfigurationModule configurationModule, JoystickViewModel left, JoystickViewModel right, AudioSpectrum spectrum, List<string> soundDevices)
     {
         Model = configurationModule.Model;
 
         Left = left;
         Right = right;
 
-        SoundDevices = configurationModule.SoundDevices;
+        SoundDevices = soundDevices;
         Spectrum = spectrum;
     }
 

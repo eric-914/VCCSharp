@@ -3,92 +3,91 @@ using System.IO;
 using System.Windows;
 using VCCSharp.IoC;
 
-namespace VCCSharp.BitBanger
+namespace VCCSharp.BitBanger;
+
+public class BitBangerManager : IBitBanger
 {
-    public class BitBangerManager : IBitBanger
+    private readonly IModules _modules;
+
+    private readonly BitBangerViewModel _viewModel = new();
+    private BitBangerWindow? _view;
+
+    public BitBangerManager(IModules modules)
     {
-        private readonly IModules _modules;
+        _modules = modules;
 
-        private readonly BitBangerViewModel _viewModel = new();
-        private BitBangerWindow? _view;
-
-        public BitBangerManager(IModules modules)
+        _viewModel.PropertyChanged += (_, args) =>
         {
-            _modules = modules;
-
-            _viewModel.PropertyChanged += (_, args) =>
+            switch (args.PropertyName)
             {
-                switch (args.PropertyName)
-                {
-                    case "AddLineFeed":
-                        _modules.MC6821.SetSerialParams(_modules.ConfigurationModule.TextMode);
-                        break;
+                case "AddLineFeed":
+                    _modules.MC6821.SetSerialParams(_modules.ConfigurationModule.Model.SerialPort.TextMode);
+                    break;
 
-                    case "Print":
-                        _modules.MC6821.SetMonState(_modules.ConfigurationModule.PrintMonitorWindow);
-                        break;
-                }
-            };
-        }
-
-        public void ShowDialog()
-        {
-            _viewModel.Config = _modules.ConfigurationModule;
-
-            _view ??= new BitBangerWindow(_viewModel, this);
-
-            _view.Show();
-        }
-
-        public void Open()
-        {
-            string? szFileName = _modules.ConfigurationModule.SerialCaptureFile;
-            string appPath = Path.GetDirectoryName(szFileName) ?? "C:\\";
-
-            var openFileDlg = new Microsoft.Win32.OpenFileDialog
-            {
-                FileName = szFileName,
-                DefaultExt = ".txt",
-                Filter = "Text files (.txt)|*.txt",
-                InitialDirectory = appPath,
-                CheckFileExists = true,
-                ShowReadOnly = false,
-                Title = "Open print capture file"
-            };
-
-            if (openFileDlg.ShowDialog() == true)
-            {
-                string? serialCaptureFile = openFileDlg.FileName;
-
-                if (serialCaptureFile == null)
-                {
-                    throw new Exception("Invalid serial capture file name");
-                }
-
-                if (_modules.MC6821.OpenPrintFile(serialCaptureFile) == 0)
-                {
-                    MessageBox.Show($"Can't Open File {serialCaptureFile}", "Can't open the file specified.");
-                }
-
-                _viewModel.SerialCaptureFile = serialCaptureFile;
-
-                serialCaptureFile = Path.GetFileName(openFileDlg.FileName);
-
-                _modules.ConfigurationModule.SerialCaptureFile = serialCaptureFile;
+                case "Print":
+                    _modules.MC6821.SetMonState(_modules.ConfigurationModule.Model.SerialPort.PrintMonitorWindow);
+                    break;
             }
-        }
+        };
+    }
 
-        public void Close()
+    public void ShowDialog()
+    {
+        _viewModel.ConfigurationModule = _modules.ConfigurationModule;
+
+        _view ??= new BitBangerWindow(_viewModel, this);
+
+        _view.Show();
+    }
+
+    public void Open()
+    {
+        string? filename = _modules.ConfigurationModule.Model.SerialPort.SerialCaptureFile;
+        string appPath = Path.GetDirectoryName(filename) ?? "C:\\";
+
+        var openFileDlg = new Microsoft.Win32.OpenFileDialog
         {
-            _modules.MC6821.ClosePrintFile();
+            FileName = filename,
+            DefaultExt = ".txt",
+            Filter = "Text files (.txt)|*.txt",
+            InitialDirectory = appPath,
+            CheckFileExists = true,
+            ShowReadOnly = false,
+            Title = "Open print capture file"
+        };
 
-            _viewModel.SerialCaptureFile = null;
+        if (openFileDlg.ShowDialog() == true)
+        {
+            string? serialCaptureFile = openFileDlg.FileName;
 
-            _modules.ConfigurationModule.PrintMonitorWindow = false;
+            if (serialCaptureFile == null)
+            {
+                throw new Exception("Invalid serial capture file name");
+            }
 
-            _modules.MC6821.SetMonState(_modules.ConfigurationModule.PrintMonitorWindow);
+            if (_modules.MC6821.OpenPrintFile(serialCaptureFile) == 0)
+            {
+                MessageBox.Show($"Can't Open File {serialCaptureFile}", "Can't open the file specified.");
+            }
 
-            _viewModel.Print = false;
+            _viewModel.SerialCaptureFile = serialCaptureFile;
+
+            serialCaptureFile = Path.GetFileName(openFileDlg.FileName);
+
+            _modules.ConfigurationModule.Model.SerialPort.SerialCaptureFile = serialCaptureFile;
         }
+    }
+
+    public void Close()
+    {
+        _modules.MC6821.ClosePrintFile();
+
+        _viewModel.SerialCaptureFile = null;
+
+        _modules.ConfigurationModule.Model.SerialPort.PrintMonitorWindow = false;
+
+        _modules.MC6821.SetMonState(_modules.ConfigurationModule.Model.SerialPort.PrintMonitorWindow);
+
+        _viewModel.Print = false;
     }
 }

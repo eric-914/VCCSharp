@@ -1,6 +1,6 @@
-﻿using System;
-using VCCSharp.Enums;
+﻿using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
+using VCCSharp.Models.Configuration;
 using VCCSharp.Modules;
 
 namespace VCCSharp.TapePlayer;
@@ -9,31 +9,22 @@ public class TapePlayerViewModel : NotifyViewModel
 {
     private const string NoFile = "EMPTY";
 
-    //TODO: Remove STATIC once safe
-    private static IConfigurationModule? _config;
-
     private string _filePath = "Sample Browse File Text";
     private TapeModes _mode = TapeModes.Stop;
     private int _counter;
 
-    public IConfigurationModule? Config
-    {
-        get => _config;
-        set
-        {
-            if (_config != null) return;
+    public CassetteRecorder Model { get; set; } = new();
 
-            _config = value;
-        }
+    public IConfigurationModule ConfigurationModule
+    {
+        set => Model = value.Model.CassetteRecorder;
     }
 
     public string FilePath
     {
         get
         {
-            if (Config == null) return string.Empty;
-
-            string? file = Config.TapeFileName;
+            string? file = Model.TapeFileName;
 
             _filePath = string.IsNullOrEmpty(file) ? NoFile : file;
 
@@ -45,12 +36,7 @@ public class TapePlayerViewModel : NotifyViewModel
 
             _filePath = value;
 
-            if (Config == null)
-            {
-                throw new Exception("Configuration is undefined");
-            }
-
-            Config.TapeFileName = value;
+            Model.TapeFileName = value;
 
             OnPropertyChanged();
         }
@@ -76,12 +62,7 @@ public class TapePlayerViewModel : NotifyViewModel
             if (value == _counter) return;
             _counter = value;
 
-            if (Config == null)
-            {
-                throw new Exception("Configuration is undefined");
-            }
-
-            Config.TapeCounter = value;
+            Model.TapeCounter = value;
 
             OnPropertyChanged();
         }

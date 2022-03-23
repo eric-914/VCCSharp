@@ -1,11 +1,13 @@
 ﻿using System.Windows;
 using VCCSharp.Main.ViewModels;
 using VCCSharp.Menu;
+using VCCSharp.Properties;
 
 namespace VCCSharp.Main;
 
 public class MainWindowViewModel : NotifyViewModel
 {
+    public string Title { get; set; } = Resources.ResourceManager.GetString("AppTitle") ?? "VCCSharp";
     public IMainMenu MenuItems { get; set; } = default!;
     public IStatus Status { get; set; } = default!;
 

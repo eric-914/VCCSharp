@@ -89,7 +89,7 @@ namespace VCCSharp.Modules
             retVal = (byte)(127 - retVal);
 
             //Collect CA2 and CB2 from the PIA (1of4 Multiplexer)
-            _modules.Joystick.StickValue = (ushort)joystick.get_pot_value(mc6821.GetMuxState());
+            _modules.Joystick.StickValue = (ushort)joystick.GetPotValue(mc6821.GetMuxState());
 
             if (_modules.Joystick.StickValue != 0)		//OS9 joyin routine needs this (koronis rift works now)
             {
