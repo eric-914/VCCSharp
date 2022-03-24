@@ -5,6 +5,7 @@ using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Libraries.Models;
 using VCCSharp.Models;
+using VCCSharp.Models.Configuration;
 using VCCSharp.Modules.TC1014;
 using static System.IntPtr;
 using Point = System.Drawing.Point;
@@ -17,7 +18,7 @@ namespace VCCSharp.Modules
         bool CreateDirectDrawWindow();
         void DoCls();
         void FullScreenToggle();
-        void SetAspect(bool forceAspect);
+        void SetAspect();
         void SetStatusBarText(string textBuffer);
         float Static();
 
@@ -34,6 +35,7 @@ namespace VCCSharp.Modules
         #region Properties
 
         private readonly IModules _modules;
+        private readonly IConfigurationRoot _configuration;
         private readonly IUser32 _user32;
         private readonly IGdi32 _gdi32;
 
@@ -54,9 +56,10 @@ namespace VCCSharp.Modules
 
         #endregion
 
-        public Draw(IModules modules, IUser32 user32, IGdi32 gdi32, IDxDraw draw)
+        public Draw(IModules modules, IConfigurationRoot configuration, IUser32 user32, IGdi32 gdi32, IDxDraw draw)
         {
             _modules = modules;
+            _configuration = configuration;
             _user32 = user32;
             _gdi32 = gdi32;
             _draw = draw;
@@ -157,9 +160,9 @@ namespace VCCSharp.Modules
             _modules.Audio.PauseAudio(false);
         }
 
-        public void SetAspect(bool forceAspect)
+        public void SetAspect()
         {
-            _forceAspect = forceAspect;
+            _forceAspect = _configuration.Video.ForceAspect;
         }
 
         public void SetStatusBarText(string text)

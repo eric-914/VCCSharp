@@ -198,7 +198,7 @@ public class ConfigurationModule : IConfigurationModule
         _modules.Graphics.SetPaletteType();
         _modules.Graphics.SetScanLines();
 
-        _modules.Draw.SetAspect(Model.Video.ForceAspect);
+        _modules.Draw.SetAspect();
 
         _modules.MC6821.SetCartAutoStart(Model.Startup.CartridgeAutoStart);
 
