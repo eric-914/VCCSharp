@@ -2,6 +2,7 @@
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using VCCSharp.Models.Configuration;
 using HANDLE = System.IntPtr;
 
 namespace VCCSharp.Modules
@@ -12,7 +13,7 @@ namespace VCCSharp.Modules
         void PiaReset();
         void IrqFs(PhaseStates phase);
         void IrqHs(PhaseStates phase);
-        void SetCartAutoStart(bool autoStart);
+        void SetCartAutoStart();
         void ClosePrintFile();
         void SetMonState(bool state);
         void SetSerialParams(bool textMode);
@@ -34,6 +35,7 @@ namespace VCCSharp.Modules
     public class MC6821 : IMC6821
     {
         private readonly IModules _modules;
+        private readonly IConfigurationRoot _configuration;
         private readonly IKernel _kernel;
 
         private bool _addLf;
@@ -55,15 +57,16 @@ namespace VCCSharp.Modules
 
         public bool CartAutoStart;
 
-        public MC6821(IModules modules, IKernel kernel)
+        public MC6821(IModules modules, IConfigurationRoot configuration, IKernel kernel)
         {
             _modules = modules;
+            _configuration = configuration;
             _kernel = kernel;
         }
 
-        public void SetCartAutoStart(bool autoStart)
+        public void SetCartAutoStart()
         {
-            CartAutoStart = autoStart;
+            CartAutoStart = _configuration.Startup.CartridgeAutoStart;
         }
 
         public void IrqHs(PhaseStates phase) //63.5 uS

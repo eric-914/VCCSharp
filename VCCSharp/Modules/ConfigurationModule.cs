@@ -200,7 +200,7 @@ public class ConfigurationModule : IConfigurationModule
 
         _modules.Draw.SetAspect();
 
-        _modules.MC6821.SetCartAutoStart(Model.Startup.CartridgeAutoStart);
+        _modules.MC6821.SetCartAutoStart();
 
         //--Synch joysticks to configurationModule instance
         _modules.Joysticks.SetLeftJoystick(Model.Joysticks.Left);
