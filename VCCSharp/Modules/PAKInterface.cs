@@ -5,6 +5,7 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using VCCSharp.Models.Configuration;
 using static System.IntPtr;
 using HINSTANCE = System.IntPtr;
 
@@ -17,7 +18,7 @@ public interface IPAKInterface
     void GetModuleStatus();
     void ResetBus();
     void UpdateBusPointer();
-    int InsertModule(bool emulationRunning, string modulePath);
+    int InsertModule();
     void PakTimer();
     string? GetCurrentModule();
     byte PakPortRead(byte port);
@@ -35,6 +36,7 @@ public interface IPAKInterface
 public class PAKInterface : IPAKInterface
 {
     private readonly IModules _modules;
+    private readonly IConfigurationRoot _configuration;
     private readonly IKernel _kernel;
 
     // ReSharper disable once InconsistentNaming
@@ -55,16 +57,12 @@ public class PAKInterface : IPAKInterface
 
     private readonly PakInterfaceDelegates _d = new();
 
-    public PAKInterface(IModules modules, IKernel kernel)
+    public PAKInterface(IModules modules, IConfigurationRoot configuration, IKernel kernel)
     {
         _modules = modules;
+        _configuration = configuration;
         _kernel = kernel;
     }
-
-    //public un/safe PakInterfaceDelegates* GetPakInterfaceDelegates()
-    //{
-    //    return Library.PAKInterface.GetPakInterfaceDelegates();
-    //}
 
     public void PakTimer()
     {
@@ -114,8 +112,10 @@ public class PAKInterface : IPAKInterface
         }
     }
 
-    public int InsertModule(bool emulationRunning, string modulePath)
+    public int InsertModule()
     {
+        bool emulationRunning = _modules.Emu.EmulationRunning;
+        string modulePath = _configuration.Accessories.ModulePath;
         int fileType = FileId(modulePath);
 
         return fileType switch

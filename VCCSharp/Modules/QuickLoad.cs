@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
+using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Modules
 {
@@ -15,10 +16,12 @@ namespace VCCSharp.Modules
     public class QuickLoad : IQuickLoad
     {
         private readonly IModules _modules;
+        private readonly IConfigurationRoot _configuration;
 
-        public QuickLoad(IModules modules)
+        public QuickLoad(IModules modules, IConfigurationRoot configuration)
         {
             _modules = modules;
+            _configuration = configuration;
         }
 
         public int QuickStart(string binFileName)
@@ -52,7 +55,8 @@ namespace VCCSharp.Modules
 
             if (modules.Contains(extension))
             {
-                _modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, binFileName);
+                _configuration.Accessories.ModulePath = binFileName;
+                _modules.PAKInterface.InsertModule();
             }
 
             if (extension == ".bin")

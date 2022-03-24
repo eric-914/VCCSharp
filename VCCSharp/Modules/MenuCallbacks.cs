@@ -4,6 +4,7 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Menu;
 using VCCSharp.Models;
+using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Modules
 {
@@ -17,13 +18,15 @@ namespace VCCSharp.Modules
     public class MenuCallbacks : IMenuCallbacks
     {
         private readonly IModules _modules;
+        private readonly IConfigurationRoot _configuration;
         private readonly ICartridge _cartridge;
 
         private bool _loadPakDialogOpen;
 
-        public MenuCallbacks(IModules modules, ICartridge cartridge)
+        public MenuCallbacks(IModules modules, IConfigurationRoot configuration, ICartridge cartridge)
         {
             _modules = modules;
+            _configuration = configuration;
             _cartridge = cartridge;
         }
 
@@ -112,7 +115,8 @@ namespace VCCSharp.Modules
             {
                 filename = openFileDlg.FileName;
 
-                if (_modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, filename) != 0)
+                _configuration.Accessories.ModulePath = filename;
+                if (_modules.PAKInterface.InsertModule() != 0)
                 {
                     return 0;
                 }

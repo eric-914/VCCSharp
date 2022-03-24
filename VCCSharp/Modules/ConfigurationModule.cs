@@ -208,7 +208,7 @@ public class ConfigurationModule : IConfigurationModule
 
         _modules.Keyboard.KeyboardBuildRuntimeTable();
 
-        _modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, Model.Accessories.ModulePath);   // Should this be here?
+        _modules.PAKInterface.InsertModule();   // Should this be here?
 
         _modules.Audio.SoundInit(Model);
     }
