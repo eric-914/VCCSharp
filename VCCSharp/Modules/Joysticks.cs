@@ -125,7 +125,7 @@ public class Joysticks : IJoysticks
                 { MouseButtonStates.LeftUp, () => SetButtonStatus(0, 0) },
                 { MouseButtonStates.LeftDown, () => SetButtonStatus(0, 1) },
                 { MouseButtonStates.RightUp, () => SetButtonStatus(1, 0) },
-                { MouseButtonStates.RightDown, () => SetButtonStatus(1, 1) },
+                { MouseButtonStates.RightDown, () => SetButtonStatus(1, 1) }
             };
 
         map[state]();

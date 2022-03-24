@@ -4,9 +4,7 @@ namespace VCCSharp.Models.Configuration.Support;
 
 public interface IConfigurationPersistence : IPersistence<IConfigurationRoot> { }
 
-public class ConfigurationPersistence : Persistence<ConfigurationRoot>, IConfigurationPersistence
+public class ConfigurationPersistence : Persistence<IConfigurationRoot>, IConfigurationPersistence
 {
     public ConfigurationPersistence(IFactory factory) : base(factory) { }
-
-    public new IConfigurationRoot Load(string path) => base.Load(path);
 }

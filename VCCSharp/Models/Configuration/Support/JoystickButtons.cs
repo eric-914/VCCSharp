@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿#pragma warning disable IDE1006 // Naming Styles
+
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;

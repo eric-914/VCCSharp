@@ -10,13 +10,13 @@ namespace VCCSharp.Models.Configuration.Support;
 /// <summary>
 /// Load/Save an object via the given path.
 /// </summary>
-public interface IPersistence<out T>
+public interface IPersistence<T>
 {
     T Load(string path);
-    void Save(string path, IConfigurationRoot model);
+    void Save(string path, T model);
 }
 
-public abstract class Persistence<T> : IPersistence<T>
+public abstract class Persistence<T> : IPersistence<T> 
 {
     private readonly IFactory _factory;
 
@@ -39,7 +39,8 @@ public abstract class Persistence<T> : IPersistence<T>
         {
             if (File.Exists(path))
             {
-                return JsonConvert.DeserializeAnonymousType(File.ReadAllText(path), instance) ?? instance;
+                var content = File.ReadAllText(path);
+                JsonConvert.PopulateObject(content, instance);
             }
         }
         catch (Exception e)
@@ -50,6 +51,6 @@ public abstract class Persistence<T> : IPersistence<T>
         return instance;
     }
 
-    public void Save(string path, IConfigurationRoot model)
+    public void Save(string path, T model)
         => File.WriteAllText(path, JsonConvert.SerializeObject(model, Formatting.Indented));
 }
