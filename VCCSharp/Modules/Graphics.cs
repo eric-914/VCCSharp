@@ -4,6 +4,7 @@ using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
+using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Graphics;
 using VCCSharp.Modules.TC1014;
 
@@ -22,7 +23,7 @@ namespace VCCSharp.Modules
         void SetVidMask(uint mask);
         void SetPaletteType();
         void SetScanLines(bool scanLines);
-        void SetMonitorType(MonitorTypes type);
+        void SetMonitorType();
         void FlipArtifacts();
         void InvalidateBorder();
         bool CheckState(byte attributes);
@@ -108,6 +109,7 @@ namespace VCCSharp.Modules
 #pragma warning restore IDE1006 // Naming Styles
 
         private readonly IModules _modules;
+        private readonly IConfigurationRoot _configuration;
 
         private readonly GraphicsColors _colors = new();
 
@@ -160,9 +162,10 @@ namespace VCCSharp.Modules
 
         private IntPointer? _surface;
 
-        public Graphics(IModules modules)
+        public Graphics(IModules modules, IConfigurationRoot configuration)
         {
             _modules = modules;
+            _configuration = configuration;
         }
 
         public IntPointer GetGraphicsSurface()
@@ -333,9 +336,9 @@ namespace VCCSharp.Modules
             SetGimeBorderColor(borderColor);
         }
 
-        public void SetMonitorType(MonitorTypes type)
+        public void SetMonitorType()
         {
-            MonitorType = type;
+            MonitorType = _configuration.Video.Monitor.Value;
 
             Debug.WriteLine($"Monitor Type={MonitorType}");
 

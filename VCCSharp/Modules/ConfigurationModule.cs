@@ -194,7 +194,7 @@ public class ConfigurationModule : IConfigurationModule
     {
         _modules.Emu.SetCpuMultiplier();
 
-        _modules.Graphics.SetMonitorType(Model.Video.Monitor.Value);
+        _modules.Graphics.SetMonitorType();
         _modules.Graphics.SetPaletteType();
         _modules.Graphics.SetScanLines(Model.Video.ScanLines);
 

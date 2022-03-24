@@ -89,7 +89,8 @@ namespace VCCSharp.Modules
         {
             MonitorTypes monType = Graphics.MonitorType == MonitorTypes.Composite ? MonitorTypes.RGB : MonitorTypes.Composite;
 
-            _modules.Graphics.SetMonitorType(monType);
+            _modules.Configuration.Video.Monitor.Value = monType;
+            _modules.Graphics.SetMonitorType();
         }
 
         public void ToggleThrottle() //F8
