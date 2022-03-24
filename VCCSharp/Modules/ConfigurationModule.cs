@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using VCCSharp.Enums;
@@ -14,12 +13,6 @@ namespace VCCSharp.Modules;
 
 public class ConfigurationModule : IConfigurationModule
 {
-    private static readonly Dictionary<CPUTypes, string> CPULookup = new()
-    {
-        { CPUTypes.MC6809, "MC6809" },
-        { CPUTypes.HD6309, "HD6309" }
-    };
-
     private readonly IModules _modules;
     private readonly IUser32 _user32;
     private readonly IConfigurationModulePersistence _persistence;
@@ -199,9 +192,6 @@ public class ConfigurationModule : IConfigurationModule
 
     public void SynchSystemWithConfig()
     {
-        _modules.Vcc.CpuName = CPULookup[Model.CPU.Type.Value];
-
-        _modules.Emu.RamSize = Model.Memory.Ram.Value;
         _modules.Emu.FrameSkip = Model.CPU.FrameSkip;
         _modules.Emu.CpuType = Model.CPU.Type.Value;
         _modules.Emu.SetCpuMultiplier(Model.CPU.CpuMultiplier);

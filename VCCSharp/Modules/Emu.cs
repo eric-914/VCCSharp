@@ -2,6 +2,7 @@
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
+using VCCSharp.Models.Configuration;
 using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules;
@@ -19,7 +20,6 @@ public interface IEmu
     CPUTypes CpuType { get; set; }
     int FrameSkip { get; set; }
     bool FullScreen { get; set; }
-    MemorySizes RamSize { get; set; }
     bool ScanLines { get; set; }
     short FrameCounter { get; set; }
     short LineCounter { get; set; } //--Still used in text modes
@@ -39,6 +39,7 @@ public interface IEmu
 public class Emu : IEmu
 {
     private readonly IModules _modules;
+    private readonly IConfigurationRoot _configuration;
 
     public HWND WindowHandle { get; set; }
 
@@ -47,7 +48,6 @@ public class Emu : IEmu
     public int FrameSkip { get; set; }
     public bool FullScreen { get; set; }
 
-    public MemorySizes RamSize { get; set; }
     public bool ScanLines { get; set; }
 
     public short FrameCounter { get; set; }
@@ -70,9 +70,10 @@ public class Emu : IEmu
 
     public string? PakPath { get; set; }
 
-    public Emu(IModules modules)
+    public Emu(IModules modules, IConfigurationRoot configuration)
     {
         _modules = modules;
+        _configuration = configuration;
     }
 
     public void SoftReset()
@@ -92,7 +93,7 @@ public class Emu : IEmu
 
     public void HardReset()
     {
-        if (!_modules.TC1014.MmuInit((byte)RamSize))
+        if (!_modules.TC1014.MmuInit(_configuration.Memory.Ram.Value))
         {
             MessageBox.Show("Can't allocate enough RAM, out of memory", "Error");
 

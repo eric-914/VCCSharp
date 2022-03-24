@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -14,7 +15,7 @@ public interface ITC1014
     void MC6883Reset();
     void CopyRom();
     void MmuReset();
-    bool MmuInit(byte ramSizeOption);
+    bool MmuInit(MemorySizes ramSizeOption);
     byte MemRead8(ushort address);
     void MemWrite8(byte data, ushort address);
     void GimeAssertVerticalInterrupt();
@@ -41,13 +42,95 @@ public partial class TC1014 : ITC1014
     private readonly IModules _modules;
     private IGraphics Graphics => _modules.Graphics;
 
-    private readonly uint[] _memConfig = { 0x20000, 0x80000, 0x200000, 0x800000 };
-    private readonly ushort[] _ramMask = { 15, 63, 255, 1023 };
-    private readonly byte[] _stateSwitch = { 8, 56, 56, 56 };
-    private readonly uint[] _vidMask = { 0x1FFFF, 0x7FFFF, 0x1FFFFF, 0x7FFFFF };
+    //private readonly uint[] _memConfig = { 0x20000, 0x80000, 0x200000, 0x800000 };
+    private readonly Dictionary<MemorySizes, uint> _memConfig = new()
+    {
+        //TODO: Verify
+        { MemorySizes._4K, 0x01000 },
+        { MemorySizes._16K, 0x04000 },
+        { MemorySizes._32K, 0x08000 },
+        { MemorySizes._64K, 0x10000 },
 
-    private readonly byte[] _vectorMask = { 15, 63, 63, 63 };
-    private readonly byte[] _vectorMaskA = { 12, 60, 60, 60 };
+        { MemorySizes._128K, 0x20000 },
+        { MemorySizes._512K, 0x80000 },
+        { MemorySizes._2048K, 0x200000 },
+        { MemorySizes._8192K, 0x800000 }
+    };
+
+    //private readonly ushort[] _ramMask = { 15, 63, 255, 1023 };
+    private readonly Dictionary<MemorySizes, ushort> _ramMask = new()
+    {
+        //TODO: Verify
+        { MemorySizes._4K, 0 },
+        { MemorySizes._16K, 1 },
+        { MemorySizes._32K, 3 },
+        { MemorySizes._64K, 7 },
+
+        { MemorySizes._128K, 15 },
+        { MemorySizes._512K, 63 },
+        { MemorySizes._2048K, 255 },
+        { MemorySizes._8192K, 1023 }
+    };
+
+    //private readonly byte[] _stateSwitch = { 8, 56, 56, 56 };
+    private readonly Dictionary<MemorySizes, byte> _stateSwitch = new()
+    {
+        //TODO: Verify
+        { MemorySizes._4K, 8 },
+        { MemorySizes._16K, 8 },
+        { MemorySizes._32K, 8 },
+        { MemorySizes._64K, 8 },
+
+        { MemorySizes._128K, 8 },
+        { MemorySizes._512K, 56 },
+        { MemorySizes._2048K, 56 },
+        { MemorySizes._8192K, 56 }
+    };
+
+    //private readonly uint[] _vidMask = { 0x1FFFF, 0x7FFFF, 0x1FFFFF, 0x7FFFFF };
+    private readonly Dictionary<MemorySizes, uint> _vidMask = new()
+    {
+        //TODO: Verify
+        { MemorySizes._4K, 0x0FFF },
+        { MemorySizes._16K, 0x3FFF },
+        { MemorySizes._32K, 0x7FFF },
+        { MemorySizes._64K, 0xFFFF },
+
+        { MemorySizes._128K, 0x1FFFF },
+        { MemorySizes._512K, 0x7FFFF },
+        { MemorySizes._2048K, 0x1FFFFF },
+        { MemorySizes._8192K, 0x7FFFFF }
+    };
+
+    //private readonly byte[] _vectorMask = { 15, 63, 63, 63 };
+    private readonly Dictionary<MemorySizes, byte> _vectorMask = new()
+    {
+        //TODO: Verify
+        { MemorySizes._4K, 15 },
+        { MemorySizes._16K, 15 },
+        { MemorySizes._32K, 15 },
+        { MemorySizes._64K, 15 },
+
+        { MemorySizes._128K, 15 },
+        { MemorySizes._512K, 63 },
+        { MemorySizes._2048K, 63 },
+        { MemorySizes._8192K, 63 }
+    };
+
+    //private readonly byte[] _vectorMaskA = { 12, 60, 60, 60 };
+    private readonly Dictionary<MemorySizes, byte> _vectorMaskA = new()
+    {
+        //TODO: Verify
+        { MemorySizes._4K, 12 },
+        { MemorySizes._16K, 12 },
+        { MemorySizes._32K, 12 },
+        { MemorySizes._64K, 12 },
+
+        { MemorySizes._128K, 12 },
+        { MemorySizes._512K, 60 },
+        { MemorySizes._2048K,60 },
+        { MemorySizes._8192K,60 }
+    };
 
     private byte _vdgMode;
     private byte _disOffset;
@@ -72,7 +155,7 @@ public partial class TC1014 : ITC1014
     private byte _mmuState;	// Composite variable handles MmuTask and MmuEnabled
     private byte _mapType;	// $FFDE/FFDF toggle Map type 0 = ram/rom
 
-    private byte _currentRamConfig = 1;
+    private MemorySizes _currentRamConfig = MemorySizes._512K;
 
     private readonly byte[] _gimeRegisters = new byte[256];
     private readonly ushort[] _memPageOffsets = new ushort[1024];
@@ -189,7 +272,7 @@ Could not locate {rom} in any of these locations:
     * Copy Rom Images to buffer space and reset GIME MMU registers to 0                      *
     * Returns NULL if any of the above fail.                                                 *
     *****************************************************************************************/
-    public bool MmuInit(byte ramSizeOption)
+    public bool MmuInit(MemorySizes ramSizeOption)
     {
         uint ramSize = _memConfig[ramSizeOption];
 
@@ -710,19 +793,31 @@ Could not locate {rom} in any of these locations:
     {
         switch (_currentRamConfig)
         {
-            case 0: // 128K
+            case MemorySizes._4K: 
                 return;
 
-            case 1: //512K
+            case MemorySizes._16K: 
                 return;
 
-            case 2: //2048K
+            case MemorySizes._32K: 
+                return;
+
+            case MemorySizes._64K: 
+                return;
+
+            case MemorySizes._128K: 
+                return;
+
+            case MemorySizes._512K: 
+                return;
+
+            case MemorySizes._2048K:
                 Graphics.SetVideoBank((byte)(data & 3));
                 SetMmuPrefix(0);
 
                 return;
 
-            case 3: //8192K	//No Can 3 
+            case MemorySizes._8192K: //No Can 3 
                 Graphics.SetVideoBank((byte)(data & 0x0F));
                 SetMmuPrefix((byte)((data & 0x30) >> 4));
 

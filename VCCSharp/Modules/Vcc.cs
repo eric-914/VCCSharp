@@ -22,7 +22,7 @@ public interface IVcc
 
     bool BinaryRunning { get; set; }
     byte RunState { get; set; }
-    string CpuName { get; set; }
+    string CpuName { get; }
 }
 
 public class Vcc : IVcc
@@ -31,12 +31,18 @@ public class Vcc : IVcc
     private readonly IStatus _status;
     private readonly IConfigurationRoot _configuration;
 
+    private static readonly Dictionary<CPUTypes, string> CPULookup = new()
+    {
+        { CPUTypes.MC6809, "MC6809" },
+        { CPUTypes.HD6309, "HD6309" }
+    };
+
     public bool BinaryRunning { get; set; }
 
     //An IRQ of sorts telling the emulator to pause during Full Screen toggle
     public byte RunState { get; set; } = Define.EMU_RUNSTATE_RUNNING;
 
-    public string CpuName { get; set; } = "(cpu)";
+    public string CpuName => CPULookup[_configuration.CPU.Type.Value];
     public string AppName { get; set; } = "(app)";
 
     public Vcc(IModules modules, IStatus status, IConfigurationRoot configuration)
