@@ -33,6 +33,8 @@ public interface IModules
 
     IHD6309 HD6309 { get; }
     IMC6809 MC6809 { get; }
+
+    void Reset();
 }
 // ReSharper restore InconsistentNaming
 
@@ -93,4 +95,30 @@ public class Modules : IModules
 
     public IHD6309 HD6309 => _factory.Get<IHD6309>();
     public IMC6809 MC6809 => _factory.Get<IMC6809>();
+    
+    /// <summary>
+    /// Tell all the modules to do a full reset.  Happens when the configuration is loaded, or a Hard Reset occurs
+    /// </summary>
+    public void Reset()
+    {
+        Emu.SetCpuMultiplier();
+
+        Graphics.SetMonitorType();
+        Graphics.SetPaletteType();
+        Graphics.SetScanLines();
+
+        Draw.SetAspect();
+
+        MC6821.SetCartAutoStart();
+
+        //--Synch joysticks to configurationModule instance
+        Joysticks.SetLeftJoystick();
+        Joysticks.SetRightJoystick();
+
+        Keyboard.KeyboardBuildRuntimeTable();
+
+        PAKInterface.InsertModule();   // Should this be here?
+
+        Audio.SoundInit();
+    }
 }

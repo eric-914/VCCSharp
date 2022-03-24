@@ -11,6 +11,4 @@ public interface IConfigurationModule
     void LoadFrom();
     void Save();
     void SaveAs();
-
-    void SynchSystemWithConfig();
 }

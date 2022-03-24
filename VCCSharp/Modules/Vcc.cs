@@ -134,7 +134,7 @@ public class Vcc : IVcc
 
             {ResetPendingStates.Hard, () =>
             {
-                _modules.ConfigurationModule.SynchSystemWithConfig();
+                _modules.Reset();
                 _modules.Draw.DoCls();
                 _modules.Emu.HardReset();
             }},
@@ -143,7 +143,7 @@ public class Vcc : IVcc
 
             {ResetPendingStates.ClsSynch, () =>
             {
-                _modules.ConfigurationModule.SynchSystemWithConfig();
+                _modules.Reset();
                 _modules.Draw.DoCls();
             }}
         };

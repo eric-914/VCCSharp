@@ -12,7 +12,7 @@ namespace VCCSharp.Modules
     {
         List<string> FindSoundDevices();
 
-        void SoundInit(IConfigurationRoot model);
+        void SoundInit();
         void SoundInit(HWND hWnd, int index, AudioRates rate);
         short SoundDeInit();
 
@@ -28,6 +28,7 @@ namespace VCCSharp.Modules
     public class Audio : IAudio
     {
         private readonly IModules _modules;
+        private readonly IConfigurationRoot _configuration;
         private readonly IDxSound _sound;
 
         public AudioSpectrum? Spectrum { get; set; }
@@ -46,17 +47,18 @@ namespace VCCSharp.Modules
 
         private bool _mute;
 
-        public Audio(IModules modules, IDxSound sound)
+        public Audio(IModules modules, IConfigurationRoot configuration, IDxSound sound)
         {
             _modules = modules;
+            _configuration = configuration;
             _sound = sound;
         }
 
-        public void SoundInit(IConfigurationRoot model)
+        public void SoundInit()
         {
-            int deviceIndex = FindSoundDevices().IndexOf(model.Audio.Device);
+            int deviceIndex = FindSoundDevices().IndexOf(_configuration.Audio.Device);
 
-            SoundInit(_modules.Emu.WindowHandle, deviceIndex, model.Audio.Rate.Value);
+            SoundInit(_modules.Emu.WindowHandle, deviceIndex, _configuration.Audio.Rate.Value);
         }
 
         public void SoundInit(HWND hWnd, int index, AudioRates rate)

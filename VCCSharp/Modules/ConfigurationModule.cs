@@ -36,7 +36,7 @@ public class ConfigurationModule : IConfigurationModule
 
         Load();
 
-        SynchSystemWithConfig();
+        _modules.Reset();
 
         ConfigureJoysticks();
         
@@ -57,7 +57,7 @@ public class ConfigurationModule : IConfigurationModule
 
         Load();
 
-        SynchSystemWithConfig();
+        _modules.Reset();
     }
 
     public void Load()
@@ -190,26 +190,4 @@ public class ConfigurationModule : IConfigurationModule
         _user32.SetWindowPos(handle, Zero, 0, 0, width + 16, height + 81, (ushort)flags);
     }
 
-    public void SynchSystemWithConfig()
-    {
-        _modules.Emu.SetCpuMultiplier();
-
-        _modules.Graphics.SetMonitorType();
-        _modules.Graphics.SetPaletteType();
-        _modules.Graphics.SetScanLines();
-
-        _modules.Draw.SetAspect();
-
-        _modules.MC6821.SetCartAutoStart();
-
-        //--Synch joysticks to configurationModule instance
-        _modules.Joysticks.SetLeftJoystick();
-        _modules.Joysticks.SetRightJoystick();
-
-        _modules.Keyboard.KeyboardBuildRuntimeTable();
-
-        _modules.PAKInterface.InsertModule();   // Should this be here?
-
-        _modules.Audio.SoundInit(Model);
-    }
 }
