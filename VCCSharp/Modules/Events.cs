@@ -94,7 +94,7 @@ namespace VCCSharp.Modules
 
         public void ToggleThrottle() //F8
         {
-            _modules.Vcc.Throttle = !_modules.Vcc.Throttle;
+            _modules.Configuration.CPU.ThrottleSpeed = !_modules.Configuration.CPU.ThrottleSpeed;
         }
 
         public void ToggleOnOff() //F9

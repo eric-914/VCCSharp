@@ -4,6 +4,7 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Libraries.Models;
+using VCCSharp.Models.Configuration;
 using static System.IntPtr;
 
 namespace VCCSharp;
@@ -24,6 +25,8 @@ public class VccApp : IVccApp
     private readonly IModules _modules;
     private readonly IUser32 _user32;
 
+    private IConfigurationRoot _configuration = default!;
+
     public VccApp(IModules modules, IUser32 user32)
     {
         _modules = modules;
@@ -35,6 +38,8 @@ public class VccApp : IVccApp
         if (iniFile == null) throw new ArgumentNullException(nameof(iniFile));
 
         _modules.ConfigurationModule.Load(iniFile);
+
+        _configuration = _modules.ConfigurationModule.Model;
     }
 
     public void Startup(string? qLoadFile)
@@ -66,7 +71,7 @@ public class VccApp : IVccApp
 
         _modules.Emu.ResetPending = ResetPendingStates.Hard;
 
-        _modules.Emu.EmulationRunning = _modules.Vcc.AutoStart;
+        _modules.Emu.EmulationRunning = _configuration.Startup.AutoStart;
 
         _modules.Vcc.BinaryRunning = true;
 

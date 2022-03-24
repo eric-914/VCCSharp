@@ -254,22 +254,25 @@ namespace VCCSharp.Modules
 
             if (!_modules.Clipboard.ClipboardEmpty())
             {
-                CpuCycleClipboard(_modules.Vcc);
+                CpuCycleClipboard();
             }
         }
 
-        private void CpuCycleClipboard(IVcc vcc)
+        private void CpuCycleClipboard()
         {
             IKey key;
+
+            var configuration = _modules.Configuration;
+
             //Remember the original throttle setting.
             //Set it to off. We need speed for this!
             if (_throttleState == ThrottleStates.Idle)
             {
-                _throttle = vcc.Throttle;
+                _throttle = configuration.CPU.ThrottleSpeed;
                 _throttleState = ThrottleStates.Active;
             }
 
-            vcc.Throttle = false;
+            configuration.CPU.ThrottleSpeed = false;
 
             if (_clipCycle == 1)
             {
@@ -309,7 +312,7 @@ namespace VCCSharp.Modules
                 if (_modules.Clipboard.ClipboardEmpty())
                 {
                     //Done pasting. Reset throttle to original state
-                    vcc.Throttle = _throttle;
+                    configuration.CPU.ThrottleSpeed = _throttle;
 
                     //...and reset the keymap to the original state
                     _modules.Keyboard.ResetKeyboardLayout();

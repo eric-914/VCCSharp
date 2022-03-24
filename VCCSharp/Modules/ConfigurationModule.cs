@@ -199,8 +199,6 @@ public class ConfigurationModule : IConfigurationModule
 
     public void SynchSystemWithConfig()
     {
-        _modules.Vcc.AutoStart = Model.Startup.AutoStart;
-        _modules.Vcc.Throttle = Model.CPU.ThrottleSpeed;
         _modules.Vcc.CpuName = CPULookup[Model.CPU.Type.Value];
 
         _modules.Emu.RamSize = Model.Memory.Ram.Value;

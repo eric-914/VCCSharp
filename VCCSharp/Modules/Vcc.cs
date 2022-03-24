@@ -6,6 +6,7 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Main;
 using VCCSharp.Models;
+using VCCSharp.Models.Configuration;
 using VCCSharp.Properties;
 
 namespace VCCSharp.Modules;
@@ -19,10 +20,8 @@ public interface IVcc
     string GetExecPath();
     void ApplyConfigurationChanges();
 
-    bool AutoStart { get; set; }
     bool BinaryRunning { get; set; }
     byte RunState { get; set; }
-    bool Throttle { get; set; } 
     string CpuName { get; set; }
 }
 
@@ -30,21 +29,21 @@ public class Vcc : IVcc
 {
     private readonly IModules _modules;
     private readonly IStatus _status;
+    private readonly IConfigurationRoot _configuration;
 
-    public bool AutoStart { get; set; } = true;
     public bool BinaryRunning { get; set; }
 
     //An IRQ of sorts telling the emulator to pause during Full Screen toggle
     public byte RunState { get; set; } = Define.EMU_RUNSTATE_RUNNING;
-    public bool Throttle { get; set; } = false;
 
     public string CpuName { get; set; } = "(cpu)";
     public string AppName { get; set; } = "(app)";
 
-    public Vcc(IModules modules, IStatus status)
+    public Vcc(IModules modules, IStatus status, IConfigurationRoot configuration)
     {
         _modules = modules;
         _status = status;
+        _configuration = configuration;
     }
 
     public void CheckScreenModeChange()
@@ -105,7 +104,7 @@ public class Vcc : IVcc
             _status.Mhz = _modules.Emu.CpuCurrentSpeed;
             _status.Status = _modules.Emu.StatusLine;
 
-            if (Throttle)
+            if (_configuration.CPU.ThrottleSpeed)
             {
                 //Do nothing until the frame is over returning unused time to OS
                 _modules.Throttle.FrameWait();
