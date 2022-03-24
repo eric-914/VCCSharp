@@ -22,7 +22,7 @@ namespace VCCSharp.Modules
         void SetBorderChange();
         void SetVidMask(uint mask);
         void SetPaletteType();
-        void SetScanLines(bool scanLines);
+        void SetScanLines();
         void SetMonitorType();
         void FlipArtifacts();
         void InvalidateBorder();
@@ -227,9 +227,9 @@ namespace VCCSharp.Modules
         }
 
         //TODO: ScanLines never really worked right to begin with...
-        public void SetScanLines(bool scanLines)
+        public void SetScanLines()
         {
-            _modules.Emu.ScanLines = scanLines;
+            _modules.Emu.ScanLines = _configuration.Video.ScanLines;
             _modules.Emu.ResetPending = ResetPendingStates.Cls;
 
             _modules.Draw.ClearScreen();
