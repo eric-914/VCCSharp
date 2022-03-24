@@ -16,8 +16,8 @@ public interface IJoysticks
     Joystick GetLeftJoystick();
     Joystick GetRightJoystick();
 
-    void SetLeftJoystick(Joystick model);
-    void SetRightJoystick(Joystick model);
+    void SetLeftJoystick();
+    void SetRightJoystick();
 
     void SetStickNumbers(int leftStickNumber, int rightStickNumber);
     void SetButtonStatus(MouseButtonStates state);
@@ -39,6 +39,7 @@ public class Joysticks : IJoysticks
     private const int MAX = 63;
     private const int CENTER = 32;
 
+    private readonly IConfigurationRoot _configuration;
     private readonly IDxInput _input;
 
     public ushort StickValue { get; set; }
@@ -52,8 +53,9 @@ public class Joysticks : IJoysticks
     private int _leftId;
     private int _rightId;
 
-    public Joysticks(IDxInput input)
+    public Joysticks(IConfigurationRoot configuration, IDxInput input)
     {
+        _configuration = configuration;
         _input = input;
     }
 
@@ -76,14 +78,14 @@ public class Joysticks : IJoysticks
         return _right;
     }
 
-    public void SetLeftJoystick(Joystick model)
+    public void SetLeftJoystick()
     {
-        _left = model;
+        _left = _configuration.Joysticks.Left;
     }
 
-    public void SetRightJoystick(Joystick model)
+    public void SetRightJoystick()
     {
-        _right = model;
+        _right = _configuration.Joysticks.Right;
     }
 
     public void SetStickNumbers(int leftStickNumber, int rightStickNumber)

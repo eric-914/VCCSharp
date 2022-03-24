@@ -17,7 +17,7 @@ namespace VCCSharp.Modules
     {
         void KeyboardHandleKey(Key key, KeyStates keyState);
         void KeyboardHandleKey(byte scanCode, KeyStates keyState);
-        void KeyboardBuildRuntimeTable(KeyboardLayouts keyMapIndex);
+        void KeyboardBuildRuntimeTable();
         void GimeSetKeyboardInterruptState(byte state);
         byte KeyboardGetScan(byte column);
         void SwapKeyboardLayout(KeyboardLayouts newLayout);
@@ -29,6 +29,7 @@ namespace VCCSharp.Modules
     public class Keyboard : IKeyboard
     {
         private readonly IModules _modules;
+        private readonly IConfigurationRoot _configuration;
         private readonly IKeyScanMapper _keyScanMapper;
 
         public bool KeyboardInterruptEnabled { get; set; }
@@ -53,9 +54,10 @@ namespace VCCSharp.Modules
         private byte _scSave2;
         private bool _keySaveToggle;
 
-        public Keyboard(IModules modules, IKeyScanMapper keyScanMapper)
+        public Keyboard(IModules modules, IConfigurationRoot configuration, IKeyScanMapper keyScanMapper)
         {
             _modules = modules;
+            _configuration = configuration;
             _keyScanMapper = keyScanMapper;
         }
 
@@ -164,6 +166,11 @@ namespace VCCSharp.Modules
         public void ResetKeyboardLayout()
         {
             SwapKeyboardLayout(PreviousKeyBoardLayout);
+        }
+
+        public void KeyboardBuildRuntimeTable()
+        {
+            KeyboardBuildRuntimeTable(_configuration.Keyboard.Layout.Value);
         }
 
         /*

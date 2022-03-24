@@ -203,10 +203,10 @@ public class ConfigurationModule : IConfigurationModule
         _modules.MC6821.SetCartAutoStart();
 
         //--Synch joysticks to configurationModule instance
-        _modules.Joysticks.SetLeftJoystick(Model.Joysticks.Left);
-        _modules.Joysticks.SetRightJoystick(Model.Joysticks.Right);
+        _modules.Joysticks.SetLeftJoystick();
+        _modules.Joysticks.SetRightJoystick();
 
-        _modules.Keyboard.KeyboardBuildRuntimeTable(Model.Keyboard.Layout.Value);
+        _modules.Keyboard.KeyboardBuildRuntimeTable();
 
         _modules.PAKInterface.InsertModule(_modules.Emu.EmulationRunning, Model.Accessories.ModulePath);   // Should this be here?
 

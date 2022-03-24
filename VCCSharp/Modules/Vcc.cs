@@ -184,7 +184,7 @@ public class Vcc : IVcc
 
         _modules.Audio.SoundInit(_modules.Emu.WindowHandle, audioDeviceIndex, configuration.Audio.Rate.Value);
 
-        _modules.Keyboard.KeyboardBuildRuntimeTable(configuration.Keyboard.Layout.Value);
+        _modules.Keyboard.KeyboardBuildRuntimeTable();
 
         int leftDeviceIndex = configuration.Joysticks.Left.DeviceIndex;
         int rightDeviceIndex = configuration.Joysticks.Right.DeviceIndex;
