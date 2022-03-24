@@ -192,9 +192,7 @@ public class ConfigurationModule : IConfigurationModule
 
     public void SynchSystemWithConfig()
     {
-        _modules.Emu.FrameSkip = Model.CPU.FrameSkip;
-        _modules.Emu.CpuType = Model.CPU.Type.Value;
-        _modules.Emu.SetCpuMultiplier(Model.CPU.CpuMultiplier);
+        _modules.Emu.SetCpuMultiplier();
 
         _modules.Graphics.SetMonitorType(Model.Video.Monitor.Value);
         _modules.Graphics.SetPaletteType();

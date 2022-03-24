@@ -105,7 +105,7 @@ public class Vcc : IVcc
             _modules.PAKInterface.GetModuleStatus();
 
             _status.Fps = fps;
-            _status.FrameSkip = _modules.Emu.FrameSkip;
+            _status.FrameSkip = _configuration.CPU.FrameSkip;
             _status.CpuName = CpuName;
             _status.Mhz = _modules.Emu.CpuCurrentSpeed;
             _status.Status = _modules.Emu.StatusLine;
@@ -148,7 +148,7 @@ public class Vcc : IVcc
             }}
         };
 
-        for (int frames = 1; frames <= _modules.Emu.FrameSkip; frames++)
+        for (int frames = 1; frames <= _configuration.CPU.FrameSkip; frames++)
         {
             resetActions[_modules.Emu.ResetPending]();
 
@@ -159,7 +159,7 @@ public class Vcc : IVcc
                 : _modules.Draw.Static();
         }
 
-        _modules.Throttle.EndRender(_modules.Emu.FrameSkip);
+        _modules.Throttle.EndRender(_configuration.CPU.FrameSkip);
 
         return fps;
     }

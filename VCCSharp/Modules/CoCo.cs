@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
+using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Keyboard.Mappings;
 
 namespace VCCSharp.Modules
@@ -44,6 +45,7 @@ namespace VCCSharp.Modules
         private Action _audioEvent = () => { };
 
         private readonly IModules _modules;
+        private readonly IConfigurationRoot _configuration;
 
         private static byte _lastMode;
 
@@ -90,9 +92,10 @@ namespace VCCSharp.Modules
         private static readonly IKey ShiftKey = KeyDefinitions.Shift;
         private static readonly IKey ReturnKey = KeyDefinitions.Return;
 
-        public CoCo(IModules modules)
+        public CoCo(IModules modules, IConfigurationRoot configuration)
         {
             _modules = modules;
+            _configuration = configuration;
 
             UpdateTapeDialog = _ => { }; //_modules.ConfigurationModule.UpdateTapeDialog((uint)offset);
         }
@@ -131,7 +134,7 @@ namespace VCCSharp.Modules
 
         private bool RenderVideoFrame()
         {
-            bool skipRender = _modules.Emu.FrameCounter % _modules.Emu.FrameSkip != 0;
+            bool skipRender = _modules.Emu.FrameCounter % _configuration.CPU.FrameSkip != 0;
 
             _modules.Graphics.SetBlinkState(BlinkPhase);
 

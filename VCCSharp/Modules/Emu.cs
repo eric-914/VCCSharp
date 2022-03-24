@@ -13,12 +13,10 @@ public interface IEmu
 
     void SoftReset();
     void HardReset();
-    void SetCpuMultiplier(int multiplier);
+    void SetCpuMultiplier();
     void SetCpuMultiplierFlag(byte doubleSpeed);
     void SetTurboMode(byte data);
 
-    CPUTypes CpuType { get; set; }
-    int FrameSkip { get; set; }
     bool FullScreen { get; set; }
     bool ScanLines { get; set; }
     short FrameCounter { get; set; }
@@ -43,9 +41,6 @@ public class Emu : IEmu
 
     public HWND WindowHandle { get; set; }
 
-    public CPUTypes CpuType { get; set; }
-
-    public int FrameSkip { get; set; }
     public bool FullScreen { get; set; }
 
     public bool ScanLines { get; set; }
@@ -100,7 +95,7 @@ public class Emu : IEmu
             Environment.Exit(0);
         }
 
-        if (CpuType == CPUTypes.HD6309)
+        if (_configuration.CPU.Type.Value == CPUTypes.HD6309)
         {
             _modules.CPU.SetHD6309();
         }
@@ -137,9 +132,9 @@ public class Emu : IEmu
         _modules.Audio.ResetAudio();
     }
 
-    public void SetCpuMultiplier(int multiplier)
+    public void SetCpuMultiplier()
     {
-        DoubleSpeedMultiplier = multiplier;
+        DoubleSpeedMultiplier = _configuration.CPU.CpuMultiplier;
 
         SetCpuMultiplierFlag(DoubleSpeedFlag);
     }
