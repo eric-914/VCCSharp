@@ -9,7 +9,7 @@ using VCCSharp.Models.Keyboard.Mappings;
 
 namespace VCCSharp.Modules;
 
-public interface IClipboard
+public interface IClipboard : IModule
 {
     void PasteText(string text);
     bool ClipboardEmpty();
@@ -312,7 +312,7 @@ public class Clipboard : IClipboard
         char Ascii(byte value) => value < 127 ? _pcChars32[value] : ' ';
         string AsString(IEnumerable<char> line) => string.Concat(line).Trim();
 
-        var lines = 
+        var lines =
             ReadMemoryBlock(startAddress, cols * rows)
                 .Chunk(cols)
                 .Select(line => line.Select(Ascii))
@@ -331,7 +331,14 @@ public class Clipboard : IClipboard
     public IEnumerable<byte> ReadMemoryBlock(uint startAddress, int range)
     {
         return from index in Enumerable.Range(0, range - 1)
-            let address = (ushort)(startAddress + index)
-            select _modules.TC1014.MemRead8(address);
+               let address = (ushort)(startAddress + index)
+               select _modules.TC1014.MemRead8(address);
+    }
+
+    public void Reset()
+    {
+        CodePaste = false;
+        PasteWithNew = false;
+        Abort = false;
     }
 }

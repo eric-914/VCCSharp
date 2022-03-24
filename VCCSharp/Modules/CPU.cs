@@ -5,9 +5,8 @@ using VCCSharp.Models;
 namespace VCCSharp.Modules;
 
 // ReSharper disable InconsistentNaming
-public interface ICPU
+public interface ICPU : IModule
 {
-    void Reset();
     void Init();
     void ForcePC(ushort address);
     int Exec(int cycle);

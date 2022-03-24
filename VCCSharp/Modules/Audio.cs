@@ -8,7 +8,7 @@ using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules
 {
-    public interface IAudio
+    public interface IAudio : IModule
     {
         List<string> FindSoundDevices();
 
@@ -201,5 +201,12 @@ namespace VCCSharp.Modules
         }
 
         public List<string> FindSoundDevices() => _sound.EnumerateSoundCards();
+        
+        public void Reset()
+        {
+            //_initialized = false; //--I think we don't need to re-initialize DxSound
+
+            SoundInit();
+        }
     }
 }

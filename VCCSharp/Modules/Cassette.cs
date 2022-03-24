@@ -5,12 +5,13 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using VCCSharp.Models.Configuration;
 using static System.IntPtr;
 using HANDLE = System.IntPtr;
 
 namespace VCCSharp.Modules;
 
-public interface ICassette
+public interface ICassette : IModule
 {
     HANDLE TapeHandle { get; set; }
 
@@ -35,6 +36,7 @@ public interface ICassette
 public class Cassette : ICassette
 {
     private readonly IModules _modules;
+    private readonly IConfigurationRoot _configuration;
     private readonly IKernel _kernel;
 
     public byte MotorState { get; set; }
@@ -68,9 +70,10 @@ public class Cassette : ICassette
 
     public Action<int> UpdateTapeDialog { get; set; }
 
-    public Cassette(IModules modules, IKernel kernel)
+    public Cassette(IModules modules, IConfigurationRoot configuration, IKernel kernel)
     {
         _modules = modules;
+        _configuration = configuration;
         _kernel = kernel;
 
         UpdateTapeDialog = _ => { }; //_modules.ConfigurationModule.UpdateTapeDialog((uint) offset);
@@ -509,5 +512,30 @@ public class Cassette : ICassette
         {
             _totalSize = TapeOffset;
         }
+    }
+
+    public void Reset()
+    {
+        MotorState = 0;
+        TapeFileName = _configuration.CassetteRecorder.TapeFileName;
+        TapeMode = _configuration.CassetteRecorder.TapeMode;
+
+        //TODO: This may be a problem.
+        TapeOffset = (uint)_configuration.CassetteRecorder.TapeCounter;
+
+        UpdateTapeDialog = _ => { };
+
+        FileType = 0;
+
+        _quiet = 30;
+
+        LastTrans = 0;
+
+        _byte = 0;
+        _lastSample = 0;
+        _mask = 0;
+
+        _bytesMoved = 0;
+        _totalSize = 0;
     }
 }
