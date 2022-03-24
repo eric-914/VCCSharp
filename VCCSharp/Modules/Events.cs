@@ -75,13 +75,13 @@ namespace VCCSharp.Modules
 
         public void SlowDown() //F3
         {
-            _modules.ConfigurationModule.Model.CPU.AdjustOverclockSpeed(-1);
+            _modules.Configuration.CPU.AdjustOverclockSpeed(-1);
             _modules.Emu.ResetPending = ResetPendingStates.ClsSynch; // Without this, changing the configurationModule does nothing.
         }
 
         public void SpeedUp() //F4
         {
-            _modules.ConfigurationModule.Model.CPU.AdjustOverclockSpeed(1);
+            _modules.Configuration.CPU.AdjustOverclockSpeed(1);
             _modules.Emu.ResetPending = ResetPendingStates.ClsSynch; // Without this, changing the configurationModule does nothing.
         }
 
