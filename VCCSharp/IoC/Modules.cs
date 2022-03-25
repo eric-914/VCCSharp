@@ -71,12 +71,13 @@ public class Modules : IModules
 
     public void Initialize()
     {
+        ConfigurationModule = _factory.Get<IConfigurationModule>();
+
         Audio = _factory.Get<IAudio>();
         CPU = _factory.Get<ICPU>();
         Cassette = _factory.Get<ICassette>();
         Clipboard = _factory.Get<IClipboard>();
         CoCo = _factory.Get<ICoCo>();
-        ConfigurationModule = _factory.Get<IConfigurationModule>();
         Draw = _factory.Get<IDraw>();
         Emu = _factory.Get<IEmu>();
         Events = _factory.Get<IEvents>();
@@ -104,6 +105,7 @@ public class Modules : IModules
         Audio.Reset();
         //CPU.Reset();
         Cassette.Reset();
+        CoCo.Reset();
 
         Emu.SetCpuMultiplier();
 

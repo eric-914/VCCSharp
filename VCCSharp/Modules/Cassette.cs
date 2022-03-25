@@ -521,7 +521,7 @@ public class Cassette : ICassette
         TapeMode = _configuration.CassetteRecorder.TapeMode;
 
         //TODO: This may be a problem.
-        TapeOffset = (uint)_configuration.CassetteRecorder.TapeCounter;
+        TapeOffset = 0; //(uint)_configuration.CassetteRecorder.TapeCounter;
 
         UpdateTapeDialog = _ => { };
 
