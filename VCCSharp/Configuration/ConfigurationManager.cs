@@ -14,7 +14,7 @@ namespace VCCSharp.Configuration
             _factory = factory;
         }
 
-        public void ShowDialog(IConfigurationModule configurationModule)
+        public void ShowDialog(IConfigurationManager configurationModule)
         {
             var viewModel = _factory.CreateConfigurationViewModel(configurationModule);
 

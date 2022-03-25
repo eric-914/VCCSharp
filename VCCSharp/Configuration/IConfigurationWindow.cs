@@ -4,6 +4,6 @@ namespace VCCSharp.Configuration
 {
     public interface IConfigurationWindow
     {
-        void ShowDialog(IConfigurationModule configurationModule);
+        void ShowDialog(IConfigurationManager configurationModule);
     }
 }

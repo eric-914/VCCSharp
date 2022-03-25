@@ -38,7 +38,7 @@ public partial class App
             .Singleton<IMainWindowEvents, MainWindowEvents>()
             .Singleton<IConfigurationPersistence, ConfigurationPersistence>()
             .Singleton<IConfigurationRoot, ConfigurationRoot>()
-            .Singleton<IConfigurationModulePersistence, ConfigurationModulePersistence>()
+            .Singleton<IConfigurationPersistenceManager, ConfigurationPersistenceManager>()
             .Singleton<IJoystickServices, JoystickServices>()
 
             //--Modules
@@ -47,7 +47,7 @@ public partial class App
             .Singleton<ICassette, Cassette>()
             .Singleton<IClipboard, Modules.Clipboard>()
             .Singleton<ICoCo, CoCo>()
-            .Singleton<IConfigurationModule, ConfigurationModule>()
+            .Singleton<IConfigurationManager, Modules.ConfigurationManager>()
             .Singleton<IDraw, Draw>()
             .Singleton<IEmu, Emu>()
             .Singleton<IEvents, Events>()
@@ -91,7 +91,7 @@ public partial class App
 
             //--Options
             .Bind<ICartridge, MenuManager>()
-            .Bind<IConfigurationWindow, ConfigurationManager>()
+            .Bind<IConfigurationWindow, Configuration.ConfigurationManager>()
             .Bind<ITapePlayer, TapePlayerManager>()
             .Bind<IBitBanger, BitBangerManager>()
 

@@ -2,7 +2,7 @@
 
 namespace VCCSharp.Modules;
 
-public interface IConfigurationModule
+public interface IConfigurationManager
 {
     IConfigurationRoot Model { get; }
 

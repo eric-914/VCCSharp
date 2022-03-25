@@ -13,7 +13,7 @@ public class BitBangerViewModel : NotifyViewModel
 
     public SerialPort Model { get; set; } = new();
 
-    public IConfigurationModule ConfigurationModule
+    public IConfigurationManager ConfigurationModule
     {
         set => Model = value.Model.SerialPort;
     }

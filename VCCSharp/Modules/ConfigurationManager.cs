@@ -11,21 +11,21 @@ using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules;
 
-public class ConfigurationModule : IConfigurationModule
+public class ConfigurationManager : IConfigurationManager
 {
     private readonly IModules _modules;
     private readonly IUser32 _user32;
-    private readonly IConfigurationModulePersistence _persistence;
+    private readonly IConfigurationPersistenceManager _persistenceManager;
 
     private string? _filePath;
 
     public IConfigurationRoot Model { get; private set; } = default!;
 
-    public ConfigurationModule(IModules modules, IUser32 user32, IConfigurationModulePersistence persistence)
+    public ConfigurationManager(IModules modules, IUser32 user32, IConfigurationPersistenceManager persistenceManager)
     {
         _modules = modules;
         _user32 = user32;
-        _persistence = persistence;
+        _persistenceManager = persistenceManager;
     }
 
     public string? GetFilePath() => _filePath;
@@ -40,14 +40,14 @@ public class ConfigurationModule : IConfigurationModule
 
         ConfigureJoysticks();
         
-        if (_persistence.IsNew(_filePath))
+        if (_persistenceManager.IsNew(_filePath))
         {
             Save();
         }
     }
 
     // LoadFrom allows user to browse for an ini file and reloads the configurationModule from it.
-    public void LoadFrom() => _persistence.LoadFrom(_filePath, LoadFrom);
+    public void LoadFrom() => _persistenceManager.LoadFrom(_filePath, LoadFrom);
 
     private void LoadFrom(string filePath)
     {
@@ -62,7 +62,7 @@ public class ConfigurationModule : IConfigurationModule
 
     public void Load()
     {
-        Model = _persistence.Load(_filePath);
+        Model = _persistenceManager.Load(_filePath);
 
         if (!string.IsNullOrEmpty(_modules.Emu.PakPath))
         {
@@ -81,7 +81,7 @@ public class ConfigurationModule : IConfigurationModule
 
     public void SaveAs()
     {
-        _persistence.SaveAs(_filePath, SaveAs);
+        _persistenceManager.SaveAs(_filePath, SaveAs);
     }
 
     private void SaveAs(string filePath)
@@ -107,7 +107,7 @@ public class ConfigurationModule : IConfigurationModule
             Model.Accessories.ModulePath = modulePath;
         }
 
-        _persistence.Save(_filePath, Model);
+        _persistenceManager.Save(_filePath, Model);
     }
 
     private void ConfigureJoysticks()

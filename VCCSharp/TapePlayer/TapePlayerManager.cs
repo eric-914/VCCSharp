@@ -37,7 +37,7 @@ public class TapePlayerManager : ITapePlayer
         _modules.Cassette.UpdateTapeDialog = SetTapeCounter;
     }
 
-    public void ShowDialog(IConfigurationModule state)
+    public void ShowDialog(IConfigurationManager state)
     {
         _viewModel.ConfigurationModule = _modules.ConfigurationModule;
 

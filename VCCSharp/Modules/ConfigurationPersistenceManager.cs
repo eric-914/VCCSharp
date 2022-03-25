@@ -10,12 +10,12 @@ namespace VCCSharp.Modules;
 /// <summary>
 /// Handles the File I/O of ConfigurationModule
 /// </summary>
-public class ConfigurationModulePersistence : IConfigurationModulePersistence
+public class ConfigurationPersistenceManager : IConfigurationPersistenceManager
 {
     private readonly IModules _modules;
     private readonly IConfigurationPersistence _persistence;
 
-    public ConfigurationModulePersistence(IModules modules, IConfigurationPersistence persistence)
+    public ConfigurationPersistenceManager(IModules modules, IConfigurationPersistence persistence)
     {
         _modules = modules;
         _persistence = persistence;

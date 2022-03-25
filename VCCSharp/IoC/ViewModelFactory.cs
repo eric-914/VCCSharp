@@ -14,7 +14,7 @@ public interface IViewModelFactory
     MainWindowViewModel CreateMainWindowViewModel(IMainMenu menuItems);
     CommandViewModel CreateCommandViewModel(Action? action = null);
     MenuItemViewModel CreateMenuItemViewModel(string header, Action action);
-    ConfigurationViewModel CreateConfigurationViewModel(IConfigurationModule configurationModule);
+    ConfigurationViewModel CreateConfigurationViewModel(IConfigurationManager configurationModule);
 }
 
 public class ViewModelFactory : IViewModelFactory
@@ -45,7 +45,7 @@ public class ViewModelFactory : IViewModelFactory
         return new MenuItemViewModel { Header = header, Action = action };
     }
 
-    public ConfigurationViewModel CreateConfigurationViewModel(IConfigurationModule configurationModule)
+    public ConfigurationViewModel CreateConfigurationViewModel(IConfigurationManager configurationModule)
     {
         var services = _factory.Get<IJoystickServices>();
         var left = new JoystickViewModel(JoystickSides.Left, configurationModule.Model.Joysticks.Left, services);
