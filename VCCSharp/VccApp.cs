@@ -37,9 +37,9 @@ public class VccApp : IVccApp
     {
         if (iniFile == null) throw new ArgumentNullException(nameof(iniFile));
 
-        _modules.ConfigurationModule.Load(iniFile);
+        _modules.ConfigurationManager.Load(iniFile);
 
-        _configuration = _modules.ConfigurationModule.Model;
+        _configuration = _modules.ConfigurationManager.Model;
     }
 
     public void Startup(string? qLoadFile)

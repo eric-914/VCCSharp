@@ -48,8 +48,8 @@ public class MainMenu : MenuItems, IMainMenu
         MenuItems = new MenuItems
         {
             Menu("Run", actions.Run),
-            Menu("Save ConfigurationModule", actions.SaveConfiguration),
-            Menu("Load ConfigurationModule", actions.LoadConfiguration),
+            Menu("Save Configuration", actions.SaveConfiguration),
+            Menu("Load Configuration", actions.LoadConfiguration),
             ______________,
             Menu("[F9] Hard Reset", actions.HardReset),
             Menu("[F5] Soft Reset", actions.SoftReset),

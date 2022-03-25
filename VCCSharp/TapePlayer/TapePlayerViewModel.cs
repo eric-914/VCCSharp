@@ -15,7 +15,7 @@ public class TapePlayerViewModel : NotifyViewModel
 
     public CassetteRecorder Model { get; set; } = new();
 
-    public IConfigurationManager ConfigurationModule
+    public IConfigurationManager ConfigurationManager
     {
         set => Model = value.Model.CassetteRecorder;
     }

@@ -29,12 +29,12 @@ namespace VCCSharp
 
         public void SaveConfiguration()
         {
-            _modules.ConfigurationModule.SaveAs();
+            _modules.ConfigurationManager.SaveAs();
         }
 
         public void LoadConfiguration()
         {
-            _modules.ConfigurationModule.LoadFrom();
+            _modules.ConfigurationManager.LoadFrom();
             _modules.Emu.ResetPending = ResetPendingStates.Hard;
         }
 
@@ -75,7 +75,7 @@ namespace VCCSharp
 
         public void TapeRecorder()
         {
-            _options.TapePlayer.ShowDialog(_modules.ConfigurationModule);
+            _options.TapePlayer.ShowDialog(_modules.ConfigurationManager);
         }
 
         public void BitBanger()
@@ -85,7 +85,7 @@ namespace VCCSharp
 
         public void OpenConfiguration()
         {
-            _options.Configuration.ShowDialog(_modules.ConfigurationModule);
+            _options.Configuration.ShowDialog(_modules.ConfigurationManager);
         }
 
         public void LoadCartridge()
@@ -148,12 +148,12 @@ namespace VCCSharp
 
         public void OpenBitBanger()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void CloseBitBanger()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

@@ -47,7 +47,7 @@ public partial class App
             .Singleton<ICassette, Cassette>()
             .Singleton<IClipboard, Modules.Clipboard>()
             .Singleton<ICoCo, CoCo>()
-            .Singleton<IConfigurationManager, Modules.ConfigurationManager>()
+            .Singleton<IConfigurationManager, ConfigurationManager>()
             .Singleton<IDraw, Draw>()
             .Singleton<IEmu, Emu>()
             .Singleton<IEvents, Events>()
@@ -91,7 +91,7 @@ public partial class App
 
             //--Options
             .Bind<ICartridge, MenuManager>()
-            .Bind<IConfigurationWindow, Configuration.ConfigurationManager>()
+            .Bind<IConfigurationWindowManager, ConfigurationWindowManager>()
             .Bind<ITapePlayer, TapePlayerManager>()
             .Bind<IBitBanger, BitBangerManager>()
 

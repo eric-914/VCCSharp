@@ -11,9 +11,9 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
 {
     public AudioSpectrum Spectrum { get; }
 
-    public ConfigurationViewModel(IConfigurationManager configurationModule, JoystickViewModel left, JoystickViewModel right, AudioSpectrum spectrum, List<string> soundDevices)
+    public ConfigurationViewModel(IConfigurationManager manager, JoystickViewModel left, JoystickViewModel right, AudioSpectrum spectrum, List<string> soundDevices)
     {
-        Model = configurationModule.Model;
+        Model = manager.Model;
 
         Left = left;
         Right = right;

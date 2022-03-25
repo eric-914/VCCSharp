@@ -14,7 +14,7 @@ public interface IModules
     ICassette Cassette { get; }
     IClipboard Clipboard { get; }
     ICoCo CoCo { get; }
-    IConfigurationManager ConfigurationModule { get; }
+    IConfigurationManager ConfigurationManager { get; }
     IConfigurationRoot Configuration { get; }
     IDraw Draw { get; }
     IEmu Emu { get; }
@@ -47,8 +47,8 @@ public class Modules : IModules
     public ICassette Cassette { get; private set; } = default!;
     public IClipboard Clipboard { get; private set; } = default!;
     public ICoCo CoCo { get; private set; } = default!;
-    public IConfigurationManager ConfigurationModule { get; private set; } = default!;
-    public IConfigurationRoot Configuration => ConfigurationModule.Model;
+    public IConfigurationManager ConfigurationManager { get; private set; } = default!;
+    public IConfigurationRoot Configuration => ConfigurationManager.Model;
     public IDraw Draw { get; private set; } = default!;
     public IEmu Emu { get; private set; } = default!;
     public IEvents Events { get; private set; } = default!;
@@ -71,7 +71,7 @@ public class Modules : IModules
 
     public void Initialize()
     {
-        ConfigurationModule = _factory.Get<IConfigurationManager>();
+        ConfigurationManager = _factory.Get<IConfigurationManager>();
 
         Audio = _factory.Get<IAudio>();
         CPU = _factory.Get<ICPU>();
@@ -117,13 +117,11 @@ public class Modules : IModules
 
         MC6821.SetCartAutoStart();
 
-        //--Synch joysticks to configurationModule instance
         Joysticks.SetLeftJoystick();
         Joysticks.SetRightJoystick();
 
         Keyboard.KeyboardBuildRuntimeTable();
 
         PAKInterface.InsertModule();   // Should this be here?
-
     }
 }

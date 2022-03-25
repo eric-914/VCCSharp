@@ -46,7 +46,7 @@ public class ConfigurationManager : IConfigurationManager
         }
     }
 
-    // LoadFrom allows user to browse for an ini file and reloads the configurationModule from it.
+    // LoadFrom allows user to browse for an ini file and reloads the configuration from it.
     public void LoadFrom() => _persistenceManager.LoadFrom(_filePath, LoadFrom);
 
     private void LoadFrom(string filePath)

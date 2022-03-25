@@ -97,7 +97,7 @@ public class CoCo : ICoCo
         _modules = modules;
         _configuration = configuration;
 
-        UpdateTapeDialog = _ => { }; //_modules.ConfigurationModule.UpdateTapeDialog((uint)offset);
+        UpdateTapeDialog = _ => { }; //_modules.ConfigurationManager.UpdateTapeDialog((uint)offset);
     }
 
     public void CocoReset()

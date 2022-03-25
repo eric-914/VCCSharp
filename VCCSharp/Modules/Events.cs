@@ -62,7 +62,7 @@ namespace VCCSharp.Modules
         public void EmuExit()
         {
             Debug.WriteLine("Exiting...");
-            _modules.ConfigurationModule.Save(); //Save any changes to ini File
+            _modules.ConfigurationManager.Save(); //Save any changes to ini File
 
             _modules.Vcc.BinaryRunning = false;
         }
@@ -76,13 +76,13 @@ namespace VCCSharp.Modules
         public void SlowDown() //F3
         {
             _modules.Configuration.CPU.AdjustOverclockSpeed(-1);
-            _modules.Emu.ResetPending = ResetPendingStates.ClsSynch; // Without this, changing the configurationModule does nothing.
+            _modules.Emu.ResetPending = ResetPendingStates.ClsSynch; // Without this, changing the configuration does nothing.
         }
 
         public void SpeedUp() //F4
         {
             _modules.Configuration.CPU.AdjustOverclockSpeed(1);
-            _modules.Emu.ResetPending = ResetPendingStates.ClsSynch; // Without this, changing the configurationModule does nothing.
+            _modules.Emu.ResetPending = ResetPendingStates.ClsSynch; // Without this, changing the configuration does nothing.
         }
 
         public void ToggleMonitorType() //F6

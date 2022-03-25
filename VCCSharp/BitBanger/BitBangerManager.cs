@@ -21,11 +21,11 @@ public class BitBangerManager : IBitBanger
             switch (args.PropertyName)
             {
                 case "AddLineFeed":
-                    _modules.MC6821.SetSerialParams(_modules.ConfigurationModule.Model.SerialPort.TextMode);
+                    _modules.MC6821.SetSerialParams(_modules.ConfigurationManager.Model.SerialPort.TextMode);
                     break;
 
                 case "Print":
-                    _modules.MC6821.SetMonState(_modules.ConfigurationModule.Model.SerialPort.PrintMonitorWindow);
+                    _modules.MC6821.SetMonState(_modules.ConfigurationManager.Model.SerialPort.PrintMonitorWindow);
                     break;
             }
         };
@@ -33,7 +33,7 @@ public class BitBangerManager : IBitBanger
 
     public void ShowDialog()
     {
-        _viewModel.ConfigurationModule = _modules.ConfigurationModule;
+        _viewModel.ConfigurationManager = _modules.ConfigurationManager;
 
         _view ??= new BitBangerWindow(_viewModel, this);
 
@@ -42,7 +42,7 @@ public class BitBangerManager : IBitBanger
 
     public void Open()
     {
-        string? filename = _modules.ConfigurationModule.Model.SerialPort.SerialCaptureFile;
+        string? filename = _modules.ConfigurationManager.Model.SerialPort.SerialCaptureFile;
         string appPath = Path.GetDirectoryName(filename) ?? "C:\\";
 
         var openFileDlg = new Microsoft.Win32.OpenFileDialog
@@ -74,7 +74,7 @@ public class BitBangerManager : IBitBanger
 
             serialCaptureFile = Path.GetFileName(openFileDlg.FileName);
 
-            _modules.ConfigurationModule.Model.SerialPort.SerialCaptureFile = serialCaptureFile;
+            _modules.ConfigurationManager.Model.SerialPort.SerialCaptureFile = serialCaptureFile;
         }
     }
 
@@ -84,9 +84,9 @@ public class BitBangerManager : IBitBanger
 
         _viewModel.SerialCaptureFile = null;
 
-        _modules.ConfigurationModule.Model.SerialPort.PrintMonitorWindow = false;
+        _modules.ConfigurationManager.Model.SerialPort.PrintMonitorWindow = false;
 
-        _modules.MC6821.SetMonState(_modules.ConfigurationModule.Model.SerialPort.PrintMonitorWindow);
+        _modules.MC6821.SetMonState(_modules.ConfigurationManager.Model.SerialPort.PrintMonitorWindow);
 
         _viewModel.Print = false;
     }

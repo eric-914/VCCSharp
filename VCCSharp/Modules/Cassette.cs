@@ -76,7 +76,7 @@ public class Cassette : ICassette
         _configuration = configuration;
         _kernel = kernel;
 
-        UpdateTapeDialog = _ => { }; //_modules.ConfigurationModule.UpdateTapeDialog((uint) offset);
+        UpdateTapeDialog = _ => { }; //_modules.ConfigurationManager.UpdateTapeDialog((uint) offset);
     }
 
     public void LoadCassetteBuffer(byte[] buffer)
@@ -400,7 +400,7 @@ public class Cassette : ICassette
         _totalSize = _kernel.SetFilePointer(TapeHandle, Define.FILE_END);
         TapeOffset = 0;
 
-        var extension = Path.GetExtension(filename)?.ToUpper();
+        var extension = Path.GetExtension(filename).ToUpper();
 
         if (extension == ".CAS")
         {

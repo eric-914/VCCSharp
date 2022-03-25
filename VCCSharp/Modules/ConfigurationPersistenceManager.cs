@@ -8,7 +8,7 @@ using VCCSharp.Models.Configuration.Support;
 namespace VCCSharp.Modules;
 
 /// <summary>
-/// Handles the File I/O of ConfigurationModule
+/// Handles the File I/O of the configuration for ConfigurationManager
 /// </summary>
 public class ConfigurationPersistenceManager : IConfigurationPersistenceManager
 {
@@ -62,7 +62,7 @@ public class ConfigurationPersistenceManager : IConfigurationPersistenceManager
             throw new ArgumentNullException(nameof(filePath));
         }
 
-        //  Try to open the configurationModule file.  Create it if necessary.  Abort if failure.
+        //  Try to open the configuration file.  Create it if necessary.  Abort if failure.
         if (File.Exists(filePath))
         {
             return false;
@@ -90,7 +90,7 @@ public class ConfigurationPersistenceManager : IConfigurationPersistenceManager
             InitialDirectory = Path.GetDirectoryName(filePath) ?? "C:\\",
             CheckFileExists = true,
             ShowReadOnly = false,
-            Title = "Load Vcc ConfigurationModule File"
+            Title = "Load Vcc Configuration File"
         };
     }
 
@@ -104,7 +104,7 @@ public class ConfigurationPersistenceManager : IConfigurationPersistenceManager
             FilterIndex = 1,
             InitialDirectory = filePath,
             CheckPathExists = true,
-            Title = "Save Vcc ConfigurationModule File",
+            Title = "Save Vcc Configuration File",
             AddExtension = true
         };
     }

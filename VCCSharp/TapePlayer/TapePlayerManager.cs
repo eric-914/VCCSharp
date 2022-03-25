@@ -39,7 +39,7 @@ public class TapePlayerManager : ITapePlayer
 
     public void ShowDialog(IConfigurationManager state)
     {
-        _viewModel.ConfigurationModule = _modules.ConfigurationModule;
+        _viewModel.ConfigurationManager = _modules.ConfigurationManager;
 
         _view ??= new TapePlayerWindow(_viewModel, this);
 
@@ -55,7 +55,7 @@ public class TapePlayerManager : ITapePlayer
     {
         _viewModel.Mode = TapeModes.Record;
 
-        _modules.ConfigurationModule.Model.CassetteRecorder.TapeMode = TapeModes.Record;
+        _modules.ConfigurationManager.Model.CassetteRecorder.TapeMode = TapeModes.Record;
 
         SetTapeMode(TapeModes.Record);
     }
@@ -64,7 +64,7 @@ public class TapePlayerManager : ITapePlayer
     {
         _viewModel.Mode = TapeModes.Play;
 
-        _modules.ConfigurationModule.Model.CassetteRecorder.TapeMode = TapeModes.Play;
+        _modules.ConfigurationManager.Model.CassetteRecorder.TapeMode = TapeModes.Play;
 
         SetTapeMode(TapeModes.Play);
     }
@@ -73,7 +73,7 @@ public class TapePlayerManager : ITapePlayer
     {
         _viewModel.Mode = TapeModes.Stop;
 
-        _modules.ConfigurationModule.Model.CassetteRecorder.TapeMode = TapeModes.Stop;
+        _modules.ConfigurationManager.Model.CassetteRecorder.TapeMode = TapeModes.Stop;
 
         SetTapeMode(TapeModes.Stop);
     }
@@ -82,7 +82,7 @@ public class TapePlayerManager : ITapePlayer
     {
         _viewModel.Mode = TapeModes.Eject;
 
-        _modules.ConfigurationModule.Model.CassetteRecorder.TapeMode = TapeModes.Eject;
+        _modules.ConfigurationManager.Model.CassetteRecorder.TapeMode = TapeModes.Eject;
 
         SetTapeMode(TapeModes.Eject);
     }
@@ -91,7 +91,7 @@ public class TapePlayerManager : ITapePlayer
     {
         _viewModel.Counter = 0;
 
-        _modules.ConfigurationModule.Model.CassetteRecorder.TapeCounter = 0;
+        _modules.ConfigurationManager.Model.CassetteRecorder.TapeCounter = 0;
 
         SetTapeCounter(0);
     }
@@ -141,7 +141,7 @@ public class TapePlayerManager : ITapePlayer
     {
         var configuration = _modules.Configuration;
 
-        string? szFileName = _modules.ConfigurationModule.Model.CassetteRecorder.TapeFileName;
+        string? szFileName = _modules.ConfigurationManager.Model.CassetteRecorder.TapeFileName;
         string appPath = configuration.FilePaths.Cassette ?? "C:\\";
 
         var openFileDlg = new Microsoft.Win32.OpenFileDialog
@@ -183,7 +183,7 @@ public class TapePlayerManager : ITapePlayer
 
             configuration.FilePaths.Cassette = path;
 
-            _modules.ConfigurationModule.Model.CassetteRecorder.TapeCounter = 0;
+            _modules.ConfigurationManager.Model.CassetteRecorder.TapeCounter = 0;
 
             SetTapeCounter(0);
 
@@ -196,7 +196,7 @@ public class TapePlayerManager : ITapePlayer
     private void SetTapeCounter(int counter)
     {
         //_modules.Cassette.SetTapeCounter((uint)counter);
-        //_modules.ConfigurationModule.UpdateTapeDialog((uint) counter);
+        //_modules.ConfigurationManager.UpdateTapeDialog((uint) counter);
         _viewModel.Counter = counter;
     }
 }
