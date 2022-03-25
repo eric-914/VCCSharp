@@ -106,14 +106,13 @@ public class Modules : IModules
         //CPU.Reset();
         Cassette.Reset();
         CoCo.Reset();
+        Draw.Reset();
 
         Emu.SetCpuMultiplier();
 
         Graphics.SetMonitorType();
         Graphics.SetPaletteType();
         Graphics.SetScanLines();
-
-        Draw.SetAspect();
 
         MC6821.SetCartAutoStart();
 
