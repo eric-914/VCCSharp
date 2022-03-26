@@ -2,7 +2,7 @@
 using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
-using VCCSharp.Models;
+using VCCSharp.Models.Audio;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Modules;
 

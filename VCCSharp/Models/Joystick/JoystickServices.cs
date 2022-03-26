@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using VCCSharp.Libraries;
 
-namespace VCCSharp.Configuration.TabControls.Joystick;
+namespace VCCSharp.Models.Joystick;
 
 public interface IJoystickServices
 {

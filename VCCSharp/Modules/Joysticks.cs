@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using VCCSharp.Enums;
 using VCCSharp.Libraries;
-using VCCSharp.Models;
 using VCCSharp.Models.Configuration;
+using VCCSharp.Models.Joystick;
 
 namespace VCCSharp.Modules;
 

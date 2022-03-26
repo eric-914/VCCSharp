@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Enums;
-using VCCSharp.Models;
+using VCCSharp.Models.Audio;
 
 namespace VCCSharp.Configuration.ViewModel;
 

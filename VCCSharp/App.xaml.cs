@@ -2,7 +2,6 @@
 using System.Windows;
 using VCCSharp.BitBanger;
 using VCCSharp.Configuration;
-using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.DX8;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
@@ -12,6 +11,7 @@ using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Configuration.Support;
 using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
+using VCCSharp.Models.Joystick;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Modules;
 using VCCSharp.Modules.TC1014;

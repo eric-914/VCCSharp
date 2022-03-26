@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
+using VCCSharp.Models.Audio;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Keyboard.Mappings;
 

@@ -5,6 +5,8 @@ using VCCSharp.Enums;
 using VCCSharp.Main;
 using VCCSharp.Menu;
 using VCCSharp.Models;
+using VCCSharp.Models.Audio;
+using VCCSharp.Models.Joystick;
 using VCCSharp.Modules;
 
 namespace VCCSharp.IoC;

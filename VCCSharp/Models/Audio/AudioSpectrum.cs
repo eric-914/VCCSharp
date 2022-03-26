@@ -1,6 +1,6 @@
 ﻿using VCCSharp.Main.ViewModels;
 
-namespace VCCSharp.Models;
+namespace VCCSharp.Models.Audio;
 
 public class AudioSpectrum : NotifyViewModel
 {

@@ -1,6 +1,6 @@
 ﻿using DX8;
 
-namespace VCCSharp.Models;
+namespace VCCSharp.Models.Joystick;
 
 public class JoystickState
 {

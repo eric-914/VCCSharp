@@ -2,6 +2,7 @@
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using VCCSharp.Models.Audio;
 using VCCSharp.Models.Configuration;
 using HANDLE = System.IntPtr;
 

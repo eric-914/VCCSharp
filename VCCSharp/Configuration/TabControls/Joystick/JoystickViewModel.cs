@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
+using VCCSharp.Models.Joystick;
 using VCCSharp.Models.Keyboard;
 
 namespace VCCSharp.Configuration.TabControls.Joystick;
