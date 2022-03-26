@@ -18,12 +18,12 @@ public interface IMenuCallbacks : IModule
 public class MenuCallbacks : IMenuCallbacks
 {
     private readonly IModules _modules;
-    private readonly IConfigurationRoot _configuration;
+    private readonly IConfiguration _configuration;
     private readonly ICartridge _cartridge;
 
     private bool _loadPakDialogOpen;
 
-    public MenuCallbacks(IModules modules, IConfigurationRoot configuration, ICartridge cartridge)
+    public MenuCallbacks(IModules modules, IConfiguration configuration, ICartridge cartridge)
     {
         _modules = modules;
         _configuration = configuration;

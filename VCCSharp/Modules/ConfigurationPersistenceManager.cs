@@ -21,7 +21,7 @@ public class ConfigurationPersistenceManager : IConfigurationPersistenceManager
         _persistence = persistence;
     }
 
-    public IConfigurationRoot Load(string? filePath)
+    public IConfiguration Load(string? filePath)
     {
         if (filePath == null) throw new ArgumentNullException(nameof(filePath));
 
@@ -39,7 +39,7 @@ public class ConfigurationPersistenceManager : IConfigurationPersistenceManager
         Dialog(filePath, LoadFrom, onContinue);
     }
 
-    public void Save(string? filePath, IConfigurationRoot model)
+    public void Save(string? filePath, IConfiguration model)
     {
         if (filePath == null) throw new ArgumentNullException(nameof(filePath));
 
@@ -109,7 +109,7 @@ public class ConfigurationPersistenceManager : IConfigurationPersistenceManager
         };
     }
 
-    public void ValidateModel(IConfigurationRoot model)
+    public void ValidateModel(IConfiguration model)
     {
         string? exePath = Path.GetDirectoryName(_modules.Vcc.GetExecPath());
 

@@ -29,7 +29,7 @@ public interface IKeyboard : IModule
 public class Keyboard : IKeyboard
 {
     private readonly IModules _modules;
-    private readonly IConfigurationRoot _configuration;
+    private readonly IConfiguration _configuration;
     private readonly IKeyScanMapper _keyScanMapper;
 
     public bool KeyboardInterruptEnabled { get; set; }
@@ -54,7 +54,7 @@ public class Keyboard : IKeyboard
     private byte _scSave2;
     private bool _keySaveToggle;
 
-    public Keyboard(IModules modules, IConfigurationRoot configuration, IKeyScanMapper keyScanMapper)
+    public Keyboard(IModules modules, IConfiguration configuration, IKeyScanMapper keyScanMapper)
     {
         _modules = modules;
         _configuration = configuration;

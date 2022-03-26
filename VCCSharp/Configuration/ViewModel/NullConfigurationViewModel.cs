@@ -16,7 +16,7 @@ public class NullConfigurationViewModel : IConfigurationViewModel
     public AudioSpectrum Spectrum { get; set; } = new();
     public CPUTypes CpuType { get; set; }
     public CPUTypes? Cpu { get; set; }
-    public IConfigurationRoot Model => default!;
+    public IConfiguration Model => default!;
     public JoystickViewModel Left { get; } = new();
     public JoystickViewModel Right { get; } = new();
     public KeyboardLayouts KeyboardLayout { get; set; }

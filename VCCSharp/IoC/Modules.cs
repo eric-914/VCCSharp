@@ -15,7 +15,7 @@ public interface IModules
     IClipboard Clipboard { get; }
     ICoCo CoCo { get; }
     IConfigurationManager ConfigurationManager { get; }
-    IConfigurationRoot Configuration { get; }
+    IConfiguration Configuration { get; }
     IDraw Draw { get; }
     IEmu Emu { get; }
     IEvents Events { get; }
@@ -48,7 +48,7 @@ public class Modules : IModules
     public IClipboard Clipboard { get; private set; } = default!;
     public ICoCo CoCo { get; private set; } = default!;
     public IConfigurationManager ConfigurationManager { get; private set; } = default!;
-    public IConfigurationRoot Configuration => ConfigurationManager.Model;
+    public IConfiguration Configuration => ConfigurationManager.Model;
     public IDraw Draw { get; private set; } = default!;
     public IEmu Emu { get; private set; } = default!;
     public IEvents Events { get; private set; } = default!;

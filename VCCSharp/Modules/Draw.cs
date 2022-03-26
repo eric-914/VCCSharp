@@ -35,7 +35,7 @@ public class Draw : IDraw
     #region Properties
 
     private readonly IModules _modules;
-    private readonly IConfigurationRoot _configuration;
+    private readonly IConfiguration _configuration;
     private readonly IUser32 _user32;
     private readonly IGdi32 _gdi32;
 
@@ -56,7 +56,7 @@ public class Draw : IDraw
 
     #endregion
 
-    public Draw(IModules modules, IConfigurationRoot configuration, IUser32 user32, IGdi32 gdi32, IDxDraw draw)
+    public Draw(IModules modules, IConfiguration configuration, IUser32 user32, IGdi32 gdi32, IDxDraw draw)
     {
         _modules = modules;
         _configuration = configuration;

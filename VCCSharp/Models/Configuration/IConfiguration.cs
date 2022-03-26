@@ -1,6 +1,6 @@
 ﻿namespace VCCSharp.Models.Configuration;
 
-public interface IConfigurationRoot
+public interface IConfiguration
 {
     Version Version { get; }
     Window Window { get; }

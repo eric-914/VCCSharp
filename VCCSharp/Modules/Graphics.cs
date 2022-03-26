@@ -109,7 +109,7 @@ public class Graphics : IGraphics
 #pragma warning restore IDE1006 // Naming Styles
 
     private readonly IModules _modules;
-    private readonly IConfigurationRoot _configuration;
+    private readonly IConfiguration _configuration;
 
     private readonly GraphicsColors _colors = new();
 
@@ -162,7 +162,7 @@ public class Graphics : IGraphics
 
     private IntPointer? _surface;
 
-    public Graphics(IModules modules, IConfigurationRoot configuration)
+    public Graphics(IModules modules, IConfiguration configuration)
     {
         _modules = modules;
         _configuration = configuration;

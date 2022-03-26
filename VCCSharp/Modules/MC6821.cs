@@ -35,7 +35,7 @@ public interface IMC6821 : IModule
 public class MC6821 : IMC6821
 {
     private readonly IModules _modules;
-    private readonly IConfigurationRoot _configuration;
+    private readonly IConfiguration _configuration;
     private readonly IKernel _kernel;
 
     private bool _addLf;
@@ -57,7 +57,7 @@ public class MC6821 : IMC6821
 
     public bool CartAutoStart;
 
-    public MC6821(IModules modules, IConfigurationRoot configuration, IKernel kernel)
+    public MC6821(IModules modules, IConfiguration configuration, IKernel kernel)
     {
         _modules = modules;
         _configuration = configuration;

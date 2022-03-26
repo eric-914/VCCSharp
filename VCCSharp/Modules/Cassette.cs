@@ -36,7 +36,7 @@ public interface ICassette : IModule
 public class Cassette : ICassette
 {
     private readonly IModules _modules;
-    private readonly IConfigurationRoot _configuration;
+    private readonly IConfiguration _configuration;
     private readonly IKernel _kernel;
 
     public byte MotorState { get; set; }
@@ -70,7 +70,7 @@ public class Cassette : ICassette
 
     public Action<int> UpdateTapeDialog { get; set; }
 
-    public Cassette(IModules modules, IConfigurationRoot configuration, IKernel kernel)
+    public Cassette(IModules modules, IConfiguration configuration, IKernel kernel)
     {
         _modules = modules;
         _configuration = configuration;

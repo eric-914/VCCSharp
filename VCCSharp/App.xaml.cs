@@ -37,7 +37,7 @@ public partial class App
             .Singleton<IKeyScanMapper, KeyScanMapper>()
             .Singleton<IMainWindowEvents, MainWindowEvents>()
             .Singleton<IConfigurationPersistence, ConfigurationPersistence>()
-            .Singleton<IConfigurationRoot, ConfigurationRoot>()
+            .Singleton<IConfiguration, ConfigurationRoot>()
             .Singleton<IConfigurationPersistenceManager, ConfigurationPersistenceManager>()
             .Singleton<IJoystickServices, JoystickServices>()
 

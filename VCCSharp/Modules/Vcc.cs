@@ -29,7 +29,7 @@ public class Vcc : IVcc
 {
     private readonly IModules _modules;
     private readonly IStatus _status;
-    private readonly IConfigurationRoot _configuration;
+    private readonly IConfiguration _configuration;
 
     private static readonly Dictionary<CPUTypes, string> CPULookup = new()
     {
@@ -45,7 +45,7 @@ public class Vcc : IVcc
     public string CpuName => CPULookup[_configuration.CPU.Type.Value];
     public string AppName { get; set; } = "(app)";
 
-    public Vcc(IModules modules, IStatus status, IConfigurationRoot configuration)
+    public Vcc(IModules modules, IStatus status, IConfiguration configuration)
     {
         _modules = modules;
         _status = status;

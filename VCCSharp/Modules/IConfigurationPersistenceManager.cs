@@ -5,10 +5,10 @@ namespace VCCSharp.Modules;
 
 public interface IConfigurationPersistenceManager
 {
-    IConfigurationRoot Load(string? filePath);
+    IConfiguration Load(string? filePath);
     void LoadFrom(string? filePath, Action<string> onContinue);
 
-    void Save(string? filePath, IConfigurationRoot model);
+    void Save(string? filePath, IConfiguration model);
     void SaveAs(string? filePath, Action<string> onContinue);
 
     bool IsNew(string? filePath);

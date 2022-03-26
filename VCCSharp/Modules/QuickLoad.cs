@@ -16,9 +16,9 @@ public interface IQuickLoad
 public class QuickLoad : IQuickLoad
 {
     private readonly IModules _modules;
-    private readonly IConfigurationRoot _configuration;
+    private readonly IConfiguration _configuration;
 
-    public QuickLoad(IModules modules, IConfigurationRoot configuration)
+    public QuickLoad(IModules modules, IConfiguration configuration)
     {
         _modules = modules;
         _configuration = configuration;

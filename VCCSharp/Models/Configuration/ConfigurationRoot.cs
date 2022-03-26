@@ -1,6 +1,6 @@
 ﻿namespace VCCSharp.Models.Configuration;
 
-public class ConfigurationRoot : IConfigurationRoot
+public class ConfigurationRoot : IConfiguration
 {
     public Version Version { get; } = new();
     public Window Window { get; } = new();

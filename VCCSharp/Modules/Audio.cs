@@ -28,7 +28,7 @@ namespace VCCSharp.Modules
     public class Audio : IAudio
     {
         private readonly IModules _modules;
-        private readonly IConfigurationRoot _configuration;
+        private readonly IConfiguration _configuration;
         private readonly IDxSound _sound;
 
         public AudioSpectrum? Spectrum { get; set; }
@@ -47,7 +47,7 @@ namespace VCCSharp.Modules
 
         private bool _mute;
 
-        public Audio(IModules modules, IConfigurationRoot configuration, IDxSound sound)
+        public Audio(IModules modules, IConfiguration configuration, IDxSound sound)
         {
             _modules = modules;
             _configuration = configuration;

@@ -25,7 +25,7 @@ public class VccApp : IVccApp
     private readonly IModules _modules;
     private readonly IUser32 _user32;
 
-    private IConfigurationRoot _configuration = default!;
+    private IConfiguration _configuration = default!;
 
     public VccApp(IModules modules, IUser32 user32)
     {

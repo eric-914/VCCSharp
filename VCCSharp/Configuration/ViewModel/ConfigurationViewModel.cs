@@ -3,6 +3,7 @@ using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
 using VCCSharp.Models;
+using VCCSharp.Models.Configuration;
 using VCCSharp.Modules;
 
 namespace VCCSharp.Configuration.ViewModel;
@@ -22,7 +23,7 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
         Spectrum = spectrum;
     }
 
-    public Models.Configuration.IConfigurationRoot Model { get; }
+    public IConfiguration Model { get; }
 
     #region Constants
 

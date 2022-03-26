@@ -36,7 +36,7 @@ public interface IPAKInterface : IModule
 public class PAKInterface : IPAKInterface
 {
     private readonly IModules _modules;
-    private readonly IConfigurationRoot _configuration;
+    private readonly IConfiguration _configuration;
     private readonly IKernel _kernel;
 
     // ReSharper disable once InconsistentNaming
@@ -57,7 +57,7 @@ public class PAKInterface : IPAKInterface
 
     private readonly PakInterfaceDelegates _d = new();
 
-    public PAKInterface(IModules modules, IConfigurationRoot configuration, IKernel kernel)
+    public PAKInterface(IModules modules, IConfiguration configuration, IKernel kernel)
     {
         _modules = modules;
         _configuration = configuration;

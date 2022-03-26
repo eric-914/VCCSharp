@@ -37,7 +37,7 @@ public interface IEmu : IModule
 public class Emu : IEmu
 {
     private readonly IModules _modules;
-    private readonly IConfigurationRoot _configuration;
+    private readonly IConfiguration _configuration;
 
     public HWND WindowHandle { get; set; }
 
@@ -65,7 +65,7 @@ public class Emu : IEmu
 
     public string? PakPath { get; set; }
 
-    public Emu(IModules modules, IConfigurationRoot configuration)
+    public Emu(IModules modules, IConfiguration configuration)
     {
         _modules = modules;
         _configuration = configuration;

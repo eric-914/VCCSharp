@@ -39,7 +39,7 @@ public class Joysticks : IJoysticks
     private const int MAX = 63;
     private const int CENTER = 32;
 
-    private readonly IConfigurationRoot _configuration;
+    private readonly IConfiguration _configuration;
     private readonly IDxInput _input;
 
     public ushort StickValue { get; set; }
@@ -53,7 +53,7 @@ public class Joysticks : IJoysticks
     private int _leftId = -1;
     private int _rightId = -1;
 
-    public Joysticks(IConfigurationRoot configuration, IDxInput input)
+    public Joysticks(IConfiguration configuration, IDxInput input)
     {
         _configuration = configuration;
         _input = input;

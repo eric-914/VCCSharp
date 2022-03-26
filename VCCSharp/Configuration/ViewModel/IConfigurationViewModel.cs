@@ -8,7 +8,7 @@ namespace VCCSharp.Configuration.ViewModel;
 public interface IConfigurationViewModel
 {
     AudioSpectrum Spectrum { get; }
-    Models.Configuration.IConfigurationRoot Model { get; }
+    Models.Configuration.IConfiguration Model { get; }
     List<string> KeyboardLayouts { get; }
     List<string> SoundRates { get; }
     string Release { get; set; }

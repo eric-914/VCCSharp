@@ -45,7 +45,7 @@ public class CoCo : ICoCo
     private Action _audioEvent = () => { };
 
     private readonly IModules _modules;
-    private readonly IConfigurationRoot _configuration;
+    private readonly IConfiguration _configuration;
 
     private static byte _lastMode;
 
@@ -92,7 +92,7 @@ public class CoCo : ICoCo
     private static readonly IKey ShiftKey = KeyDefinitions.Shift;
     private static readonly IKey ReturnKey = KeyDefinitions.Return;
 
-    public CoCo(IModules modules, IConfigurationRoot configuration)
+    public CoCo(IModules modules, IConfiguration configuration)
     {
         _modules = modules;
         _configuration = configuration;

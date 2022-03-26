@@ -4,7 +4,7 @@ namespace VCCSharp.Modules;
 
 public interface IConfigurationManager
 {
-    IConfigurationRoot Model { get; }
+    IConfiguration Model { get; }
 
     string? GetFilePath();
     void Load(string filePath);

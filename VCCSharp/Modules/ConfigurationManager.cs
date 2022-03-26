@@ -19,7 +19,7 @@ public class ConfigurationManager : IConfigurationManager
 
     private string? _filePath;
 
-    public IConfigurationRoot Model { get; private set; } = default!;
+    public IConfiguration Model { get; private set; } = default!;
 
     public ConfigurationManager(IModules modules, IUser32 user32, IConfigurationPersistenceManager persistenceManager)
     {
