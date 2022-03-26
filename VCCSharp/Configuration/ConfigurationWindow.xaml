@@ -6,6 +6,11 @@
         xmlns:tabControls="clr-namespace:VCCSharp.Configuration.TabControls"
         xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
         xmlns:viewModel="clr-namespace:VCCSharp.Configuration.ViewModel"
+        xmlns:audio="clr-namespace:VCCSharp.Configuration.TabControls.Audio"
+        xmlns:keyboard="clr-namespace:VCCSharp.Configuration.TabControls.Keyboard"
+        xmlns:display="clr-namespace:VCCSharp.Configuration.TabControls.Display"
+        xmlns:cpu="clr-namespace:VCCSharp.Configuration.TabControls.Cpu"
+        xmlns:miscellaneous="clr-namespace:VCCSharp.Configuration.TabControls.Miscellaneous"
         mc:Ignorable="d"
         Title="Vcc Options" Height="500" Width="800">
     <Window.DataContext>
@@ -50,22 +55,22 @@
                 </Style>
             </TabControl.Resources>
             <TabItem Header="Audio">
-                <tabControls:AudioTabControl DataContext="{Binding}"/>
+                <audio:AudioTabControl DataContext="{Binding}"/>
             </TabItem>
             <TabItem Header="CPU" >
-                <tabControls:CpuTabControl DataContext="{Binding}"/>
+                <cpu:CpuTabControl DataContext="{Binding}"/>
             </TabItem>
             <TabItem Header="Display" >
-                <tabControls:DisplayTabControl DataContext="{Binding}"/>
+                <display:DisplayTabControl DataContext="{Binding}"/>
             </TabItem>
             <TabItem Header="Keyboard" >
-                <tabControls:KeyboardTabControl DataContext="{Binding}"/>
+                <keyboard:KeyboardTabControl DataContext="{Binding}"/>
             </TabItem>
             <TabItem Header="Joysticks" >
                 <joystick:JoystickTabControl DataContext="{Binding}"/>
             </TabItem>
             <TabItem Header="Misc" >
-                <tabControls:MiscellaneousTabControl DataContext="{Binding}"/>
+                <miscellaneous:MiscellaneousTabControl DataContext="{Binding}"/>
             </TabItem>
         </TabControl>
     </DockPanel>
