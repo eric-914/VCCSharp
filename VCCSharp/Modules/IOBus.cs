@@ -3,7 +3,7 @@
 namespace VCCSharp.Modules
 {
     // ReSharper disable once InconsistentNaming
-    public interface IIOBus
+    public interface IIOBus : IModule
     {
         byte PortRead(ushort address);
         void PortWrite(byte data, ushort address);
@@ -264,6 +264,11 @@ namespace VCCSharp.Modules
                     _modules.PAKInterface.PakPortWrite(port, data);
                     break;
             }
+        }
+
+        public void Reset()
+        {
+            //--Anything to reset?
         }
     }
 }

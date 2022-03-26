@@ -10,7 +10,7 @@ namespace VCCSharp.Modules.TC1014;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable CommentTypo
-public interface ITC1014
+public interface ITC1014 : IModule
 {
     void MC6883Reset();
     void CopyRom();
@@ -128,8 +128,8 @@ public partial class TC1014 : ITC1014
 
         { MemorySizes._128K, 12 },
         { MemorySizes._512K, 60 },
-        { MemorySizes._2048K,60 },
-        { MemorySizes._8192K,60 }
+        { MemorySizes._2048K, 60 },
+        { MemorySizes._8192K, 60 }
     };
 
     private byte _vdgMode;
@@ -793,22 +793,22 @@ Could not locate {rom} in any of these locations:
     {
         switch (_currentRamConfig)
         {
-            case MemorySizes._4K: 
+            case MemorySizes._4K:
                 return;
 
-            case MemorySizes._16K: 
+            case MemorySizes._16K:
                 return;
 
-            case MemorySizes._32K: 
+            case MemorySizes._32K:
                 return;
 
-            case MemorySizes._64K: 
+            case MemorySizes._64K:
                 return;
 
-            case MemorySizes._128K: 
+            case MemorySizes._128K:
                 return;
 
-            case MemorySizes._512K: 
+            case MemorySizes._512K:
                 return;
 
             case MemorySizes._2048K:
@@ -855,5 +855,34 @@ Could not locate {rom} in any of these locations:
 
             _lastIrq |= 2;
         }
+    }
+
+    public void Reset()
+    {
+        _vdgMode = 0;
+        _disOffset = 0;
+
+        _mmuTask = 0;
+        _mmuEnabled = false;
+        _ramVectors = 0;
+
+        _romMap = 0;
+
+        _mmuPrefix = 0;
+
+        _enhancedFIRQFlag = 0;
+        _enhancedIRQFlag = 0;
+        _lastIrq = 0;
+        _lastFirq = 0;
+
+        _mmuState = 0;
+        _mapType = 0;
+
+        _currentRamConfig = MemorySizes._512K;
+
+        _gimeRegisters.Initialize();
+        _memPageOffsets.Initialize();
+        _mmuRegisters.Initialize();
+        _memPages.Initialize();
     }
 }

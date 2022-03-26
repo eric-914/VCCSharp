@@ -12,7 +12,7 @@ using HINSTANCE = System.IntPtr;
 namespace VCCSharp.Modules;
 
 // ReSharper disable once InconsistentNaming
-public interface IPAKInterface
+public interface IPAKInterface : IModule
 {
     void UnloadDll(bool emulationRunning);
     void GetModuleStatus();
@@ -692,5 +692,21 @@ public class PAKInterface : IPAKInterface
         PAKMEMREAD8 fn = Marshal.GetDelegateForFunctionPointer<PAKMEMREAD8>(p);
 
         return fn((ushort)(address & 32767));
+    }
+
+    public void Reset()
+    {
+        _dllPath = null;
+
+        CartInserted = 0;
+        ModuleName = "Blank";
+        RomPackLoaded = false;
+        BankedCartOffset = 0;
+
+        ExternalRomBuffer = new byte[Define.PAK_MAX_MEM];
+
+        hInstLib = IntPtr.Zero;
+
+        InsertModule();   // Should this be here?
     }
 }

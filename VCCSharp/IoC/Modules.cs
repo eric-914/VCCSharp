@@ -72,6 +72,8 @@ public class Modules : IModules
     public void Initialize()
     {
         ConfigurationManager = _factory.Get<IConfigurationManager>();
+        Events = _factory.Get<IEvents>();
+        QuickLoad = _factory.Get<IQuickLoad>();
 
         Audio = _factory.Get<IAudio>();
         CPU = _factory.Get<ICPU>();
@@ -80,7 +82,6 @@ public class Modules : IModules
         CoCo = _factory.Get<ICoCo>();
         Draw = _factory.Get<IDraw>();
         Emu = _factory.Get<IEmu>();
-        Events = _factory.Get<IEvents>();
         Graphics = _factory.Get<IGraphics>();
         IOBus = _factory.Get<IIOBus>();
         Joysticks = _factory.Get<IJoysticks>();
@@ -88,7 +89,6 @@ public class Modules : IModules
         MC6821 = _factory.Get<IMC6821>();
         MenuCallbacks = _factory.Get<IMenuCallbacks>();
         PAKInterface = _factory.Get<IPAKInterface>();
-        QuickLoad = _factory.Get<IQuickLoad>();
         TC1014 = _factory.Get<ITC1014>();
         Throttle = _factory.Get<IThrottle>();
         Vcc = _factory.Get<IVcc>();
@@ -107,20 +107,16 @@ public class Modules : IModules
         Cassette.Reset();
         CoCo.Reset();
         Draw.Reset();
-
-        Emu.SetCpuMultiplier();
-
-        Graphics.SetMonitorType();
-        Graphics.SetPaletteType();
-        Graphics.SetScanLines();
-
-        MC6821.SetCartAutoStart();
-
-        Joysticks.SetLeftJoystick();
-        Joysticks.SetRightJoystick();
-
-        Keyboard.KeyboardBuildRuntimeTable();
-
-        PAKInterface.InsertModule();   // Should this be here?
+        Emu.Reset();
+        Graphics.Reset();
+        IOBus.Reset();
+        Joysticks.Reset();
+        Keyboard.Reset();
+        MC6821.Reset();
+        MenuCallbacks.Reset();
+        PAKInterface.Reset();
+        TC1014.Reset();
+        Throttle.Reset();
+        Vcc.Reset();
     }
 }

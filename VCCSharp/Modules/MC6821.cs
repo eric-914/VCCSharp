@@ -5,524 +5,544 @@ using VCCSharp.Models;
 using VCCSharp.Models.Configuration;
 using HANDLE = System.IntPtr;
 
-namespace VCCSharp.Modules
+namespace VCCSharp.Modules;
+
+// ReSharper disable once InconsistentNaming
+public interface IMC6821 : IModule
 {
-    // ReSharper disable once InconsistentNaming
-    public interface IMC6821
+    void PiaReset();
+    void IrqFs(PhaseStates phase);
+    void IrqHs(PhaseStates phase);
+    void SetCartAutoStart();
+    void ClosePrintFile();
+    void SetMonState(bool state);
+    void SetSerialParams(bool textMode);
+    int OpenPrintFile(string filename);
+
+    byte Pia0_Read(byte port);
+    byte Pia1_Read(byte port);
+    void Pia0_Write(byte data, byte port);
+    void Pia1_Write(byte data, byte port);
+
+    byte GetMuxState();
+    byte DACState();
+    void GetDACSample(DACSample dacSample);
+    void SetCassetteSample(byte sample);
+    byte GetCassetteSample();
+}
+
+// ReSharper disable once InconsistentNaming
+public class MC6821 : IMC6821
+{
+    private readonly IModules _modules;
+    private readonly IConfigurationRoot _configuration;
+    private readonly IKernel _kernel;
+
+    private bool _addLf;
+    private bool _monState;
+
+    private HANDLE _hPrintFile;
+    //private HANDLE _hOut;
+
+    // ReSharper disable IdentifierTypo
+    private readonly byte[] _regadd = { 0, 0, 0, 0 };
+    private readonly byte[] _regbdd = { 0, 0, 0, 0 };
+    private readonly byte[] _rega = { 0, 0, 0, 0 };
+    private readonly byte[] _regb = { 0, 0, 0, 0 };
+    // ReSharper restore IdentifierTypo
+
+    private byte _audioSample;
+    private byte _singleBitSample;
+    private byte _cassetteSample;
+
+    public bool CartAutoStart;
+
+    public MC6821(IModules modules, IConfigurationRoot configuration, IKernel kernel)
     {
-        void PiaReset();
-        void IrqFs(PhaseStates phase);
-        void IrqHs(PhaseStates phase);
-        void SetCartAutoStart();
-        void ClosePrintFile();
-        void SetMonState(bool state);
-        void SetSerialParams(bool textMode);
-        int OpenPrintFile(string filename);
-
-        byte Pia0_Read(byte port);
-        byte Pia1_Read(byte port);
-        void Pia0_Write(byte data, byte port);
-        void Pia1_Write(byte data, byte port);
-
-        byte GetMuxState();
-        byte DACState();
-        void GetDACSample(DACSample dacSample);
-        void SetCassetteSample(byte sample);
-        byte GetCassetteSample();
+        _modules = modules;
+        _configuration = configuration;
+        _kernel = kernel;
     }
 
-    // ReSharper disable once InconsistentNaming
-    public class MC6821 : IMC6821
+    public void SetCartAutoStart()
     {
-        private readonly IModules _modules;
-        private readonly IConfigurationRoot _configuration;
-        private readonly IKernel _kernel;
+        CartAutoStart = _configuration.Startup.CartridgeAutoStart;
+    }
 
-        private bool _addLf;
-        private bool _monState;
-
-        private HANDLE _hPrintFile;
-        //private HANDLE _hOut;
-
-        // ReSharper disable IdentifierTypo
-        private readonly byte[] _regadd = { 0, 0, 0, 0 };
-        private readonly byte[] _regbdd = { 0, 0, 0, 0 };
-        private readonly byte[] _rega = { 0, 0, 0, 0 };
-        private readonly byte[] _regb = { 0, 0, 0, 0 };
-        // ReSharper restore IdentifierTypo
-
-        private byte _audioSample;
-        private byte _singleBitSample;
-        private byte _cassetteSample;
-
-        public bool CartAutoStart;
-
-        public MC6821(IModules modules, IConfigurationRoot configuration, IKernel kernel)
+    public void IrqHs(PhaseStates phase) //63.5 uS
+    {
+        switch (phase)
         {
-            _modules = modules;
-            _configuration = configuration;
-            _kernel = kernel;
+            case PhaseStates.Falling:	//HS went High to low
+                if ((_rega[1] & 2) != 0)
+                { //IRQ on low to High transition
+                    return;
+                }
+
+                _rega[1] = (byte)(_rega[1] | 128);
+
+                if ((_rega[1] & 1) != 0)
+                {
+                    _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 1);
+                }
+
+                break;
+
+            case PhaseStates.Rising:	//HS went Low to High
+                if ((_rega[1] & 2) == 0)
+                {
+                    //IRQ  High to low transition
+                    return;
+                }
+
+                _rega[1] = (byte)(_rega[1] | 128);
+
+                if ((_rega[1] & 1) != 0)
+                {
+                    _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 1);
+                }
+
+                break;
+
+            case PhaseStates.Any:
+                _rega[1] = (byte)(_rega[1] | 128);
+
+                if ((_rega[1] & 1) != 0)
+                {
+                    _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 1);
+                }
+
+                break;
+        }
+    }
+
+    public void IrqFs(PhaseStates phase) //60HZ Vertical sync pulse 16.667 mS
+    {
+        if (_modules.PAKInterface.CartInserted == 1 && CartAutoStart)
+        {
+            MC6821_AssertCart();
         }
 
-        public void SetCartAutoStart()
+        switch (phase)
         {
-            CartAutoStart = _configuration.Startup.CartridgeAutoStart;
+            case PhaseStates.Falling:	//FS went High to low
+                if ((_rega[3] & 2) == 0) //IRQ on High to low transition
+                {
+                    _rega[3] = (byte)(_rega[3] | 128);
+                }
+
+                break;
+
+            case PhaseStates.Rising:	//FS went Low to High
+                if ((_rega[3] & 2) != 0) //IRQ  Low to High transition
+                {
+                    _rega[3] = (byte)(_rega[3] | 128);
+                }
+
+                break;
         }
 
-        public void IrqHs(PhaseStates phase) //63.5 uS
+        if ((_rega[3] & 1) != 0)
         {
-            switch (phase)
-            {
-                case PhaseStates.Falling:	//HS went High to low
-                    if ((_rega[1] & 2) != 0)
-                    { //IRQ on low to High transition
-                        return;
-                    }
-
-                    _rega[1] = (byte)(_rega[1] | 128);
-
-                    if ((_rega[1] & 1) != 0)
-                    {
-                        _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 1);
-                    }
-
-                    break;
-
-                case PhaseStates.Rising:	//HS went Low to High
-                    if ((_rega[1] & 2) == 0)
-                    {
-                        //IRQ  High to low transition
-                        return;
-                    }
-
-                    _rega[1] = (byte)(_rega[1] | 128);
-
-                    if ((_rega[1] & 1) != 0)
-                    {
-                        _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 1);
-                    }
-
-                    break;
-
-                case PhaseStates.Any:
-                    _rega[1] = (byte)(_rega[1] | 128);
-
-                    if ((_rega[1] & 1) != 0)
-                    {
-                        _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 1);
-                    }
-
-                    break;
-            }
+            _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 1);
         }
+    }
 
-        public void IrqFs(PhaseStates phase) //60HZ Vertical sync pulse 16.667 mS
+    public void PiaReset()
+    {
+        // Clear the PIA registers
+        for (byte index = 0; index < 4; index++)
         {
-            if (_modules.PAKInterface.CartInserted == 1 && CartAutoStart)
-            {
-                MC6821_AssertCart();
-            }
-
-            switch (phase)
-            {
-                case PhaseStates.Falling:	//FS went High to low
-                    if ((_rega[3] & 2) == 0) //IRQ on High to low transition
-                    {
-                        _rega[3] = (byte)(_rega[3] | 128);
-                    }
-
-                    break;
-
-                case PhaseStates.Rising:	//FS went Low to High
-                    if ((_rega[3] & 2) != 0) //IRQ  Low to High transition
-                    {
-                        _rega[3] = (byte)(_rega[3] | 128);
-                    }
-
-                    break;
-            }
-
-            if ((_rega[3] & 1) != 0)
-            {
-                _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 1);
-            }
+            _rega[index] = 0;
+            _regb[index] = 0;
+            _regadd[index] = 0;
+            _regbdd[index] = 0;
         }
+    }
 
-        public void PiaReset()
+    public void MC6821_AssertCart()
+    {
+        _regb[3] = (byte)(_regb[3] | 128);
+
+        if ((_regb[3] & 1) != 0)
         {
-            // Clear the PIA registers
-            for (byte index = 0; index < 4; index++)
-            {
-                _rega[index] = 0;
-                _regb[index] = 0;
-                _regadd[index] = 0;
-                _regbdd[index] = 0;
-            }
+            _modules.CPU.AssertInterrupt(CPUInterrupts.FIRQ, 0);
         }
-
-        public void MC6821_AssertCart()
+        else
         {
-            _regb[3] = (byte)(_regb[3] | 128);
-
-            if ((_regb[3] & 1) != 0)
-            {
-                _modules.CPU.AssertInterrupt(CPUInterrupts.FIRQ, 0);
-            }
-            else
-            {
-                _modules.CPU.DeAssertInterrupt(CPUInterrupts.FIRQ); //Kludge but working
-            }
+            _modules.CPU.DeAssertInterrupt(CPUInterrupts.FIRQ); //Kludge but working
         }
+    }
 
-        public void ClosePrintFile()
+    public void ClosePrintFile()
+    {
+        _kernel.CloseHandle(_hPrintFile);
+
+        _hPrintFile = Define.INVALID_HANDLE_VALUE;
+
+        _kernel.FreeConsole();
+
+        //_hOut = IntPtr.Zero;
+    }
+
+    public void SetMonState(bool state)
+    {
+        if (_monState && state)
         {
-            _kernel.CloseHandle(_hPrintFile);
-
-            _hPrintFile = Define.INVALID_HANDLE_VALUE;
-
             _kernel.FreeConsole();
 
             //_hOut = IntPtr.Zero;
         }
 
-        public void SetMonState(bool state)
+        _monState = state;
+    }
+
+    public byte Pia0_Read(byte port)
+    {
+        var dda = (byte)(_rega[1] & 4);
+        var ddb = (byte)(_rega[3] & 4);
+
+        switch (port)
         {
-            if (_monState && state)
-            {
-                _kernel.FreeConsole();
+            case 1:
+                return (_rega[port]);
 
-                //_hOut = IntPtr.Zero;
-            }
+            case 3:
+                return (_rega[port]);
 
-            _monState = state;
+            case 0:
+                if (dda != 0)
+                {
+                    _rega[1] = (byte)(_rega[1] & 63);
+
+                    return _modules.Keyboard.KeyboardGetScan(_rega[2]); //Read
+                }
+                else
+                {
+                    return _regadd[port];
+                }
+
+            case 2: //WritePrint 
+                if (ddb != 0)
+                {
+                    _rega[3] = (byte)(_rega[3] & 63);
+
+                    return (byte)(_rega[port] & _regadd[port]);
+                }
+                else
+                {
+                    return _regadd[port];
+                }
         }
 
-        public byte Pia0_Read(byte port)
+        return 0;
+    }
+
+    public byte Pia1_Read(byte port)
+    {
+        port -= 0x20;
+
+        var dda = (byte)(_regb[1] & 4);
+        var ddb = (byte)(_regb[3] & 4);
+
+        switch (port)
         {
-            var dda = (byte)(_rega[1] & 4);
-            var ddb = (byte)(_rega[3] & 4);
+            case 1:
+            //	return 0;
 
-            switch (port)
-            {
-                case 1:
-                    return (_rega[port]);
+            case 3:
+                return _regb[port];
 
-                case 3:
-                    return (_rega[port]);
+            case 2:
+                if (ddb != 0)
+                {
+                    _regb[3] = (byte)(_regb[3] & 63);
 
-                case 0:
-                    if (dda != 0)
-                    {
-                        _rega[1] = (byte)(_rega[1] & 63);
+                    return (byte)(_regb[port] & _regbdd[port]);
+                }
+                else
+                {
+                    return _regbdd[port];
+                }
 
-                        return _modules.Keyboard.KeyboardGetScan(_rega[2]); //Read
-                    }
-                    else
-                    {
-                        return _regadd[port];
-                    }
+            case 0:
+                if (dda != 0)
+                {
+                    _regb[1] = (byte)(_regb[1] & 63); //Cassette In
+                    byte flag = _regb[port];
 
-                case 2: //WritePrint 
-                    if (ddb != 0)
-                    {
-                        _rega[3] = (byte)(_rega[3] & 63);
-
-                        return (byte)(_rega[port] & _regadd[port]);
-                    }
-                    else
-                    {
-                        return _regadd[port];
-                    }
-            }
-
-            return 0;
+                    return flag;
+                }
+                else
+                {
+                    return _regbdd[port];
+                }
         }
 
-        public byte Pia1_Read(byte port)
+        return 0;
+    }
+
+    public void Pia0_Write(byte data, byte port)
+    {
+        var dda = (byte)(_rega[1] & 4);
+        var ddb = (byte)(_rega[3] & 4);
+
+        switch (port)
         {
-            port -= 0x20;
+            case 0:
+                if (dda != 0)
+                {
+                    _rega[port] = data;
+                }
+                else
+                {
+                    _regadd[port] = data;
+                }
 
-            var dda = (byte)(_regb[1] & 4);
-            var ddb = (byte)(_regb[3] & 4);
+                return;
 
-            switch (port)
-            {
-                case 1:
-                //	return 0;
+            case 2:
+                if (ddb != 0)
+                {
+                    _rega[port] = data;
+                }
+                else
+                {
+                    _regadd[port] = data;
+                }
 
-                case 3:
-                    return _regb[port];
+                return;
 
-                case 2:
-                    if (ddb != 0)
-                    {
-                        _regb[3] = (byte)(_regb[3] & 63);
+            case 1:
+                _rega[port] = (byte)(data & 0x3F);
 
-                        return (byte)(_regb[port] & _regbdd[port]);
-                    }
-                    else
-                    {
-                        return _regbdd[port];
-                    }
+                return;
 
-                case 0:
-                    if (dda != 0)
-                    {
-                        _regb[1] = (byte)(_regb[1] & 63); //Cassette In
-                        byte flag = _regb[port];
+            case 3:
+                _rega[port] = (byte)(data & 0x3F);
 
-                        return flag;
-                    }
-                    else
-                    {
-                        return _regbdd[port];
-                    }
-            }
-
-            return 0;
+                return;
         }
+    }
 
-        public void Pia0_Write(byte data, byte port)
+    public void Pia1_Write(byte data, byte port)
+    {
+        port -= 0x20;
+
+        var dda = (byte)(_regb[1] & 4);
+        var ddb = (byte)(_regb[3] & 4);
+
+        switch (port)
         {
-            var dda = (byte)(_rega[1] & 4);
-            var ddb = (byte)(_rega[3] & 4);
+            case 0:
+                if (dda != 0)
+                {
+                    _regb[port] = data;
 
-            switch (port)
-            {
-                case 0:
-                    if (dda != 0)
+                    MC6821_CaptureBit((byte)((_regb[0] & 2) >> 1));
+
+                    if (GetMuxState() == 0)
                     {
-                        _rega[port] = data;
-                    }
-                    else
-                    {
-                        _regadd[port] = data;
-                    }
-
-                    return;
-
-                case 2:
-                    if (ddb != 0)
-                    {
-                        _rega[port] = data;
-                    }
-                    else
-                    {
-                        _regadd[port] = data;
-                    }
-
-                    return;
-
-                case 1:
-                    _rega[port] = (byte)(data & 0x3F);
-
-                    return;
-
-                case 3:
-                    _rega[port] = (byte)(data & 0x3F);
-
-                    return;
-            }
-        }
-
-        public void Pia1_Write(byte data, byte port)
-        {
-            port -= 0x20;
-
-            var dda = (byte)(_regb[1] & 4);
-            var ddb = (byte)(_regb[3] & 4);
-
-            switch (port)
-            {
-                case 0:
-                    if (dda != 0)
-                    {
-                        _regb[port] = data;
-
-                        MC6821_CaptureBit((byte)((_regb[0] & 2) >> 1));
-
-                        if (GetMuxState() == 0)
+                        if ((_regb[3] & 8) != 0)
+                        { //==0 for cassette writes
+                            _audioSample = (byte)((_regb[0] & 0xFC) >> 1); //0 to 127
+                        }
+                        else
                         {
-                            if ((_regb[3] & 8) != 0)
-                            { //==0 for cassette writes
-                                _audioSample = (byte)((_regb[0] & 0xFC) >> 1); //0 to 127
-                            }
-                            else
-                            {
-                                _cassetteSample = (byte)(_regb[0] & 0xFC);
-                            }
+                            _cassetteSample = (byte)(_regb[0] & 0xFC);
                         }
                     }
-                    else
-                    {
-                        _regbdd[port] = data;
-                    }
+                }
+                else
+                {
+                    _regbdd[port] = data;
+                }
 
-                    return;
+                return;
 
-                case 2: //FF22
-                    if (ddb != 0)
-                    {
-                        _regb[port] = (byte)(data & _regbdd[port]);
+            case 2: //FF22
+                if (ddb != 0)
+                {
+                    _regb[port] = (byte)(data & _regbdd[port]);
 
-                        _singleBitSample = (byte)((_regb[port] & 2) << 6);
+                    _singleBitSample = (byte)((_regb[port] & 2) << 6);
 
-                        _modules.Graphics.SetGimeVdgMode2((byte)((_regb[2] & 248) >> 3));
-                    }
-                    else
-                    {
-                        _regbdd[port] = data;
-                    }
+                    _modules.Graphics.SetGimeVdgMode2((byte)((_regb[2] & 248) >> 3));
+                }
+                else
+                {
+                    _regbdd[port] = data;
+                }
 
-                    return;
+                return;
 
-                case 1:
-                    _regb[port] = (byte)(data & 0x3F);
+            case 1:
+                _regb[port] = (byte)(data & 0x3F);
 
-                    _modules.Cassette.Motor((byte)((data & 8) >> 3));
+                _modules.Cassette.Motor((byte)((data & 8) >> 3));
 
-                    return;
+                return;
 
-                case 3:
-                    _regb[port] = (byte)(data & 0x3F);
+            case 3:
+                _regb[port] = (byte)(data & 0x3F);
 
-                    return;
-            }
+                return;
+        }
+    }
+
+    private byte _bitMask = 1, _startWait = 1;
+
+    public void MC6821_CaptureBit(byte sample)
+    {
+        byte data = 0;
+
+        if ((long)(_hPrintFile) == -1)
+        { //INVALID_HANDLE_VALUE
+            return;
         }
 
-        private byte _bitMask = 1, _startWait = 1;
+        if ((_startWait & sample) != 0)
+        { //Waiting for start bit
+            return;
+        }
 
-        public void MC6821_CaptureBit(byte sample)
+        if (_startWait != 0)
         {
-            byte data = 0;
+            _startWait = 0;
 
-            if ((long)(_hPrintFile) == -1)
-            { //INVALID_HANDLE_VALUE
-                return;
-            }
+            return;
+        }
 
-            if ((_startWait & sample) != 0)
-            { //Waiting for start bit
-                return;
-            }
+        if (sample != 0)
+        {
+            data |= _bitMask;
+        }
 
-            if (_startWait != 0)
+        _bitMask = (byte)(_bitMask << 1);
+
+        if (_bitMask == 0)
+        {
+            _bitMask = 1;
+            _startWait = 1;
+
+            //WritePrint(data);
+
+            if (_monState)
             {
-                _startWait = 0;
-
-                return;
+                MC6821_WritePrintMon(data);
             }
 
-            if (sample != 0)
+            if (data == 0x0D && _addLf)
             {
-                data |= _bitMask;
-            }
-
-            _bitMask = (byte)(_bitMask << 1);
-
-            if (_bitMask == 0)
-            {
-                _bitMask = 1;
-                _startWait = 1;
+                //data = 0x0A;
 
                 //WritePrint(data);
-
-                if (_monState)
-                {
-                    MC6821_WritePrintMon(data);
-                }
-
-                if (data == 0x0D && _addLf)
-                {
-                    //data = 0x0A;
-
-                    //WritePrint(data);
-                }
             }
         }
+    }
 
-        //// ReSharper disable once UnusedParameter.Local
-        //private void WritePrint(byte data)
-        //{
-        //    //ulong bytesMoved = 0;
+    //// ReSharper disable once UnusedParameter.Local
+    //private void WritePrint(byte data)
+    //{
+    //    //ulong bytesMoved = 0;
 
-        //    //TODO: Writing to a print file?
-        //    //WriteFile(instance->hPrintFile, &data, 1, &bytesMoved, NULL);
-        //}
+    //    //TODO: Writing to a print file?
+    //    //WriteFile(instance->hPrintFile, &data, 1, &bytesMoved, NULL);
+    //}
 
-        public byte GetMuxState()
+    public byte GetMuxState()
+    {
+        return (byte)(((_rega[1] & 8) >> 3) + ((_rega[3] & 8) >> 2));
+    }
+
+    public void MC6821_WritePrintMon(byte data)
+    {
+        //WriteConsole(data);
+
+        if (data == 0x0D)
         {
-            return (byte)(((_rega[1] & 8) >> 3) + ((_rega[3] & 8) >> 2));
-        }
+            data = 0x0A;
 
-        public void MC6821_WritePrintMon(byte data)
-        {
             //WriteConsole(data);
-
-            if (data == 0x0D)
-            {
-                data = 0x0A;
-
-                //WriteConsole(data);
-            }
         }
+    }
 
-        //// ReSharper disable once UnusedParameter.Local
-        //private un/safe void WriteConsole(byte* data)
-        //{
-        //    //ulong dummy = 0;
+    //// ReSharper disable once UnusedParameter.Local
+    //private un/safe void WriteConsole(byte* data)
+    //{
+    //    //ulong dummy = 0;
 
-        //    //if (instance->hOut == IntPtr.Zero)
-        //    {
-        //        //AllocConsole();
+    //    //if (instance->hOut == IntPtr.Zero)
+    //    {
+    //        //AllocConsole();
 
-        //        //instance->hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    //        //instance->hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
-        //        //SetConsoleTitle("Printer Monitor");
-        //    }
+    //        //SetConsoleTitle("Printer Monitor");
+    //    }
 
-        //    //TODO: Writing to a console?
-        //    //WriteConsole(instance->hOut, data, 1, &dummy, 0);
-        //}
+    //    //TODO: Writing to a console?
+    //    //WriteConsole(instance->hOut, data, 1, &dummy, 0);
+    //}
 
-        public byte DACState()
+    public byte DACState()
+    {
+        return (byte)(_regb[0] >> 2);
+    }
+
+    public int OpenPrintFile(string filename)
+    {
+        _hPrintFile = _kernel.CreateFile(filename, Define.GENERIC_READ | Define.GENERIC_WRITE, Define.CREATE_ALWAYS);
+
+        return _hPrintFile == Define.INVALID_HANDLE_VALUE ? 0 : 1;
+    }
+
+    public void SetSerialParams(bool textMode)
+    {
+        _addLf = textMode;
+    }
+
+    public void GetDACSample(DACSample dacSample)
+    {
+        int pakSample = _modules.PAKInterface.PakAudioSample();
+
+        dacSample.Left.Sample(pakSample >> 8, _audioSample, _singleBitSample);
+        dacSample.Right.Sample(pakSample & 0xFF, _audioSample, _singleBitSample);
+    }
+
+    public void SetCassetteSample(byte sample)
+    {
+        _regb[0] &= 0xFE;
+
+        if (sample > 0x7F)
         {
-            return (byte)(_regb[0] >> 2);
+            _regb[0] |= 1;
         }
+    }
 
-        public int OpenPrintFile(string filename)
-        {
-            _hPrintFile = _kernel.CreateFile(filename, Define.GENERIC_READ | Define.GENERIC_WRITE, Define.CREATE_ALWAYS);
+    public byte GetCassetteSample()
+    {
+        return _cassetteSample;
+    }
 
-            return _hPrintFile == Define.INVALID_HANDLE_VALUE ? 0 : 1;
-        }
+    public void Reset()
+    {
+        _addLf = false;
+        _monState = false;
 
-        public void SetSerialParams(bool textMode)
-        {
-            _addLf = textMode;
-        }
+        _hPrintFile = HANDLE.Zero;
 
-        public void GetDACSample(DACSample dacSample)
-        {
-            int pakSample = _modules.PAKInterface.PakAudioSample();
+        _regadd.Initialize();
+        _regbdd.Initialize();
+        _rega.Initialize();
+        _regb.Initialize();
 
-            dacSample.Left.Sample(pakSample >> 8, _audioSample, _singleBitSample);
-            dacSample.Right.Sample(pakSample & 0xFF, _audioSample, _singleBitSample);
-        }
+        _audioSample = 0;
+        _singleBitSample = 0;
+        _cassetteSample = 0;
 
-        public void SetCassetteSample(byte sample)
-        {
-            _regb[0] &= 0xFE;
+        CartAutoStart = false;
 
-            if (sample > 0x7F)
-            {
-                _regb[0] |= 1;
-            }
-        }
-
-        public byte GetCassetteSample()
-        {
-            return _cassetteSample;
-        }
+        SetCartAutoStart();
     }
 }

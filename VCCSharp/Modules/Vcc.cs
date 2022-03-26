@@ -11,7 +11,7 @@ using VCCSharp.Properties;
 
 namespace VCCSharp.Modules;
 
-public interface IVcc
+public interface IVcc : IModule
 {
     void CheckScreenModeChange();
     void CreatePrimaryWindow();
@@ -154,8 +154,8 @@ public class Vcc : IVcc
 
             _modules.Emu.ResetPending = (byte)ResetPendingStates.None;
 
-            fps += _modules.Emu.EmulationRunning 
-                ? _modules.CoCo.RenderFrame() 
+            fps += _modules.Emu.EmulationRunning
+                ? _modules.CoCo.RenderFrame()
                 : _modules.Draw.Static();
         }
 
@@ -190,5 +190,15 @@ public class Vcc : IVcc
         int rightDeviceIndex = configuration.Joysticks.Right.DeviceIndex;
 
         _modules.Joysticks.SetStickNumbers(leftDeviceIndex, rightDeviceIndex);
+    }
+
+    public void Reset()
+    {
+        //BinaryRunning = false;
+
+        //An IRQ of sorts telling the emulator to pause during Full Screen toggle
+        RunState = Define.EMU_RUNSTATE_RUNNING;
+
+        AppName = "(app)";
     }
 }

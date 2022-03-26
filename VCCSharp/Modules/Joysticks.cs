@@ -9,7 +9,7 @@ using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Modules;
 
-public interface IJoysticks
+public interface IJoysticks : IModule
 {
     List<string> FindJoysticks();
 
@@ -50,8 +50,8 @@ public class Joysticks : IJoysticks
     private Joystick _left = new();
     private Joystick _right = new();
 
-    private int _leftId;
-    private int _rightId;
+    private int _leftId = -1;
+    private int _rightId = -1;
 
     public Joysticks(IConfigurationRoot configuration, IDxInput input)
     {
@@ -391,5 +391,14 @@ public class Joysticks : IJoysticks
     {
         //Fix this if it ever gets invoked, I guess.
         throw new NotImplementedException();
+    }
+
+    public void Reset()
+    {
+        _leftId = -1;
+        _rightId = -1;
+
+        SetLeftJoystick();
+        SetRightJoystick();
     }
 }

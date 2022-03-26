@@ -7,7 +7,7 @@ using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules;
 
-public interface IEmu
+public interface IEmu : IModule
 {
     HWND WindowHandle { get; set; }
 
@@ -177,4 +177,9 @@ public class Emu : IEmu
         }
     }
 
+    public void Reset()
+    {
+        HardReset();
+        SetCpuMultiplier();
+    }
 }
