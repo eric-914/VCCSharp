@@ -11,7 +11,7 @@
         xmlns:miscellaneous="clr-namespace:VCCSharp.Configuration.TabControls.Miscellaneous"
         xmlns:viewModel="clr-namespace:VCCSharp.Configuration.ViewModel"
         mc:Ignorable="d"
-        Title="Vcc Options" Height="500" Width="800">
+        Title="Vcc Options" Height="550" Width="850">
     <Window.DataContext>
         <viewModel:ConfigurationViewModel/>
     </Window.DataContext>

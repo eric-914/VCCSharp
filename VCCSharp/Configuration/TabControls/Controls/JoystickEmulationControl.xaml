@@ -1,28 +1,41 @@
 ﻿<UserControl x:Class="VCCSharp.Configuration.TabControls.Controls.JoystickEmulationControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:configuration="clr-namespace:VCCSharp.Configuration"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
              xmlns:converters="clr-namespace:VCCSharp.Converters"
              xmlns:enums="clr-namespace:VCCSharp.Enums"
-             xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
              mc:Ignorable="d" 
-             d:DesignHeight="150" d:DesignWidth="200">
-  <UserControl.DataContext>
-    <joystick:JoystickViewModel/>
-  </UserControl.DataContext>
-  <UserControl.Resources>
-    <converters:EnumToSelectionConverter x:Key="Converter"/>
-  </UserControl.Resources>
+             d:DesignHeight="50" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <joystick:JoystickViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <converters:EnumToSelectionConverter x:Key="Converter"/>
+        <Style TargetType="RadioButton">
+            <Setter Property="Margin" Value="6,6,6,0"/>
+        </Style>
+    </UserControl.Resources>
 
-  <StackPanel Orientation="Vertical">
-    <StackPanel Orientation="Horizontal">
-      <Label Content="{Binding SideText}" />
-      <Label Content="Emulation" />
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+        <Label Content="{Binding SideText}" />
+        <Label Content="Emulation:" />
+
+        <RadioButton Content="Standard Joystick" 
+                     IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.Standard}}"/>
+
+        <!-- TODO: Need to research these other options which is why they are disabled -->
+        <RadioButton Content="Tandy Hi-Res Joystick" 
+                     IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.TandyHiRes}}"
+                     IsEnabled="False"/>
+
+        <RadioButton Content="CoCo-MAX Mouse" 
+                     IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.CoCoMaxMouse}}"
+                     IsEnabled="False"/>
+
+        <RadioButton Content="X-Pad" 
+                     IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.XPad}}"
+                     IsEnabled="False"/>
     </StackPanel>
-    <RadioButton Content="Standard" IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.Standard}}"/>
-    <RadioButton Content="Tandy Hi-Res" IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.TandyHiRes}}"/>
-    <RadioButton Content="CC-MAX" IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.CCMAX}}"/>
-  </StackPanel>
 </UserControl>

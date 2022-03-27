@@ -10,14 +10,21 @@
     <UserControl.DataContext>
         <local:JoystickViewModel/>
     </UserControl.DataContext>
+    <UserControl.Resources>
+        <Style TargetType="Border">
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+    </UserControl.Resources>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="20"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <controls:JoystickSourceControl Grid.Column="0" DataContext="{Binding }"/>
-        <controls:JoystickEmulationControl Grid.Column="2" DataContext="{Binding }"/>
-    </Grid>
+    <DockPanel>
+        <Border DockPanel.Dock="Top" >
+            <controls:JoystickEmulationControl 
+                DataContext="{Binding }"/>
+        </Border>
+        <Border>
+            <controls:JoystickSourceControl 
+                DataContext="{Binding }"/>
+        </Border>
+    </DockPanel>
 </UserControl>
