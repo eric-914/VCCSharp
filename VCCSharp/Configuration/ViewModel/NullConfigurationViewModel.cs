@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using VCCSharp.Configuration.TabControls.Audio;
+﻿using VCCSharp.Configuration.TabControls.Audio;
 using VCCSharp.Configuration.TabControls.Cpu;
 using VCCSharp.Configuration.TabControls.Display;
 using VCCSharp.Configuration.TabControls.Joystick;
+using VCCSharp.Configuration.TabControls.Keyboard;
 using VCCSharp.Configuration.TabControls.Miscellaneous;
-using VCCSharp.Enums;
 using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Configuration.ViewModel;
@@ -18,14 +17,13 @@ public class NullConfigurationViewModel : IConfigurationViewModel
     public AudioTabViewModel Audio { get; } = new();
     public CpuTabViewModel Cpu { get; } = new();
     public DisplayTabViewModel Display { get; } = new();
+    public KeyboardTabViewModel Keyboard { get; } = new();
     public MiscellaneousTabViewModel Miscellaneous { get; } = new();
 
 
     public IConfiguration Model => default!;
     public JoystickViewModel Left { get; } = new();
     public JoystickViewModel Right { get; } = new();
-    public KeyboardLayouts KeyboardLayout { get; set; }
-    public List<string> KeyboardLayouts { get; } = new();
     public string CassettePath { get; set; } = string.Empty;
     public string CoCoRomPath { get; set; } = string.Empty;
     public string ExternalBasicImage { get; set; } = string.Empty;

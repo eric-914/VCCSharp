@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using VCCSharp.Configuration.TabControls.Audio;
+﻿using VCCSharp.Configuration.TabControls.Audio;
 using VCCSharp.Configuration.TabControls.Cpu;
 using VCCSharp.Configuration.TabControls.Display;
 using VCCSharp.Configuration.TabControls.Joystick;
+using VCCSharp.Configuration.TabControls.Keyboard;
 using VCCSharp.Configuration.TabControls.Miscellaneous;
-using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
 using VCCSharp.Models.Configuration;
 
@@ -15,14 +14,16 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
     public AudioTabViewModel Audio { get; }
     public DisplayTabViewModel Display { get; }
     public CpuTabViewModel Cpu { get; }
+    public KeyboardTabViewModel Keyboard { get; }
     public MiscellaneousTabViewModel Miscellaneous { get; }
 
-    public ConfigurationViewModel(IConfiguration model, AudioTabViewModel audio, CpuTabViewModel cpu, DisplayTabViewModel display, JoystickViewModel left, JoystickViewModel right, MiscellaneousTabViewModel miscellaneous)
+    public ConfigurationViewModel(IConfiguration model, AudioTabViewModel audio, CpuTabViewModel cpu, DisplayTabViewModel display, KeyboardTabViewModel keyboard, JoystickViewModel left, JoystickViewModel right, MiscellaneousTabViewModel miscellaneous)
     {
         Model = model;
         Audio = audio;
         Cpu = cpu;
         Display = display;
+        Keyboard = keyboard;
 
         Left = left;
         Right = right;
@@ -34,35 +35,14 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
 
     #region Constants
 
-    public List<string> KeyboardLayouts { get; } = new()
-    {
-        "Color Computer 1/2",
-        "Color Computer 3",
-        "PC"
-    };
 
     #endregion
 
     //[Version]
     public string Release { get; set; } = "Release";
 
-    //[CPU]
-
-
-
-    //[Video]
-
-
-
-    //[Memory]
-
     public string ExternalBasicImage { get; set; } = "External Basic Image";
 
-    public KeyboardLayouts KeyboardLayout
-    {
-        get => Model.Keyboard.Layout.Value;
-        set => Model.Keyboard.Layout.Value = value;
-    }
 
     //[Module]
     public string ModulePath { get; set; } = "Module Path";

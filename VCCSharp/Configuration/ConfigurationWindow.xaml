@@ -63,7 +63,7 @@
                 <display:DisplayTabControl DataContext="{Binding Display}"/>
             </TabItem>
             <TabItem Header="Keyboard" >
-                <keyboard:KeyboardTabControl DataContext="{Binding}"/>
+                <keyboard:KeyboardTabControl DataContext="{Binding Keyboard}"/>
             </TabItem>
             <TabItem Header="Joysticks" >
                 <joystick:JoystickTabControl DataContext="{Binding}"/>

@@ -1,14 +1,14 @@
 ﻿<UserControl x:Class="VCCSharp.Configuration.TabControls.Keyboard.KeyboardTabControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:keyboard="clr-namespace:VCCSharp.Configuration.TabControls.Keyboard"
              xmlns:converters="clr-namespace:VCCSharp.Converters"
-             xmlns:viewModel="clr-namespace:VCCSharp.Configuration.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.DataContext>
-        <viewModel:NullConfigurationViewModel/>
+        <keyboard:KeyboardTabViewModel/>
     </UserControl.DataContext>
     <UserControl.Resources>
         <converters:KeyboardLayoutConverter x:Key="KeyboardLayoutConverter"/>
@@ -40,19 +40,16 @@
                 </Style>
             </StackPanel.Resources>
             <TextBlock TextWrapping="Wrap">
-        Keyboard Map Descriptions
+                Keyboard Map Descriptions
             </TextBlock>
             <TextBlock TextWrapping="Wrap">
-        Coco 1/2: Layout physically resembles the Coco 1/2 keyboard as close as possible.
+                Coco 1/2: Layout physically resembles the Coco 1/2 keyboard as close as possible.
             </TextBlock>
             <TextBlock TextWrapping="Wrap">
-        Coco 1/2: Layout physically resembles the Coco 1/2 keyboard as close as possible.
+                Coco 3: Layout physically resembles the Coco 3 keyboard as close as possible.
             </TextBlock>
             <TextBlock TextWrapping="Wrap">
-        Coco 3: Layout physically resembles the Coco 3 keyboard as close as possible.
-            </TextBlock>
-            <TextBlock TextWrapping="Wrap">
-        Standard PC keyboard layout.
+                Standard PC keyboard layout.
             </TextBlock>
         </StackPanel>
     </Grid>

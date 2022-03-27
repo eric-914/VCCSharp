@@ -3,6 +3,7 @@ using VCCSharp.Configuration.TabControls.Audio;
 using VCCSharp.Configuration.TabControls.Cpu;
 using VCCSharp.Configuration.TabControls.Display;
 using VCCSharp.Configuration.TabControls.Joystick;
+using VCCSharp.Configuration.TabControls.Keyboard;
 using VCCSharp.Configuration.TabControls.Miscellaneous;
 using VCCSharp.Configuration.ViewModel;
 using VCCSharp.Enums;
@@ -60,9 +61,10 @@ public class ViewModelFactory : IViewModelFactory
         var audio = new AudioTabViewModel(model.Audio, modules.Audio);
         var cpu = new CpuTabViewModel(model.CPU, model.Memory);
         var display = new DisplayTabViewModel(model.CPU, model.Video, model.Window);
+        var keyboard = new KeyboardTabViewModel(model.Keyboard);
 
         var miscellaneous = new MiscellaneousTabViewModel(model.Startup);
 
-        return new ConfigurationViewModel(model, audio, cpu, display, left, right, miscellaneous);
+        return new ConfigurationViewModel(model, audio, cpu, display, keyboard, left, right, miscellaneous);
     }
 }
