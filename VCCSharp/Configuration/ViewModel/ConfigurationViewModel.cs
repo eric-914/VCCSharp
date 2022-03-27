@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using VCCSharp.Configuration.TabControls.Audio;
 using VCCSharp.Configuration.TabControls.Joystick;
+using VCCSharp.Configuration.TabControls.Miscellaneous;
 using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
 using VCCSharp.Models.Configuration;
@@ -10,14 +11,17 @@ namespace VCCSharp.Configuration.ViewModel;
 public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
 {
     public AudioTabViewModel Audio { get; }
+    public MiscellaneousTabViewModel Miscellaneous { get; }
 
-    public ConfigurationViewModel(IConfiguration model, AudioTabViewModel audio, JoystickViewModel left, JoystickViewModel right)
+    public ConfigurationViewModel(IConfiguration model, AudioTabViewModel audio, JoystickViewModel left, JoystickViewModel right, MiscellaneousTabViewModel miscellaneous)
     {
         Model = model;
         Audio = audio;
 
         Left = left;
         Right = right;
+
+        Miscellaneous = miscellaneous;
     }
 
     public IConfiguration Model { get; }
@@ -177,19 +181,6 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
     }
 
     public string ExternalBasicImage { get; set; } = "External Basic Image";
-
-    //[Misc]
-    public bool AutoStart
-    {
-        get => Model.Startup.AutoStart;
-        set => Model.Startup.AutoStart = value;
-    }
-
-    public bool CartAutoStart
-    {
-        get => Model.Startup.CartridgeAutoStart;
-        set => Model.Startup.CartridgeAutoStart = value;
-    }
 
     public KeyboardLayouts KeyboardLayout
     {

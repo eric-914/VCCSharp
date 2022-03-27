@@ -69,7 +69,7 @@
                 <joystick:JoystickTabControl DataContext="{Binding}"/>
             </TabItem>
             <TabItem Header="Misc" >
-                <miscellaneous:MiscellaneousTabControl DataContext="{Binding}"/>
+                <miscellaneous:MiscellaneousTabControl DataContext="{Binding Miscellaneous}"/>
             </TabItem>
         </TabControl>
     </DockPanel>

@@ -1,6 +1,7 @@
 ﻿using System;
 using VCCSharp.Configuration.TabControls.Audio;
 using VCCSharp.Configuration.TabControls.Joystick;
+using VCCSharp.Configuration.TabControls.Miscellaneous;
 using VCCSharp.Configuration.ViewModel;
 using VCCSharp.Enums;
 using VCCSharp.Main;
@@ -56,6 +57,8 @@ public class ViewModelFactory : IViewModelFactory
 
         var audio = new AudioTabViewModel(model.Audio, modules.Audio);
 
-        return new ConfigurationViewModel(model, audio, left, right);
+        var miscellaneous = new MiscellaneousTabViewModel(model.Startup);
+
+        return new ConfigurationViewModel(model, audio, left, right, miscellaneous);
     }
 }

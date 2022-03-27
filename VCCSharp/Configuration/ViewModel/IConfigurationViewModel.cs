@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using VCCSharp.Configuration.TabControls.Audio;
 using VCCSharp.Configuration.TabControls.Joystick;
+using VCCSharp.Configuration.TabControls.Miscellaneous;
 using VCCSharp.Enums;
 
 namespace VCCSharp.Configuration.ViewModel;
@@ -7,6 +9,10 @@ namespace VCCSharp.Configuration.ViewModel;
 public interface IConfigurationViewModel
 {
     Models.Configuration.IConfiguration Model { get; }
+
+    AudioTabViewModel Audio { get; }
+    MiscellaneousTabViewModel Miscellaneous { get; }
+
     List<string> KeyboardLayouts { get; }
     string Release { get; set; }
     int CpuMultiplier { get; set; }
@@ -23,8 +29,6 @@ public interface IConfigurationViewModel
     MemorySizes? Memory { get; set; }
     MemorySizes RamSize { get; set; }
     string ExternalBasicImage { get; set; }
-    bool AutoStart { get; set; }
-    bool CartAutoStart { get; set; }
     KeyboardLayouts KeyboardLayout { get; set; }
     string ModulePath { get; set; }
     JoystickViewModel Left { get; }

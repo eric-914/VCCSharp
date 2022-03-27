@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using VCCSharp.Configuration.TabControls.Audio;
 using VCCSharp.Configuration.TabControls.Joystick;
+using VCCSharp.Configuration.TabControls.Miscellaneous;
 using VCCSharp.Enums;
 using VCCSharp.Models.Configuration;
 
@@ -13,6 +14,7 @@ namespace VCCSharp.Configuration.ViewModel;
 public class NullConfigurationViewModel : IConfigurationViewModel
 {
     public AudioTabViewModel Audio { get; } = new();
+    public MiscellaneousTabViewModel Miscellaneous { get; } = new();
 
     public CPUTypes CpuType { get; set; }
     public CPUTypes? Cpu { get; set; }
@@ -25,8 +27,6 @@ public class NullConfigurationViewModel : IConfigurationViewModel
     public MemorySizes? Memory { get; set; }
     public MonitorTypes? MonitorType { get; set; }
     public PaletteTypes? PaletteType { get; set; }
-    public bool AutoStart { get; set; }
-    public bool CartAutoStart { get; set; }
     public bool ForceAspect { get; set; }
     public bool RememberSize { get; set; }
     public bool ScanLines { get; set; }

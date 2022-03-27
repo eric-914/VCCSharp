@@ -3,12 +3,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:viewModel="clr-namespace:VCCSharp.Configuration.ViewModel"
+             xmlns:miscellaneous="clr-namespace:VCCSharp.Configuration.TabControls.Miscellaneous"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200">
   <UserControl.DataContext>
-    <viewModel:NullConfigurationViewModel/>
+    <miscellaneous:MiscellaneousTabViewModel/>
   </UserControl.DataContext>
+
   <StackPanel Orientation="Vertical">
     <Label Content="Miscellaneous" />
     <CheckBox IsChecked="{Binding AutoStart}">AutoStart Emulation</CheckBox>
