@@ -11,6 +11,20 @@
     </UserControl.DataContext>
 
     <Grid>
-        <joystick:JoystickConfigurationSelectionControl DataContext="{Binding}"/>
+        <TabControl Name="TabControl">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="FontSize" Value="20" />
+                    <Setter Property="Width" Value="380"/>
+                </Style>
+            </TabControl.Resources>
+
+            <TabItem Header="Left Joystick" >
+                <joystick:JoystickInputControl DataContext="{Binding Left}"/>
+            </TabItem>
+            <TabItem Header="Right Joystick" >
+                <joystick:JoystickInputControl DataContext="{Binding Right}"/>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>
