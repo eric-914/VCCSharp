@@ -24,7 +24,7 @@ public interface IJoysticks : IModule
     void SetJoystick(System.Windows.Size clientSize, System.Windows.Point point);
     byte SetMouseStatus(byte scanCode, byte phase);
 
-    int GetPotValue(byte pot);
+    int GetPotValue(Pots pot);
 
     ushort StickValue { get; set; }
 
@@ -94,7 +94,7 @@ public class Joysticks : IJoysticks
         _rightId = rightStickNumber;
     }
 
-    public int GetPotValue(byte pot)
+    public int GetPotValue(Pots pot)
     {
         bool useLeft = _left.InputSource.Value == JoystickDevices.Joystick;
         bool useRight = _right.InputSource.Value == JoystickDevices.Joystick;
@@ -111,10 +111,10 @@ public class Joysticks : IJoysticks
 
         return pot switch
         {
-            0 => Right.X,
-            1 => Right.Y,
-            2 => Left.X,
-            3 => Left.Y,
+            Pots.RightX => Right.X,
+            Pots.RightY => Right.Y,
+            Pots.LeftX => Left.X,
+            Pots.LeftY => Left.Y,
             _ => 0
         };
     }

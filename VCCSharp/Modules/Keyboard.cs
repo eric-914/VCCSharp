@@ -91,8 +91,8 @@ public class Keyboard : IKeyboard
 
         retVal = (byte)(127 - retVal);
 
-        //Collect CA2 and CB2 from the PIA (1of4 Multiplexer)
-        _modules.Joysticks.StickValue = (ushort)joysticks.GetPotValue(mc6821.GetMuxState());
+        //Collect CA2 and CB2 from the PIA (1 of 4 Multiplexer)
+        _modules.Joysticks.StickValue = (ushort)joysticks.GetPotValue((Pots)mc6821.GetMuxState());
 
         if (_modules.Joysticks.StickValue != 0)		//OS9 joyin routine needs this (koronis rift works now)
         {

@@ -9,7 +9,6 @@ using VCCSharp.Configuration.ViewModel;
 using VCCSharp.Main;
 using VCCSharp.Menu;
 using VCCSharp.Models.Configuration;
-using VCCSharp.Models.Joystick;
 
 namespace VCCSharp.IoC;
 
@@ -52,13 +51,12 @@ public class ViewModelFactory : IViewModelFactory
     public ConfigurationViewModel CreateConfigurationViewModel(IConfiguration model)
     {
         var modules = _factory.Get<IModules>();
-        var services = _factory.Get<IJoystickServices>();
 
         var audio = new AudioTabViewModel(model.Audio, modules.Audio);
         var cpu = new CpuTabViewModel(model.CPU, model.Memory);
         var display = new DisplayTabViewModel(model.CPU, model.Video, model.Window);
         var keyboard = new KeyboardTabViewModel(model.Keyboard);
-        var joysticks = new JoystickTabViewModel(model.Joysticks, services);
+        var joysticks = new JoystickTabViewModel(model.Joysticks, modules.Joysticks);
         var miscellaneous = new MiscellaneousTabViewModel(model.Startup);
 
         return new ConfigurationViewModel(audio, cpu, display, keyboard, joysticks, miscellaneous);

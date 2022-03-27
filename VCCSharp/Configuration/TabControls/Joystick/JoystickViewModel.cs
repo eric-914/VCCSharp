@@ -2,32 +2,32 @@
 using System.Windows.Input;
 using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
-using VCCSharp.Models.Joystick;
 using VCCSharp.Models.Keyboard;
+using VCCSharp.Modules;
 
 namespace VCCSharp.Configuration.TabControls.Joystick;
 
 public class JoystickViewModel : NotifyViewModel
 {
-    private readonly IJoystickServices? _services;
+    private readonly IJoysticks? _module;
 
     public Models.Configuration.Joystick Model { get; } = new();
 
     public JoystickViewModel() { }
 
     //--TODO: Holding a local copy of the correct JoystickModel* ends up with bad pointers for reason unknown
-    public JoystickViewModel(JoystickSides side, Models.Configuration.Joystick model, IJoystickServices services) : this()
+    public JoystickViewModel(JoystickSides side, Models.Configuration.Joystick model, IJoysticks module) 
     {
+        _module = module;
         Side = side;
         Model = model;
-        _services = services;
     }
 
     #region Constants
 
     public IEnumerable<string> KeyNames => KeyScanMapper.KeyText;
 
-    public List<string> JoystickNames => _services?.FindJoysticks() ?? new List<string>();
+    public List<string> JoystickNames => _module?.FindJoysticks() ?? new List<string>();
 
     public string SideText => Side == JoystickSides.Left ? "Left" : "Right";
 

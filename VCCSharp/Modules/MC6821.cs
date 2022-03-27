@@ -25,6 +25,7 @@ public interface IMC6821 : IModule
     void Pia0_Write(byte data, byte port);
     void Pia1_Write(byte data, byte port);
 
+    //TODO: Probably should be returning Pots enum
     byte GetMuxState();
     byte DACState();
     void GetDACSample(DACSample dacSample);
