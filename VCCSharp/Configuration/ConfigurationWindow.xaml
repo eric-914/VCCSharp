@@ -60,7 +60,7 @@
                 <cpu:CpuTabControl DataContext="{Binding Cpu}"/>
             </TabItem>
             <TabItem Header="Display" >
-                <display:DisplayTabControl DataContext="{Binding}"/>
+                <display:DisplayTabControl DataContext="{Binding Display}"/>
             </TabItem>
             <TabItem Header="Keyboard" >
                 <keyboard:KeyboardTabControl DataContext="{Binding}"/>

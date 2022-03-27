@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using VCCSharp.Configuration.TabControls.Audio;
 using VCCSharp.Configuration.TabControls.Cpu;
+using VCCSharp.Configuration.TabControls.Display;
 using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Configuration.TabControls.Miscellaneous;
 using VCCSharp.Enums;
@@ -12,14 +13,16 @@ namespace VCCSharp.Configuration.ViewModel;
 public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
 {
     public AudioTabViewModel Audio { get; }
-    public MiscellaneousTabViewModel Miscellaneous { get; }
+    public DisplayTabViewModel Display { get; }
     public CpuTabViewModel Cpu { get; }
+    public MiscellaneousTabViewModel Miscellaneous { get; }
 
-    public ConfigurationViewModel(IConfiguration model, AudioTabViewModel audio, CpuTabViewModel cpu, JoystickViewModel left, JoystickViewModel right, MiscellaneousTabViewModel miscellaneous)
+    public ConfigurationViewModel(IConfiguration model, AudioTabViewModel audio, CpuTabViewModel cpu, DisplayTabViewModel display, JoystickViewModel left, JoystickViewModel right, MiscellaneousTabViewModel miscellaneous)
     {
         Model = model;
         Audio = audio;
         Cpu = cpu;
+        Display = display;
 
         Left = left;
         Right = right;
@@ -45,90 +48,10 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
 
     //[CPU]
 
-    public int FrameSkip
-    {
-        get => Model.CPU.FrameSkip;
-        set
-        {
-            if (Model.CPU.FrameSkip == (byte)value) return;
 
-            Model.CPU.FrameSkip = (byte)value;
-            OnPropertyChanged();
-        }
-    }
-
-    public bool SpeedThrottle
-    {
-        get => Model.CPU.ThrottleSpeed;
-        set
-        {
-            if (value == Model.CPU.ThrottleSpeed) return;
-
-            Model.CPU.ThrottleSpeed = value;
-            OnPropertyChanged();
-        }
-    }
 
     //[Video]
-    public MonitorTypes? MonitorType
-    {
-        get => Model.Video.Monitor.Value;
-        set
-        {
-            if (!value.HasValue || Model.Video.Monitor.Value == value.Value) return;
 
-            Model.Video.Monitor.Value = value.Value;
-            OnPropertyChanged();
-        }
-    }
-
-    public PaletteTypes? PaletteType
-    {
-        get => Model.Video.Palette.Value;
-        set
-        {
-            if (!value.HasValue || Model.Video.Palette.Value == value.Value) return;
-
-            Model.Video.Palette.Value = value.Value;
-            OnPropertyChanged();
-        }
-    }
-
-    public bool ScanLines
-    {
-        get => Model.Video.ScanLines;
-        set
-        {
-            if (value == Model.Video.ScanLines) return;
-
-            Model.Video.ScanLines = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public bool ForceAspect
-    {
-        get => Model.Video.ForceAspect;
-        set
-        {
-            if (value == Model.Video.ForceAspect) return;
-
-            Model.Video.ForceAspect = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public bool RememberSize
-    {
-        get => Model.Window.RememberSize;
-        set
-        {
-            if (value == Model.Window.RememberSize) return;
-
-            Model.Window.RememberSize = value;
-            OnPropertyChanged();
-        }
-    }
 
 
     //[Memory]
