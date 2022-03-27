@@ -6,7 +6,6 @@ using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Configuration.TabControls.Keyboard;
 using VCCSharp.Configuration.TabControls.Miscellaneous;
 using VCCSharp.Configuration.ViewModel;
-using VCCSharp.Enums;
 using VCCSharp.Main;
 using VCCSharp.Menu;
 using VCCSharp.Models.Configuration;
@@ -55,16 +54,13 @@ public class ViewModelFactory : IViewModelFactory
         var modules = _factory.Get<IModules>();
         var services = _factory.Get<IJoystickServices>();
 
-        var left = new JoystickViewModel(JoystickSides.Left, model.Joysticks.Left, services);
-        var right = new JoystickViewModel(JoystickSides.Right, model.Joysticks.Right, services);
-
         var audio = new AudioTabViewModel(model.Audio, modules.Audio);
         var cpu = new CpuTabViewModel(model.CPU, model.Memory);
         var display = new DisplayTabViewModel(model.CPU, model.Video, model.Window);
         var keyboard = new KeyboardTabViewModel(model.Keyboard);
-
+        var joysticks = new JoystickTabViewModel(model.Joysticks, services);
         var miscellaneous = new MiscellaneousTabViewModel(model.Startup);
 
-        return new ConfigurationViewModel(model, audio, cpu, display, keyboard, left, right, miscellaneous);
+        return new ConfigurationViewModel(audio, cpu, display, keyboard, joysticks, miscellaneous);
     }
 }

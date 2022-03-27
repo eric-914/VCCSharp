@@ -9,29 +9,26 @@ using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Configuration.ViewModel;
 
-public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
+public class ConfigurationViewModel : NotifyViewModel
 {
-    public AudioTabViewModel Audio { get; }
-    public DisplayTabViewModel Display { get; }
-    public CpuTabViewModel Cpu { get; }
-    public KeyboardTabViewModel Keyboard { get; }
-    public MiscellaneousTabViewModel Miscellaneous { get; }
+    public AudioTabViewModel Audio { get; } = new();
+    public DisplayTabViewModel Display { get; }= new();
+    public CpuTabViewModel Cpu { get; }= new();
+    public KeyboardTabViewModel Keyboard { get; }= new();
+    public JoystickTabViewModel Joystick { get; }= new();
+    public MiscellaneousTabViewModel Miscellaneous { get; }= new();
 
-    public ConfigurationViewModel(IConfiguration model, AudioTabViewModel audio, CpuTabViewModel cpu, DisplayTabViewModel display, KeyboardTabViewModel keyboard, JoystickViewModel left, JoystickViewModel right, MiscellaneousTabViewModel miscellaneous)
+    public ConfigurationViewModel() { }
+
+    public ConfigurationViewModel(AudioTabViewModel audio, CpuTabViewModel cpu, DisplayTabViewModel display, KeyboardTabViewModel keyboard, JoystickTabViewModel joystick, MiscellaneousTabViewModel miscellaneous)
     {
-        Model = model;
         Audio = audio;
         Cpu = cpu;
         Display = display;
         Keyboard = keyboard;
-
-        Left = left;
-        Right = right;
-
+        Joystick = joystick;
         Miscellaneous = miscellaneous;
     }
-
-    public IConfiguration Model { get; }
 
     #region Constants
 
@@ -47,11 +44,6 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
     //[Module]
     public string ModulePath { get; set; } = "Module Path";
 
-    //[LeftJoyStick]
-    public JoystickViewModel Left { get; }
-
-    //[RightJoyStick]
-    public JoystickViewModel Right { get; }
 
     //[DefaultPaths]
     public string CassettePath { get; set; } = "Cassette Path";

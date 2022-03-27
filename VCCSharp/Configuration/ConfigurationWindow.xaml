@@ -13,7 +13,7 @@
         mc:Ignorable="d"
         Title="Vcc Options" Height="500" Width="800">
     <Window.DataContext>
-        <viewModel:NullConfigurationViewModel/>
+        <viewModel:ConfigurationViewModel/>
     </Window.DataContext>
     <Window.Resources>
         <Style TargetType="Button">
@@ -66,7 +66,7 @@
                 <keyboard:KeyboardTabControl DataContext="{Binding Keyboard}"/>
             </TabItem>
             <TabItem Header="Joysticks" >
-                <joystick:JoystickTabControl DataContext="{Binding}"/>
+                <joystick:JoystickTabControl DataContext="{Binding Joystick}"/>
             </TabItem>
             <TabItem Header="Misc" >
                 <miscellaneous:MiscellaneousTabControl DataContext="{Binding Miscellaneous}"/>
