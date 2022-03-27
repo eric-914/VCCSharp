@@ -57,7 +57,7 @@
                 <audio:AudioTabControl DataContext="{Binding Audio}"/>
             </TabItem>
             <TabItem Header="CPU" >
-                <cpu:CpuTabControl DataContext="{Binding}"/>
+                <cpu:CpuTabControl DataContext="{Binding Cpu}"/>
             </TabItem>
             <TabItem Header="Display" >
                 <display:DisplayTabControl DataContext="{Binding}"/>

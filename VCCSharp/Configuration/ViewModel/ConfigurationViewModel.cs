@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using VCCSharp.Configuration.TabControls.Audio;
+using VCCSharp.Configuration.TabControls.Cpu;
 using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Configuration.TabControls.Miscellaneous;
 using VCCSharp.Enums;
@@ -12,11 +13,13 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
 {
     public AudioTabViewModel Audio { get; }
     public MiscellaneousTabViewModel Miscellaneous { get; }
+    public CpuTabViewModel Cpu { get; }
 
-    public ConfigurationViewModel(IConfiguration model, AudioTabViewModel audio, JoystickViewModel left, JoystickViewModel right, MiscellaneousTabViewModel miscellaneous)
+    public ConfigurationViewModel(IConfiguration model, AudioTabViewModel audio, CpuTabViewModel cpu, JoystickViewModel left, JoystickViewModel right, MiscellaneousTabViewModel miscellaneous)
     {
         Model = model;
         Audio = audio;
+        Cpu = cpu;
 
         Left = left;
         Right = right;
@@ -41,17 +44,6 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
     public string Release { get; set; } = "Release";
 
     //[CPU]
-    public int CpuMultiplier
-    {
-        get => Model.CPU.CpuMultiplier;
-        set
-        {
-            if (value == Model.CPU.CpuMultiplier) return;
-
-            Model.CPU.CpuMultiplier = (byte)value;
-            OnPropertyChanged();
-        }
-    }
 
     public int FrameSkip
     {
@@ -76,28 +68,6 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
             OnPropertyChanged();
         }
     }
-
-    public CPUTypes CpuType
-    {
-        get => Model.CPU.Type.Value;
-        set => Model.CPU.Type.Value = value;
-    }
-
-    public CPUTypes? Cpu
-    {
-        get => CpuType;
-        set
-        {
-            if (value.HasValue)
-            {
-                CpuType = value.Value;
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public int MaxOverclock => Model.CPU.MaxOverclock;
-
 
     //[Video]
     public MonitorTypes? MonitorType
@@ -160,25 +130,8 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
         }
     }
 
-    public MemorySizes? Memory
-    {
-        get => RamSize;
-        set
-        {
-            if (value.HasValue)
-            {
-                RamSize = value.Value;
-                OnPropertyChanged();
-            }
-        }
-    }
 
     //[Memory]
-    public MemorySizes RamSize
-    {
-        get => Model.Memory.Ram.Value;
-        set => Model.Memory.Ram.Value = value;
-    }
 
     public string ExternalBasicImage { get; set; } = "External Basic Image";
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using VCCSharp.Configuration.TabControls.Audio;
+using VCCSharp.Configuration.TabControls.Cpu;
 using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Configuration.TabControls.Miscellaneous;
 using VCCSharp.Configuration.ViewModel;
@@ -56,9 +57,10 @@ public class ViewModelFactory : IViewModelFactory
         var right = new JoystickViewModel(JoystickSides.Right, model.Joysticks.Right, services);
 
         var audio = new AudioTabViewModel(model.Audio, modules.Audio);
+        var cpu = new CpuTabViewModel(model.CPU, model.Memory);
 
         var miscellaneous = new MiscellaneousTabViewModel(model.Startup);
 
-        return new ConfigurationViewModel(model, audio, left, right, miscellaneous);
+        return new ConfigurationViewModel(model, audio, cpu, left, right, miscellaneous);
     }
 }
