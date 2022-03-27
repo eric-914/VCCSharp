@@ -1,13 +1,12 @@
 ﻿using System;
+using VCCSharp.Configuration.TabControls.Audio;
 using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Configuration.ViewModel;
 using VCCSharp.Enums;
 using VCCSharp.Main;
 using VCCSharp.Menu;
-using VCCSharp.Models;
-using VCCSharp.Models.Audio;
+using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Joystick;
-using VCCSharp.Modules;
 
 namespace VCCSharp.IoC;
 
@@ -16,7 +15,7 @@ public interface IViewModelFactory
     MainWindowViewModel CreateMainWindowViewModel(IMainMenu menuItems);
     CommandViewModel CreateCommandViewModel(Action? action = null);
     MenuItemViewModel CreateMenuItemViewModel(string header, Action action);
-    ConfigurationViewModel CreateConfigurationViewModel(IConfigurationManager manager);
+    ConfigurationViewModel CreateConfigurationViewModel(IConfiguration model);
 }
 
 public class ViewModelFactory : IViewModelFactory
@@ -47,15 +46,16 @@ public class ViewModelFactory : IViewModelFactory
         return new MenuItemViewModel { Header = header, Action = action };
     }
 
-    public ConfigurationViewModel CreateConfigurationViewModel(IConfigurationManager manager)
+    public ConfigurationViewModel CreateConfigurationViewModel(IConfiguration model)
     {
+        var modules = _factory.Get<IModules>();
         var services = _factory.Get<IJoystickServices>();
-        var left = new JoystickViewModel(JoystickSides.Left, manager.Model.Joysticks.Left, services);
-        var right = new JoystickViewModel(JoystickSides.Right, manager.Model.Joysticks.Right, services);
-        var spectrum = new AudioSpectrum();
 
-        var soundDevices = _factory.Get<IModules>().Audio.FindSoundDevices();
+        var left = new JoystickViewModel(JoystickSides.Left, model.Joysticks.Left, services);
+        var right = new JoystickViewModel(JoystickSides.Right, model.Joysticks.Right, services);
 
-        return new ConfigurationViewModel(manager, left, right, spectrum, soundDevices);
+        var audio = new AudioTabViewModel(model.Audio, modules.Audio);
+
+        return new ConfigurationViewModel(model, audio, left, right);
     }
 }

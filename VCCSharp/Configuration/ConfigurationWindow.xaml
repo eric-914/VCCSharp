@@ -3,14 +3,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:tabControls="clr-namespace:VCCSharp.Configuration.TabControls"
-        xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
-        xmlns:viewModel="clr-namespace:VCCSharp.Configuration.ViewModel"
         xmlns:audio="clr-namespace:VCCSharp.Configuration.TabControls.Audio"
-        xmlns:keyboard="clr-namespace:VCCSharp.Configuration.TabControls.Keyboard"
-        xmlns:display="clr-namespace:VCCSharp.Configuration.TabControls.Display"
         xmlns:cpu="clr-namespace:VCCSharp.Configuration.TabControls.Cpu"
+        xmlns:display="clr-namespace:VCCSharp.Configuration.TabControls.Display"
+        xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
+        xmlns:keyboard="clr-namespace:VCCSharp.Configuration.TabControls.Keyboard"
         xmlns:miscellaneous="clr-namespace:VCCSharp.Configuration.TabControls.Miscellaneous"
+        xmlns:viewModel="clr-namespace:VCCSharp.Configuration.ViewModel"
         mc:Ignorable="d"
         Title="Vcc Options" Height="500" Width="800">
     <Window.DataContext>
@@ -55,7 +54,7 @@
                 </Style>
             </TabControl.Resources>
             <TabItem Header="Audio">
-                <audio:AudioTabControl DataContext="{Binding}"/>
+                <audio:AudioTabControl DataContext="{Binding Audio}"/>
             </TabItem>
             <TabItem Header="CPU" >
                 <cpu:CpuTabControl DataContext="{Binding}"/>

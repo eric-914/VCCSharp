@@ -1,11 +1,11 @@
 ﻿using VCCSharp.IoC;
-using VCCSharp.Modules;
+using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Configuration;
 
 public interface IConfigurationWindowManager
 {
-    void ShowDialog(IConfigurationManager manager);
+    void ShowDialog(IConfiguration model);
 }
 
 public class ConfigurationWindowManager : IConfigurationWindowManager
@@ -19,16 +19,13 @@ public class ConfigurationWindowManager : IConfigurationWindowManager
         _factory = factory;
     }
 
-    public void ShowDialog(IConfigurationManager manager)
+    public void ShowDialog(IConfiguration model)
     {
-        var viewModel = _factory.CreateConfigurationViewModel(manager);
+        var viewModel = _factory.CreateConfigurationViewModel(model);
 
         var view = new ConfigurationWindow(viewModel) { Apply = ApplyChanges };
 
-        view.Closing += (_, _) => _modules.Audio.Spectrum = null;
         view.Show();
-
-        _modules.Audio.Spectrum = viewModel.Spectrum;
     }
 
     public void ApplyChanges()

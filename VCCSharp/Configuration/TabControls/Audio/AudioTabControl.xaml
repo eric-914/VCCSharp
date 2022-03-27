@@ -3,25 +3,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:audio="clr-namespace:VCCSharp.Configuration.TabControls.Audio"
              xmlns:controls="clr-namespace:VCCSharp.Configuration.TabControls.Controls"
-             xmlns:viewModel="clr-namespace:VCCSharp.Configuration.ViewModel"
              xmlns:converters="clr-namespace:VCCSharp.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.DataContext>
-        <viewModel:NullConfigurationViewModel/>
+        <audio:AudioTabViewModel/>
     </UserControl.DataContext>
     <UserControl.Resources>
         <converters:AudioRateConverter x:Key="AudioRateConverter"/>
     </UserControl.Resources>
 
     <DockPanel>
-        <controls:AudioSpectrumControl DockPanel.Dock="Right" Width="100" DataContext="{Binding Spectrum}"/>
+        <controls:AudioSpectrumControl DockPanel.Dock="Right" Width="100" 
+                                       DataContext="{Binding Spectrum}"/>
         <StackPanel Orientation="Vertical" Margin="20">
             <Label Content="Output Device" />
-            <ComboBox ItemsSource="{Binding SoundDevices}" Text="{Binding SoundDevice}" />
+            <ComboBox ItemsSource="{Binding SoundDevices}" 
+                      SelectedItem="{Binding SoundDevice}" />
             <Label Content="Sound Quality" />
-            <ComboBox ItemsSource="{Binding SoundRates}" SelectedIndex="{Binding AudioRate, Converter={StaticResource AudioRateConverter}}" />
+            <ComboBox ItemsSource="{Binding SoundRates}" 
+                      SelectedIndex="{Binding AudioRate, Converter={StaticResource AudioRateConverter}}" />
         </StackPanel>
     </DockPanel>
 </UserControl>

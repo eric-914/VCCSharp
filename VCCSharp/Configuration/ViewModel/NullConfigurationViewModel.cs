@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using VCCSharp.Configuration.TabControls.Audio;
 using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Enums;
-using VCCSharp.Models.Audio;
 using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Configuration.ViewModel;
@@ -12,8 +12,8 @@ namespace VCCSharp.Configuration.ViewModel;
 /// </summary>
 public class NullConfigurationViewModel : IConfigurationViewModel
 {
-    public AudioRates AudioRate { get; set; }
-    public AudioSpectrum Spectrum { get; set; } = new();
+    public AudioTabViewModel Audio { get; } = new();
+
     public CPUTypes CpuType { get; set; }
     public CPUTypes? Cpu { get; set; }
     public IConfiguration Model => default!;
@@ -21,8 +21,6 @@ public class NullConfigurationViewModel : IConfigurationViewModel
     public JoystickViewModel Right { get; } = new();
     public KeyboardLayouts KeyboardLayout { get; set; }
     public List<string> KeyboardLayouts { get; } = new();
-    public List<string> SoundDevices => new();
-    public List<string> SoundRates { get; } = new();
     public MemorySizes RamSize { get; set; }
     public MemorySizes? Memory { get; set; }
     public MonitorTypes? MonitorType { get; set; }

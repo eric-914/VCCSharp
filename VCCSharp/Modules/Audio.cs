@@ -22,7 +22,7 @@ namespace VCCSharp.Modules
         void FlushAudioBuffer(int[] buffer, int length);
         int GetFreeBlockCount();
 
-        AudioSpectrum? Spectrum { get; set; }
+        AudioSpectrum Spectrum { get; }
         AudioRates CurrentRate { get; set; }
     }
 
@@ -32,7 +32,7 @@ namespace VCCSharp.Modules
         private readonly IConfiguration _configuration;
         private readonly IDxSound _sound;
 
-        public AudioSpectrum? Spectrum { get; set; }
+        public AudioSpectrum Spectrum { get; } = new();
         public AudioRates CurrentRate { get; set; }
 
         private bool _initialized;
@@ -139,7 +139,7 @@ namespace VCCSharp.Modules
             int leftAverage = buffer[0] >> 16;
             int rightAverage = buffer[0] & 0xFFFF;
 
-            _modules.Audio.Spectrum?.UpdateSoundBar(leftAverage, rightAverage);
+            _modules.Audio.Spectrum.UpdateSoundBar(leftAverage, rightAverage);
 
             if (!_initialized || _audioPause || length == 0 || _mute)
             {

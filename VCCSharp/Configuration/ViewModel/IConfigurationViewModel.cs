@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
 using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Enums;
-using VCCSharp.Models.Audio;
 
 namespace VCCSharp.Configuration.ViewModel;
 
 public interface IConfigurationViewModel
 {
-    AudioSpectrum Spectrum { get; }
     Models.Configuration.IConfiguration Model { get; }
     List<string> KeyboardLayouts { get; }
-    List<string> SoundRates { get; }
     string Release { get; set; }
     int CpuMultiplier { get; set; }
     int FrameSkip { get; set; }
@@ -18,9 +15,6 @@ public interface IConfigurationViewModel
     CPUTypes CpuType { get; set; }
     CPUTypes? Cpu { get; set; }
     int MaxOverclock { get; }
-    List<string> SoundDevices { get; }
-    string SoundDevice { get; set; }
-    AudioRates AudioRate { get; set; }
     MonitorTypes? MonitorType { get; set; }
     PaletteTypes? PaletteType { get; set; }
     bool ScanLines { get; set; }

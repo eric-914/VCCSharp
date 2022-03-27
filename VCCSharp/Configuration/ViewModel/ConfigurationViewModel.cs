@@ -1,26 +1,23 @@
 ﻿using System.Collections.Generic;
+using VCCSharp.Configuration.TabControls.Audio;
 using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
-using VCCSharp.Models.Audio;
 using VCCSharp.Models.Configuration;
-using VCCSharp.Modules;
 
 namespace VCCSharp.Configuration.ViewModel;
 
 public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
 {
-    public AudioSpectrum Spectrum { get; }
+    public AudioTabViewModel Audio { get; }
 
-    public ConfigurationViewModel(IConfigurationManager manager, JoystickViewModel left, JoystickViewModel right, AudioSpectrum spectrum, List<string> soundDevices)
+    public ConfigurationViewModel(IConfiguration model, AudioTabViewModel audio, JoystickViewModel left, JoystickViewModel right)
     {
-        Model = manager.Model;
+        Model = model;
+        Audio = audio;
 
         Left = left;
         Right = right;
-
-        SoundDevices = soundDevices;
-        Spectrum = spectrum;
     }
 
     public IConfiguration Model { get; }
@@ -33,8 +30,6 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
         "Color Computer 3",
         "PC"
     };
-
-    public List<string> SoundRates { get; } = new() { "Disabled", "11025 Hz", "22050 Hz", "44100 Hz" };
 
     #endregion
 
@@ -99,20 +94,6 @@ public class ConfigurationViewModel : NotifyViewModel, IConfigurationViewModel
 
     public int MaxOverclock => Model.CPU.MaxOverclock;
 
-    //[Audio]
-    public List<string> SoundDevices { get; }
-
-    public string SoundDevice
-    {
-        get => Model.Audio.Device;
-        set => Model.Audio.Device = value;
-    }
-
-    public AudioRates AudioRate
-    {
-        get => Model.Audio.Rate.Value;
-        set => Model.Audio.Rate.Value = value;
-    }
 
     //[Video]
     public MonitorTypes? MonitorType
