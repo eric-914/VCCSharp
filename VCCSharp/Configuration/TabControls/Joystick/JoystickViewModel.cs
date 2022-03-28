@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using DX8;
+using System.Collections.Generic;
 using System.Windows.Input;
+using DX8.Models;
 using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
 using VCCSharp.Models.Keyboard;
@@ -136,5 +138,26 @@ public class JoystickViewModel : NotifyViewModel
     {
         get => Model.DeviceIndex;
         set => Model.DeviceIndex = value;
+    }
+
+    private IDxJoystickState _state = new NullDxJoystickState();
+    public IDxJoystickState State
+    {
+        get => _state;
+        set
+        {
+            if (_state == value) return;
+
+            _state = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public void Refresh()
+    {
+        if (_module != null)
+        {
+            State = _module.JoystickPoll(DeviceIndex);
+        }
     }
 }

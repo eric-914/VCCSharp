@@ -99,3 +99,17 @@ internal class DxXboxControllerState : IDxJoystickState
         return $"({Horizontal},{Vertical}) X={X} Y={Y} A={A} B={B} LB={LB} RB={RB} Back={Back} Start={Start}";
     }
 }
+
+public class NullDxJoystickState : IDxJoystickState
+{
+    public int Horizontal => 0;
+    public int Vertical => 0;
+    public bool X => false;
+    public bool Y => false;
+    public bool A => false;
+    public bool B => false;
+    public bool LB => false;
+    public bool RB => false;
+    public bool Back => false;
+    public bool Start => false;
+}
