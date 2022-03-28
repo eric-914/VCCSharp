@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="VCCSharp.Configuration.TabControls.Controls.JoystickEmulationControl"
+﻿<UserControl x:Class="VCCSharp.Configuration.TabControls.Joystick.JoystickEmulationControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -19,7 +19,6 @@
     </UserControl.Resources>
 
     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-        <Label Content="{Binding SideText}" />
         <Label Content="Emulation:" />
 
         <RadioButton Content="Standard Joystick" 

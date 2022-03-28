@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
-             xmlns:controls="clr-namespace:VCCSharp.Configuration.TabControls.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.DataContext>
@@ -18,12 +17,12 @@
     </UserControl.Resources>
 
     <DockPanel>
-        <Border DockPanel.Dock="Top" >
-            <controls:JoystickEmulationControl 
+        <Border DockPanel.Dock="Top" Height="40">
+            <local:JoystickEmulationControl 
                 DataContext="{Binding }"/>
         </Border>
         <Border>
-            <controls:JoystickSourceControl 
+            <local:JoystickSourceControl 
                 DataContext="{Binding }"/>
         </Border>
     </DockPanel>

@@ -4,7 +4,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:audio="clr-namespace:VCCSharp.Configuration.TabControls.Audio"
-             xmlns:controls="clr-namespace:VCCSharp.Configuration.TabControls.Controls"
              xmlns:converters="clr-namespace:VCCSharp.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -16,7 +15,7 @@
     </UserControl.Resources>
 
     <DockPanel>
-        <controls:AudioSpectrumControl DockPanel.Dock="Right" Width="100" 
+        <audio:AudioSpectrumControl DockPanel.Dock="Right" Width="100" 
                                        DataContext="{Binding Spectrum}"/>
         <StackPanel Orientation="Vertical" Margin="20">
             <Label Content="Output Device" />
