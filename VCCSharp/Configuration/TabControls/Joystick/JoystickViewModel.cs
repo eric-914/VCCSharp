@@ -18,23 +18,23 @@ public class JoystickViewModel : NotifyViewModel
     public JoystickViewModel() { }
 
     //--TODO: Holding a local copy of the correct JoystickModel* ends up with bad pointers for reason unknown
-    public JoystickViewModel(JoystickSides side, Models.Configuration.Joystick model, IJoysticks module) 
+    public JoystickViewModel(JoystickSides side, Models.Configuration.Joystick model, IJoysticks module)
     {
         _module = module;
         Side = side;
         Model = model;
+
+        RefreshList();
     }
 
     #region Constants
 
     public IEnumerable<string> KeyNames => KeyScanMapper.KeyText;
 
-    public List<string> JoystickNames => _module?.FindJoysticks() ?? new List<string>();
-
     public string SideText => Side == JoystickSides.Left ? "Left" : "Right";
 
     #endregion
-    
+
     public JoystickSides Side { get; set; }
 
     public JoystickDevices Device
@@ -43,7 +43,7 @@ public class JoystickViewModel : NotifyViewModel
         set
         {
             if (Model.InputSource.Value == value) return;
-            
+
             Model.InputSource.Value = value;
             OnPropertyChanged();
         }
@@ -153,11 +153,33 @@ public class JoystickViewModel : NotifyViewModel
         }
     }
 
+    private List<string> _joystickNames = new();
+
+    public List<string> JoystickNames
+    {
+        get => _joystickNames;
+        set
+        {
+            if (_joystickNames == value) return;
+
+            _joystickNames = value;
+            OnPropertyChanged();
+        }
+    }
+
     public void Refresh()
     {
         if (_module != null)
         {
             State = _module.JoystickPoll(DeviceIndex);
+        }
+    }
+
+    public void RefreshList()
+    {
+        if (_module != null)
+        {
+            JoystickNames = _module.FindJoysticks();
         }
     }
 }

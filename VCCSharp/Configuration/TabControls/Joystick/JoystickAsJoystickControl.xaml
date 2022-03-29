@@ -3,22 +3,25 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:enums="clr-namespace:VCCSharp.Enums"
              xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
-             xmlns:converters="clr-namespace:VCCSharp.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.DataContext>
-        <joystick:JoystickViewModel/>
-    </UserControl.DataContext>
-    <UserControl.Resources>
-        <converters:EnumIsSelectedConverter x:Key="Enabled"/>
-    </UserControl.Resources>
+  <UserControl.DataContext>
+    <joystick:JoystickViewModel/>
+  </UserControl.DataContext>
+  <UserControl.Resources>
+  </UserControl.Resources>
 
-    <StackPanel>
-        <Image Stretch="None" Source="/Resources/joystick.ico" />
-        <ComboBox Height="30"
-                  SelectedIndex="{Binding DeviceIndex}"
-                  ItemsSource="{Binding JoystickNames}"/>
-    </StackPanel>
+  <StackPanel>
+    <Image Stretch="None" Source="/Resources/joystick.ico" />
+    <DockPanel>
+      <Label DockPanel.Dock="Left">Windows Joystick:</Label>
+      <Button DockPanel.Dock="Right" Click="RefreshList_OnClick" Content="Refresh List"/>
+      <ComboBox Height="30"
+                SelectedIndex="{Binding DeviceIndex}"
+                ItemsSource="{Binding JoystickNames}"/>
+    </DockPanel>
+
+    <joystick:JoystickTestControl/>
+  </StackPanel>
 </UserControl>

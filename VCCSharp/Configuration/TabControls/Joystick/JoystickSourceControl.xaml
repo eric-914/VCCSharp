@@ -5,15 +5,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
              mc:Ignorable="d" 
-             d:DesignHeight="350" d:DesignWidth="300">
+             d:DesignHeight="350" d:DesignWidth="500">
   <UserControl.DataContext>
     <joystick:JoystickViewModel/>
   </UserControl.DataContext>
   <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="JoystickSourceTabStyle.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
   </UserControl.Resources>
 
   <DockPanel>
-    <TabControl TabStripPlacement="Left">
+    <TabControl>
       <TabItem Header="Joystick">
         <joystick:JoystickAsJoystickControl DataContext="{Binding}"/>
       </TabItem>
