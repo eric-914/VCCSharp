@@ -1,11 +1,14 @@
 ﻿<UserControl x:Class="VCCSharp.Configuration.TabControls.Joystick.ButtonsControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
              mc:Ignorable="d" 
              d:DesignHeight="178" d:DesignWidth="400">
+  <UserControl.DataContext>
+    <joystick:JoystickViewModel/>
+  </UserControl.DataContext>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -21,11 +24,11 @@
             <ColumnDefinition Width="150"/>
         </Grid.ColumnDefinitions>
 
-        <joystick:ButtonControl Grid.Row="0" Grid.Column="0" Text="LB" Width="30" DataContext="{Binding Joystick}" Button="{Binding LB}"/>
-        <joystick:ButtonControl Grid.Row="0" Grid.Column="3" Text="RB" Width="30" DataContext="{Binding Joystick}" Button="{Binding RB}"/>
+        <joystick:ButtonControl Grid.Row="0" Grid.Column="0" Text="LB" Width="30" DataContext="{Binding State}" Button="{Binding LB}"/>
+        <joystick:ButtonControl Grid.Row="0" Grid.Column="3" Text="RB" Width="30" DataContext="{Binding State}" Button="{Binding RB}"/>
 
-        <joystick:ButtonControl Grid.Row="1" Grid.Column="1" Text="Back" Width="50" DataContext="{Binding Joystick}" Button="{Binding Back}"/>
-        <joystick:ButtonControl Grid.Row="1" Grid.Column="2" Text="Start" Width="50" DataContext="{Binding Joystick}" Button="{Binding Start}"/>
+        <joystick:ButtonControl Grid.Row="1" Grid.Column="1" Text="Back" Width="50" DataContext="{Binding State}" Button="{Binding Back}"/>
+        <joystick:ButtonControl Grid.Row="1" Grid.Column="2" Text="Start" Width="50" DataContext="{Binding State}" Button="{Binding Start}"/>
 
         <Grid Grid.Row="1" Grid.Column="3" >
             <Grid.RowDefinitions>
@@ -39,10 +42,10 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <joystick:ButtonControl Grid.Column="0" Grid.Row="1" Text="X" Width="30" DataContext="{Binding Joystick}" Button="{Binding X}"/>
-            <joystick:ButtonControl Grid.Column="1" Grid.Row="0" Text="Y" Width="30" DataContext="{Binding Joystick}" Button="{Binding Y}"/>
-            <joystick:ButtonControl Grid.Column="1" Grid.Row="2" Text="A" Width="30" DataContext="{Binding Joystick}" Button="{Binding A}"/>
-            <joystick:ButtonControl Grid.Column="2" Grid.Row="1" Text="B" Width="30" DataContext="{Binding Joystick}" Button="{Binding B}"/>
+            <joystick:ButtonControl Grid.Column="0" Grid.Row="1" Text="X" Width="30" DataContext="{Binding State}" Button="{Binding X}"/>
+            <joystick:ButtonControl Grid.Column="1" Grid.Row="0" Text="Y" Width="30" DataContext="{Binding State}" Button="{Binding Y}"/>
+            <joystick:ButtonControl Grid.Column="1" Grid.Row="2" Text="A" Width="30" DataContext="{Binding State}" Button="{Binding A}"/>
+            <joystick:ButtonControl Grid.Column="2" Grid.Row="1" Text="B" Width="30" DataContext="{Binding State}" Button="{Binding B}"/>
         </Grid>
 
         <Border Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="2" Width="128" Height="128"/>

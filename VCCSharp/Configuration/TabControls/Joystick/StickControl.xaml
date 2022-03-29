@@ -3,9 +3,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
              xmlns:converters="clr-namespace:VCCSharp.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="128" d:DesignWidth="128">
+  <UserControl.DataContext>
+    <joystick:JoystickViewModel/>
+  </UserControl.DataContext>
     <UserControl.Resources>
         <converters:JoystickAxisToTextConverter x:Key="JoystickAxisToTextConverter"/>
         <converters:AxisScaleConverter x:Key="AxisScaleConverter"/>
@@ -15,12 +19,12 @@
         <Canvas>
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="{Binding Joystick, Converter={StaticResource JoystickAxisToTextConverter}}"></Label>
+                    <Label Content="{Binding State, Converter={StaticResource JoystickAxisToTextConverter}}"></Label>
                 </StackPanel>
             </StackPanel>
             <Ellipse Width="4" Height="4" Fill="Orange" 
-                     Canvas.Left="{Binding Joystick.Horizontal, Converter={StaticResource AxisScaleConverter}}" 
-                     Canvas.Top="{Binding Joystick.Vertical, Converter={StaticResource AxisScaleConverter}}"/>
+                     Canvas.Left="{Binding State.Horizontal, Converter={StaticResource AxisScaleConverter}}" 
+                     Canvas.Top="{Binding State.Vertical, Converter={StaticResource AxisScaleConverter}}"/>
         </Canvas>
     </Border>
 </UserControl>

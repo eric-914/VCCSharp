@@ -6,6 +6,9 @@
              xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="400">
+  <UserControl.DataContext>
+    <joystick:JoystickViewModel/>
+  </UserControl.DataContext>
 
     <StackPanel>
         <Canvas>

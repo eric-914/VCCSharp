@@ -52,6 +52,7 @@ namespace DX8.Models
         public List<string> EnumerateDevices()
         {
             var names = new List<string>();
+            _devices.Clear();
 
             int Callback(ref DIDEVICEINSTANCE p, IntPtr v)
             {
