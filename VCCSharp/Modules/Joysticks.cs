@@ -1,6 +1,7 @@
 ﻿using DX8;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 using VCCSharp.Enums;
 using VCCSharp.Libraries;
@@ -11,7 +12,9 @@ namespace VCCSharp.Modules;
 
 public interface IJoysticks : IModule
 {
-    List<string> FindJoysticks();
+    void FindJoysticks(bool refresh);
+
+    List<string> JoystickList { get; }
 
     Joystick GetLeftJoystick();
     Joystick GetRightJoystick();
@@ -45,6 +48,7 @@ public class Joysticks : IJoysticks
 
     public ushort StickValue { get; set; }
 
+    public List<string> JoystickList { get; private set; } = new();
     public JoystickState Left { get; private set; } = new();
     public JoystickState Right { get; private set; } = new();
 
@@ -60,13 +64,15 @@ public class Joysticks : IJoysticks
         _input = input;
     }
 
-    public List<string> FindJoysticks()
+    public void FindJoysticks(bool refresh)
     {
+        if (!refresh && JoystickList.Any()) return;
+
         var handle = KernelDll.GetModuleHandleA(IntPtr.Zero);
 
         _input.CreateDirectInput(handle);
 
-        return _input.EnumerateDevices();
+        JoystickList = _input.EnumerateDevices();
     }
 
     public Joystick GetLeftJoystick()

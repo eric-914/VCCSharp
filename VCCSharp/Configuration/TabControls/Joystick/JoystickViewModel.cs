@@ -1,7 +1,7 @@
 ﻿using DX8;
+using DX8.Models;
 using System.Collections.Generic;
 using System.Windows.Input;
-using DX8.Models;
 using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
 using VCCSharp.Models.Keyboard;
@@ -17,12 +17,13 @@ public class JoystickViewModel : NotifyViewModel
 
     public JoystickViewModel() { }
 
-    //--TODO: Holding a local copy of the correct JoystickModel* ends up with bad pointers for reason unknown
     public JoystickViewModel(JoystickSides side, Models.Configuration.Joystick model, IJoysticks module)
     {
         _module = module;
         Side = side;
         Model = model;
+
+        _module.FindJoysticks(false);
 
         RefreshList();
     }
@@ -153,19 +154,7 @@ public class JoystickViewModel : NotifyViewModel
         }
     }
 
-    private List<string> _joystickNames = new();
-
-    public List<string> JoystickNames
-    {
-        get => _joystickNames;
-        set
-        {
-            if (_joystickNames == value) return;
-
-            _joystickNames = value;
-            OnPropertyChanged();
-        }
-    }
+    public List<string> JoystickNames => _module?.JoystickList ?? new List<string>();
 
     public void Refresh()
     {
@@ -179,7 +168,9 @@ public class JoystickViewModel : NotifyViewModel
     {
         if (_module != null)
         {
-            JoystickNames = _module.FindJoysticks();
+            _module.FindJoysticks(true);
+
+            OnPropertyChanged(nameof(JoystickNames));
         }
     }
 }

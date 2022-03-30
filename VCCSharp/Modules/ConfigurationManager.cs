@@ -114,7 +114,9 @@ public class ConfigurationManager : IConfigurationManager
     {
         var joystick = _modules.Joysticks;
 
-        var joysticks = joystick.FindJoysticks();
+        joystick.FindJoysticks(false);
+
+        var joysticks = joystick.JoystickList;
 
         if (Model.Joysticks.Left.DeviceIndex >= joysticks.Count)
         {
