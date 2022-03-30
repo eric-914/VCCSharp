@@ -19,10 +19,6 @@ public interface IJoysticks : IModule
     Joystick GetLeftJoystick();
     Joystick GetRightJoystick();
 
-    void SetLeftJoystick();
-    void SetRightJoystick();
-
-    void SetStickNumbers(int leftStickNumber, int rightStickNumber);
     void SetButtonStatus(MouseButtonStates state);
     void SetJoystick(System.Windows.Size clientSize, System.Windows.Point point);
     byte SetMouseStatus(byte scanCode, byte phase);
@@ -54,9 +50,6 @@ public class Joysticks : IJoysticks
 
     private Joystick _left = new();
     private Joystick _right = new();
-
-    private int _leftId = -1;
-    private int _rightId = -1;
 
     public Joysticks(IConfiguration configuration, IDxInput input)
     {
@@ -95,27 +88,23 @@ public class Joysticks : IJoysticks
         _right = _configuration.Joysticks.Right;
     }
 
-    public void SetStickNumbers(int leftStickNumber, int rightStickNumber)
-    {
-        _leftId = leftStickNumber;
-        _rightId = rightStickNumber;
-    }
-
     public IDxJoystickState JoystickPoll(int index) => _input.JoystickPoll(index);
 
     public int GetPotValue(Pots pot)
     {
+        int leftId = _configuration.Joysticks.Left.DeviceIndex;
+        int rightId = _configuration.Joysticks.Right.DeviceIndex;
         bool useLeft = _left.InputSource.Value == JoystickDevices.Joystick;
         bool useRight = _right.InputSource.Value == JoystickDevices.Joystick;
 
-        if (useLeft && _leftId != -1)
+        if (useLeft && leftId != -1)
         {
-            Left = new JoystickState(JoystickPoll(_leftId));
+            Left = new JoystickState(JoystickPoll(leftId));
         }
 
-        if (useRight && _rightId != -1)
+        if (useRight && rightId != -1)
         {
-            Right = new JoystickState(JoystickPoll(_rightId));
+            Right = new JoystickState(JoystickPoll(rightId));
         }
 
         return pot switch
@@ -404,9 +393,6 @@ public class Joysticks : IJoysticks
 
     public void Reset()
     {
-        _leftId = -1;
-        _rightId = -1;
-
         SetLeftJoystick();
         SetRightJoystick();
     }

@@ -38,14 +38,14 @@ public class JoystickViewModel : NotifyViewModel
 
     public JoystickSides Side { get; set; }
 
-    public JoystickDevices Device
+    public int Device
     {
-        get => Model.InputSource.Value;
+        get => (int)Model.InputSource.Value;
         set
         {
-            if (Model.InputSource.Value == value) return;
+            if ((int)Model.InputSource.Value == value) return;
 
-            Model.InputSource.Value = value;
+            Model.InputSource.Value = (JoystickDevices)value;
             OnPropertyChanged();
         }
     }

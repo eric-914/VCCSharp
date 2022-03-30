@@ -116,21 +116,19 @@ public class ConfigurationManager : IConfigurationManager
 
         joystick.FindJoysticks(false);
 
-        var joysticks = joystick.JoystickList;
+        var count = joystick.JoystickList.Count;
 
-        if (Model.Joysticks.Left.DeviceIndex >= joysticks.Count)
+        if (Model.Joysticks.Left.DeviceIndex >= count)
         {
-            Model.Joysticks.Left.DeviceIndex = 0;
+            Model.Joysticks.Left.DeviceIndex = -1;
         }
 
-        if (Model.Joysticks.Right.DeviceIndex >= joysticks.Count)
+        if (Model.Joysticks.Right.DeviceIndex >= count)
         {
-            Model.Joysticks.Right.DeviceIndex = 0;
+            Model.Joysticks.Right.DeviceIndex = -1;
         }
 
-        joystick.SetStickNumbers(Model.Joysticks.Left.DeviceIndex, Model.Joysticks.Right.DeviceIndex);
-
-        if (joysticks.Count == 0)	//Use Mouse input if no Joysticks present
+        if (count == 0)	//Use Mouse input if no Joysticks present
         {
             if (Model.Joysticks.Left.InputSource.Value == JoystickDevices.Joystick)
             {
