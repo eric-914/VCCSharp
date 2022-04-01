@@ -17,7 +17,7 @@ public partial class JoystickAsJoystickControl
 
     private void RefreshList_OnClick(object sender, RoutedEventArgs e)
     {
-        ViewModel.RefreshList();
+        ViewModel.RefreshList(true);
     }
 
     private void TestJoystick_OnClick(object sender, RoutedEventArgs e)

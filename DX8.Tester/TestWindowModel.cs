@@ -28,7 +28,9 @@ internal class TestWindowModel
 
         _input.CreateDirectInput(handle);
 
-        var list = _input.EnumerateDevices();
+        _input.EnumerateDevices();
+
+        var list = _input.JoystickList();
 
         Count = list.Count;
 

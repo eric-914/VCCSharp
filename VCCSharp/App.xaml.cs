@@ -11,6 +11,7 @@ using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Configuration.Support;
 using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
+using VCCSharp.Models.Joystick;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Modules;
 using VCCSharp.Modules.TC1014;
@@ -38,6 +39,9 @@ public partial class App
             .Singleton<IConfigurationPersistence, ConfigurationPersistence>()
             .Singleton<IConfiguration, ConfigurationRoot>()
             .Singleton<IConfigurationPersistenceManager, ConfigurationPersistenceManager>()
+
+            //--Models
+            .Bind<IKeyboardAsJoystick, KeyboardAsJoystick>()
 
             //--Modules
             .Singleton<IAudio, Modules.Audio>()

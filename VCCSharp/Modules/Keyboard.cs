@@ -317,7 +317,7 @@ public class Keyboard : IKeyboard
                 scanCode = DIK.DIK_LSHIFT;
                 break;
         }
-            
+
         switch (keyState)
         {
             // Key Down
@@ -337,14 +337,9 @@ public class Keyboard : IKeyboard
         // Save key down in case focus is lost
         SaveLastTwoKeyDownEvents(scanCode);
 
-        Joystick left = _modules.Joysticks.GetLeftJoystick();
-        Joystick right = _modules.Joysticks.GetRightJoystick();
-
-        //TODO: Why check for keyboard only to set mouse?
-        if (left.InputSource.Value == JoystickDevices.Keyboard || right.InputSource.Value == JoystickDevices.Keyboard)
-        {
-            scanCode = _modules.Joysticks.SetMouseStatus(scanCode, 1);
-        }
+        //--See if the scan-code is a key reserved for joystick movement.
+        //--If it is, the joystick state will be updated and the scan code will come back as zero.
+        scanCode = _modules.Joysticks.SetJoystickFromKeyboard(scanCode, true);
 
         // track key is down
         ScanTable[scanCode] = Define.KEY_DOWN;
@@ -359,14 +354,9 @@ public class Keyboard : IKeyboard
 
     private void KeyboardHandleKeyUp(byte scanCode)
     {
-        Joystick left = _modules.Joysticks.GetLeftJoystick();
-        Joystick right = _modules.Joysticks.GetRightJoystick();
-
-        //TODO: Why check for keyboard only to set mouse?
-        if (left.InputSource.Value == JoystickDevices.Keyboard || right.InputSource.Value == JoystickDevices.Keyboard)
-        {
-            scanCode = _modules.Joysticks.SetMouseStatus(scanCode, 0);
-        }
+        //--See if the scan-code is a key reserved for joystick movement.
+        //--If it is, the joystick state will be updated and the scan code will come back as zero.
+        scanCode = _modules.Joysticks.SetJoystickFromKeyboard(scanCode, false);
 
         // reset key (released)
         ScanTable[scanCode] = Define.KEY_UP;

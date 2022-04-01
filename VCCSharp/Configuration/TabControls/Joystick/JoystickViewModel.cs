@@ -25,7 +25,7 @@ public class JoystickViewModel : NotifyViewModel
 
         _module.FindJoysticks(false);
 
-        RefreshList();
+        RefreshList(false);
     }
 
     #region Constants
@@ -164,11 +164,11 @@ public class JoystickViewModel : NotifyViewModel
         }
     }
 
-    public void RefreshList()
+    public void RefreshList(bool refresh)
     {
         if (_module != null)
         {
-            _module.FindJoysticks(true);
+            _module.FindJoysticks(refresh);
 
             OnPropertyChanged(nameof(JoystickNames));
         }

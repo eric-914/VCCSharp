@@ -7,7 +7,9 @@ public interface IDxInput
 {
     void CreateDirectInput(IntPtr handle);
 
-    List<string> EnumerateDevices();
+    void EnumerateDevices();
+
+    List<string> JoystickList();
 
     IDxJoystickState JoystickPoll(int index);
 }

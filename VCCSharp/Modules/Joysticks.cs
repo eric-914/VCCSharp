@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Input;
 using VCCSharp.Enums;
 using VCCSharp.Libraries;
 using VCCSharp.Models.Configuration;
@@ -16,12 +15,9 @@ public interface IJoysticks : IModule
 
     List<string> JoystickList { get; }
 
-    Joystick GetLeftJoystick();
-    Joystick GetRightJoystick();
-
     void SetButtonStatus(MouseButtonStates state);
     void SetJoystick(System.Windows.Size clientSize, System.Windows.Point point);
-    byte SetMouseStatus(byte scanCode, byte phase);
+    byte SetJoystickFromKeyboard(byte scanCode, bool keyDown);
 
     IDxJoystickState JoystickPoll(int index);
     int GetPotValue(Pots pot);
@@ -35,12 +31,13 @@ public interface IJoysticks : IModule
 public class Joysticks : IJoysticks
 {
     //--Goal is to bring the horizontal/vertical direction to within CoCo's 0-63 range.
-    private const int MIN = 0;
+    //private const int MIN = 0;
     private const int MAX = 63;
-    private const int CENTER = 32;
+    //private const int CENTER = 32;
 
     private readonly IConfiguration _configuration;
     private readonly IDxInput _input;
+    private readonly IKeyboardAsJoystick _keyboardHandler;
 
     public ushort StickValue { get; set; }
 
@@ -48,13 +45,11 @@ public class Joysticks : IJoysticks
     public JoystickState Left { get; private set; } = new();
     public JoystickState Right { get; private set; } = new();
 
-    private Joystick _left = new();
-    private Joystick _right = new();
-
-    public Joysticks(IConfiguration configuration, IDxInput input)
+    public Joysticks(IConfiguration configuration, IDxInput input, IKeyboardAsJoystick keyboardHandler)
     {
         _configuration = configuration;
         _input = input;
+        _keyboardHandler = keyboardHandler;
     }
 
     public void FindJoysticks(bool refresh)
@@ -65,27 +60,9 @@ public class Joysticks : IJoysticks
 
         _input.CreateDirectInput(handle);
 
-        JoystickList = _input.EnumerateDevices();
-    }
+        _input.EnumerateDevices();
 
-    public Joystick GetLeftJoystick()
-    {
-        return _left;
-    }
-
-    public Joystick GetRightJoystick()
-    {
-        return _right;
-    }
-
-    public void SetLeftJoystick()
-    {
-        _left = _configuration.Joysticks.Left;
-    }
-
-    public void SetRightJoystick()
-    {
-        _right = _configuration.Joysticks.Right;
+        JoystickList = _input.JoystickList();
     }
 
     public IDxJoystickState JoystickPoll(int index) => _input.JoystickPoll(index);
@@ -94,8 +71,8 @@ public class Joysticks : IJoysticks
     {
         int leftId = _configuration.Joysticks.Left.DeviceIndex;
         int rightId = _configuration.Joysticks.Right.DeviceIndex;
-        bool useLeft = _left.InputSource.Value == JoystickDevices.Joystick;
-        bool useRight = _right.InputSource.Value == JoystickDevices.Joystick;
+        bool useLeft = _configuration.Joysticks.Left.InputSource.Value == JoystickDevices.Joystick;
+        bool useRight = _configuration.Joysticks.Right.InputSource.Value == JoystickDevices.Joystick;
 
         if (useLeft && leftId != -1)
         {
@@ -136,7 +113,7 @@ public class Joysticks : IJoysticks
     {
         byte buttonStatus = (byte)((side << 1) | state);
 
-        if (_left.InputSource.Value == JoystickDevices.Mouse)
+        if (_configuration.Joysticks.Left.InputSource.Value == JoystickDevices.Mouse)
         {
             switch (buttonStatus)
             {
@@ -158,7 +135,7 @@ public class Joysticks : IJoysticks
             }
         }
 
-        if (_right.InputSource.Value == JoystickDevices.Mouse)
+        if (_configuration.Joysticks.Right.InputSource.Value == JoystickDevices.Mouse)
         {
             switch (buttonStatus)
             {
@@ -202,198 +179,25 @@ public class Joysticks : IJoysticks
             y = MAX;
         }
 
-        if (_left.InputSource.Value == JoystickDevices.Mouse)
+        if (_configuration.Joysticks.Left.InputSource.Value == JoystickDevices.Mouse)
         {
             Left.X = x;
             Left.Y = y;
         }
 
-        if (_right.InputSource.Value == JoystickDevices.Mouse)
+        if (_configuration.Joysticks.Right.InputSource.Value == JoystickDevices.Mouse)
         {
             Right.X = x;
             Right.Y = y;
         }
     }
 
-    public byte SetMouseStatus(byte scanCode, byte phase)
+    public byte SetJoystickFromKeyboard(byte scanCode, bool keyDown)
     {
-        byte retValue = scanCode;
-
-        switch (phase)
-        {
-            case 0:
-                if (_left.InputSource.Value == JoystickDevices.Keyboard)
-                {
-                    if (Compare(scanCode, _left.KeyMap.Left.Value))
-                    {
-                        Left.X = CENTER;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _left.KeyMap.Right.Value))
-                    {
-                        Left.X = CENTER;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _left.KeyMap.Up.Value))
-                    {
-                        Left.Y = CENTER;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _left.KeyMap.Down.Value))
-                    {
-                        Left.Y = CENTER;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _left.KeyMap.Buttons._1.Value))
-                    {
-                        Left.Button1 = false;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _left.KeyMap.Buttons._2.Value))
-                    {
-                        Left.Button2 = false;
-                        retValue = 0;
-                    }
-                }
-
-                if (_right.InputSource.Value == JoystickDevices.Keyboard)
-                {
-                    if (Compare(scanCode, _right.KeyMap.Left.Value))
-                    {
-                        Right.X = CENTER;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _right.KeyMap.Right.Value))
-                    {
-                        Right.X = CENTER;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _right.KeyMap.Up.Value))
-                    {
-                        Right.Y = CENTER;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _right.KeyMap.Down.Value))
-                    {
-                        Right.Y = CENTER;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _right.KeyMap.Buttons._1.Value))
-                    {
-                        Right.Button1 = false;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _right.KeyMap.Buttons._2.Value))
-                    {
-                        Right.Button2 = false;
-                        retValue = 0;
-                    }
-                }
-                break;
-
-            case 1:
-                if (_left.InputSource.Value == JoystickDevices.Keyboard)
-                {
-                    if (Compare(scanCode, _left.KeyMap.Left.Value))
-                    {
-                        Left.X = MIN;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _left.KeyMap.Right.Value))
-                    {
-                        Left.X = MAX;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _left.KeyMap.Up.Value))
-                    {
-                        Left.Y = MIN;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _left.KeyMap.Down.Value))
-                    {
-                        Left.Y = MAX;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _left.KeyMap.Buttons._1.Value))
-                    {
-                        Left.Button1 = true;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _left.KeyMap.Buttons._2.Value))
-                    {
-                        Left.Button2 = true;
-                        retValue = 0;
-                    }
-                }
-
-                if (_right.InputSource.Value == JoystickDevices.Keyboard)
-                {
-                    if (Compare(scanCode, _right.KeyMap.Left.Value))
-                    {
-                        Right.X = MIN;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _right.KeyMap.Right.Value))
-                    {
-                        Right.X = MAX;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _right.KeyMap.Up.Value))
-                    {
-                        Right.Y = MIN;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _right.KeyMap.Down.Value))
-                    {
-                        Right.Y = MAX;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _right.KeyMap.Buttons._1.Value))
-                    {
-                        Right.Button1 = true;
-                        retValue = 0;
-                    }
-
-                    if (Compare(scanCode, _right.KeyMap.Buttons._2.Value))
-                    {
-                        Right.Button2 = true;
-                        retValue = 0;
-                    }
-                }
-                break;
-        }
-
-        return retValue;
-    }
-
-    private bool Compare(byte scanCode, Key key)
-    {
-        //Fix this if it ever gets invoked, I guess.
-        throw new NotImplementedException();
+        return _keyboardHandler.SetJoystickFromKeyboard(scanCode, keyDown, Left, Right);
     }
 
     public void Reset()
     {
-        SetLeftJoystick();
-        SetRightJoystick();
     }
 }

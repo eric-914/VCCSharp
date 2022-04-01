@@ -68,7 +68,11 @@ namespace VCCSharp.DX8
         #region DxInput
 
         public void CreateDirectInput(IntPtr handle) => _input.CreateDirectInput(handle);
-        public List<string> EnumerateDevices() => _input.EnumerateDevices();
+
+        public List<string> JoystickList() => _input.JoystickList();
+
+        public void EnumerateDevices() => _input.EnumerateDevices();
+
         public IDxJoystickState JoystickPoll(int index) => _input.JoystickPoll(index);
 
         #endregion

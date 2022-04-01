@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 
@@ -25,7 +26,14 @@ internal class ThreadRunner
 
             if (IsRunning)
             {
-                Application.Current.Dispatcher.Invoke(callback);
+                try
+                {
+                    Application.Current.Dispatcher.Invoke(callback);
+                }
+                catch (InvalidCastException)
+                {
+                    Debug.WriteLine("InvalidCastException occurred on callback dispatch");
+                }
             }
         }
     }
