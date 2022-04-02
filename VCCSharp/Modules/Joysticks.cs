@@ -63,26 +63,32 @@ public class Joysticks : IJoysticks
 
         _input.EnumerateDevices();
 
-        JoystickList = _input.JoystickList();
+        JoystickList = _input.JoystickList().ToList();
     }
 
-    public IDxJoystickState JoystickPoll(int index) => _input.JoystickPoll(_input.JoystickList().First(x => x.Index == index));
+    public IDxJoystickState JoystickPoll(int index)
+    {
+        if (index == -1) return new NullDxJoystickState();
+
+        //TODO: Need something more efficient
+        IDxDevice match = _input.JoystickList().First(x => x.Index == index);
+
+        return _input.JoystickPoll(match);
+    }
 
     public int GetPotValue(Pots pot)
     {
-        int leftId = _configuration.Joysticks.Left.DeviceIndex;
-        int rightId = _configuration.Joysticks.Right.DeviceIndex;
-        bool useLeft = _configuration.Joysticks.Left.InputSource.Value == JoystickDevices.Joystick;
-        bool useRight = _configuration.Joysticks.Right.InputSource.Value == JoystickDevices.Joystick;
+        var left = _configuration.Joysticks.Left;
+        var right = _configuration.Joysticks.Right;
 
-        if (useLeft && leftId != -1)
+        if (left.InputSource.Value == JoystickDevices.Joystick)
         {
-            Left = new JoystickState(JoystickPoll(leftId));
+            Left = new JoystickState(JoystickPoll(left.DeviceIndex));
         }
 
-        if (useRight && rightId != -1)
+        if (right.InputSource.Value == JoystickDevices.Joystick)
         {
-            Right = new JoystickState(JoystickPoll(rightId));
+            Right = new JoystickState(JoystickPoll(right.DeviceIndex));
         }
 
         return pot switch
