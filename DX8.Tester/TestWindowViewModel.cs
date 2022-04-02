@@ -31,5 +31,7 @@ internal class TestWindowViewModel : NotifyViewModel
     public void RefreshList()
     {
         AvailableJoysticks = _model.FindJoysticks();
+        OnPropertyChanged(nameof(LeftJoystick));
+        OnPropertyChanged(nameof(RightJoystick));
     }
 }
