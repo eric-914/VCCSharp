@@ -1,26 +1,26 @@
-﻿using DX8.Models;
+﻿using System;
+using System.ComponentModel;
+using DX8.Models;
 
 namespace DX8.Tester.Model;
 
-public interface IJoystickStateViewModel
+public interface IJoystickStateViewModel : INotifyPropertyChanged
 {
     IDxJoystickState Joystick { get; }
-    void Refresh();
+    Action Refresh { get; }
 }
 
 public class JoystickStateViewModel : NotifyViewModel, IJoystickStateViewModel
 {
-    private readonly DxManager? _input;
-    private readonly int _index;
-
     private IDxJoystickState _joystick = new NullDxJoystickState();
+
+    public Action Refresh { get; } = () => { };
 
     public JoystickStateViewModel() { }
 
-    public JoystickStateViewModel(DxManager input, int index)
+    public JoystickStateViewModel(DxManager manager, int index)
     {
-        _input = input;
-        _index = index;
+        Refresh = () => Joystick = manager.Devices[index].State;
     }
 
     public IDxJoystickState Joystick
@@ -32,14 +32,6 @@ public class JoystickStateViewModel : NotifyViewModel, IJoystickStateViewModel
 
             _joystick = value;
             OnPropertyChanged();
-        }
-    }
-
-    public void Refresh()
-    {
-        if (_input != null)
-        {
-            Joystick = _input.Devices[_index].State;
         }
     }
 }

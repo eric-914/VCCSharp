@@ -7,31 +7,32 @@
         xmlns:controls="clr-namespace:DX8.Tester.Controls"
         mc:Ignorable="d"
         Title="DirectX 8 Tester" Height="550" Width="420">
-    <Window.DataContext>
-        <tester:TestWindowViewModel/>
-    </Window.DataContext>
-    <Window.Resources>
-        <Style TargetType="{x:Type CheckBox}">
-            <Setter Property="Margin" Value="0,6,20,0" />
-        </Style>
-        <Style TargetType="{x:Type controls:JoystickControl}">
-            <Setter Property="Height" Value="200" />
-        </Style>
-    </Window.Resources>
+  <Window.DataContext>
+    <tester:TestWindowViewModel/>
+  </Window.DataContext>
+  <Window.Resources>
+    <Style TargetType="{x:Type CheckBox}">
+      <Setter Property="Margin" Value="0,6,20,0" />
+    </Style>
+    <Style TargetType="{x:Type controls:JoystickControl}">
+      <Setter Property="Height" Value="200" />
+    </Style>
+  </Window.Resources>
 
-    <StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <Label>Available Joysticks:</Label>
-            <Label Content="{Binding Count}"/>
-        </StackPanel>
-        <ListBox ItemsSource="{Binding AvailableJoysticks}"/>
+  <StackPanel>
+    <DockPanel >
+      <Label DockPanel.Dock="Left">Available Joysticks:</Label>
+      <Button DockPanel.Dock="Right" Click="ButtonBase_OnClick">Refresh List</Button>
+      <Label Content="{Binding Count}"/>
+    </DockPanel>
+    <ListBox ItemsSource="{Binding AvailableJoysticks}"/>
 
-        <Label>First Joystick:</Label>
-        <controls:JoystickControl DataContext="{Binding LeftJoystick}"/>
+    <Label>First Joystick:</Label>
+    <controls:JoystickControl DataContext="{Binding LeftJoystick}"/>
 
-        <Separator/>
+    <Separator/>
 
-        <Label>Second Joystick:</Label>
-        <controls:JoystickControl DataContext="{Binding RightJoystick}"/>
-    </StackPanel>
+    <Label>Second Joystick:</Label>
+    <controls:JoystickControl DataContext="{Binding RightJoystick}"/>
+  </StackPanel>
 </Window>

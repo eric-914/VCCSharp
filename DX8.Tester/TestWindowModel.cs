@@ -22,26 +22,26 @@ internal class TestWindowModel
 
     public List<string> FindJoysticks()
     {
-        _joystick.EnumerateDevices(true);
+        _joystick.EnumerateDevices();
 
         var list = _joystick.Devices.Select(x => x.Device).ToList();
 
         Count = list.Count;
 
-        if (Count > 0)
-        {
-            LeftJoystick = new JoystickStateViewModel(_joystick, 0);
-        }
+        //--First (if found) will be left joystick
+        LeftJoystick = Count > 0
+            ? new JoystickStateViewModel(_joystick, 0)
+            : new JoystickStateViewModel();
 
-        if (Count > 1)
-        {
-            RightJoystick = new JoystickStateViewModel(_joystick, 1);
-        }
+        //--Second (if found) will be right joystick
+        RightJoystick = Count > 1
+            ? new JoystickStateViewModel(_joystick, 1)
+            : new JoystickStateViewModel();
 
         return list.Select(x => x.InstanceName).ToList();
     }
 
-    public void Refresh()
+    private void Refresh()
     {
         LeftJoystick.Refresh();
         RightJoystick.Refresh();

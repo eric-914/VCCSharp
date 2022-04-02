@@ -6,8 +6,18 @@ namespace DX8.Tester;
 internal class TestWindowViewModel : NotifyViewModel
 {
     private readonly TestWindowModel _model = new();
+    
+    private List<string> _availableJoysticks = new();
+    public List<string> AvailableJoysticks
+    {
+        get => _availableJoysticks;
+        private set
+        {
+            _availableJoysticks = value;
+            OnPropertyChanged();
+        }
+    }
 
-    public List<string> AvailableJoysticks { get; }
     public int Count => _model.Count;
 
     public IJoystickStateViewModel LeftJoystick => _model.LeftJoystick;
@@ -15,14 +25,11 @@ internal class TestWindowViewModel : NotifyViewModel
 
     public TestWindowViewModel()
     {
-        AvailableJoysticks = _model.FindJoysticks();
+        RefreshList();
     }
 
-    public void Refresh()
+    public void RefreshList()
     {
-        _model.Refresh();
-
-        OnPropertyChanged(nameof(LeftJoystick));
-        OnPropertyChanged(nameof(RightJoystick));
+        AvailableJoysticks = _model.FindJoysticks();
     }
 }

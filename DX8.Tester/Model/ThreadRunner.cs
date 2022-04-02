@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,21 +14,21 @@ internal class ThreadRunner
 
     private bool _isRunning;
 
-    public void Run()
+    public void Start()
     {
+        Debug.WriteLine("ThreadRunner.Start()");
         _isRunning = true;
 
         Task.Run(() =>
         {
             while (_isRunning)
             {
-                Thread.Sleep(100);
+                Thread.Sleep(250);
 
                 if (_isRunning)
                 {
                     Application.Current.Dispatcher.Invoke(() => Tick?.Invoke(this, EventArgs.Empty));
                 }
-
             }
         });
     }
@@ -35,5 +36,6 @@ internal class ThreadRunner
     public void Stop()
     {
         _isRunning = false;
+        Debug.WriteLine("ThreadRunner.Stop()");
     }
 }

@@ -27,15 +27,13 @@ public class DxManager
 
         _input.CreateDirectInput(handle);
 
-        EnumerateDevices(true);
+        EnumerateDevices();
 
-        _runner.Run();
+        _runner.Start();
     }
 
-    public void EnumerateDevices(bool refresh)
+    public void EnumerateDevices()
     {
-        if (!refresh && Devices.Any()) return;
-
         _runner.Stop();
 
         _input.EnumerateDevices();
@@ -46,7 +44,7 @@ public class DxManager
 
         Devices = devices.ToList();
 
-        _runner.Run();
+        _runner.Start();
     }
 
     public void JoystickPoll()
