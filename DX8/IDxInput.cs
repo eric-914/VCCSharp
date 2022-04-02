@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DX8.Models;
+using System;
 using System.Collections.Generic;
 
 namespace DX8;
@@ -9,7 +10,7 @@ public interface IDxInput
 
     void EnumerateDevices();
 
-    List<string> JoystickList();
+    IEnumerable<IDxDevice> JoystickList();
 
-    IDxJoystickState JoystickPoll(int index);
+    IDxJoystickState JoystickPoll(IDxDevice index);
 }

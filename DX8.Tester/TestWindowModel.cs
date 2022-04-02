@@ -1,50 +1,44 @@
 ﻿using DX8.Tester.Model;
-using System;
 using System.Collections.Generic;
-using VCCSharp.Libraries;
+using System.Linq;
 
 namespace DX8.Tester;
 
 internal class TestWindowModel
 {
-    private readonly Dx _dx = new();
-    private readonly IDxInput _input;
+    private readonly DxManager _joystick;
 
-    public IJoystickStateViewModel LeftJoystick { get; private set; } 
-    public IJoystickStateViewModel RightJoystick { get; private set; } 
+    public IJoystickStateViewModel LeftJoystick { get; private set; } = new JoystickStateViewModel();
+    public IJoystickStateViewModel RightJoystick { get; private set; } = new JoystickStateViewModel();
 
     public int Count { get; set; }
 
     public TestWindowModel()
     {
-        _input = _dx.Input;
-        LeftJoystick = new JoystickStateViewModel();
-        RightJoystick = new JoystickStateViewModel();
+        _joystick = new Dx().Joystick;
+        _joystick.PollEvent += (_, _) => Refresh();
+        _joystick.Initialize();
     }
 
     public List<string> FindJoysticks()
     {
-        var handle = KernelDll.GetModuleHandleA(IntPtr.Zero);
+        _joystick.EnumerateDevices(true);
 
-        _input.CreateDirectInput(handle);
-
-        _input.EnumerateDevices();
-
-        var list = _input.JoystickList();
+        var list = _joystick.Devices.Select(x => x.Device).ToList();
 
         Count = list.Count;
 
         if (Count > 0)
         {
-            LeftJoystick = new JoystickStateViewModel(_input, 0);
+            LeftJoystick = new JoystickStateViewModel(_joystick, 0);
         }
 
         if (Count > 1)
         {
-            RightJoystick = new JoystickStateViewModel(_input, 1);
+            RightJoystick = new JoystickStateViewModel(_joystick, 1);
         }
 
-        return list;
+        return list.Select(x => x.InstanceName).ToList();
     }
 
     public void Refresh()

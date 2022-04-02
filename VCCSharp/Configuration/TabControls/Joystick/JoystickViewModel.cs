@@ -1,6 +1,7 @@
 ﻿using DX8;
 using DX8.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 using VCCSharp.Enums;
 using VCCSharp.Main.ViewModels;
@@ -154,7 +155,7 @@ public class JoystickViewModel : NotifyViewModel
         }
     }
 
-    public List<string> JoystickNames => _module?.JoystickList ?? new List<string>();
+    public List<string> JoystickNames => _module?.JoystickList.Select(x => x.InstanceName).ToList() ?? new List<string>();
 
     public void Refresh()
     {

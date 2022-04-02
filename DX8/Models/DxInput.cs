@@ -17,7 +17,7 @@ internal class DxInput : IDxInput
     private readonly IDxFactoryInternal _factory;
 
     private IDirectInput _di;
-    private readonly List<DxDevice> _devices = new();
+    private readonly Dictionary<IDxDevice, IDirectInputDevice> _devices = new();
 
     internal DxInput(IDInput input, IDxFactoryInternal factory)
     {
@@ -50,9 +50,9 @@ internal class DxInput : IDxInput
         return joystick;
     }
 
-    public List<string> JoystickList()
+    public IEnumerable<IDxDevice> JoystickList()
     {
-        return _devices.Select(x => x.InstanceName).ToList();
+        return _devices.Keys;
     }
 
     public void EnumerateDevices()
@@ -64,11 +64,11 @@ internal class DxInput : IDxInput
             IDirectInputDevice joystick = CreateDevice(p.guidInstance);
             string instanceName = StringConverter.ToString(p.tszInstanceName);
 
-            var device = new DxDevice(_devices.Count, instanceName, joystick);
+            var device = new DxDevice(_devices.Count, instanceName);
 
-            _devices.Add(device);
+            _devices.Add(device, joystick);
 
-            SetJoystickProperties(device.Device);
+            SetJoystickProperties(joystick);
 
             return _devices.Count < DxDefine.MAX_JOYSTICKS ? DxDefine.TRUE : DxDefine.FALSE;
         }
@@ -131,15 +131,15 @@ internal class DxInput : IDxInput
         }
     }
 
-    public IDxJoystickState JoystickPoll(int index)
+    public IDxJoystickState JoystickPoll(IDxDevice index)
     {
         DIJOYSTATE2 state = DIJOYSTATE2.Create();
 
-        var device = _devices.FirstOrDefault(x => x.Index == index);
+        var device = _devices.FirstOrDefault(x => x.Key.Index == index.Index).Value;
 
         if (device == null) return new NullDxJoystickState();
 
-        long hr = JoystickPoll(ref state, device.Device);
+        long hr = JoystickPoll(ref state, device);
 
         if (hr != DxDefine.S_OK)
         {

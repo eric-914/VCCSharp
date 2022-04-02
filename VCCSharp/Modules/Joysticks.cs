@@ -1,4 +1,5 @@
 ﻿using DX8;
+using DX8.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ public interface IJoysticks : IModule
 {
     void FindJoysticks(bool refresh);
 
-    List<string> JoystickList { get; }
+    List<IDxDevice> JoystickList { get; }
 
     void SetButtonStatus(MouseButtonStates state);
     void SetJoystick(System.Windows.Size clientSize, System.Windows.Point point);
@@ -41,7 +42,7 @@ public class Joysticks : IJoysticks
 
     public ushort StickValue { get; set; }
 
-    public List<string> JoystickList { get; private set; } = new();
+    public List<IDxDevice> JoystickList { get; private set; } = new();
     public JoystickState Left { get; private set; } = new();
     public JoystickState Right { get; private set; } = new();
 
@@ -65,7 +66,7 @@ public class Joysticks : IJoysticks
         JoystickList = _input.JoystickList();
     }
 
-    public IDxJoystickState JoystickPoll(int index) => _input.JoystickPoll(index);
+    public IDxJoystickState JoystickPoll(int index) => _input.JoystickPoll(_input.JoystickList().First(x => x.Index == index));
 
     public int GetPotValue(Pots pot)
     {

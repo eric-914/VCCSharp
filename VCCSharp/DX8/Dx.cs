@@ -1,4 +1,5 @@
 ﻿using DX8;
+using DX8.Models;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -69,11 +70,11 @@ namespace VCCSharp.DX8
 
         public void CreateDirectInput(IntPtr handle) => _input.CreateDirectInput(handle);
 
-        public List<string> JoystickList() => _input.JoystickList();
+        public IEnumerable<IDxDevice> JoystickList() => _input.JoystickList();
 
         public void EnumerateDevices() => _input.EnumerateDevices();
 
-        public IDxJoystickState JoystickPoll(int index) => _input.JoystickPoll(index);
+        public IDxJoystickState JoystickPoll(IDxDevice index) => _input.JoystickPoll(index);
 
         #endregion
     }

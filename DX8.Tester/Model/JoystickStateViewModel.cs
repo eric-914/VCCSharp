@@ -10,14 +10,14 @@ public interface IJoystickStateViewModel
 
 public class JoystickStateViewModel : NotifyViewModel, IJoystickStateViewModel
 {
-    private readonly IDxInput? _input;
+    private readonly DxManager? _input;
     private readonly int _index;
 
     private IDxJoystickState _joystick = new NullDxJoystickState();
 
     public JoystickStateViewModel() { }
 
-    public JoystickStateViewModel(IDxInput input, int index)
+    public JoystickStateViewModel(DxManager input, int index)
     {
         _input = input;
         _index = index;
@@ -39,7 +39,7 @@ public class JoystickStateViewModel : NotifyViewModel, IJoystickStateViewModel
     {
         if (_input != null)
         {
-            Joystick = _input.JoystickPoll(_index);
+            Joystick = _input.Devices[_index].State;
         }
     }
 }
