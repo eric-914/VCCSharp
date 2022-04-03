@@ -1,6 +1,8 @@
-﻿using System;
+﻿using DX8.Models;
+using System;
 using System.ComponentModel;
-using DX8.Models;
+using VCCSharp.Shared.Dx;
+using VCCSharp.Shared.ViewModels;
 
 namespace DX8.Tester.Model;
 
@@ -18,7 +20,7 @@ public class JoystickStateViewModel : NotifyViewModel, IJoystickStateViewModel
 
     public JoystickStateViewModel() { }
 
-    public JoystickStateViewModel(DxManager manager, int index)
+    public JoystickStateViewModel(IDxManager manager, int index)
     {
         Refresh = () => Joystick = manager.Devices[index].State;
     }

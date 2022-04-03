@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace VCCSharp.Shared;
+namespace VCCSharp.Shared.Threading;
 
 public delegate void TickEventHandler(object? sender, EventArgs e);
 
@@ -13,7 +13,7 @@ public interface IThreadRunner
     void Stop();
 }
 
-public class ThreadRunner : IThreadRunner
+internal class ThreadRunner : IThreadRunner
 {
     public event TickEventHandler? Tick;
 
@@ -23,7 +23,7 @@ public class ThreadRunner : IThreadRunner
 
     public int Interval { get; set; } = 200;
 
-    public ThreadRunner(IDispatcher dispatcher)
+    internal ThreadRunner(IDispatcher dispatcher)
     {
         _dispatcher = dispatcher;
     }

@@ -1,15 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using DX8;
 using VCCSharp.Libraries;
-using VCCSharp.Shared;
+using VCCSharp.Shared.Threading;
 
-namespace DX8.Tester.Model;
+namespace VCCSharp.Shared.Dx;
 
 public delegate void PollEventHandler(object? sender, EventArgs e);
 public delegate void DeviceLostEventHandler(object? sender, EventArgs e);
 
-public class DxManager
+public interface IDxManager
+{
+    event PollEventHandler? PollEvent;
+    event DeviceLostEventHandler? DeviceLostEvent;
+
+    List<DxJoystick> Devices { get; }
+    int Interval { get; set; }
+
+    void Initialize();
+    void EnumerateDevices();
+}
+
+internal class DxManager : IDxManager
 {
     public event PollEventHandler? PollEvent;
     public event DeviceLostEventHandler? DeviceLostEvent;
@@ -20,7 +30,7 @@ public class DxManager
 
     public List<DxJoystick> Devices { get; private set; } = new();
 
-    public DxManager(IDxInput input, IThreadRunner runner)
+    internal DxManager(IDxInput input, IThreadRunner runner)
     {
         _input = input;
         _runner = runner;
@@ -32,8 +42,6 @@ public class DxManager
         var handle = KernelDll.GetModuleHandleA(IntPtr.Zero);
 
         _input.CreateDirectInput(handle);
-
-        //EnumerateDevices();
     }
 
     public void EnumerateDevices()

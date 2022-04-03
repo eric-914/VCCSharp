@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using VCCSharp.Main.ViewModels;
+using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.Main;
 

@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Main.ViewModels;
+using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.Menu;
 

@@ -1,7 +1,7 @@
 ﻿using VCCSharp.Enums;
-using VCCSharp.Main.ViewModels;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Modules;
+using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.TapePlayer;
 

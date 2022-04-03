@@ -1,6 +1,6 @@
 ﻿using VCCSharp.Enums;
-using VCCSharp.Main.ViewModels;
 using VCCSharp.Models.Configuration;
+using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.Configuration.TabControls.Display;
 

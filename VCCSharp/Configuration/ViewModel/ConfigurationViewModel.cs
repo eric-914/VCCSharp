@@ -4,8 +4,7 @@ using VCCSharp.Configuration.TabControls.Display;
 using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Configuration.TabControls.Keyboard;
 using VCCSharp.Configuration.TabControls.Miscellaneous;
-using VCCSharp.Main.ViewModels;
-using VCCSharp.Models.Configuration;
+using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.Configuration.ViewModel;
 

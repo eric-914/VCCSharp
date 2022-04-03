@@ -143,7 +143,8 @@ internal class DxInput : IDxInput
 
         DIJOYSTATE2 state = DIJOYSTATE2.Create();
 
-        var device = _devices.FirstOrDefault(x => x.Key.Index == index.Index).Value;
+        //--TODO: Make this more efficient
+        IDirectInputDevice device = _devices.FirstOrDefault(x => x.Key.Index == index.Index).Value;
 
         if (device == null) return new NullDxJoystickState();
 

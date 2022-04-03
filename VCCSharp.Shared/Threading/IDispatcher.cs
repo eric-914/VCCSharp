@@ -1,4 +1,4 @@
-﻿namespace VCCSharp.Shared;
+﻿namespace VCCSharp.Shared.Threading;
 
 /// <summary>
 /// The Dispatcher is a Windows object, which isn't an available class.

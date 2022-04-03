@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using VCCSharp.Enums;
-using VCCSharp.Main.ViewModels;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Modules;
+using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.Configuration.TabControls.Joystick;
 

@@ -1,18 +1,22 @@
 ﻿using VCCSharp.Shared;
+using VCCSharp.Shared.Dx;
+using VCCSharp.Shared.Threading;
 
 namespace DX8.Tester.Model;
 
 internal class Factory
 {
-    public DxManager CreateManager(IThreadRunner runner)
-    {
-        var dxInput = DxFactory.Instance.CreateDxInput();
+    private static readonly SharedFactory Shared = new();
 
-        return new DxManager(dxInput, runner);
+    public IDxManager CreateManager(IThreadRunner runner)
+    {
+        IDxInput dxInput = DxFactory.Instance.CreateDxInput();
+
+        return Shared.CreateManager(dxInput, runner);
     }
 
     public IThreadRunner CreateThreadRunner(IDispatcher dispatcher)
     {
-        return new ThreadRunner(dispatcher);
+        return Shared.CreateThreadRunner(dispatcher);
     }
 }

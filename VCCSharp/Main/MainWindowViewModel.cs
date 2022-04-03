@@ -1,7 +1,7 @@
 ﻿using System.Windows;
-using VCCSharp.Main.ViewModels;
 using VCCSharp.Menu;
 using VCCSharp.Properties;
+using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.Main;
 

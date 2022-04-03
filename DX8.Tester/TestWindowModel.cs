@@ -1,10 +1,11 @@
-﻿using System;
-using DX8.Tester.Model;
+﻿using DX8.Tester.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
-using VCCSharp.Shared;
+using VCCSharp.Shared.Dx;
+using VCCSharp.Shared.Threading;
 
 namespace DX8.Tester;
 
@@ -14,7 +15,7 @@ internal class TestWindowModel
 {
     public event DeviceLostEventHandler? DeviceLostEvent;
 
-    private readonly DxManager _joystick;
+    private readonly IDxManager _joystick;
 
     public IJoystickStateViewModel LeftJoystick { get; private set; } = new JoystickStateViewModel();
     public IJoystickStateViewModel RightJoystick { get; private set; } = new JoystickStateViewModel();

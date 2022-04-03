@@ -1,4 +1,4 @@
-﻿using VCCSharp.Main.ViewModels;
+﻿using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.Models.Audio;
 

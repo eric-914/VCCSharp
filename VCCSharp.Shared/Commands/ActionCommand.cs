@@ -1,18 +1,16 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
-namespace DX8.Tester.Model;
+namespace VCCSharp.Shared.Commands;
 
 public class ActionCommand : ICommand
 {
-    public event EventHandler? CanExecuteChanged;
+    public event EventHandler? CanExecuteChanged { add { } remove { } }
 
     private readonly Action _action;
 
     public ActionCommand(Action action)
     {
         _action = action;
-        CanExecuteChanged?.Invoke(this, EventArgs.Empty); //--Such a stupid way to avoid CS0067 warning
     }
 
     public void Execute(object? o)

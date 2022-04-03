@@ -1,8 +1,7 @@
-﻿using DX8.Tester.Annotations;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace DX8.Tester.Model;
+namespace VCCSharp.Shared.ViewModels;
 
 public class NotifyViewModel : INotifyPropertyChanged
 {

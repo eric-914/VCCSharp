@@ -1,6 +1,7 @@
-﻿using DX8.Models;
+﻿using DX8;
+using DX8.Models;
 
-namespace DX8.Tester.Model;
+namespace VCCSharp.Shared.Dx;
 
 public class DxJoystick
 {
@@ -8,7 +9,7 @@ public class DxJoystick
 
     public IDxJoystickState State { get; set; } = new NullDxJoystickState();
 
-    public DxJoystick(IDxDevice device)
+    internal DxJoystick(IDxDevice device)
     {
         Device = device;
     }

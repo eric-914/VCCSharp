@@ -30,10 +30,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-using System;
 
 // ReSharper disable once CheckNamespace
-namespace DX8.Tester.Annotations;
+namespace VCCSharp.Shared;
 
 /// <summary>
 /// Indicates that the value of the marked element could be <c>null</c> sometimes,
