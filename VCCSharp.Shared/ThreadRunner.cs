@@ -1,32 +1,29 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Threading;
+﻿using System.Diagnostics;
 
-namespace DX8.Tester.Model;
+namespace VCCSharp.Shared;
 
-public delegate void ThreadRunnerEventHandler(object? sender, EventArgs e);
+public delegate void TickEventHandler(object? sender, EventArgs e);
 
 public interface IThreadRunner
 {
-    event ThreadRunnerEventHandler? Tick;
+    event TickEventHandler? Tick;
     bool IsRunning { get; }
     int Interval { get; set; }
     void Start();
     void Stop();
 }
 
-internal class ThreadRunner : IThreadRunner
+public class ThreadRunner : IThreadRunner
 {
-    private readonly Dispatcher _dispatcher;
-    public event ThreadRunnerEventHandler? Tick;
+    public event TickEventHandler? Tick;
+
+    private readonly IDispatcher _dispatcher;
 
     public bool IsRunning { get; private set; }
 
     public int Interval { get; set; } = 200;
 
-    public ThreadRunner(Dispatcher dispatcher)
+    public ThreadRunner(IDispatcher dispatcher)
     {
         _dispatcher = dispatcher;
     }

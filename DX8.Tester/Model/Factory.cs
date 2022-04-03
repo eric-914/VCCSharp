@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Threading;
+﻿using VCCSharp.Shared;
 
 namespace DX8.Tester.Model;
 
@@ -12,11 +11,8 @@ internal class Factory
         return new DxManager(dxInput, runner);
     }
 
-    public IThreadRunner CreateThreadRunner(Dispatcher dispatcher)
+    public IThreadRunner CreateThreadRunner(IDispatcher dispatcher)
     {
-        var runner = new ThreadRunner(dispatcher);
-        
-
-        return runner;
+        return new ThreadRunner(dispatcher);
     }
 }

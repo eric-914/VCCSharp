@@ -3,6 +3,8 @@ using DX8.Tester.Model;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Threading;
+using VCCSharp.Shared;
 
 namespace DX8.Tester;
 
@@ -23,7 +25,8 @@ internal class TestWindowModel
     {
         var factory = new Factory();
 
-        var runner = factory.CreateThreadRunner(Application.Current.Dispatcher);
+        var dispatcher = new DispatcherWrapper(Application.Current.Dispatcher);
+        var runner = factory.CreateThreadRunner(dispatcher);
         Application.Current.Exit += (_, _) => runner.Stop();
 
         _joystick = factory.CreateManager(runner);
@@ -63,5 +66,19 @@ internal class TestWindowModel
     {
         get => _joystick.Interval;
         set => _joystick.Interval = value;
+    }
+
+    internal class DispatcherWrapper : IDispatcher
+    {
+        private readonly Dispatcher _source;
+
+        public DispatcherWrapper(Dispatcher source)
+        {
+            _source = source;
+        }
+        public void Invoke(Action callback)
+        {
+            _source.Invoke(callback);
+        }
     }
 }

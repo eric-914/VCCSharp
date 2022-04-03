@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using VCCSharp.Libraries;
+using VCCSharp.Shared;
 
 namespace DX8.Tester.Model;
 
