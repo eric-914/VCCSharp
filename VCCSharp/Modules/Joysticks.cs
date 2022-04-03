@@ -1,8 +1,5 @@
 ﻿using DX8;
 using DX8.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using VCCSharp.Enums;
 using VCCSharp.Libraries;
 using VCCSharp.Models.Configuration;
@@ -71,7 +68,9 @@ public class Joysticks : IJoysticks
         if (index == -1) return new NullDxJoystickState();
 
         //TODO: Need something more efficient
-        IDxDevice match = _input.JoystickList().First(x => x.Index == index);
+        IDxDevice? match = _input.JoystickList().FirstOrDefault(x => x.Index == index);
+
+        if (match == null) return new NullDxJoystickState();
 
         return _input.JoystickPoll(match);
     }

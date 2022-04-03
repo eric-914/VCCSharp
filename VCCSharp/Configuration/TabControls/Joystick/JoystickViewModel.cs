@@ -1,6 +1,4 @@
-﻿using DX8;
-using DX8.Models;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using VCCSharp.Enums;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Modules;
@@ -14,13 +12,17 @@ public class JoystickViewModel : NotifyViewModel
 
     public Models.Configuration.Joystick Model { get; } = new();
 
+    //--TODO: Getting the IDxJoystickState requires State.State
+    public JoystickStateViewModel State { get; } = new();
+
     public JoystickViewModel() { }
 
-    public JoystickViewModel(JoystickSides side, Models.Configuration.Joystick model, IJoysticks module)
+    public JoystickViewModel(JoystickSides side, Models.Configuration.Joystick model, IJoysticks module, JoystickStateViewModel state)
     {
         _module = module;
         Side = side;
         Model = model;
+        State = state;
 
         _module.FindJoysticks(false);
 
@@ -144,26 +146,13 @@ public class JoystickViewModel : NotifyViewModel
         set => Model.DeviceIndex = value;
     }
 
-    private IDxJoystickState _state = new NullDxJoystickState();
-    public IDxJoystickState State
-    {
-        get => _state;
-        set
-        {
-            if (_state == value) return;
-
-            _state = value;
-            OnPropertyChanged();
-        }
-    }
-
     public List<string> JoystickNames => _module?.JoystickList.Select(x => x.InstanceName).ToList() ?? new List<string>();
 
     public void Refresh()
     {
         if (_module != null)
         {
-            State = _module.JoystickPoll(DeviceIndex);
+            State.Refresh();// = _module.JoystickPoll(DeviceIndex);
         }
     }
 

@@ -21,7 +21,7 @@ public class JoystickStateViewModel : NotifyViewModel, IJoystickStateViewModel
 
     public JoystickStateViewModel(IDxManager manager, int index)
     {
-        Refresh = () => State = manager.Devices[index].State;
+        Refresh = () => State = manager.State(index);
     }
 
     public IDxJoystickState State

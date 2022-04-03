@@ -1,8 +1,6 @@
 ﻿using DX8.Tester.Model;
 using System.Windows;
-using System.Windows.Threading;
 using VCCSharp.Shared.Dx;
-using VCCSharp.Shared.Threading;
 using VCCSharp.Shared.ViewModels;
 
 namespace DX8.Tester;
@@ -65,19 +63,5 @@ internal class TestWindowModel
     {
         get => _manager.Interval;
         set => _manager.Interval = value;
-    }
-
-    internal class DispatcherWrapper : IDispatcher
-    {
-        private readonly Dispatcher _source;
-
-        public DispatcherWrapper(Dispatcher source)
-        {
-            _source = source;
-        }
-        public void Invoke(Action callback)
-        {
-            _source.Invoke(callback);
-        }
     }
 }

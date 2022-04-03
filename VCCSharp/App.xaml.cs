@@ -7,6 +7,7 @@ using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Main;
 using VCCSharp.Menu;
+using VCCSharp.Models;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Configuration.Support;
 using VCCSharp.Models.CPU.HD6309;
@@ -15,6 +16,8 @@ using VCCSharp.Models.Joystick;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Modules;
 using VCCSharp.Modules.TC1014;
+using VCCSharp.Shared.Dx;
+using VCCSharp.Shared.Threading;
 using VCCSharp.TapePlayer;
 
 namespace VCCSharp;
@@ -82,6 +85,10 @@ public partial class App
             .Bind<IDxSound, Dx>()
             .Bind<IDxInput, Dx>()
 
+            .Bind<IDispatcher>(() => new DispatcherWrapper(Current.Dispatcher))
+            .Bind<IThreadRunner, Shared.Threading.ThreadRunner>()
+            .Singleton<IDxManager, DxManager>()
+
             //--Main
             .Bind<ICommandLineParser, CommandLineParser>()
             .Bind<IVccApp, VccApp>()
@@ -103,6 +110,7 @@ public partial class App
             //--Options container/accessor
             .Singleton<IOptions, Options>()
 
+            .InitializeDxManager()
             .InitializeModules()
             ;
     }

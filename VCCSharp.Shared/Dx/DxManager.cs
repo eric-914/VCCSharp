@@ -1,4 +1,5 @@
 ﻿using DX8;
+using DX8.Models;
 using VCCSharp.Libraries;
 using VCCSharp.Shared.Threading;
 
@@ -17,9 +18,11 @@ public interface IDxManager
 
     void Initialize();
     void EnumerateDevices();
+
+    IDxJoystickState State(int index);
 }
 
-internal class DxManager : IDxManager
+public class DxManager : IDxManager
 {
     public event PollEventHandler? PollEvent;
     public event DeviceLostEventHandler? DeviceLostEvent;
@@ -30,7 +33,7 @@ internal class DxManager : IDxManager
 
     public List<DxJoystick> Devices { get; private set; } = new();
 
-    internal DxManager(IDxInput input, IThreadRunner runner)
+    public DxManager(IDxInput input, IThreadRunner runner)
     {
         _input = input;
         _runner = runner;
@@ -85,5 +88,15 @@ internal class DxManager : IDxManager
     {
         get => _runner.Interval;
         set => _runner.Interval = value;
+    }
+
+    public IDxJoystickState State(int index)
+    {
+        if (index < Devices.Count)
+        {
+            return Devices[index].State;
+        }
+
+        return new NullDxJoystickState();
     }
 }

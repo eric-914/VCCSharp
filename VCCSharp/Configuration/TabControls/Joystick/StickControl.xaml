@@ -16,7 +16,7 @@
     </UserControl.Resources>
 
     <Border BorderBrush="Black" BorderThickness="2" Width="128" Height="128">
-        <Canvas>
+        <Canvas DataContext="{Binding State}">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="{Binding State, Converter={StaticResource JoystickAxisToTextConverter}}"></Label>

@@ -13,7 +13,7 @@ public interface IThreadRunner
     void Stop();
 }
 
-internal class ThreadRunner : IThreadRunner
+public class ThreadRunner : IThreadRunner
 {
     public event TickEventHandler? Tick;
 
@@ -23,7 +23,7 @@ internal class ThreadRunner : IThreadRunner
 
     public int Interval { get; set; } = 200;
 
-    internal ThreadRunner(IDispatcher dispatcher)
+    public ThreadRunner(IDispatcher dispatcher)
     {
         _dispatcher = dispatcher;
     }

@@ -1,5 +1,6 @@
 ﻿using VCCSharp.IoC;
 using VCCSharp.Models.Configuration;
+using VCCSharp.Shared.Dx;
 
 namespace VCCSharp.Configuration;
 
@@ -12,16 +13,18 @@ public class ConfigurationWindowManager : IConfigurationWindowManager
 {
     private readonly IModules _modules;
     private readonly IViewModelFactory _factory;
+    private readonly IDxManager _manager;
 
-    public ConfigurationWindowManager(IModules modules, IViewModelFactory factory)
+    public ConfigurationWindowManager(IModules modules, IViewModelFactory factory, IDxManager manager)
     {
         _modules = modules;
         _factory = factory;
+        _manager = manager;
     }
 
     public void ShowDialog(IConfiguration model)
     {
-        var viewModel = _factory.CreateConfigurationViewModel(model);
+        var viewModel = _factory.CreateConfigurationViewModel(model, _manager);
 
         var view = new ConfigurationWindow(viewModel) { Apply = ApplyChanges };
 

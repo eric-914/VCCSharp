@@ -9,6 +9,8 @@ using VCCSharp.Enums;
 using VCCSharp.Main;
 using VCCSharp.Menu;
 using VCCSharp.Models.Configuration;
+using VCCSharp.Shared.Dx;
+using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.IoC;
 
@@ -17,7 +19,7 @@ public interface IViewModelFactory
     MainWindowViewModel CreateMainWindowViewModel(IMainMenu menuItems);
     CommandViewModel CreateCommandViewModel(Action? action = null);
     MenuItemViewModel CreateMenuItemViewModel(string header, Action action);
-    ConfigurationViewModel CreateConfigurationViewModel(IConfiguration model);
+    ConfigurationViewModel CreateConfigurationViewModel(IConfiguration model, IDxManager manager);
 }
 
 public class ViewModelFactory : IViewModelFactory
@@ -48,7 +50,7 @@ public class ViewModelFactory : IViewModelFactory
         return new MenuItemViewModel { Header = header, Action = action };
     }
 
-    public ConfigurationViewModel CreateConfigurationViewModel(IConfiguration model)
+    public ConfigurationViewModel CreateConfigurationViewModel(IConfiguration model, IDxManager manager)
     {
         var modules = _factory.Get<IModules>();
 
@@ -57,8 +59,10 @@ public class ViewModelFactory : IViewModelFactory
         var display = new DisplayTabViewModel(model.CPU, model.Video, model.Window);
         var keyboard = new KeyboardTabViewModel(model.Keyboard);
 
-        var left = new JoystickViewModel(JoystickSides.Left, model.Joysticks.Left, modules.Joysticks);
-        var right = new JoystickViewModel(JoystickSides.Right, model.Joysticks.Right, modules.Joysticks);
+        var leftState = new JoystickStateViewModel(manager, (int)JoystickSides.Left);
+        var rightState = new JoystickStateViewModel(manager, (int)JoystickSides.Right);
+        var left = new JoystickViewModel(JoystickSides.Left, model.Joysticks.Left, modules.Joysticks, leftState);
+        var right = new JoystickViewModel(JoystickSides.Right, model.Joysticks.Right, modules.Joysticks, rightState);
         var joysticks = new JoystickTabViewModel(left, right);
 
         var miscellaneous = new MiscellaneousTabViewModel(model.Startup);
