@@ -12,8 +12,4 @@
 		<ProjectReference Include="..\VCCSharp.Libraries\VCCSharp.Libraries.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Folder Include="Converters\" />
-	</ItemGroup>
-
 </Project>

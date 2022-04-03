@@ -1,7 +1,7 @@
-﻿using DX8.Tester.Converters;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using VCCSharp.Shared.Converters;
 
 namespace DX8.Tester.Controls;
 

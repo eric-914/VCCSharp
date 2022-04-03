@@ -5,14 +5,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:model="clr-namespace:DX8.Tester.Model"
              xmlns:converters="clr-namespace:DX8.Tester.Converters"
+             xmlns:shared="clr-namespace:VCCSharp.Shared.Converters;assembly=VCCSharp.Shared"
              mc:Ignorable="d" 
              d:DesignHeight="128" d:DesignWidth="128">
     <UserControl.DataContext>
         <model:JoystickStateViewModel/>
     </UserControl.DataContext>
     <UserControl.Resources>
-        <converters:JoystickAxisToTextConverter x:Key="JoystickAxisToTextConverter"/>
-        <converters:AxisScaleConverter x:Key="AxisScaleConverter"/>
+        <shared:JoystickAxisToTextConverter x:Key="JoystickAxisToTextConverter"/>
+        <shared:AxisScaleConverter x:Key="AxisScaleConverter"/>
     </UserControl.Resources>
 
     <Border BorderBrush="Black" BorderThickness="2" Width="128" Height="128">

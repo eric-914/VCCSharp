@@ -4,15 +4,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
-             xmlns:converters="clr-namespace:VCCSharp.Converters"
+             xmlns:shared="clr-namespace:VCCSharp.Shared.Converters;assembly=VCCSharp.Shared"
              mc:Ignorable="d" 
              d:DesignHeight="128" d:DesignWidth="128">
   <UserControl.DataContext>
     <joystick:JoystickViewModel/>
   </UserControl.DataContext>
     <UserControl.Resources>
-        <converters:JoystickAxisToTextConverter x:Key="JoystickAxisToTextConverter"/>
-        <converters:AxisScaleConverter x:Key="AxisScaleConverter"/>
+        <shared:JoystickAxisToTextConverter x:Key="JoystickAxisToTextConverter"/>
+        <shared:AxisScaleConverter x:Key="AxisScaleConverter"/>
     </UserControl.Resources>
 
     <Border BorderBrush="Black" BorderThickness="2" Width="128" Height="128">

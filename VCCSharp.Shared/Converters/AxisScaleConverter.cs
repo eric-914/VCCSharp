@@ -1,10 +1,9 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows.Data;
 
-namespace VCCSharp.Converters
+namespace VCCSharp.Shared.Converters
 {
-    internal class AxisScaleConverter : IValueConverter
+    public class AxisScaleConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

@@ -1,20 +1,21 @@
-﻿using DX8;
-using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows.Data;
+using System.Windows.Media;
 
-namespace VCCSharp.Converters
+namespace VCCSharp.Shared.Converters
 {
-    internal class JoystickAxisToTextConverter : IValueConverter
+    public class BooleanToBorderColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is IDxJoystickState j)
+            if (value is bool b)
             {
-                return $"{j.Horizontal},{j.Vertical}";
+                return b
+                    ? Brushes.Blue
+                    : Brushes.Transparent;
             }
 
-            return string.Empty;
+            return Brushes.Red;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

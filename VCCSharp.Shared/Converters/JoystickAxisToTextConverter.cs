@@ -1,10 +1,10 @@
-﻿using System;
+﻿using DX8;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace DX8.Tester.Converters
+namespace VCCSharp.Shared.Converters
 {
-    internal class JoystickAxisToTextConverter : IValueConverter
+    public class JoystickAxisToTextConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

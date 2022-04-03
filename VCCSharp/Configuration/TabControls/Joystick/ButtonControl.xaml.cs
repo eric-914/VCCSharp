@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using VCCSharp.Converters;
+using VCCSharp.Shared.Converters;
 
 namespace VCCSharp.Configuration.TabControls.Joystick;
 
