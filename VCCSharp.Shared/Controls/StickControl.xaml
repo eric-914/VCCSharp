@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="VCCSharp.Shared.Controls.StickControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:VCCSharp.Shared.ViewModels"
+             xmlns:converters="clr-namespace:VCCSharp.Shared.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="128" d:DesignWidth="128">
+  <UserControl.DataContext>
+    <viewModels:JoystickStateViewModel/>
+  </UserControl.DataContext>
+  <UserControl.Resources>
+    <converters:JoystickAxisToTextConverter x:Key="JoystickAxisToTextConverter"/>
+    <converters:AxisScaleConverter x:Key="AxisScaleConverter"/>
+  </UserControl.Resources>
+
+  <Border BorderBrush="Black" BorderThickness="2" Width="128" Height="128">
+    <Canvas>
+      <StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <Label Content="{Binding State, Converter={StaticResource JoystickAxisToTextConverter}}"></Label>
+        </StackPanel>
+      </StackPanel>
+      <Ellipse Width="4" Height="4" Fill="Orange" 
+               Canvas.Left="{Binding State.Horizontal, Converter={StaticResource AxisScaleConverter}}" 
+               Canvas.Top="{Binding State.Vertical, Converter={StaticResource AxisScaleConverter}}"/>
+    </Canvas>
+  </Border>
+</UserControl>

@@ -3,7 +3,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="clr-namespace:DX8.Tester.Controls"
              xmlns:controls="clr-namespace:VCCSharp.Shared.Controls;assembly=VCCSharp.Shared"
              xmlns:viewModels="clr-namespace:VCCSharp.Shared.ViewModels;assembly=VCCSharp.Shared"
              mc:Ignorable="d" 
@@ -14,7 +13,7 @@
 
     <StackPanel>
         <Canvas>
-            <local:StickControl Canvas.Left="11" Canvas.Top="50" DataContext="{Binding}"/>
+            <controls:StickControl Canvas.Left="11" Canvas.Top="50" DataContext="{Binding}"/>
 
             <controls:ButtonsControl DataContext="{Binding}"/>
         </Canvas>

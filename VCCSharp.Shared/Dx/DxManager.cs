@@ -94,6 +94,6 @@ public class DxManager : IDxManager
 
     public IDxJoystickState State(int index)
     {
-        return index < Devices.Count ? Devices[index].State : NullState;
+        return index != -1 && index < Devices.Count ? Devices[index].State : NullState;
     }
 }

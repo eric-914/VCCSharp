@@ -13,7 +13,7 @@
 
     <StackPanel>
         <Canvas>
-            <joystick:StickControl Canvas.Left="11" Canvas.Top="50" DataContext="{Binding State}"/>
+            <controls:StickControl Canvas.Left="11" Canvas.Top="50" DataContext="{Binding State}"/>
 
             <controls:ButtonsControl DataContext="{Binding State}"/>
         </Canvas>

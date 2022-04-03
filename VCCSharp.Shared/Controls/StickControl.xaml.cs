@@ -1,4 +1,4 @@
-﻿namespace DX8.Tester.Controls;
+﻿namespace VCCSharp.Shared.Controls;
 
 public partial class StickControl 
 {
