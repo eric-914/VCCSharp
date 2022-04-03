@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using VCCSharp.Shared.Converters;
 
-namespace VCCSharp.Configuration.TabControls.Joystick;
+namespace VCCSharp.Shared.Controls;
 
 public partial class ButtonControl 
 {

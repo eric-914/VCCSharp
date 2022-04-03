@@ -1,7 +1,5 @@
 ﻿using DX8;
 using DX8.Models;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Input;
 using VCCSharp.Enums;
 using VCCSharp.Models.Keyboard;
