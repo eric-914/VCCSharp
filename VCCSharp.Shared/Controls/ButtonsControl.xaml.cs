@@ -1,4 +1,4 @@
-﻿namespace VCCSharp.Configuration.TabControls.Joystick;
+﻿namespace VCCSharp.Shared.Controls;
 
 public partial class ButtonsControl 
 {

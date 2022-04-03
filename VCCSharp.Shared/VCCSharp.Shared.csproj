@@ -12,17 +12,4 @@
 		<ProjectReference Include="..\VCCSharp.Libraries\VCCSharp.Libraries.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Compile Update="Controls\ButtonControl.xaml.cs">
-	    <SubType>Code</SubType>
-	  </Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Page Update="Controls\ButtonControl.xaml">
-	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-	    <SubType>Designer</SubType>
-	  </Page>
-	</ItemGroup>
-
 </Project>
