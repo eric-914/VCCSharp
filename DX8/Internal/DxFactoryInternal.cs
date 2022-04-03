@@ -29,6 +29,9 @@ namespace DX8.Internal
         /// This call site is reachable on all platforms.
         /// 'Marshal.GetObjectForIUnknown(IntPtr)' is only supported on: 'windows'.
         /// </summary>
+        /// <remarks>
+        /// NOTE: we're already dependent on DX8 COM objects, so we are kind of stuck with Windows-specific for the time being.
+        /// </remarks>
         private static T GetObjectForIUnknown<T>(IntPtr p) where T : class
         {
 #pragma warning disable CA1416
