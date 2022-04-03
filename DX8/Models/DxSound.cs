@@ -5,8 +5,6 @@ using DX8.Internal.Converters;
 using DX8.Internal.Interfaces;
 using DX8.Internal.Libraries;
 using DX8.Internal.Models;
-using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using static System.IntPtr;
 using HWND = System.IntPtr;
@@ -21,8 +19,8 @@ namespace DX8.Models
         private readonly IDSound _sound;
         private readonly IDxFactoryInternal _factory;
 
-        private IDirectSound _ds;
-        private IDirectSoundBuffer _buffer;
+        private IDirectSound? _ds;
+        private IDirectSoundBuffer? _buffer;
 
         private LPVOID _sndPointer1 = Zero;
         private LPVOID _sndPointer2 = Zero;
@@ -50,12 +48,12 @@ namespace DX8.Models
 
         public bool SetCooperativeLevel(HWND hWnd)
         {
-            return _ds.SetCooperativeLevel(hWnd, DxDefine.DSSCL_NORMAL) == DxDefine.S_OK;
+            return _ds!.SetCooperativeLevel(hWnd, DxDefine.DSSCL_NORMAL) == DxDefine.S_OK;
         }
 
         private bool CreateDirectSoundBuffer(DSBUFFERDESC bufferDescription)
         {
-            _buffer = _factory.CreateSoundBuffer(_ds, bufferDescription);
+            _buffer = _factory.CreateSoundBuffer(_ds!, bufferDescription);
 
             return _buffer != null;
         }
@@ -112,15 +110,15 @@ namespace DX8.Models
             return names;
         }
 
-        public void Stop() => _buffer.Stop();
-        public void Play() => _buffer.Play(0, 0, DxDefine.DSBPLAY_LOOPING);
-        public void Reset() => _buffer.SetCurrentPosition(0);
+        public void Stop() => _buffer!.Stop();
+        public void Play() => _buffer!.Play(0, 0, DxDefine.DSBPLAY_LOOPING);
+        public void Reset() => _buffer!.SetCurrentPosition(0);
 
         public int ReadPlayCursor()
         {
             uint playCursor = 0, writeCursor = 0;
 
-            _buffer.GetCurrentPosition(ref playCursor, ref writeCursor);
+            _buffer!.GetCurrentPosition(ref playCursor, ref writeCursor);
 
             return (int)playCursor;
         }
@@ -131,7 +129,7 @@ namespace DX8.Models
             LPVOID s1 = _sndPointer1;
             LPVOID s2 = _sndPointer2;
 
-            long result = _buffer.Lock((uint)offset, (uint)length, ref s1, ref _sndLength1, ref s2, ref _sndLength2, 0);
+            long result = _buffer!.Lock((uint)offset, (uint)length, ref s1, ref _sndLength1, ref s2, ref _sndLength2, 0);
 
             _sndPointer1 = s1;
             _sndPointer2 = s2;
@@ -141,7 +139,7 @@ namespace DX8.Models
 
         public bool Unlock()
         {
-            return _buffer.Unlock(_sndPointer1, _sndLength1, _sndPointer2, _sndLength2) == DxDefine.S_OK;
+            return _buffer!.Unlock(_sndPointer1, _sndLength1, _sndPointer2, _sndLength2) == DxDefine.S_OK;
         }
 
         public bool CreateDirectSoundBuffer(ushort bitRate, int length)

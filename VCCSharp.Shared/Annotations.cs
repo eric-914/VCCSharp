@@ -1,4 +1,4 @@
-﻿#pragma warning disable 1591
+﻿//#pragma warning disable 1591
 // ReSharper disable CommentTypo
 // ReSharper disable InheritdocConsiderUsage
 // ReSharper disable UnusedMember.Global
@@ -510,6 +510,7 @@ public enum ImplicitUseKindFlags
 [Flags]
 public enum ImplicitUseTargetFlags
 {
+#pragma warning disable CA1069
     Default = Itself,
     Itself = 1,
     /// <summary>Members of entity marked with attribute are considered used.</summary>
@@ -517,7 +518,8 @@ public enum ImplicitUseTargetFlags
     /// <summary> Inherited entities are considered used. </summary>
     WithInheritors = 4,
     /// <summary>Entity marked with attribute and all its members considered used.</summary>
-    WithMembers = Itself | Members
+    WithMembers = Default | Members
+#pragma warning restore CA1069
 }
 
 /// <summary>

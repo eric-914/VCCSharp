@@ -2,7 +2,6 @@
 using DX8.Internal.Interfaces;
 using DX8.Internal.Libraries;
 using DX8.Internal.Models;
-using System;
 using static System.IntPtr;
 using Point = System.Drawing.Point;
 
@@ -13,10 +12,10 @@ namespace DX8.Models
         private readonly IDDraw _dDraw;
         private readonly IDxFactoryInternal _factory;
 
-        private IDirectDraw _dd;      // The DirectDraw object
-        private IDirectDrawClipper _clipper; // Clipper for primary surface
-        private IDirectDrawSurface _surface;    // Primary surface
-        private IDirectDrawSurface _back;    // Back surface
+        private IDirectDraw? _dd;      // The DirectDraw object
+        private IDirectDrawClipper? _clipper; // Clipper for primary surface
+        private IDirectDrawSurface? _surface;    // Primary surface
+        private IDirectDrawSurface? _back;    // Back surface
 
         private DDSURFACEDESC _primarySurface;
         private DDSURFACEDESC _backSurface;
@@ -69,7 +68,7 @@ namespace DX8.Models
 
         public bool SetCooperativeLevel(IntPtr hWnd, uint value)
         {
-            return _dd.SetCooperativeLevel(hWnd, value) == DxDefine.S_OK;
+            return _dd!.SetCooperativeLevel(hWnd, value) == DxDefine.S_OK;
         }
 
         public bool HasSurface()
@@ -79,22 +78,22 @@ namespace DX8.Models
 
         public bool SurfaceIsLost()
         {
-            return _surface.IsLost() != 0;
+            return _surface!.IsLost() != 0;
         }
 
         public bool BackSurfaceIsLost()
         {
-            return _back.IsLost() != 0;
+            return _back!.IsLost() != 0;
         }
 
         public void SurfaceRestore()
         {
-            _surface.Restore();
+            _surface!.Restore();
         }
 
         public void BackSurfaceRestore()
         {
-            _back.Restore();
+            _back!.Restore();
         }
 
         public void SurfaceBlt(int dl, int dt, int dr, int db, int sl, int st, int sr, int sb)
@@ -102,7 +101,7 @@ namespace DX8.Models
             var rcDest = new DXRECT { left = dl, top = dt, right = dr, bottom = db };
             var rcSrc = new DXRECT { left = sl, top = st, right = sr, bottom = sb };
 
-            _surface.Blt(ref rcDest, _back, ref rcSrc, DxDefine.DDBLT_WAIT, Zero);
+            _surface!.Blt(ref rcDest, _back!, ref rcSrc, DxDefine.DDBLT_WAIT, Zero);
         }
 
         public bool HasBackSurface()
@@ -114,19 +113,19 @@ namespace DX8.Models
         {
             IntPtr p = Zero;
 
-            _back.GetDC(ref p);
+            _back!.GetDC(ref p);
 
             return p;
         }
 
         public void ReleaseBackSurface(IntPtr hdc)
         {
-            _back.ReleaseDC(hdc);
+            _back!.ReleaseDC(hdc);
         }
 
         public void SurfaceFlip()
         {
-            _surface.Flip(Zero, DxDefine.DDFLIP_NOVSYNC | DxDefine.DDFLIP_DONOTWAIT);
+            _surface!.Flip(Zero, DxDefine.DDFLIP_NOVSYNC | DxDefine.DDFLIP_DONOTWAIT);
         }
 
         public bool LockSurface()
@@ -135,7 +134,7 @@ namespace DX8.Models
 
             _lockSurface = CreateSurfaceDescription();
 
-            var result = _back.Lock(Zero, ref _lockSurface, (uint)flags, Zero) == DxDefine.S_OK;
+            var result = _back!.Lock(Zero, ref _lockSurface, (uint)flags, Zero) == DxDefine.S_OK;
 
             SurfacePitch = _lockSurface.lPitch >> 2;
             Surface = _lockSurface.lpSurface;
@@ -145,17 +144,17 @@ namespace DX8.Models
 
         public bool UnlockSurface()
         {
-            return _back.Unlock(Zero) == DxDefine.S_OK;
+            return _back!.Unlock(Zero) == DxDefine.S_OK;
         }
 
         public bool SetSurfaceClipper()
         {
-            return _surface.SetClipper(_clipper) == DxDefine.S_OK;
+            return _surface!.SetClipper(_clipper!) == DxDefine.S_OK;
         }
 
         public bool SetClipper(IntPtr hWnd)
         {
-            return _clipper.SetHWnd(0, hWnd) == DxDefine.S_OK;
+            return _clipper!.SetHWnd(0, hWnd) == DxDefine.S_OK;
         }
 
         private static DDSURFACEDESC CreateSurfaceDescription()
