@@ -1,11 +1,16 @@
-﻿using DX8.Tester.Model;
+﻿using System;
+using DX8.Tester.Model;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace DX8.Tester;
 
+public delegate void DeviceLostEventHandler(object? sender, EventArgs e);
+
 internal class TestWindowModel
 {
+    public event DeviceLostEventHandler? DeviceLostEvent;
+
     private readonly DxManager _joystick;
 
     public IJoystickStateViewModel LeftJoystick { get; private set; } = new JoystickStateViewModel();
@@ -17,6 +22,7 @@ internal class TestWindowModel
     {
         _joystick = new Dx().Joystick;
         _joystick.PollEvent += (_, _) => Refresh();
+        _joystick.DeviceLostEvent += (_, _) => DeviceLostEvent?.Invoke(this, EventArgs.Empty);
         _joystick.Initialize();
     }
 
@@ -45,5 +51,11 @@ internal class TestWindowModel
     {
         LeftJoystick.Refresh();
         RightJoystick.Refresh();
+    }
+
+    public int Interval
+    {
+        get => _joystick.Interval;
+        set => _joystick.Interval = value;
     }
 }

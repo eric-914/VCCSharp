@@ -6,7 +6,7 @@
         xmlns:tester="clr-namespace:DX8.Tester"
         xmlns:controls="clr-namespace:DX8.Tester.Controls"
         mc:Ignorable="d"
-        Title="DirectX 8 Tester" Height="550" Width="420">
+        Title="DirectX 8 Tester" Height="575" Width="420">
   <Window.DataContext>
     <tester:TestWindowViewModel/>
   </Window.DataContext>
@@ -19,20 +19,24 @@
     </Style>
   </Window.Resources>
 
-  <StackPanel>
-    <DockPanel >
-      <Label DockPanel.Dock="Left">Available Joysticks:</Label>
-      <Button DockPanel.Dock="Right" Click="ButtonBase_OnClick">Refresh List</Button>
-      <Label Content="{Binding Count}"/>
+  <DockPanel>
+    <StackPanel DockPanel.Dock="Top">
+      <DockPanel>
+        <Label DockPanel.Dock="Left">Available Joysticks:</Label>
+        <Button DockPanel.Dock="Right" Command="{Binding RefreshListCommand}">Refresh List</Button>
+        <Label Content="{Binding Count}"/>
+      </DockPanel>
+
+      <ListBox DockPanel.Dock="Top" ItemsSource="{Binding AvailableJoysticks}"/>
+    </StackPanel>
+
+    <DockPanel DockPanel.Dock="Bottom">
+      <Label DockPanel.Dock="Left">Interval:</Label>
+      <Label DockPanel.Dock="Right" Content="{Binding Interval}" Width="50"/>
+      <ScrollBar Orientation="Horizontal" Minimum="10" Maximum="500" Value="{Binding Interval}"/>
     </DockPanel>
-    <ListBox ItemsSource="{Binding AvailableJoysticks}"/>
 
-    <Label>First Joystick:</Label>
-    <controls:JoystickControl DataContext="{Binding LeftJoystick}"/>
+    <controls:JoystickPairControl DataContext="{Binding}"/>
 
-    <Separator/>
-
-    <Label>Second Joystick:</Label>
-    <controls:JoystickControl DataContext="{Binding RightJoystick}"/>
-  </StackPanel>
+  </DockPanel>
 </Window>

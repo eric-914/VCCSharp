@@ -2,8 +2,17 @@
 // ReSharper disable CommentTypo
 namespace DX8;
 
-public interface IDxJoystickState 
+public enum JoystickStateErrorCodes
 {
+    Ok = 0,
+    BadPoll = 1,
+    COMException = 2
+}
+
+public interface IDxJoystickState
+{
+    JoystickStateErrorCodes ErrorCode { get; }
+
     int Horizontal { get; }
     int Vertical { get; }
     bool X { get; }

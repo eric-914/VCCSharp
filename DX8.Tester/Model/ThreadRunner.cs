@@ -12,20 +12,27 @@ internal class ThreadRunner
 {
     public event ThreadRunnerEventHandler? Tick;
 
-    private bool _isRunning;
+    public bool IsRunning { get; private set; }
+
+    public int Interval { get; set; } = 200;
+
+    public ThreadRunner()
+    {
+        Application.Current.Exit += (_, _) => Stop();
+    }
 
     public void Start()
     {
         Debug.WriteLine("ThreadRunner.Start()");
-        _isRunning = true;
+        IsRunning = true;
 
         Task.Run(() =>
         {
-            while (_isRunning)
+            while (IsRunning)
             {
-                Thread.Sleep(250);
+                Thread.Sleep(Interval);
 
-                if (_isRunning)
+                if (IsRunning)
                 {
                     Application.Current.Dispatcher.Invoke(() => Tick?.Invoke(this, EventArgs.Empty));
                 }
@@ -35,7 +42,7 @@ internal class ThreadRunner
 
     public void Stop()
     {
-        _isRunning = false;
+        IsRunning = false;
         Debug.WriteLine("ThreadRunner.Stop()");
     }
 }

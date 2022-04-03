@@ -5,9 +5,13 @@ using VCCSharp.Libraries;
 
 namespace DX8.Tester.Model;
 
+public delegate void PollEventHandler(object? sender, EventArgs e);
+public delegate void DeviceLostEventHandler(object? sender, EventArgs e);
+
 public class DxManager
 {
-    public event ThreadRunnerEventHandler? PollEvent;
+    public event PollEventHandler? PollEvent;
+    public event DeviceLostEventHandler? DeviceLostEvent;
 
     private readonly IDxInput _input;
 
@@ -38,7 +42,7 @@ public class DxManager
 
         _input.EnumerateDevices();
 
-        var devices = 
+        var devices =
             from each in _input.JoystickList()
             select new DxJoystick(each);
 
@@ -47,13 +51,31 @@ public class DxManager
         _runner.Start();
     }
 
-    public void JoystickPoll()
+    private void JoystickPoll()
     {
         foreach (var device in Devices)
         {
             device.State = _input.JoystickPoll(device.Device);
         }
 
-        PollEvent?.Invoke(this, EventArgs.Empty);
+        //--This will happen if any joysticks get disconnected
+        if (Devices.Any(x => x.State.ErrorCode == JoystickStateErrorCodes.COMException))
+        {
+            if (_runner.IsRunning)
+            {
+                _runner.Stop(); //--Stop further polling until this is addressed
+                DeviceLostEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        else
+        {
+            PollEvent?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    public int Interval
+    {
+        get => _runner.Interval;
+        set => _runner.Interval = value;
     }
 }

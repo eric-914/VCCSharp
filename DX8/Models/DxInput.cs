@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace DX8.Models;
 
@@ -18,6 +19,8 @@ internal class DxInput : IDxInput
 
     private IDirectInput _di;
     private readonly Dictionary<IDxDevice, IDirectInputDevice> _devices = new();
+
+    private JoystickStateErrorCodes _errorCode = JoystickStateErrorCodes.Ok;
 
     internal DxInput(IDInput input, IDxFactoryInternal factory)
     {
@@ -79,6 +82,8 @@ internal class DxInput : IDxInput
         {
             throw new Exception("Failed to enumerate joysticks");
         }
+
+        _errorCode = JoystickStateErrorCodes.Ok;
     }
 
     private static void SetJoystickProperties(IDirectInputDevice device)
@@ -133,20 +138,33 @@ internal class DxInput : IDxInput
 
     public IDxJoystickState JoystickPoll(IDxDevice index)
     {
+        //--When a COM exception occurs, return null state until things are reset.
+        if (_errorCode == JoystickStateErrorCodes.COMException) return new NullDxJoystickState();
+
         DIJOYSTATE2 state = DIJOYSTATE2.Create();
 
         var device = _devices.FirstOrDefault(x => x.Key.Index == index.Index).Value;
 
         if (device == null) return new NullDxJoystickState();
 
-        long hr = JoystickPoll(ref state, device);
-
-        if (hr != DxDefine.S_OK)
+        try
         {
-            Debug.WriteLine($"Bad joystick poll: {hr}");
+            long hr = JoystickPoll(ref state, device);
+
+            if (hr != DxDefine.S_OK)
+            {
+                _errorCode = JoystickStateErrorCodes.BadPoll;
+                Debug.WriteLine($"Bad joystick poll: {hr}");
+            }
+        }
+        catch (COMException)
+        {
+            //--This will happen if a joystick gets disconnected.
+            _errorCode = JoystickStateErrorCodes.COMException;
+            Debug.WriteLine($"COMException occurred during joystick '{index.InstanceName}' polling.  Disconnected?");
         }
 
-        var xbox = new DxXboxControllerState(state);
+        var xbox = new DxXboxControllerState(state, _errorCode);
         //Debug.WriteLine(xbox);
 
         return xbox;
@@ -159,19 +177,7 @@ internal class DxInput : IDxInput
             return DxDefine.S_OK;
         }
 
-        long hr;
-
-        hr = device.Poll();
-        //try
-        //{
-        //    hr = device.Poll();
-        //}
-        //catch (InvalidCastException)
-        //{
-        //    //--TODO: Track down why this happens on first poll after list refresh.
-        //    Debug.WriteLine("InvalidCastException on device.Poll()");
-        //    return -1;
-        //}
+        var hr = device.Poll();
 
         if (hr < 0)
         {
@@ -193,16 +199,6 @@ internal class DxInput : IDxInput
         }
 
         hr = device.GetDeviceState((uint)DIJOYSTATE2.Size, ref state);
-
-        //try
-        //{
-        //    hr = device.GetDeviceState((uint)DIJOYSTATE2.Size, ref state);
-        //}
-        //catch (InvalidCastException)
-        //{
-        //    //--TODO: Track down why this happens on first poll after list refresh.
-        //    Debug.WriteLine("InvalidCastException on device.GetDeviceState()");
-        //}
 
         return hr < 0 ? hr : DxDefine.S_OK;
     }

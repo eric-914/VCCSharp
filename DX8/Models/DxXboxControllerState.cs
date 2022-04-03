@@ -1,14 +1,14 @@
-﻿using DX8.Internal.Models;
+﻿// ReSharper disable InconsistentNaming
+// ReSharper disable CommentTypo
+using DX8.Internal.Models;
 using System.Collections.Generic;
 
-// ReSharper disable InconsistentNaming
-// ReSharper disable CommentTypo
 namespace DX8.Models;
 
 /// <summary>
 /// Works on translating DIJOYSTATE2 state into something that makes more sense when viewed as an Xbox controller.
 /// </summary>
-internal class DxXboxControllerState : IDxJoystickState 
+internal class DxXboxControllerState : IDxJoystickState
 {
     /// <summary>
     /// The D-Pad value can be any of the following
@@ -28,6 +28,7 @@ internal class DxXboxControllerState : IDxJoystickState
     private const int MAX = 63;
     private const int CENTER = 32;
 
+    public JoystickStateErrorCodes ErrorCode { get; }
     public int Horizontal { get; }
     public int Vertical { get; }
 
@@ -45,30 +46,32 @@ internal class DxXboxControllerState : IDxJoystickState
 
     private static readonly Dictionary<uint, int> _horizontal = new()
     {
-        {N, CENTER},
-        {NE, MAX},
-        {E, MAX},
-        {SE, MAX},
-        {S, CENTER},
-        {SW, MIN},
-        {W, MIN},
-        {NW, MIN}
+        { N, CENTER },
+        { NE, MAX },
+        { E, MAX },
+        { SE, MAX },
+        { S, CENTER },
+        { SW, MIN },
+        { W, MIN },
+        { NW, MIN }
     };
 
     private static readonly Dictionary<uint, int> _vertical = new()
     {
-        {N, MIN},
-        {NE, MIN},
-        {E, CENTER},
-        {SE, MAX},
-        {S, MAX},
-        {SW, MAX},
-        {W, CENTER},
-        {NW, MIN}
+        { N, MIN },
+        { NE, MIN },
+        { E, CENTER },
+        { SE, MAX },
+        { S, MAX },
+        { SW, MAX },
+        { W, CENTER },
+        { NW, MIN }
     };
 
-    public DxXboxControllerState(DIJOYSTATE2 state)
+    public DxXboxControllerState(DIJOYSTATE2 state, JoystickStateErrorCodes errorCode)
     {
+        ErrorCode = errorCode;
+
         var dPad = state.rgdwPOV.UI0;
 
         //--If the D-Pad isn't being pressed, use the stick values
@@ -102,6 +105,7 @@ internal class DxXboxControllerState : IDxJoystickState
 
 public class NullDxJoystickState : IDxJoystickState
 {
+    public JoystickStateErrorCodes ErrorCode => JoystickStateErrorCodes.Ok;
     public int Horizontal => 0;
     public int Vertical => 0;
     public bool X => false;
