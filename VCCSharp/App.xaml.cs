@@ -86,7 +86,7 @@ public partial class App
             .Bind<IDxInput, Dx>()
 
             .Bind<IDispatcher>(() => new DispatcherWrapper(Current.Dispatcher))
-            .Bind<IThreadRunner, Shared.Threading.ThreadRunner>()
+            .Bind<IThreadRunner, ThreadRunner>()
             .Singleton<IDxManager, DxManager>()
 
             //--Main

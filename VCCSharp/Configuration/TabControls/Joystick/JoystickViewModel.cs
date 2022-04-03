@@ -2,6 +2,7 @@
 using VCCSharp.Enums;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Modules;
+using VCCSharp.Shared.Commands;
 using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.Configuration.TabControls.Joystick;
@@ -15,6 +16,8 @@ public class JoystickViewModel : NotifyViewModel
     //--TODO: Getting the IDxJoystickState requires State.State
     public JoystickStateViewModel State { get; } = new();
 
+    public ICommand RefreshListCommand { get; } = new ActionCommand(() => throw new NotImplementedException());
+
     public JoystickViewModel() { }
 
     public JoystickViewModel(JoystickSides side, Models.Configuration.Joystick model, IJoysticks module, JoystickStateViewModel state)
@@ -24,9 +27,10 @@ public class JoystickViewModel : NotifyViewModel
         Model = model;
         State = state;
 
-        _module.FindJoysticks(false);
+        _module.FindJoysticks();
 
-        RefreshList(false);
+        RefreshListCommand = new ActionCommand(RefreshList);
+        RefreshList();
     }
 
     #region Constants
@@ -146,21 +150,13 @@ public class JoystickViewModel : NotifyViewModel
         set => Model.DeviceIndex = value;
     }
 
-    public List<string> JoystickNames => _module?.JoystickList.Select(x => x.InstanceName).ToList() ?? new List<string>();
+    public List<string> JoystickNames => _module?.JoystickList.Select(x => x.Device.InstanceName).ToList() ?? new List<string>();
 
-    public void Refresh()
+    public void RefreshList()
     {
         if (_module != null)
         {
-            State.Refresh();// = _module.JoystickPoll(DeviceIndex);
-        }
-    }
-
-    public void RefreshList(bool refresh)
-    {
-        if (_module != null)
-        {
-            _module.FindJoysticks(refresh);
+            _module.FindJoysticks();
 
             OnPropertyChanged(nameof(JoystickNames));
         }

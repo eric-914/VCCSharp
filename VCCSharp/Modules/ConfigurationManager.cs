@@ -114,7 +114,7 @@ public class ConfigurationManager : IConfigurationManager
     {
         var joystick = _modules.Joysticks;
 
-        joystick.FindJoysticks(false);
+        joystick.FindJoysticks();
 
         var count = joystick.JoystickList.Count;
 

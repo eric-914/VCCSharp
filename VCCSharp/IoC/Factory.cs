@@ -84,6 +84,7 @@ public class Factory : IFactory
     {
         var modules = Get<IDxManager>();
         modules.Initialize();
+        modules.EnumerateDevices();
 
         return this;
     }

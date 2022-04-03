@@ -1,6 +1,4 @@
-﻿using DX8.Tester.Model;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using VCCSharp.Shared.Commands;
 using VCCSharp.Shared.ViewModels;

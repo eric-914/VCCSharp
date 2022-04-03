@@ -1,6 +1,8 @@
-﻿namespace VCCSharp.Configuration.TabControls.Joystick;
+﻿using VCCSharp.Shared.ViewModels;
 
-public class JoystickTabViewModel
+namespace VCCSharp.Configuration.TabControls.Joystick;
+
+public class JoystickTabViewModel : NotifyViewModel
 {
     //[LeftJoyStick]
     public JoystickViewModel Left { get; } = new();

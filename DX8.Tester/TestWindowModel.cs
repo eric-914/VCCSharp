@@ -27,7 +27,6 @@ internal class TestWindowModel
         Application.Current.Exit += (_, _) => runner.Stop();
 
         _manager = factory.CreateManager(runner);
-        _manager.PollEvent += (_, _) => Refresh();
         _manager.DeviceLostEvent += (_, _) => DeviceLostEvent?.Invoke(this, EventArgs.Empty);
         _manager.Initialize();
     }
@@ -51,12 +50,6 @@ internal class TestWindowModel
             : new JoystickStateViewModel();
 
         return list.Select(x => x.InstanceName).ToList();
-    }
-
-    private void Refresh()
-    {
-        LeftJoystick.Refresh();
-        RightJoystick.Refresh();
     }
 
     public int Interval

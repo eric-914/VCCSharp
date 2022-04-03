@@ -33,11 +33,12 @@ public class DxManager : IDxManager
 
     public List<DxJoystick> Devices { get; private set; } = new();
 
+    private static readonly IDxJoystickState NullState = new NullDxJoystickState();
+
     public DxManager(IDxInput input, IThreadRunner runner)
     {
         _input = input;
         _runner = runner;
-        _runner.Tick += (_, _) => JoystickPoll();
     }
 
     public void Initialize()
@@ -45,6 +46,7 @@ public class DxManager : IDxManager
         var handle = KernelDll.GetModuleHandleA(IntPtr.Zero);
 
         _input.CreateDirectInput(handle);
+        _runner.Tick += (_, _) => JoystickPoll();
     }
 
     public void EnumerateDevices()
@@ -92,11 +94,6 @@ public class DxManager : IDxManager
 
     public IDxJoystickState State(int index)
     {
-        if (index < Devices.Count)
-        {
-            return Devices[index].State;
-        }
-
-        return new NullDxJoystickState();
+        return index < Devices.Count ? Devices[index].State : NullState;
     }
 }

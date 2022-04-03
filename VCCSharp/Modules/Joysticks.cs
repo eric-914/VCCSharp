@@ -1,17 +1,16 @@
 ﻿using DX8;
-using DX8.Models;
 using VCCSharp.Enums;
-using VCCSharp.Libraries;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Joystick;
+using VCCSharp.Shared.Dx;
 
 namespace VCCSharp.Modules;
 
 public interface IJoysticks : IModule
 {
-    void FindJoysticks(bool refresh);
+    void FindJoysticks();
 
-    List<IDxDevice> JoystickList { get; }
+    List<DxJoystick> JoystickList { get; }
 
     void SetButtonStatus(MouseButtonStates state);
     void SetJoystick(System.Windows.Size clientSize, System.Windows.Point point);
@@ -34,45 +33,30 @@ public class Joysticks : IJoysticks
     //private const int CENTER = 32;
 
     private readonly IConfiguration _configuration;
-    private readonly IDxInput _input;
+    private readonly IDxManager _manager;
     private readonly IKeyboardAsJoystick _keyboardHandler;
 
     public ushort StickValue { get; set; }
 
-    public List<IDxDevice> JoystickList { get; private set; } = new();
+    public List<DxJoystick> JoystickList { get; private set; } = new();
     public JoystickState Left { get; private set; } = new();
     public JoystickState Right { get; private set; } = new();
 
-    public Joysticks(IConfiguration configuration, IDxInput input, IKeyboardAsJoystick keyboardHandler)
+    public Joysticks(IConfiguration configuration, IDxManager manager, IKeyboardAsJoystick keyboardHandler)
     {
         _configuration = configuration;
-        _input = input;
+        _manager = manager;
         _keyboardHandler = keyboardHandler;
     }
 
-    public void FindJoysticks(bool refresh)
+    public void FindJoysticks()
     {
-        if (!refresh && JoystickList.Any()) return;
-
-        var handle = KernelDll.GetModuleHandleA(IntPtr.Zero);
-
-        _input.CreateDirectInput(handle);
-
-        _input.EnumerateDevices();
-
-        JoystickList = _input.JoystickList().ToList();
+        JoystickList = _manager.Devices;
     }
 
     public IDxJoystickState JoystickPoll(int index)
     {
-        if (index == -1) return new NullDxJoystickState();
-
-        //TODO: Need something more efficient
-        IDxDevice? match = _input.JoystickList().FirstOrDefault(x => x.Index == index);
-
-        if (match == null) return new NullDxJoystickState();
-
-        return _input.JoystickPoll(match);
+        return _manager.State(index);
     }
 
     public int GetPotValue(Pots pot)

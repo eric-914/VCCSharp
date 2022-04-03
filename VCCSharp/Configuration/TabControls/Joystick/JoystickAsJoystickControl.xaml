@@ -16,13 +16,12 @@
     <Image DockPanel.Dock="Top" Stretch="None" Source="/Resources/joystick.ico" />
     <DockPanel DockPanel.Dock="Top">
       <Label DockPanel.Dock="Left">Windows Joystick:</Label>
-      <Button DockPanel.Dock="Right" Click="RefreshList_OnClick" Content="Refresh List"/>
+      <Button DockPanel.Dock="Right" Command="{Binding RefreshListCommand}" Content="Refresh List"/>
       <ComboBox Height="30"
                 SelectedIndex="{Binding DeviceIndex}"
                 ItemsSource="{Binding JoystickNames}"/>
     </DockPanel>
-    <Button DockPanel.Dock="Bottom" Click="TestJoystick_OnClick" Content="Test Joystick"/>
-
+    
     <joystick:JoystickTestControl DataContext="{Binding }"/>
   </DockPanel>
 </UserControl>
