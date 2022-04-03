@@ -2,6 +2,7 @@
 using DX8.Tester.Model;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace DX8.Tester;
 
@@ -20,7 +21,12 @@ internal class TestWindowModel
 
     public TestWindowModel()
     {
-        _joystick = new Dx().Joystick;
+        var factory = new Factory();
+
+        var runner = factory.CreateThreadRunner(Application.Current.Dispatcher);
+        Application.Current.Exit += (_, _) => runner.Stop();
+
+        _joystick = factory.CreateManager(runner);
         _joystick.PollEvent += (_, _) => Refresh();
         _joystick.DeviceLostEvent += (_, _) => DeviceLostEvent?.Invoke(this, EventArgs.Empty);
         _joystick.Initialize();

@@ -15,13 +15,14 @@ public class DxManager
 
     private readonly IDxInput _input;
 
-    private readonly ThreadRunner _runner = new();
+    private readonly IThreadRunner _runner;
 
     public List<DxJoystick> Devices { get; private set; } = new();
 
-    public DxManager(IDxInput input)
+    public DxManager(IDxInput input, IThreadRunner runner)
     {
         _input = input;
+        _runner = runner;
         _runner.Tick += (_, _) => JoystickPoll();
     }
 
@@ -31,9 +32,7 @@ public class DxManager
 
         _input.CreateDirectInput(handle);
 
-        EnumerateDevices();
-
-        _runner.Start();
+        //EnumerateDevices();
     }
 
     public void EnumerateDevices()

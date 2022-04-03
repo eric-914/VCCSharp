@@ -2,23 +2,33 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
+using System.Windows.Threading;
 
 namespace DX8.Tester.Model;
 
 public delegate void ThreadRunnerEventHandler(object? sender, EventArgs e);
 
-internal class ThreadRunner
+public interface IThreadRunner
 {
+    event ThreadRunnerEventHandler? Tick;
+    bool IsRunning { get; }
+    int Interval { get; set; }
+    void Start();
+    void Stop();
+}
+
+internal class ThreadRunner : IThreadRunner
+{
+    private readonly Dispatcher _dispatcher;
     public event ThreadRunnerEventHandler? Tick;
 
     public bool IsRunning { get; private set; }
 
     public int Interval { get; set; } = 200;
 
-    public ThreadRunner()
+    public ThreadRunner(Dispatcher dispatcher)
     {
-        Application.Current.Exit += (_, _) => Stop();
+        _dispatcher = dispatcher;
     }
 
     public void Start()
@@ -34,7 +44,15 @@ internal class ThreadRunner
 
                 if (IsRunning)
                 {
-                    Application.Current.Dispatcher.Invoke(() => Tick?.Invoke(this, EventArgs.Empty));
+                    try
+                    {
+                        _dispatcher.Invoke(() => Tick?.Invoke(this, EventArgs.Empty));
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        //--This can happen if you're debugging the shutdown process.
+                        Debug.WriteLine("Dispatcher.Invoke task cancelled.");
+                    }
                 }
             }
         });

@@ -7,26 +7,31 @@ namespace DX8.Tester;
 
 internal class TestWindowViewModel : NotifyViewModel
 {
-    private readonly TestWindowModel _model = new();
+    private readonly TestWindowModel? _model;
 
-    public int Count => _model.Count;
+    public int Count => _model?.Count ?? 0;
 
-    public IJoystickStateViewModel LeftJoystick => _model.LeftJoystick;
-    public IJoystickStateViewModel RightJoystick => _model.RightJoystick;
+    public IJoystickStateViewModel LeftJoystick => _model?.LeftJoystick ?? new JoystickStateViewModel();
+    public IJoystickStateViewModel RightJoystick => _model?.RightJoystick ?? new JoystickStateViewModel();
 
     public ICommand RefreshListCommand { get; }
 
     public TestWindowViewModel()
     {
+        RefreshListCommand = new ActionCommand(RefreshList);
+    }
+
+    public TestWindowViewModel(TestWindowModel model) : this()
+    {
+        _model = model;
         _model.DeviceLostEvent += (_, _) => DeviceLost();
 
-        RefreshListCommand = new ActionCommand(RefreshList);
         RefreshList();
     }
 
     private void RefreshList()
     {
-        AvailableJoysticks = _model.FindJoysticks();
+        AvailableJoysticks = _model?.FindJoysticks() ?? new List<string>();
         OnPropertyChanged(nameof(Count));
         OnPropertyChanged(nameof(LeftJoystick));
         OnPropertyChanged(nameof(RightJoystick));
@@ -46,9 +51,11 @@ Choose OK to refresh the joystick list.
 
     public int Interval
     {
-        get => _model.Interval;
+        get => _model?.Interval ?? 0;
         set
         {
+            if (_model == null) return;
+
             _model.Interval = value;
             OnPropertyChanged();
         }
