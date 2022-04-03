@@ -1,11 +1,9 @@
 ﻿using DX8.Tester.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using VCCSharp.Shared.Dx;
 using VCCSharp.Shared.Threading;
+using VCCSharp.Shared.ViewModels;
 
 namespace DX8.Tester;
 
@@ -15,7 +13,7 @@ internal class TestWindowModel
 {
     public event DeviceLostEventHandler? DeviceLostEvent;
 
-    private readonly IDxManager _joystick;
+    private readonly IDxManager _manager;
 
     public IJoystickStateViewModel LeftJoystick { get; private set; } = new JoystickStateViewModel();
     public IJoystickStateViewModel RightJoystick { get; private set; } = new JoystickStateViewModel();
@@ -30,28 +28,28 @@ internal class TestWindowModel
         var runner = factory.CreateThreadRunner(dispatcher);
         Application.Current.Exit += (_, _) => runner.Stop();
 
-        _joystick = factory.CreateManager(runner);
-        _joystick.PollEvent += (_, _) => Refresh();
-        _joystick.DeviceLostEvent += (_, _) => DeviceLostEvent?.Invoke(this, EventArgs.Empty);
-        _joystick.Initialize();
+        _manager = factory.CreateManager(runner);
+        _manager.PollEvent += (_, _) => Refresh();
+        _manager.DeviceLostEvent += (_, _) => DeviceLostEvent?.Invoke(this, EventArgs.Empty);
+        _manager.Initialize();
     }
 
     public List<string> FindJoysticks()
     {
-        _joystick.EnumerateDevices();
+        _manager.EnumerateDevices();
 
-        var list = _joystick.Devices.Select(x => x.Device).ToList();
+        var list = _manager.Devices.Select(x => x.Device).ToList();
 
         Count = list.Count;
 
         //--First (if found) will be left joystick
         LeftJoystick = Count > 0
-            ? new JoystickStateViewModel(_joystick, 0)
+            ? new JoystickStateViewModel(_manager, 0)
             : new JoystickStateViewModel();
 
         //--Second (if found) will be right joystick
         RightJoystick = Count > 1
-            ? new JoystickStateViewModel(_joystick, 1)
+            ? new JoystickStateViewModel(_manager, 1)
             : new JoystickStateViewModel();
 
         return list.Select(x => x.InstanceName).ToList();
@@ -65,8 +63,8 @@ internal class TestWindowModel
 
     public int Interval
     {
-        get => _joystick.Interval;
-        set => _joystick.Interval = value;
+        get => _manager.Interval;
+        set => _manager.Interval = value;
     }
 
     internal class DispatcherWrapper : IDispatcher

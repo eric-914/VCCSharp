@@ -1,8 +1,4 @@
-﻿using VCCSharp.Enums;
-using VCCSharp.Modules;
-using Joysticks = VCCSharp.Models.Configuration.Joysticks;
-
-namespace VCCSharp.Configuration.TabControls.Joystick;
+﻿namespace VCCSharp.Configuration.TabControls.Joystick;
 
 public class JoystickTabViewModel
 {
@@ -14,9 +10,9 @@ public class JoystickTabViewModel
 
     public JoystickTabViewModel() { }
 
-    public JoystickTabViewModel(Joysticks model, IJoysticks module)
+    public JoystickTabViewModel(JoystickViewModel left, JoystickViewModel right)
     {
-        Left = new JoystickViewModel(JoystickSides.Left, model.Left, module);
-        Right = new JoystickViewModel(JoystickSides.Right, model.Right, module);
+        Left = left;
+        Right = right;
     }
 }

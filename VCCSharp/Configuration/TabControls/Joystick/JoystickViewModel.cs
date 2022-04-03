@@ -61,6 +61,8 @@ public class JoystickViewModel : NotifyViewModel
         }
     }
 
+    #region Key Mapping
+
     public Key Up
     {
         get => Model.KeyMap.Up.Value;
@@ -132,6 +134,8 @@ public class JoystickViewModel : NotifyViewModel
             OnPropertyChanged();
         }
     }
+
+    #endregion
 
     // Index of which Joystick is selected
     public int DeviceIndex

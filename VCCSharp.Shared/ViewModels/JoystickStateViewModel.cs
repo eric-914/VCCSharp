@@ -1,19 +1,19 @@
-﻿using DX8.Models;
+﻿using DX8;
+using DX8.Models;
 using System.ComponentModel;
 using VCCSharp.Shared.Dx;
-using VCCSharp.Shared.ViewModels;
 
-namespace DX8.Tester.Model;
+namespace VCCSharp.Shared.ViewModels;
 
 public interface IJoystickStateViewModel : INotifyPropertyChanged
 {
-    IDxJoystickState Joystick { get; }
+    IDxJoystickState State { get; }
     Action Refresh { get; }
 }
 
 public class JoystickStateViewModel : NotifyViewModel, IJoystickStateViewModel
 {
-    private IDxJoystickState _joystick = new NullDxJoystickState();
+    private IDxJoystickState _state = new NullDxJoystickState();
 
     public Action Refresh { get; } = () => { };
 
@@ -21,17 +21,17 @@ public class JoystickStateViewModel : NotifyViewModel, IJoystickStateViewModel
 
     public JoystickStateViewModel(IDxManager manager, int index)
     {
-        Refresh = () => Joystick = manager.Devices[index].State;
+        Refresh = () => State = manager.Devices[index].State;
     }
 
-    public IDxJoystickState Joystick
+    public IDxJoystickState State
     {
-        get => _joystick;
+        get => _state;
         set
         {
-            if (_joystick == value) return;
+            if (_state == value) return;
 
-            _joystick = value;
+            _state = value;
             OnPropertyChanged();
         }
     }

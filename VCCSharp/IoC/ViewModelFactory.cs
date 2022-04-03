@@ -1,11 +1,11 @@
-﻿using System;
-using VCCSharp.Configuration.TabControls.Audio;
+﻿using VCCSharp.Configuration.TabControls.Audio;
 using VCCSharp.Configuration.TabControls.Cpu;
 using VCCSharp.Configuration.TabControls.Display;
 using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Configuration.TabControls.Keyboard;
 using VCCSharp.Configuration.TabControls.Miscellaneous;
 using VCCSharp.Configuration.ViewModel;
+using VCCSharp.Enums;
 using VCCSharp.Main;
 using VCCSharp.Menu;
 using VCCSharp.Models.Configuration;
@@ -56,7 +56,11 @@ public class ViewModelFactory : IViewModelFactory
         var cpu = new CpuTabViewModel(model.CPU, model.Memory);
         var display = new DisplayTabViewModel(model.CPU, model.Video, model.Window);
         var keyboard = new KeyboardTabViewModel(model.Keyboard);
-        var joysticks = new JoystickTabViewModel(model.Joysticks, modules.Joysticks);
+
+        var left = new JoystickViewModel(JoystickSides.Left, model.Joysticks.Left, modules.Joysticks);
+        var right = new JoystickViewModel(JoystickSides.Right, model.Joysticks.Right, modules.Joysticks);
+        var joysticks = new JoystickTabViewModel(left, right);
+
         var miscellaneous = new MiscellaneousTabViewModel(model.Startup);
 
         return new ConfigurationViewModel(audio, cpu, display, keyboard, joysticks, miscellaneous);
