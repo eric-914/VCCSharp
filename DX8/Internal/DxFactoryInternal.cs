@@ -24,11 +24,23 @@ namespace DX8.Internal
     {
         private delegate long CreateDelegate(ref IntPtr p);
 
+        /// <summary>
+        /// Warning	CA1416
+        /// This call site is reachable on all platforms.
+        /// 'Marshal.GetObjectForIUnknown(IntPtr)' is only supported on: 'windows'.
+        /// </summary>
+        private static T GetObjectForIUnknown<T>(IntPtr p) where T : class
+        {
+#pragma warning disable CA1416
+            return (T)Marshal.GetObjectForIUnknown(p);
+#pragma warning restore CA1416
+        }
+
         private static T Create<T>(CreateDelegate fn) where T : class
         {
             IntPtr p = Zero;
 
-            return fn(ref p) != DxDefine.S_OK ? null : (T)Marshal.GetObjectForIUnknown(p);
+            return fn(ref p) != DxDefine.S_OK ? null : GetObjectForIUnknown<T>(p);
         }
 
         public IDirectDraw CreateDirectDraw(IDDraw d)
@@ -57,7 +69,7 @@ namespace DX8.Internal
 
             long hr = d.CreateSurface(ref pSurfaceDescription, ref p, Zero);
 
-            return hr != DxDefine.S_OK ? null : (IDirectDrawSurface)Marshal.GetObjectForIUnknown(p);
+            return hr != DxDefine.S_OK ? null : GetObjectForIUnknown<IDirectDrawSurface>(p);
         }
 
         public IDirectInput CreateDirectInput(IDInput d, IntPtr handle, uint version, _GUID guid)
