@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
+             xmlns:controls="clr-namespace:VCCSharp.Shared.Controls;assembly=VCCSharp.Shared"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.DataContext>
@@ -22,6 +23,6 @@
                 ItemsSource="{Binding JoystickNames}"/>
     </DockPanel>
     
-    <joystick:JoystickTestControl DataContext="{Binding }"/>
+    <controls:JoystickTestControl DataContext="{Binding State}"/>
   </DockPanel>
 </UserControl>
