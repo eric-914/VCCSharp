@@ -30,7 +30,7 @@ namespace DX8.Internal.Interfaces
         /// DIERR_DEVICENOTREG | DIERR_INVALIDPARAM | DIERR_NOINTERFACE | DIERR_NOTINITIALIZED | DIERR_OUTOFMEMORY.
         /// </returns>
         /// <remarks>Calling this method with pUnkOuter = NULL is equivalent to creating the object by CoCreateInstance (CLSID_DirectInputDevice, NULL, CLSCTX_INPROC_SERVER, riid, lplpDirectInputDevice) and then initializing it with Initialize.</remarks>
-        long CreateDevice(_GUID refGuid, ref IDirectInputDevice lpDirectInputDevice, LPUNKNOWN lpUnknown);
+        long CreateDevice(_GUID refGuid, ref IDirectInputDevice? lpDirectInputDevice, LPUNKNOWN lpUnknown);
 
         /// <summary>
         /// Enumerates available devices.

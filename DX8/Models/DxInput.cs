@@ -4,10 +4,7 @@ using DX8.Internal.Formats;
 using DX8.Internal.Interfaces;
 using DX8.Internal.Libraries;
 using DX8.Internal.Models;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace DX8.Models;
@@ -17,7 +14,7 @@ internal class DxInput : IDxInput
     private readonly IDInput _input;
     private readonly IDxFactoryInternal _factory;
 
-    private IDirectInput _di;
+    private IDirectInput? _di;
     private readonly Dictionary<IDxDevice, IDirectInputDevice> _devices = new();
 
     private JoystickStateErrorCodes _errorCode = JoystickStateErrorCodes.Ok;
@@ -36,14 +33,16 @@ internal class DxInput : IDxInput
 
         _GUID guid = GuidConverter.ToGuid(DxGuid.DirectInput);
 
-        _di = _factory.CreateDirectInput(_input, handle, version, guid);
+        var di = _factory.CreateDirectInput(_input, handle, version, guid);
+
+        _di = di ?? throw new Exception("Failed to create Direct Input COM object");
     }
 
-    private IDirectInputDevice CreateDevice(_GUID guidInstance)
+    private IDirectInputDevice? CreateDevice(_GUID guidInstance)
     {
-        IDirectInputDevice joystick = null;
+        IDirectInputDevice? joystick = null;
 
-        long hr = _di.CreateDevice(guidInstance, ref joystick, IntPtr.Zero);
+        long hr = _di!.CreateDevice(guidInstance, ref joystick, IntPtr.Zero);
 
         if (hr < 0)
         {
@@ -64,19 +63,27 @@ internal class DxInput : IDxInput
 
         int Callback(ref DIDEVICEINSTANCE p, IntPtr v)
         {
-            IDirectInputDevice joystick = CreateDevice(p.guidInstance);
-            string instanceName = StringConverter.ToString(p.tszInstanceName);
+            IDirectInputDevice? joystick = CreateDevice(p.guidInstance);
+            
+            if (joystick == null)
+            {
+                Debug.WriteLine("Failed to create device");
+            }
+            else
+            {
+                string instanceName = StringConverter.ToString(p.tszInstanceName);
 
-            var device = new DxDevice(_devices.Count, instanceName);
+                var device = new DxDevice(_devices.Count, instanceName);
 
-            _devices.Add(device, joystick);
+                _devices.Add(device, joystick);
 
-            SetJoystickProperties(joystick);
+                SetJoystickProperties(joystick);
+            }
 
             return _devices.Count < DxDefine.MAX_JOYSTICKS ? DxDefine.TRUE : DxDefine.FALSE;
         }
 
-        long hr = _di.EnumDevices(DxDefine.DI8DEVCLASS_GAMECTRL, Callback, IntPtr.Zero, DxDefine.DIEDFL_ATTACHEDONLY);
+        long hr = _di!.EnumDevices(DxDefine.DI8DEVCLASS_GAMECTRL, Callback, IntPtr.Zero, DxDefine.DIEDFL_ATTACHEDONLY);
 
         if (hr < 0)
         {
@@ -143,13 +150,11 @@ internal class DxInput : IDxInput
 
         DIJOYSTATE2 state = DIJOYSTATE2.Create();
 
-        //--TODO: Make this more efficient
-        IDirectInputDevice device = _devices.FirstOrDefault(x => x.Key.Index == index.Index).Value;
-
-        if (device == null) return new NullDxJoystickState();
-
         try
         {
+            //--TODO: Make this more efficient.  Also, how does FirstOrDefault work with a Dictionary?
+            IDirectInputDevice device = _devices.FirstOrDefault(x => x.Key.Index == index.Index).Value;
+
             long hr = JoystickPoll(ref state, device);
 
             if (hr != DxDefine.S_OK)
@@ -171,7 +176,7 @@ internal class DxInput : IDxInput
         return xbox;
     }
 
-    private static long JoystickPoll(ref DIJOYSTATE2 state, IDirectInputDevice device)
+    private static long JoystickPoll(ref DIJOYSTATE2 state, IDirectInputDevice? device)
     {
         if (device == null)
         {
