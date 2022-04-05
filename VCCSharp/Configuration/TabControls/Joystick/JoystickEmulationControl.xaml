@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="50" d:DesignWidth="800">
     <UserControl.DataContext>
-        <joystick:JoystickViewModel/>
+        <joystick:JoystickConfigurationViewModel/>
     </UserControl.DataContext>
     <UserControl.Resources>
         <converters:EnumToSelectionConverter x:Key="Converter"/>

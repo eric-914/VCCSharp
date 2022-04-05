@@ -1,6 +1,4 @@
-﻿using DX8.Tester.Model;
-using System.Windows;
-using VCCSharp.Shared.Dx;
+﻿using VCCSharp.Shared.Dx;
 using VCCSharp.Shared.ViewModels;
 
 namespace DX8.Tester;
@@ -18,15 +16,9 @@ internal class TestWindowModel
 
     public int Count { get; set; }
 
-    public TestWindowModel()
+    public TestWindowModel(IDxManager manager)
     {
-        var factory = new Factory();
-
-        var dispatcher = new DispatcherWrapper(Application.Current.Dispatcher);
-        var runner = factory.CreateThreadRunner(dispatcher);
-        Application.Current.Exit += (_, _) => runner.Stop();
-
-        _manager = factory.CreateManager(runner);
+        _manager = manager;
         _manager.DeviceLostEvent += (_, _) => DeviceLostEvent?.Invoke(this, EventArgs.Empty);
         _manager.Initialize();
     }

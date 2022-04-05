@@ -1,4 +1,6 @@
-﻿namespace DX8.Tester;
+﻿using DX8.Tester.Model;
+
+namespace DX8.Tester;
 
 public partial class TestWindow
 {
@@ -6,6 +8,6 @@ public partial class TestWindow
     {
         InitializeComponent();
 
-        DataContext = new TestWindowViewModel(new TestWindowModel());
+        DataContext = Factory.Instance.CreateViewModel();
     }
 }

@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="500">
   <UserControl.DataContext>
-    <joystick:JoystickViewModel/>
+    <joystick:JoystickConfigurationViewModel/>
   </UserControl.DataContext>
   <UserControl.Resources>
     <ResourceDictionary>
@@ -18,9 +18,9 @@
   </UserControl.Resources>
 
   <DockPanel>
-    <TabControl SelectedIndex="{Binding Device}">
+    <TabControl SelectedIndex="{Binding InputSource}">
       <TabItem Header="Joystick">
-        <joystick:JoystickAsJoystickControl DataContext="{Binding}"/>
+        <joystick:JoystickAsJoystickControl DataContext="{Binding JoystickSource}"/>
       </TabItem>
       <TabItem Header="Mouse">
         <joystick:MouseAsJoystickControl DataContext="{Binding}"/>

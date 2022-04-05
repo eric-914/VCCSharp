@@ -8,6 +8,8 @@ public class ActionCommand : ICommand
 
     private readonly Action _action;
 
+    public ActionCommand() : this(() => throw new NotImplementedException()) { }
+
     public ActionCommand(Action action)
     {
         _action = action;

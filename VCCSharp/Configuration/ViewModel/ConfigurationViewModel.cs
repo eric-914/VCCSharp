@@ -14,12 +14,12 @@ public class ConfigurationViewModel : NotifyViewModel
     public DisplayTabViewModel Display { get; }= new();
     public CpuTabViewModel Cpu { get; }= new();
     public KeyboardTabViewModel Keyboard { get; }= new();
-    public JoystickTabViewModel Joystick { get; }= new();
+    public JoystickPairViewModel Joystick { get; }= new();
     public MiscellaneousTabViewModel Miscellaneous { get; }= new();
 
     public ConfigurationViewModel() { }
 
-    public ConfigurationViewModel(AudioTabViewModel audio, CpuTabViewModel cpu, DisplayTabViewModel display, KeyboardTabViewModel keyboard, JoystickTabViewModel joystick, MiscellaneousTabViewModel miscellaneous)
+    public ConfigurationViewModel(AudioTabViewModel audio, CpuTabViewModel cpu, DisplayTabViewModel display, KeyboardTabViewModel keyboard, JoystickPairViewModel joystick, MiscellaneousTabViewModel miscellaneous)
     {
         Audio = audio;
         Cpu = cpu;

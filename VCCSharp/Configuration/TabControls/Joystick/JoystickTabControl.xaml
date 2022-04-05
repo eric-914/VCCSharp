@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="800">
     <UserControl.DataContext>
-        <joystick:JoystickTabViewModel/>
+        <joystick:JoystickPairViewModel/>
     </UserControl.DataContext>
     <UserControl.Resources>
         <Style TargetType="TabItem">

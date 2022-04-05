@@ -61,9 +61,12 @@ public class ViewModelFactory : IViewModelFactory
 
         var leftState = new JoystickStateViewModel(manager, (int)JoystickSides.Left);
         var rightState = new JoystickStateViewModel(manager, (int)JoystickSides.Right);
-        var left = new JoystickViewModel(JoystickSides.Left, model.Joysticks.Left, modules.Joysticks, leftState);
-        var right = new JoystickViewModel(JoystickSides.Right, model.Joysticks.Right, modules.Joysticks, rightState);
-        var joysticks = new JoystickTabViewModel(left, right);
+        var leftSource = new JoystickSourceViewModel(model.Joysticks.Left, modules.Joysticks, leftState);
+        var rightSource = new JoystickSourceViewModel(model.Joysticks.Right, modules.Joysticks, rightState);
+
+        var left = new JoystickConfigurationViewModel(JoystickSides.Left, model.Joysticks.Left, leftSource, leftState);
+        var right = new JoystickConfigurationViewModel(JoystickSides.Right, model.Joysticks.Right, rightSource, rightState);
+        var joysticks = new JoystickPairViewModel(left, right);
 
         var miscellaneous = new MiscellaneousTabViewModel(model.Startup);
 

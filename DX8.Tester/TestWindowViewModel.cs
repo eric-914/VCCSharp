@@ -14,18 +14,16 @@ internal class TestWindowViewModel : NotifyViewModel
     public IJoystickStateViewModel LeftJoystick => _model?.LeftJoystick ?? new JoystickStateViewModel();
     public IJoystickStateViewModel RightJoystick => _model?.RightJoystick ?? new JoystickStateViewModel();
 
-    public ICommand RefreshListCommand { get; }
+    public ICommand RefreshListCommand { get; } = new ActionCommand();
 
-    public TestWindowViewModel()
-    {
-        RefreshListCommand = new ActionCommand(RefreshList);
-    }
+    public TestWindowViewModel() { }
 
-    public TestWindowViewModel(TestWindowModel model) : this()
+    public TestWindowViewModel(TestWindowModel model)
     {
         _model = model;
         _model.DeviceLostEvent += (_, _) => DeviceLost();
 
+        RefreshListCommand = new ActionCommand(RefreshList);
         RefreshList();
     }
 
