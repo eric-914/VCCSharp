@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Shared.Threading;
 
@@ -18,14 +19,21 @@ public class ThreadRunner : IThreadRunner
     public event TickEventHandler? Tick;
 
     private readonly IDispatcher _dispatcher;
+    private readonly IInterval _configuration = new NullInterval();
 
     public bool IsRunning { get; private set; }
 
-    public int Interval { get; set; } = 200;
+    public int Interval { get => _configuration.Interval; set => _configuration.Interval = value; }
 
     public ThreadRunner(IDispatcher dispatcher)
     {
         _dispatcher = dispatcher;
+    }
+
+    public ThreadRunner(IDispatcher dispatcher, IInterval configuration)
+    {
+        _dispatcher = dispatcher;
+        _configuration = configuration;
     }
 
     public void Start()

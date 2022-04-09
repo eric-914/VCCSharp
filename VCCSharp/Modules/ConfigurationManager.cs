@@ -1,11 +1,11 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using VCCSharp.Models.Configuration;
+using VCCSharp.Shared.Enums;
 using static System.IntPtr;
 using HWND = System.IntPtr;
 

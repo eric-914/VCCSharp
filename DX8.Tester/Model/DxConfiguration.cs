@@ -1,19 +1,19 @@
 ﻿using VCCSharp.Shared.Enums;
 using VCCSharp.Shared.Models;
 
-namespace VCCSharp.Models.Configuration;
+namespace DX8.Tester.Model;
 
-public class Joysticks : IDxConfiguration
+public class DxConfiguration : IDxConfiguration
 {
-    public Joystick Left { get; } = new();
-    public Joystick Right { get; } = new();
+    private int _leftDeviceIndex;
+    private int _rightDeviceIndex = 1;
 
     public int GetDeviceIndex(JoystickSides side)
     {
         var lookup = new Dictionary<JoystickSides, Func<int>>
         {
-            { JoystickSides.Left, () => Left.DeviceIndex },
-            { JoystickSides.Right, () => Right.DeviceIndex }
+            { JoystickSides.Left, () => _leftDeviceIndex },
+            { JoystickSides.Right, () => _rightDeviceIndex }
         };
 
         return lookup[side]();
@@ -23,8 +23,8 @@ public class Joysticks : IDxConfiguration
     {
         var lookup = new Dictionary<JoystickSides, Action<int>>
         {
-            { JoystickSides.Left, x => Left.DeviceIndex = x },
-            { JoystickSides.Right, x => Right.DeviceIndex = x}
+            { JoystickSides.Left, x => _leftDeviceIndex = x },
+            { JoystickSides.Right, x => _rightDeviceIndex = x}
         };
 
         lookup[side](value);

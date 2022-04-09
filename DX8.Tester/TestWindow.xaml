@@ -23,8 +23,6 @@
         <Button DockPanel.Dock="Right" Command="{Binding RefreshListCommand}">Refresh List</Button>
         <Label Content="{Binding Count}"/>
       </DockPanel>
-
-      <ListBox DockPanel.Dock="Top" ItemsSource="{Binding AvailableJoysticks}"/>
     </StackPanel>
 
     <DockPanel DockPanel.Dock="Bottom">

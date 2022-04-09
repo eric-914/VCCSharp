@@ -60,11 +60,11 @@ public class ViewModelFactory : IViewModelFactory
         var display = new DisplayTabViewModel(configuration.CPU, configuration.Video, configuration.Window);
         var keyboard = new KeyboardTabViewModel(configuration.Keyboard);
 
-        var leftState = new JoystickStateViewModel(manager, (int)JoystickSides.Left);
-        var rightState = new JoystickStateViewModel(manager, (int)JoystickSides.Right);
+        var leftState = new JoystickStateViewModel(manager, configuration.Joysticks, JoystickSides.Left);
+        var rightState = new JoystickStateViewModel(manager, configuration.Joysticks, JoystickSides.Right);
 
-        var leftModel = new JoystickSourceModel(manager, configuration.Joysticks.Left);
-        var rightModel = new JoystickSourceModel(manager, configuration.Joysticks.Right);
+        var leftModel = new JoystickSourceModel(manager, configuration.Joysticks, JoystickSides.Left);
+        var rightModel = new JoystickSourceModel(manager, configuration.Joysticks, JoystickSides.Right);
 
         var leftJoystickSource = new JoystickSourceViewModel(leftModel, leftState);
         var rightJoystickSource = new JoystickSourceViewModel(rightModel, rightState);

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Windows.Input;
-using VCCSharp.Enums;
+﻿using System.Windows.Input;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Configuration.Support;
+using VCCSharp.Shared.Enums;
 
 namespace VCCSharp.Models.Joystick;
 

@@ -3,6 +3,7 @@ using VCCSharp.Enums;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Joystick;
 using VCCSharp.Shared.Dx;
+using VCCSharp.Shared.Enums;
 
 namespace VCCSharp.Modules;
 

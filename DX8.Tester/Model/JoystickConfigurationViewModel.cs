@@ -1,5 +1,4 @@
-﻿using VCCSharp.Enums;
-using VCCSharp.Shared.Enums;
+﻿using VCCSharp.Shared.Enums;
 using VCCSharp.Shared.ViewModels;
 
 namespace DX8.Tester.Model;

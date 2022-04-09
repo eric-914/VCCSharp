@@ -2,6 +2,8 @@
 using DX8.Models;
 using System.ComponentModel;
 using VCCSharp.Shared.Dx;
+using VCCSharp.Shared.Enums;
+using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Shared.ViewModels;
 
@@ -16,9 +18,9 @@ public class JoystickStateViewModel : NotifyViewModel, IJoystickStateViewModel
 
     public JoystickStateViewModel() { }
 
-    public JoystickStateViewModel(IDxManager manager, int index)
+    public JoystickStateViewModel(IDxManager manager, IDeviceIndex configuration, JoystickSides side)
     {
-        manager.PollEvent += (_, _) => State = manager.State(index);
+        manager.PollEvent += (_, _) => State = manager.State(configuration.GetDeviceIndex(side));
     }
 
     public IDxJoystickState State

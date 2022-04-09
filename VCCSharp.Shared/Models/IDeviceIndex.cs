@@ -1,11 +1,17 @@
-﻿namespace VCCSharp.Shared.Models;
+﻿using VCCSharp.Shared.Enums;
+
+namespace VCCSharp.Shared.Models;
 
 public interface IDeviceIndex
 {
-    int DeviceIndex { get; set; }
+    int GetDeviceIndex(JoystickSides side);
+    void SetDeviceIndex(JoystickSides side, int value);
 }
 
 public class NullDeviceIndex : IDeviceIndex
 {
-    public int DeviceIndex { get; set; }
+    private int _deviceIndex = -1;
+
+    public int GetDeviceIndex(JoystickSides side) => _deviceIndex;
+    public void SetDeviceIndex(JoystickSides side, int value) => _deviceIndex = value;
 }
