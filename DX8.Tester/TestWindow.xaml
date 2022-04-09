@@ -33,7 +33,7 @@
       <ScrollBar Orientation="Horizontal" Minimum="10" Maximum="500" Value="{Binding Interval}"/>
     </DockPanel>
 
-    <controls:JoystickPairControl DataContext="{Binding}"/>
+    <controls:JoystickPairControl DataContext="{Binding Joysticks}"/>
 
   </DockPanel>
 </Window>

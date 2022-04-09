@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using DX8.Tester.Model;
 using VCCSharp.Shared.Commands;
 using VCCSharp.Shared.ViewModels;
 
@@ -11,6 +12,8 @@ internal class TestWindowViewModel : NotifyViewModel
 
     public int Count => _model?.Count ?? 0;
 
+    public JoystickPairViewModel Joysticks { get; } = new();
+
     public IJoystickStateViewModel LeftJoystick => _model?.LeftJoystick ?? new JoystickStateViewModel();
     public IJoystickStateViewModel RightJoystick => _model?.RightJoystick ?? new JoystickStateViewModel();
 
@@ -18,11 +21,12 @@ internal class TestWindowViewModel : NotifyViewModel
 
     public TestWindowViewModel() { }
 
-    public TestWindowViewModel(TestWindowModel model)
+    public TestWindowViewModel(TestWindowModel model, JoystickPairViewModel joysticks)
     {
         _model = model;
         _model.DeviceLostEvent += (_, _) => DeviceLost();
 
+        Joysticks = joysticks;
         RefreshListCommand = new ActionCommand(RefreshList);
         RefreshList();
     }

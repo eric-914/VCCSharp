@@ -1,4 +1,5 @@
-﻿using VCCSharp.Shared.Dx;
+﻿using DX8.Tester.Controls;
+using VCCSharp.Shared.Dx;
 using VCCSharp.Shared.ViewModels;
 
 namespace DX8.Tester;

@@ -5,11 +5,11 @@ using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Configuration.TabControls.Keyboard;
 using VCCSharp.Configuration.TabControls.Miscellaneous;
 using VCCSharp.Configuration.ViewModel;
-using VCCSharp.Enums;
 using VCCSharp.Main;
 using VCCSharp.Menu;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Shared.Dx;
+using VCCSharp.Shared.Enums;
 using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.IoC;
@@ -61,11 +61,16 @@ public class ViewModelFactory : IViewModelFactory
 
         var leftState = new JoystickStateViewModel(manager, (int)JoystickSides.Left);
         var rightState = new JoystickStateViewModel(manager, (int)JoystickSides.Right);
-        var leftSource = new JoystickSourceViewModel(model.Joysticks.Left, modules.Joysticks, leftState);
-        var rightSource = new JoystickSourceViewModel(model.Joysticks.Right, modules.Joysticks, rightState);
 
-        var left = new JoystickConfigurationViewModel(JoystickSides.Left, model.Joysticks.Left, leftSource, leftState);
-        var right = new JoystickConfigurationViewModel(JoystickSides.Right, model.Joysticks.Right, rightSource, rightState);
+        var leftJoystickSource = new JoystickSourceViewModel(model.Joysticks.Left, modules.Joysticks, leftState);
+        var rightJoystickSource = new JoystickSourceViewModel(model.Joysticks.Right, modules.Joysticks, rightState);
+
+        var leftKeyboardSource = new KeyboardSourceViewModel(model.Joysticks.Left.KeyMap);
+        var rightKeyboardSource = new KeyboardSourceViewModel(model.Joysticks.Right.KeyMap);
+
+        var left = new JoystickConfigurationViewModel(JoystickSides.Left, model.Joysticks.Left, leftJoystickSource, leftKeyboardSource);
+        var right = new JoystickConfigurationViewModel(JoystickSides.Right, model.Joysticks.Right, rightJoystickSource, rightKeyboardSource);
+
         var joysticks = new JoystickPairViewModel(left, right);
 
         var miscellaneous = new MiscellaneousTabViewModel(model.Startup);
