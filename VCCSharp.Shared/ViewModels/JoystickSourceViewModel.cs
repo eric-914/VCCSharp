@@ -1,18 +1,15 @@
 ﻿using System.Windows.Input;
 using VCCSharp.Shared.Commands;
 using VCCSharp.Shared.Models;
-using VCCSharp.Shared.ViewModels;
 
-namespace DX8.Tester.Model;
+namespace VCCSharp.Shared.ViewModels;
 
 public class JoystickSourceViewModel : NotifyViewModel
 {
     private readonly JoystickSourceModel? _model;
 
-
     public ICommand RefreshListCommand { get; } = new ActionCommand(() => throw new NotImplementedException());
 
-    //--TODO: Getting the IDxJoystickState requires State.State
     public JoystickStateViewModel State { get; } = new();
     
     public int Count => _model?.Count ?? 0;
@@ -29,11 +26,14 @@ public class JoystickSourceViewModel : NotifyViewModel
     }
 
     // Index of which Joystick is selected
-    public int DeviceIndex = 0;
-    //{
-    //    get => _model.DeviceIndex;
-    //    set => _model.DeviceIndex = value;
-    //}
+    public int DeviceIndex
+    {
+        get => _model?.DeviceIndex ?? -1;
+        set
+        {
+            if (_model != null) _model.DeviceIndex = value;
+        }
+    }
 
     private List<string> _availableJoysticks = new();
     public List<string> AvailableJoysticks

@@ -4,11 +4,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:VCCSharp.Shared.Controls;assembly=VCCSharp.Shared"
-             xmlns:model="clr-namespace:DX8.Tester.Model"
+             xmlns:viewModels="clr-namespace:VCCSharp.Shared.ViewModels;assembly=VCCSharp.Shared"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="400">
   <UserControl.DataContext>
-    <model:JoystickSourceViewModel/>
+    <viewModels:JoystickSourceViewModel/>
   </UserControl.DataContext>
 
   <Grid>
