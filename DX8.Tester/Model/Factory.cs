@@ -44,6 +44,8 @@ internal class Factory
         var model = CreateJoystickSourceModel(manager);
         var state = CreateJoystickStateViewModel(manager, index);
 
+        model.DeviceIndex = index;
+
         return new JoystickSourceViewModel(model, state);
     }
 
@@ -54,7 +56,7 @@ internal class Factory
 
     private static JoystickSourceModel CreateJoystickSourceModel(IDxManager manager)
     {
-        return new JoystickSourceModel(manager);
+        return new JoystickSourceModel(manager, new NullDeviceIndex());
     }
 
     private static TestWindowModel CreateModel(IDxManager manager)

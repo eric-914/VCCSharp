@@ -8,9 +8,17 @@ public class JoystickSourceModel
 
     public int Count { get; set; }
 
-    public JoystickSourceModel(IDxManager manager)
+    private readonly IDeviceIndex _deviceIndex;
+    public int DeviceIndex
+    {
+        get => _deviceIndex.DeviceIndex;
+        set => _deviceIndex.DeviceIndex = value;
+    }
+
+    public JoystickSourceModel(IDxManager manager, IDeviceIndex deviceIndex)
     {
         _manager = manager;
+        _deviceIndex = deviceIndex;
     }
 
     public List<string> FindJoysticks()

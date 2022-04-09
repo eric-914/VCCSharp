@@ -10,6 +10,7 @@ using VCCSharp.Menu;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Shared.Dx;
 using VCCSharp.Shared.Enums;
+using VCCSharp.Shared.Models;
 using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.IoC;
@@ -19,7 +20,7 @@ public interface IViewModelFactory
     MainWindowViewModel CreateMainWindowViewModel(IMainMenu menuItems);
     CommandViewModel CreateCommandViewModel(Action? action = null);
     MenuItemViewModel CreateMenuItemViewModel(string header, Action action);
-    ConfigurationViewModel CreateConfigurationViewModel(IConfiguration model, IDxManager manager);
+    ConfigurationViewModel CreateConfigurationViewModel(IConfiguration configuration, IDxManager manager);
 }
 
 public class ViewModelFactory : IViewModelFactory
@@ -50,30 +51,33 @@ public class ViewModelFactory : IViewModelFactory
         return new MenuItemViewModel { Header = header, Action = action };
     }
 
-    public ConfigurationViewModel CreateConfigurationViewModel(IConfiguration model, IDxManager manager)
+    public ConfigurationViewModel CreateConfigurationViewModel(IConfiguration configuration, IDxManager manager)
     {
         var modules = _factory.Get<IModules>();
 
-        var audio = new AudioTabViewModel(model.Audio, modules.Audio);
-        var cpu = new CpuTabViewModel(model.CPU, model.Memory);
-        var display = new DisplayTabViewModel(model.CPU, model.Video, model.Window);
-        var keyboard = new KeyboardTabViewModel(model.Keyboard);
+        var audio = new AudioTabViewModel(configuration.Audio, modules.Audio);
+        var cpu = new CpuTabViewModel(configuration.CPU, configuration.Memory);
+        var display = new DisplayTabViewModel(configuration.CPU, configuration.Video, configuration.Window);
+        var keyboard = new KeyboardTabViewModel(configuration.Keyboard);
 
         var leftState = new JoystickStateViewModel(manager, (int)JoystickSides.Left);
         var rightState = new JoystickStateViewModel(manager, (int)JoystickSides.Right);
 
-        var leftJoystickSource = new JoystickSourceViewModel(model.Joysticks.Left, modules.Joysticks, leftState);
-        var rightJoystickSource = new JoystickSourceViewModel(model.Joysticks.Right, modules.Joysticks, rightState);
+        var leftModel = new JoystickSourceModel(manager, configuration.Joysticks.Left);
+        var rightModel = new JoystickSourceModel(manager, configuration.Joysticks.Right);
 
-        var leftKeyboardSource = new KeyboardSourceViewModel(model.Joysticks.Left.KeyMap);
-        var rightKeyboardSource = new KeyboardSourceViewModel(model.Joysticks.Right.KeyMap);
+        var leftJoystickSource = new JoystickSourceViewModel(leftModel, leftState);
+        var rightJoystickSource = new JoystickSourceViewModel(rightModel, rightState);
 
-        var left = new JoystickConfigurationViewModel(JoystickSides.Left, model.Joysticks.Left, leftJoystickSource, leftKeyboardSource);
-        var right = new JoystickConfigurationViewModel(JoystickSides.Right, model.Joysticks.Right, rightJoystickSource, rightKeyboardSource);
+        var leftKeyboardSource = new KeyboardSourceViewModel(configuration.Joysticks.Left.KeyMap);
+        var rightKeyboardSource = new KeyboardSourceViewModel(configuration.Joysticks.Right.KeyMap);
+
+        var left = new JoystickConfigurationViewModel(JoystickSides.Left, configuration.Joysticks.Left, leftJoystickSource, leftKeyboardSource);
+        var right = new JoystickConfigurationViewModel(JoystickSides.Right, configuration.Joysticks.Right, rightJoystickSource, rightKeyboardSource);
 
         var joysticks = new JoystickPairViewModel(left, right);
 
-        var miscellaneous = new MiscellaneousTabViewModel(model.Startup);
+        var miscellaneous = new MiscellaneousTabViewModel(configuration.Startup);
 
         return new ConfigurationViewModel(audio, cpu, display, keyboard, joysticks, miscellaneous);
     }

@@ -1,9 +1,10 @@
 ﻿using VCCSharp.Enums;
 using VCCSharp.Models.Configuration.Support;
+using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Models.Configuration
 {
-    public class Joystick
+    public class Joystick : IDeviceIndex
     {
         public int DeviceIndex { get; set; } = -1;
 
