@@ -6,13 +6,13 @@
              xmlns:model="clr-namespace:DX8.Tester.Model"
              xmlns:controls="clr-namespace:DX8.Tester.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="420" d:DesignWidth="475">
+             d:DesignHeight="500" d:DesignWidth="475">
   <UserControl.DataContext>
     <model:JoystickPairViewModel/>
   </UserControl.DataContext>
   <UserControl.Resources>
     <Style TargetType="{x:Type controls:JoystickConfigurationControl}">
-      <Setter Property="Height" Value="200" />
+      <Setter Property="Height" Value="230" />
     </Style>
   </UserControl.Resources>
 

@@ -6,7 +6,7 @@
         xmlns:tester="clr-namespace:DX8.Tester"
         xmlns:controls="clr-namespace:DX8.Tester.Controls"
         mc:Ignorable="d"
-        Title="DirectX 8 Tester" Height="575" Width="420">
+        Title="DirectX 8 Tester" Height="620" Width="420">
   <Window.DataContext>
     <tester:TestWindowViewModel/>
   </Window.DataContext>
