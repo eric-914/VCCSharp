@@ -6,32 +6,34 @@
              xmlns:model="clr-namespace:DX8.Tester.Model"
              xmlns:controls="clr-namespace:DX8.Tester.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="475">
+             d:DesignHeight="600" d:DesignWidth="475">
   <UserControl.DataContext>
     <model:JoystickPairViewModel/>
   </UserControl.DataContext>
   <UserControl.Resources>
     <Style TargetType="{x:Type controls:JoystickConfigurationControl}">
-      <Setter Property="Height" Value="230" />
+      <Setter Property="Height" Value="270" />
     </Style>
   </UserControl.Resources>
 
-  <Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="*"/>
-      <RowDefinition Height="*"/>
-    </Grid.RowDefinitions>
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
 
-    <DockPanel Grid.Row="0">
-      <Label DockPanel.Dock="Top">First Joystick:</Label>
-      <Separator DockPanel.Dock="Bottom"/>
-      <controls:JoystickConfigurationControl DataContext="{Binding Left}"/>
-    </DockPanel>
+      <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1">
+        <DockPanel >
+          <Label DockPanel.Dock="Top" Background="Gainsboro">'Left' Joystick:</Label>
+          <controls:JoystickConfigurationControl DataContext="{Binding Left}"/>
+        </DockPanel>
+      </Border>
 
-    <DockPanel Grid.Row="1">
-      <Label DockPanel.Dock="Top">Second Joystick:</Label>
-      <Separator DockPanel.Dock="Bottom"/>
-      <controls:JoystickConfigurationControl DataContext="{Binding Right}"/>
-    </DockPanel>
-  </Grid>
+      <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1">
+        <DockPanel>
+          <Label DockPanel.Dock="Top" Background="Gainsboro">'Right' Joystick:</Label>
+          <controls:JoystickConfigurationControl DataContext="{Binding Right}"/>
+        </DockPanel>
+      </Border>
+    </Grid>
 </UserControl>

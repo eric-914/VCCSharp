@@ -11,15 +11,17 @@ public class JoystickSourceViewModel : NotifyViewModel
     public ICommand RefreshListCommand { get; } = new ActionCommand(() => throw new NotImplementedException());
 
     public JoystickStateViewModel State { get; } = new();
-    
+    public JoystickIntervalViewModel Interval { get; } = new();
+
     public int Count => _model?.Count ?? 0;
     
     public JoystickSourceViewModel() { }
 
-    public JoystickSourceViewModel(JoystickSourceModel model, JoystickStateViewModel state)
+    public JoystickSourceViewModel(JoystickSourceModel model, JoystickStateViewModel state, JoystickIntervalViewModel interval)
     {
         _model = model;
         State = state;
+        Interval = interval;
 
         RefreshListCommand = new ActionCommand(RefreshList);
         RefreshList();
@@ -48,7 +50,9 @@ public class JoystickSourceViewModel : NotifyViewModel
 
     public void RefreshList()
     {
-        AvailableJoysticks = _model?.FindJoysticks() ?? new List<string>();
+        _model?.RefreshList();
+
+        AvailableJoysticks = _model?.Joysticks ?? new List<string>();
         OnPropertyChanged(nameof(Count));
     }
 }

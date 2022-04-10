@@ -7,10 +7,12 @@ public class JoystickSourceModel
 {
     private readonly IDxManager _manager;
     private readonly JoystickSides _side;
+    private readonly IDeviceIndex _deviceIndex;
 
     public int Count { get; set; }
 
-    private readonly IDeviceIndex _deviceIndex;
+    public List<string> Joysticks { get; private set; } = new();
+
     public int DeviceIndex
     {
         get => _deviceIndex.GetDeviceIndex(_side);
@@ -22,16 +24,15 @@ public class JoystickSourceModel
         _manager = manager;
         _deviceIndex = deviceIndex;
         _side = side;
+
+        _manager.DeviceRefreshListEvent += (_, _) => Refresh();
     }
 
-    public List<string> FindJoysticks()
+    public void RefreshList() => _manager.EnumerateDevices();
+
+    private void Refresh()
     {
-        _manager.EnumerateDevices();
-
-        var list = _manager.Devices.Select(x => x.Device).ToList();
-
-        Count = list.Count;
-
-        return list.Select(x => x.InstanceName).ToList();
+        Joysticks = _manager.DeviceNames;
+        Count = Joysticks.Count;
     }
 }

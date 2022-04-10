@@ -82,9 +82,9 @@ public class Factory : IFactory
 
     public IFactory InitializeDxManager()
     {
-        var modules = Get<IDxManager>();
-        modules.Initialize();
-        modules.EnumerateDevices();
+        Get<IDxManager>()
+            .Initialize()
+            .EnumerateDevices();
 
         return this;
     }

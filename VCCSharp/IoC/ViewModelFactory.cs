@@ -66,8 +66,10 @@ public class ViewModelFactory : IViewModelFactory
         var leftModel = new JoystickSourceModel(manager, configuration.Joysticks, JoystickSides.Left);
         var rightModel = new JoystickSourceModel(manager, configuration.Joysticks, JoystickSides.Right);
 
-        var leftJoystickSource = new JoystickSourceViewModel(leftModel, leftState);
-        var rightJoystickSource = new JoystickSourceViewModel(rightModel, rightState);
+        var interval = new JoystickIntervalViewModel(configuration.Joysticks, manager);
+
+        var leftJoystickSource = new JoystickSourceViewModel(leftModel, leftState, interval);
+        var rightJoystickSource = new JoystickSourceViewModel(rightModel, rightState, interval);
 
         var leftKeyboardSource = new KeyboardSourceViewModel(configuration.Joysticks.Left.KeyMap);
         var rightKeyboardSource = new KeyboardSourceViewModel(configuration.Joysticks.Right.KeyMap);

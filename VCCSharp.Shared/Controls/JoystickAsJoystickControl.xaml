@@ -14,13 +14,22 @@
   </UserControl.Resources>
 
   <DockPanel>
-    <Image DockPanel.Dock="Top" Stretch="None" />
     <DockPanel DockPanel.Dock="Top">
-      <Label DockPanel.Dock="Left">Windows Joystick:</Label>
+      <Label DockPanel.Dock="Left">Available Windows Joysticks:</Label>
       <Button DockPanel.Dock="Right" Command="{Binding RefreshListCommand}" Content="Refresh List"/>
+      <Label Content="{Binding Count}"/>
+    </DockPanel>
+    <DockPanel DockPanel.Dock="Top">
+      <Label DockPanel.Dock="Left">Select Joystick:</Label>
       <ComboBox Height="30"
                 SelectedIndex="{Binding DeviceIndex}"
                 ItemsSource="{Binding AvailableJoysticks}"/>
+    </DockPanel>
+    <DockPanel DockPanel.Dock="Bottom" DataContext="{Binding Interval}">
+      <Label DockPanel.Dock="Left">Polling Interval:</Label>
+      <Label DockPanel.Dock="Right">(ms)</Label>
+      <Label DockPanel.Dock="Right" Content="{Binding Value}" Width="50" HorizontalContentAlignment="Right"/>
+      <ScrollBar Orientation="Horizontal" Minimum="10" Maximum="200" Value="{Binding Value}"/>
     </DockPanel>
 
     <controls:JoystickTestControl DataContext="{Binding State}"/>

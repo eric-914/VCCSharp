@@ -15,34 +15,34 @@ internal class Factory
     {
         IDxManager manager = CreateManager(configuration);
 
-        TestWindowModel model = CreateModel(manager);
-        
         JoystickPairViewModel joysticks = CreateJoystickPairViewModel(manager, configuration);
 
-        return new TestWindowViewModel(model, joysticks);
+        return new TestWindowViewModel(joysticks);
     }
 
-    private static JoystickPairViewModel CreateJoystickPairViewModel(IDxManager manager, IDeviceIndex configuration)
+    private static JoystickPairViewModel CreateJoystickPairViewModel(IDxManager manager, IDxConfiguration configuration)
     {
-        JoystickConfigurationViewModel left = CreateJoystickConfigurationViewModel(manager, configuration, JoystickSides.Left);
-        JoystickConfigurationViewModel right = CreateJoystickConfigurationViewModel(manager, configuration, JoystickSides.Right);
+        JoystickIntervalViewModel interval = CreateJoystickIntervalViewModel(manager, configuration);
+
+        JoystickConfigurationViewModel left = CreateJoystickConfigurationViewModel(manager, configuration, interval, JoystickSides.Left);
+        JoystickConfigurationViewModel right = CreateJoystickConfigurationViewModel(manager, configuration, interval, JoystickSides.Right);
 
         return new JoystickPairViewModel(left, right);
     }
 
-    private static JoystickConfigurationViewModel CreateJoystickConfigurationViewModel(IDxManager manager, IDeviceIndex configuration, JoystickSides side)
+    private static JoystickConfigurationViewModel CreateJoystickConfigurationViewModel(IDxManager manager, IDxConfiguration configuration, JoystickIntervalViewModel interval, JoystickSides side)
     {
-        JoystickSourceViewModel source = CreateJoystickSourceViewModel(manager, configuration, side);
+        JoystickSourceViewModel source = CreateJoystickSourceViewModel(manager, configuration, interval, side);
 
         return new JoystickConfigurationViewModel(side, source);
     }
 
-    private static JoystickSourceViewModel CreateJoystickSourceViewModel(IDxManager manager, IDeviceIndex configuration, JoystickSides side)
+    private static JoystickSourceViewModel CreateJoystickSourceViewModel(IDxManager manager, IDxConfiguration configuration, JoystickIntervalViewModel interval, JoystickSides side)
     {
         JoystickSourceModel model = CreateJoystickSourceModel(side, manager);
         JoystickStateViewModel state = CreateJoystickStateViewModel(manager, configuration, side);
 
-        return new JoystickSourceViewModel(model, state);
+        return new JoystickSourceViewModel(model, state, interval);
     }
 
     private static JoystickStateViewModel CreateJoystickStateViewModel(IDxManager manager, IDeviceIndex configuration, JoystickSides side)
@@ -50,14 +50,13 @@ internal class Factory
         return new JoystickStateViewModel(manager, configuration, side);
     }
 
+    private static JoystickIntervalViewModel CreateJoystickIntervalViewModel(IDxManager manager, IInterval configuration)
+    {
+        return new JoystickIntervalViewModel(configuration, manager);
+    }
     private static JoystickSourceModel CreateJoystickSourceModel(JoystickSides side, IDxManager manager)
     {
         return new JoystickSourceModel(manager, new NullDeviceIndex(), side);
-    }
-
-    private static TestWindowModel CreateModel(IDxManager manager)
-    {
-        return new TestWindowModel(manager);
     }
 
     private static IDxManager CreateManager(IInterval configuration)
@@ -72,7 +71,9 @@ internal class Factory
     {
         IDxInput dxInput = DxFactory.Instance.CreateDxInput();
 
-        return new DxManager(dxInput, runner);
+        return new DxManager(dxInput, runner)
+            .Initialize()
+            .EnumerateDevices();
     }
 
     private static IThreadRunner CreateThreadRunner(IDispatcher dispatcher, IInterval configuration)
