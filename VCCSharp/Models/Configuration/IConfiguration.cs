@@ -1,4 +1,6 @@
-﻿namespace VCCSharp.Models.Configuration;
+﻿using VCCSharp.Shared.Models;
+
+namespace VCCSharp.Models.Configuration;
 
 public interface IConfiguration
 {
@@ -9,9 +11,10 @@ public interface IConfiguration
     IVideoConfiguration Video { get; }
     IMemoryConfiguration Memory { get; }
     IKeyboardConfiguration Keyboard { get; }
-    Joysticks Joysticks { get; }
+    IJoysticksConfiguration Joysticks { get; }
+    IStartupConfiguration Startup { get; }
+
     FilePaths FilePaths { get; }
-    Startup Startup { get; }
     Accessories Accessories { get; }
     CassetteRecorder CassetteRecorder { get; }
     SerialPort SerialPort { get; }

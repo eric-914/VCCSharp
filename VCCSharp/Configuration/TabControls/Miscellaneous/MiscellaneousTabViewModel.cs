@@ -4,7 +4,7 @@ namespace VCCSharp.Configuration.TabControls.Miscellaneous;
 
 public class MiscellaneousTabViewModel
 {
-    private readonly Startup _model = new();
+    private readonly IStartupConfiguration _model = new Startup();
 
     public bool AutoStart
     {
@@ -20,7 +20,7 @@ public class MiscellaneousTabViewModel
 
     public MiscellaneousTabViewModel() { }
 
-    public MiscellaneousTabViewModel(Startup model)
+    public MiscellaneousTabViewModel(IStartupConfiguration model)
     {
         _model = model;
     }

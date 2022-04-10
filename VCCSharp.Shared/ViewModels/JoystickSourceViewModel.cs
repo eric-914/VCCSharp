@@ -6,18 +6,18 @@ namespace VCCSharp.Shared.ViewModels;
 
 public class JoystickSourceViewModel : NotifyViewModel
 {
-    private readonly JoystickSourceModel? _model;
+    private readonly IJoystickSourceModel? _model;
 
     public ICommand RefreshListCommand { get; } = new ActionCommand(() => throw new NotImplementedException());
 
-    public JoystickStateViewModel State { get; } = new();
+    public IJoystickStateViewModel State { get; } = new JoystickStateViewModel();
     public JoystickIntervalViewModel Interval { get; } = new();
 
     public int Count => _model?.Count ?? 0;
     
     public JoystickSourceViewModel() { }
 
-    public JoystickSourceViewModel(JoystickSourceModel model, JoystickStateViewModel state, JoystickIntervalViewModel interval)
+    public JoystickSourceViewModel(IJoystickSourceModel model, IJoystickStateViewModel state, JoystickIntervalViewModel interval)
     {
         _model = model;
         State = state;

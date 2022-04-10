@@ -35,3 +35,22 @@ public class JoystickStateViewModel : NotifyViewModel, IJoystickStateViewModel
         }
     }
 }
+
+#region Left/Right implementations
+
+public interface ILeftJoystickStateViewModel : IJoystickStateViewModel { }
+public interface IRightJoystickStateViewModel : IJoystickStateViewModel { }
+
+public class LeftJoystickStateViewModel : JoystickStateViewModel, ILeftJoystickStateViewModel
+{
+    public LeftJoystickStateViewModel(IDxManager manager, IJoysticksConfiguration configuration)
+        : base(manager, configuration, JoystickSides.Left) { }
+}
+
+public class RightJoystickStateViewModel : JoystickStateViewModel, IRightJoystickStateViewModel
+{
+    public RightJoystickStateViewModel(IDxManager manager, IJoysticksConfiguration configuration)
+        : base(manager, configuration, JoystickSides.Left) { }
+}
+
+#endregion
