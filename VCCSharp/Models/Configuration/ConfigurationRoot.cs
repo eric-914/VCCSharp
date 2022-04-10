@@ -3,13 +3,13 @@
 public class ConfigurationRoot : IConfiguration
 {
     public Version Version { get; } = new();
-    public Window Window { get; } = new();
+    public IWindowConfiguration Window { get; } = new Window();
 
-    public CPU CPU { get; } = new();
+    public ICPUConfiguration CPU { get; } = new CPU();
     public IAudioConfiguration Audio { get; } = new Audio();
-    public Video Video { get; } = new();
-    public Memory Memory { get; } = new();
-    public Keyboard Keyboard { get; } = new();
+    public IVideoConfiguration Video { get; } = new Video();
+    public IMemoryConfiguration Memory { get; } = new Memory();
+    public IKeyboardConfiguration Keyboard { get; } = new Keyboard();
     public Joysticks Joysticks { get; } = new();
 
     public FilePaths FilePaths { get; } = new();

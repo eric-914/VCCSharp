@@ -5,7 +5,7 @@ namespace VCCSharp.Shared.ViewModels;
 
 public class JoystickIntervalViewModel : NotifyViewModel
 {
-    private readonly IInterval _configuration = new NullDxConfiguration();
+    private readonly IInterval _configuration = new NullJoysticksConfiguration();
     private readonly IDxManager? _manager;
 
     public JoystickIntervalViewModel() { }

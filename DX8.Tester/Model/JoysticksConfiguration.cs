@@ -4,7 +4,7 @@ using VCCSharp.Shared.Models;
 
 namespace DX8.Tester.Model;
 
-public class DxConfiguration : IDxConfiguration
+public class JoysticksConfiguration : IJoysticksConfiguration
 {
     private int _leftDeviceIndex;
     private int _rightDeviceIndex = 1;

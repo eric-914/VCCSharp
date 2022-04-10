@@ -3,7 +3,15 @@ using VCCSharp.Models.Configuration.Support;
 
 namespace VCCSharp.Models.Configuration;
 
-public class Video
+public interface IVideoConfiguration
+{
+    RangeSelect<MonitorTypes> Monitor { get; }
+    RangeSelect<PaletteTypes> Palette { get; }
+    bool ScanLines { get; set; }
+    bool ForceAspect { get; set; }
+}
+
+public class Video : IVideoConfiguration
 {
     public RangeSelect<MonitorTypes> Monitor { get; } = new();
 

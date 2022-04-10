@@ -4,7 +4,7 @@ using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Models.Configuration;
 
-public class Joysticks : IDxConfiguration
+public class Joysticks : IJoysticksConfiguration
 {
     public IJoystickConfiguration Left { get; } = new Joystick();
     public IJoystickConfiguration Right { get; } = new Joystick();

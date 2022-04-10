@@ -3,7 +3,14 @@ using VCCSharp.Models.Configuration.Support;
 
 namespace VCCSharp.Models.Configuration;
 
-public class Memory
+public interface IMemoryConfiguration
+{
+    RangeSelect<MemorySizes> Ram { get; }
+    string ExternalBasicImage { get; } //## READ-ONLY ##//
+    void SetExternalBasicImage(string value);
+}
+
+public class Memory : IMemoryConfiguration
 {
     public RangeSelect<MemorySizes> Ram { get; } = new(true) { Value = MemorySizes._512K };
 

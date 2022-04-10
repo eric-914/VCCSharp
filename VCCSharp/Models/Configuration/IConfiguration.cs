@@ -3,12 +3,12 @@
 public interface IConfiguration
 {
     Version Version { get; }
-    Window Window { get; }
-    CPU CPU { get; }
+    IWindowConfiguration Window { get; }
+    ICPUConfiguration CPU { get; }
     IAudioConfiguration Audio { get; }
-    Video Video { get; }
-    Memory Memory { get; }
-    Keyboard Keyboard { get; }
+    IVideoConfiguration Video { get; }
+    IMemoryConfiguration Memory { get; }
+    IKeyboardConfiguration Keyboard { get; }
     Joysticks Joysticks { get; }
     FilePaths FilePaths { get; }
     Startup Startup { get; }

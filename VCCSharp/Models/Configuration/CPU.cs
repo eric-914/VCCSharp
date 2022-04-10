@@ -3,7 +3,17 @@ using VCCSharp.Models.Configuration.Support;
 
 namespace VCCSharp.Models.Configuration;
 
-public class CPU
+public interface ICPUConfiguration
+{
+    RangeSelect<CPUTypes> Type { get; }
+    bool ThrottleSpeed { get; set; }
+    int CpuMultiplier { get; set; }
+    int FrameSkip { get; set; }
+    int MaxOverclock { get; set; }
+    void AdjustOverclockSpeed(int change);
+}
+
+public class CPU : ICPUConfiguration
 {
     public RangeSelect<CPUTypes> Type { get; } = new();
 

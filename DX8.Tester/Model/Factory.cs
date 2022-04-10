@@ -10,14 +10,14 @@ namespace DX8.Tester.Model;
 
 internal interface IFactory
 {
-    TestWindowViewModel CreateViewModel(IDxConfiguration configuration);
+    TestWindowViewModel CreateViewModel(IJoysticksConfiguration configuration);
 }
 
 internal class Factory : IFactory
 {
     public static IFactory Instance { get; } = new Factory();
 
-    public TestWindowViewModel CreateViewModel(IDxConfiguration configuration)
+    public TestWindowViewModel CreateViewModel(IJoysticksConfiguration configuration)
     {
         IDxManager manager = CreateManager(configuration);
 
@@ -26,7 +26,7 @@ internal class Factory : IFactory
         return new TestWindowViewModel(joysticks);
     }
 
-    private static JoystickPairViewModel CreateJoystickPairViewModel(IDxManager manager, IDxConfiguration configuration)
+    private static JoystickPairViewModel CreateJoystickPairViewModel(IDxManager manager, IJoysticksConfiguration configuration)
     {
         JoystickIntervalViewModel interval = CreateJoystickIntervalViewModel(manager, configuration);
 
@@ -36,7 +36,7 @@ internal class Factory : IFactory
         return new JoystickPairViewModel(left, right);
     }
 
-    private static JoystickConfigurationViewModel CreateJoystickConfigurationViewModel(IDxManager manager, IDxConfiguration configuration, JoystickIntervalViewModel interval, JoystickSides side)
+    private static JoystickConfigurationViewModel CreateJoystickConfigurationViewModel(IDxManager manager, IJoysticksConfiguration configuration, JoystickIntervalViewModel interval, JoystickSides side)
     {
         JoystickSourceViewModel joystickSource = CreateJoystickSourceViewModel(manager, configuration, interval, side);
         KeyboardSourceViewModel keyboardSource = new();

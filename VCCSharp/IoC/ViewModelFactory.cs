@@ -7,6 +7,7 @@ using VCCSharp.Configuration.ViewModel;
 using VCCSharp.Main;
 using VCCSharp.Menu;
 using VCCSharp.Models.Configuration;
+using VCCSharp.Shared.Configuration;
 using VCCSharp.Shared.Dx;
 using VCCSharp.Shared.Enums;
 using VCCSharp.Shared.Models;
@@ -56,31 +57,29 @@ public class ViewModelFactory : IViewModelFactory
         var configuration = _factory.Get<IConfiguration>();
 
         var audio = _factory.Get<AudioTabViewModel>();
-        var cpu = new CpuTabViewModel(configuration.CPU, configuration.Memory);
-        var display = new DisplayTabViewModel(configuration.CPU, configuration.Video, configuration.Window);
-        var keyboard = new KeyboardTabViewModel(configuration.Keyboard);
-
-        var leftState = new JoystickStateViewModel(manager, configuration.Joysticks, JoystickSides.Left);
-        var rightState = new JoystickStateViewModel(manager, configuration.Joysticks, JoystickSides.Right);
-
-        var leftModel = new JoystickSourceModel(manager, configuration.Joysticks, JoystickSides.Left);
-        var rightModel = new JoystickSourceModel(manager, configuration.Joysticks, JoystickSides.Right);
+        var cpu = _factory.Get<CpuTabViewModel>();
+        var display = _factory.Get<DisplayTabViewModel>();
+        var keyboard = _factory.Get<KeyboardTabViewModel>();
 
         var interval = new JoystickIntervalViewModel(configuration.Joysticks, manager);
 
-        var leftJoystickSource = new JoystickSourceViewModel(leftModel, leftState, interval);
-        var rightJoystickSource = new JoystickSourceViewModel(rightModel, rightState, interval);
-
-        var leftKeyboardSource = new KeyboardSourceViewModel(configuration.Joysticks.Left.KeyMap);
-        var rightKeyboardSource = new KeyboardSourceViewModel(configuration.Joysticks.Right.KeyMap);
-
-        var left = new JoystickConfigurationViewModel(JoystickSides.Left, configuration.Joysticks.Left, leftJoystickSource, leftKeyboardSource);
-        var right = new JoystickConfigurationViewModel(JoystickSides.Right, configuration.Joysticks.Right, rightJoystickSource, rightKeyboardSource);
+        var left = CreateJoystickConfigurationViewModel(manager, JoystickSides.Left, configuration.Joysticks.Left, configuration.Joysticks, interval);
+        var right = CreateJoystickConfigurationViewModel(manager, JoystickSides.Right, configuration.Joysticks.Right, configuration.Joysticks, interval);
 
         var joysticks = new JoystickPairViewModel(left, right);
 
         var miscellaneous = new MiscellaneousTabViewModel(configuration.Startup);
 
         return new ConfigurationViewModel(audio, cpu, display, keyboard, joysticks, miscellaneous);
+    }
+
+    private static JoystickConfigurationViewModel CreateJoystickConfigurationViewModel(IDxManager manager, JoystickSides side, IJoystickConfiguration configuration, IDeviceIndex joysticks, JoystickIntervalViewModel interval)
+    {
+        var state = new JoystickStateViewModel(manager, joysticks, side);
+        var model = new JoystickSourceModel(manager, joysticks, side);
+        var joystickSource = new JoystickSourceViewModel(model, state, interval);
+        var keyboardSource = new KeyboardSourceViewModel(configuration.KeyMap);
+
+        return new JoystickConfigurationViewModel(side, configuration, joystickSource, keyboardSource);
     }
 }

@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using VCCSharp.Enums;
+﻿using VCCSharp.Enums;
+using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Configuration.TabControls.Keyboard;
 
 public class KeyboardTabViewModel
 {
-    private readonly Models.Configuration.Keyboard _model = new();
+    private readonly IKeyboardConfiguration _model = new Models.Configuration.Keyboard();
 
     public List<string> KeyboardLayouts { get; } = new()
     {
@@ -16,7 +16,7 @@ public class KeyboardTabViewModel
 
     public KeyboardTabViewModel() { }
 
-    public KeyboardTabViewModel(Models.Configuration.Keyboard model)
+    public KeyboardTabViewModel(IKeyboardConfiguration model)
     {
         _model = model;
     }

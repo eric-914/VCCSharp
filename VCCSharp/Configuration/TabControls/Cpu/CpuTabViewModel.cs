@@ -1,4 +1,5 @@
-﻿using VCCSharp.Enums;
+﻿using Ninject;
+using VCCSharp.Enums;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Shared.ViewModels;
 
@@ -6,14 +7,15 @@ namespace VCCSharp.Configuration.TabControls.Cpu;
 
 public class CpuTabViewModel : NotifyViewModel
 {
-    private readonly CPU _model = new();
-    private readonly Memory _memory = new();
+    private readonly ICPUConfiguration _model = new CPU();
+    private readonly IMemoryConfiguration _memory = new Memory();
 
     public int MaxOverclock => _model.MaxOverclock;
 
     public CpuTabViewModel() { }
 
-    public CpuTabViewModel(CPU model, Memory memory)
+    [Inject]
+    public CpuTabViewModel(ICPUConfiguration model, IMemoryConfiguration memory)
     {
         _model = model;
         _memory = memory;

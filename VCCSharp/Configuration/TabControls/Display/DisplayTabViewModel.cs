@@ -1,4 +1,5 @@
-﻿using VCCSharp.Enums;
+﻿using Ninject;
+using VCCSharp.Enums;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Shared.ViewModels;
 
@@ -6,13 +7,14 @@ namespace VCCSharp.Configuration.TabControls.Display;
 
 public class DisplayTabViewModel : NotifyViewModel
 {
-    private readonly CPU _model = new();
-    private readonly Video _video = new();
-    private readonly Window _window = new();
+    private readonly ICPUConfiguration _model = new CPU();
+    private readonly IVideoConfiguration _video = new Video();
+    private readonly IWindowConfiguration _window = new Window();
 
     public DisplayTabViewModel() { }
 
-    public DisplayTabViewModel(CPU model, Video video, Window window)
+    [Inject]
+    public DisplayTabViewModel(ICPUConfiguration model, IVideoConfiguration video, IWindowConfiguration window)
     {
         _model = model;
         _video = video;

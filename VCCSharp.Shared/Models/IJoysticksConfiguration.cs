@@ -3,13 +3,13 @@ using VCCSharp.Shared.Enums;
 
 namespace VCCSharp.Shared.Models;
 
-public interface IDxConfiguration : IDeviceIndex, IInterval
+public interface IJoysticksConfiguration : IDeviceIndex, IInterval
 {
     IJoystickConfiguration Left { get; }
     IJoystickConfiguration Right { get; }
 }
 
-public class NullDxConfiguration : IDxConfiguration
+public class NullJoysticksConfiguration : IJoysticksConfiguration
 {
     private readonly IDeviceIndex _deviceIndex = new NullDeviceIndex();
     private readonly IInterval _interval = new NullInterval();

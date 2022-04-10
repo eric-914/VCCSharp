@@ -8,6 +8,6 @@ public partial class TestWindow
     {
         InitializeComponent();
 
-        DataContext = Factory.Instance.CreateViewModel(new DxConfiguration());
+        DataContext = Factory.Instance.CreateViewModel(new JoysticksConfiguration());
     }
 }
