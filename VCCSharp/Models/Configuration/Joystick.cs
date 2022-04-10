@@ -1,5 +1,6 @@
 ﻿using VCCSharp.Enums;
 using VCCSharp.Models.Configuration.Support;
+using VCCSharp.Shared.Configuration;
 using VCCSharp.Shared.Enums;
 
 namespace VCCSharp.Models.Configuration;
@@ -12,5 +13,5 @@ public class Joystick
 
     public RangeSelect<JoystickEmulations> Type { get; } = new() { Value = JoystickEmulations.Standard };
 
-    public JoystickKeyMapping KeyMap { get; } = new();
+    public IJoystickKeyMapping KeyMap { get; } = new JoystickKeyMapping();
 }

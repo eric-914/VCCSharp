@@ -1,95 +1,68 @@
 ﻿using System.Windows.Input;
 using VCCSharp.Models.Configuration.Support;
-using VCCSharp.Models.Keyboard;
+using VCCSharp.Shared.Configuration;
 using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.Configuration.TabControls.Joystick;
 
 public class KeyboardSourceViewModel : NotifyViewModel
 {
-    private readonly JoystickKeyMapping _model = new();
+    private readonly IJoystickKeyMapping? _model;
 
     public KeyboardSourceViewModel() { }
 
-    public KeyboardSourceViewModel(JoystickKeyMapping model)
+    public KeyboardSourceViewModel(IJoystickKeyMapping model)
     {
         _model = model;
     }
 
-    public IEnumerable<string> KeyNames => KeyScanMapper.KeyText;
+    public IEnumerable<string> KeyNames => _model?.KeyNames ?? new List<string>();
 
     #region Key Mapping
 
+    private static Key GetKey(IKeySelect? source) => source?.Value ?? Key.None;
+
+    private static bool SetKey(IKeySelect? source, Key value)
+    {
+        if (source == null) return false;
+        source.Value = value;
+        return true;
+    }
+
     public Key Up
     {
-        get => _model.Up.Value;
-        set
-        {
-            if (_model.Up.Value == value) return;
-
-            _model.Up.Value = value;
-            OnPropertyChanged();
-        }
+        get => GetKey(_model?.Up);
+        set { if (SetKey(_model?.Up, value)) OnPropertyChanged(); }
     }
 
     public Key Down
     {
-        get => _model.Down.Value;
-        set
-        {
-            if (_model.Down.Value == value) return;
-
-            _model.Down.Value = value;
-            OnPropertyChanged();
-        }
+        get => GetKey(_model?.Down);
+        set { if (SetKey(_model?.Down, value)) OnPropertyChanged(); }
     }
 
     public Key Left
     {
-        get => _model.Left.Value;
-        set
-        {
-            if (_model.Left.Value == value) return;
-
-            _model.Left.Value = value;
-            OnPropertyChanged();
-        }
+        get => GetKey(_model?.Left);
+        set { if (SetKey(_model?.Left, value)) OnPropertyChanged(); }
     }
 
     public Key Right
     {
-        get => _model.Right.Value;
-        set
-        {
-            if (_model.Right.Value == value) return;
-
-            _model.Right.Value = value;
-            OnPropertyChanged();
-        }
+        get => GetKey(_model?.Right);
+        set { if (SetKey(_model?.Right, value)) OnPropertyChanged(); }
     }
 
     public Key Fire1
     {
-        get => _model.Buttons[0].Value;
-        set
-        {
-            if (_model.Buttons[0].Value == value) return;
-
-            _model.Buttons[0].Value = value;
-            OnPropertyChanged();
-        }
+        get => GetKey(_model?.Buttons[0]);
+        set { if (SetKey(_model?.Buttons[0], value)) OnPropertyChanged(); }
     }
 
     public Key Fire2
     {
-        get => _model.Buttons[1].Value;
-        set
-        {
-            if (_model.Buttons[1].Value == value) return;
-
-            _model.Buttons[1].Value = value;
-            OnPropertyChanged();
-        }
+        get => GetKey(_model?.Buttons[1]);
+        set { if (SetKey(_model?.Buttons[1], value)) OnPropertyChanged(); }
     }
 
     #endregion
