@@ -1,5 +1,6 @@
 ﻿using Ninject;
 using VCCSharp.Menu;
+using VCCSharp.Modules;
 using VCCSharp.Shared.Dx;
 
 namespace VCCSharp.IoC;
@@ -21,6 +22,9 @@ public interface IFactory
 
     IFactory InitializeModules();
     IFactory InitializeDxManager();
+
+    IFactory SelfBind();
+    IFactory ModuleBind();
 }
 
 /// <summary>
@@ -28,7 +32,7 @@ public interface IFactory
 /// </summary>
 public class Factory : IFactory
 {
-    public static Factory Instance { get; } = new();
+    public static IFactory Instance { get; } = new Factory();
     private readonly IKernel _kernel = new StandardKernel();
 
     public IFactory SelfBind()
@@ -37,6 +41,8 @@ public class Factory : IFactory
 
         return this;
     }
+
+    public IFactory ModuleBind() => ModuleBinding.Initialize(this);
 
     public IFactory Bind<TInterface, TClass>() where TClass : class, TInterface
     {
