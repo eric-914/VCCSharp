@@ -9,3 +9,10 @@ public interface IJoystickConfiguration
     IRangeSelect<JoystickEmulations> Type { get; }
     IJoystickKeyMapping KeyMap { get; }
 }
+
+public class NullJoystickConfiguration : IJoystickConfiguration {
+    public int DeviceIndex { get; set; }
+    public IRangeSelect<JoystickDevices> InputSource { get; } = new NullRangeSelect<JoystickDevices>();
+    public IRangeSelect<JoystickEmulations> Type { get; } = new NullRangeSelect<JoystickEmulations>();
+    public IJoystickKeyMapping KeyMap { get; } = new NullJoystickKeyMapping();
+}

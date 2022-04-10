@@ -1,12 +1,13 @@
-﻿using VCCSharp.Shared.Enums;
+﻿using VCCSharp.Shared.Configuration;
+using VCCSharp.Shared.Enums;
 using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Models.Configuration;
 
 public class Joysticks : IDxConfiguration
 {
-    public Joystick Left { get; } = new();
-    public Joystick Right { get; } = new();
+    public IJoystickConfiguration Left { get; } = new Joystick();
+    public IJoystickConfiguration Right { get; } = new Joystick();
 
     public int GetDeviceIndex(JoystickSides side)
     {

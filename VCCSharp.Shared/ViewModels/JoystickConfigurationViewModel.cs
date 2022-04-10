@@ -1,8 +1,7 @@
 ﻿using VCCSharp.Shared.Configuration;
 using VCCSharp.Shared.Enums;
-using VCCSharp.Shared.ViewModels;
 
-namespace VCCSharp.Configuration.TabControls.Joystick;
+namespace VCCSharp.Shared.ViewModels;
 
 /// <summary>
 /// Contains the different input source configurations (Joystick, Mouse, Keyboard)
@@ -13,6 +12,7 @@ public class JoystickConfigurationViewModel : NotifyViewModel
 
     public JoystickSourceViewModel JoystickSource { get; } = new();
     public KeyboardSourceViewModel KeyboardSource { get; } = new();
+    public JoystickSides Side { get; }
 
     public JoystickConfigurationViewModel() { }
 
@@ -23,14 +23,7 @@ public class JoystickConfigurationViewModel : NotifyViewModel
         KeyboardSource = keyboardSource;
         Side = side;
     }
-
-    #region Constants
-
-
-    #endregion
-
-    public JoystickSides Side { get; set; }
-
+    
     public JoystickDevices InputSource
     {
         get => _model?.InputSource.Value ?? JoystickDevices.Keyboard;
@@ -54,5 +47,4 @@ public class JoystickConfigurationViewModel : NotifyViewModel
             OnPropertyChanged();
         }
     }
-
 }

@@ -1,4 +1,5 @@
-﻿using VCCSharp.Shared.Enums;
+﻿using VCCSharp.Shared.Configuration;
+using VCCSharp.Shared.Enums;
 using VCCSharp.Shared.Models;
 
 namespace DX8.Tester.Model;
@@ -31,4 +32,7 @@ public class DxConfiguration : IDxConfiguration
     }
 
     public int Interval { get; set; } = 100;
+
+    public IJoystickConfiguration Left { get; } = new NullJoystickConfiguration();
+    public IJoystickConfiguration Right { get; } = new NullJoystickConfiguration();
 }

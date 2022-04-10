@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using VCCSharp.Shared.Configuration;
 using VCCSharp.Shared.Dx;
 using VCCSharp.Shared.Enums;
 using VCCSharp.Shared.Models;
@@ -7,9 +8,14 @@ using VCCSharp.Shared.ViewModels;
 
 namespace DX8.Tester.Model;
 
-internal class Factory
+internal interface IFactory
 {
-    public static Factory Instance { get; } = new();
+    TestWindowViewModel CreateViewModel(IDxConfiguration configuration);
+}
+
+internal class Factory : IFactory
+{
+    public static IFactory Instance { get; } = new Factory();
 
     public TestWindowViewModel CreateViewModel(IDxConfiguration configuration)
     {
@@ -32,12 +38,15 @@ internal class Factory
 
     private static JoystickConfigurationViewModel CreateJoystickConfigurationViewModel(IDxManager manager, IDxConfiguration configuration, JoystickIntervalViewModel interval, JoystickSides side)
     {
-        JoystickSourceViewModel source = CreateJoystickSourceViewModel(manager, configuration, interval, side);
+        JoystickSourceViewModel joystickSource = CreateJoystickSourceViewModel(manager, configuration, interval, side);
+        KeyboardSourceViewModel keyboardSource = new();
 
-        return new JoystickConfigurationViewModel(side, source);
+        IJoystickConfiguration model = side == JoystickSides.Left ? configuration.Left : configuration.Right;
+
+        return new JoystickConfigurationViewModel(side, model, joystickSource, keyboardSource);
     }
 
-    private static JoystickSourceViewModel CreateJoystickSourceViewModel(IDxManager manager, IDxConfiguration configuration, JoystickIntervalViewModel interval, JoystickSides side)
+    private static JoystickSourceViewModel CreateJoystickSourceViewModel(IDxManager manager, IDeviceIndex configuration, JoystickIntervalViewModel interval, JoystickSides side)
     {
         JoystickSourceModel model = CreateJoystickSourceModel(side, manager);
         JoystickStateViewModel state = CreateJoystickStateViewModel(manager, configuration, side);

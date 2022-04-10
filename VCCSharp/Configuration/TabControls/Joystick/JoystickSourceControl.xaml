@@ -5,10 +5,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
              xmlns:controls="clr-namespace:VCCSharp.Shared.Controls;assembly=VCCSharp.Shared"
+             xmlns:viewModels="clr-namespace:VCCSharp.Shared.ViewModels;assembly=VCCSharp.Shared"
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="500">
   <UserControl.DataContext>
-    <joystick:JoystickConfigurationViewModel/>
+    <viewModels:JoystickConfigurationViewModel/>
   </UserControl.DataContext>
   <UserControl.Resources>
     <ResourceDictionary>
