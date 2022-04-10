@@ -1,5 +1,4 @@
-﻿using System;
-using VCCSharp.Enums;
+﻿using VCCSharp.Enums;
 
 namespace VCCSharp.Models.Graphics;
 
@@ -15,13 +14,14 @@ public class PaletteLookup32
     {
         get
         {
-            switch (monitorType)
+            return monitorType switch
             {
-                case MonitorTypes.Composite: return _composite;
-                case MonitorTypes.RGB: return _rgb;
-            }
+                MonitorTypes.Composite => _composite,
+                MonitorTypes.RGB => _rgb,
 
-            throw new ArgumentException(nameof(monitorType));
+#pragma warning disable CA2208
+                _ => throw new ArgumentException(nameof(monitorType))
+            };
         }
     }
 }

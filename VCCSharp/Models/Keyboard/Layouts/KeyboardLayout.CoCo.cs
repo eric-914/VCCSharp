@@ -113,7 +113,6 @@ public partial class KeyboardLayout
 
         #endregion
 
-#pragma warning disable IDE1006 // Naming Styles
         public static readonly byte[][] KeyTranslations =
         {
             A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,

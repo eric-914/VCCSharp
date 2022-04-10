@@ -1,5 +1,4 @@
-﻿#pragma warning disable IDE1006 // Naming Styles
-// ReSharper disable InconsistentNaming
+﻿// ReSharper disable InconsistentNaming
 // ReSharper disable InvalidXmlDocComment
 using VCCSharp.Models.Keyboard.Definitions;
 

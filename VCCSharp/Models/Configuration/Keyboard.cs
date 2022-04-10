@@ -1,10 +1,9 @@
 ﻿using VCCSharp.Enums;
 using VCCSharp.Models.Configuration.Support;
 
-namespace VCCSharp.Models.Configuration
+namespace VCCSharp.Models.Configuration;
+
+public class Keyboard
 {
-    public class Keyboard
-    {
-        public RangeSelect<KeyboardLayouts> Layout { get; } = new();
-    }
+    public RangeSelect<KeyboardLayouts> Layout { get; } = new();
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using VCCSharp.Enums;
+﻿using VCCSharp.Enums;
 using VCCSharp.Models.Keyboard.Definitions;
 
 namespace VCCSharp.Models.Keyboard.Layouts;
@@ -74,7 +71,7 @@ public partial class KeyboardLayout
     //--Character isn't used, but included for debugging purposes
     private static byte[] Key(char character, byte[] matrix, byte scanCode, bool shift = false)
     {
-        byte ShiftLeft(byte amount) => (byte)(1 << (amount - 1)); //--Transform 1,2,3,4,5,6 -> 1,2,4,8,16,32,64
+        static byte ShiftLeft(byte amount) => (byte)(1 << (amount - 1)); //--Transform 1,2,3,4,5,6 -> 1,2,4,8,16,32,64
 
         bool hasPlus = matrix.Length > 2; //--TRUE when key combo
         byte row = ShiftLeft(matrix[0]);

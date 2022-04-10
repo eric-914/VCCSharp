@@ -1,7 +1,6 @@
 ﻿// ReSharper disable CommentTypo
 // ReSharper disable InvalidXmlDocComment
 
-using System.Linq;
 using VCCSharp.Models.Keyboard.Definitions;
 
 namespace VCCSharp.Models.Keyboard.Layouts;

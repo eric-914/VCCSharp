@@ -4,6 +4,6 @@
 public enum MonitorTypes
 {
     Composite = 0,
-    RGB = 1,
+    RGB = 1
 }
 // ReSharper restore InconsistentNaming

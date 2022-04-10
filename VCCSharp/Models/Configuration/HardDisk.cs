@@ -1,7 +1,6 @@
-﻿namespace VCCSharp.Models.Configuration
+﻿namespace VCCSharp.Models.Configuration;
+
+public class HardDisk
 {
-    public class HardDisk
-    {
-        public string FilePath { get; set; } = "";
-    }
+    public string FilePath { get; set; } = "";
 }

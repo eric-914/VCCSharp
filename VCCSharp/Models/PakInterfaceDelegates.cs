@@ -1,7 +1,6 @@
-﻿using System;
-
-// ReSharper disable CommentTypo
+﻿// ReSharper disable CommentTypo
 // ReSharper disable InconsistentNaming
+// ReSharper disable IdentifierTypo
 namespace VCCSharp.Models
 {
     public delegate byte PAKMEMREAD8(ushort address);
@@ -82,5 +81,6 @@ namespace VCCSharp.Models
         public IntPtr SetInterruptCallPointer;
     }
 }
+// ReSharper restore IdentifierTypo
 // ReSharper restore CommentTypo
 // ReSharper restore InconsistentNaming
