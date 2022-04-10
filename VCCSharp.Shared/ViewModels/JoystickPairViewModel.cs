@@ -1,6 +1,4 @@
-﻿using VCCSharp.Shared.ViewModels;
-
-namespace VCCSharp.Configuration.TabControls.Joystick;
+﻿namespace VCCSharp.Shared.ViewModels;
 
 public class JoystickPairViewModel : NotifyViewModel
 {

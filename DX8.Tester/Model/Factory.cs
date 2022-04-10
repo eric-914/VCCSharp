@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Shared.Configuration;
 using VCCSharp.Shared.Dx;
 using VCCSharp.Shared.Enums;
