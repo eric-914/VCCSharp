@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using Ninject;
 using VCCSharp.Enums;
 using VCCSharp.Models.Audio;
+using VCCSharp.Models.Configuration;
 using VCCSharp.Modules;
 
 namespace VCCSharp.Configuration.TabControls.Audio;
 
 public class AudioTabViewModel
 {
-    private readonly Models.Configuration.Audio _model = new();
+    private readonly IAudioConfiguration _model = new Models.Configuration.Audio();
 
     public AudioSpectrum Spectrum { get; } = new();
 
@@ -28,7 +29,8 @@ public class AudioTabViewModel
 
     public AudioTabViewModel() { }
 
-    public AudioTabViewModel(Models.Configuration.Audio model, IAudio audio)
+    [Inject]
+    public AudioTabViewModel(IAudioConfiguration model, IAudio audio)
     {
         _model = model;
 

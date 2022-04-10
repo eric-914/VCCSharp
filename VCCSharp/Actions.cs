@@ -84,7 +84,7 @@ namespace VCCSharp
 
         public void OpenConfiguration()
         {
-            _options.Configuration.ShowDialog(_modules.Configuration);
+            _options.Configuration.ShowDialog();
         }
 
         public void LoadCartridge()

@@ -17,7 +17,7 @@ public interface IFactory
 /// <summary>
 /// Binding functionality is only required on startup
 /// </summary>
-public interface IBinder
+public interface IBinder : IFactory
 {
     IBinder SelfBind();
 

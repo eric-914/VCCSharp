@@ -3,7 +3,13 @@ using VCCSharp.Models.Configuration.Support;
 
 namespace VCCSharp.Models.Configuration;
 
-public class Audio
+public interface IAudioConfiguration
+{
+    string Device { get; set; }
+    RangeSelect<AudioRates> Rate { get; }
+}
+
+public class Audio : IAudioConfiguration
 {
     public string Device { get; set; } = "Primary Sound Driver";
 

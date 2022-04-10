@@ -5,7 +5,7 @@ public interface IConfiguration
     Version Version { get; }
     Window Window { get; }
     CPU CPU { get; }
-    Audio Audio { get; }
+    IAudioConfiguration Audio { get; }
     Video Video { get; }
     Memory Memory { get; }
     Keyboard Keyboard { get; }

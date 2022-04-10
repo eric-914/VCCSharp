@@ -1,7 +1,6 @@
 ﻿using VCCSharp.Configuration.TabControls.Audio;
 using VCCSharp.Configuration.TabControls.Cpu;
 using VCCSharp.Configuration.TabControls.Display;
-using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Configuration.TabControls.Keyboard;
 using VCCSharp.Configuration.TabControls.Miscellaneous;
 using VCCSharp.Configuration.ViewModel;
@@ -20,7 +19,7 @@ public interface IViewModelFactory
     MainWindowViewModel CreateMainWindowViewModel(IMainMenu menuItems);
     CommandViewModel CreateCommandViewModel(Action? action = null);
     MenuItemViewModel CreateMenuItemViewModel(string header, Action action);
-    ConfigurationViewModel CreateConfigurationViewModel(IConfiguration configuration, IDxManager manager);
+    ConfigurationViewModel CreateConfigurationViewModel();
 }
 
 public class ViewModelFactory : IViewModelFactory
@@ -51,11 +50,12 @@ public class ViewModelFactory : IViewModelFactory
         return new MenuItemViewModel { Header = header, Action = action };
     }
 
-    public ConfigurationViewModel CreateConfigurationViewModel(IConfiguration configuration, IDxManager manager)
+    public ConfigurationViewModel CreateConfigurationViewModel()
     {
-        var modules = _factory.Get<IModules>();
+        var manager = _factory.Get<IDxManager>();
+        var configuration = _factory.Get<IConfiguration>();
 
-        var audio = new AudioTabViewModel(configuration.Audio, modules.Audio);
+        var audio = _factory.Get<AudioTabViewModel>();
         var cpu = new CpuTabViewModel(configuration.CPU, configuration.Memory);
         var display = new DisplayTabViewModel(configuration.CPU, configuration.Video, configuration.Window);
         var keyboard = new KeyboardTabViewModel(configuration.Keyboard);
