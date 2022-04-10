@@ -25,8 +25,8 @@
       <ColumnDefinition Width="150"/>
     </Grid.ColumnDefinitions>
 
-    <controls:ButtonControl Grid.Row="0" Grid.Column="0" Text="LB" Width="30" DataContext="{Binding State}" Button="{Binding LB}"/>
-    <controls:ButtonControl Grid.Row="0" Grid.Column="3" Text="RB" Width="30" DataContext="{Binding State}" Button="{Binding RB}"/>
+    <controls:ButtonControl Grid.Row="0" Grid.Column="0" Text="LB" Width="35" DataContext="{Binding State}" Button="{Binding LB}"/>
+    <controls:ButtonControl Grid.Row="0" Grid.Column="3" Text="RB" Width="35" DataContext="{Binding State}" Button="{Binding RB}"/>
 
     <controls:ButtonControl Grid.Row="1" Grid.Column="1" Text="Back" Width="50" DataContext="{Binding State}" Button="{Binding Back}"/>
     <controls:ButtonControl Grid.Row="1" Grid.Column="2" Text="Start" Width="50" DataContext="{Binding State}" Button="{Binding Start}"/>

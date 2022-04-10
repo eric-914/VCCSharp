@@ -1,4 +1,4 @@
-﻿using VCCSharp.Enums;
+﻿using VCCSharp.Shared.Configuration;
 using VCCSharp.Shared.Enums;
 using VCCSharp.Shared.ViewModels;
 
@@ -9,14 +9,14 @@ namespace VCCSharp.Configuration.TabControls.Joystick;
 /// </summary>
 public class JoystickConfigurationViewModel : NotifyViewModel
 {
-    private readonly Models.Configuration.Joystick _model = new();
+    private readonly IJoystickConfiguration? _model;
 
     public JoystickSourceViewModel JoystickSource { get; } = new();
     public KeyboardSourceViewModel KeyboardSource { get; } = new();
 
     public JoystickConfigurationViewModel() { }
 
-    public JoystickConfigurationViewModel(JoystickSides side, Models.Configuration.Joystick model, JoystickSourceViewModel joystickSource, KeyboardSourceViewModel keyboardSource)
+    public JoystickConfigurationViewModel(JoystickSides side, IJoystickConfiguration model, JoystickSourceViewModel joystickSource, KeyboardSourceViewModel keyboardSource)
     {
         _model = model;
         JoystickSource = joystickSource;
@@ -31,24 +31,24 @@ public class JoystickConfigurationViewModel : NotifyViewModel
 
     public JoystickSides Side { get; set; }
 
-    public int InputSource
+    public JoystickDevices InputSource
     {
-        get => (int)_model.InputSource.Value;
+        get => _model?.InputSource.Value ?? JoystickDevices.Keyboard;
         set
         {
-            if ((int)_model.InputSource.Value == value) return;
+            if (_model == null || _model.InputSource.Value == value) return;
 
-            _model.InputSource.Value = (JoystickDevices)value;
+            _model.InputSource.Value = value;
             OnPropertyChanged();
         }
     }
 
     public JoystickEmulations Emulation
     {
-        get => _model.Type.Value;
+        get => _model?.Type.Value ?? JoystickEmulations.Standard;
         set
         {
-            if (_model.Type.Value == value) return;
+            if (_model == null || _model.Type.Value == value) return;
 
             _model.Type.Value = value;
             OnPropertyChanged();

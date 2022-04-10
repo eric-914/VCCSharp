@@ -1,4 +1,4 @@
-﻿namespace VCCSharp.Enums;
+﻿namespace VCCSharp.Shared.Enums;
 
 public enum JoystickEmulations
 {

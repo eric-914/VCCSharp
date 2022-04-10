@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:joystick="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
              xmlns:converters="clr-namespace:VCCSharp.Converters"
-             xmlns:enums="clr-namespace:VCCSharp.Enums"
+             xmlns:enums="clr-namespace:VCCSharp.Shared.Enums;assembly=VCCSharp.Shared"
              mc:Ignorable="d" 
              d:DesignHeight="50" d:DesignWidth="800">
     <UserControl.DataContext>

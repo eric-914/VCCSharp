@@ -1,9 +1,7 @@
 ﻿using System.Windows.Input;
-using VCCSharp.Models.Configuration.Support;
 using VCCSharp.Shared.Configuration;
-using VCCSharp.Shared.ViewModels;
 
-namespace VCCSharp.Configuration.TabControls.Joystick;
+namespace VCCSharp.Shared.ViewModels;
 
 public class KeyboardSourceViewModel : NotifyViewModel
 {

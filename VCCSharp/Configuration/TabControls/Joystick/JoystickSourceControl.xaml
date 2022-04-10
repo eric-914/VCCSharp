@@ -19,7 +19,7 @@
   </UserControl.Resources>
 
   <DockPanel>
-    <TabControl SelectedIndex="{Binding InputSource}">
+    <TabControl SelectedIndex="{Binding InputSource, Converter={StaticResource InputSourceToTabIndexConverter}}">
       <TabItem Header="Joystick">
         <controls:JoystickAsJoystickControl DataContext="{Binding JoystickSource}"/>
       </TabItem>
