@@ -1,12 +1,7 @@
-﻿using DX8;
-using System.Windows;
-using VCCSharp.BitBanger;
+﻿using VCCSharp.BitBanger;
 using VCCSharp.Configuration;
-using VCCSharp.DX8;
-using VCCSharp.Libraries;
 using VCCSharp.Main;
 using VCCSharp.Menu;
-using VCCSharp.Models;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Configuration.Support;
 using VCCSharp.Models.CPU.HD6309;
@@ -14,8 +9,6 @@ using VCCSharp.Models.CPU.MC6809;
 using VCCSharp.Models.Joystick;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Modules;
-using VCCSharp.Shared.Dx;
-using VCCSharp.Shared.Threading;
 using VCCSharp.TapePlayer;
 
 namespace VCCSharp.IoC;
@@ -27,6 +20,11 @@ internal static class Binding
         binder
             .SelfBind()
 
+            .WindowsLibraryBind()   //--Windows Libraries
+            .DxBind()               //--Bind to DX8 library and the DxManager
+            .ConfigurationBind()    //--Configuration
+            .ModuleBind()           //--Modules
+            
             //--Specialized Factories
             .Singleton<IViewModelFactory, ViewModelFactory>()
 
@@ -39,34 +37,13 @@ internal static class Binding
 
             //--Models
             .Bind<IKeyboardAsJoystick, KeyboardAsJoystick>()
-
-            //--Modules
-            .ModuleBind()
-
-            //--Configuration
-            .ConfigurationBind()
-
+            
             .Singleton<IHD6309, HD6309>()
             .Singleton<IMC6809, MC6809>()
 
             //--Modules container/accessor
             .Singleton<IModules, Modules>()
-
-            //--Windows Libraries
-            .Bind<IKernel, Kernel>()
-            .Bind<IUser32, User32>()
-            .Bind<IGdi32, Gdi32>()
-            .Bind<IWinmm, Winmm>()
-
-            //--Bind to DX8 library
-            .Bind<IDxDraw, Dx>()
-            .Bind<IDxSound, Dx>()
-            .Bind<IDxInput, Dx>()
-
-            .Bind<IDispatcher>(() => new DispatcherWrapper(Application.Current.Dispatcher))
-            .Bind<IThreadRunner, ThreadRunner>()
-            .Singleton<IDxManager, DxManager>()
-
+            
             //--Main
             .Bind<ICommandLineParser, CommandLineParser>()
             .Bind<IVccApp, VccApp>()
@@ -88,9 +65,9 @@ internal static class Binding
             //--Options container/accessor
             .Singleton<IOptions, Options>()
 
+            //--Wait until everything is defined before initializing
             .InitializeDxManager()
             .InitializeModules()
             ;
-
     }
 }

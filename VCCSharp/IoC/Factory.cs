@@ -1,5 +1,6 @@
 ﻿using Ninject;
 using VCCSharp.Configuration;
+using VCCSharp.DX8;
 using VCCSharp.Modules;
 using VCCSharp.Shared.Dx;
 
@@ -13,11 +14,17 @@ public interface IFactory
     TInterface Get<TInterface>();
 }
 
+/// <summary>
+/// Binding functionality is only required on startup
+/// </summary>
 public interface IBinder
 {
     IBinder SelfBind();
+
     IBinder ModuleBind();
     IBinder ConfigurationBind();
+    IBinder DxBind();
+    IBinder WindowsLibraryBind();
 
     IBinder Singleton<TInterface, TClass>() where TClass : class, TInterface;
     IBinder Singleton<TInterface, TClass>(TClass instance) where TClass : class, TInterface;
@@ -72,11 +79,21 @@ public class Factory : IFactory, IBinder
     public IBinder InitializeDxManager() 
         => BindThis(() => Get<IDxManager>().Initialize().EnumerateDevices());
 
+    #region Binding Delegates
+
     public IBinder ModuleBind() 
         => ModuleBinding.Initialize(this);
 
     public IBinder ConfigurationBind() 
         => ConfigurationBinding.Initialize(this);
+
+    public IBinder DxBind() 
+        => BindThis(() => DxBinding.Initialize(this));
+
+    public IBinder WindowsLibraryBind() 
+        => BindThis(() => WindowsLibraryBinding.Initialize(this));
+
+    #endregion
 
     private IBinder BindThis(Action action)
     {
