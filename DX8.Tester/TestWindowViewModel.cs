@@ -1,5 +1,4 @@
-﻿using DX8.Tester.Model;
-using System.Windows;
+﻿using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Shared.ViewModels;
 
 namespace DX8.Tester;
