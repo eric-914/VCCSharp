@@ -132,9 +132,9 @@ namespace VCCSharp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] Keyboard {
+        internal static byte[] keyboard {
             get {
-                object obj = ResourceManager.GetObject("Keyboard", resourceCulture);
+                object obj = ResourceManager.GetObject("keyboard", resourceCulture);
                 return ((byte[])(obj));
             }
         }

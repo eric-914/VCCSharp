@@ -21,13 +21,31 @@
 
   <DockPanel>
     <TabControl SelectedIndex="{Binding InputSource, Converter={StaticResource InputSourceToTabIndexConverter}}">
-      <TabItem Header="Joystick">
+      <TabItem>
+        <TabItem.Header>
+          <DockPanel>
+            <Image DockPanel.Dock="Left" Stretch="None" Source="/Resources/joystick.ico" />
+            <Label>Joystick</Label>
+          </DockPanel>
+        </TabItem.Header>
         <controls:JoystickAsJoystickControl DataContext="{Binding JoystickSource}"/>
       </TabItem>
-      <TabItem Header="Mouse">
+      <TabItem>
+        <TabItem.Header>
+          <DockPanel>
+            <Image DockPanel.Dock="Left" Stretch="None" Source="/Resources/mouse.ico" />
+            <Label>Mouse</Label>
+          </DockPanel>
+        </TabItem.Header>
         <joystick:MouseAsJoystickControl DataContext="{Binding}"/>
       </TabItem>
-      <TabItem Header="Keyboard">
+      <TabItem>
+        <TabItem.Header>
+          <DockPanel>
+            <Image DockPanel.Dock="Left" Stretch="None" Source="/Resources/Keyboard.ico" />
+            <Label>Keyboard</Label>
+          </DockPanel>
+        </TabItem.Header>
         <joystick:KeyboardAsJoystickControl DataContext="{Binding KeyboardSource}"/>
       </TabItem>
     </TabControl>

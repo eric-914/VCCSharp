@@ -136,8 +136,8 @@
   <data name="joystick" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\joystick.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Keyboard" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Keyboard.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="keyboard" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\keyboard.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="moto" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\moto.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

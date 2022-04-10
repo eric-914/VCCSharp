@@ -19,7 +19,7 @@
         <ControlTemplate TargetType="TabControl">
           <Grid>
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="120px"/>
+              <ColumnDefinition Width="150px"/>
               <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TabPanel Grid.Column="0"

@@ -11,6 +11,21 @@
     <viewModels:JoystickSourceViewModel/>
   </UserControl.DataContext>
   <UserControl.Resources>
+    <Style TargetType="Button">
+      <Setter Property="Width" Value="200"/>
+    </Style>
+    <Style TargetType="ComboBox">
+      <Setter Property="Height" Value="32"/>
+    </Style>
+    <Style TargetType="ScrollBar">
+      <Setter Property="Height" Value="32"/>
+      <Setter Property="Minimum" Value="10"/>
+      <Setter Property="Maximum" Value="200"/>
+    </Style>
+    <Style TargetType="Label" x:Key="NumberLabel">
+      <Setter Property="Width" Value="50"/>
+      <Setter Property="HorizontalContentAlignment" Value="Right"/>
+    </Style>
   </UserControl.Resources>
 
   <DockPanel>
@@ -21,15 +36,14 @@
     </DockPanel>
     <DockPanel DockPanel.Dock="Top">
       <Label DockPanel.Dock="Left">Select Joystick:</Label>
-      <ComboBox Height="30"
-                SelectedIndex="{Binding DeviceIndex}"
+      <ComboBox SelectedIndex="{Binding DeviceIndex}"
                 ItemsSource="{Binding AvailableJoysticks}"/>
     </DockPanel>
     <DockPanel DockPanel.Dock="Bottom" DataContext="{Binding Interval}">
       <Label DockPanel.Dock="Left">Polling Interval:</Label>
       <Label DockPanel.Dock="Right">(ms)</Label>
-      <Label DockPanel.Dock="Right" Content="{Binding Value}" Width="50" HorizontalContentAlignment="Right"/>
-      <ScrollBar Orientation="Horizontal" Minimum="10" Maximum="200" Value="{Binding Value}"/>
+      <Label DockPanel.Dock="Right" Content="{Binding Value}" Style="{StaticResource NumberLabel}"/>
+      <ScrollBar Orientation="Horizontal" Value="{Binding Value}"/>
     </DockPanel>
 
     <controls:JoystickTestControl DataContext="{Binding State}"/>
