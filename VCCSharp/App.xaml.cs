@@ -11,6 +11,6 @@ public partial class App
 
         //ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
-        Binding.Initialize(Factory.Instance);
+        Binding.Initialize(Factory.Binder);
     }
 }

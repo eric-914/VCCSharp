@@ -22,9 +22,9 @@ namespace VCCSharp.IoC;
 
 internal static class Binding
 {
-    public static void Initialize(IFactory factory)
+    public static void Initialize(IBinder binder)
     {
-        factory
+        binder
             .SelfBind()
 
             //--Specialized Factories
@@ -42,6 +42,9 @@ internal static class Binding
 
             //--Modules
             .ModuleBind()
+
+            //--Configuration
+            .ConfigurationBind()
 
             .Singleton<IHD6309, HD6309>()
             .Singleton<IMC6809, MC6809>()

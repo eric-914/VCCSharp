@@ -1,5 +1,5 @@
 ﻿using Ninject;
-using VCCSharp.Menu;
+using VCCSharp.Configuration;
 using VCCSharp.Modules;
 using VCCSharp.Shared.Dx;
 
@@ -10,88 +10,80 @@ namespace VCCSharp.IoC;
 /// </summary>
 public interface IFactory
 {
-    IFactory Bind<TInterface, TClass>() where TClass : class, TInterface;
-    IFactory Bind<TInterface>(Func<TInterface> fn);
-
-    IFactory Singleton<TInterface, TClass>() where TClass : class, TInterface;
-    IFactory Singleton<TInterface, TClass>(TClass instance) where TClass : class, TInterface;
-
     TInterface Get<TInterface>();
+}
 
-    MainWindowCommands MainWindowCommands { get; }
+public interface IBinder
+{
+    IBinder SelfBind();
+    IBinder ModuleBind();
+    IBinder ConfigurationBind();
 
-    IFactory InitializeModules();
-    IFactory InitializeDxManager();
+    IBinder Singleton<TInterface, TClass>() where TClass : class, TInterface;
+    IBinder Singleton<TInterface, TClass>(TClass instance) where TClass : class, TInterface;
 
-    IFactory SelfBind();
-    IFactory ModuleBind();
+    IBinder Bind<TInterface, TClass>() where TClass : class, TInterface;
+    IBinder Bind<TInterface>(Func<TInterface> fn);
+
+    IBinder InitializeModules();
+    IBinder InitializeDxManager();
 }
 
 /// <summary>
 /// A wrapper around NInject to handle dependency injection
 /// </summary>
-public class Factory : IFactory
+public class Factory : IFactory, IBinder
 {
-    public static IFactory Instance { get; } = new Factory();
-    private readonly IKernel _kernel = new StandardKernel();
+    // ReSharper disable once InconsistentNaming
+    private static readonly Factory _instance = new();
 
-    public IFactory SelfBind()
+    //--NInject IoC service
+    private readonly IKernel _kernel = new StandardKernel(); 
+
+    public static IFactory Instance => _instance;
+    public static IBinder Binder => _instance;
+
+    #region Factory
+
+    public TInterface Get<TInterface>() => _kernel.Get<TInterface>();
+
+    #endregion
+
+    #region Binder
+
+    public IBinder SelfBind() 
+        => BindThis(() => _kernel.Bind<IFactory>().ToMethod(_ => Instance));
+
+    public IBinder Bind<TInterface, TClass>() where TClass : class, TInterface 
+        => BindThis(() => _kernel.Bind<TInterface>().To<TClass>());
+
+    public IBinder Bind<TInterface>(Func<TInterface> fn) 
+        => BindThis(() => _kernel.Bind<TInterface>().ToMethod(_ => fn()));
+
+    public IBinder Singleton<TInterface, TClass>() where TClass : class, TInterface 
+        => BindThis(() => _kernel.Bind<TInterface>().To<TClass>().InSingletonScope());
+
+    public IBinder Singleton<TInterface,TClass>(TClass instance) where TClass : class, TInterface 
+        => BindThis(() => _kernel.Bind<TInterface>().ToMethod(_ => instance));
+
+    public IBinder InitializeModules() 
+        => BindThis(() => ((Modules)Get<IModules>()).Initialize());
+
+    public IBinder InitializeDxManager() 
+        => BindThis(() => Get<IDxManager>().Initialize().EnumerateDevices());
+
+    public IBinder ModuleBind() 
+        => ModuleBinding.Initialize(this);
+
+    public IBinder ConfigurationBind() 
+        => ConfigurationBinding.Initialize(this);
+
+    private IBinder BindThis(Action action)
     {
-        _kernel.Bind<IFactory>().ToMethod(_ => Instance);
+        action();
 
         return this;
     }
 
-    public IFactory ModuleBind() => ModuleBinding.Initialize(this);
-
-    public IFactory Bind<TInterface, TClass>() where TClass : class, TInterface
-    {
-        _kernel.Bind<TInterface>().To<TClass>();
-
-        return this;
-    }
-    public IFactory Bind<TInterface>(Func<TInterface> fn) 
-    {
-        _kernel.Bind<TInterface>().ToMethod(_ => fn());
-
-        return this;
-    }
-
-    public IFactory Singleton<TInterface, TClass>() where TClass : class, TInterface
-    {
-        _kernel.Bind<TInterface>().To<TClass>().InSingletonScope();
-
-        return this;
-    }
-
-    public IFactory Singleton<TInterface,TClass>(TClass instance) where TClass : class, TInterface
-    {
-        _kernel.Bind<TInterface>().ToMethod(_ => instance);
-
-        return this;
-    }
-
-    public TInterface Get<TInterface>()
-    {
-        return _kernel.Get<TInterface>();
-    }
-
-    public MainWindowCommands MainWindowCommands => _kernel.Get<MainWindowCommands>();
-
-    public IFactory InitializeModules()
-    {
-        var modules = (Modules)Get<IModules>();
-        modules.Initialize();
-
-        return this;
-    }
-
-    public IFactory InitializeDxManager()
-    {
-        Get<IDxManager>()
-            .Initialize()
-            .EnumerateDevices();
-
-        return this;
-    }
+    #endregion
 }
