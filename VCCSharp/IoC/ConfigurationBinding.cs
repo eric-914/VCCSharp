@@ -1,19 +1,24 @@
-﻿using VCCSharp.IoC;
-using VCCSharp.Models.Configuration;
+﻿using VCCSharp.Models.Configuration;
+using VCCSharp.Models.Configuration.Support;
+using VCCSharp.Modules;
 using VCCSharp.Shared.Configuration;
 using VCCSharp.Shared.Models;
 using VCCSharp.Shared.ViewModels;
 
-namespace VCCSharp.Configuration;
+namespace VCCSharp.IoC;
 
 internal static class ConfigurationBinding
 {
-    public static IBinder Initialize(IBinder binder)
+    public static void Bind(IBinder binder)
     {
         IConfiguration _() => binder.Get<IConfiguration>();
 
-        //--Bind a configuration for each of the configuration tabs
         binder
+            .Singleton<IConfigurationPersistence, ConfigurationPersistence>()
+            .Singleton<IConfiguration, ConfigurationRoot>()
+            .Singleton<IConfigurationPersistenceManager, ConfigurationPersistenceManager>()
+
+            //--Bind a configuration for each of the configuration tabs
             .Bind(() => _().Audio)
             .Bind(() => _().CPU)
             .Bind(() => _().Memory)
@@ -23,11 +28,13 @@ internal static class ConfigurationBinding
             .Bind(() => _().Joysticks)
             .Bind(() => _().Startup)
 
+            //--Define binding mappings for left/right joystick configuration branches
             .Bind(() => (ILeftJoystickConfiguration)_().Joysticks.Left)
             .Bind(() => (IRightJoystickConfiguration)_().Joysticks.Right)
             .Bind(() => (ILeftJoystickKeyMapping)_().Joysticks.Left.KeyMap)
             .Bind(() => (IRightJoystickKeyMapping)_().Joysticks.Right.KeyMap)
 
+            //--Define binding mappings for left/right joystick view models
             .Bind<ILeftJoystickStateViewModel, LeftJoystickStateViewModel>()
             .Bind<IRightJoystickStateViewModel, RightJoystickStateViewModel>()
 
@@ -43,7 +50,5 @@ internal static class ConfigurationBinding
             .Bind<ILeftJoystickConfigurationViewModel, LeftJoystickConfigurationViewModel>()
             .Bind<IRightJoystickConfigurationViewModel, RightJoystickConfigurationViewModel>()
             ;
-
-        return binder;
     }
 }

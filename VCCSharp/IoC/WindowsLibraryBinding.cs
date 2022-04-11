@@ -4,7 +4,7 @@ namespace VCCSharp.IoC;
 
 internal static class WindowsLibraryBinding
 {
-    public static IBinder Initialize(IBinder binder)
+    public static void Bind(IBinder binder)
     {
         binder
             .Bind<IKernel, Kernel>()
@@ -12,7 +12,5 @@ internal static class WindowsLibraryBinding
             .Bind<IGdi32, Gdi32>()
             .Bind<IWinmm, Winmm>()
             ;
-
-        return binder;
     }
 }

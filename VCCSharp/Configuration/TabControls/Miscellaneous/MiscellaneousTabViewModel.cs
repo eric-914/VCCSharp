@@ -1,4 +1,5 @@
-﻿using VCCSharp.Models.Configuration;
+﻿using Ninject;
+using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Configuration.TabControls.Miscellaneous;
 
@@ -20,6 +21,7 @@ public class MiscellaneousTabViewModel
 
     public MiscellaneousTabViewModel() { }
 
+    [Inject]
     public MiscellaneousTabViewModel(IStartupConfiguration model)
     {
         _model = model;

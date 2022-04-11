@@ -1,8 +1,4 @@
 ﻿using Ninject;
-using VCCSharp.Configuration;
-using VCCSharp.DX8;
-using VCCSharp.Modules;
-using VCCSharp.Shared.Dx;
 
 namespace VCCSharp.IoC;
 
@@ -19,27 +15,22 @@ public interface IFactory
 /// </summary>
 public interface IBinder : IFactory
 {
-    IBinder SelfBind();
+    IBinder BindFactory();
 
-    IBinder ModuleBind();
-    IBinder ConfigurationBind();
-    IBinder DxBind();
-    IBinder WindowsLibraryBind();
+    IBinder Include(Action<IBinder> action);
+    IBinder Initialize(Action<IFactory> action);
 
     IBinder Singleton<TInterface, TClass>() where TClass : class, TInterface;
     IBinder Singleton<TInterface, TClass>(TClass instance) where TClass : class, TInterface;
 
     IBinder Bind<TInterface, TClass>() where TClass : class, TInterface;
     IBinder Bind<TInterface>(Func<TInterface> fn);
-
-    IBinder InitializeModules();
-    IBinder InitializeDxManager();
 }
 
 /// <summary>
 /// A wrapper around NInject to handle dependency injection
 /// </summary>
-public class Factory : IFactory, IBinder
+public class Factory : IBinder
 {
     // ReSharper disable once InconsistentNaming
     private static readonly Factory _instance = new();
@@ -58,7 +49,7 @@ public class Factory : IFactory, IBinder
 
     #region Binder
 
-    public IBinder SelfBind() 
+    public IBinder BindFactory() 
         => BindThis(() => _kernel.Bind<IFactory>().ToMethod(_ => Instance));
 
     public IBinder Bind<TInterface, TClass>() where TClass : class, TInterface 
@@ -73,25 +64,19 @@ public class Factory : IFactory, IBinder
     public IBinder Singleton<TInterface,TClass>(TClass instance) where TClass : class, TInterface 
         => BindThis(() => _kernel.Bind<TInterface>().ToMethod(_ => instance));
 
-    public IBinder InitializeModules() 
-        => BindThis(() => ((Modules)Get<IModules>()).Initialize());
-
-    public IBinder InitializeDxManager() 
-        => BindThis(() => Get<IDxManager>().Initialize().EnumerateDevices());
-
     #region Binding Delegates
 
-    public IBinder ModuleBind() 
-        => ModuleBinding.Initialize(this);
+    public IBinder Include(Action<IBinder> action)
+    {
+        action(this);
+        return this;
+    }
 
-    public IBinder ConfigurationBind() 
-        => ConfigurationBinding.Initialize(this);
-
-    public IBinder DxBind() 
-        => BindThis(() => DxBinding.Initialize(this));
-
-    public IBinder WindowsLibraryBind() 
-        => BindThis(() => WindowsLibraryBinding.Initialize(this));
+    public IBinder Initialize(Action<IFactory> action)
+    {
+        action(this);
+        return this;
+    }
 
     #endregion
 

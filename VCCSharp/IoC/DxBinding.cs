@@ -1,15 +1,15 @@
-﻿using System.Windows;
-using DX8;
-using VCCSharp.IoC;
+﻿using DX8;
+using System.Windows;
+using VCCSharp.DX8;
 using VCCSharp.Models;
 using VCCSharp.Shared.Dx;
 using VCCSharp.Shared.Threading;
 
-namespace VCCSharp.DX8;
+namespace VCCSharp.IoC;
 
 internal static class DxBinding
 {
-    public static IBinder Initialize(IBinder binder)
+    public static void Bind(IBinder binder)
     {
         binder
             .Bind<IDxDraw, Dx>()
@@ -20,7 +20,12 @@ internal static class DxBinding
             .Bind<IThreadRunner, ThreadRunner>()
             .Singleton<IDxManager, DxManager>()
             ;
+    }
 
-        return binder;
+    public static void Initialize(IFactory factory)
+    {
+        factory.Get<IDxManager>()
+            .Initialize()
+            .EnumerateDevices();
     }
 }

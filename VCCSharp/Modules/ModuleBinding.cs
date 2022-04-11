@@ -5,7 +5,7 @@ namespace VCCSharp.Modules;
 
 internal static class ModuleBinding
 {
-    public static IBinder Initialize(IBinder  binder)
+    public static void Bind(IBinder  binder)
     {
         binder
             .Singleton<IAudio, Audio>()
@@ -29,7 +29,11 @@ internal static class ModuleBinding
             .Singleton<IThrottle, Throttle>()
             .Singleton<IVcc, Vcc>()
             ;
+    }
 
-        return binder;
+    public static void Initialize(IFactory factory)
+    {
+        ((IoC.Modules)factory.Get<IModules>())
+            .Initialize();
     }
 }

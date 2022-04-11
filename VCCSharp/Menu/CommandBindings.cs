@@ -1,35 +1,33 @@
-﻿using System.Collections.Generic;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace VCCSharp.Menu
+namespace VCCSharp.Menu;
+
+public class CommandBindings : List<CommandBinding>
 {
-    public class CommandBindings : List<CommandBinding>
+    protected void Add(MenuCommand command)
     {
-        protected void Add(MenuCommand command)
-        {
-            Add(new CommandBinding(command, Execute, CanExecute));
-        }
+        Add(new CommandBinding(command, Execute, CanExecute));
+    }
 
-        protected void AddRange(IEnumerable<MenuCommand> commands)
+    protected void AddRange(IEnumerable<MenuCommand> commands)
+    {
+        foreach (var command in commands)
         {
-            foreach (var command in commands)
-            {
-                Add(command);
-            }
+            Add(command);
         }
+    }
 
-        private static void Execute(object sender, ExecutedRoutedEventArgs e)
+    private static void Execute(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Command is MenuCommand command)
         {
-            if (e.Command is MenuCommand command)
-            {
-                command.Action();
-            }
+            command.Action();
         }
+    }
 
-        private static void CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = e.Source is Control;
-        }
+    private static void CanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = e.Source is Control;
     }
 }

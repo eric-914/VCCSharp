@@ -1,7 +1,7 @@
-﻿using VCCSharp.Configuration.TabControls.Audio;
+﻿using Ninject;
+using VCCSharp.Configuration.TabControls.Audio;
 using VCCSharp.Configuration.TabControls.Cpu;
 using VCCSharp.Configuration.TabControls.Display;
-using VCCSharp.Configuration.TabControls.Joystick;
 using VCCSharp.Configuration.TabControls.Keyboard;
 using VCCSharp.Configuration.TabControls.Miscellaneous;
 using VCCSharp.Shared.ViewModels;
@@ -19,6 +19,7 @@ public class ConfigurationViewModel : NotifyViewModel
 
     public ConfigurationViewModel() { }
 
+    [Inject]
     public ConfigurationViewModel(AudioTabViewModel audio, CpuTabViewModel cpu, DisplayTabViewModel display, KeyboardTabViewModel keyboard, JoystickPairViewModel joystick, MiscellaneousTabViewModel miscellaneous)
     {
         Audio = audio;

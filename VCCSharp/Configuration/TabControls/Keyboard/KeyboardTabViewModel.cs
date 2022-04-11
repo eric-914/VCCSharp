@@ -1,4 +1,5 @@
-﻿using VCCSharp.Enums;
+﻿using Ninject;
+using VCCSharp.Enums;
 using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Configuration.TabControls.Keyboard;
@@ -16,6 +17,7 @@ public class KeyboardTabViewModel
 
     public KeyboardTabViewModel() { }
 
+    [Inject]
     public KeyboardTabViewModel(IKeyboardConfiguration model)
     {
         _model = model;

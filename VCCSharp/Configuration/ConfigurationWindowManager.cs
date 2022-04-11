@@ -1,4 +1,5 @@
-﻿using VCCSharp.IoC;
+﻿using VCCSharp.Configuration.ViewModel;
+using VCCSharp.IoC;
 
 namespace VCCSharp.Configuration;
 
@@ -10,9 +11,9 @@ public interface IConfigurationWindowManager
 public class ConfigurationWindowManager : IConfigurationWindowManager
 {
     private readonly IModules _modules;
-    private readonly IViewModelFactory _factory;
+    private readonly IFactory _factory;
 
-    public ConfigurationWindowManager(IModules modules, IViewModelFactory factory)
+    public ConfigurationWindowManager(IModules modules, IFactory factory)
     {
         _modules = modules;
         _factory = factory;
@@ -20,7 +21,7 @@ public class ConfigurationWindowManager : IConfigurationWindowManager
 
     public void ShowDialog()
     {
-        var viewModel = _factory.CreateConfigurationViewModel();
+        var viewModel = _factory.Get<ConfigurationViewModel>();
 
         var view = new ConfigurationWindow(viewModel) { Apply = ApplyChanges };
 

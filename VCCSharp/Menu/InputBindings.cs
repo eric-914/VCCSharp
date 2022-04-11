@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
-namespace VCCSharp.Menu
+namespace VCCSharp.Menu;
+
+public class InputBindings : List<InputBinding>
 {
-    public class InputBindings : List<InputBinding>
+    public void Add(MenuCommand command)
     {
-        public void Add(MenuCommand command)
-        {
-            Add(new KeyBinding(command, command.Key, command.Modifier));
-        }
+        Add(new KeyBinding(command, command.Key, command.Modifier));
     }
 }
