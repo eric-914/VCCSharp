@@ -4,7 +4,7 @@ using VCCSharp.Shared.Enums;
 
 namespace VCCSharp.Models.Configuration;
 
-public class Joystick : IJoystickConfiguration
+public class Joystick : ILeftJoystickConfiguration, IRightJoystickConfiguration
 {
     public int DeviceIndex { get; set; } = -1;
 

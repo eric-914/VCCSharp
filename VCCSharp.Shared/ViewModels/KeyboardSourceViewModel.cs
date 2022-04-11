@@ -15,7 +15,10 @@ public interface IKeyboardSourceViewModel : INotifyPropertyChanged
     Key Fire2 { get; set; }
 }
 
-public class KeyboardSourceViewModel : NotifyViewModel, IKeyboardSourceViewModel
+public interface ILeftKeyboardSourceViewModel : IKeyboardSourceViewModel { }
+public interface IRightKeyboardSourceViewModel : IKeyboardSourceViewModel { }
+
+public class KeyboardSourceViewModel : NotifyViewModel, ILeftKeyboardSourceViewModel, IRightKeyboardSourceViewModel
 {
     private readonly IJoystickKeyMapping? _model;
 
@@ -78,15 +81,12 @@ public class KeyboardSourceViewModel : NotifyViewModel, IKeyboardSourceViewModel
     #endregion
 }
 
-public interface ILeftKeyboardSourceViewModel : IKeyboardSourceViewModel { }
-public interface IRightKeyboardSourceViewModel : IKeyboardSourceViewModel { }
-
-public class LeftKeyboardSourceViewModel : KeyboardSourceViewModel, ILeftKeyboardSourceViewModel
+public class LeftKeyboardSourceViewModel : KeyboardSourceViewModel
 {
     public LeftKeyboardSourceViewModel(ILeftJoystickKeyMapping model) : base(model) { }
 }
 
-public class RightKeyboardSourceViewModel : KeyboardSourceViewModel, IRightKeyboardSourceViewModel
+public class RightKeyboardSourceViewModel : KeyboardSourceViewModel
 {
     public RightKeyboardSourceViewModel(IRightJoystickKeyMapping model) : base(model) { }
 }

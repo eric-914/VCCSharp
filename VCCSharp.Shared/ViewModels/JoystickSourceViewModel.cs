@@ -5,7 +5,7 @@ using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Shared.ViewModels;
 
-public interface IJoystickSourceViewModel
+public interface IJoystickSourceViewModel : INotifyPropertyChanged
 {
     ICommand RefreshListCommand { get; }
     IJoystickStateViewModel State { get; }
@@ -14,10 +14,12 @@ public interface IJoystickSourceViewModel
     int DeviceIndex { get; set; }
     List<string> AvailableJoysticks { get; }
     void RefreshList();
-    event PropertyChangedEventHandler? PropertyChanged;
 }
 
-public class JoystickSourceViewModel : NotifyViewModel, IJoystickSourceViewModel
+public interface ILeftJoystickSourceViewModel : IJoystickSourceViewModel { }
+public interface IRightJoystickSourceViewModel : IJoystickSourceViewModel { }
+
+public class JoystickSourceViewModel : NotifyViewModel, ILeftJoystickSourceViewModel, IRightJoystickSourceViewModel
 {
     private readonly IJoystickSourceModel? _model;
 
@@ -70,16 +72,13 @@ public class JoystickSourceViewModel : NotifyViewModel, IJoystickSourceViewModel
     }
 }
 
-public interface ILeftJoystickSourceViewModel : IJoystickSourceViewModel { }
-public interface IRightJoystickSourceViewModel : IJoystickSourceViewModel { }
-
-public class LeftJoystickSourceViewModel : JoystickSourceViewModel, ILeftJoystickSourceViewModel
+public class LeftJoystickSourceViewModel : JoystickSourceViewModel
 {
     public LeftJoystickSourceViewModel(ILeftJoystickSourceModel model, ILeftJoystickStateViewModel state, JoystickIntervalViewModel interval)
         : base(model, state, interval) { }
 }
 
-public class RightJoystickSourceViewModel : JoystickSourceViewModel, IRightJoystickSourceViewModel
+public class RightJoystickSourceViewModel : JoystickSourceViewModel
 {
     public RightJoystickSourceViewModel(IRightJoystickSourceModel model, IRightJoystickStateViewModel state, JoystickIntervalViewModel interval)
         : base(model, state, interval) { }

@@ -6,8 +6,6 @@ using VCCSharp.Configuration.TabControls.Miscellaneous;
 using VCCSharp.Configuration.ViewModel;
 using VCCSharp.Main;
 using VCCSharp.Menu;
-using VCCSharp.Shared.Enums;
-using VCCSharp.Shared.Models;
 using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.IoC;
@@ -55,29 +53,10 @@ public class ViewModelFactory : IViewModelFactory
         var display = _factory.Get<DisplayTabViewModel>();
         var keyboard = _factory.Get<KeyboardTabViewModel>();
         var miscellaneous = _factory.Get<MiscellaneousTabViewModel>();
-
-        var left = CreateJoystickConfigurationViewModel(JoystickSides.Left);
-        var right = CreateJoystickConfigurationViewModel(JoystickSides.Right);
-
-        var joysticks = new JoystickPairViewModel(left, right);
+        var joysticks = _factory.Get<JoystickPairViewModel>();
 
         return new ConfigurationViewModel(audio, cpu, display, keyboard, joysticks, miscellaneous);
-    }
 
-    private JoystickConfigurationViewModel CreateJoystickConfigurationViewModel(JoystickSides side)
-    {
-        var joysticks = _factory.Get<IJoysticksConfiguration>();
-
-        var joystick = side == JoystickSides.Left ? joysticks.Left : joysticks.Right;
-
-        var keyboardSource = side == JoystickSides.Left
-            ? (IKeyboardSourceViewModel)_factory.Get<ILeftKeyboardSourceViewModel>()
-            : _factory.Get<IRightKeyboardSourceViewModel>();
-
-        var joystickSource = side == JoystickSides.Left
-            ? (IJoystickSourceViewModel)_factory.Get<ILeftJoystickSourceViewModel>()
-            : _factory.Get<IRightJoystickSourceViewModel>();
-
-        return new JoystickConfigurationViewModel(side, joystick, joystickSource, keyboardSource);
+        //return _factory.Get<ConfigurationViewModel>();
     }
 }

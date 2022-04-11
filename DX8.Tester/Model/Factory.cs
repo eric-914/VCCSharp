@@ -30,8 +30,8 @@ internal class Factory : IFactory
     {
         JoystickIntervalViewModel interval = CreateJoystickIntervalViewModel(manager, configuration);
 
-        JoystickConfigurationViewModel left = CreateJoystickConfigurationViewModel(manager, configuration, interval, JoystickSides.Left);
-        JoystickConfigurationViewModel right = CreateJoystickConfigurationViewModel(manager, configuration, interval, JoystickSides.Right);
+        ILeftJoystickConfigurationViewModel left = CreateJoystickConfigurationViewModel(manager, configuration, interval, JoystickSides.Left);
+        IRightJoystickConfigurationViewModel right = CreateJoystickConfigurationViewModel(manager, configuration, interval, JoystickSides.Right);
 
         return new JoystickPairViewModel(left, right);
     }
@@ -43,7 +43,9 @@ internal class Factory : IFactory
 
         IJoystickConfiguration model = side == JoystickSides.Left ? configuration.Left : configuration.Right;
 
-        return new JoystickConfigurationViewModel(side, model, joystickSource, keyboardSource);
+        return side == JoystickSides.Left
+            ? new LeftJoystickConfigurationViewModel((ILeftJoystickConfiguration)model, joystickSource, keyboardSource)
+            : new RightJoystickConfigurationViewModel((IRightJoystickConfiguration)model, joystickSource, keyboardSource);
     }
 
     private static JoystickSourceViewModel CreateJoystickSourceViewModel(IDxManager manager, IDeviceIndex configuration, JoystickIntervalViewModel interval, JoystickSides side)

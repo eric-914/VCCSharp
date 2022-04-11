@@ -10,7 +10,11 @@ public interface IJoystickConfiguration
     IJoystickKeyMapping KeyMap { get; }
 }
 
-public class NullJoystickConfiguration : IJoystickConfiguration {
+public interface ILeftJoystickConfiguration : IJoystickConfiguration { }
+public interface IRightJoystickConfiguration : IJoystickConfiguration { }
+
+public class NullJoystickConfiguration : ILeftJoystickConfiguration, IRightJoystickConfiguration
+{
     public int DeviceIndex { get; set; }
     public IRangeSelect<JoystickDevices> InputSource { get; } = new NullRangeSelect<JoystickDevices>();
     public IRangeSelect<JoystickEmulations> Type { get; } = new NullRangeSelect<JoystickEmulations>();

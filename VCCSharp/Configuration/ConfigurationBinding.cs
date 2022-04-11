@@ -23,6 +23,8 @@ internal static class ConfigurationBinding
             .Bind(() => _().Joysticks)
             .Bind(() => _().Startup)
 
+            .Bind(() => (ILeftJoystickConfiguration)_().Joysticks.Left)
+            .Bind(() => (IRightJoystickConfiguration)_().Joysticks.Right)
             .Bind(() => (ILeftJoystickKeyMapping)_().Joysticks.Left.KeyMap)
             .Bind(() => (IRightJoystickKeyMapping)_().Joysticks.Right.KeyMap)
 
@@ -37,6 +39,9 @@ internal static class ConfigurationBinding
 
             .Bind<ILeftJoystickSourceViewModel, LeftJoystickSourceViewModel>()
             .Bind<IRightJoystickSourceViewModel, RightJoystickSourceViewModel>()
+
+            .Bind<ILeftJoystickConfigurationViewModel, LeftJoystickConfigurationViewModel>()
+            .Bind<IRightJoystickConfigurationViewModel, RightJoystickConfigurationViewModel>()
             ;
 
         return binder;
