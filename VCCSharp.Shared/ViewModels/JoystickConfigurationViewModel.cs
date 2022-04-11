@@ -10,13 +10,13 @@ public class JoystickConfigurationViewModel : NotifyViewModel
 {
     private readonly IJoystickConfiguration? _model;
 
-    public JoystickSourceViewModel JoystickSource { get; } = new();
-    public KeyboardSourceViewModel KeyboardSource { get; } = new();
+    public IJoystickSourceViewModel JoystickSource { get; } = new JoystickSourceViewModel();
+    public IKeyboardSourceViewModel KeyboardSource { get; } = new KeyboardSourceViewModel();
     public JoystickSides Side { get; }
 
     public JoystickConfigurationViewModel() { }
 
-    public JoystickConfigurationViewModel(JoystickSides side, IJoystickConfiguration model, JoystickSourceViewModel joystickSource, KeyboardSourceViewModel keyboardSource)
+    public JoystickConfigurationViewModel(JoystickSides side, IJoystickConfiguration model, IJoystickSourceViewModel joystickSource, IKeyboardSourceViewModel keyboardSource)
     {
         _model = model;
         JoystickSource = joystickSource;

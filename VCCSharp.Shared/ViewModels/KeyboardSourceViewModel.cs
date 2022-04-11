@@ -1,9 +1,21 @@
-﻿using System.Windows.Input;
+﻿using System.ComponentModel;
+using System.Windows.Input;
 using VCCSharp.Shared.Configuration;
 
 namespace VCCSharp.Shared.ViewModels;
 
-public class KeyboardSourceViewModel : NotifyViewModel
+public interface IKeyboardSourceViewModel : INotifyPropertyChanged
+{
+    IEnumerable<string> KeyNames { get; }
+    Key Up { get; set; }
+    Key Down { get; set; }
+    Key Left { get; set; }
+    Key Right { get; set; }
+    Key Fire1 { get; set; }
+    Key Fire2 { get; set; }
+}
+
+public class KeyboardSourceViewModel : NotifyViewModel, IKeyboardSourceViewModel
 {
     private readonly IJoystickKeyMapping? _model;
 
@@ -64,4 +76,17 @@ public class KeyboardSourceViewModel : NotifyViewModel
     }
 
     #endregion
+}
+
+public interface ILeftKeyboardSourceViewModel : IKeyboardSourceViewModel { }
+public interface IRightKeyboardSourceViewModel : IKeyboardSourceViewModel { }
+
+public class LeftKeyboardSourceViewModel : KeyboardSourceViewModel, ILeftKeyboardSourceViewModel
+{
+    public LeftKeyboardSourceViewModel(ILeftJoystickKeyMapping model) : base(model) { }
+}
+
+public class RightKeyboardSourceViewModel : KeyboardSourceViewModel, IRightKeyboardSourceViewModel
+{
+    public RightKeyboardSourceViewModel(IRightJoystickKeyMapping model) : base(model) { }
 }

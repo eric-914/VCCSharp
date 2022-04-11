@@ -6,7 +6,6 @@ using VCCSharp.Configuration.TabControls.Miscellaneous;
 using VCCSharp.Configuration.ViewModel;
 using VCCSharp.Main;
 using VCCSharp.Menu;
-using VCCSharp.Models.Configuration;
 using VCCSharp.Shared.Enums;
 using VCCSharp.Shared.Models;
 using VCCSharp.Shared.ViewModels;
@@ -51,13 +50,11 @@ public class ViewModelFactory : IViewModelFactory
 
     public ConfigurationViewModel CreateConfigurationViewModel()
     {
-        var configuration = _factory.Get<IConfiguration>();
-
         var audio = _factory.Get<AudioTabViewModel>();
         var cpu = _factory.Get<CpuTabViewModel>();
         var display = _factory.Get<DisplayTabViewModel>();
         var keyboard = _factory.Get<KeyboardTabViewModel>();
-        var miscellaneous = new MiscellaneousTabViewModel(configuration.Startup);
+        var miscellaneous = _factory.Get<MiscellaneousTabViewModel>();
 
         var left = CreateJoystickConfigurationViewModel(JoystickSides.Left);
         var right = CreateJoystickConfigurationViewModel(JoystickSides.Right);
@@ -71,20 +68,15 @@ public class ViewModelFactory : IViewModelFactory
     {
         var joysticks = _factory.Get<IJoysticksConfiguration>();
 
-        var interval = _factory.Get<JoystickIntervalViewModel>();
-
         var joystick = side == JoystickSides.Left ? joysticks.Left : joysticks.Right;
 
-        var state = side == JoystickSides.Left
-            ? (IJoystickStateViewModel)_factory.Get<ILeftJoystickStateViewModel>()
-            : _factory.Get<IRightJoystickStateViewModel>();
+        var keyboardSource = side == JoystickSides.Left
+            ? (IKeyboardSourceViewModel)_factory.Get<ILeftKeyboardSourceViewModel>()
+            : _factory.Get<IRightKeyboardSourceViewModel>();
 
-        var model = side == JoystickSides.Left
-            ? (IJoystickSourceModel)_factory.Get<ILeftJoystickSourceModel>()
-            : _factory.Get<IRightJoystickSourceModel>();
-
-        var joystickSource = new JoystickSourceViewModel(model, state, interval);
-        var keyboardSource = new KeyboardSourceViewModel(joystick.KeyMap);
+        var joystickSource = side == JoystickSides.Left
+            ? (IJoystickSourceViewModel)_factory.Get<ILeftJoystickSourceViewModel>()
+            : _factory.Get<IRightJoystickSourceViewModel>();
 
         return new JoystickConfigurationViewModel(side, joystick, joystickSource, keyboardSource);
     }

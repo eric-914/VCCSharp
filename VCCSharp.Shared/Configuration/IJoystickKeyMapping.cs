@@ -11,6 +11,9 @@ public interface IJoystickKeyMapping
     IEnumerable<string> KeyNames { get; }
 }
 
+public interface ILeftJoystickKeyMapping : IJoystickKeyMapping { }
+public interface IRightJoystickKeyMapping : IJoystickKeyMapping { }
+
 public class NullJoystickKeyMapping : IJoystickKeyMapping
 {
     public IKeySelect Left { get; } = new NullJoystickKeySelect();

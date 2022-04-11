@@ -1,5 +1,6 @@
 ﻿using VCCSharp.IoC;
 using VCCSharp.Models.Configuration;
+using VCCSharp.Shared.Configuration;
 using VCCSharp.Shared.Models;
 using VCCSharp.Shared.ViewModels;
 
@@ -22,11 +23,20 @@ internal static class ConfigurationBinding
             .Bind(() => _().Joysticks)
             .Bind(() => _().Startup)
 
+            .Bind(() => (ILeftJoystickKeyMapping)_().Joysticks.Left.KeyMap)
+            .Bind(() => (IRightJoystickKeyMapping)_().Joysticks.Right.KeyMap)
+
             .Bind<ILeftJoystickStateViewModel, LeftJoystickStateViewModel>()
             .Bind<IRightJoystickStateViewModel, RightJoystickStateViewModel>()
 
             .Bind<ILeftJoystickSourceModel, LeftJoystickSourceModel>()
             .Bind<IRightJoystickSourceModel, RightJoystickSourceModel>()
+
+            .Bind<ILeftKeyboardSourceViewModel, LeftKeyboardSourceViewModel>()
+            .Bind<IRightKeyboardSourceViewModel, RightKeyboardSourceViewModel>()
+
+            .Bind<ILeftJoystickSourceViewModel, LeftJoystickSourceViewModel>()
+            .Bind<IRightJoystickSourceViewModel, RightJoystickSourceViewModel>()
             ;
 
         return binder;
