@@ -6,16 +6,15 @@ using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Shared.ViewModels;
 
-public interface ILeftJoystickStateViewModel { }
-public interface IRightJoystickStateViewModel { }
+public interface IJoystickStateViewModel { }
 
-public class JoystickStateViewModel : NotifyViewModel, ILeftJoystickStateViewModel, IRightJoystickStateViewModel
+public class JoystickStateViewModel : NotifyViewModel, ILeft<IJoystickStateViewModel>, IRight<IJoystickStateViewModel>
 {
     private IDxJoystickState _state = new NullDxJoystickState();
 
     public JoystickStateViewModel() { }
 
-    public JoystickStateViewModel(IDxManager manager, IDeviceIndex configuration, JoystickSides side)
+    protected JoystickStateViewModel(IDxManager manager, IDeviceIndex configuration, JoystickSides side)
     {
         manager.PollEvent += (_, _) => State = manager.State(configuration.GetDeviceIndex(side));
     }

@@ -48,25 +48,28 @@ internal class Factory : IFactory
             : new RightJoystickConfigurationViewModel((IRightJoystickConfiguration)model, joystickSource, keyboardSource);
     }
 
-    private static JoystickSourceViewModel CreateJoystickSourceViewModel(IDxManager manager, IDeviceIndex configuration, JoystickIntervalViewModel interval, JoystickSides side)
+    private static JoystickSourceViewModel CreateJoystickSourceViewModel(IDxManager manager, IJoysticksConfiguration configuration, JoystickIntervalViewModel interval, JoystickSides side)
     {
         JoystickSourceModel model = CreateJoystickSourceModel(side, manager);
         JoystickStateViewModel state = CreateJoystickStateViewModel(manager, configuration, side);
 
         return side == JoystickSides.Left
-            ? new LeftJoystickSourceViewModel((ILeftJoystickSourceModel)model, state, interval)
-            : new RightJoystickSourceViewModel((IRightJoystickSourceModel)model, state, interval);
+            ? new LeftJoystickSourceViewModel(model, state, interval)
+            : new RightJoystickSourceViewModel(model, state, interval);
     }
 
-    private static JoystickStateViewModel CreateJoystickStateViewModel(IDxManager manager, IDeviceIndex configuration, JoystickSides side)
+    private static JoystickStateViewModel CreateJoystickStateViewModel(IDxManager manager, IJoysticksConfiguration configuration, JoystickSides side)
     {
-        return new JoystickStateViewModel(manager, configuration, side);
+        return side == JoystickSides.Left
+         ? new LeftJoystickStateViewModel(manager, configuration)
+         : new RightJoystickStateViewModel(manager, configuration);
     }
 
     private static JoystickIntervalViewModel CreateJoystickIntervalViewModel(IDxManager manager, IInterval configuration)
     {
         return new JoystickIntervalViewModel(configuration, manager);
     }
+
     private static JoystickSourceModel CreateJoystickSourceModel(JoystickSides side, IDxManager manager)
     {
         return new JoystickSourceModel(manager, new NullDeviceIndex(), side);

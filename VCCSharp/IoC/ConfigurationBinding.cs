@@ -35,8 +35,8 @@ internal static class ConfigurationBinding
             .Bind(() => (IRightJoystickKeyMapping)_().Joysticks.Right.KeyMap)
 
             //--Define binding mappings for left/right joystick view models
-            .Bind<ILeftJoystickStateViewModel, LeftJoystickStateViewModel>()
-            .Bind<IRightJoystickStateViewModel, RightJoystickStateViewModel>()
+            .Bind<ILeft<IJoystickStateViewModel>, LeftJoystickStateViewModel>()
+            .Bind<IRight<IJoystickStateViewModel>, RightJoystickStateViewModel>()
 
             .Bind<ILeftJoystickSourceModel, LeftJoystickSourceModel>()
             .Bind<IRightJoystickSourceModel, RightJoystickSourceModel>()

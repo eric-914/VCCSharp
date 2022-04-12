@@ -62,12 +62,12 @@ public class JoystickSourceViewModel : NotifyViewModel, ILeftJoystickSourceViewM
 
 public class LeftJoystickSourceViewModel : JoystickSourceViewModel
 {
-    public LeftJoystickSourceViewModel(ILeftJoystickSourceModel model, ILeftJoystickStateViewModel state, JoystickIntervalViewModel interval)
+    public LeftJoystickSourceViewModel(ILeftJoystickSourceModel model, ILeft<IJoystickStateViewModel> state, JoystickIntervalViewModel interval)
         : base((JoystickSourceModel)model, (JoystickStateViewModel)state, interval) { }
 }
 
 public class RightJoystickSourceViewModel : JoystickSourceViewModel
 {
-    public RightJoystickSourceViewModel(IRightJoystickSourceModel model, IRightJoystickStateViewModel state, JoystickIntervalViewModel interval)
+    public RightJoystickSourceViewModel(IRightJoystickSourceModel model, IRight<IJoystickStateViewModel> state, JoystickIntervalViewModel interval)
         : base((JoystickSourceModel)model, (JoystickStateViewModel)state, interval) { }
 }
