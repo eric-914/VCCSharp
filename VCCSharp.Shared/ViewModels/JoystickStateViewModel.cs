@@ -6,9 +6,7 @@ using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Shared.ViewModels;
 
-public interface IJoystickStateViewModel { }
-
-public class JoystickStateViewModel : NotifyViewModel, ILeft<IJoystickStateViewModel>, IRight<IJoystickStateViewModel>
+public class JoystickStateViewModel : NotifyViewModel, ILeft<JoystickStateViewModel>, IRight<JoystickStateViewModel>
 {
     private IDxJoystickState _state = new NullDxJoystickState();
 
@@ -41,5 +39,5 @@ public class LeftJoystickStateViewModel : JoystickStateViewModel
 public class RightJoystickStateViewModel : JoystickStateViewModel
 {
     public RightJoystickStateViewModel(IDxManager manager, IJoysticksConfiguration configuration)
-        : base(manager, configuration, JoystickSides.Left) { }
+        : base(manager, configuration, JoystickSides.Right) { }
 }

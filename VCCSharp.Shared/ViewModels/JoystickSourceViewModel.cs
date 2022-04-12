@@ -4,9 +4,7 @@ using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Shared.ViewModels;
 
-public interface IJoystickSourceViewModel { }
-
-public class JoystickSourceViewModel : NotifyViewModel, ILeft<IJoystickSourceViewModel>, IRight<IJoystickSourceViewModel>
+public class JoystickSourceViewModel : NotifyViewModel, ILeft<JoystickSourceViewModel>, IRight<JoystickSourceViewModel>
 {
     private readonly JoystickSourceModel? _model;
 
@@ -61,12 +59,12 @@ public class JoystickSourceViewModel : NotifyViewModel, ILeft<IJoystickSourceVie
 
 public class LeftJoystickSourceViewModel : JoystickSourceViewModel
 {
-    public LeftJoystickSourceViewModel(ILeft<IJoystickSourceModel> model, ILeft<IJoystickStateViewModel> state, JoystickIntervalViewModel interval)
+    public LeftJoystickSourceViewModel(ILeft<JoystickSourceModel> model, ILeft<JoystickStateViewModel> state, JoystickIntervalViewModel interval)
         : base((JoystickSourceModel)model, (JoystickStateViewModel)state, interval) { }
 }
 
 public class RightJoystickSourceViewModel : JoystickSourceViewModel
 {
-    public RightJoystickSourceViewModel(IRight<IJoystickSourceModel> model, IRight<IJoystickStateViewModel> state, JoystickIntervalViewModel interval)
+    public RightJoystickSourceViewModel(IRight<JoystickSourceModel> model, IRight<JoystickStateViewModel> state, JoystickIntervalViewModel interval)
         : base((JoystickSourceModel)model, (JoystickStateViewModel)state, interval) { }
 }

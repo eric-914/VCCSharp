@@ -12,7 +12,7 @@ public class JoystickPairViewModel : NotifyViewModel
 
     public JoystickPairViewModel() { }
 
-    public JoystickPairViewModel(ILeft<IJoystickConfigurationViewModel> left, IRight<IJoystickConfigurationViewModel> right)
+    public JoystickPairViewModel(ILeft<JoystickConfigurationViewModel> left, IRight<JoystickConfigurationViewModel> right)
     {
         Left = (JoystickConfigurationViewModel)left;
         Right = (JoystickConfigurationViewModel)right;

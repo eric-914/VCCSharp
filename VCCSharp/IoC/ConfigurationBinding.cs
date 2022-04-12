@@ -35,20 +35,20 @@ internal static class ConfigurationBinding
             .Bind(() => (IRightJoystickKeyMapping)_().Joysticks.Right.KeyMap)
 
             //--Define binding mappings for left/right joystick view models
-            .Bind<ILeft<IJoystickStateViewModel>, LeftJoystickStateViewModel>()
-            .Bind<IRight<IJoystickStateViewModel>, RightJoystickStateViewModel>()
+            .Bind<ILeft<JoystickStateViewModel>, LeftJoystickStateViewModel>()
+            .Bind<IRight<JoystickStateViewModel>, RightJoystickStateViewModel>()
 
-            .Bind<ILeft<IJoystickSourceModel>, LeftJoystickSourceModel>()
-            .Bind<IRight<IJoystickSourceModel>, RightJoystickSourceModel>()
+            .Bind<ILeft<JoystickSourceModel>, LeftJoystickSourceModel>()
+            .Bind<IRight<JoystickSourceModel>, RightJoystickSourceModel>()
 
-            .Bind<ILeft<IKeyboardSourceViewModel>, LeftKeyboardSourceViewModel>()
-            .Bind<IRight<IKeyboardSourceViewModel>, RightKeyboardSourceViewModel>()
+            .Bind<ILeft<KeyboardSourceViewModel>, LeftKeyboardSourceViewModel>()
+            .Bind<IRight<KeyboardSourceViewModel>, RightKeyboardSourceViewModel>()
 
-            .Bind<ILeft<IJoystickSourceViewModel>, LeftJoystickSourceViewModel>()
-            .Bind<IRight<IJoystickSourceViewModel>, RightJoystickSourceViewModel>()
+            .Bind<ILeft<JoystickSourceViewModel>, LeftJoystickSourceViewModel>()
+            .Bind<IRight<JoystickSourceViewModel>, RightJoystickSourceViewModel>()
 
-            .Bind<ILeft<IJoystickConfigurationViewModel>, LeftJoystickConfigurationViewModel>()
-            .Bind<IRight<IJoystickConfigurationViewModel>, RightJoystickConfigurationViewModel>()
+            .Bind<ILeft<JoystickConfigurationViewModel>, LeftJoystickConfigurationViewModel>()
+            .Bind<IRight<JoystickConfigurationViewModel>, RightJoystickConfigurationViewModel>()
             ;
     }
 }

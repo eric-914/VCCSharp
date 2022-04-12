@@ -3,9 +3,7 @@ using VCCSharp.Shared.Enums;
 
 namespace VCCSharp.Shared.Models;
 
-public interface IJoystickSourceModel { }
-
-public class JoystickSourceModel : ILeft<IJoystickSourceModel>, IRight<IJoystickSourceModel>
+public class JoystickSourceModel : ILeft<JoystickSourceModel>, IRight<JoystickSourceModel>
 {
     private readonly IDxManager _manager;
     private readonly JoystickSides _side;

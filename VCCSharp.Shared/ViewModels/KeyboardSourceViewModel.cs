@@ -4,9 +4,7 @@ using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Shared.ViewModels;
 
-public interface IKeyboardSourceViewModel { }
-
-public class KeyboardSourceViewModel : NotifyViewModel, ILeft<IKeyboardSourceViewModel>, IRight<IKeyboardSourceViewModel>
+public class KeyboardSourceViewModel : NotifyViewModel, ILeft<KeyboardSourceViewModel>, IRight<KeyboardSourceViewModel>
 {
     private readonly IJoystickKeyMapping? _model;
 
