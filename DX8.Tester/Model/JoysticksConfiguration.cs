@@ -1,4 +1,5 @@
-﻿using VCCSharp.Shared.Configuration;
+﻿using DX8.Tester.Mock;
+using VCCSharp.Shared.Configuration;
 using VCCSharp.Shared.Enums;
 using VCCSharp.Shared.Models;
 
@@ -8,6 +9,11 @@ public class JoysticksConfiguration : IJoysticksConfiguration
 {
     private int _leftDeviceIndex;
     private int _rightDeviceIndex = 1;
+
+    public int Interval { get; set; } = 100;
+
+    public IJoystickConfiguration Left { get; } = new MockJoystickConfiguration();
+    public IJoystickConfiguration Right { get; } = new MockJoystickConfiguration();
 
     public int GetDeviceIndex(JoystickSides side)
     {
@@ -31,8 +37,4 @@ public class JoysticksConfiguration : IJoysticksConfiguration
         lookup[side](value);
     }
 
-    public int Interval { get; set; } = 100;
-
-    public IJoystickConfiguration Left { get; } = new NullJoystickConfiguration();
-    public IJoystickConfiguration Right { get; } = new NullJoystickConfiguration();
 }

@@ -44,8 +44,8 @@ internal class Factory : IFactory
         IJoystickConfiguration model = side == JoystickSides.Left ? configuration.Left : configuration.Right;
 
         return side == JoystickSides.Left
-            ? new LeftJoystickConfigurationViewModel((ILeftJoystickConfiguration)model, joystickSource, keyboardSource)
-            : new RightJoystickConfigurationViewModel((IRightJoystickConfiguration)model, joystickSource, keyboardSource);
+            ? new LeftJoystickConfigurationViewModel(model, joystickSource, keyboardSource)
+            : new RightJoystickConfigurationViewModel(model, joystickSource, keyboardSource);
     }
 
     private static JoystickSourceViewModel CreateJoystickSourceViewModel(IDxManager manager, IJoysticksConfiguration configuration, JoystickIntervalViewModel interval, JoystickSides side)

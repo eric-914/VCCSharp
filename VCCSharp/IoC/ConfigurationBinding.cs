@@ -29,8 +29,8 @@ internal static class ConfigurationBinding
             .Bind(() => _().Startup)
 
             //--Define binding mappings for left/right joystick configuration branches
-            .Bind(() => (ILeftJoystickConfiguration)_().Joysticks.Left)
-            .Bind(() => (IRightJoystickConfiguration)_().Joysticks.Right)
+            .Bind(() => (ILeft<IJoystickConfiguration>)_().Joysticks.Left)
+            .Bind(() => (IRight<IJoystickConfiguration>)_().Joysticks.Right)
             .Bind(() => (ILeftJoystickKeyMapping)_().Joysticks.Left.KeyMap)
             .Bind(() => (IRightJoystickKeyMapping)_().Joysticks.Right.KeyMap)
 

@@ -50,12 +50,12 @@ public class JoystickConfigurationViewModel : NotifyViewModel, ILeft<JoystickCon
 
 public class LeftJoystickConfigurationViewModel : JoystickConfigurationViewModel
 {
-    public LeftJoystickConfigurationViewModel(ILeftJoystickConfiguration model, ILeft<JoystickSourceViewModel> joystickSource, ILeft<KeyboardSourceViewModel> keyboardSource)
-        : base(model, (JoystickSourceViewModel)joystickSource, (KeyboardSourceViewModel)keyboardSource) { }
+    public LeftJoystickConfigurationViewModel(ILeft<IJoystickConfiguration> model, ILeft<JoystickSourceViewModel> joystickSource, ILeft<KeyboardSourceViewModel> keyboardSource)
+        : base((IJoystickConfiguration)model, (JoystickSourceViewModel)joystickSource, (KeyboardSourceViewModel)keyboardSource) { }
 }
 
 public class RightJoystickConfigurationViewModel : JoystickConfigurationViewModel
 {
-    public RightJoystickConfigurationViewModel(IRightJoystickConfiguration model, IRight<JoystickSourceViewModel> joystickSource, IRight<KeyboardSourceViewModel> keyboardSource)
-        : base(model, (JoystickSourceViewModel)joystickSource, (KeyboardSourceViewModel)keyboardSource) { }
+    public RightJoystickConfigurationViewModel(IRight<IJoystickConfiguration> model, IRight<JoystickSourceViewModel> joystickSource, IRight<KeyboardSourceViewModel> keyboardSource)
+        : base((IJoystickConfiguration)model, (JoystickSourceViewModel)joystickSource, (KeyboardSourceViewModel)keyboardSource) { }
 }
