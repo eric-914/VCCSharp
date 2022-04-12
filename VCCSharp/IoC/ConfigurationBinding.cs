@@ -38,17 +38,17 @@ internal static class ConfigurationBinding
             .Bind<ILeft<IJoystickStateViewModel>, LeftJoystickStateViewModel>()
             .Bind<IRight<IJoystickStateViewModel>, RightJoystickStateViewModel>()
 
-            .Bind<ILeftJoystickSourceModel, LeftJoystickSourceModel>()
-            .Bind<IRightJoystickSourceModel, RightJoystickSourceModel>()
+            .Bind<ILeft<IJoystickSourceModel>, LeftJoystickSourceModel>()
+            .Bind<IRight<IJoystickSourceModel>, RightJoystickSourceModel>()
 
-            .Bind<ILeftKeyboardSourceViewModel, LeftKeyboardSourceViewModel>()
-            .Bind<IRightKeyboardSourceViewModel, RightKeyboardSourceViewModel>()
+            .Bind<ILeft<IKeyboardSourceViewModel>, LeftKeyboardSourceViewModel>()
+            .Bind<IRight<IKeyboardSourceViewModel>, RightKeyboardSourceViewModel>()
 
-            .Bind<ILeftJoystickSourceViewModel, LeftJoystickSourceViewModel>()
-            .Bind<IRightJoystickSourceViewModel, RightJoystickSourceViewModel>()
+            .Bind<ILeft<IJoystickSourceViewModel>, LeftJoystickSourceViewModel>()
+            .Bind<IRight<IJoystickSourceViewModel>, RightJoystickSourceViewModel>()
 
-            .Bind<ILeftJoystickConfigurationViewModel, LeftJoystickConfigurationViewModel>()
-            .Bind<IRightJoystickConfigurationViewModel, RightJoystickConfigurationViewModel>()
+            .Bind<ILeft<IJoystickConfigurationViewModel>, LeftJoystickConfigurationViewModel>()
+            .Bind<IRight<IJoystickConfigurationViewModel>, RightJoystickConfigurationViewModel>()
             ;
     }
 }

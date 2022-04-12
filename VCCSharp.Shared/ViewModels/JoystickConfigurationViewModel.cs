@@ -1,15 +1,15 @@
 ﻿using VCCSharp.Shared.Configuration;
 using VCCSharp.Shared.Enums;
+using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Shared.ViewModels;
 
-public interface ILeftJoystickConfigurationViewModel { }
-public interface IRightJoystickConfigurationViewModel { }
+public interface IJoystickConfigurationViewModel { }
 
 /// <summary>
 /// Contains the different input source configurations (Joystick, Mouse, Keyboard)
 /// </summary>
-public class JoystickConfigurationViewModel : NotifyViewModel, ILeftJoystickConfigurationViewModel, IRightJoystickConfigurationViewModel
+public class JoystickConfigurationViewModel : NotifyViewModel, ILeft<IJoystickConfigurationViewModel>, IRight<IJoystickConfigurationViewModel>
 {
     private readonly IJoystickConfiguration? _model;
 
@@ -52,12 +52,12 @@ public class JoystickConfigurationViewModel : NotifyViewModel, ILeftJoystickConf
 
 public class LeftJoystickConfigurationViewModel : JoystickConfigurationViewModel
 {
-    public LeftJoystickConfigurationViewModel(ILeftJoystickConfiguration model, ILeftJoystickSourceViewModel joystickSource, ILeftKeyboardSourceViewModel keyboardSource)
+    public LeftJoystickConfigurationViewModel(ILeftJoystickConfiguration model, ILeft<IJoystickSourceViewModel> joystickSource, ILeft<IKeyboardSourceViewModel> keyboardSource)
         : base(model, (JoystickSourceViewModel)joystickSource, (KeyboardSourceViewModel)keyboardSource) { }
 }
 
 public class RightJoystickConfigurationViewModel : JoystickConfigurationViewModel
 {
-    public RightJoystickConfigurationViewModel(IRightJoystickConfiguration model, IRightJoystickSourceViewModel joystickSource, IRightKeyboardSourceViewModel keyboardSource)
+    public RightJoystickConfigurationViewModel(IRightJoystickConfiguration model, IRight<IJoystickSourceViewModel> joystickSource, IRight<IKeyboardSourceViewModel> keyboardSource)
         : base(model, (JoystickSourceViewModel)joystickSource, (KeyboardSourceViewModel)keyboardSource) { }
 }

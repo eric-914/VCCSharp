@@ -1,4 +1,6 @@
-﻿namespace VCCSharp.Shared.ViewModels;
+﻿using VCCSharp.Shared.Models;
+
+namespace VCCSharp.Shared.ViewModels;
 
 public class JoystickPairViewModel : NotifyViewModel
 {
@@ -10,7 +12,7 @@ public class JoystickPairViewModel : NotifyViewModel
 
     public JoystickPairViewModel() { }
 
-    public JoystickPairViewModel(ILeftJoystickConfigurationViewModel left, IRightJoystickConfigurationViewModel right)
+    public JoystickPairViewModel(ILeft<IJoystickConfigurationViewModel> left, IRight<IJoystickConfigurationViewModel> right)
     {
         Left = (JoystickConfigurationViewModel)left;
         Right = (JoystickConfigurationViewModel)right;

@@ -1,12 +1,12 @@
 ﻿using System.Windows.Input;
 using VCCSharp.Shared.Configuration;
+using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Shared.ViewModels;
 
-public interface ILeftKeyboardSourceViewModel { }
-public interface IRightKeyboardSourceViewModel { }
+public interface IKeyboardSourceViewModel { }
 
-public class KeyboardSourceViewModel : NotifyViewModel, ILeftKeyboardSourceViewModel, IRightKeyboardSourceViewModel
+public class KeyboardSourceViewModel : NotifyViewModel, ILeft<IKeyboardSourceViewModel>, IRight<IKeyboardSourceViewModel>
 {
     private readonly IJoystickKeyMapping? _model;
 
