@@ -9,18 +9,18 @@ public interface IRightJoystickSourceViewModel { }
 
 public class JoystickSourceViewModel : NotifyViewModel, ILeftJoystickSourceViewModel, IRightJoystickSourceViewModel
 {
-    private readonly IJoystickSourceModel? _model;
+    private readonly JoystickSourceModel? _model;
 
     public ICommand RefreshListCommand { get; } = new ActionCommand(() => throw new NotImplementedException());
 
-    public IJoystickStateViewModel State { get; } = new JoystickStateViewModel();
+    public JoystickStateViewModel State { get; } = new();
     public JoystickIntervalViewModel Interval { get; } = new();
 
     public int Count => _model?.Count ?? 0;
     
     public JoystickSourceViewModel() { }
 
-    public JoystickSourceViewModel(IJoystickSourceModel model, IJoystickStateViewModel state, JoystickIntervalViewModel interval)
+    protected JoystickSourceViewModel(JoystickSourceModel model, JoystickStateViewModel state, JoystickIntervalViewModel interval)
     {
         _model = model;
         State = state;
@@ -63,11 +63,11 @@ public class JoystickSourceViewModel : NotifyViewModel, ILeftJoystickSourceViewM
 public class LeftJoystickSourceViewModel : JoystickSourceViewModel
 {
     public LeftJoystickSourceViewModel(ILeftJoystickSourceModel model, ILeftJoystickStateViewModel state, JoystickIntervalViewModel interval)
-        : base(model, state, interval) { }
+        : base((JoystickSourceModel)model, (JoystickStateViewModel)state, interval) { }
 }
 
 public class RightJoystickSourceViewModel : JoystickSourceViewModel
 {
     public RightJoystickSourceViewModel(IRightJoystickSourceModel model, IRightJoystickStateViewModel state, JoystickIntervalViewModel interval)
-        : base(model, state, interval) { }
+        : base((JoystickSourceModel)model, (JoystickStateViewModel)state, interval) { }
 }

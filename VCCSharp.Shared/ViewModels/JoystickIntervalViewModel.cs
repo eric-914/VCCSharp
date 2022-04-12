@@ -5,7 +5,7 @@ namespace VCCSharp.Shared.ViewModels;
 
 public class JoystickIntervalViewModel : NotifyViewModel
 {
-    private readonly IInterval _configuration = new NullJoysticksConfiguration();
+    private readonly IInterval? _configuration;
     private readonly IDxManager? _manager;
 
     public JoystickIntervalViewModel() { }
@@ -18,10 +18,10 @@ public class JoystickIntervalViewModel : NotifyViewModel
 
     public int Value
     {
-        get => _configuration.Interval;
+        get => _configuration?.Interval ?? 0;
         set
         {
-            if (_configuration.Interval == value) return;
+            if (_configuration == null || _configuration.Interval == value) return;
 
             _configuration.Interval = value;
 

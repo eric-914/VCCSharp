@@ -1,18 +1,15 @@
 ﻿using DX8;
 using DX8.Models;
-using System.ComponentModel;
 using VCCSharp.Shared.Dx;
 using VCCSharp.Shared.Enums;
 using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Shared.ViewModels;
 
-public interface IJoystickStateViewModel : INotifyPropertyChanged
-{
-    IDxJoystickState State { get; }
-}
+public interface ILeftJoystickStateViewModel { }
+public interface IRightJoystickStateViewModel { }
 
-public class JoystickStateViewModel : NotifyViewModel, IJoystickStateViewModel
+public class JoystickStateViewModel : NotifyViewModel, ILeftJoystickStateViewModel, IRightJoystickStateViewModel
 {
     private IDxJoystickState _state = new NullDxJoystickState();
 
@@ -36,21 +33,14 @@ public class JoystickStateViewModel : NotifyViewModel, IJoystickStateViewModel
     }
 }
 
-#region Left/Right implementations
-
-public interface ILeftJoystickStateViewModel : IJoystickStateViewModel { }
-public interface IRightJoystickStateViewModel : IJoystickStateViewModel { }
-
-public class LeftJoystickStateViewModel : JoystickStateViewModel, ILeftJoystickStateViewModel
+public class LeftJoystickStateViewModel : JoystickStateViewModel
 {
     public LeftJoystickStateViewModel(IDxManager manager, IJoysticksConfiguration configuration)
         : base(manager, configuration, JoystickSides.Left) { }
 }
 
-public class RightJoystickStateViewModel : JoystickStateViewModel, IRightJoystickStateViewModel
+public class RightJoystickStateViewModel : JoystickStateViewModel
 {
     public RightJoystickStateViewModel(IDxManager manager, IJoysticksConfiguration configuration)
         : base(manager, configuration, JoystickSides.Left) { }
 }
-
-#endregion

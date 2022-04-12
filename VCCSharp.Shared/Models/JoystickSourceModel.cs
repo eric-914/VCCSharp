@@ -3,15 +3,10 @@ using VCCSharp.Shared.Enums;
 
 namespace VCCSharp.Shared.Models;
 
-public interface IJoystickSourceModel
-{
-    int Count { get; set; }
-    List<string> Joysticks { get; }
-    int DeviceIndex { get; set; }
-    void RefreshList();
-}
+public interface ILeftJoystickSourceModel { }
+public interface IRightJoystickSourceModel { }
 
-public class JoystickSourceModel : IJoystickSourceModel
+public class JoystickSourceModel : ILeftJoystickSourceModel, IRightJoystickSourceModel
 {
     private readonly IDxManager _manager;
     private readonly JoystickSides _side;
@@ -45,17 +40,14 @@ public class JoystickSourceModel : IJoystickSourceModel
     }
 }
 
-public interface ILeftJoystickSourceModel : IJoystickSourceModel {}
-public interface IRightJoystickSourceModel : IJoystickSourceModel {}
-
-public class LeftJoystickSourceModel : JoystickSourceModel, ILeftJoystickSourceModel
+public class LeftJoystickSourceModel : JoystickSourceModel
 {
-    public LeftJoystickSourceModel(IDxManager manager, IJoysticksConfiguration configuration) 
+    public LeftJoystickSourceModel(IDxManager manager, IJoysticksConfiguration configuration)
         : base(manager, configuration, JoystickSides.Left) { }
 }
 
-public class RightJoystickSourceModel : JoystickSourceModel, IRightJoystickSourceModel
+public class RightJoystickSourceModel : JoystickSourceModel
 {
-    public RightJoystickSourceModel(IDxManager manager, IJoysticksConfiguration configuration) 
+    public RightJoystickSourceModel(IDxManager manager, IJoysticksConfiguration configuration)
         : base(manager, configuration, JoystickSides.Right) { }
 }

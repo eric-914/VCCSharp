@@ -19,11 +19,21 @@ public class ThreadRunner : IThreadRunner
     public event TickEventHandler? Tick;
 
     private readonly IDispatcher _dispatcher;
-    private readonly IInterval _configuration = new NullInterval();
+    private readonly IInterval? _configuration;
 
     public bool IsRunning { get; private set; }
 
-    public int Interval { get => _configuration.Interval; set => _configuration.Interval = value; }
+    public int Interval
+    {
+        get => _configuration?.Interval ?? 100;
+        set
+        {
+            if (_configuration != null)
+            {
+                _configuration.Interval = value;
+            }
+        }
+    }
 
     public ThreadRunner(IDispatcher dispatcher)
     {

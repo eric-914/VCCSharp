@@ -53,7 +53,9 @@ internal class Factory : IFactory
         JoystickSourceModel model = CreateJoystickSourceModel(side, manager);
         JoystickStateViewModel state = CreateJoystickStateViewModel(manager, configuration, side);
 
-        return new JoystickSourceViewModel(model, state, interval);
+        return side == JoystickSides.Left
+            ? new LeftJoystickSourceViewModel((ILeftJoystickSourceModel)model, state, interval)
+            : new RightJoystickSourceViewModel((IRightJoystickSourceModel)model, state, interval);
     }
 
     private static JoystickStateViewModel CreateJoystickStateViewModel(IDxManager manager, IDeviceIndex configuration, JoystickSides side)
