@@ -1,6 +1,8 @@
-﻿namespace VCCSharp.Shared.Configuration;
+﻿using VCCSharp.Shared.Models;
 
-public interface IJoystickKeyMapping
+namespace VCCSharp.Shared.Configuration;
+
+public interface IJoystickKeyMapping : ILeft<IJoystickKeyMapping>, IRight<IJoystickKeyMapping>
 {
     IKeySelect Left { get; }
     IKeySelect Right { get; }
@@ -11,8 +13,6 @@ public interface IJoystickKeyMapping
     IEnumerable<string> KeyNames { get; }
 }
 
-public interface ILeftJoystickKeyMapping : IJoystickKeyMapping { }
-public interface IRightJoystickKeyMapping : IJoystickKeyMapping { }
 
 public class NullJoystickKeyMapping : IJoystickKeyMapping
 {

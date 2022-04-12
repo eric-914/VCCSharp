@@ -69,10 +69,12 @@ public class KeyboardSourceViewModel : NotifyViewModel, ILeft<KeyboardSourceView
 
 public class LeftKeyboardSourceViewModel : KeyboardSourceViewModel
 {
-    public LeftKeyboardSourceViewModel(ILeftJoystickKeyMapping model) : base(model) { }
+    public LeftKeyboardSourceViewModel(ILeft<IJoystickKeyMapping> model) 
+        : base((IJoystickKeyMapping)model) { }
 }
 
 public class RightKeyboardSourceViewModel : KeyboardSourceViewModel
 {
-    public RightKeyboardSourceViewModel(IRightJoystickKeyMapping model) : base(model) { }
+    public RightKeyboardSourceViewModel(IRight<IJoystickKeyMapping> model) 
+        : base((IJoystickKeyMapping)model) { }
 }

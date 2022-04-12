@@ -5,7 +5,7 @@ using VCCSharp.Shared.Configuration;
 
 namespace VCCSharp.Models.Configuration.Support;
 
-public class JoystickKeyMapping : ILeftJoystickKeyMapping, IRightJoystickKeyMapping
+public class JoystickKeyMapping : IJoystickKeyMapping
 {
     //--Too many keys to list out, just go look at the source
     [JsonProperty("(Comment)")]
