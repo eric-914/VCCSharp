@@ -7,24 +7,24 @@ namespace VCCSharp.Configuration.TabControls.Cpu;
 
 public class CpuTabViewModel : NotifyViewModel
 {
-    private readonly ICPUConfiguration _model = new CPU();
+    private readonly ICPUConfiguration _cpu = new CPU();
     private readonly IMemoryConfiguration _memory = new Memory();
 
-    public int MaxOverclock => _model.MaxOverclock;
+    public int MaxOverclock => _cpu.MaxOverclock;
 
     public CpuTabViewModel() { }
 
     [Inject]
-    public CpuTabViewModel(ICPUConfiguration model, IMemoryConfiguration memory)
+    public CpuTabViewModel(ICPUConfiguration cpu, IMemoryConfiguration memory)
     {
-        _model = model;
+        _cpu = cpu;
         _memory = memory;
     }
 
     public CPUTypes CpuType
     {
-        get => _model.Type.Value;
-        set => _model.Type.Value = value;
+        get => _cpu.Type.Value;
+        set => _cpu.Type.Value = value;
     }
 
     public CPUTypes? Cpu
@@ -42,12 +42,12 @@ public class CpuTabViewModel : NotifyViewModel
 
     public int CpuMultiplier
     {
-        get => _model.CpuMultiplier;
+        get => _cpu.CpuMultiplier;
         set
         {
-            if (value == _model.CpuMultiplier) return;
+            if (value == _cpu.CpuMultiplier) return;
 
-            _model.CpuMultiplier = (byte)value;
+            _cpu.CpuMultiplier = (byte)value;
             OnPropertyChanged();
         }
     }

@@ -14,18 +14,7 @@ public class AudioTabViewModel
 
     public List<string> SoundDevices { get; } = new();
 
-    public string SoundDevice 
-    {
-        get => _model.Device;
-        set => _model.Device = value;
-    }
-
     public List<string> SoundRates { get; } = new() { "Disabled", "11025 Hz", "22050 Hz", "44100 Hz" };
-    public AudioRates AudioRate
-    {
-        get => _model.Rate.Value;
-        set => _model.Rate.Value = value;
-    }
 
     public AudioTabViewModel() { }
 
@@ -36,5 +25,17 @@ public class AudioTabViewModel
 
         SoundDevices = audio.FindSoundDevices();
         Spectrum = audio.Spectrum;
+    }
+
+    public string SoundDevice 
+    {
+        get => _model.Device;
+        set => _model.Device = value;
+    }
+
+    public AudioRates AudioRate
+    {
+        get => _model.Rate.Value;
+        set => _model.Rate.Value = value;
     }
 }

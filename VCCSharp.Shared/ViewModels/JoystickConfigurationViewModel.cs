@@ -1,20 +1,10 @@
-﻿using System.ComponentModel;
-using VCCSharp.Shared.Configuration;
+﻿using VCCSharp.Shared.Configuration;
 using VCCSharp.Shared.Enums;
 
 namespace VCCSharp.Shared.ViewModels;
 
-public interface IJoystickConfigurationViewModel : INotifyPropertyChanged
-{
-    IJoystickSourceViewModel JoystickSource { get; }
-    IKeyboardSourceViewModel KeyboardSource { get; }
-    JoystickDevices InputSource { get; set; }
-    JoystickEmulations Emulation { get; set; }
-}
-
-public interface ILeftJoystickConfigurationViewModel : IJoystickConfigurationViewModel { }
-public interface IRightJoystickConfigurationViewModel : IJoystickConfigurationViewModel { }
-
+public interface ILeftJoystickConfigurationViewModel { }
+public interface IRightJoystickConfigurationViewModel { }
 
 /// <summary>
 /// Contains the different input source configurations (Joystick, Mouse, Keyboard)
@@ -23,12 +13,12 @@ public class JoystickConfigurationViewModel : NotifyViewModel, ILeftJoystickConf
 {
     private readonly IJoystickConfiguration? _model;
 
-    public IJoystickSourceViewModel JoystickSource { get; } = new JoystickSourceViewModel();
-    public IKeyboardSourceViewModel KeyboardSource { get; } = new KeyboardSourceViewModel();
+    public JoystickSourceViewModel JoystickSource { get; } = new();
+    public KeyboardSourceViewModel KeyboardSource { get; } = new();
 
     public JoystickConfigurationViewModel() { }
 
-    public JoystickConfigurationViewModel(IJoystickConfiguration model, IJoystickSourceViewModel joystickSource, IKeyboardSourceViewModel keyboardSource)
+    protected JoystickConfigurationViewModel(IJoystickConfiguration model, JoystickSourceViewModel joystickSource, KeyboardSourceViewModel keyboardSource)
     {
         _model = model;
         JoystickSource = joystickSource;
@@ -63,11 +53,11 @@ public class JoystickConfigurationViewModel : NotifyViewModel, ILeftJoystickConf
 public class LeftJoystickConfigurationViewModel : JoystickConfigurationViewModel
 {
     public LeftJoystickConfigurationViewModel(ILeftJoystickConfiguration model, ILeftJoystickSourceViewModel joystickSource, ILeftKeyboardSourceViewModel keyboardSource)
-        : base(model, joystickSource, keyboardSource) { }
+        : base(model, (JoystickSourceViewModel)joystickSource, (KeyboardSourceViewModel)keyboardSource) { }
 }
 
 public class RightJoystickConfigurationViewModel : JoystickConfigurationViewModel
 {
     public RightJoystickConfigurationViewModel(IRightJoystickConfiguration model, IRightJoystickSourceViewModel joystickSource, IRightKeyboardSourceViewModel keyboardSource)
-        : base(model, joystickSource, keyboardSource) { }
+        : base(model, (JoystickSourceViewModel)joystickSource, (KeyboardSourceViewModel)keyboardSource) { }
 }

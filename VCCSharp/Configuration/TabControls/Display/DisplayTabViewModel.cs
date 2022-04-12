@@ -7,28 +7,28 @@ namespace VCCSharp.Configuration.TabControls.Display;
 
 public class DisplayTabViewModel : NotifyViewModel
 {
-    private readonly ICPUConfiguration _model = new CPU();
+    private readonly ICPUConfiguration _cpu = new CPU();
     private readonly IVideoConfiguration _video = new Video();
     private readonly IWindowConfiguration _window = new Window();
 
     public DisplayTabViewModel() { }
 
     [Inject]
-    public DisplayTabViewModel(ICPUConfiguration model, IVideoConfiguration video, IWindowConfiguration window)
+    public DisplayTabViewModel(ICPUConfiguration cpu, IVideoConfiguration video, IWindowConfiguration window)
     {
-        _model = model;
+        _cpu = cpu;
         _video = video;
         _window = window;
     }
 
     public int FrameSkip
     {
-        get => _model.FrameSkip;
+        get => _cpu.FrameSkip;
         set
         {
-            if (_model.FrameSkip == (byte)value) return;
+            if (_cpu.FrameSkip == (byte)value) return;
 
-            _model.FrameSkip = (byte)value;
+            _cpu.FrameSkip = (byte)value;
             OnPropertyChanged();
         }
     }
@@ -95,12 +95,12 @@ public class DisplayTabViewModel : NotifyViewModel
 
     public bool SpeedThrottle
     {
-        get => _model.ThrottleSpeed;
+        get => _cpu.ThrottleSpeed;
         set
         {
-            if (value == _model.ThrottleSpeed) return;
+            if (value == _cpu.ThrottleSpeed) return;
 
-            _model.ThrottleSpeed = value;
+            _cpu.ThrottleSpeed = value;
             OnPropertyChanged();
         }
     }

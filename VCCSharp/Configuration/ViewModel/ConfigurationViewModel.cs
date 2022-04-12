@@ -39,12 +39,10 @@ public class ConfigurationViewModel : NotifyViewModel
     public string Release { get; set; } = "Release";
 
     public string ExternalBasicImage { get; set; } = "External Basic Image";
-
-
+    
     //[Module]
     public string ModulePath { get; set; } = "Module Path";
-
-
+    
     //[DefaultPaths]
     public string CassettePath { get; set; } = "Cassette Path";
     public string PakPath { get; set; } = "Pak Path";

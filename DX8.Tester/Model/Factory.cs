@@ -30,8 +30,8 @@ internal class Factory : IFactory
     {
         JoystickIntervalViewModel interval = CreateJoystickIntervalViewModel(manager, configuration);
 
-        ILeftJoystickConfigurationViewModel left = CreateJoystickConfigurationViewModel(manager, configuration, interval, JoystickSides.Left);
-        IRightJoystickConfigurationViewModel right = CreateJoystickConfigurationViewModel(manager, configuration, interval, JoystickSides.Right);
+        var left = (LeftJoystickConfigurationViewModel)CreateJoystickConfigurationViewModel(manager, configuration, interval, JoystickSides.Left);
+        var right = (RightJoystickConfigurationViewModel)CreateJoystickConfigurationViewModel(manager, configuration, interval, JoystickSides.Right);
 
         return new JoystickPairViewModel(left, right);
     }

@@ -28,5 +28,4 @@ public class KeyboardTabViewModel
         get => _model.Layout.Value;
         set => _model.Layout.Value = value;
     }
-
 }

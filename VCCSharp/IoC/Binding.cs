@@ -3,8 +3,6 @@ using VCCSharp.BitBanger;
 using VCCSharp.Configuration;
 using VCCSharp.Main;
 using VCCSharp.Menu;
-using VCCSharp.Models.CPU.HD6309;
-using VCCSharp.Models.CPU.MC6809;
 using VCCSharp.Models.Joystick;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Modules;
@@ -30,6 +28,7 @@ internal static class Binding
             .Include(DxBinding.Bind)                 //--Bind to DX8 library and the DxManager
             .Include(ConfigurationBinding.Bind)      //--Configuration
             .Include(ModuleBinding.Bind)             //--Modules
+            .Include(CpuBinding.Bind)                //--CPU's
             
             //--Specialized Factories
             .Singleton<IViewModelFactory, ViewModelFactory>()
@@ -40,10 +39,6 @@ internal static class Binding
 
             //--Models
             .Bind<IKeyboardAsJoystick, KeyboardAsJoystick>()
-
-            //--CPU's
-            .Singleton<IHD6309, HD6309>()
-            .Singleton<IMC6809, MC6809>()
 
             //--Modules container/accessor
             .Singleton<IModules, Modules>()

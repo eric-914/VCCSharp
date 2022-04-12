@@ -3,16 +3,16 @@
 public class JoystickPairViewModel : NotifyViewModel
 {
     //[LeftJoyStick]
-    public IJoystickConfigurationViewModel Left { get; } = new JoystickConfigurationViewModel();
+    public JoystickConfigurationViewModel Left { get; } = new();
 
     //[RightJoyStick]
-    public IJoystickConfigurationViewModel Right { get; } = new JoystickConfigurationViewModel();
+    public JoystickConfigurationViewModel Right { get; } = new();
 
     public JoystickPairViewModel() { }
 
     public JoystickPairViewModel(ILeftJoystickConfigurationViewModel left, IRightJoystickConfigurationViewModel right)
     {
-        Left = left;
-        Right = right;
+        Left = (JoystickConfigurationViewModel)left;
+        Right = (JoystickConfigurationViewModel)right;
     }
 }

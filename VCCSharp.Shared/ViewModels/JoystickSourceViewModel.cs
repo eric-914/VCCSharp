@@ -1,23 +1,11 @@
-﻿using System.ComponentModel;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using VCCSharp.Shared.Commands;
 using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Shared.ViewModels;
 
-public interface IJoystickSourceViewModel : INotifyPropertyChanged
-{
-    ICommand RefreshListCommand { get; }
-    IJoystickStateViewModel State { get; }
-    JoystickIntervalViewModel Interval { get; }
-    int Count { get; }
-    int DeviceIndex { get; set; }
-    List<string> AvailableJoysticks { get; }
-    void RefreshList();
-}
-
-public interface ILeftJoystickSourceViewModel : IJoystickSourceViewModel { }
-public interface IRightJoystickSourceViewModel : IJoystickSourceViewModel { }
+public interface ILeftJoystickSourceViewModel { }
+public interface IRightJoystickSourceViewModel { }
 
 public class JoystickSourceViewModel : NotifyViewModel, ILeftJoystickSourceViewModel, IRightJoystickSourceViewModel
 {
