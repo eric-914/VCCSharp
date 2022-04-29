@@ -12,8 +12,15 @@ public class JoysticksConfiguration : IJoysticksConfiguration
 
     public int Interval { get; set; } = 100;
 
-    public IJoystickConfiguration Left { get; } = new MockJoystickConfiguration();
-    public IJoystickConfiguration Right { get; } = new MockJoystickConfiguration();
+    public IJoystickConfiguration Left { get; } = new MockJoystickConfiguration
+    {
+        DeviceIndex = 0
+    };
+
+    public IJoystickConfiguration Right { get; } = new MockJoystickConfiguration
+    {
+        DeviceIndex = 1
+    };
 
     public int GetDeviceIndex(JoystickSides side)
     {

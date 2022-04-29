@@ -11,7 +11,7 @@ public class JoystickSourceViewModel : NotifyViewModel, ILeft<JoystickSourceView
     public ICommand RefreshListCommand { get; } = new ActionCommand(() => throw new NotImplementedException());
 
     public JoystickStateViewModel State { get; } = new();
-    public JoystickIntervalViewModel Interval { get; } = new();
+    public JoystickIntervalViewModel Interval { get; } = new(); //--Both joysticks are bound to the same interval VM.
 
     public int Count => _model?.Count ?? 0;
     
@@ -34,6 +34,7 @@ public class JoystickSourceViewModel : NotifyViewModel, ILeft<JoystickSourceView
         set
         {
             if (_model != null) _model.DeviceIndex = value;
+            OnPropertyChanged();
         }
     }
 
