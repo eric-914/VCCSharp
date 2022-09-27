@@ -1,8 +1,7 @@
-﻿namespace VCCSharp.Enums
+﻿namespace VCCSharp.Enums;
+
+public enum KeyStates
 {
-    public enum KeyStates
-    {
-        Up = 0,
-        Down = 1
-    }
+    Up = 0,
+    Down = 1
 }

@@ -1,12 +1,10 @@
-﻿using System;
-using VCCSharp.Models;
+﻿using VCCSharp.Models;
 
 namespace VCCSharp;
 
 public interface ICommandLineParser
 {
     CmdLineArguments? Parse();
-    void Help();
 }
 
 public class CommandLineParser : ICommandLineParser

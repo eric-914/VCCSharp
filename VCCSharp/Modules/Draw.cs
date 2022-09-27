@@ -1,5 +1,4 @@
 ﻿using DX8;
-using System;
 using System.Windows;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
@@ -18,14 +17,11 @@ public interface IDraw : IModule
     bool CreateDirectDrawWindow();
     void DoCls();
     void FullScreenToggle();
-    void SetAspect();
     void SetStatusBarText(string textBuffer);
     float Static();
 
     bool LockScreen();
     void UnlockScreen();
-
-    RECT GetWindowSize(IntPtr hWnd);
 
     bool InfoBand { get; set; }
 }

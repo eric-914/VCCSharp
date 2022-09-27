@@ -1,5 +1,4 @@
-﻿using System;
-using VCCSharp.Models.Configuration;
+﻿using VCCSharp.Models.Configuration;
 using VCCSharp.Modules;
 using VCCSharp.Shared.ViewModels;
 

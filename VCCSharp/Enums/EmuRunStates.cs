@@ -1,9 +1,8 @@
-﻿namespace VCCSharp.Enums
+﻿namespace VCCSharp.Enums;
+
+public enum EmuRunStates
 {
-    public enum EmuRunStates
-    {
-        Running = 0,
-        ReqWait = 1,
-        Waiting = 2
-    }
+    Running = 0,
+    ReqWait = 1,
+    Waiting = 2
 }

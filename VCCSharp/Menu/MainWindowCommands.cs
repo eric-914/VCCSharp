@@ -1,28 +1,26 @@
-﻿using System.Linq;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
-namespace VCCSharp.Menu
+namespace VCCSharp.Menu;
+
+public class MainWindowCommands
 {
-    public class MainWindowCommands
+    public IMainMenu MenuItems { get; }
+    public CommandBindings CommandBindings { get; }
+    public InputBindings InputBindings { get; } = new();
+
+    public MainWindowCommands(IMainMenu menuItems, MainCommands commandBindings)
     {
-        public IMainMenu MenuItems { get; }
-        public CommandBindings CommandBindings { get; }
-        public InputBindings InputBindings { get; } = new();
+        MenuItems = menuItems;
+        CommandBindings = commandBindings;
 
-        public MainWindowCommands(IMainMenu menuItems, MainCommands commandBindings)
+        var menuCommands = from each in commandBindings
+            let command = each.Command as MenuCommand
+            where command != null && command.Key != Key.None
+            select command;
+
+        foreach (var each in menuCommands)
         {
-            MenuItems = menuItems;
-            CommandBindings = commandBindings;
-
-            var menuCommands = from each in commandBindings
-                let command = each.Command as MenuCommand
-                where command != null && command.Key != Key.None
-                select command;
-
-            foreach (var each in menuCommands)
-            {
-                InputBindings.Add(each);
-            }
+            InputBindings.Add(each);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using VCCSharp.Configuration.ViewModel;
-using VCCSharp.Main;
+﻿using VCCSharp.Main;
 using VCCSharp.Menu;
 
 namespace VCCSharp.IoC;

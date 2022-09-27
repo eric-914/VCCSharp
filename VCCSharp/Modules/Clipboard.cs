@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
@@ -11,7 +8,6 @@ namespace VCCSharp.Modules;
 
 public interface IClipboard : IModule
 {
-    void PasteText(string text);
     bool ClipboardEmpty();
     IKey PeekClipboard();
     void PopClipboard();

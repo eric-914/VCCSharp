@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using VCCSharp.Enums;
+﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
 using VCCSharp.Models.Audio;

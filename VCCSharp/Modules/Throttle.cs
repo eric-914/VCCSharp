@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using VCCSharp.IoC;
+﻿using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Libraries.Models;
 using VCCSharp.Models;

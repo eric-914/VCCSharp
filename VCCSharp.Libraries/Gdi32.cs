@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace VCCSharp.Libraries
+﻿namespace VCCSharp.Libraries
 {
     public interface IGdi32
     {

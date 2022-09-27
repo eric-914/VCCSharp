@@ -1,9 +1,8 @@
-﻿namespace VCCSharp.Enums
+﻿namespace VCCSharp.Enums;
+
+public enum PhaseStates
 {
-    public enum PhaseStates
-    {
-        Falling = 0,
-        Rising = 1,
-        Any = 2
-    }
+    Falling = 0,
+    Rising = 1,
+    Any = 2
 }

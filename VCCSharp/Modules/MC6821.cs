@@ -14,7 +14,6 @@ public interface IMC6821 : IModule
     void PiaReset();
     void IrqFs(PhaseStates phase);
     void IrqHs(PhaseStates phase);
-    void SetCartAutoStart();
     void ClosePrintFile();
     void SetMonState(bool state);
     void SetSerialParams(bool textMode);

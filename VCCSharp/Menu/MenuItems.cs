@@ -1,8 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace VCCSharp.Menu
+namespace VCCSharp.Menu;
+
+public class MenuItems : ObservableCollection<MenuItemViewModel>
 {
-    public class MenuItems : ObservableCollection<MenuItemViewModel>
-    {
-    }
 }

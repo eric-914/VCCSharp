@@ -1,21 +1,19 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows.Data;
 
-namespace VCCSharp.Converters
+namespace VCCSharp.Converters;
+
+public class CpuMultiplierToTextConverter : IValueConverter
 {
-    public class CpuMultiplierToTextConverter : IValueConverter
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            float transform = (float)((int) (value ?? 1) * 0.894);
+        float transform = (float)((int) (value ?? 1) * 0.894);
 
-            return $"{transform:F3} Mhz";
-        }
+        return $"{transform:F3} Mhz";
+    }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -1,8 +1,7 @@
-﻿namespace VCCSharp.Enums
+﻿namespace VCCSharp.Enums;
+
+public enum PaletteTypes
 {
-    public enum PaletteTypes
-    {
-        Updated = 0,
-        Original = 1
-    }
+    Updated = 0,
+    Original = 1
 }

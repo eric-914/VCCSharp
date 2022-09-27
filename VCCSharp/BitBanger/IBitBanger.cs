@@ -1,10 +1,9 @@
-﻿namespace VCCSharp.BitBanger
-{
-    public interface IBitBanger
-    {
-        void ShowDialog();
+﻿namespace VCCSharp.BitBanger;
 
-        void Open();
-        void Close();
-    }
+public interface IBitBanger
+{
+    void ShowDialog();
+
+    void Open();
+    void Close();
 }

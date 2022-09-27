@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models.Configuration;
@@ -13,7 +12,6 @@ public interface IEmu : IModule
 
     void SoftReset();
     void HardReset();
-    void SetCpuMultiplier();
     void SetCpuMultiplierFlag(byte doubleSpeed);
     void SetTurboMode(byte data);
 

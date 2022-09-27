@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
@@ -95,19 +94,19 @@ public class Cassette : ICassette
                 break;
 
             case TapeFileType.CAS:
-                LoadCassetteBufferCas(buffer, ref bytesMoved);
+                LoadCassetteBufferCas(buffer);
                 break;
         }
 
         UpdateTapeDialog((int)TapeOffset);
     }
 
-    public void LoadCassetteBufferCas(byte[] buffer, ref uint bytesMoved)
+    private void LoadCassetteBufferCas(byte[] buffer)
     {
-        CasToWav(buffer, Define.TAPEAUDIORATE / 60, ref bytesMoved);
+        CasToWav(buffer, Define.TAPEAUDIORATE / 60);
     }
 
-    public void CasToWav(byte[] buffer, ushort bytesToConvert, ref uint bytesConverted)
+    private void CasToWav(byte[] buffer, ushort bytesToConvert)
     {
         if (_quiet > 0)
         {
@@ -122,7 +121,7 @@ public class Cassette : ICassette
             return;
         }
 
-        if ((TapeOffset > _totalSize) || (_totalSize == 0)) //End of tape return nothing
+        if (TapeOffset > _totalSize || _totalSize == 0) //End of tape return nothing
         {
             //memset(buffer, 0, bytesToConvert);
             for (int index = 0; index < bytesToConvert; index++)
@@ -135,7 +134,7 @@ public class Cassette : ICassette
             return;
         }
 
-        while ((TempIndex < bytesToConvert) && (TapeOffset <= _totalSize))
+        while (TempIndex < bytesToConvert && TapeOffset <= _totalSize)
         {
             var b = CasBuffer[(TapeOffset++) % _totalSize];
 
@@ -312,17 +311,17 @@ public class Cassette : ICassette
         return TapeOffset;
     }
 
-    public void FlushCassetteCas(byte[] buffer, uint length)
+    private void FlushCassetteCas(byte[] buffer, uint length)
     {
         for (int index = 0; index < length; index++)
         {
             var sample = buffer[index];
 
-            if ((_lastSample <= 0x80) && (sample > 0x80)) //Low to High transition
+            if (_lastSample <= 0x80 && sample > 0x80) //Low to High transition
             {
                 var width = index - LastTrans;
 
-                if ((width < 10) || (width > 50)) //Invalid Sample Skip it
+                if (width < 10 || width > 50) //Invalid Sample Skip it
                 {
                     _lastSample = 0;
                     LastTrans = index;
@@ -431,7 +430,7 @@ public class Cassette : ICassette
         return 1;
     }
 
-    public void SyncFileBuffer()
+    private void SyncFileBuffer()
     {
         _kernel.SetFilePointer(TapeHandle, Define.FILE_BEGIN);
 
@@ -449,7 +448,7 @@ public class Cassette : ICassette
         _kernel.FlushFileBuffers(TapeHandle);
     }
 
-    public void SyncFileBufferCas()
+    private void SyncFileBufferCas()
     {
         CasBuffer[TapeOffset] = _byte;	//capture the last byte
         LastTrans = 0;	//reset all static inter-call variables
@@ -461,7 +460,7 @@ public class Cassette : ICassette
         _kernel.WriteFile(TapeHandle, CasBuffer, TapeOffset);
     }
 
-    public void SyncFileBufferWav()
+    private void SyncFileBufferWav()
     {
         uint formatSize = 16;		//size of WAVE section chunk
         ushort waveType = 1;		//WAVE type format

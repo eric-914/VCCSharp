@@ -1,7 +1,6 @@
-﻿namespace VCCSharp.Enums
+﻿namespace VCCSharp.Enums;
+
+public enum ShowWindowCommands
 {
-    public enum ShowWindowCommands
-    {
-        Normal = 1
-    }
+    Normal = 1
 }

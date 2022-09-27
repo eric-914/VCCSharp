@@ -1,10 +1,9 @@
-﻿namespace VCCSharp.Enums
+﻿namespace VCCSharp.Enums;
+
+public enum MouseButtonStates
 {
-    public enum MouseButtonStates
-    {
-        LeftUp,
-        LeftDown,
-        RightUp,
-        RightDown
-    }
+    LeftUp,
+    LeftDown,
+    RightUp,
+    RightDown
 }

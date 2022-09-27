@@ -1,5 +1,4 @@
 ﻿using Microsoft.Win32;
-using System;
 using System.IO;
 using VCCSharp.IoC;
 using VCCSharp.Models.Configuration;

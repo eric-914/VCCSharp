@@ -1,12 +1,9 @@
-﻿namespace VCCSharp.Enums
+﻿namespace VCCSharp.Enums;
+
+public enum TapeModes : byte
 {
-    // ReSharper disable InconsistentNaming
-    public enum TapeModes : byte
-    {
-        Stop = 0,
-        Play = 1,
-        Record = 2,
-        Eject = 3
-    }
-    // ReSharper restore InconsistentNaming
+    Stop = 0,
+    Play = 1,
+    Record = 2,
+    Eject = 3
 }

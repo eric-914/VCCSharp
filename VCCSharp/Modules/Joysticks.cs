@@ -17,7 +17,6 @@ public interface IJoysticks : IModule
     void SetJoystick(System.Windows.Size clientSize, System.Windows.Point point);
     byte SetJoystickFromKeyboard(byte scanCode, bool keyDown);
 
-    IDxJoystickState JoystickPoll(int index);
     int GetPotValue(Pots pot);
 
     ushort StickValue { get; set; }
@@ -29,9 +28,7 @@ public interface IJoysticks : IModule
 public class Joysticks : IJoysticks
 {
     //--Goal is to bring the horizontal/vertical direction to within CoCo's 0-63 range.
-    //private const int MIN = 0;
-    private const int MAX = 63;
-    //private const int CENTER = 32;
+    private const int Max = 63;
 
     private readonly IConfiguration _configuration;
     private readonly IDxManager _manager;
@@ -160,14 +157,14 @@ public class Joysticks : IJoysticks
         ushort x = (ushort)point.X;
         ushort y = (ushort)point.Y;
 
-        if (x > MAX)
+        if (x > Max)
         {
-            x = MAX;
+            x = Max;
         }
 
-        if (y > MAX)
+        if (y > Max)
         {
-            y = MAX;
+            y = Max;
         }
 
         if (_configuration.Joysticks.Left.InputSource.Value == JoystickDevices.Mouse)

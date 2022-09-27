@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using VCCSharp.Models.Keyboard;
+﻿using VCCSharp.Models.Keyboard;
 using VCCSharp.Models.Keyboard.Definitions;
 
 namespace VCCSharp.Modules;

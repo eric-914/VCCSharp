@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
@@ -17,12 +16,10 @@ public interface IGraphics : IModule
     IntPointer GetGraphicsSurface();
 
     void ResetGraphicsState();
-    void ResetPalette();
     void SetBlinkState(byte state);
     void SetBorderChange();
     void SetVidMask(uint mask);
     void SetPaletteType();
-    void SetScanLines();
     void SetMonitorType();
     void FlipArtifacts();
     void InvalidateBorder();
