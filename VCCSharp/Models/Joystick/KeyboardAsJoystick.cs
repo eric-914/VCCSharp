@@ -95,6 +95,19 @@ public class KeyboardAsJoystick : IKeyboardAsJoystick
     private static bool Compare(byte scanCode, Key key)
     {
         //Fix this if it ever gets invoked, I guess.
-        throw new NotImplementedException();
+        switch (scanCode)
+        {
+            case 208: return key == Key.D2;
+            case 203: return key == Key.D4;
+            case 205: return key == Key.D6;
+            case 200: return key == Key.D8;
+            case 210: return key == Key.D0;
+            case 211: return key == Key.Decimal;
+        }
+
+        //Debug.WriteLine($"Compare({scanCode}, {key})");
+
+        //throw new NotImplementedException();
+        return false;
     }
 }
