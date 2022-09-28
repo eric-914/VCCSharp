@@ -1,5 +1,7 @@
 ﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
+using VCCSharp.Models.CPU.HD6309.OpCodes;
+using VCCSharp.Models.CPU.HD6309.Registers;
 
 namespace VCCSharp.Models.CPU.HD6309;
 

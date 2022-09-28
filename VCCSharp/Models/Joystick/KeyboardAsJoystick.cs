@@ -95,19 +95,17 @@ public class KeyboardAsJoystick : IKeyboardAsJoystick
     private static bool Compare(byte scanCode, Key key)
     {
         //Fix this if it ever gets invoked, I guess.
-        switch (scanCode)
-        {
-            case 208: return key == Key.D2;
-            case 203: return key == Key.D4;
-            case 205: return key == Key.D6;
-            case 200: return key == Key.D8;
-            case 210: return key == Key.D0;
-            case 211: return key == Key.Decimal;
-        }
-
         //Debug.WriteLine($"Compare({scanCode}, {key})");
-
+        return scanCode switch
+        {
+            208 => key == Key.D2,
+            203 => key == Key.D4,
+            205 => key == Key.D6,
+            200 => key == Key.D8,
+            210 => key == Key.D0,
+            211 => key == Key.Decimal,
+            _ => false
+        };
         //throw new NotImplementedException();
-        return false;
     }
 }

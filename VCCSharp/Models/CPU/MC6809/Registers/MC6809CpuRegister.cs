@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace VCCSharp.Models.CPU.MC6809;
+namespace VCCSharp.Models.CPU.MC6809.Registers;
 
 [StructLayout(LayoutKind.Explicit)]
 // ReSharper disable once InconsistentNaming

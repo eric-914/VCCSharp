@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
+using VCCSharp.Modules.TC1014.Masks;
 
 namespace VCCSharp.Modules.TC1014;
 
@@ -42,95 +41,12 @@ public partial class TC1014 : ITC1014
     private readonly IModules _modules;
     private IGraphics Graphics => _modules.Graphics;
 
-    //private readonly uint[] _memConfig = { 0x20000, 0x80000, 0x200000, 0x800000 };
-    private readonly Dictionary<MemorySizes, uint> _memConfig = new()
-    {
-        //TODO: Verify
-        { MemorySizes._4K, 0x01000 },
-        { MemorySizes._16K, 0x04000 },
-        { MemorySizes._32K, 0x08000 },
-        { MemorySizes._64K, 0x10000 },
-
-        { MemorySizes._128K, 0x20000 },
-        { MemorySizes._512K, 0x80000 },
-        { MemorySizes._2048K, 0x200000 },
-        { MemorySizes._8192K, 0x800000 }
-    };
-
-    //private readonly ushort[] _ramMask = { 15, 63, 255, 1023 };
-    private readonly Dictionary<MemorySizes, ushort> _ramMask = new()
-    {
-        //TODO: Verify
-        { MemorySizes._4K, 0 },
-        { MemorySizes._16K, 1 },
-        { MemorySizes._32K, 3 },
-        { MemorySizes._64K, 7 },
-
-        { MemorySizes._128K, 15 },
-        { MemorySizes._512K, 63 },
-        { MemorySizes._2048K, 255 },
-        { MemorySizes._8192K, 1023 }
-    };
-
-    //private readonly byte[] _stateSwitch = { 8, 56, 56, 56 };
-    private readonly Dictionary<MemorySizes, byte> _stateSwitch = new()
-    {
-        //TODO: Verify
-        { MemorySizes._4K, 8 },
-        { MemorySizes._16K, 8 },
-        { MemorySizes._32K, 8 },
-        { MemorySizes._64K, 8 },
-
-        { MemorySizes._128K, 8 },
-        { MemorySizes._512K, 56 },
-        { MemorySizes._2048K, 56 },
-        { MemorySizes._8192K, 56 }
-    };
-
-    //private readonly uint[] _vidMask = { 0x1FFFF, 0x7FFFF, 0x1FFFFF, 0x7FFFFF };
-    private readonly Dictionary<MemorySizes, uint> _vidMask = new()
-    {
-        //TODO: Verify
-        { MemorySizes._4K, 0x0FFF },
-        { MemorySizes._16K, 0x3FFF },
-        { MemorySizes._32K, 0x7FFF },
-        { MemorySizes._64K, 0xFFFF },
-
-        { MemorySizes._128K, 0x1FFFF },
-        { MemorySizes._512K, 0x7FFFF },
-        { MemorySizes._2048K, 0x1FFFFF },
-        { MemorySizes._8192K, 0x7FFFFF }
-    };
-
-    //private readonly byte[] _vectorMask = { 15, 63, 63, 63 };
-    private readonly Dictionary<MemorySizes, byte> _vectorMask = new()
-    {
-        //TODO: Verify
-        { MemorySizes._4K, 15 },
-        { MemorySizes._16K, 15 },
-        { MemorySizes._32K, 15 },
-        { MemorySizes._64K, 15 },
-
-        { MemorySizes._128K, 15 },
-        { MemorySizes._512K, 63 },
-        { MemorySizes._2048K, 63 },
-        { MemorySizes._8192K, 63 }
-    };
-
-    //private readonly byte[] _vectorMaskA = { 12, 60, 60, 60 };
-    private readonly Dictionary<MemorySizes, byte> _vectorMaskA = new()
-    {
-        //TODO: Verify
-        { MemorySizes._4K, 12 },
-        { MemorySizes._16K, 12 },
-        { MemorySizes._32K, 12 },
-        { MemorySizes._64K, 12 },
-
-        { MemorySizes._128K, 12 },
-        { MemorySizes._512K, 60 },
-        { MemorySizes._2048K, 60 },
-        { MemorySizes._8192K, 60 }
-    };
+    private readonly MemoryConfigurations _memConfiguration = new();
+    private readonly RamMask _ramMask = new();
+    private readonly MemorySizeStates _stateSwitch = new();
+    private readonly VideoMasks _videoMask = new();
+    private readonly VectorMasks _vectorMask = new();
+    private readonly VectorMasksAlt _vectorMaskAlt = new();
 
     private byte _vdgMode;
     private byte _disOffset;
@@ -274,26 +190,15 @@ Could not locate {rom} in any of these locations:
     *****************************************************************************************/
     public bool MmuInit(MemorySizes ramSizeOption)
     {
-        uint ramSize = _memConfig[ramSizeOption];
+        uint ramSize = _memConfiguration[ramSizeOption];
 
         _currentRamConfig = ramSizeOption;
 
         _ram.Reset(ramSize);
 
-        //--Well, this explains the vertical bands when you start a graphics mode in BASIC w/out PCLS
-        for (int index = 0; index < ramSize; index++)
-        {
-            _ram[index] = (byte)((index & 1) == 0 ? 0 : 0xFF);
-        }
+        Graphics.SetVidMask(_videoMask[_currentRamConfig]);
 
-        Graphics.SetVidMask(_vidMask[_currentRamConfig]);
-
-        _irb.Reset(0x8001); //--TODO: Weird that the extra byte is needed here
-
-        for (int index = 0; index <= 0x8000; index++)
-        {
-            _irb[index] = 0xFF;
-        }
+        _irb.Reset(0x8000);
 
         CopyRom();
         MmuReset();
@@ -363,7 +268,7 @@ Could not locate {rom} in any of these locations:
         if (_ramVectors != 0)
         {
             //Address must be $FE00 - $FEFF
-            return (_ram[(0x2000 * _vectorMask[_currentRamConfig]) | (address & 0x1FFF)]);
+            return _ram[(0x2000 * _vectorMask[_currentRamConfig]) | (address & 0x1FFF)];
         }
 
         return MemRead8(address);
@@ -378,10 +283,10 @@ Could not locate {rom} in any of these locations:
 
             ushort mmu = _mmuRegisters[_mmuState, index];
 
-            byte maskA = _vectorMaskA[_currentRamConfig];
+            byte maskA = _vectorMaskAlt[_currentRamConfig];
             byte maskB = _vectorMask[_currentRamConfig];
 
-            if ((_mapType != 0) || (mmu < maskA) || (mmu > maskB))
+            if (_mapType != 0 || mmu < maskA || mmu > maskB)
             {
                 _memPages[mmu][mask] = data;
             }
@@ -426,7 +331,7 @@ Could not locate {rom} in any of these locations:
             return _rom[0x3F00 + port];
         }
 
-        return (0);
+        return 0;
     }
 
     public void SAMWrite(byte data, byte port)

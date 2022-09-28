@@ -31,6 +31,11 @@ namespace VCCSharp.Modules.TC1014
         public void Reset(uint size)
         {
             _buffer = new byte[size];
+
+            for (int index = 0; index < size; index++)
+            {
+                _buffer[index] = 0xFF;
+            }
         }
 
         public void Reset(BytePointer source)

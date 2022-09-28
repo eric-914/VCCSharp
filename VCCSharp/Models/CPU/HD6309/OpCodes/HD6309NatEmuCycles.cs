@@ -1,4 +1,4 @@
-﻿namespace VCCSharp.Models.CPU.HD6309;
+﻿namespace VCCSharp.Models.CPU.HD6309.OpCodes;
 
 // ReSharper disable once InconsistentNaming
 public class HD6309NatEmuCycles

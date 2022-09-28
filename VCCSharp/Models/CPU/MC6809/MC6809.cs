@@ -1,5 +1,6 @@
 ﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
+using VCCSharp.Models.CPU.MC6809.Registers;
 
 namespace VCCSharp.Models.CPU.MC6809;
 
