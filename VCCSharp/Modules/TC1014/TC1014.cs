@@ -81,8 +81,6 @@ public partial class TC1014 : ITC1014
     public TC1014(IModules modules)
     {
         _modules = modules;
-
-        InitializeModes();
     }
 
     public void MC6883Reset()
