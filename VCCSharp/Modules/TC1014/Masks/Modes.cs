@@ -2,6 +2,8 @@
 
 namespace VCCSharp.Modules.TC1014.Masks;
 
+public delegate void Mode(ModeModel model, int start, int yStride);
+
 public class Modes : List<Mode>
 {
     private static void NA(ModeModel model, int start, int yStride) { throw new NotImplementedException(); }

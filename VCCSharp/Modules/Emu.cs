@@ -77,6 +77,7 @@ public class Emu : IEmu
         _modules.CPU.Reset();
 
         GimeReset();
+
         _modules.TC1014.MmuReset();
         _modules.TC1014.CopyRom();
         _modules.PAKInterface.ResetBus();

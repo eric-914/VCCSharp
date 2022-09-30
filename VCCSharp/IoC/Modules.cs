@@ -27,6 +27,7 @@ public interface IModules
     IMenuCallbacks MenuCallbacks { get; }
     IPAKInterface PAKInterface { get; }
     IQuickLoad QuickLoad { get; }
+    IScreen Screen { get; }
     ITC1014 TC1014 { get; }
     IThrottle Throttle { get; }
     IVcc Vcc { get; }
@@ -60,6 +61,7 @@ public class Modules : IModules
     public IMenuCallbacks MenuCallbacks { get; private set; } = default!;
     public IPAKInterface PAKInterface { get; private set; } = default!;
     public IQuickLoad QuickLoad { get; private set; } = default!;
+    public IScreen Screen { get; private set; } = default!;
     public ITC1014 TC1014 { get; private set; } = default!;
     public IThrottle Throttle { get; private set; } = default!;
     public IVcc Vcc { get; private set; } = default!;
@@ -89,6 +91,7 @@ public class Modules : IModules
         MC6821 = _factory.Get<IMC6821>();
         MenuCallbacks = _factory.Get<IMenuCallbacks>();
         PAKInterface = _factory.Get<IPAKInterface>();
+        Screen = _factory.Get<IScreen>();
         TC1014 = _factory.Get<ITC1014>();
         Throttle = _factory.Get<IThrottle>();
         Vcc = _factory.Get<IVcc>();

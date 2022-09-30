@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
-using System.IO;
-using System.Windows;
-using VCCSharp.Enums;
+﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Modules.TC1014.Masks;
+using VCCSharp.Modules.TC1014.Modes;
 
 namespace VCCSharp.Modules.TC1014;
 
@@ -23,22 +21,20 @@ public interface ITC1014 : IModule
     ushort GetMem(int address);
     void SetMapType(byte type);
 
-    void DrawBottomBorder32(int lineCounter);
-    void DrawTopBorder32(int lineCounter);
-    void UpdateScreen(int lineCounter);
-
     byte SAMRead(byte port);
     void SAMWrite(byte data, byte port);
     byte GimeRead(byte port);
     void GimeWrite(byte port, byte data);
     void GimeAssertKeyboardInterrupt();
+    ModeModel GetMode();
 }
 // ReSharper restore InconsistentNaming
 
 // ReSharper disable once InconsistentNaming
-public partial class TC1014 : ITC1014
+public class TC1014 : ITC1014
 {
     private readonly IModules _modules;
+    private readonly IRomLoader _romLoader;
     private IGraphics Graphics => _modules.Graphics;
 
     private readonly MemoryConfigurations _memConfiguration = new();
@@ -63,10 +59,7 @@ public partial class TC1014 : ITC1014
     private readonly BytePointer _rom = new();
     private readonly BytePointer _irb = new(); //--Internal ROM buffer
 
-    private byte _enhancedFIRQFlag;
-    private byte _enhancedIRQFlag;
-    private byte _lastIrq;
-    private byte _lastFirq;
+    private readonly Interrupts _interrupts = new();
 
     private byte _mmuState;	// Composite variable handles MmuTask and MmuEnabled
     private byte _mapType;	// $FFDE/FFDF toggle Map type 0 = ram/rom
@@ -78,9 +71,10 @@ public partial class TC1014 : ITC1014
     private readonly ushort[,] _mmuRegisters = new ushort[4, 8];	// $FFA0 - FFAF
     private readonly BytePointer[] _memPages = new BytePointer[1024];
 
-    public TC1014(IModules modules)
+    public TC1014(IModules modules, IRomLoader romLoader)
     {
         _modules = modules;
+        _romLoader = romLoader;
     }
 
     public void MC6883Reset()
@@ -94,56 +88,7 @@ public partial class TC1014 : ITC1014
     //TODO: Used by MmuInit()
     public void CopyRom()
     {
-        const string rom = "coco3.rom";
-
-        var configuration = _modules.Configuration;
-
-        //--Try loading from Vcc.ini >> CoCoRomPath
-        string cocoRomPath = configuration.FilePaths.Rom;
-
-        string path = Path.Combine(configuration.FilePaths.Rom, rom);
-
-        if (LoadInternalRom(path))
-        {
-            Debug.WriteLine($"Found {rom} in CoCoRomPath");
-            return;
-        }
-
-        //--Try loading from Vcc.ini >> ExternalBasicImage
-        string externalBasicImage = _modules.Configuration.Memory.ExternalBasicImage;
-
-        if (!string.IsNullOrEmpty(externalBasicImage) && LoadInternalRom(externalBasicImage))
-        {
-            Debug.WriteLine($"Found {rom} in ExternalBasicImage");
-            return;
-        }
-
-        //--Try loading from current executable folder
-        string? exePath = Path.GetDirectoryName(_modules.Vcc.GetExecPath());
-        if (exePath == null)
-        {
-            throw new Exception("Missing .EXE path?");
-        }
-
-        string exeFile = Path.Combine(exePath, rom);
-
-        if (LoadInternalRom(exeFile))
-        {
-            Debug.WriteLine($"Found {rom} in executable folder");
-            return;
-        }
-
-        //--Give up...
-        string message = @$"
-Could not locate {rom} in any of these locations:
-* Vcc.ini >> CoCoRomPath=""{cocoRomPath}""
-* Vcc.ini >> ExternalBasicImage=""{externalBasicImage}""
-* In the same folder as the executable: ""{exePath}""
-";
-
-        MessageBox.Show(message, "Error");
-
-        Environment.Exit(0);
+        _romLoader.CopyRom(_irb);
     }
 
     public void MmuReset()
@@ -204,35 +149,19 @@ Could not locate {rom} in any of these locations:
         return true;
     }
 
-    public bool LoadInternalRom(string filename)
-    {
-        Debug.WriteLine($"LoadInternalRom: {filename}");
-
-        if (!File.Exists(filename)) return false;
-
-        byte[] bytes = File.ReadAllBytes(filename);
-
-        for (ushort index = 0; index < bytes.Length; index++)
-        {
-            _irb[index] = bytes[index];
-        }
-
-        return true; //(ushort)bytes.Length;
-    }
-
     public void GimeAssertVerticalInterrupt()
     {
-        if (((_gimeRegisters[0x93] & 8) != 0) && (_enhancedFIRQFlag == 1))
+        if ((_gimeRegisters[0x93] & 8) != 0 && _interrupts.FIRQ.EnhancedFlag)
         {
             _modules.CPU.AssertInterrupt(CPUInterrupts.FIRQ, 0); //FIRQ
 
-            _lastFirq |= 8;
+            _interrupts.FIRQ.Last |= InterruptFlags.Vertical;
         }
-        else if (((_gimeRegisters[0x92] & 8) != 0) && (_enhancedIRQFlag == 1))
+        else if ((_gimeRegisters[0x92] & 8) != 0 && _interrupts.IRQ.EnhancedFlag)
         {
             _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 0); //IRQ moon patrol demo using this
 
-            _lastIrq |= 8;
+            _interrupts.IRQ.Last |= InterruptFlags.Vertical;
         }
     }
 
@@ -386,25 +315,25 @@ Could not locate {rom} in any of these locations:
 
     public byte GimeRead(byte port)
     {
-        byte temp;
+        InterruptFlags temp;
 
         switch (port)
         {
             case 0x92:
-                temp = _lastIrq;
-                _lastIrq = 0;
+                temp = _interrupts.IRQ.Last;
+                _interrupts.IRQ.Last = 0;
 
-                return temp;
+                return (byte)temp;
 
             case 0x93:
-                temp = _lastFirq;
-                _lastFirq = 0;
+                temp = _interrupts.FIRQ.Last;
+                _interrupts.FIRQ.Last = 0;
 
-                return temp;
+                return (byte)temp;
 
             case 0x94:
             case 0x95:
-                return 126;
+                return 126; //--What is this magic number?
 
             default:
                 return _gimeRegisters[port];
@@ -523,8 +452,8 @@ Could not locate {rom} in any of these locations:
         SetRomMap((byte)(data & 3)); //MC0-MC1
         SetVectors((byte)(data & 8)); //MC3
 
-        _enhancedFIRQFlag = (byte)((data & 16) >> 4);
-        _enhancedIRQFlag = (byte)((data & 32) >> 5);
+        _interrupts.FIRQ.SetFlag((byte)((data & 16) >> 4));
+        _interrupts.IRQ.SetFlag((byte)((data & 32) >> 5));
     }
 
     private void SetInit1(byte data)
@@ -572,33 +501,33 @@ Could not locate {rom} in any of these locations:
 
     public void GimeAssertHorizontalInterrupt()
     {
-        if (((_gimeRegisters[0x93] & 16) != 0) && (_enhancedFIRQFlag == 1))
+        if ((_gimeRegisters[0x93] & 16) != 0 && _interrupts.FIRQ.EnhancedFlag)
         {
             _modules.CPU.AssertInterrupt(CPUInterrupts.FIRQ, 0);
 
-            _lastFirq |= 16;
+            _interrupts.FIRQ.Last |= InterruptFlags.Horizontal;
         }
-        else if (((_gimeRegisters[0x92] & 16) != 0) && (_enhancedIRQFlag == 1))
+        else if ((_gimeRegisters[0x92] & 16) != 0 && _interrupts.IRQ.EnhancedFlag)
         {
             _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 0);
 
-            _lastIrq |= 16;
+            _interrupts.IRQ.Last |= InterruptFlags.Horizontal;
         }
     }
 
     public void GimeAssertTimerInterrupt()
     {
-        if (((_gimeRegisters[0x93] & 32) != 0) && (_enhancedFIRQFlag == 1))
+        if ((_gimeRegisters[0x93] & 32) != 0 && _interrupts.FIRQ.EnhancedFlag)
         {
             _modules.CPU.AssertInterrupt(CPUInterrupts.FIRQ, 0);
 
-            _lastFirq |= 32;
+            _interrupts.FIRQ.Last |= InterruptFlags.Timer;
         }
-        else if (((_gimeRegisters[0x92] & 32) != 0) && (_enhancedIRQFlag == 1))
+        else if ((_gimeRegisters[0x92] & 32) != 0 && _interrupts.IRQ.EnhancedFlag)
         {
             _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 0);
 
-            _lastIrq |= 32;
+            _interrupts.IRQ.Last |= InterruptFlags.Timer;
         }
     }
 
@@ -746,18 +675,23 @@ Could not locate {rom} in any of these locations:
 
     public void GimeAssertKeyboardInterrupt()
     {
-        if (((_gimeRegisters[0x93] & 2) != 0) && (_enhancedFIRQFlag == 1))
+        if ((_gimeRegisters[0x93] & 2) != 0 && (_interrupts.FIRQ.EnhancedFlag))
         {
             _modules.CPU.AssertInterrupt(CPUInterrupts.FIRQ, 0);
 
-            _lastFirq |= 2;
+            _interrupts.FIRQ.Last |= InterruptFlags.Keyboard;
         }
-        else if (((_gimeRegisters[0x92] & 2) != 0) && (_enhancedIRQFlag == 1))
+        else if ((_gimeRegisters[0x92] & 2) != 0 && (_interrupts.IRQ.EnhancedFlag))
         {
             _modules.CPU.AssertInterrupt(CPUInterrupts.IRQ, 0);
 
-            _lastIrq |= 2;
+            _interrupts.IRQ.Last |= InterruptFlags.Keyboard;
         }
+    }
+
+    public ModeModel GetMode()
+    {
+        return new ModeModel(_ram, _modules);
     }
 
     public void Reset()
@@ -773,10 +707,8 @@ Could not locate {rom} in any of these locations:
 
         _mmuPrefix = 0;
 
-        _enhancedFIRQFlag = 0;
-        _enhancedIRQFlag = 0;
-        _lastIrq = 0;
-        _lastFirq = 0;
+        _interrupts.FIRQ.Reset();
+        _interrupts.IRQ.Reset();
 
         _mmuState = 0;
         _mapType = 0;

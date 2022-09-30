@@ -165,7 +165,7 @@ public class CoCo : ICoCo
         {
             if (!skipRender)
             {
-                _modules.TC1014.DrawTopBorder32(counter);
+                _modules.Screen.DrawTopBorder(counter);
             }
 
             CpuCycle();
@@ -178,7 +178,8 @@ public class CoCo : ICoCo
 
             if (!skipRender)
             {
-                _modules.TC1014.UpdateScreen(counter);
+                var mode = _modules.TC1014.GetMode();
+                _modules.Screen.DrawScreen(counter, mode);
             }
         }
 
@@ -196,7 +197,7 @@ public class CoCo : ICoCo
 
             if (!skipRender)
             {
-                _modules.TC1014.DrawBottomBorder32(counter);
+                _modules.Screen.DrawBottomBorder(counter);
             }
         }
 

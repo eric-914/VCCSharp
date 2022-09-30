@@ -6,6 +6,7 @@ using VCCSharp.Menu;
 using VCCSharp.Models.Joystick;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Modules;
+using VCCSharp.Modules.TC1014;
 using VCCSharp.TapePlayer;
 
 namespace VCCSharp.IoC;
@@ -48,6 +49,8 @@ internal static class Binding
             .Bind<IVccApp, VccApp>()
             .Bind<IVccThread, VccThread>()
             .Bind<IVccMainWindow, VccMainWindow>()
+            .Bind<IScreen, Screen>()
+            .Bind<IRomLoader, RomLoader>()
 
             //--Menu
             .Singleton<IMainMenu, MainMenu>()
