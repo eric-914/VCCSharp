@@ -2,7 +2,7 @@
 using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
 using VCCSharp.Modules;
-using VCCSharp.Modules.TC1014;
+using VCCSharp.Modules.TCC1014;
 
 namespace VCCSharp.IoC;
 
@@ -28,7 +28,7 @@ public interface IModules
     IPAKInterface PAKInterface { get; }
     IQuickLoad QuickLoad { get; }
     IScreen Screen { get; }
-    ITC1014 TC1014 { get; }
+    ITCC1014 TCC1014 { get; }
     IThrottle Throttle { get; }
     IVcc Vcc { get; }
 
@@ -62,7 +62,7 @@ public class Modules : IModules
     public IPAKInterface PAKInterface { get; private set; } = default!;
     public IQuickLoad QuickLoad { get; private set; } = default!;
     public IScreen Screen { get; private set; } = default!;
-    public ITC1014 TC1014 { get; private set; } = default!;
+    public ITCC1014 TCC1014 { get; private set; } = default!;
     public IThrottle Throttle { get; private set; } = default!;
     public IVcc Vcc { get; private set; } = default!;
 
@@ -92,7 +92,7 @@ public class Modules : IModules
         MenuCallbacks = _factory.Get<IMenuCallbacks>();
         PAKInterface = _factory.Get<IPAKInterface>();
         Screen = _factory.Get<IScreen>();
-        TC1014 = _factory.Get<ITC1014>();
+        TCC1014 = _factory.Get<ITCC1014>();
         Throttle = _factory.Get<IThrottle>();
         Vcc = _factory.Get<IVcc>();
     }
@@ -118,7 +118,7 @@ public class Modules : IModules
         MC6821.Reset();
         MenuCallbacks.Reset();
         PAKInterface.Reset();
-        TC1014.Reset();
+        TCC1014.Reset();
         Throttle.Reset();
         Vcc.Reset();
     }

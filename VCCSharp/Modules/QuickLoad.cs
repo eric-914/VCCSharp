@@ -98,7 +98,7 @@ public class QuickLoad : IQuickLoad
             {
                 for (ushort memIndex = 0; memIndex < fileLength; memIndex++)
                 { //Kluge!!!
-                    _modules.TC1014.MemWrite8(memImage[memIndex], (ushort)(startAddress + memIndex));
+                    _modules.TCC1014.MemWrite8(memImage[memIndex], (ushort)(startAddress + memIndex));
                 }
             }
             else

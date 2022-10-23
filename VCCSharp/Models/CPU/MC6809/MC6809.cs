@@ -86,7 +86,7 @@ public partial class MC6809 : IMC6809
 
         PC_REG = MemRead16(Define.VRESET);	//PC gets its reset vector
 
-        _modules.TC1014.SetMapType(0);	//shouldn't be here
+        _modules.TCC1014.SetMapType(0);	//shouldn't be here
     }
 
     public int Exec(int cycleFor)
@@ -132,7 +132,7 @@ public partial class MC6809 : IMC6809
 
             _gCycleFor = cycleFor;
 
-            byte opCode = _modules.TC1014.MemRead8(_cpu.pc.Reg++);   //PC_REG
+            byte opCode = _modules.TCC1014.MemRead8(_cpu.pc.Reg++);   //PC_REG
 
             Exec(opCode);
         }
@@ -144,20 +144,20 @@ public partial class MC6809 : IMC6809
     {
         _cpu.cc[(int)CCFlagMasks.E] = true;
 
-        _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
-        _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
-        _modules.TC1014.MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
-        _modules.TC1014.MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
-        _modules.TC1014.MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
-        _modules.TC1014.MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
-        _modules.TC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
-        _modules.TC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
-        _modules.TC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
+        _modules.TCC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
+        _modules.TCC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
+        _modules.TCC1014.MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
+        _modules.TCC1014.MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
+        _modules.TCC1014.MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
+        _modules.TCC1014.MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
+        _modules.TCC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
+        _modules.TCC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
+        _modules.TCC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
 
-        _modules.TC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg);
-        _modules.TC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg);
+        _modules.TCC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg);
+        _modules.TCC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg);
 
-        _modules.TC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
+        _modules.TCC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
 
         _cpu.cc[(int)CCFlagMasks.I] = true;
         _cpu.cc[(int)CCFlagMasks.F] = true;
@@ -175,10 +175,10 @@ public partial class MC6809 : IMC6809
 
             _cpu.cc[(int)CCFlagMasks.E] = false; // Turn E flag off
 
-            _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
 
-            _modules.TC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
 
             _cpu.cc[(int)CCFlagMasks.I] = true;
             _cpu.cc[(int)CCFlagMasks.F] = true;
@@ -201,19 +201,19 @@ public partial class MC6809 : IMC6809
         {
             _cpu.cc[(int)CCFlagMasks.E] = true;
 
-            _modules.TC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg);
-            _modules.TC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg);
 
-            _modules.TC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
 
             _cpu.pc.Reg = MemRead16(Define.VIRQ);
             _cpu.cc[(int)CCFlagMasks.I] = true;

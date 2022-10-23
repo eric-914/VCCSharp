@@ -96,7 +96,7 @@ public partial class HD6309 : IHD6309
         DP_REG = 0;
         PC_REG = MemRead16(Define.VRESET);	//PC gets its reset vector
 
-        _modules.TC1014.SetMapType(0);	//shouldn't be here
+        _modules.TCC1014.SetMapType(0);	//shouldn't be here
     }
 
     public int Exec(int cycleFor)
@@ -142,7 +142,7 @@ public partial class HD6309 : IHD6309
 
             _gCycleFor = cycleFor;
 
-            byte opCode = _modules.TC1014.MemRead8(_cpu.pc.Reg++); //PC_REG
+            byte opCode = _modules.TCC1014.MemRead8(_cpu.pc.Reg++); //PC_REG
 
             Exec(opCode);
         }

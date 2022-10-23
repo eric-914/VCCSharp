@@ -1,5 +1,5 @@
 ﻿using VCCSharp.IoC;
-using VCCSharp.Modules.TC1014;
+using VCCSharp.Modules.TCC1014;
 
 namespace VCCSharp.Modules;
 
@@ -25,7 +25,7 @@ internal static class ModuleBinding
             .Singleton<IMenuCallbacks, MenuCallbacks>()
             .Singleton<IPAKInterface, PAKInterface>()
             .Singleton<IQuickLoad, QuickLoad>()
-            .Singleton<ITC1014, TC1014.TC1014>()
+            .Singleton<ITCC1014, TCC1014.TCC1014>()
             .Singleton<IThrottle, Throttle>()
             .Singleton<IVcc, Vcc>()
             ;

@@ -345,7 +345,7 @@ public class Keyboard : IKeyboard
 
         if (KeyboardInterruptEnabled)
         {
-            _modules.TC1014.GimeAssertKeyboardInterrupt();
+            _modules.TCC1014.GimeAssertKeyboardInterrupt();
         }
     }
 

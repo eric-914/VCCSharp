@@ -563,8 +563,8 @@ public class PAKInterface : IPAKInterface
 
     public void InvokeDmaMemPointer()
     {
-        _readCallback = _modules.TC1014.MemRead8;
-        _writeCallback = _modules.TC1014.MemWrite8;
+        _readCallback = _modules.TCC1014.MemRead8;
+        _writeCallback = _modules.TCC1014.MemWrite8;
 
         IntPtr callbackRead = Marshal.GetFunctionPointerForDelegate(_readCallback);
         IntPtr callbackWrite = Marshal.GetFunctionPointerForDelegate(_writeCallback);

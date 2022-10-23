@@ -73,7 +73,7 @@ public class IOBus : IIOBus
             case 0xDD:
             case 0xDE:
             case 0xDF:
-                value = _modules.TC1014.SAMRead(port);  //MC6883 S.A.M. address range $FFC0-$FFDF
+                value = _modules.TCC1014.SAMRead(port);  //MC6883 S.A.M. address range $FFC0-$FFDF
                 break;
 
             case 0xF0:
@@ -92,7 +92,7 @@ public class IOBus : IIOBus
             case 0xFD:
             case 0xFE:
             case 0xFF:
-                value = _modules.TC1014.SAMRead(port);  // SAM controls IRQ Vectors at $FFF0 - $FFFF	
+                value = _modules.TCC1014.SAMRead(port);  // SAM controls IRQ Vectors at $FFF0 - $FFFF	
                 break;
 
             case 0x90:                  //TCC1014 G.I.M.E.
@@ -143,7 +143,7 @@ public class IOBus : IIOBus
             case 0xBD:
             case 0xBE:
             case 0xBF:
-                value = _modules.TC1014.GimeRead(port);
+                value = _modules.TCC1014.GimeRead(port);
                 break;
 
             default:
@@ -206,7 +206,7 @@ public class IOBus : IIOBus
             case 0xDD:
             case 0xDE:
             case 0xDF:
-                _modules.TC1014.SAMWrite(data, port);	//MC6883 S.A.M. address range $FFC0-$FFDF
+                _modules.TCC1014.SAMWrite(data, port);	//MC6883 S.A.M. address range $FFC0-$FFDF
                 break;
 
             case 0x90:
@@ -257,7 +257,7 @@ public class IOBus : IIOBus
             case 0xBD:
             case 0xBE:
             case 0xBF:
-                _modules.TC1014.GimeWrite(port, data);
+                _modules.TCC1014.GimeWrite(port, data);
                 break;
 
             default:

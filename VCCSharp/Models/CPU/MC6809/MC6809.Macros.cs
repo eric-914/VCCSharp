@@ -194,8 +194,8 @@ public partial class MC6809
 
     public ushort DPADDRESS(ushort r) => (ushort)(_cpu.dp.Reg | MemRead8(r));
 
-    public byte MemRead8(ushort address) => _modules.TC1014.MemRead8(address);
-    public void MemWrite8(byte data, ushort address) => _modules.TC1014.MemWrite8(data, address);
+    public byte MemRead8(ushort address) => _modules.TCC1014.MemRead8(address);
+    public void MemWrite8(byte data, ushort address) => _modules.TCC1014.MemWrite8(data, address);
 
     public ushort MemRead16(ushort address)
     {

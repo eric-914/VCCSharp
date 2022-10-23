@@ -5,7 +5,7 @@ using VCCSharp.IoC;
 using VCCSharp.Models;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Graphics;
-using VCCSharp.Modules.TC1014;
+using VCCSharp.Modules.TCC1014;
 
 namespace VCCSharp.Modules;
 

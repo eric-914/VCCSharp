@@ -71,15 +71,15 @@ public class Emu : IEmu
 
     public void SoftReset()
     {
-        _modules.TC1014.MC6883Reset();
+        _modules.TCC1014.MC6883Reset();
         _modules.MC6821.PiaReset();
 
         _modules.CPU.Reset();
 
         GimeReset();
 
-        _modules.TC1014.MmuReset();
-        _modules.TC1014.CopyRom();
+        _modules.TCC1014.MmuReset();
+        _modules.TCC1014.CopyRom();
         _modules.PAKInterface.ResetBus();
 
         TurboSpeedFlag = 1;
@@ -87,7 +87,7 @@ public class Emu : IEmu
 
     public void HardReset()
     {
-        if (!_modules.TC1014.MmuInit(_configuration.Memory.Ram.Value))
+        if (!_modules.TCC1014.MmuInit(_configuration.Memory.Ram.Value))
         {
             MessageBox.Show("Can't allocate enough RAM, out of memory", "Error");
 
@@ -103,7 +103,7 @@ public class Emu : IEmu
             _modules.CPU.SetMC6809();
         }
 
-        _modules.TC1014.MC6883Reset();  //Captures internal rom pointer for CPU Interrupt Vectors
+        _modules.TCC1014.MC6883Reset();  //Captures internal rom pointer for CPU Interrupt Vectors
         _modules.MC6821.PiaReset();
 
         _modules.CPU.Init();

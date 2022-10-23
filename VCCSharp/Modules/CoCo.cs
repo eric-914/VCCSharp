@@ -178,7 +178,7 @@ public class CoCo : ICoCo
 
             if (!skipRender)
             {
-                var mode = _modules.TC1014.GetMode();
+                var mode = _modules.TCC1014.GetMode();
                 _modules.Screen.DrawScreen(counter, mode);
             }
         }
@@ -187,7 +187,7 @@ public class CoCo : ICoCo
 
         if (_verticalInterruptEnabled)
         {
-            _modules.TC1014.GimeAssertVerticalInterrupt();
+            _modules.TCC1014.GimeAssertVerticalInterrupt();
         }
 
         //Bottom border
@@ -242,7 +242,7 @@ public class CoCo : ICoCo
     {
         if (_horizontalInterruptEnabled)
         {
-            _modules.TC1014.GimeAssertHorizontalInterrupt();
+            _modules.TCC1014.GimeAssertHorizontalInterrupt();
         }
 
         _modules.MC6821.IrqHs(PhaseStates.Any);
@@ -393,7 +393,7 @@ public class CoCo : ICoCo
             _cycleDrift = _cyclesThisLine;
         }
 
-        _modules.TC1014.GimeAssertTimerInterrupt();
+        _modules.TCC1014.GimeAssertTimerInterrupt();
 
         _picosToSoundSample -= _picosToInterrupt;
         _picosToInterrupt = _masterTickCounter;
@@ -456,7 +456,7 @@ public class CoCo : ICoCo
                 _cycleDrift = _cyclesThisLine;
             }
 
-            _modules.TC1014.GimeAssertTimerInterrupt();
+            _modules.TCC1014.GimeAssertTimerInterrupt();
 
             _picosToSoundSample -= _picosToInterrupt;
             _picosToInterrupt = _masterTickCounter;
@@ -479,7 +479,7 @@ public class CoCo : ICoCo
                 _cycleDrift = _cyclesThisLine;
             }
 
-            _modules.TC1014.GimeAssertTimerInterrupt();
+            _modules.TCC1014.GimeAssertTimerInterrupt();
 
             _picosToSoundSample -= _picosToInterrupt;
             _picosToInterrupt = _masterTickCounter;
@@ -518,7 +518,7 @@ public class CoCo : ICoCo
             _cycleDrift = _cyclesThisLine;
         }
 
-        _modules.TC1014.GimeAssertTimerInterrupt();
+        _modules.TCC1014.GimeAssertTimerInterrupt();
 
         _audioEvent();
 

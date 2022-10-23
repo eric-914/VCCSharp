@@ -6,7 +6,7 @@ using VCCSharp.Menu;
 using VCCSharp.Models.Joystick;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Modules;
-using VCCSharp.Modules.TC1014;
+using VCCSharp.Modules.TCC1014;
 using VCCSharp.TapePlayer;
 
 namespace VCCSharp.IoC;
@@ -30,7 +30,7 @@ internal static class Binding
             .Include(ConfigurationBinding.Bind)      //--Configuration
             .Include(ModuleBinding.Bind)             //--Modules
             .Include(CpuBinding.Bind)                //--CPU's
-            
+
             //--Specialized Factories
             .Singleton<IViewModelFactory, ViewModelFactory>()
 
@@ -43,7 +43,7 @@ internal static class Binding
 
             //--Modules container/accessor
             .Singleton<IModules, Modules>()
-            
+
             //--Main
             .Bind<ICommandLineParser, CommandLineParser>()
             .Bind<IVccApp, VccApp>()

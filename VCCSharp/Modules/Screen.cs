@@ -1,5 +1,5 @@
-﻿using VCCSharp.Modules.TC1014.Masks;
-using VCCSharp.Modules.TC1014.Modes;
+﻿using VCCSharp.Modules.TCC1014.Masks;
+using VCCSharp.Modules.TCC1014.Modes;
 
 namespace VCCSharp.Modules;
 

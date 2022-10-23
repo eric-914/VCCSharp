@@ -273,7 +273,7 @@ public class Clipboard : IClipboard
             for (int idx = 0; idx < bytesPerRow * 2; idx += 2)
             {
                 int address = (int)(startOfVidRam + y * (bytesPerRow * 2) + idx);
-                int tmp = _modules.TC1014.GetMem(address);
+                int tmp = _modules.TCC1014.GetMem(address);
 
                 if (tmp is 32 or 64 or 96)
                 {
@@ -328,7 +328,7 @@ public class Clipboard : IClipboard
     {
         return from index in Enumerable.Range(0, range - 1)
                let address = (ushort)(startAddress + index)
-               select _modules.TC1014.MemRead8(address);
+               select _modules.TCC1014.MemRead8(address);
     }
 
     public void Reset()

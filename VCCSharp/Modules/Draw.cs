@@ -5,7 +5,7 @@ using VCCSharp.Libraries;
 using VCCSharp.Libraries.Models;
 using VCCSharp.Models;
 using VCCSharp.Models.Configuration;
-using VCCSharp.Modules.TC1014;
+using VCCSharp.Modules.TCC1014;
 using static System.IntPtr;
 using Point = System.Drawing.Point;
 
