@@ -1,23 +1,40 @@
-﻿namespace VCCSharp.Modules.TCC1014;
+﻿using VCCSharp.Enums;
+using VCCSharp.Modules.TCC1014.Masks;
+
+namespace VCCSharp.Modules.TCC1014;
 
 /// <summary>
 /// Memory Management Unit (MMU)
 /// </summary>
-// ReSharper disable once InconsistentNaming
+// ReSharper disable InconsistentNaming
 public class MMU
 {
+    private readonly MemoryConfigurations _memConfiguration = new();
+    private readonly MemorySizeStates _stateSwitch = new();
+
     public byte Task { get; set; }	    // $FF91 bit 0
     public bool Enabled { get; set; }	// $FF90 bit 6
     public byte State { get; set; }	    // Composite variable handles MmuTask and MmuEnabled
     public ushort Prefix { get; set; }
 
+    public BytePointer RAM { get; } = new();
+    public BytePointer ROM { get; } = new();
+    public BytePointer IRB { get; } = new();    //--Internal ROM buffer
+
+    public BytePointer[] Pages { get; } = new BytePointer[1024];
+    public ushort[] PageOffsets { get; } = new ushort[1024];
+
     public ushort[,] Registers { get; } = new ushort[4, 8];	// $FFA0 - $FFAF
+
+    public MemorySizes CurrentRamConfiguration { get; set; } = MemorySizes._512K;
 
     public void Initialize()
     {
         Reset();
 
         Registers.Initialize();
+        Pages.Initialize();
+        PageOffsets.Initialize();
     }
 
     public void Reset()
@@ -26,6 +43,19 @@ public class MMU
         Prefix = 0;
         State = 0;
         Enabled = false;
+        CurrentRamConfiguration = MemorySizes._512K;
+
+        ResetRegisters(_stateSwitch[CurrentRamConfiguration]);
+    }
+
+    public void Reset(MemorySizes ramSizeOption)
+    {
+        CurrentRamConfiguration = ramSizeOption;
+
+        uint ramSize = _memConfiguration[ramSizeOption];
+        
+        RAM.Reset(ramSize);
+        IRB.Reset(0x8000);
     }
 
     public void ResetRegisters(byte offset)

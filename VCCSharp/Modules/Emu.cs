@@ -76,7 +76,10 @@ public class Emu : IEmu
 
         _modules.CPU.Reset();
 
-        GimeReset();
+        _modules.Graphics.ResetGraphicsState();
+        _modules.Graphics.SetPaletteType();
+        _modules.CoCo.CocoReset();
+        _modules.Audio.ResetAudio();
 
         _modules.TCC1014.MmuReset();
         _modules.TCC1014.CopyRom();
@@ -94,22 +97,16 @@ public class Emu : IEmu
             Environment.Exit(0);
         }
 
-        if (_configuration.CPU.Type.Value == CPUTypes.HD6309)
-        {
-            _modules.CPU.SetHD6309();
-        }
-        else
-        {
-            _modules.CPU.SetMC6809();
-        }
-
         _modules.TCC1014.MC6883Reset();  //Captures internal rom pointer for CPU Interrupt Vectors
         _modules.MC6821.PiaReset();
 
-        _modules.CPU.Init();
-        _modules.CPU.Reset();    // Zero all CPU Registers and sets the PC to VRESET
+        _modules.CPU.Init(_configuration.CPU.Type.Value);
+        _modules.CPU.Reset();   // Zero all CPU Registers and sets the PC to VRESET
 
-        GimeReset();
+        _modules.Graphics.ResetGraphicsState();
+        _modules.Graphics.SetPaletteType();
+        _modules.CoCo.CocoReset();
+        _modules.Audio.ResetAudio();
 
         _modules.PAKInterface.UpdateBusPointer();
 
@@ -120,18 +117,7 @@ public class Emu : IEmu
         _modules.CoCo.OverClock = 1;
     }
 
-    private void GimeReset()
-    {
-        _modules.Graphics.ResetGraphicsState();
-
-        _modules.Graphics.SetPaletteType();
-
-        _modules.CoCo.CocoReset();
-
-        _modules.Audio.ResetAudio();
-    }
-
-    public void SetCpuMultiplier()
+    private void SetCpuMultiplier()
     {
         DoubleSpeedMultiplier = _configuration.CPU.CpuMultiplier;
 

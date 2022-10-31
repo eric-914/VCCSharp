@@ -7,18 +7,22 @@
 /// Gone were the 6847 VDG and 6883 SAM, functionally replaced and enhanced with the TCC1014 Advanced Color Video Chip (ACVC)
 /// which most folks reference as the GIME.
 /// </summary>
-// ReSharper disable once InconsistentNaming
+// ReSharper disable InconsistentNaming
 public class GIME
 {
     public byte[] Registers { get; } = new byte[256];
 
     public Interrupts Interrupts { get; } = new();
+    public MMU MMU { get; } = new ();
+    public VDG VDG { get; } = new();
 
     public void Initialize()
     {
         Registers.Initialize();
+        MMU.Initialize();
         Interrupts.FIRQ.Reset();
         Interrupts.IRQ.Reset();
+        VDG.Reset();
     }
 
     public byte ReadIRQ()

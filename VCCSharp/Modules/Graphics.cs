@@ -6,6 +6,7 @@ using VCCSharp.Models;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Graphics;
 using VCCSharp.Modules.TCC1014;
+using VCCSharp.Modules.TCC1014.Masks;
 
 namespace VCCSharp.Modules;
 
@@ -18,7 +19,7 @@ public interface IGraphics : IModule
     void ResetGraphicsState();
     void SetBlinkState(byte state);
     void SetBorderChange();
-    void SetVidMask(uint mask);
+    void SetVidMask(MemorySizes memorySize);
     void SetPaletteType();
     void SetMonitorType();
     void FlipArtifacts();
@@ -109,6 +110,7 @@ public class Graphics : IGraphics
     private readonly IConfiguration _configuration;
 
     private readonly GraphicsColors _colors = new();
+    private readonly VideoMasks _videoMask = new();
 
     public byte BlinkState { get; set; }
 
@@ -213,9 +215,9 @@ public class Graphics : IGraphics
         }
     }
 
-    public void SetVidMask(uint mask)
+    public void SetVidMask(MemorySizes memorySize)
     {
-        VidMask = mask;
+        VidMask = _videoMask[memorySize];
     }
 
     public void FlipArtifacts()
