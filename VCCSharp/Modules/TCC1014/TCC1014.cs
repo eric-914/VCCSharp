@@ -40,8 +40,6 @@ public class TCC1014 : ITCC1014
     private IGraphics Graphics => _modules.Graphics;
     private ICPU CPU => _modules.CPU;
 
-    private readonly RamMask _ramMask = new();
-
     private readonly VectorMasks _vectorMask = new();
     private readonly VectorMasksAlt _vectorMaskAlt = new();
 
@@ -55,12 +53,6 @@ public class TCC1014 : ITCC1014
     {
         _modules = modules;
         _romLoader = romLoader;
-    }
-
-    //TODO: Used by MmuInit()
-    public void CopyRom()
-    {
-        _romLoader.CopyRom(_gime.MMU.IRB);
     }
 
     /*****************************************************************************************
@@ -381,6 +373,7 @@ public class TCC1014 : ITCC1014
     private void SetInit0(byte data)
     {
         Graphics.SetCompatMode((data & 128) == 0 ? CompatibilityModes.CoCo3 : CompatibilityModes.CoCo2);
+
         SetMmuEnabled((data & 64) == 0);
         SetRomMap((byte)(data & 3)); //MC0-MC1
         SetVectors((byte)(data & 8)); //MC3
@@ -537,14 +530,7 @@ public class TCC1014 : ITCC1014
         _gime.MMU.State = (byte)((_gime.MMU.Enabled ? 1 : 0) << 1 | _gime.MMU.Task);
     }
 
-    private void SetMmuRegister(byte register, byte data)
-    {
-        byte bankRegister = (byte)(register & 7);
-        byte task = (byte)((register & 8) == 0 ? 0 : 1);
-
-        //gime.c returns what was written so I can get away with this
-        _gime.MMU.Registers[task, bankRegister] = (ushort)(_gime.MMU.Prefix | (data & _ramMask[_gime.MMU.CurrentRamConfiguration]));
-    }
+    private void SetMmuRegister(byte register, byte data) => _gime.MMU.SetRegister(register, data);
 
     private void SetVideoOffsetRamBank(byte data)
     {
@@ -572,15 +558,9 @@ public class TCC1014 : ITCC1014
         }
     }
 
-    private void SetMmuPrefix(byte data)
-    {
-        _gime.MMU.Prefix = (ushort)((data & 3) << 8);
-    }
+    private void SetMmuPrefix(byte data) => _gime.MMU.Prefix = (ushort)((data & 3) << 8);
 
-    private void SetVectors(byte data)
-    {
-        _ramVectors = (byte)(data == 0 ? 0 : 1); //Bit 3 of $FF90 MC3
-    }
+    private void SetVectors(byte data) => _ramVectors = (byte)(data == 0 ? 0 : 1); //Bit 3 of $FF90 MC3
 
     private void SetMmuEnabled(bool flag)
     {
@@ -604,15 +584,9 @@ public class TCC1014 : ITCC1014
         }
     }
 
-    public ModeModel GetMode()
-    {
-        return new ModeModel(_gime.MMU.RAM, _modules);
-    }
+    public ModeModel GetMode() => new(_gime.MMU.RAM, _modules);
 
-    public void ModuleReset()
-    {
-        ChipReset();
-    }
+    public void ModuleReset() => ChipReset();
 
     public void ChipReset()
     {
@@ -624,15 +598,10 @@ public class TCC1014 : ITCC1014
         _gime.VDG.Reset();
         _gime.MMU.ROM.Reset(_gime.MMU.IRB);
 
-        CopyRom();
+        _romLoader.CopyRom(_gime.MMU.IRB);
 
         _gime.MMU.Reset();
-
-        for (int index = 0; index < 1024; index++)
-        {
-            _gime.MMU.Pages[index] = _gime.MMU.RAM.GetBytePointer((index & _ramMask[_gime.MMU.CurrentRamConfiguration]) * 0x2000);
-            _gime.MMU.PageOffsets[index] = 1;
-        }
+        _gime.MMU.ResetPages();
 
         SetRomMap(0);
         SetMapType(0);

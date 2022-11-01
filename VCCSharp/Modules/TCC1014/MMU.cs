@@ -11,6 +11,7 @@ public class MMU
 {
     private readonly MemoryConfigurations _memConfiguration = new();
     private readonly MemorySizeStates _stateSwitch = new();
+    private readonly RamMask _ramMask = new();
 
     public byte Task { get; set; }	    // $FF91 bit 0
     public bool Enabled { get; set; }	// $FF90 bit 6
@@ -26,7 +27,7 @@ public class MMU
 
     public ushort[,] Registers { get; } = new ushort[4, 8];	// $FFA0 - $FFAF
 
-    public MemorySizes CurrentRamConfiguration { get; set; } = MemorySizes._512K;
+    public MemorySizes CurrentRamConfiguration { get; private set; } = MemorySizes._512K;
 
     public void Initialize()
     {
@@ -58,7 +59,16 @@ public class MMU
         IRB.Reset(0x8000);
     }
 
-    public void ResetRegisters(byte offset)
+    public void ResetPages()
+    {
+        for (int index = 0; index < 1024; index++)
+        {
+            Pages[index] = RAM.GetBytePointer((index & _ramMask[CurrentRamConfiguration]) * 0x2000);
+            PageOffsets[index] = 1;
+        }
+    }
+
+    private void ResetRegisters(byte offset)
     {
         //ushort[,] MmuRegisters = new ushort[4, 8];
 
@@ -74,5 +84,14 @@ public class MMU
         //{
         //    instance->MmuRegisters[index] = MmuRegisters[index >> 3, index & 7];
         //}
+    }
+
+    public void SetRegister(byte register, byte data)
+    {
+        byte bankRegister = (byte)(register & 7);
+        byte task = (byte)((register & 8) == 0 ? 0 : 1);
+
+        //gime.c returns what was written so I can get away with this
+        Registers[task, bankRegister] = (ushort)(Prefix | (data & _ramMask[CurrentRamConfiguration]));
     }
 }
