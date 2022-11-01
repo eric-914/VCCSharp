@@ -485,7 +485,7 @@ public class Keyboard : IKeyboard
         _scSave2 = 0;
     }
 
-    public void Reset()
+    public void ModuleReset()
     {
         CurrentKeyBoardLayout = KeyboardLayouts.CoCo;
         PreviousKeyBoardLayout = KeyboardLayouts.CoCo;

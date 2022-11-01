@@ -105,21 +105,21 @@ public class Modules : IModules
     /// </summary>
     public void Reset()
     {
-        Audio.Reset();
-        //CPU.Reset();
-        Cassette.Reset();
-        CoCo.Reset();
-        Draw.Reset();
-        Emu.Reset();
-        Graphics.Reset();
-        IOBus.Reset();
-        Joysticks.Reset();
-        Keyboard.Reset();
-        MC6821.Reset();
-        MenuCallbacks.Reset();
-        PAKInterface.Reset();
-        TCC1014.Reset();
-        Throttle.Reset();
-        Vcc.Reset();
+        Audio.ModuleReset();
+        //CPU.ModuleReset();
+        Cassette.ModuleReset();
+        CoCo.ModuleReset();
+        Draw.ModuleReset();
+        Emu.ModuleReset();
+        Graphics.ModuleReset();
+        IOBus.ModuleReset();
+        Joysticks.ModuleReset();
+        Keyboard.ModuleReset();
+        MC6821.ModuleReset();
+        MenuCallbacks.ModuleReset();
+        PAKInterface.ModuleReset();
+        TCC1014.ModuleReset();
+        Throttle.ModuleReset();
+        Vcc.ModuleReset();
     }
 }

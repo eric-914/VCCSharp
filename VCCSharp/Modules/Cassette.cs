@@ -513,7 +513,7 @@ public class Cassette : ICassette
         }
     }
 
-    public void Reset()
+    public void ModuleReset()
     {
         MotorState = 0;
         TapeFileName = _configuration.CassetteRecorder.TapeFileName;

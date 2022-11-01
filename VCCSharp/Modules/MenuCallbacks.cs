@@ -151,7 +151,7 @@ public class MenuCallbacks : IMenuCallbacks
         return result != 0;
     }
 
-    public void Reset()
+    public void ModuleReset()
     {
         _loadPakDialogOpen = false;
     }

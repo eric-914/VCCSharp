@@ -322,7 +322,7 @@ public class IOBus : IIOBus
         #endregion
     }
 
-    public void Reset()
+    public void ModuleReset()
     {
         //--Anything to reset?
     }

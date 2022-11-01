@@ -185,7 +185,7 @@ public class Joysticks : IJoysticks
         return _keyboardHandler.SetJoystickFromKeyboard(scanCode, keyDown, Left, Right);
     }
 
-    public void Reset()
+    public void ModuleReset()
     {
     }
 }

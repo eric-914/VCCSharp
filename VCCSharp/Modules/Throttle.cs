@@ -132,7 +132,7 @@ public class Throttle : IThrottle
         _targetTime.QuadPart = _startTime.QuadPart + _oneFrame.QuadPart * _frameSkip;
     }
 
-    public void Reset()
+    public void ModuleReset()
     {
         _currentTime = new LARGE_INTEGER();
         _startTime = new LARGE_INTEGER();

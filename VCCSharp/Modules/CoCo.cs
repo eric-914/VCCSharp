@@ -714,7 +714,7 @@ public class CoCo : ICoCo
         _audioEvent = CassetteIn;
     }
 
-    public void Reset()
+    public void ModuleReset()
     {
         CocoReset();
 

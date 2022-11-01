@@ -60,7 +60,7 @@ public class ConfigurationManager : IConfigurationManager
         _modules.Reset();
     }
 
-    public void Load()
+    private void Load()
     {
         Model = _persistenceManager.Load(_filePath);
 

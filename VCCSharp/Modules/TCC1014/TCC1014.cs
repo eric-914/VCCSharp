@@ -7,25 +7,25 @@ namespace VCCSharp.Modules.TCC1014;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable CommentTypo
-public interface ITCC1014 : IModule
+public interface ITCC1014 : IModule, IChip
 {
-    void MC6883Reset();
-    void CopyRom();
-    void MmuReset();
-    bool MmuInit(MemorySizes ramSizeOption);
+    void SetMapType(byte type);
+
+    void MmuInit(MemorySizes ramSizeOption);
+    
     byte MemRead8(ushort address);
     void MemWrite8(byte data, ushort address);
-    void GimeAssertVerticalInterrupt();
-    void GimeAssertHorizontalInterrupt();
-    void GimeAssertTimerInterrupt();
-    ushort GetMem(int address);
-    void SetMapType(byte type);
 
     byte SAMRead(byte port);
     void SAMWrite(byte data, byte port);
+
     byte GimeRead(byte port);
     void GimeWrite(byte port, byte data);
     void GimeAssertKeyboardInterrupt();
+    void GimeAssertVerticalInterrupt();
+    void GimeAssertHorizontalInterrupt();
+    void GimeAssertTimerInterrupt();
+
     ModeModel GetMode();
 }
 // ReSharper restore InconsistentNaming
@@ -41,7 +41,7 @@ public class TCC1014 : ITCC1014
     private ICPU CPU => _modules.CPU;
 
     private readonly RamMask _ramMask = new();
-    
+
     private readonly VectorMasks _vectorMask = new();
     private readonly VectorMasksAlt _vectorMaskAlt = new();
 
@@ -57,35 +57,10 @@ public class TCC1014 : ITCC1014
         _romLoader = romLoader;
     }
 
-    public void MC6883Reset()
-    {
-        _gime.VDG.Reset();
-        _gime.MMU.ROM.Reset(_gime.MMU.IRB);
-    }
-
     //TODO: Used by MmuInit()
     public void CopyRom()
     {
         _romLoader.CopyRom(_gime.MMU.IRB);
-    }
-
-    public void MmuReset()
-    {
-        _gime.MMU.Reset();
-
-        _ramVectors = 0;
-        
-        _romMap = 0;
-        _mapType = 0;
-
-        for (int index = 0; index < 1024; index++)
-        {
-            _gime.MMU.Pages[index] = _gime.MMU.RAM.GetBytePointer((index & _ramMask[_gime.MMU.CurrentRamConfiguration]) * 0x2000);
-            _gime.MMU.PageOffsets[index] = 1;
-        }
-
-        SetRomMap(0);
-        SetMapType(0);
     }
 
     /*****************************************************************************************
@@ -93,16 +68,11 @@ public class TCC1014 : ITCC1014
     * Copy Rom Images to buffer space and reset GIME MMU registers to 0                      *
     * Returns NULL if any of the above fail.                                                 *
     *****************************************************************************************/
-    public bool MmuInit(MemorySizes ramSizeOption)
+    public void MmuInit(MemorySizes ramSizeOption)
     {
         _gime.MMU.Reset(ramSizeOption);
 
         Graphics.SetVidMask(_gime.MMU.CurrentRamConfiguration);
-
-        CopyRom();
-        MmuReset();
-
-        return true;
     }
 
     public void GimeAssertVerticalInterrupt()
@@ -126,19 +96,19 @@ public class TCC1014 : ITCC1014
         switch (address)
         {
             case < 0xFE00:
-            {
-                ushort index = (ushort)(address >> 13);
-                ushort mask = (ushort)(address & 0x1FFF);
-
-                ushort mmu = _gime.MMU.Registers[_gime.MMU.State, index];
-
-                if (_gime.MMU.PageOffsets[mmu] == 1)
                 {
-                    return _gime.MMU.Pages[mmu][mask];
-                }
+                    ushort index = (ushort)(address >> 13);
+                    ushort mask = (ushort)(address & 0x1FFF);
 
-                return _modules.PAKInterface.PakMem8Read((ushort)(_gime.MMU.PageOffsets[mmu] + mask));
-            }
+                    ushort mmu = _gime.MMU.Registers[_gime.MMU.State, index];
+
+                    if (_gime.MMU.PageOffsets[mmu] == 1)
+                    {
+                        return _gime.MMU.Pages[mmu][mask];
+                    }
+
+                    return _modules.PAKInterface.PakMem8Read((ushort)(_gime.MMU.PageOffsets[mmu] + mask));
+                }
 
             case > 0xFEFF:
                 return _modules.IOBus.PortRead(address);
@@ -164,22 +134,22 @@ public class TCC1014 : ITCC1014
         switch (address)
         {
             case < 0xFE00:
-            {
-                ushort index = (ushort)(address >> 13);
-                ushort mask = (ushort)(address & 0x1FFF);
-
-                ushort mmu = _gime.MMU.Registers[_gime.MMU.State, index];
-
-                byte maskA = _vectorMaskAlt[_gime.MMU.CurrentRamConfiguration];
-                byte maskB = _vectorMask[_gime.MMU.CurrentRamConfiguration];
-
-                if (_mapType != 0 || mmu < maskA || mmu > maskB)
                 {
-                    _gime.MMU.Pages[mmu][mask] = data;
-                }
+                    ushort index = (ushort)(address >> 13);
+                    ushort mask = (ushort)(address & 0x1FFF);
 
-                break;
-            }
+                    ushort mmu = _gime.MMU.Registers[_gime.MMU.State, index];
+
+                    byte maskA = _vectorMaskAlt[_gime.MMU.CurrentRamConfiguration];
+                    byte maskB = _vectorMask[_gime.MMU.CurrentRamConfiguration];
+
+                    if (_mapType != 0 || mmu < maskA || mmu > maskB)
+                    {
+                        _gime.MMU.Pages[mmu][mask] = data;
+                    }
+
+                    break;
+                }
 
             case > 0xFEFF:
                 _modules.IOBus.PortWrite(data, address);
@@ -205,74 +175,113 @@ public class TCC1014 : ITCC1014
         }
     }
 
-    //--I think this is just a hack to access memory directly for the 40/80 char-wide screen-scrapes
-    public ushort GetMem(int address)
-    {
-        return _gime.MMU.RAM[address];
-    }
-
+    //$FFC0 - $FFDF -- 0
+    //$FFF0 - $FFFF -- Vectors
     public byte SAMRead(byte port)
     {
-        if (port >= 0xF0) // && port <= 0xFF)
+        switch (port)
         {
-            //IRQ vectors from rom
-            return _gime.MMU.ROM[0x3F00 + port];
-        }
+            case >= 0xC0 and <= 0xDF:
+                return 0;
+                
+            //Vectors
+            case >= 0xF0:
+                //F0-F1 Illegal opcode and ÷ by zero
+                //F2-F3 SWI3
+                //F4-F5 SWI2
+                //F6-F7 FIRQ
+                //F8-F9 IRQ
+                //FA-FB SWI
+                //FC-FD NMI
+                //FE-FF Reset
 
-        return 0;
+                //These are "ghosted" from the end of the BASIC ROM at BFF0
+                return _gime.MMU.ROM[0x3F00 + port];
+
+            default:
+                throw new ArgumentOutOfRangeException($"{port} is not part of the SAM handler");
+        }
     }
 
+    //$FFC0 - $FFDF
+    //$FFF0 - $FFFF
     public void SAMWrite(byte data, byte port)
     {
-        byte mask;
-        byte reg;
-
-        if (port is >= 0xC6 and <= 0xD3)   //VDG Display offset Section
+        switch (port)
         {
-            port -= 0xC6;
-            reg = (byte)((port & 0x0E) >> 1);
-            mask = (byte)(1 << reg);
+            case >= 0xC0 and <= 0xC5:   //VDG Mode
+                SetGimeVdgMode(port);
+                break;
 
-            _gime.VDG.DisplayOffset = (byte)(_gime.VDG.DisplayOffset & (0xFF - mask)); //Shut the bit off
+            case >= 0xC6 and <= 0xD3:   //VDG Display offset Section
+                SetGimeVdgOffset(port);
+                break;
 
-            if ((port & 1) != 0)
-            {
-                _gime.VDG.DisplayOffset |= mask;
-            }
+            //Deprecated for CoCo3
+            case 0xD4 or 0xD5: //Page number -- clear/set
+                break;
 
-            Graphics.SetGimeVdgOffset(_gime.VDG.DisplayOffset);
+            case 0xD6 or 0xD7:  //POKE 65495,0 :: COCO 1/2
+                _modules.Emu.SetCpuMultiplierFlag((byte)(port & 1));
+                break;
+
+            case 0xD8 or 0xD9:  //POKE 65497,0 :: COCO 3
+                _modules.Emu.SetCpuMultiplierFlag((byte)(port & 1));
+                break;
+
+            //Deprecated for CoCo3
+            case >= 0xDA and <= 0xDD:   //Memory size -- clear/set
+                //0 0 4K
+                //0 1 16K
+                //1 0 32K / 64K
+                //1 1 Not used
+                break;
+
+            case 0xDE or 0xDF:
+                SetMapType((byte)(port & 1));
+                break;
+
+            case >= 0xF0 and <= 0xFF:
+                //--Ignored
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException($"{port} is not part of the SAM handler");
+        }
+    }
+
+    private void SetGimeVdgOffset(byte port)
+    {
+        port -= 0xC6;
+
+        byte reg = (byte)((port & 0x0E) >> 1);
+        byte mask = (byte)(1 << reg);
+
+        _gime.VDG.DisplayOffset = (byte)(_gime.VDG.DisplayOffset & (0xFF - mask)); //Shut the bit off
+
+        if ((port & 1) != 0)
+        {
+            _gime.VDG.DisplayOffset |= mask;
         }
 
-        if (port is >= 0xC0 and <= 0xC5)   //VDG Mode
+        Graphics.SetGimeVdgOffset(_gime.VDG.DisplayOffset);
+    }
+
+    private void SetGimeVdgMode(byte port)
+    {
+        port -= 0xC0;
+
+        byte reg = (byte)((port & 0x0E) >> 1);
+        byte mask = (byte)(1 << reg);
+
+        _gime.VDG.Mode = (byte)(_gime.VDG.Mode & (0xFF - mask));
+
+        if ((port & 1) != 0)
         {
-            port -= 0xC0;
-            reg = (byte)((port & 0x0E) >> 1);
-            mask = (byte)(1 << reg);
-
-            _gime.VDG.Mode = (byte)(_gime.VDG.Mode & (0xFF - mask));
-
-            if ((port & 1) != 0)
-            {
-                _gime.VDG.Mode |= mask;
-            }
-
-            Graphics.SetGimeVdgMode(_gime.VDG.Mode);
+            _gime.VDG.Mode |= mask;
         }
 
-        if (port is 0xDE or 0xDF)
-        {
-            SetMapType((byte)(port & 1));
-        }
-
-        if (port is 0xD7 or 0xD9)
-        {
-            _modules.Emu.SetCpuMultiplierFlag(1);
-        }
-
-        if (port is 0xD6 or 0xD8)
-        {
-            _modules.Emu.SetCpuMultiplierFlag(0);
-        }
+        Graphics.SetGimeVdgMode(_gime.VDG.Mode);
     }
 
     public byte GimeRead(byte port)
@@ -600,12 +609,32 @@ public class TCC1014 : ITCC1014
         return new ModeModel(_gime.MMU.RAM, _modules);
     }
 
-    public void Reset()
+    public void ModuleReset()
+    {
+        ChipReset();
+    }
+
+    public void ChipReset()
     {
         _ramVectors = 0;
         _romMap = 0;
         _mapType = 0;
 
         _gime.Initialize();
+        _gime.VDG.Reset();
+        _gime.MMU.ROM.Reset(_gime.MMU.IRB);
+
+        CopyRom();
+
+        _gime.MMU.Reset();
+
+        for (int index = 0; index < 1024; index++)
+        {
+            _gime.MMU.Pages[index] = _gime.MMU.RAM.GetBytePointer((index & _ramMask[_gime.MMU.CurrentRamConfiguration]) * 0x2000);
+            _gime.MMU.PageOffsets[index] = 1;
+        }
+
+        SetRomMap(0);
+        SetMapType(0);
     }
 }

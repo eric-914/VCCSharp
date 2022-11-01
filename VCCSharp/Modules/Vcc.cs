@@ -184,7 +184,7 @@ public class Vcc : IVcc
         _modules.Keyboard.KeyboardBuildRuntimeTable();
     }
 
-    public void Reset()
+    public void ModuleReset()
     {
         //BinaryRunning = false;
 

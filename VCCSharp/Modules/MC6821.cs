@@ -9,9 +9,8 @@ using HANDLE = System.IntPtr;
 namespace VCCSharp.Modules;
 
 // ReSharper disable once InconsistentNaming
-public interface IMC6821 : IModule
+public interface IMC6821 : IModule, IChip
 {
-    void PiaReset();
     void IrqFs(PhaseStates phase);
     void IrqHs(PhaseStates phase);
     void ClosePrintFile();
@@ -32,6 +31,9 @@ public interface IMC6821 : IModule
     byte GetCassetteSample();
 }
 
+/// <summary>
+/// PERIPHERAL INTERFACE ADAPTER
+/// </summary>
 // ReSharper disable once InconsistentNaming
 public class MC6821 : IMC6821
 {
@@ -55,8 +57,10 @@ public class MC6821 : IMC6821
     private byte _audioSample;
     private byte _singleBitSample;
     private byte _cassetteSample;
+    private byte _bitMask = 1;
+    private byte _startWait = 1;
 
-    public bool CartAutoStart;
+    private bool _cartAutoStart;
 
     public MC6821(IModules modules, IConfiguration configuration, IKernel kernel)
     {
@@ -65,9 +69,9 @@ public class MC6821 : IMC6821
         _kernel = kernel;
     }
 
-    public void SetCartAutoStart()
+    private void SetCartAutoStart()
     {
-        CartAutoStart = _configuration.Startup.CartridgeAutoStart;
+        _cartAutoStart = _configuration.Startup.CartridgeAutoStart;
     }
 
     public void IrqHs(PhaseStates phase) //63.5 uS
@@ -119,7 +123,7 @@ public class MC6821 : IMC6821
 
     public void IrqFs(PhaseStates phase) //60HZ Vertical sync pulse 16.667 mS
     {
-        if (_modules.PAKInterface.CartInserted == 1 && CartAutoStart)
+        if (_modules.PAKInterface.CartInserted == 1 && _cartAutoStart)
         {
             MC6821_AssertCart();
         }
@@ -149,19 +153,7 @@ public class MC6821 : IMC6821
         }
     }
 
-    public void PiaReset()
-    {
-        // Clear the PIA registers
-        for (byte index = 0; index < 4; index++)
-        {
-            _rega[index] = 0;
-            _regb[index] = 0;
-            _regadd[index] = 0;
-            _regbdd[index] = 0;
-        }
-    }
-
-    public void MC6821_AssertCart()
+    private void MC6821_AssertCart()
     {
         _regb[3] = (byte)(_regb[3] | 128);
 
@@ -391,9 +383,7 @@ public class MC6821 : IMC6821
         }
     }
 
-    private byte _bitMask = 1, _startWait = 1;
-
-    public void MC6821_CaptureBit(byte sample)
+    private void MC6821_CaptureBit(byte sample)
     {
         byte data = 0;
 
@@ -456,7 +446,7 @@ public class MC6821 : IMC6821
         return (byte)(((_rega[1] & 8) >> 3) + ((_rega[3] & 8) >> 2));
     }
 
-    public void MC6821_WritePrintMon(byte data)
+    private void MC6821_WritePrintMon(byte data)
     {
         //WriteConsole(data);
 
@@ -526,7 +516,7 @@ public class MC6821 : IMC6821
         return _cassetteSample;
     }
 
-    public void Reset()
+    public void ModuleReset()
     {
         _addLf = false;
         _monState = false;
@@ -542,8 +532,20 @@ public class MC6821 : IMC6821
         _singleBitSample = 0;
         _cassetteSample = 0;
 
-        CartAutoStart = false;
+        _cartAutoStart = false;
 
         SetCartAutoStart();
+    }
+
+    public void ChipReset()
+    {
+        // Clear the PIA registers
+        for (byte index = 0; index < 4; index++)
+        {
+            _rega[index] = 0;
+            _regb[index] = 0;
+            _regadd[index] = 0;
+            _regbdd[index] = 0;
+        }
     }
 }

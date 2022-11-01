@@ -637,7 +637,7 @@ public class Graphics : IGraphics
         return true;
     }
 
-    public void Reset()
+    public void ModuleReset()
     {
         SetMonitorType();
         SetPaletteType();

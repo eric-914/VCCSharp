@@ -71,18 +71,16 @@ public class Emu : IEmu
 
     public void SoftReset()
     {
-        _modules.TCC1014.MC6883Reset();
-        _modules.MC6821.PiaReset();
+        _modules.TCC1014.ChipReset();
+        _modules.MC6821.ChipReset();
 
-        _modules.CPU.Reset();
+        _modules.CPU.ChipReset();
 
         _modules.Graphics.ResetGraphicsState();
         _modules.Graphics.SetPaletteType();
         _modules.CoCo.CocoReset();
         _modules.Audio.ResetAudio();
 
-        _modules.TCC1014.MmuReset();
-        _modules.TCC1014.CopyRom();
         _modules.PAKInterface.ResetBus();
 
         TurboSpeedFlag = 1;
@@ -90,18 +88,12 @@ public class Emu : IEmu
 
     public void HardReset()
     {
-        if (!_modules.TCC1014.MmuInit(_configuration.Memory.Ram.Value))
-        {
-            MessageBox.Show("Can't allocate enough RAM, out of memory", "Error");
-
-            Environment.Exit(0);
-        }
-
-        _modules.TCC1014.MC6883Reset();  //Captures internal rom pointer for CPU Interrupt Vectors
-        _modules.MC6821.PiaReset();
+        _modules.TCC1014.MmuInit(_configuration.Memory.Ram.Value);
+        _modules.TCC1014.ChipReset();  //Captures internal rom pointer for CPU Interrupt Vectors
+        _modules.MC6821.ChipReset();
 
         _modules.CPU.Init(_configuration.CPU.Type.Value);
-        _modules.CPU.Reset();   // Zero all CPU Registers and sets the PC to VRESET
+        _modules.CPU.ChipReset();   // Zero all CPU Registers and sets the PC to VRESET
 
         _modules.Graphics.ResetGraphicsState();
         _modules.Graphics.SetPaletteType();
@@ -162,7 +154,7 @@ public class Emu : IEmu
         }
     }
 
-    public void Reset()
+    public void ModuleReset()
     {
         HardReset();
         SetCpuMultiplier();

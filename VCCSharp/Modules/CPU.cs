@@ -5,7 +5,7 @@ using VCCSharp.Models;
 namespace VCCSharp.Modules;
 
 // ReSharper disable InconsistentNaming
-public interface ICPU : IModule
+public interface ICPU : IModule, IChip
 {
     void Init(CPUTypes cpu);
     void ForcePC(ushort address);
@@ -15,6 +15,10 @@ public interface ICPU : IModule
 }
 // ReSharper restore InconsistentNaming
 
+/// <summary>
+/// A wrapper around the true CPU-processor instance.
+/// HD6309 vs. MC6809
+/// </summary>
 // ReSharper disable once InconsistentNaming
 public class CPU : ICPU
 {
@@ -26,11 +30,6 @@ public class CPU : ICPU
     {
         _modules = modules;
         _processor = _modules.MC6809; //--Default to 6809 until specified otherwise.
-    }
-
-    public void Reset()
-    {
-        _processor.Reset();
     }
 
     public void Init(CPUTypes cpu)
@@ -58,5 +57,15 @@ public class CPU : ICPU
     public void DeAssertInterrupt(CPUInterrupts irq)
     {
         _processor.DeAssertInterrupt((byte)irq);
+    }
+
+    public void ModuleReset()
+    {
+        ChipReset();
+    }
+
+    public void ChipReset()
+    {
+        _processor.Reset();
     }
 }

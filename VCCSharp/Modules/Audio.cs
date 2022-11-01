@@ -202,7 +202,7 @@ namespace VCCSharp.Modules
 
         public List<string> FindSoundDevices() => _sound.EnumerateSoundCards();
         
-        public void Reset()
+        public void ModuleReset()
         {
             //_initialized = false; //--I think we don't need to re-initialize DxSound
 

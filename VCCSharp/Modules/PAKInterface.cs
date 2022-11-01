@@ -693,7 +693,7 @@ public class PAKInterface : IPAKInterface
         return fn((ushort)(address & 32767));
     }
 
-    public void Reset()
+    public void ModuleReset()
     {
         _dllPath = null;
 

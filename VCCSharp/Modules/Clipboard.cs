@@ -272,8 +272,8 @@ public class Clipboard : IClipboard
 
             for (int idx = 0; idx < bytesPerRow * 2; idx += 2)
             {
-                int address = (int)(startOfVidRam + y * (bytesPerRow * 2) + idx);
-                int tmp = _modules.TCC1014.GetMem(address);
+                ushort address = (ushort)(startOfVidRam + y * (bytesPerRow * 2) + idx);
+                int tmp = _modules.TCC1014.MemRead8(address);
 
                 if (tmp is 32 or 64 or 96)
                 {
@@ -331,7 +331,7 @@ public class Clipboard : IClipboard
                select _modules.TCC1014.MemRead8(address);
     }
 
-    public void Reset()
+    public void ModuleReset()
     {
         CodePaste = false;
         PasteWithNew = false;

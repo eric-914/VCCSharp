@@ -382,7 +382,7 @@ public class Draw : IDraw
         }
     }
 
-    public void Reset()
+    public void ModuleReset()
     {
         SetAspect();
         ClearScreen();
