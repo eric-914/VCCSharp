@@ -13,7 +13,6 @@ public interface IEmu : IModule
     void SoftReset();
     void HardReset();
     void SetCpuMultiplierFlag(byte doubleSpeed);
-    void SetTurboMode(byte data);
 
     bool FullScreen { get; set; }
     bool ScanLines { get; set; }
@@ -37,6 +36,9 @@ public class Emu : IEmu
     private readonly IModules _modules;
     private readonly IConfiguration _configuration;
 
+    private byte _doubleSpeedFlag;
+    private int _doubleSpeedMultiplier = 2;
+
     public HWND WindowHandle { get; set; }
 
     public bool FullScreen { get; set; }
@@ -50,11 +52,7 @@ public class Emu : IEmu
 
     public string? StatusLine { get; set; }
 
-    public byte DoubleSpeedFlag;
-    public int DoubleSpeedMultiplier = 2;
-
     public double CpuCurrentSpeed { get; set; } = .894;
-    public byte TurboSpeedFlag = 1;
 
     public Point WindowSize { get; set; }
 
@@ -82,8 +80,6 @@ public class Emu : IEmu
         _modules.Audio.ResetAudio();
 
         _modules.PAKInterface.ResetBus();
-
-        TurboSpeedFlag = 1;
     }
 
     public void HardReset()
@@ -101,9 +97,6 @@ public class Emu : IEmu
         _modules.Audio.ResetAudio();
 
         _modules.PAKInterface.UpdateBusPointer();
-
-        TurboSpeedFlag = 1;
-
         _modules.PAKInterface.ResetBus();
 
         _modules.CoCo.OverClock = 1;
@@ -111,46 +104,27 @@ public class Emu : IEmu
 
     private void SetCpuMultiplier()
     {
-        DoubleSpeedMultiplier = _configuration.CPU.CpuMultiplier;
+        _doubleSpeedMultiplier = _configuration.CPU.CpuMultiplier;
 
-        SetCpuMultiplierFlag(DoubleSpeedFlag);
+        SetCpuMultiplierFlag(_doubleSpeedFlag);
     }
 
     public void SetCpuMultiplierFlag(byte doubleSpeed)
     {
         _modules.CoCo.OverClock = 1;
 
-        DoubleSpeedFlag = doubleSpeed;
+        _doubleSpeedFlag = doubleSpeed;
 
-        if (DoubleSpeedFlag != 0)
+        if (_doubleSpeedFlag != 0)
         {
-            _modules.CoCo.OverClock = DoubleSpeedMultiplier * TurboSpeedFlag;
+            _modules.CoCo.OverClock = _doubleSpeedMultiplier;
         }
 
         CpuCurrentSpeed = .894;
 
-        if (DoubleSpeedFlag != 0)
+        if (_doubleSpeedFlag != 0)
         {
-            CpuCurrentSpeed *= (DoubleSpeedMultiplier * (double)TurboSpeedFlag);
-        }
-    }
-
-    public void SetTurboMode(byte data)
-    {
-        _modules.CoCo.OverClock = 1;
-
-        TurboSpeedFlag = (byte)((data & 1) + 1);
-
-        if (DoubleSpeedFlag != 0)
-        {
-            _modules.CoCo.OverClock = DoubleSpeedMultiplier * TurboSpeedFlag;
-        }
-
-        CpuCurrentSpeed = .894;
-
-        if (DoubleSpeedFlag != 0)
-        {
-            CpuCurrentSpeed *= DoubleSpeedMultiplier * (double)TurboSpeedFlag;
+            CpuCurrentSpeed *= _doubleSpeedMultiplier;
         }
     }
 

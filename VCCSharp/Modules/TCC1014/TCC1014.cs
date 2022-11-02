@@ -12,12 +12,15 @@ public interface ITCC1014 : IModule, IChip
     void SetMapType(byte type);
 
     void MmuInit(MemorySizes ramSizeOption);
-    
+
     byte MemRead8(ushort address);
     void MemWrite8(byte data, ushort address);
 
     byte SAMRead(byte port);
     void SAMWrite(byte data, byte port);
+
+    byte VectorRead(byte port);
+    void VectorWrite(byte data, byte port);
 
     byte GimeRead(byte port);
     void GimeWrite(byte port, byte data);
@@ -35,24 +38,28 @@ public interface ITCC1014 : IModule, IChip
 public class TCC1014 : ITCC1014
 {
     private readonly IModules _modules;
-    private readonly IRomLoader _romLoader;
 
     private IGraphics Graphics => _modules.Graphics;
     private ICPU CPU => _modules.CPU;
+    private IIOBus IO => _modules.IOBus;
+    private IPAKInterface PAK => _modules.PAKInterface;
+    private IEmu Emu => _modules.Emu;
+    private ICoCo CoCo => _modules.CoCo;
+    private IKeyboard Keyboard => _modules.Keyboard;
 
     private readonly VectorMasks _vectorMask = new();
     private readonly VectorMasksAlt _vectorMaskAlt = new();
 
-    private readonly GIME _gime = new();
+    private readonly IGIME _gime;
 
     private byte _ramVectors;	// $FF90 bit 3
     private byte _romMap;		// $FF90 bit 1-0
     private byte _mapType;	    // $FFDE/FFDF toggle Map type 0 = ram/rom
 
-    public TCC1014(IModules modules, IRomLoader romLoader)
+    public TCC1014(IModules modules, IGIME gime)
     {
         _modules = modules;
-        _romLoader = romLoader;
+        _gime = gime;
     }
 
     /*****************************************************************************************
@@ -99,11 +106,11 @@ public class TCC1014 : ITCC1014
                         return _gime.MMU.Pages[mmu][mask];
                     }
 
-                    return _modules.PAKInterface.PakMem8Read((ushort)(_gime.MMU.PageOffsets[mmu] + mask));
+                    return PAK.PakMem8Read((ushort)(_gime.MMU.PageOffsets[mmu] + mask));
                 }
 
             case > 0xFEFF:
-                return _modules.IOBus.PortRead(address);
+                return IO.PortRead(address);
 
             default:
                 return VectorMemRead8(address);
@@ -144,7 +151,7 @@ public class TCC1014 : ITCC1014
                 }
 
             case > 0xFEFF:
-                _modules.IOBus.PortWrite(data, address);
+                IO.PortWrite(data, address);
 
                 break;
 
@@ -168,14 +175,52 @@ public class TCC1014 : ITCC1014
     }
 
     //$FFC0 - $FFDF -- 0
-    //$FFF0 - $FFFF -- Vectors
     public byte SAMRead(byte port)
+    {
+        //Reading from this range is ignored.
+        return 0;
+    }
+
+    //$FFC0 - $FFDF
+    public void SAMWrite(byte data, byte port)
+    {
+        SAMHandlers handler = Ports.SAMHandler(port);
+
+        switch (handler)
+        {
+            case SAMHandlers.DisplayModelControl:   //0xC0-0xC5
+                SetGimeVdgMode(port);
+                break;
+
+            case SAMHandlers.DisplayOffset:         //0xC6-0xD3
+                SetGimeVdgOffset(port);
+                break;
+
+            case SAMHandlers.Page_1:                //0xD4-0xD5
+                //--Deprecated for CoCo3
+                break;
+
+            case SAMHandlers.CPURate:               //0xD6-0xD9
+                //0xD6-0xD7  POKE 65495,0 :: COCO 1/2
+                //0xD8-0xD9  POKE 65497,0 :: COCO 3
+                Emu.SetCpuMultiplierFlag((byte)(port & 1));
+                break;
+
+            case SAMHandlers.MemorySize:            //0xDA-0xDD
+                //--Deprecated for CoCo3
+                break;
+
+            case SAMHandlers.MapType:               //0xDE-0xDF
+                SetMapType((byte)(port & 1));
+                break;
+        }
+    }
+
+    //$FFF0 - $FFFF
+    public byte VectorRead(byte port)
     {
         switch (port)
         {
-            case >= 0xC0 and <= 0xDF:
-                return 0;
-                
             //Vectors
             case >= 0xF0:
                 //F0-F1 Illegal opcode and ÷ by zero
@@ -195,51 +240,10 @@ public class TCC1014 : ITCC1014
         }
     }
 
-    //$FFC0 - $FFDF
     //$FFF0 - $FFFF
-    public void SAMWrite(byte data, byte port)
+    public void VectorWrite(byte data, byte port)
     {
-        switch (port)
-        {
-            case >= 0xC0 and <= 0xC5:   //VDG Mode
-                SetGimeVdgMode(port);
-                break;
-
-            case >= 0xC6 and <= 0xD3:   //VDG Display offset Section
-                SetGimeVdgOffset(port);
-                break;
-
-            //Deprecated for CoCo3
-            case 0xD4 or 0xD5: //Page number -- clear/set
-                break;
-
-            case 0xD6 or 0xD7:  //POKE 65495,0 :: COCO 1/2
-                _modules.Emu.SetCpuMultiplierFlag((byte)(port & 1));
-                break;
-
-            case 0xD8 or 0xD9:  //POKE 65497,0 :: COCO 3
-                _modules.Emu.SetCpuMultiplierFlag((byte)(port & 1));
-                break;
-
-            //Deprecated for CoCo3
-            case >= 0xDA and <= 0xDD:   //Memory size -- clear/set
-                //0 0 4K
-                //0 1 16K
-                //1 0 32K / 64K
-                //1 1 Not used
-                break;
-
-            case 0xDE or 0xDF:
-                SetMapType((byte)(port & 1));
-                break;
-
-            case >= 0xF0 and <= 0xFF:
-                //--Ignored
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException($"{port} is not part of the SAM handler");
-        }
+        //--Writes to this range are ignored
     }
 
     private void SetGimeVdgOffset(byte port)
@@ -280,14 +284,14 @@ public class TCC1014 : ITCC1014
     {
         switch (port)
         {
-            case Ports.IRQENR:
+            case Ports.IRQENR: //0x92
                 return _gime.ReadIRQ();
 
-            case Ports.FIRQENR:
+            case Ports.FIRQENR: //0x93
                 return _gime.ReadFIRQ();
 
-            case Ports.TIMER_MS: //--Timer
-            case Ports.TIMER_LS:
+            case Ports.TIMER_MS: //0x94 //--Timer
+            case Ports.TIMER_LS: //0x95
                 return 126; //--What is this magic number?
 
             default:
@@ -325,8 +329,7 @@ public class TCC1014 : ITCC1014
                 SetTimerLsb();
                 break;
 
-            case Ports.RESERVED_96: //0x96 -- TODO: Is this TurboMode or Reserved?  65495 maps to $FFD7
-                _modules.Emu.SetTurboMode((byte)(data & 1));
+            case Ports.RESERVED_96: //0x96
                 break;
 
             case Ports.RESERVED_97: //0x97
@@ -385,12 +388,12 @@ public class TCC1014 : ITCC1014
     private void SetInit1(byte data)
     {
         SetMmuTask((byte)(data & 1));                       //TR
-        _modules.CoCo.SetTimerClockRate((byte)(data & 32));	//TINS
+        CoCo.SetTimerClockRate((byte)(data & 32));	//TINS
     }
 
-    private void SetTimerMsb() => _modules.CoCo.SetInterruptTimer(Timer);
+    private void SetTimerMsb() => CoCo.SetInterruptTimer(Timer);
 
-    private void SetTimerLsb() => _modules.CoCo.SetInterruptTimer(Timer);
+    private void SetTimerLsb() => CoCo.SetInterruptTimer(Timer);
 
     private ushort Timer => (ushort)(((_gime.Registers[Ports.TIMER_MS] << 8) + _gime.Registers[Ports.TIMER_LS]) & 0x0FFF); //--Limit to 12-bit value
 
@@ -399,10 +402,10 @@ public class TCC1014 : ITCC1014
         bool TestMask(int address, int mask) => (_gime.Registers[address] & mask) != 0;
         byte Test(int mask) => TestMask(Ports.IRQENR, mask) | TestMask(Ports.FIRQENR, mask) ? (byte)1 : (byte)0;
 
-        _modules.Keyboard.GimeSetKeyboardInterruptState(Test(2));
-        _modules.CoCo.SetVerticalInterruptState(Test(8));
-        _modules.CoCo.SetHorizontalInterruptState(Test(16));
-        _modules.CoCo.SetTimerInterruptState(Test(32));
+        Keyboard.GimeSetKeyboardInterruptState(Test(2));
+        CoCo.SetVerticalInterruptState(Test(8));
+        CoCo.SetHorizontalInterruptState(Test(16));
+        CoCo.SetTimerInterruptState(Test(32));
     }
 
     //--TODO: Not sure why this is the same as IRQ above
@@ -411,10 +414,10 @@ public class TCC1014 : ITCC1014
         bool TestMask(int address, int mask) => (_gime.Registers[address] & mask) != 0;
         byte Test(int mask) => TestMask(Ports.IRQENR, mask) | TestMask(Ports.FIRQENR, mask) ? (byte)1 : (byte)0;
 
-        _modules.Keyboard.GimeSetKeyboardInterruptState(Test(2));
-        _modules.CoCo.SetVerticalInterruptState(Test(8));
-        _modules.CoCo.SetHorizontalInterruptState(Test(16));
-        _modules.CoCo.SetTimerInterruptState(Test(32));
+        Keyboard.GimeSetKeyboardInterruptState(Test(2));
+        CoCo.SetVerticalInterruptState(Test(8));
+        CoCo.SetHorizontalInterruptState(Test(16));
+        CoCo.SetTimerInterruptState(Test(32));
     }
 
     public void GimeAssertHorizontalInterrupt()
@@ -596,10 +599,8 @@ public class TCC1014 : ITCC1014
 
         _gime.Initialize();
         _gime.VDG.Reset();
-        _gime.MMU.ROM.Reset(_gime.MMU.IRB);
 
-        _romLoader.CopyRom(_gime.MMU.IRB);
-
+        _gime.LoadRom();
         _gime.MMU.Reset();
         _gime.MMU.ResetPages();
 

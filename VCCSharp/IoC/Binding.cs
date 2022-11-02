@@ -51,6 +51,7 @@ internal static class Binding
             .Bind<IVccMainWindow, VccMainWindow>()
             .Bind<IScreen, Screen>()
             .Bind<IRomLoader, RomLoader>()
+            .Bind<IGIME, GIME>()
 
             //--Menu
             .Singleton<IMainMenu, MainMenu>()

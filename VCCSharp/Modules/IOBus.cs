@@ -37,6 +37,8 @@ public class IOBus : IIOBus
                 return _modules.TCC1014.GimeRead(port);
             case PortHandlers.SAM:
                 return _modules.TCC1014.SAMRead(port);
+            case PortHandlers.VECT:
+                return _modules.TCC1014.VectorRead(port);
             default:
                 return _modules.PAKInterface.PakPortRead(port);
         }

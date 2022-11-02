@@ -45,34 +45,100 @@ public static class Ports
     public const byte VerticalOffset0Register = 0x9E;   // Vertical Offset 0 Register
     public const byte HorizontalOffsetRegister = 0x9F;  // Horizontal Offset Register
 
+    // Display Model Control
+    public const byte V0_C = 0xC0; //--Clear
+    public const byte V0_S = 0xC1; //--Set
+    public const byte V1_C = 0xC2; //--Clear
+    public const byte V1_S = 0xC3; //--Set
+    public const byte V2_C = 0xC4; //--Clear
+    public const byte V2_S = 0xC5; //--Set
+
+    // Display Offset
+    public const byte F0_C = 0xC6; //--Clear
+    public const byte F0_S = 0xC7; //--Set
+    public const byte F1_C = 0xC8; //--Clear
+    public const byte F1_S = 0xC9; //--Set
+    public const byte F2_C = 0xCA; //--Clear
+    public const byte F2_S = 0xCB; //--Set
+    public const byte F3_C = 0xCC; //--Clear
+    public const byte F3_S = 0xCD; //--Set
+    public const byte F4_C = 0xCE; //--Clear
+    public const byte F4_S = 0xCF; //--Set
+    public const byte F5_C = 0xD0; //--Clear
+    public const byte F5_S = 0xD1; //--Set
+    public const byte F6_C = 0xD2; //--Clear
+    public const byte F6_S = 0xD3; //--Set
+
+    // Page #1
+    public const byte P1_C = 0xD4; //--Clear
+    public const byte P1_S = 0xD5; //--Set
+
+    // CPU Rate
+    public const byte R0_C = 0xD6; //--Clear
+    public const byte R0_S = 0xD7; //--Set
+    public const byte R1_C = 0xD8; //--Clear
+    public const byte R1_S = 0xD9; //--Set
+
+    // Memory Size
+    public const byte M0_C = 0xDA; //--Clear
+    public const byte M0_S = 0xDB; //--Set
+    public const byte M1_C = 0xDC; //--Clear
+    public const byte M1_S = 0xDD; //--Set
+
+    // Map Type
+    public const byte TY_C = 0xDE; //--Clear
+    public const byte TY_S = 0xDF; //--Set
+
+
+
     private const PortHandlers PAK_ = PortHandlers.PAK;
     private const PortHandlers PIA0 = PortHandlers.PIA0;
     private const PortHandlers PIA1 = PortHandlers.PIA1;
     private const PortHandlers GIME = PortHandlers.GIME;
     private const PortHandlers SAM_ = PortHandlers.SAM;
+    private const PortHandlers VECT = PortHandlers.VECT;
 
+    //--Handler map for memory range: $FF00 - $FFFF
     private static readonly PortHandlers[] _handlers =
     {
-        /*00-0F*/ PIA0, PIA0, PIA0, PIA0, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
-        /*10-1F*/ PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
-        /*20-23*/ PIA1, PIA1, PIA1, PIA1, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
-        /*30-3F*/ PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
+        // $FF__:
+        /*        $_0   $_1   $_2   $_3   $_4   $_5   $_6   $_7   $_8   $_9   $_A   $_B   $_C   $_D   $_E   $_F  */
+        /* $0_ */ PIA0, PIA0, PIA0, PIA0, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
+        /* $1_ */ PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
+        /* $2_ */ PIA1, PIA1, PIA1, PIA1, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
+        /* $3_ */ PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
 
-        /*40-4F*/ PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
-        /*50-5F*/ PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
-        /*60-6F*/ PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
-        /*70-7F*/ PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
+        /* $4_ */ PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
+        /* $5_ */ PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
+        /* $6_ */ PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
+        /* $7_ */ PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
 
-        /*80-8F*/ PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
-        /*90-9F*/ GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME,
-        /*A0-AF*/ GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME,
-        /*B0-BF*/ GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME,
+        /* $8_ */ PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
+        /* $9_ */ GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME,
+        /* $A_ */ GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME,
+        /* $B_ */ GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME, GIME,
 
-        /*C0-CF*/ SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_,
-        /*D0-DF*/ SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_,
-        /*E0-EF*/ PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
-        /*F0-FF*/ SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_,
+        /* $C_ */ SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_,
+        /* $D_ */ SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_, SAM_,
+        /* $E_ */ PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_, PAK_,
+        /* $F_ */ VECT, VECT, VECT, VECT, VECT, VECT, VECT, VECT, VECT, VECT, VECT, VECT, VECT, VECT, VECT, VECT
     };
 
     public static PortHandlers Handler(byte port) => _handlers[port];
+
+    private const SAMHandlers DMC = SAMHandlers.DisplayModelControl;
+    private const SAMHandlers DOF = SAMHandlers.DisplayOffset;
+    private const SAMHandlers CPU = SAMHandlers.CPURate;
+    private const SAMHandlers MAP = SAMHandlers.MapType;
+    private const SAMHandlers MEM = SAMHandlers.MemorySize;
+    private const SAMHandlers PG1 = SAMHandlers.Page_1;
+
+    //--Handler map for memory range: $FFC0 - $FFDF
+    private static readonly SAMHandlers[] _sam =
+    {
+        DMC, DMC, DMC, DMC, DMC, DMC, DOF, DOF, DOF, DOF, DOF, DOF, DOF, DOF, DOF, DOF,
+        DOF, DOF, DOF, DOF, PG1, PG1, CPU, CPU, CPU, CPU, MEM, MEM, MEM, MEM, MAP, MAP
+    };
+
+    public static SAMHandlers SAMHandler(byte port) => _sam[port - 0xC0];
 }
