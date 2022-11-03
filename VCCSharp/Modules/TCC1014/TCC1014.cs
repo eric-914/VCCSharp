@@ -9,9 +9,7 @@ namespace VCCSharp.Modules.TCC1014;
 // ReSharper disable CommentTypo
 public interface ITCC1014 : IModule, IChip
 {
-    void SetMapType(byte type);
-
-    void MmuInit(MemorySizes ramSizeOption);
+    void Initialize(MemorySizes ramSizeOption);
 
     byte MemRead8(ushort address);
     void MemWrite8(byte data, ushort address);
@@ -19,11 +17,12 @@ public interface ITCC1014 : IModule, IChip
     byte SAMRead(byte port);
     void SAMWrite(byte data, byte port);
 
+    byte GimeRead(byte port);
+    void GimeWrite(byte port, byte data);
+
     byte VectorRead(byte port);
     void VectorWrite(byte data, byte port);
 
-    byte GimeRead(byte port);
-    void GimeWrite(byte port, byte data);
     void GimeAssertKeyboardInterrupt();
     void GimeAssertVerticalInterrupt();
     void GimeAssertHorizontalInterrupt();
@@ -40,7 +39,6 @@ public class TCC1014 : ITCC1014
     private readonly IModules _modules;
 
     private IGraphics Graphics => _modules.Graphics;
-    private ICPU CPU => _modules.CPU;
     private IIOBus IO => _modules.IOBus;
     private IPAKInterface PAK => _modules.PAKInterface;
     private IEmu Emu => _modules.Emu;
@@ -52,9 +50,9 @@ public class TCC1014 : ITCC1014
 
     private readonly IGIME _gime;
 
-    private byte _ramVectors;	// $FF90 bit 3
-    private byte _romMap;		// $FF90 bit 1-0
-    private byte _mapType;	    // $FFDE/FFDF toggle Map type 0 = ram/rom
+    private bool _ramVectors;	    // $FF90 bit 3      1 = DRAM at XFEXX is constant
+    private RomMapping _romMap;		// $FF90 bit 1-0
+    private MapTypes _mapType;	    // $FFDE/FFDF toggle Map type 0 = ram/rom
 
     public TCC1014(IModules modules, IGIME gime)
     {
@@ -67,29 +65,14 @@ public class TCC1014 : ITCC1014
     * Copy Rom Images to buffer space and reset GIME MMU registers to 0                      *
     * Returns NULL if any of the above fail.                                                 *
     *****************************************************************************************/
-    public void MmuInit(MemorySizes ramSizeOption)
+
+    public void Initialize(MemorySizes ramSizeOption)
     {
         _gime.MMU.Reset(ramSizeOption);
 
         Graphics.SetVidMask(_gime.MMU.CurrentRamConfiguration);
     }
-
-    public void GimeAssertVerticalInterrupt()
-    {
-        if ((_gime.Registers[Ports.FIRQENR] & 8) != 0 && _gime.Interrupts.FIRQ.EnhancedFlag)
-        {
-            CPU.AssertInterrupt(CPUInterrupts.FIRQ, 0); //FIRQ
-
-            _gime.Interrupts.FIRQ.Last |= InterruptFlags.Vertical;
-        }
-        else if ((_gime.Registers[Ports.IRQENR] & 8) != 0 && _gime.Interrupts.IRQ.EnhancedFlag)
-        {
-            CPU.AssertInterrupt(CPUInterrupts.IRQ, 0); //IRQ moon patrol demo using this
-
-            _gime.Interrupts.IRQ.Last |= InterruptFlags.Vertical;
-        }
-    }
-
+    
     public byte MemRead8(ushort address)
     {
         switch (address)
@@ -119,7 +102,7 @@ public class TCC1014 : ITCC1014
 
     private byte VectorMemRead8(ushort address)
     {
-        if (_ramVectors != 0)
+        if (_ramVectors)
         {
             //Address must be $FE00 - $FEFF
             return _gime.MMU.RAM[(0x2000 * _vectorMask[_gime.MMU.CurrentRamConfiguration]) | (address & 0x1FFF)];
@@ -163,7 +146,7 @@ public class TCC1014 : ITCC1014
 
     private void VectorMemWrite8(byte data, ushort address)
     {
-        if (_ramVectors != 0)
+        if (_ramVectors)
         {
             //Address must be $FE00 - $FEFF
             _gime.MMU.RAM[(0x2000 * _vectorMask[_gime.MMU.CurrentRamConfiguration]) | (address & 0x1FFF)] = data;
@@ -211,7 +194,7 @@ public class TCC1014 : ITCC1014
                 break;
 
             case SAMHandlers.MapType:               //0xDE-0xDF
-                SetMapType((byte)(port & 1));
+                SetMapType((MapTypes)(port & 1));
                 break;
         }
     }
@@ -219,25 +202,17 @@ public class TCC1014 : ITCC1014
     //$FFF0 - $FFFF
     public byte VectorRead(byte port)
     {
-        switch (port)
-        {
-            //Vectors
-            case >= 0xF0:
-                //F0-F1 Illegal opcode and ÷ by zero
-                //F2-F3 SWI3
-                //F4-F5 SWI2
-                //F6-F7 FIRQ
-                //F8-F9 IRQ
-                //FA-FB SWI
-                //FC-FD NMI
-                //FE-FF Reset
+        //F0-F1 Illegal opcode and ÷ by zero
+        //F2-F3 SWI3
+        //F4-F5 SWI2
+        //F6-F7 FIRQ
+        //F8-F9 IRQ
+        //FA-FB SWI
+        //FC-FD NMI
+        //FE-FF Reset
 
-                //These are "ghosted" from the end of the BASIC ROM at BFF0
-                return _gime.MMU.ROM[0x3F00 + port];
-
-            default:
-                throw new ArgumentOutOfRangeException($"{port} is not part of the SAM handler");
-        }
+        //These are "ghosted" from the end of the BASIC ROM at BFF0
+        return _gime.MMU.ROM[0x3F00 + port];
     }
 
     //$FFF0 - $FFFF
@@ -282,21 +257,22 @@ public class TCC1014 : ITCC1014
 
     public byte GimeRead(byte port)
     {
-        switch (port)
+        return port switch
         {
-            case Ports.IRQENR: //0x92
-                return _gime.ReadIRQ();
+            Ports.IRQENR => //0x92
+                _gime.ReadIRQ(),
 
-            case Ports.FIRQENR: //0x93
-                return _gime.ReadFIRQ();
+            Ports.FIRQENR => //0x93
+                _gime.ReadFIRQ(),
 
-            case Ports.TIMER_MS: //0x94 //--Timer
-            case Ports.TIMER_LS: //0x95
-                return 126; //--What is this magic number?
+            Ports.TIMER_MS => //0x94 //--Timer
+                126, //--What is this magic number?
 
-            default:
-                return _gime.Registers[port];
-        }
+            Ports.TIMER_LS => //0x95
+                126, //--What is this magic number?
+
+            _ => _gime.Registers[port]
+        };
     }
 
     public void GimeWrite(byte port, byte data)
@@ -378,8 +354,10 @@ public class TCC1014 : ITCC1014
         Graphics.SetCompatMode((data & 128) == 0 ? CompatibilityModes.CoCo3 : CompatibilityModes.CoCo2);
 
         SetMmuEnabled((data & 64) == 0);
-        SetRomMap((byte)(data & 3)); //MC0-MC1
-        SetVectors((byte)(data & 8)); //MC3
+
+        UpdateMmuArray(_mapType, (RomMapping)(data & 3));   //MC0-MC1
+
+        _ramVectors = (data & 8) != 0;      //Bit 3 of $FF90 MC3
 
         _gime.Interrupts.FIRQ.SetFlag((byte)((data & 16) >> 4));
         _gime.Interrupts.IRQ.SetFlag((byte)((data & 32) >> 5));
@@ -387,7 +365,7 @@ public class TCC1014 : ITCC1014
 
     private void SetInit1(byte data)
     {
-        SetMmuTask((byte)(data & 1));                       //TR
+        SetMmuTask((byte)(data & 1));               //TR
         CoCo.SetTimerClockRate((byte)(data & 32));	//TINS
     }
 
@@ -420,110 +398,25 @@ public class TCC1014 : ITCC1014
         CoCo.SetTimerInterruptState(Test(32));
     }
 
-    public void GimeAssertHorizontalInterrupt()
+    public void SetMapType(MapTypes type)
     {
-        if ((_gime.Registers[Ports.FIRQENR] & 16) != 0 && _gime.Interrupts.FIRQ.EnhancedFlag)
-        {
-            CPU.AssertInterrupt(CPUInterrupts.FIRQ, 0);
-
-            _gime.Interrupts.FIRQ.Last |= InterruptFlags.Horizontal;
-        }
-        else if ((_gime.Registers[Ports.IRQENR] & 16) != 0 && _gime.Interrupts.IRQ.EnhancedFlag)
-        {
-            CPU.AssertInterrupt(CPUInterrupts.IRQ, 0);
-
-            _gime.Interrupts.IRQ.Last |= InterruptFlags.Horizontal;
-        }
+        UpdateMmuArray(type, _romMap);
     }
 
-    public void GimeAssertTimerInterrupt()
+    private void UpdateMmuArray(MapTypes mapType, RomMapping romMap)
     {
-        if ((_gime.Registers[Ports.FIRQENR] & 32) != 0 && _gime.Interrupts.FIRQ.EnhancedFlag)
+        _mapType = mapType;
+        _romMap = romMap;
+
+        switch (_mapType)
         {
-            CPU.AssertInterrupt(CPUInterrupts.FIRQ, 0);
+            case MapTypes.RAM:
+                _gime.SetMapTypeRam();
+                break;
 
-            _gime.Interrupts.FIRQ.Last |= InterruptFlags.Timer;
-        }
-        else if ((_gime.Registers[Ports.IRQENR] & 32) != 0 && _gime.Interrupts.IRQ.EnhancedFlag)
-        {
-            CPU.AssertInterrupt(CPUInterrupts.IRQ, 0);
-
-            _gime.Interrupts.IRQ.Last |= InterruptFlags.Timer;
-        }
-    }
-
-    public void SetMapType(byte type)
-    {
-        _mapType = type; //={0-ROM,1-RAM}
-
-        UpdateMmuArray();
-    }
-
-    private void SetRomMap(byte data)
-    {
-        _romMap = (byte)(data & 3);
-
-        UpdateMmuArray();
-    }
-
-    private void UpdateMmuArray()
-    {
-        if (_mapType != 0)
-        {
-            _gime.MMU.Pages[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 3] = _gime.MMU.RAM.GetBytePointer(0x2000 * (_vectorMask[_gime.MMU.CurrentRamConfiguration] - 3));
-            _gime.MMU.Pages[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 2] = _gime.MMU.RAM.GetBytePointer(0x2000 * (_vectorMask[_gime.MMU.CurrentRamConfiguration] - 2));
-            _gime.MMU.Pages[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 1] = _gime.MMU.RAM.GetBytePointer(0x2000 * (_vectorMask[_gime.MMU.CurrentRamConfiguration] - 1));
-            _gime.MMU.Pages[_vectorMask[_gime.MMU.CurrentRamConfiguration]] = _gime.MMU.RAM.GetBytePointer(0x2000 * _vectorMask[_gime.MMU.CurrentRamConfiguration]);
-
-            _gime.MMU.PageOffsets[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 3] = 1;
-            _gime.MMU.PageOffsets[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 2] = 1;
-            _gime.MMU.PageOffsets[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 1] = 1;
-            _gime.MMU.PageOffsets[_vectorMask[_gime.MMU.CurrentRamConfiguration]] = 1;
-
-            return;
-        }
-
-        switch (_romMap)
-        {
-            case 0:
-            case 1: //16K Internal 16K External
-                _gime.MMU.Pages[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 3] = _gime.MMU.IRB.GetBytePointer(0x0000);
-                _gime.MMU.Pages[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 2] = _gime.MMU.IRB.GetBytePointer(0x2000);
-                _gime.MMU.Pages[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 1] = new BytePointer();
-                _gime.MMU.Pages[_vectorMask[_gime.MMU.CurrentRamConfiguration]] = new BytePointer();
-
-                _gime.MMU.PageOffsets[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 3] = 1;
-                _gime.MMU.PageOffsets[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 2] = 1;
-                _gime.MMU.PageOffsets[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 1] = 0;
-                _gime.MMU.PageOffsets[_vectorMask[_gime.MMU.CurrentRamConfiguration]] = 0x2000;
-
-                return;
-
-            case 2: // 32K Internal
-                _gime.MMU.Pages[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 3] = _gime.MMU.IRB.GetBytePointer(0x0000);
-                _gime.MMU.Pages[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 2] = _gime.MMU.IRB.GetBytePointer(0x2000);
-                _gime.MMU.Pages[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 1] = _gime.MMU.IRB.GetBytePointer(0x4000);
-                _gime.MMU.Pages[_vectorMask[_gime.MMU.CurrentRamConfiguration]] = _gime.MMU.IRB.GetBytePointer(0x6000);
-
-                _gime.MMU.PageOffsets[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 3] = 1;
-                _gime.MMU.PageOffsets[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 2] = 1;
-                _gime.MMU.PageOffsets[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 1] = 1;
-                _gime.MMU.PageOffsets[_vectorMask[_gime.MMU.CurrentRamConfiguration]] = 1;
-
-                return;
-
-            case 3: //32K External
-                _gime.MMU.Pages[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 1] = new BytePointer();
-                _gime.MMU.Pages[_vectorMask[_gime.MMU.CurrentRamConfiguration]] = new BytePointer();
-                _gime.MMU.Pages[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 3] = new BytePointer();
-                _gime.MMU.Pages[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 2] = new BytePointer();
-
-                _gime.MMU.PageOffsets[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 1] = 0;
-                _gime.MMU.PageOffsets[_vectorMask[_gime.MMU.CurrentRamConfiguration]] = 0x2000;
-                _gime.MMU.PageOffsets[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 3] = 0x4000;
-                _gime.MMU.PageOffsets[_vectorMask[_gime.MMU.CurrentRamConfiguration] - 2] = 0x6000;
-
-                return;
+            case MapTypes.ROM:
+                _gime.SetMapTypeRom(_romMap);
+                break;
         }
     }
 
@@ -563,29 +456,19 @@ public class TCC1014 : ITCC1014
 
     private void SetMmuPrefix(byte data) => _gime.MMU.Prefix = (ushort)((data & 3) << 8);
 
-    private void SetVectors(byte data) => _ramVectors = (byte)(data == 0 ? 0 : 1); //Bit 3 of $FF90 MC3
-
     private void SetMmuEnabled(bool flag)
     {
         _gime.MMU.Enabled = flag;
         _gime.MMU.State = (byte)((_gime.MMU.Enabled ? 1 : 0) << 1 | _gime.MMU.Task);
     }
 
-    public void GimeAssertKeyboardInterrupt()
-    {
-        if ((_gime.Registers[Ports.FIRQENR] & 2) != 0 && (_gime.Interrupts.FIRQ.EnhancedFlag))
-        {
-            CPU.AssertInterrupt(CPUInterrupts.FIRQ, 0);
+    public void GimeAssertKeyboardInterrupt() => _gime.AssertKeyboardInterrupt();
 
-            _gime.Interrupts.FIRQ.Last |= InterruptFlags.Keyboard;
-        }
-        else if ((_gime.Registers[Ports.IRQENR] & 2) != 0 && (_gime.Interrupts.IRQ.EnhancedFlag))
-        {
-            CPU.AssertInterrupt(CPUInterrupts.IRQ, 0);
+    public void GimeAssertVerticalInterrupt() => _gime.AssertVerticalInterrupt();
 
-            _gime.Interrupts.IRQ.Last |= InterruptFlags.Keyboard;
-        }
-    }
+    public void GimeAssertHorizontalInterrupt() => _gime.AssertHorizontalInterrupt();
+
+    public void GimeAssertTimerInterrupt() => _gime.AssertTimerInterrupt();
 
     public ModeModel GetMode() => new(_gime.MMU.RAM, _modules);
 
@@ -593,9 +476,7 @@ public class TCC1014 : ITCC1014
 
     public void ChipReset()
     {
-        _ramVectors = 0;
-        _romMap = 0;
-        _mapType = 0;
+        _ramVectors = false;
 
         _gime.Initialize();
         _gime.VDG.Reset();
@@ -604,7 +485,6 @@ public class TCC1014 : ITCC1014
         _gime.MMU.Reset();
         _gime.MMU.ResetPages();
 
-        SetRomMap(0);
-        SetMapType(0);
+        UpdateMmuArray(MapTypes.ROM, RomMapping._16kInternal_16kExternal);   // {F:ROM,T:RAM} , 16K Internal, 16K External
     }
 }

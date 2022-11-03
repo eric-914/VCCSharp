@@ -84,7 +84,7 @@ public class Emu : IEmu
 
     public void HardReset()
     {
-        _modules.TCC1014.MmuInit(_configuration.Memory.Ram.Value);
+        _modules.TCC1014.Initialize(_configuration.Memory.Ram.Value);
         _modules.TCC1014.ChipReset();  //Captures internal rom pointer for CPU Interrupt Vectors
         _modules.MC6821.ChipReset();
 

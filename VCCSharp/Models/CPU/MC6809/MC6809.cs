@@ -86,7 +86,7 @@ public partial class MC6809 : IMC6809
 
         PC_REG = MemRead16(Define.VRESET);	//PC gets its reset vector
 
-        _modules.TCC1014.SetMapType(0);	//shouldn't be here
+        //_modules.TCC1014.SetMapType(false);	//shouldn't be here
     }
 
     public int Exec(int cycleFor)

@@ -121,9 +121,10 @@ This section itemizes the following registers:
     BIT 7 = Cartridge Interrupt Flag
 ```
 
-#### FF40 - FFBF: Not used
+#### FF40 - FFBF: Not used (CoCo 1/2)
+#### FF40 - FF8F: Not used (CoCo 3)
 ```
-Note: FF22, FF23 are duplicated in tcclOH (VC2645QC), and V.D.G Control Bit
+Note: FF22, FF23 are duplicated in TCC1014 (VC2645QC), and V.D.G Control Bit
 (Bit 3 through Bit 7) affects this IC (TCC1014) only.
 ```
 
@@ -141,8 +142,8 @@ Note: FF22, FF23 are duplicated in tcclOH (VC2645QC), and V.D.G Control Bit
     BIT 4 = FEN    1 = Chip FIRQ output enabled
     BIT 3 = MC3    1 = DRAM at XFEXX is constant
     BIT 2 = MC2    1 = Standard SCS
-    BIT 1 = MCI    ROM map control (See table below)
-    BIT 0 = MCO    ROM map control (See table below)
+    BIT 1 = MC1    ROM map control (See table below)
+    BIT 0 = MC0    ROM map control (See table below)
 ```
 
 +:---:+:---:+:---------------------------------:+

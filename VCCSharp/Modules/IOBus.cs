@@ -209,6 +209,9 @@ public class IOBus : IIOBus
             case PortHandlers.SAM:
                 _modules.TCC1014.SAMWrite(data, port);
                 break;
+            case PortHandlers.VECT:
+                _modules.TCC1014.VectorWrite(data, port);
+                break;
             default:
                 _modules.PAKInterface.PakPortWrite(port, data);
                 break;
