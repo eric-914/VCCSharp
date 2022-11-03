@@ -50,7 +50,7 @@ public class TCC1014 : ITCC1014
 
     private readonly IGIME _gime;
 
-    private bool _ramVectors;	    // $FF90 bit 3      1 = DRAM at XFEXX is constant
+    private XFEXX _ramVectors;	    // $FF90 bit 3      1 = DRAM at XFEXX is constant
     private RomMapping _romMap;		// $FF90 bit 1-0
     private MapTypes _mapType;	    // $FFDE/FFDF toggle Map type 0 = ram/rom
 
@@ -60,11 +60,11 @@ public class TCC1014 : ITCC1014
         _gime = gime;
     }
 
-    /*****************************************************************************************
-    * MmuInit Initialize and allocate memory for RAM Internal and External ROM Images.        *
-    * Copy Rom Images to buffer space and reset GIME MMU registers to 0                      *
-    * Returns NULL if any of the above fail.                                                 *
-    *****************************************************************************************/
+    /*****************************************************************************
+    * Initialize and allocate memory for RAM Internal and External ROM Images.   *
+    * Copy Rom Images to buffer space and reset GIME MMU registers to 0          *
+    * Returns NULL if any of the above fail.                                     *
+    ******************************************************************************/
 
     public void Initialize(MemorySizes ramSizeOption)
     {
@@ -102,7 +102,7 @@ public class TCC1014 : ITCC1014
 
     private byte VectorMemRead8(ushort address)
     {
-        if (_ramVectors)
+        if (_ramVectors == XFEXX.Vector)
         {
             //Address must be $FE00 - $FEFF
             return _gime.MMU.RAM[(0x2000 * _vectorMask[_gime.MMU.CurrentRamConfiguration]) | (address & 0x1FFF)];
@@ -146,7 +146,7 @@ public class TCC1014 : ITCC1014
 
     private void VectorMemWrite8(byte data, ushort address)
     {
-        if (_ramVectors)
+        if (_ramVectors == XFEXX.Vector)
         {
             //Address must be $FE00 - $FEFF
             _gime.MMU.RAM[(0x2000 * _vectorMask[_gime.MMU.CurrentRamConfiguration]) | (address & 0x1FFF)] = data;
@@ -194,7 +194,7 @@ public class TCC1014 : ITCC1014
                 break;
 
             case SAMHandlers.MapType:               //0xDE-0xDF
-                SetMapType((MapTypes)(port & 1));
+                UpdateMmuArray((MapTypes)(port & 1), _romMap);
                 break;
         }
     }
@@ -353,14 +353,13 @@ public class TCC1014 : ITCC1014
     {
         Graphics.SetCompatMode((data & 128) == 0 ? CompatibilityModes.CoCo3 : CompatibilityModes.CoCo2);
 
-        SetMmuEnabled((data & 64) == 0);
+        _gime.MMU.SetEnabled((data & 64) == 0);
 
         UpdateMmuArray(_mapType, (RomMapping)(data & 3));   //MC0-MC1
 
-        _ramVectors = (data & 8) != 0;      //Bit 3 of $FF90 MC3
+        _ramVectors = (XFEXX)(data & 8);      //Bit 3 of $FF90 MC3
 
-        _gime.Interrupts.FIRQ.SetFlag((byte)((data & 16) >> 4));
-        _gime.Interrupts.IRQ.SetFlag((byte)((data & 32) >> 5));
+        _gime.Interrupts.SetFlags(data);
     }
 
     private void SetInit1(byte data)
@@ -396,11 +395,6 @@ public class TCC1014 : ITCC1014
         CoCo.SetVerticalInterruptState(Test(8));
         CoCo.SetHorizontalInterruptState(Test(16));
         CoCo.SetTimerInterruptState(Test(32));
-    }
-
-    public void SetMapType(MapTypes type)
-    {
-        UpdateMmuArray(type, _romMap);
     }
 
     private void UpdateMmuArray(MapTypes mapType, RomMapping romMap)
@@ -456,12 +450,6 @@ public class TCC1014 : ITCC1014
 
     private void SetMmuPrefix(byte data) => _gime.MMU.Prefix = (ushort)((data & 3) << 8);
 
-    private void SetMmuEnabled(bool flag)
-    {
-        _gime.MMU.Enabled = flag;
-        _gime.MMU.State = (byte)((_gime.MMU.Enabled ? 1 : 0) << 1 | _gime.MMU.Task);
-    }
-
     public void GimeAssertKeyboardInterrupt() => _gime.AssertKeyboardInterrupt();
 
     public void GimeAssertVerticalInterrupt() => _gime.AssertVerticalInterrupt();
@@ -476,7 +464,7 @@ public class TCC1014 : ITCC1014
 
     public void ChipReset()
     {
-        _ramVectors = false;
+        _ramVectors = XFEXX.RAM;
 
         _gime.Initialize();
         _gime.VDG.Reset();
@@ -485,6 +473,6 @@ public class TCC1014 : ITCC1014
         _gime.MMU.Reset();
         _gime.MMU.ResetPages();
 
-        UpdateMmuArray(MapTypes.ROM, RomMapping._16kInternal_16kExternal);   // {F:ROM,T:RAM} , 16K Internal, 16K External
+        UpdateMmuArray(MapTypes.ROM, RomMapping._16kInternal_16kExternal);
     }
 }

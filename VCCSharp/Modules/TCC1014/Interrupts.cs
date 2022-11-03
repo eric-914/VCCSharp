@@ -17,6 +17,12 @@ public class Interrupts
 {
     public Interrupt FIRQ { get; } = new();
     public Interrupt IRQ { get; } = new();
+
+    public void SetFlags(byte data)
+    {
+        FIRQ.SetFlag((byte)((data & 16) >> 4));
+        IRQ.SetFlag((byte)((data & 32) >> 5));
+    }
 }
 
 public class Interrupt

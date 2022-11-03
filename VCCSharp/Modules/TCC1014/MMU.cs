@@ -94,4 +94,10 @@ public class MMU
         //gime.c returns what was written so I can get away with this
         Registers[task, bankRegister] = (ushort)(Prefix | (data & _ramMask[CurrentRamConfiguration]));
     }
+
+    public void SetEnabled(bool flag)
+    {
+        Enabled = flag;
+        State = (byte)((Enabled ? 1 : 0) << 1 | Task);
+    }
 }
