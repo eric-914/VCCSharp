@@ -9,11 +9,18 @@ public enum InterruptFlags : byte
     Timer = 0x20
 }
 
+public interface IInterrupts
+{
+    Interrupt FIRQ { get; }
+    Interrupt IRQ { get; }
+    void SetFlags(byte data);
+}
+
 /// <summary>
 /// In CoCo2, the three interrupt sources CART*, HSYNC* and VSYNC*
 /// requested an interrupt to the CPU from PIA as IRQ* and FIRQ*.
 /// </summary>
-public class Interrupts
+public class Interrupts : IInterrupts
 {
     public Interrupt FIRQ { get; } = new();
     public Interrupt IRQ { get; } = new();

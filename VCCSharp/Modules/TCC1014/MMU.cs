@@ -1,13 +1,34 @@
 ﻿using VCCSharp.Enums;
 using VCCSharp.Modules.TCC1014.Masks;
 
+// ReSharper disable InconsistentNaming
 namespace VCCSharp.Modules.TCC1014;
+
+public interface IMMU
+{
+    byte Task { get; set; } // $FF91 bit 0
+    bool Enabled { get; set; } // $FF90 bit 6
+    byte State { get; set; } // Composite variable handles MmuTask and MmuEnabled
+    ushort Prefix { get; set; }
+    BytePointer RAM { get; }
+    BytePointer ROM { get; }
+    BytePointer IRB { get; } //--Internal ROM buffer
+    BytePointer[] Pages { get; }
+    ushort[] PageOffsets { get; }
+    ushort[,] Registers { get; } // $FFA0 - $FFAF
+    MemorySizes CurrentRamConfiguration { get; }
+    void Initialize();
+    void Reset();
+    void Reset(MemorySizes ramSizeOption);
+    void ResetPages();
+    void SetRegister(byte register, byte data);
+    void SetEnabled(bool flag);
+}
 
 /// <summary>
 /// Memory Management Unit (MMU)
 /// </summary>
-// ReSharper disable InconsistentNaming
-public class MMU
+public class MMU : IMMU
 {
     private readonly MemoryConfigurations _memConfiguration = new();
     private readonly MemorySizeStates _stateSwitch = new();

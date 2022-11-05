@@ -1,10 +1,17 @@
-﻿namespace VCCSharp.Modules.TCC1014;
+﻿// ReSharper disable InconsistentNaming
+namespace VCCSharp.Modules.TCC1014;
+
+public interface IVDG
+{
+    byte Mode { get; set; }
+    byte DisplayOffset { get; set; }
+    void Reset();
+}
 
 /// <summary>
 /// MC6847 Video Display Generator (VDG)
 /// </summary>
-// ReSharper disable InconsistentNaming
-public class VDG
+public class VDG : IVDG
 {
     public byte Mode { get; set; }
     public byte DisplayOffset { get; set; }

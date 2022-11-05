@@ -8,9 +8,9 @@ namespace VCCSharp.Modules.TCC1014;
 public interface IGIME
 {
     byte[] Registers { get; }
-    Interrupts Interrupts { get; }
-    MMU MMU { get; }
-    VDG VDG { get; }
+    IInterrupts Interrupts { get; }
+    IMMU MMU { get; }
+    IVDG VDG { get; }
 
     void Initialize();
     byte ReadIRQ();
@@ -40,14 +40,18 @@ public class GIME : IGIME
 
     public byte[] Registers { get; } = new byte[256];
 
-    public Interrupts Interrupts { get; } = new();
-    public MMU MMU { get; } = new ();
-    public VDG VDG { get; } = new();
+    public IInterrupts Interrupts { get; }
+    public IMMU MMU { get; }
+    public IVDG VDG { get; }
 
-    public GIME(IModules modules, IRomLoader romLoader)
+    public GIME(IModules modules, IRomLoader romLoader, IVDG vdg, IMMU mmu, IInterrupts interrupts)
     {
         _modules = modules;
         _romLoader = romLoader;
+
+        VDG = vdg;
+        MMU = mmu;
+        Interrupts = interrupts;
     }
 
     public void Initialize()
