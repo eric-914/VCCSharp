@@ -87,6 +87,8 @@ public class Vcc : IVcc
     {
         while (BinaryRunning)
         {
+            CheckScreenModeChange();
+
             if (RunState == (byte)EmuRunStates.ReqWait)
             {
                 RunState = (byte)EmuRunStates.Waiting; //Signal Main thread we are waiting

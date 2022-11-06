@@ -36,8 +36,6 @@ public class ConfigurationManager : IConfigurationManager
 
         Load();
 
-        _modules.Reset();
-
         ConfigureJoysticks();
         
         if (_persistenceManager.IsNew(_filePath))

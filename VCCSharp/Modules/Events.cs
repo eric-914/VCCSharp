@@ -69,6 +69,7 @@ namespace VCCSharp.Modules
 
         public void Shutdown()
         {
+            Debug.WriteLine("Shutdown...");
             _modules.PAKInterface.UnloadDll(false);
             _modules.Audio.SoundDeInit();
         }

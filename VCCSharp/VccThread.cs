@@ -23,14 +23,13 @@ public class VccThread : IVccThread
         Task.Run(() => Run(args));
     }
 
-    public void Run(CmdLineArguments args)
+    private void Run(CmdLineArguments args)
     {
         _vccApp.LoadConfiguration(args.IniFile);
-        _vccApp.Startup();
+
+        _vccApp.Startup(args.QLoadFile);
 
         //--The emulation runs on a different thread
-        _vccApp.Threading();
-
-        _vccApp.Run(args.QLoadFile);
+        _vccApp.RunThreaded();
     }
 }
