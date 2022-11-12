@@ -20,6 +20,7 @@ public class VccThread : IVccThread
     {
         _vccApp.SetWindow(hWnd);
 
+        //--The emulation runs on a different thread
         Task.Run(() => Run(args));
     }
 
@@ -29,7 +30,6 @@ public class VccThread : IVccThread
 
         _vccApp.Startup(args.QLoadFile);
 
-        //--The emulation runs on a different thread
-        _vccApp.RunThreaded();
+        _vccApp.Run();
     }
 }

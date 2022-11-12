@@ -10,7 +10,6 @@ namespace VCCSharp.Modules;
 
 public interface IVcc : IModule
 {
-    void CheckScreenModeChange();
     void CreatePrimaryWindow();
     void SetAppTitle(string binFileName);
     void EmuLoop();
@@ -40,6 +39,7 @@ public class Vcc : IVcc
     public byte RunState { get; set; } = Define.EMU_RUNSTATE_RUNNING;
 
     public string CpuName => CPULookup[_configuration.CPU.Type.Value];
+
     public string AppName { get; set; } = "(app)";
 
     public Vcc(IModules modules, IStatus status, IConfiguration configuration)

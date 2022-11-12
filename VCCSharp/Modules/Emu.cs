@@ -1,7 +1,10 @@
 ﻿using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
+using VCCSharp.Libraries;
+using VCCSharp.Models;
 using VCCSharp.Models.Configuration;
+using static System.IntPtr;
 using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules;
@@ -29,11 +32,13 @@ public interface IEmu : IModule
     string? PakPath { get; set; }
 
     Point WindowSize { get; set; }
+    void SetWindowSize(IWindowConfiguration window);
 }
 
 public class Emu : IEmu
 {
     private readonly IModules _modules;
+    private readonly IUser32 _user32;
     private readonly IConfiguration _configuration;
 
     private byte _doubleSpeedFlag;
@@ -61,9 +66,10 @@ public class Emu : IEmu
 
     public string? PakPath { get; set; }
 
-    public Emu(IModules modules, IConfiguration configuration)
+    public Emu(IModules modules, IUser32 user32, IConfiguration configuration)
     {
         _modules = modules;
+        _user32 = user32;
         _configuration = configuration;
     }
 
@@ -126,6 +132,27 @@ public class Emu : IEmu
         {
             CpuCurrentSpeed *= _doubleSpeedMultiplier;
         }
+    }
+
+    public void SetWindowSize(IWindowConfiguration configuration)
+    {
+        if (configuration.RememberSize)
+        {
+            SetWindowSize((short)configuration.Width, (short)configuration.Height);
+        }
+        else
+        {
+            SetWindowSize(Define.DEFAULT_WIDTH, Define.DEFAULT_HEIGHT);
+        }
+    }
+
+    private void SetWindowSize(short width, short height)
+    {
+        IntPtr handle = _user32.GetActiveWindow();
+
+        SetWindowPosFlags flags = SetWindowPosFlags.NoMove | SetWindowPosFlags.NoOwnerZOrder | SetWindowPosFlags.NoZOrder;
+
+        _user32.SetWindowPos(handle, Zero, 0, 0, width + 16, height + 81, (ushort)flags);
     }
 
     public void ModuleReset()

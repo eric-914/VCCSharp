@@ -1,30 +1,22 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Libraries;
-using VCCSharp.Models;
 using VCCSharp.Models.Configuration;
-using VCCSharp.Shared.Enums;
-using static System.IntPtr;
-using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules;
 
 public class ConfigurationManager : IConfigurationManager
 {
     private readonly IModules _modules;
-    private readonly IUser32 _user32;
     private readonly IConfigurationPersistenceManager _persistenceManager;
 
     private string? _filePath;
 
     public IConfiguration Model { get; private set; } = default!;
 
-    public ConfigurationManager(IModules modules, IUser32 user32, IConfigurationPersistenceManager persistenceManager)
+    public ConfigurationManager(IModules modules, IConfigurationPersistenceManager persistenceManager)
     {
         _modules = modules;
-        _user32 = user32;
         _persistenceManager = persistenceManager;
     }
 
@@ -34,9 +26,16 @@ public class ConfigurationManager : IConfigurationManager
     {
         _filePath = GetConfigurationFilePath(filePath);  //--Use default if needed
 
-        Load();
+        Model = _persistenceManager.Load(_filePath);
 
-        ConfigureJoysticks();
+        if (!string.IsNullOrEmpty(_modules.Emu.PakPath))
+        {
+            Model.Accessories.MultiPak.FilePath = _modules.Emu.PakPath;
+        }
+
+        //TODO: These don't belong here.
+        _modules.Emu.SetWindowSize(Model.Window);
+        _modules.Joysticks.Configure(Model.Joysticks);
         
         if (_persistenceManager.IsNew(_filePath))
         {
@@ -50,31 +49,7 @@ public class ConfigurationManager : IConfigurationManager
     private void LoadFrom(string filePath)
     {
         Save();
-
-        _filePath = filePath;
-
-        Load();
-
-        _modules.Reset();
-    }
-
-    private void Load()
-    {
-        Model = _persistenceManager.Load(_filePath);
-
-        if (!string.IsNullOrEmpty(_modules.Emu.PakPath))
-        {
-            Model.Accessories.MultiPak.FilePath = _modules.Emu.PakPath;
-        }
-
-        if (Model.Window.RememberSize)
-        {
-            SetWindowSize((short)Model.Window.Width, (short)Model.Window.Height);
-        }
-        else
-        {
-            SetWindowSize(Define.DEFAULT_WIDTH, Define.DEFAULT_HEIGHT);
-        }
+        Load(filePath);
     }
 
     public void SaveAs()
@@ -106,38 +81,6 @@ public class ConfigurationManager : IConfigurationManager
         }
 
         _persistenceManager.Save(_filePath, Model);
-    }
-
-    private void ConfigureJoysticks()
-    {
-        var joystick = _modules.Joysticks;
-
-        joystick.FindJoysticks();
-
-        var count = joystick.JoystickList.Count;
-
-        if (Model.Joysticks.Left.DeviceIndex >= count)
-        {
-            Model.Joysticks.Left.DeviceIndex = -1;
-        }
-
-        if (Model.Joysticks.Right.DeviceIndex >= count)
-        {
-            Model.Joysticks.Right.DeviceIndex = -1;
-        }
-
-        if (count == 0)	//Use Mouse input if no Joysticks present
-        {
-            if (Model.Joysticks.Left.InputSource.Value == JoystickDevices.Joystick)
-            {
-                Model.Joysticks.Left.InputSource.Value = JoystickDevices.Mouse;
-            }
-
-            if (Model.Joysticks.Right.InputSource.Value == JoystickDevices.Joystick)
-            {
-                Model.Joysticks.Left.InputSource.Value = JoystickDevices.Mouse;
-            }
-        }
     }
 
     private static string GetConfigurationFilePath(string argIniFile)
@@ -178,14 +121,4 @@ public class ConfigurationManager : IConfigurationManager
 
         return appDataPath;
     }
-
-    private void SetWindowSize(short width, short height)
-    {
-        HWND handle = _user32.GetActiveWindow();
-
-        SetWindowPosFlags flags = SetWindowPosFlags.NoMove | SetWindowPosFlags.NoOwnerZOrder | SetWindowPosFlags.NoZOrder;
-
-        _user32.SetWindowPos(handle, Zero, 0, 0, width + 16, height + 81, (ushort)flags);
-    }
-
 }

@@ -4,6 +4,7 @@ using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Joystick;
 using VCCSharp.Shared.Dx;
 using VCCSharp.Shared.Enums;
+using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Modules;
 
@@ -23,6 +24,8 @@ public interface IJoysticks : IModule
 
     JoystickState Left { get; }
     JoystickState Right { get; }
+
+    void Configure(IJoysticksConfiguration configuration);
 }
 
 public class Joysticks : IJoysticks
@@ -183,6 +186,36 @@ public class Joysticks : IJoysticks
     public byte SetJoystickFromKeyboard(byte scanCode, bool keyDown)
     {
         return _keyboardHandler.SetJoystickFromKeyboard(scanCode, keyDown, Left, Right);
+    }
+
+    public void Configure(IJoysticksConfiguration configuration)
+    {
+        FindJoysticks();
+
+        var count = JoystickList.Count;
+
+        if (configuration.Left.DeviceIndex >= count)
+        {
+            configuration.Left.DeviceIndex = -1;
+        }
+
+        if (configuration.Right.DeviceIndex >= count)
+        {
+            configuration.Right.DeviceIndex = -1;
+        }
+
+        if (count == 0)	//Use Mouse input if no Joysticks present
+        {
+            if (configuration.Left.InputSource.Value == JoystickDevices.Joystick)
+            {
+                configuration.Left.InputSource.Value = JoystickDevices.Mouse;
+            }
+
+            if (configuration.Right.InputSource.Value == JoystickDevices.Joystick)
+            {
+                configuration.Left.InputSource.Value = JoystickDevices.Mouse;
+            }
+        }
     }
 
     public void ModuleReset()

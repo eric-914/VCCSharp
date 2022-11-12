@@ -1,7 +1,5 @@
 ﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Libraries;
-using VCCSharp.Models.Configuration;
 
 namespace VCCSharp;
 
@@ -9,7 +7,7 @@ public interface IVccApp
 {
     void LoadConfiguration(string? iniFile);
     void Startup(string? qLoadFile);
-    void RunThreaded();
+    void Run();
 
     void SetWindow(IntPtr hWnd);
 }
@@ -17,14 +15,10 @@ public interface IVccApp
 public class VccApp : IVccApp
 {
     private readonly IModules _modules;
-    private readonly IUser32 _user32;
 
-    private IConfiguration _configuration = default!;
-
-    public VccApp(IModules modules, IUser32 user32)
+    public VccApp(IModules modules)
     {
         _modules = modules;
-        _user32 = user32;
     }
 
     public void LoadConfiguration(string? iniFile)
@@ -32,8 +26,6 @@ public class VccApp : IVccApp
         if (iniFile == null) throw new ArgumentNullException(nameof(iniFile));
 
         _modules.ConfigurationManager.Load(iniFile);
-
-        _configuration = _modules.ConfigurationManager.Model;
     }
 
     public void Startup(string? qLoadFile)
@@ -54,7 +46,7 @@ public class VccApp : IVccApp
 
         _modules.Emu.ResetPending = ResetPendingStates.Hard;
 
-        _modules.Emu.EmulationRunning = _configuration.Startup.AutoStart;
+        _modules.Emu.EmulationRunning = _modules.ConfigurationManager.Model.Startup.AutoStart;
 
         _modules.Vcc.BinaryRunning = true;
 
@@ -71,9 +63,9 @@ public class VccApp : IVccApp
         }
     }
 
-    public void RunThreaded()
+    public void Run()
     {
-        Task.Run(_modules.Vcc.EmuLoop);
+        _modules.Vcc.EmuLoop();
     }
 
     public void SetWindow(IntPtr hWnd)

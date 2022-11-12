@@ -61,12 +61,13 @@ public class ConfigurationPersistenceManager : IConfigurationPersistenceManager
             throw new ArgumentNullException(nameof(filePath));
         }
 
-        //  Try to open the configuration file.  Create it if necessary.  Abort if failure.
+        // Try to open the configuration file.  
         if (File.Exists(filePath))
         {
             return false;
         }
 
+        // Create it if necessary. Abort if failure.
         try
         {
             File.WriteAllText(filePath, "");
@@ -79,13 +80,13 @@ public class ConfigurationPersistenceManager : IConfigurationPersistenceManager
         return true;
     }
 
-    public FileDialog LoadFrom(string filePath)
+    private static FileDialog LoadFrom(string filePath)
     {
         return new OpenFileDialog
         {
             FileName = filePath,
             DefaultExt = ".ini",
-            Filter = "INI files (.ini)|*.ini",
+            Filter = "JSON files (.json)|*.json",
             InitialDirectory = Path.GetDirectoryName(filePath) ?? "C:\\",
             CheckFileExists = true,
             ShowReadOnly = false,
@@ -93,13 +94,13 @@ public class ConfigurationPersistenceManager : IConfigurationPersistenceManager
         };
     }
 
-    public FileDialog SaveAs(string filePath)
+    private static FileDialog SaveAs(string filePath)
     {
         return new SaveFileDialog
         {
             FileName = filePath,
-            DefaultExt = ".ini",
-            Filter = "INI files (.ini)|*.ini",
+            DefaultExt = ".json",
+            Filter = "JSON files (.json)|*.json",
             FilterIndex = 1,
             InitialDirectory = filePath,
             CheckPathExists = true,
@@ -108,7 +109,7 @@ public class ConfigurationPersistenceManager : IConfigurationPersistenceManager
         };
     }
 
-    public void ValidateModel(IConfiguration model)
+    private void ValidateModel(IConfiguration model)
     {
         string? exePath = Path.GetDirectoryName(_modules.Vcc.GetExecPath());
 
