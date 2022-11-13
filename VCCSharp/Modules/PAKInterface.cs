@@ -26,8 +26,8 @@ public interface IPAKInterface : IModule
     bool HasConfigModule();
     void InvokeConfigModule(byte menuItem);
     bool UnloadPack(bool emulationRunning);
-    byte CartInserted { get; set; }
-    string ModuleName { get; set; }
+    byte CartInserted { get; }
+    string ModuleName { get; }
     byte PakMem8Read(ushort address);
 }
 
@@ -35,8 +35,9 @@ public interface IPAKInterface : IModule
 public class PAKInterface : IPAKInterface
 {
     private readonly IModules _modules;
-    private readonly IConfiguration _configuration;
     private readonly IKernel _kernel;
+
+    private IConfiguration _configuration => _modules.Configuration;
 
     // ReSharper disable once InconsistentNaming
     private static readonly object _lock = new();
@@ -45,21 +46,20 @@ public class PAKInterface : IPAKInterface
 
     public byte CartInserted { get; set; }
     public string ModuleName { get; set; } = "Blank";
-    public bool RomPackLoaded { get; set; }
-    public uint BankedCartOffset { get; set; }
+    private bool _romPackLoaded;
+    private uint _bankedCartOffset;
 
     // Storage for Pak ROMs
-    public byte[]? ExternalRomBuffer = new byte[Define.PAK_MAX_MEM];
+    private byte[]? _externalRomBuffer = new byte[Define.PAK_MAX_MEM];
 
     // ReSharper disable once InconsistentNaming
-    public HINSTANCE hInstLib;
+    private HINSTANCE _hInstLib;
 
     private readonly PakInterfaceDelegates _d = new();
 
-    public PAKInterface(IModules modules, IConfiguration configuration, IKernel kernel)
+    public PAKInterface(IModules modules, IKernel kernel)
     {
         _modules = modules;
-        _configuration = configuration;
         _kernel = kernel;
     }
 
@@ -80,12 +80,12 @@ public class PAKInterface : IPAKInterface
     {
         UnloadModule();
 
-        if (hInstLib != Zero)
+        if (_hInstLib != Zero)
         {
-            _kernel.FreeLibrary(hInstLib);
+            _kernel.FreeLibrary(_hInstLib);
         }
 
-        hInstLib = Zero;
+        _hInstLib = Zero;
 
         if (emulationRunning)
         {
@@ -95,7 +95,7 @@ public class PAKInterface : IPAKInterface
 
     public void ResetBus()
     {
-        BankedCartOffset = 0;
+        _bankedCartOffset = 0;
 
         if (HasModuleReset())
         {
@@ -130,32 +130,32 @@ public class PAKInterface : IPAKInterface
     }
 
     //File is a DLL
-    public int InsertModuleCase1(bool emulationRunning, string modulePath)
+    private int InsertModuleCase1(bool emulationRunning, string modulePath)
     {
         ushort moduleParams = 0;
         //string catNumber = "";
 
         UnloadDll(emulationRunning);
 
-        hInstLib = _kernel.LoadLibrary(modulePath);
+        _hInstLib = _kernel.LoadLibrary(modulePath);
 
-        if (hInstLib == Zero)
+        if (_hInstLib == Zero)
         {
             return Define.NOMODULE;
         }
 
         SetCart(0);
 
-        if (SetDelegates(hInstLib))
+        if (SetDelegates(_hInstLib))
         {
-            _kernel.FreeLibrary(hInstLib);
+            _kernel.FreeLibrary(_hInstLib);
 
-            hInstLib = Zero;
+            _hInstLib = Zero;
 
             return Define.NOTVCC;
         }
 
-        BankedCartOffset = 0;
+        _bankedCartOffset = 0;
 
         if (HasDmaMemPointer())
         {
@@ -276,7 +276,7 @@ public class PAKInterface : IPAKInterface
     }
 
     //File is a ROM image
-    public int InsertModuleCase2(bool emulationRunning, string modulePath)
+    private int InsertModuleCase2(bool emulationRunning, string modulePath)
     {
         UnloadDll(emulationRunning);
 
@@ -316,9 +316,9 @@ public class PAKInterface : IPAKInterface
     {
         if (ModulePortWrite(port, data) == 1)
         {
-            if (port == 0x40 && RomPackLoaded)
+            if (port == 0x40 && _romPackLoaded)
             {
-                BankedCartOffset = (uint)((data & 15) << 14);
+                _bankedCartOffset = (uint)((data & 15) << 14);
             }
         }
     }
@@ -338,7 +338,7 @@ public class PAKInterface : IPAKInterface
         return 2; //Rom Image 
     }
 
-    public void SetCart(byte cart)
+    private void SetCart(byte cart)
     {
         CartInserted = cart;
     }
@@ -347,21 +347,21 @@ public class PAKInterface : IPAKInterface
             Load a ROM pack
             return total bytes loaded, or 0 on failure
         */
-    public int LoadRomPack(bool emulationRunning, string filename)
+    private int LoadRomPack(bool emulationRunning, string filename)
     {
-        ExternalRomBuffer = new byte[Define.PAK_MAX_MEM];
+        _externalRomBuffer = new byte[Define.PAK_MAX_MEM];
 
         var rom = File.ReadAllBytes(filename);
 
         for (int i = 0; i < rom.Length; i++)
         {
-            ExternalRomBuffer[i] = rom[i];
+            _externalRomBuffer[i] = rom[i];
         }
 
         UnloadDll(emulationRunning);
 
-        BankedCartOffset = 0;
-        RomPackLoaded = true;
+        _bankedCartOffset = 0;
+        _romPackLoaded = true;
 
         return rom.Length;
     }
@@ -373,20 +373,20 @@ public class PAKInterface : IPAKInterface
         _dllPath = "";
         ModuleName = "Blank";
 
-        RomPackLoaded = false;
+        _romPackLoaded = false;
 
         SetCart(0);
 
         //FreeMemory(instance->ExternalRomBuffer);
 
-        ExternalRomBuffer = null;
+        _externalRomBuffer = null;
 
         _modules.MenuCallbacks.RefreshCartridgeMenu();
 
         return true;
     }
 
-    public void UnloadModule()
+    private void UnloadModule()
     {
         _d.ConfigModule = Zero;
         _d.DmaMemPointers = Zero;
@@ -402,62 +402,62 @@ public class PAKInterface : IPAKInterface
         _d.SetInterruptCallPointer = Zero;
     }
 
-    public bool HasSetInterruptCallPointer()
+    private bool HasSetInterruptCallPointer()
     {
         return _d.SetInterruptCallPointer != Zero;
     }
 
-    public bool HasModuleReset()
+    private bool HasModuleReset()
     {
         return _d.ModuleReset != Zero;
     }
 
-    public bool HasModuleStatus()
+    private bool HasModuleStatus()
     {
         return _d.ModuleStatus != Zero;
     }
 
-    public bool HasDmaMemPointer()
+    private bool HasDmaMemPointer()
     {
         return _d.DmaMemPointers != Zero;
     }
 
-    public bool HasModuleAudioSample()
+    private bool HasModuleAudioSample()
     {
         return _d.ModuleAudioSample != Zero;
     }
 
-    public bool HasPakMemWrite8()
+    private bool HasPakMemWrite8()
     {
         return _d.PakMemWrite8 != Zero;
     }
 
-    public bool HasPakMemRead8()
+    private bool HasPakMemRead8()
     {
         return _d.PakMemRead8 != Zero;
     }
 
-    public bool HasSetIniPath()
+    private bool HasSetIniPath()
     {
         return _d.SetIniPath != Zero;
     }
 
-    public bool HasPakSetCart()
+    private bool HasPakSetCart()
     {
         return _d.PakSetCart != Zero;
     }
 
-    public bool HasPakPortWrite()
+    private bool HasPakPortWrite()
     {
         return _d.PakPortWrite != Zero;
     }
 
-    public bool HasPakPortRead()
+    private bool HasPakPortRead()
     {
         return _d.PakPortRead != Zero;
     }
 
-    public bool HasHeartBeat()
+    private bool HasHeartBeat()
     {
         return _d.HeartBeat != Zero;
     }
@@ -467,7 +467,7 @@ public class PAKInterface : IPAKInterface
         return _d.ConfigModule != Zero;
     }
 
-    public void InvokeHeartBeat()
+    private void InvokeHeartBeat()
     {
         IntPtr p = _d.HeartBeat;
 
@@ -476,7 +476,7 @@ public class PAKInterface : IPAKInterface
         fn();
     }
 
-    public void InvokeModuleReset()
+    private void InvokeModuleReset()
     {
         IntPtr p = _d.ModuleReset;
 
@@ -485,7 +485,7 @@ public class PAKInterface : IPAKInterface
         fn();
     }
 
-    public void InvokeModuleStatus(byte[] statusLine)
+    private void InvokeModuleStatus(byte[] statusLine)
     {
         IntPtr p = _d.ModuleStatus;
 
@@ -494,7 +494,7 @@ public class PAKInterface : IPAKInterface
         fn(statusLine);
     }
 
-    public void InvokeSetIniPath(string? ini)
+    private void InvokeSetIniPath(string? ini)
     {
         if (ini == null) throw new ArgumentNullException(nameof(ini));
 
@@ -507,7 +507,7 @@ public class PAKInterface : IPAKInterface
 
     private static DYNAMICMENUCALLBACK? _dynamicMenuCallback;
 
-    public string InvokeGetModuleName()
+    private string InvokeGetModuleName()
     {
         //Instantiate the menus from HERE!
         _dynamicMenuCallback = _modules.MenuCallbacks.BuildCartridgeMenu;
@@ -538,7 +538,7 @@ public class PAKInterface : IPAKInterface
 
     private static ASSERTINTERRUPT? _assertInterruptCallback;
 
-    public void InvokeSetInterruptCallPointer()
+    private void InvokeSetInterruptCallPointer()
     {
         void CpuAssertInterrupt(byte irq, byte flag)
         {
@@ -561,7 +561,7 @@ public class PAKInterface : IPAKInterface
     private static PAKMEMREAD8? _readCallback;
     private static PAKMEMWRITE8? _writeCallback;
 
-    public void InvokeDmaMemPointer()
+    private void InvokeDmaMemPointer()
     {
         _readCallback = _modules.TCC1014.MemRead8;
         _writeCallback = _modules.TCC1014.MemWrite8;
@@ -581,7 +581,7 @@ public class PAKInterface : IPAKInterface
 
     private static SETCART? _setCartCallback;
 
-    public void InvokePakSetCart()
+    private void InvokePakSetCart()
     {
         _setCartCallback = SetCart;
         IntPtr callback = Marshal.GetFunctionPointerForDelegate(_setCartCallback);
@@ -595,7 +595,7 @@ public class PAKInterface : IPAKInterface
         fn(fnx);
     }
 
-    public ushort ReadModuleAudioSample()
+    private ushort ReadModuleAudioSample()
     {
         IntPtr p = _d.ModuleAudioSample;
 
@@ -605,7 +605,7 @@ public class PAKInterface : IPAKInterface
     }
 
     // ReSharper disable once ParameterHidesMember
-    public bool SetDelegates(HINSTANCE hInstLib)
+    private bool SetDelegates(HINSTANCE hInstLib)
     {
         _d.GetModuleName = _kernel.GetProcAddress(hInstLib, "ModuleName");
         _d.ConfigModule = _kernel.GetProcAddress(hInstLib, "ModuleConfig");
@@ -625,7 +625,7 @@ public class PAKInterface : IPAKInterface
         return true; //_d.GetModuleName == null;
     }
 
-    public int ModulePortWrite(byte port, byte data)
+    private int ModulePortWrite(byte port, byte data)
     {
         if (_d.PakPortWrite != Zero)
         {
@@ -648,16 +648,16 @@ public class PAKInterface : IPAKInterface
             return ModuleMem8Read(address);
         }
 
-        int offset = (int)((address & 32767) + BankedCartOffset);
+        int offset = (int)((address & 32767) + _bankedCartOffset);
 
-        if (ExternalRomBuffer != null)
+        if (_externalRomBuffer != null)
         {
             //Threading makes it possible to reach here where ExternalRomBuffer = NULL despite check.
             lock (_lock)
             {
-                if (ExternalRomBuffer != null)
+                if (_externalRomBuffer != null)
                 {
-                    return ExternalRomBuffer[offset];
+                    return _externalRomBuffer[offset];
                 }
             }
         }
@@ -665,12 +665,12 @@ public class PAKInterface : IPAKInterface
         return 0;
     }
 
-    public bool HasModulePortRead()
+    private bool HasModulePortRead()
     {
         return _d.PakPortRead != Zero;
     }
 
-    public byte ModulePortRead(byte port)
+    private byte ModulePortRead(byte port)
     {
         IntPtr p = _d.PakPortRead;
 
@@ -679,12 +679,12 @@ public class PAKInterface : IPAKInterface
         return fn(port);
     }
 
-    public bool HasModuleMem8Read()
+    private bool HasModuleMem8Read()
     {
         return _d.PakMemRead8 != Zero;
     }
 
-    public byte ModuleMem8Read(ushort address)
+    private byte ModuleMem8Read(ushort address)
     {
         IntPtr p = _d.PakMemRead8;
 
@@ -699,12 +699,12 @@ public class PAKInterface : IPAKInterface
 
         CartInserted = 0;
         ModuleName = "Blank";
-        RomPackLoaded = false;
-        BankedCartOffset = 0;
+        _romPackLoaded = false;
+        _bankedCartOffset = 0;
 
-        ExternalRomBuffer = new byte[Define.PAK_MAX_MEM];
+        _externalRomBuffer = new byte[Define.PAK_MAX_MEM];
 
-        hInstLib = IntPtr.Zero;
+        _hInstLib = IntPtr.Zero;
 
         InsertModule();   // Should this be here?
     }

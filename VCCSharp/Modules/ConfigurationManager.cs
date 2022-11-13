@@ -5,18 +5,23 @@ using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Modules;
 
+public delegate void ConfigurationChanged(IConfiguration model);
+
+public delegate void ConfigurationSave(IConfiguration model);
+
 public class ConfigurationManager : IConfigurationManager
 {
-    private readonly IModules _modules;
+    public event ConfigurationChanged? OnConfigurationChanged;
+    public event ConfigurationSave? OnConfigurationSave;
+
     private readonly IConfigurationPersistenceManager _persistenceManager;
 
     private string? _filePath;
 
     public IConfiguration Model { get; private set; } = default!;
 
-    public ConfigurationManager(IModules modules, IConfigurationPersistenceManager persistenceManager)
+    public ConfigurationManager(IConfigurationPersistenceManager persistenceManager)
     {
-        _modules = modules;
         _persistenceManager = persistenceManager;
     }
 
@@ -28,15 +33,8 @@ public class ConfigurationManager : IConfigurationManager
 
         Model = _persistenceManager.Load(_filePath);
 
-        if (!string.IsNullOrEmpty(_modules.Emu.PakPath))
-        {
-            Model.Accessories.MultiPak.FilePath = _modules.Emu.PakPath;
-        }
+        OnConfigurationChanged?.Invoke(Model);
 
-        //TODO: These don't belong here.
-        _modules.Emu.SetWindowSize(Model.Window);
-        _modules.Joysticks.Configure(Model.Joysticks);
-        
         if (_persistenceManager.IsNew(_filePath))
         {
             Save();
@@ -65,20 +63,7 @@ public class ConfigurationManager : IConfigurationManager
 
     public void Save()
     {
-        Model.Window.Width = (short)_modules.Emu.WindowSize.X;
-        Model.Window.Height = (short)_modules.Emu.WindowSize.Y;
-
-        string? modulePath = Model.Accessories.ModulePath;
-
-        if (string.IsNullOrEmpty(modulePath))
-        {
-            modulePath = _modules.PAKInterface.GetCurrentModule();
-        }
-
-        if (!string.IsNullOrEmpty(modulePath))
-        {
-            Model.Accessories.ModulePath = modulePath;
-        }
+        OnConfigurationSave?.Invoke(Model);
 
         _persistenceManager.Save(_filePath, Model);
     }

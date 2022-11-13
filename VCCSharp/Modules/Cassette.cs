@@ -12,7 +12,7 @@ namespace VCCSharp.Modules;
 
 public interface ICassette : IModule
 {
-    HANDLE TapeHandle { get; set; }
+    HANDLE TapeHandle { get; }
 
     uint FlushCassetteBuffer(byte[] buffer, uint length);
     void LoadCassetteBuffer(byte[] buffer);
@@ -24,19 +24,20 @@ public interface ICassette : IModule
     int MountTape(string filename);
     void CloseTapeFile();
 
-    Action<int> UpdateTapeDialog { get; set; }
+    Action<int> UpdateTapeDialog { set; }
 
-    byte MotorState { get; set; }
+    byte MotorState { get; }
     TapeModes TapeMode { get; set; }
-    string? TapeFileName { get; set; }
-    uint TapeOffset { get; set; }
+    string? TapeFileName { set; }
+    uint TapeOffset { get; }
 }
 
 public class Cassette : ICassette
 {
     private readonly IModules _modules;
-    private readonly IConfiguration _configuration;
     private readonly IKernel _kernel;
+
+    private IConfiguration Configuration => _modules.Configuration;
 
     public byte MotorState { get; set; }
     public TapeModes TapeMode { get; set; } = TapeModes.Stop;
@@ -47,11 +48,11 @@ public class Cassette : ICassette
     public string? TapeFileName { get; set; } //[Define.MAX_PATH];
     public uint TapeOffset { get; set; }
 
-    public byte FileType;
+    private byte _fileType;
 
     private byte _quiet = 30;
 
-    public int LastTrans;
+    private int _lastTrans;
 
     private byte _byte;
     private byte _lastSample;
@@ -62,17 +63,16 @@ public class Cassette : ICassette
 
     public HANDLE TapeHandle { get; set; }
 
-    public uint TempIndex;
-    public byte[] TempBuffer = new byte[8192];
+    private uint _tempIndex;
+    private readonly byte[] _tempBuffer = new byte[8192];
 
-    public byte[] CasBuffer = new byte[Define.WRITEBUFFERSIZE];
+    private byte[] _casBuffer = new byte[Define.WRITEBUFFERSIZE];
 
     public Action<int> UpdateTapeDialog { get; set; }
 
-    public Cassette(IModules modules, IConfiguration configuration, IKernel kernel)
+    public Cassette(IModules modules, IKernel kernel)
     {
         _modules = modules;
-        _configuration = configuration;
         _kernel = kernel;
 
         UpdateTapeDialog = _ => { }; //_modules.ConfigurationManager.UpdateTapeDialog((uint) offset);
@@ -87,7 +87,7 @@ public class Cassette : ICassette
             return;
         }
 
-        switch ((TapeFileType)(FileType))
+        switch ((TapeFileType)(_fileType))
         {
             case TapeFileType.WAV:
                 LoadCassetteBufferWav(buffer, ref bytesMoved);
@@ -134,9 +134,9 @@ public class Cassette : ICassette
             return;
         }
 
-        while (TempIndex < bytesToConvert && TapeOffset <= _totalSize)
+        while (_tempIndex < bytesToConvert && TapeOffset <= _totalSize)
         {
-            var b = CasBuffer[(TapeOffset++) % _totalSize];
+            var b = _casBuffer[(TapeOffset++) % _totalSize];
 
             byte mask;
             for (mask = 0; mask <= 7; mask++)
@@ -146,55 +146,55 @@ public class Cassette : ICassette
                     //memcpy(&(instance->TempBuffer[instance->TempIndex]), instance->Zero, 40);
                     for (int index = 0; index < 40; index++)
                     {
-                        TempBuffer[TempIndex + index] = _zero[index];
+                        _tempBuffer[_tempIndex + index] = _zero[index];
                     }
 
-                    TempIndex += 40;
+                    _tempIndex += 40;
                 }
                 else
                 {
                     //memcpy(&(instance->TempBuffer[instance->TempIndex]), instance->One, 21);
                     for (int index = 0; index < 21; index++)
                     {
-                        TempBuffer[TempIndex + index] = _one[index];
+                        _tempBuffer[_tempIndex + index] = _one[index];
                     }
 
-                    TempIndex += 21;
+                    _tempIndex += 21;
                 }
             }
         }
 
-        if (TempIndex >= bytesToConvert)
+        if (_tempIndex >= bytesToConvert)
         {
             //memcpy(buffer, instance->TempBuffer, bytesToConvert); //Fill the return Buffer
             for (int index = 0; index < bytesToConvert; index++)
             {
-                buffer[index] = TempBuffer[index];
+                buffer[index] = _tempBuffer[index];
             }
 
             //memcpy(instance->TempBuffer, &(instance->TempBuffer[bytesToConvert]), instance->TempIndex - bytesToConvert);	//Slide the overage to the front
-            for (int index = 0; index < TempIndex - bytesToConvert; index++)
+            for (int index = 0; index < _tempIndex - bytesToConvert; index++)
             {
-                TempBuffer[index] = TempBuffer[bytesToConvert + index];
+                _tempBuffer[index] = _tempBuffer[bytesToConvert + index];
             }
 
-            TempIndex -= bytesToConvert; //Point to the Next free byte in the temp buffer
+            _tempIndex -= bytesToConvert; //Point to the Next free byte in the temp buffer
         }
         else //We ran out of source bytes
         {
             //memcpy(buffer, instance->TempBuffer, instance->TempIndex);						//Partial Fill of return buffer;
-            for (int index = 0; index < TempIndex; index++)
+            for (int index = 0; index < _tempIndex; index++)
             {
-                buffer[index] = TempBuffer[index];
+                buffer[index] = _tempBuffer[index];
             }
 
             //memset(&buffer[instance->TempIndex], 0, bytesToConvert - instance->TempIndex);		//and silence for the rest
-            for (int index = 0; index < bytesToConvert - TempIndex; index++)
+            for (int index = 0; index < bytesToConvert - _tempIndex; index++)
             {
-                buffer[index + TempIndex] = 0;
+                buffer[index + _tempIndex] = 0;
             }
 
-            TempIndex = 0;
+            _tempIndex = 0;
         }
     }
 
@@ -228,7 +228,7 @@ public class Cassette : ICassette
 
                     case TapeModes.Play:
                         _quiet = 30;
-                        TempIndex = 0;
+                        _tempIndex = 0;
                         break;
 
                     case TapeModes.Record:
@@ -296,7 +296,7 @@ public class Cassette : ICassette
     {
         if (TapeMode == TapeModes.Record)
         {
-            switch (FileType)
+            switch (_fileType)
             {
                 case Define.WAV:
                     FlushCassetteWav(buffer, length);
@@ -319,12 +319,12 @@ public class Cassette : ICassette
 
             if (_lastSample <= 0x80 && sample > 0x80) //Low to High transition
             {
-                var width = index - LastTrans;
+                var width = index - _lastTrans;
 
                 if (width < 10 || width > 50) //Invalid Sample Skip it
                 {
                     _lastSample = 0;
-                    LastTrans = index;
+                    _lastTrans = index;
                     _mask = 0;
                     _byte = 0;
                 }
@@ -343,7 +343,7 @@ public class Cassette : ICassette
 
                     if (_mask == 0)
                     {
-                        CasBuffer[TapeOffset++] = _byte;
+                        _casBuffer[TapeOffset++] = _byte;
                         _byte = 0;
 
                         //Don't blow past the end of the buffer
@@ -354,13 +354,13 @@ public class Cassette : ICassette
                     }
                 }
 
-                LastTrans = index;
+                _lastTrans = index;
             }
 
             _lastSample = sample;
         }
 
-        LastTrans -= (int)length;
+        _lastTrans -= (int)length;
 
         if (TapeOffset > _totalSize)
         {
@@ -379,7 +379,7 @@ public class Cassette : ICassette
         }
 
         //_writeProtect = 0;
-        FileType = 0; //0=wav 1=cas
+        _fileType = 0; //0=wav 1=cas
 
         TapeHandle = _kernel.CreateFile(filename, Define.GENERIC_READ | Define.GENERIC_WRITE, Define.OPEN_ALWAYS);
 
@@ -403,21 +403,21 @@ public class Cassette : ICassette
 
         if (extension == ".CAS")
         {
-            FileType = Define.CAS;
-            LastTrans = 0;
+            _fileType = Define.CAS;
+            _lastTrans = 0;
             _mask = 0;
             _byte = 0;
             _lastSample = 0;
-            TempIndex = 0;
+            _tempIndex = 0;
 
-            CasBuffer = new byte[Define.WRITEBUFFERSIZE];
+            _casBuffer = new byte[Define.WRITEBUFFERSIZE];
 
             _kernel.SetFilePointer(TapeHandle, Define.FILE_BEGIN);
 
             ulong moved = 0;
 
             //Read the whole file in for .CAS files
-            _kernel.ReadFile(TapeHandle, CasBuffer, _totalSize, ref moved);
+            _kernel.ReadFile(TapeHandle, _casBuffer, _totalSize, ref moved);
 
             _bytesMoved = (uint)moved;
 
@@ -434,7 +434,7 @@ public class Cassette : ICassette
     {
         _kernel.SetFilePointer(TapeHandle, Define.FILE_BEGIN);
 
-        switch (FileType)
+        switch (_fileType)
         {
             case Define.CAS:
                 SyncFileBufferCas();
@@ -450,14 +450,14 @@ public class Cassette : ICassette
 
     private void SyncFileBufferCas()
     {
-        CasBuffer[TapeOffset] = _byte;	//capture the last byte
-        LastTrans = 0;	//reset all static inter-call variables
+        _casBuffer[TapeOffset] = _byte;	//capture the last byte
+        _lastTrans = 0;	//reset all static inter-call variables
         _mask = 0;
         _byte = 0;
         _lastSample = 0;
-        TempIndex = 0;
+        _tempIndex = 0;
 
-        _kernel.WriteFile(TapeHandle, CasBuffer, TapeOffset);
+        _kernel.WriteFile(TapeHandle, _casBuffer, TapeOffset);
     }
 
     private void SyncFileBufferWav()
@@ -516,19 +516,19 @@ public class Cassette : ICassette
     public void ModuleReset()
     {
         MotorState = 0;
-        TapeFileName = _configuration.CassetteRecorder.TapeFileName;
-        TapeMode = _configuration.CassetteRecorder.TapeMode;
+        TapeFileName = Configuration.CassetteRecorder.TapeFileName;
+        TapeMode = Configuration.CassetteRecorder.TapeMode;
 
         //TODO: This may be a problem.
         TapeOffset = 0; //(uint)_configuration.CassetteRecorder.TapeCounter;
 
         UpdateTapeDialog = _ => { };
 
-        FileType = 0;
+        _fileType = 0;
 
         _quiet = 30;
 
-        LastTrans = 0;
+        _lastTrans = 0;
 
         _byte = 0;
         _lastSample = 0;

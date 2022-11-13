@@ -1,5 +1,6 @@
 ﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
+using VCCSharp.Models.Configuration;
 
 namespace VCCSharp;
 
@@ -19,6 +20,10 @@ public class VccApp : IVccApp
     public VccApp(IModules modules)
     {
         _modules = modules;
+
+        //TODO: Not sure this is proper place.  Probably should have each module respond accordingly.
+        _modules.ConfigurationManager.OnConfigurationChanged += ConfigurationLoaded;
+        _modules.ConfigurationManager.OnConfigurationSave += ConfigurationSave;
     }
 
     public void LoadConfiguration(string? iniFile)
@@ -71,5 +76,42 @@ public class VccApp : IVccApp
     public void SetWindow(IntPtr hWnd)
     {
         _modules.Emu.WindowHandle = hWnd;
+    }
+
+    /// <summary>
+    /// Invoked when the configuration has loaded/changed
+    /// </summary>
+    /// <param name="model"></param>
+    private void ConfigurationLoaded(IConfiguration model)
+    {
+        _modules.Emu.SetWindowSize(model.Window);
+        _modules.Joysticks.Configure(model.Joysticks);
+
+        if (!string.IsNullOrEmpty(_modules.Emu.PakPath))
+        {
+            model.Accessories.MultiPak.FilePath = _modules.Emu.PakPath;
+        }
+    }
+
+    /// <summary>
+    /// Invoked when the configuration is about to save
+    /// </summary>
+    /// <param name="model"></param>
+    private void ConfigurationSave(IConfiguration model)
+    {
+        model.Window.Width = (short)_modules.Emu.WindowSize.X;
+        model.Window.Height = (short)_modules.Emu.WindowSize.Y;
+
+        string? modulePath = model.Accessories.ModulePath;
+
+        if (string.IsNullOrEmpty(modulePath))
+        {
+            modulePath = _modules.PAKInterface.GetCurrentModule();
+        }
+
+        if (!string.IsNullOrEmpty(modulePath))
+        {
+            model.Accessories.ModulePath = modulePath;
+        }
     }
 }

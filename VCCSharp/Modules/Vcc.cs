@@ -25,7 +25,8 @@ public class Vcc : IVcc
 {
     private readonly IModules _modules;
     private readonly IStatus _status;
-    private readonly IConfiguration _configuration;
+
+    private IConfiguration Configuration => _modules.Configuration;
 
     private static readonly Dictionary<CPUTypes, string> CPULookup = new()
     {
@@ -38,15 +39,14 @@ public class Vcc : IVcc
     //An IRQ of sorts telling the emulator to pause during Full Screen toggle
     public byte RunState { get; set; } = Define.EMU_RUNSTATE_RUNNING;
 
-    public string CpuName => CPULookup[_configuration.CPU.Type.Value];
+    public string CpuName => CPULookup[Configuration.CPU.Type.Value];
 
-    public string AppName { get; set; } = "(app)";
+    private string AppName { get; set; } = "(app)";
 
-    public Vcc(IModules modules, IStatus status, IConfiguration configuration)
+    public Vcc(IModules modules, IStatus status)
     {
         _modules = modules;
         _status = status;
-        _configuration = configuration;
     }
 
     public void CheckScreenModeChange()
@@ -104,12 +104,12 @@ public class Vcc : IVcc
             _modules.PAKInterface.GetModuleStatus();
 
             _status.Fps = fps;
-            _status.FrameSkip = _configuration.CPU.FrameSkip;
+            _status.FrameSkip = Configuration.CPU.FrameSkip;
             _status.CpuName = CpuName;
             _status.Mhz = _modules.Emu.CpuCurrentSpeed;
             _status.Status = _modules.Emu.StatusLine;
 
-            if (_configuration.CPU.ThrottleSpeed)
+            if (Configuration.CPU.ThrottleSpeed)
             {
                 //Do nothing until the frame is over returning unused time to OS
                 _modules.Throttle.FrameWait();
@@ -147,7 +147,7 @@ public class Vcc : IVcc
             }}
         };
 
-        for (int frames = 1; frames <= _configuration.CPU.FrameSkip; frames++)
+        for (int frames = 1; frames <= Configuration.CPU.FrameSkip; frames++)
         {
             resetActions[_modules.Emu.ResetPending]();
 
@@ -158,7 +158,7 @@ public class Vcc : IVcc
                 : _modules.Draw.Static();
         }
 
-        _modules.Throttle.EndRender(_configuration.CPU.FrameSkip);
+        _modules.Throttle.EndRender(Configuration.CPU.FrameSkip);
 
         return fps;
     }

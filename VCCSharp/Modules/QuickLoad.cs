@@ -14,12 +14,12 @@ public interface IQuickLoad
 public class QuickLoad : IQuickLoad
 {
     private readonly IModules _modules;
-    private readonly IConfiguration _configuration;
 
-    public QuickLoad(IModules modules, IConfiguration configuration)
+    private IConfiguration Configuration => _modules.Configuration;
+
+    public QuickLoad(IModules modules)
     {
         _modules = modules;
-        _configuration = configuration;
     }
 
     public int QuickStart(string binFileName)
@@ -53,7 +53,7 @@ public class QuickLoad : IQuickLoad
 
         if (modules.Contains(extension))
         {
-            _configuration.Accessories.ModulePath = binFileName;
+            Configuration.Accessories.ModulePath = binFileName;
             _modules.PAKInterface.InsertModule();
         }
 

@@ -20,6 +20,8 @@ public class VccThread : IVccThread
     {
         _vccApp.SetWindow(hWnd);
 
+        //_vccApp.LoadConfiguration(args.IniFile);
+
         //--The emulation runs on a different thread
         Task.Run(() => Run(args));
     }

@@ -38,8 +38,9 @@ public interface IMC6821 : IModule, IChip
 public class MC6821 : IMC6821
 {
     private readonly IModules _modules;
-    private readonly IConfiguration _configuration;
     private readonly IKernel _kernel;
+
+    private IConfiguration Configuration => _modules.Configuration;
 
     private bool _addLf;
     private bool _monState;
@@ -62,16 +63,15 @@ public class MC6821 : IMC6821
 
     private bool _cartAutoStart;
 
-    public MC6821(IModules modules, IConfiguration configuration, IKernel kernel)
+    public MC6821(IModules modules, IKernel kernel)
     {
         _modules = modules;
-        _configuration = configuration;
         _kernel = kernel;
     }
 
     private void SetCartAutoStart()
     {
-        _cartAutoStart = _configuration.Startup.CartridgeAutoStart;
+        _cartAutoStart = Configuration.Startup.CartridgeAutoStart;
     }
 
     public void IrqHs(PhaseStates phase) //63.5 uS

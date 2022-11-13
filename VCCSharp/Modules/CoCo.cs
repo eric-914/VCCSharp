@@ -34,19 +34,20 @@ public class CoCo : ICoCo
         Active
     }
 
-    public const double CyclesPerSecond = (Define.COLORBURST / 4) * (Define.TARGETFRAMERATE / Define.FRAMESPERSECORD);
-    public const double LinesPerSecond = Define.TARGETFRAMERATE * (double)Define.LINESPERFIELD;
-    public const double PicosPerLine = Define.PICOSECOND / LinesPerSecond;
-    public const double CyclesPerLine = CyclesPerSecond / LinesPerSecond;
+    private const double CyclesPerSecond = (Define.COLORBURST / 4) * (Define.TARGETFRAMERATE / Define.FRAMESPERSECORD);
+    private const double LinesPerSecond = Define.TARGETFRAMERATE * (double)Define.LINESPERFIELD;
+    private const double PicosPerLine = Define.PICOSECOND / LinesPerSecond;
+    private const double CyclesPerLine = CyclesPerSecond / LinesPerSecond;
 
-    public const byte BlinkPhase = 1;
+    private const byte BlinkPhase = 1;
 
     private Action _audioEvent = () => { };
 
     private readonly IModules _modules;
-    private readonly IConfiguration _configuration;
 
     private static byte _lastMode;
+
+    private IConfiguration Configuration => _modules.Configuration;
 
     public Action<int> UpdateTapeDialog { get; set; }
 
@@ -91,10 +92,9 @@ public class CoCo : ICoCo
     private static readonly IKey ShiftKey = KeyDefinitions.Shift;
     private static readonly IKey ReturnKey = KeyDefinitions.Return;
 
-    public CoCo(IModules modules, IConfiguration configuration)
+    public CoCo(IModules modules)
     {
         _modules = modules;
-        _configuration = configuration;
 
         UpdateTapeDialog = _ => { }; //_modules.ConfigurationManager.UpdateTapeDialog((uint)offset);
     }
@@ -133,7 +133,7 @@ public class CoCo : ICoCo
 
     private bool RenderVideoFrame()
     {
-        bool skipRender = _modules.Emu.FrameCounter % _configuration.CPU.FrameSkip != 0;
+        bool skipRender = _modules.Emu.FrameCounter % Configuration.CPU.FrameSkip != 0;
 
         _modules.Graphics.SetBlinkState(BlinkPhase);
 
@@ -608,7 +608,7 @@ public class CoCo : ICoCo
     {
     }
 
-    public void SetMasterTickCounter()
+    private void SetMasterTickCounter()
     {
         double[] rate = { Define.PICOSECOND / (Define.TARGETFRAMERATE * Define.LINESPERFIELD), Define.PICOSECOND / Define.COLORBURST };
 
@@ -690,7 +690,7 @@ public class CoCo : ICoCo
         _audioEvent = AudioOut;
     }
 
-    public void SetAudioEventCassetteOut()
+    private void SetAudioEventCassetteOut()
     {
         void CassetteOut()
         {
@@ -700,7 +700,7 @@ public class CoCo : ICoCo
         _audioEvent = CassetteOut;
     }
 
-    public void SetAudioEventCassetteIn()
+    private void SetAudioEventCassetteIn()
     {
         void CassetteIn()
         {
@@ -735,7 +735,7 @@ public class CoCo : ICoCo
         _soundOutputMode = 0;
 
         _throttleState = ThrottleStates.Idle;
-        _throttle = _configuration.CPU.ThrottleSpeed;
+        _throttle = Configuration.CPU.ThrottleSpeed;
         _shiftActive = false;
 
         _stateSwitch = 0;

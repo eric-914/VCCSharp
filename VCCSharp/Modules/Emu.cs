@@ -19,10 +19,10 @@ public interface IEmu : IModule
 
     bool FullScreen { get; set; }
     bool ScanLines { get; set; }
-    short FrameCounter { get; set; }
+    short FrameCounter { get; }
     short LineCounter { get; set; } //--Still used in text modes
     long SurfacePitch { get; set; }
-    double CpuCurrentSpeed { get; set; }
+    double CpuCurrentSpeed { get; }
 
     bool EmulationRunning { get; set; }
     ResetPendingStates ResetPending { get; set; }
@@ -39,7 +39,8 @@ public class Emu : IEmu
 {
     private readonly IModules _modules;
     private readonly IUser32 _user32;
-    private readonly IConfiguration _configuration;
+
+    private IConfiguration Configuration => _modules.Configuration;
 
     private byte _doubleSpeedFlag;
     private int _doubleSpeedMultiplier = 2;
@@ -66,11 +67,10 @@ public class Emu : IEmu
 
     public string? PakPath { get; set; }
 
-    public Emu(IModules modules, IUser32 user32, IConfiguration configuration)
+    public Emu(IModules modules, IUser32 user32)
     {
         _modules = modules;
         _user32 = user32;
-        _configuration = configuration;
     }
 
     public void SoftReset()
@@ -90,11 +90,11 @@ public class Emu : IEmu
 
     public void HardReset()
     {
-        _modules.TCC1014.Initialize(_configuration.Memory.Ram.Value);
+        _modules.TCC1014.Initialize(Configuration.Memory.Ram.Value);
         _modules.TCC1014.ChipReset();  //Captures internal rom pointer for CPU Interrupt Vectors
         _modules.MC6821.ChipReset();
 
-        _modules.CPU.Init(_configuration.CPU.Type.Value);
+        _modules.CPU.Init(Configuration.CPU.Type.Value);
         _modules.CPU.ChipReset();   // Zero all CPU Registers and sets the PC to VRESET
 
         _modules.Graphics.ResetGraphicsState();
@@ -110,7 +110,7 @@ public class Emu : IEmu
 
     private void SetCpuMultiplier()
     {
-        _doubleSpeedMultiplier = _configuration.CPU.CpuMultiplier;
+        _doubleSpeedMultiplier = Configuration.CPU.CpuMultiplier;
 
         SetCpuMultiplierFlag(_doubleSpeedFlag);
     }

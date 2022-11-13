@@ -39,31 +39,31 @@ public interface IGraphics : IModule
     void SetGraphicsSurface(IntPtr surface);
     bool InTextMode();
 
-    byte BorderChange { get; set; }
-    byte BytesPerRow { get; set; }
-    bool ColorInvert { get; set; }
-    byte ExtendedText { get; set; }
-    byte GraphicsMode { get; set; }
-    byte HorizontalOffset { get; set; }
-    byte HorizontalCenter { get; set; }
-    byte HorizontalOffsetReg { get; set; }
-    byte LinesPerRow { get; set; }
-    byte LinesPerScreen { get; set; }
-    bool LowerCase { get; set; }
-    byte MasterMode { get; set; }
-    MonitorTypes MonitorType { get; set; }
-    byte PaletteIndex { get; set; }
-    byte Stretch { get; set; }
-    byte TextBgPalette { get; set; }
-    byte TextFgPalette { get; set; }
-    byte VerticalCenter { get; set; }
-    ushort PixelsPerLine { get; set; }
+    byte BorderChange { get; }
+    byte BytesPerRow { get; }
+    bool ColorInvert { get; }
+    byte ExtendedText { get; }
+    byte GraphicsMode { get; }
+    byte HorizontalOffset { get; }
+    byte HorizontalCenter { get; }
+    byte HorizontalOffsetReg { get; }
+    byte LinesPerRow { get; }
+    byte LinesPerScreen { get; }
+    bool LowerCase { get; }
+    byte MasterMode { get; }
+    MonitorTypes MonitorType { get; }
+    byte PaletteIndex { get; }
+    byte Stretch { get; }
+    byte TextBgPalette { get; }
+    byte TextFgPalette { get; }
+    byte VerticalCenter { get; }
+    ushort PixelsPerLine { get; }
     ushort TagY { get; set; }
-    ushort VPitch { get; set; }
-    uint NewStartOfVidRam { get; set; }
+    ushort VPitch { get; }
+    uint NewStartOfVidRam { get; }
     uint StartOfVidRam { get; set; }
-    uint VidMask { get; set; }
-    uint BorderColor { get; set; }
+    uint VidMask { get; }
+    uint BorderColor { get; }
 
     byte[] Lpf { get; }
     byte[] VerticalCenterTable { get; }
@@ -107,30 +107,31 @@ public class Graphics : IGraphics
 #pragma warning restore IDE1006 // Naming Styles
 
     private readonly IModules _modules;
-    private readonly IConfiguration _configuration;
+
+    private IConfiguration Configuration => _modules.Configuration;
 
     private readonly GraphicsColors _colors = new();
     private readonly VideoMasks _videoMask = new();
 
-    public byte BlinkState { get; set; }
+    private byte BlinkState { get; set; }
 
     public byte BorderChange { get; set; } = 3;
-    public byte Bpp { get; set; }
+    private byte Bpp { get; set; }
     public byte BytesPerRow { get; set; } = 32;
-    public byte CC2Offset { get; set; }
-    public byte CC2VdgMode { get; set; }
-    public byte CC2VdgPiaMode { get; set; }
-    public byte CC3BorderColor { get; set; }
-    public byte CC3Vmode { get; set; }
-    public byte CC3Vres { get; set; }
+    private byte CC2Offset { get; set; }
+    private byte CC2VdgMode { get; set; }
+    private byte CC2VdgPiaMode { get; set; }
+    private byte CC3BorderColor { get; set; }
+    private byte CC3Vmode { get; set; }
+    private byte CC3Vres { get; set; }
     public bool ColorInvert { get; set; } = true;
-    public CompatibilityModes CompatibilityMode { get; set; }
+    private CompatibilityModes CompatibilityMode { get; set; }
     public byte ExtendedText { get; set; } = 1;
     public byte GraphicsMode { get; set; }
     public byte HorizontalOffset { get; set; }
     public byte HorizontalCenter { get; set; }
     public byte HorizontalOffsetReg { get; set; }
-    public byte InvertAll { get; set; }
+    private byte InvertAll { get; set; }
     public byte LinesPerRow { get; set; } = 1;
     public byte LinesPerScreen { get; set; }
     public bool LowerCase { get; set; }
@@ -141,14 +142,14 @@ public class Graphics : IGraphics
     public byte TextBgPalette { get; set; }
     public byte TextFgPalette { get; set; }
     public byte VerticalCenter { get; set; }
-    public byte VresIndex { get; set; }
+    private byte VresIndex { get; set; }
 
     public ushort PixelsPerLine { get; set; }
     public ushort TagY { get; set; }
-    public ushort VerticalOffsetRegister { get; set; }
+    private ushort VerticalOffsetRegister { get; set; }
     public ushort VPitch { get; set; } = 32;
 
-    public uint VidRamOffset { get; set; }
+    private uint VidRamOffset { get; set; }
     public uint NewStartOfVidRam { get; set; }
     public uint StartOfVidRam { get; set; }
     public uint VidMask { get; set; } = 0x1FFFF;
@@ -161,10 +162,9 @@ public class Graphics : IGraphics
 
     private IntPointer? _surface;
 
-    public Graphics(IModules modules, IConfiguration configuration)
+    public Graphics(IModules modules)
     {
         _modules = modules;
-        _configuration = configuration;
     }
 
     public IntPointer GetGraphicsSurface()
@@ -196,11 +196,11 @@ public class Graphics : IGraphics
         _colors.Palette32Bit.Reset();
     }
 
-    public void ResetPalette()
-    {
-        MakeRgbPalette();
-        MakeCmpPalette(_modules.Configuration.Video.Palette.Value);
-    }
+    //public void ResetPalette()
+    //{
+    //    MakeRgbPalette();
+    //    MakeCmpPalette(_modules.Configuration.Video.Palette.Value);
+    //}
 
     public void SetBlinkState(byte state)
     {
@@ -226,9 +226,9 @@ public class Graphics : IGraphics
     }
 
     //TODO: ScanLines never really worked right to begin with...
-    public void SetScanLines()
+    private void SetScanLines()
     {
-        _modules.Emu.ScanLines = _configuration.Video.ScanLines;
+        _modules.Emu.ScanLines = Configuration.Video.ScanLines;
         _modules.Emu.ResetPending = ResetPendingStates.Cls;
 
         _modules.Draw.ClearScreen();
@@ -236,7 +236,7 @@ public class Graphics : IGraphics
         BorderChange = 3;
     }
 
-    public void MakeCmpPalette(PaletteTypes paletteType)
+    private void MakeCmpPalette(PaletteTypes paletteType)
     {
         Debug.WriteLine(paletteType == PaletteTypes.Original ? "Loading original CMP palette." : "Loading updated CMP palette.");
 
@@ -337,7 +337,7 @@ public class Graphics : IGraphics
 
     public void SetMonitorType()
     {
-        MonitorType = _configuration.Video.Monitor.Value;
+        MonitorType = Configuration.Video.Monitor.Value;
 
         Debug.WriteLine($"Monitor Type={MonitorType}");
 
@@ -355,7 +355,7 @@ public class Graphics : IGraphics
         BorderChange = 5;
     }
 
-    public void MakeRgbPalette()
+    private void MakeRgbPalette()
     {
         for (byte index = 0; index < 64; index++)
         {
@@ -491,7 +491,7 @@ public class Graphics : IGraphics
         _surface = new IntPointer(surface);
     }
 
-    public void SetupDisplay()
+    private void SetupDisplay()
     {
         ExtendedText = 1;
 

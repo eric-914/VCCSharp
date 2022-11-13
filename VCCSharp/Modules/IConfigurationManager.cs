@@ -4,6 +4,9 @@ namespace VCCSharp.Modules;
 
 public interface IConfigurationManager
 {
+    event ConfigurationChanged OnConfigurationChanged;
+    event ConfigurationSave OnConfigurationSave;
+
     IConfiguration Model { get; }
 
     string? GetFilePath();

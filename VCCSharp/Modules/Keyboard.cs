@@ -26,19 +26,20 @@ public interface IKeyboard : IModule
 public class Keyboard : IKeyboard
 {
     private readonly IModules _modules;
-    private readonly IConfiguration _configuration;
     private readonly IKeyScanMapper _keyScanMapper;
 
-    public bool KeyboardInterruptEnabled { get; set; }
+    private IConfiguration Configuration => _modules.Configuration;
 
-    public KeyboardLayouts CurrentKeyBoardLayout { get; private set; }
-    public KeyboardLayouts PreviousKeyBoardLayout { get; private set; }
+    private bool KeyboardInterruptEnabled { get; set; }
+
+    private KeyboardLayouts CurrentKeyBoardLayout { get; set; }
+    private KeyboardLayouts PreviousKeyBoardLayout { get; set; }
 
     /** run-time 'rollover' table to pass to the MC6821 when a key is pressed */
-    public byte[] RolloverTable = new byte[8];	// CoCo 'keys' for emulator
+    private byte[] _rolloverTable = new byte[8];	// CoCo 'keys' for emulator
 
     /** track all keyboard scan codes state (up/down) */
-    public int[] ScanTable = new int[256];
+    private int[] _scanTable = new int[256];
 
     private KeyTranslationEntry[] _keyTransTable = new KeyTranslationEntry[Define.KBTABLE_ENTRY_COUNT];
 
@@ -51,10 +52,9 @@ public class Keyboard : IKeyboard
     private byte _scSave2;
     private bool _keySaveToggle;
 
-    public Keyboard(IModules modules, IConfiguration configuration, IKeyScanMapper keyScanMapper)
+    public Keyboard(IModules modules, IKeyScanMapper keyScanMapper)
     {
         _modules = modules;
-        _configuration = configuration;
         _keyScanMapper = keyScanMapper;
     }
 
@@ -80,7 +80,7 @@ public class Keyboard : IKeyboard
         {
             if ((temp & mask) != 0) // Found an active column scan
             {
-                retVal |= RolloverTable[x];
+                retVal |= _rolloverTable[x];
             }
 
             mask <<= 1;
@@ -167,7 +167,7 @@ public class Keyboard : IKeyboard
 
     public void KeyboardBuildRuntimeTable()
     {
-        KeyboardBuildRuntimeTable(_configuration.Keyboard.Layout.Value);
+        KeyboardBuildRuntimeTable(Configuration.Keyboard.Layout.Value);
     }
 
     /*
@@ -176,7 +176,7 @@ public class Keyboard : IKeyboard
 
       The entries are sorted.  Any SHIFT + [char] entries need to be placed first
     */
-    public void KeyboardBuildRuntimeTable(KeyboardLayouts keyBoardLayout)
+    private void KeyboardBuildRuntimeTable(KeyboardLayouts keyBoardLayout)
     {
         CurrentKeyBoardLayout = keyBoardLayout;
 
@@ -339,7 +339,7 @@ public class Keyboard : IKeyboard
         scanCode = _modules.Joysticks.SetJoystickFromKeyboard(scanCode, true);
 
         // track key is down
-        ScanTable[scanCode] = Define.KEY_DOWN;
+        _scanTable[scanCode] = Define.KEY_DOWN;
 
         KeyboardUpdateRolloverTable();
 
@@ -356,7 +356,7 @@ public class Keyboard : IKeyboard
         scanCode = _modules.Joysticks.SetJoystickFromKeyboard(scanCode, false);
 
         // reset key (released)
-        ScanTable[scanCode] = Define.KEY_UP;
+        _scanTable[scanCode] = Define.KEY_UP;
 
         // TODO: verify this is accurate emulation
         // Clean out rollover table on shift release
@@ -364,7 +364,7 @@ public class Keyboard : IKeyboard
         {
             for (int index = 0; index < Define.KBTABLE_ENTRY_COUNT; index++)
             {
-                ScanTable[index] = Define.KEY_UP;
+                _scanTable[index] = Define.KEY_UP;
             }
         }
 
@@ -378,7 +378,7 @@ public class Keyboard : IKeyboard
         // clear the rollover table
         for (int index = 0; index < 8; index++)
         {
-            RolloverTable[index] = 0;
+            _rolloverTable[index] = 0;
         }
 
         // set rollover table based on ScanTable key status
@@ -400,19 +400,19 @@ public class Keyboard : IKeyboard
                 if (scanCode1 != 0 && scanCode2 == 0)
                 {
                     // check if key pressed
-                    if (ScanTable[scanCode1] == Define.KEY_DOWN)
+                    if (_scanTable[scanCode1] == Define.KEY_DOWN)
                     {
                         int col = entry.Col1;
 
                         //assert(col >= 0 && col < 8);
 
-                        RolloverTable[col] |= entry.Row1;
+                        _rolloverTable[col] |= entry.Row1;
 
                         col = entry.Col2;
 
                         //assert(col >= 0 && col < 8);
 
-                        RolloverTable[col] |= entry.Row2;
+                        _rolloverTable[col] |= entry.Row2;
                     }
                 }
 
@@ -420,19 +420,19 @@ public class Keyboard : IKeyboard
                 if (scanCode1 != 0 && scanCode2 != 0)
                 {
                     // check if both keys pressed
-                    if (ScanTable[scanCode1] == Define.KEY_DOWN && ScanTable[scanCode2] == Define.KEY_DOWN)
+                    if (_scanTable[scanCode1] == Define.KEY_DOWN && _scanTable[scanCode2] == Define.KEY_DOWN)
                     {
                         int col = entry.Col1;
 
                         //assert(col >= 0 && col < 8);
 
-                        RolloverTable[col] |= entry.Row1;
+                        _rolloverTable[col] |= entry.Row1;
 
                         col = entry.Col2;
 
                         //assert(col >= 0 && col < 8);
 
-                        RolloverTable[col] |= entry.Row2;
+                        _rolloverTable[col] |= entry.Row2;
 
                         //--TODO: This implies that lockOut should be static?  But seems to work ok as is.
                         // always SHIFT
@@ -452,7 +452,7 @@ public class Keyboard : IKeyboard
     //--------------------------------------------------------------------------
 
     // Save last two key down events
-    public void SaveLastTwoKeyDownEvents(byte oemScan)
+    private void SaveLastTwoKeyDownEvents(byte oemScan)
     {
         // Ignore zero scan code
         if (oemScan == 0)
@@ -489,8 +489,8 @@ public class Keyboard : IKeyboard
     {
         CurrentKeyBoardLayout = KeyboardLayouts.CoCo;
         PreviousKeyBoardLayout = KeyboardLayouts.CoCo;
-        RolloverTable = new byte[8];
-        ScanTable = new int[256];
+        _rolloverTable = new byte[8];
+        _scanTable = new int[256];
 
         _keyTransTable = new KeyTranslationEntry[Define.KBTABLE_ENTRY_COUNT];
 

@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using VCCSharp.IoC;
+using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.BitBanger;
 
@@ -10,6 +11,8 @@ public class BitBangerManager : IBitBanger
 
     private readonly BitBangerViewModel _viewModel = new();
     private BitBangerWindow? _view;
+
+    private IConfiguration Model => _modules.Configuration;
 
     public BitBangerManager(IModules modules)
     {
@@ -41,7 +44,7 @@ public class BitBangerManager : IBitBanger
 
     public void Open()
     {
-        string? filename = _modules.ConfigurationManager.Model.SerialPort.SerialCaptureFile;
+        string? filename = Model.SerialPort.SerialCaptureFile;
         string appPath = Path.GetDirectoryName(filename) ?? "C:\\";
 
         var openFileDlg = new Microsoft.Win32.OpenFileDialog
@@ -73,7 +76,7 @@ public class BitBangerManager : IBitBanger
 
             serialCaptureFile = Path.GetFileName(openFileDlg.FileName);
 
-            _modules.ConfigurationManager.Model.SerialPort.SerialCaptureFile = serialCaptureFile;
+            Model.SerialPort.SerialCaptureFile = serialCaptureFile;
         }
     }
 
@@ -83,9 +86,9 @@ public class BitBangerManager : IBitBanger
 
         _viewModel.SerialCaptureFile = null;
 
-        _modules.ConfigurationManager.Model.SerialPort.PrintMonitorWindow = false;
+        Model.SerialPort.PrintMonitorWindow = false;
 
-        _modules.MC6821.SetMonState(_modules.ConfigurationManager.Model.SerialPort.PrintMonitorWindow);
+        _modules.MC6821.SetMonState(Model.SerialPort.PrintMonitorWindow);
 
         _viewModel.Print = false;
     }

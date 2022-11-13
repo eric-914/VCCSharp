@@ -6,207 +6,206 @@ using VCCSharp.Models.Audio;
 using VCCSharp.Models.Configuration;
 using HWND = System.IntPtr;
 
-namespace VCCSharp.Modules
+namespace VCCSharp.Modules;
+
+public interface IAudio : IModule
 {
-    public interface IAudio : IModule
+    List<string> FindSoundDevices();
+
+    void SoundInit();
+    void SoundInit(HWND hWnd, int index, AudioRates rate);
+    short SoundDeInit();
+
+    bool PauseAudio(bool pause);
+    void ResetAudio();
+    void FlushAudioBuffer(int[] buffer, int length);
+    int GetFreeBlockCount();
+
+    AudioSpectrum Spectrum { get; }
+    AudioRates CurrentRate { get; }
+}
+
+public class Audio : IAudio
+{
+    private readonly IModules _modules;
+    private readonly IDxSound _sound;
+
+    private IConfiguration Configuration => _modules.Configuration;
+
+    public AudioSpectrum Spectrum { get; } = new();
+    public AudioRates CurrentRate { get; set; }
+
+    private bool _initialized;
+    private bool _audioPause;
+
+    private ushort _bitRate;
+    private ushort _blockSize;
+
+    private readonly ushort[] _kHzRate = { 0, 11025, 22050, 44100 };
+
+    private int _sndBuffLength;
+    private int _buffOffset;
+
+    private bool _mute;
+
+    public Audio(IModules modules, IDxSound sound)
     {
-        List<string> FindSoundDevices();
-
-        void SoundInit();
-        void SoundInit(HWND hWnd, int index, AudioRates rate);
-        short SoundDeInit();
-
-        bool PauseAudio(bool pause);
-        void ResetAudio();
-        void FlushAudioBuffer(int[] buffer, int length);
-        int GetFreeBlockCount();
-
-        AudioSpectrum Spectrum { get; }
-        AudioRates CurrentRate { get; set; }
+        _modules = modules;
+        _sound = sound;
     }
 
-    public class Audio : IAudio
+    public void SoundInit()
     {
-        private readonly IModules _modules;
-        private readonly IConfiguration _configuration;
-        private readonly IDxSound _sound;
+        int deviceIndex = FindSoundDevices().IndexOf(Configuration.Audio.Device);
 
-        public AudioSpectrum Spectrum { get; } = new();
-        public AudioRates CurrentRate { get; set; }
+        SoundInit(_modules.Emu.WindowHandle, deviceIndex, Configuration.Audio.Rate.Value);
+    }
 
-        private bool _initialized;
-        private bool _audioPause;
-
-        private ushort _bitRate;
-        private ushort _blockSize;
-
-        private readonly ushort[] _kHzRate = { 0, 11025, 22050, 44100 };
-
-        private int _sndBuffLength;
-        private int _buffOffset;
-
-        private bool _mute;
-
-        public Audio(IModules modules, IConfiguration configuration, IDxSound sound)
+    public void SoundInit(HWND hWnd, int index, AudioRates rate)
+    {
+        if (rate != AudioRates.Disabled)
         {
-            _modules = modules;
-            _configuration = configuration;
-            _sound = sound;
+            //TODO: Since there is only 44100 or mute, remove the other options and make this a boolean
+            //Force 44100 or Disabled
+            rate = AudioRates._44100Hz;
         }
 
-        public void SoundInit()
-        {
-            int deviceIndex = FindSoundDevices().IndexOf(_configuration.Audio.Device);
+        CurrentRate = rate;
 
-            SoundInit(_modules.Emu.WindowHandle, deviceIndex, _configuration.Audio.Rate.Value);
-        }
+        _buffOffset = 0;
+        _bitRate = _kHzRate[(int)rate];
+        _blockSize = (ushort)(_bitRate * 4 / Define.TARGETFRAMERATE);
+        _sndBuffLength = (ushort)(_blockSize * Define.AUDIOBUFFERS);
 
-        public void SoundInit(HWND hWnd, int index, AudioRates rate)
+        if (!_initialized)
         {
-            if (rate != AudioRates.Disabled)
+            if (!_sound.CreateDirectSound(index)) return;
+
+            // set cooperation level normal
+            if (!_sound.SetCooperativeLevel(hWnd)) return;
+
+            if (!_sound.CreateDirectSoundBuffer(_bitRate, _sndBuffLength)) return;
+
+            // Clear out sound buffers
+            if (!_sound.Lock(_buffOffset, (ushort)_sndBuffLength)) return;
+
+            _sound.CopyBuffer(new int[_sndBuffLength >> 2]);
+
+            if (!_sound.Unlock()) return;
+
+            _sound.Reset();
+
+            if (!_mute)
             {
-                //TODO: Since there is only 44100 or mute, remove the other options and make this a boolean
-                //Force 44100 or Disabled
-                rate = AudioRates._44100Hz;
+                _sound.Play();
             }
 
-            CurrentRate = rate;
+            _initialized = true;
+        }
 
-            _buffOffset = 0;
-            _bitRate = _kHzRate[(int)rate];
-            _blockSize = (ushort)(_bitRate * 4 / Define.TARGETFRAMERATE);
-            _sndBuffLength = (ushort)(_blockSize * Define.AUDIOBUFFERS);
+        _audioPause = false;
+        _modules.CoCo.SetAudioRate(_kHzRate[(int)rate]);
 
-            if (!_initialized)
+        _mute = (rate == 0);
+    }
+
+    public short SoundDeInit()
+    {
+        if (_initialized)
+        {
+            _initialized = false;
+
+            _sound.Stop();
+        }
+
+        return 0;
+    }
+
+    public void ResetAudio()
+    {
+        _modules.CoCo.SetAudioRate(_kHzRate[(int)CurrentRate]);
+
+        if (_initialized)
+        {
+            _sound.Reset();
+        }
+
+        _buffOffset = 0;
+    }
+
+    public void FlushAudioBuffer(int[] buffer, int length)
+    {
+        int leftAverage = buffer[0] >> 16;
+        int rightAverage = buffer[0] & 0xFFFF;
+
+        _modules.Audio.Spectrum.UpdateSoundBar(leftAverage, rightAverage);
+
+        if (!_initialized || _audioPause || length == 0 || _mute)
+        {
+            return;
+        }
+
+        if (GetFreeBlockCount() <= 0)   //this should only kick in when frame skipping or un-throttled
+        {
+            return;
+        }
+
+        if (!_sound.Lock(_buffOffset, length)) return;
+
+        _sound.CopyBuffer(buffer);
+
+        _sound.Unlock(); // unlock the buffer
+
+        _buffOffset = (_buffOffset + length) % _sndBuffLength; //Where to write next
+    }
+
+    public int GetFreeBlockCount()
+    {
+        int playCursor = 0;
+
+        if (!_initialized || _audioPause || _mute)
+        {
+            return Define.AUDIOBUFFERS;
+        }
+
+        if (!_mute)
+        {
+            playCursor = _sound.ReadPlayCursor();
+        }
+
+        long maxSize = _buffOffset <= playCursor ? playCursor - _buffOffset : _sndBuffLength - _buffOffset + playCursor;
+
+        return (int)(maxSize / _blockSize);
+    }
+
+    public bool PauseAudio(bool pause)
+    {
+        _audioPause = pause;
+
+        if (_initialized)
+        {
+            if (_audioPause)
             {
-                if (!_sound.CreateDirectSound(index)) return;
-
-                // set cooperation level normal
-                if (!_sound.SetCooperativeLevel(hWnd)) return;
-
-                if (!_sound.CreateDirectSoundBuffer(_bitRate, _sndBuffLength)) return;
-
-                // Clear out sound buffers
-                if (!_sound.Lock(_buffOffset, (ushort)_sndBuffLength)) return;
-
-                _sound.CopyBuffer(new int[_sndBuffLength >> 2]);
-
-                if (!_sound.Unlock()) return;
-
-                _sound.Reset();
-
+                _sound.Stop();
+            }
+            else
+            {
                 if (!_mute)
                 {
                     _sound.Play();
                 }
-
-                _initialized = true;
             }
-
-            _audioPause = false;
-            _modules.CoCo.SetAudioRate(_kHzRate[(int)rate]);
-
-            _mute = (rate == 0);
         }
 
-        public short SoundDeInit()
-        {
-            if (_initialized)
-            {
-                _initialized = false;
+        return _audioPause;
+    }
 
-                _sound.Stop();
-            }
-
-            return 0;
-        }
-
-        public void ResetAudio()
-        {
-            _modules.CoCo.SetAudioRate(_kHzRate[(int)CurrentRate]);
-
-            if (_initialized)
-            {
-                _sound.Reset();
-            }
-
-            _buffOffset = 0;
-        }
-
-        public void FlushAudioBuffer(int[] buffer, int length)
-        {
-            int leftAverage = buffer[0] >> 16;
-            int rightAverage = buffer[0] & 0xFFFF;
-
-            _modules.Audio.Spectrum.UpdateSoundBar(leftAverage, rightAverage);
-
-            if (!_initialized || _audioPause || length == 0 || _mute)
-            {
-                return;
-            }
-
-            if (GetFreeBlockCount() <= 0)   //this should only kick in when frame skipping or un-throttled
-            {
-                return;
-            }
-
-            if (!_sound.Lock(_buffOffset, length)) return;
-
-            _sound.CopyBuffer(buffer);
-
-            _sound.Unlock(); // unlock the buffer
-
-            _buffOffset = (_buffOffset + length) % _sndBuffLength; //Where to write next
-        }
-
-        public int GetFreeBlockCount()
-        {
-            int playCursor = 0;
-
-            if (!_initialized || _audioPause || _mute)
-            {
-                return Define.AUDIOBUFFERS;
-            }
-
-            if (!_mute)
-            {
-                playCursor = _sound.ReadPlayCursor();
-            }
-
-            long maxSize = _buffOffset <= playCursor ? playCursor - _buffOffset : _sndBuffLength - _buffOffset + playCursor;
-
-            return (int)(maxSize / _blockSize);
-        }
-
-        public bool PauseAudio(bool pause)
-        {
-            _audioPause = pause;
-
-            if (_initialized)
-            {
-                if (_audioPause)
-                {
-                    _sound.Stop();
-                }
-                else
-                {
-                    if (!_mute)
-                    {
-                        _sound.Play();
-                    }
-                }
-            }
-
-            return _audioPause;
-        }
-
-        public List<string> FindSoundDevices() => _sound.EnumerateSoundCards();
+    public List<string> FindSoundDevices() => _sound.EnumerateSoundCards();
         
-        public void ModuleReset()
-        {
-            //_initialized = false; //--I think we don't need to re-initialize DxSound
+    public void ModuleReset()
+    {
+        //_initialized = false; //--I think we don't need to re-initialize DxSound
 
-            SoundInit();
-        }
+        SoundInit();
     }
 }

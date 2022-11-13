@@ -2,6 +2,7 @@
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
+using VCCSharp.Models.Configuration;
 using VCCSharp.Modules;
 
 namespace VCCSharp.TapePlayer;
@@ -12,6 +13,8 @@ public class TapePlayerManager : ITapePlayer
 
     private readonly TapePlayerViewModel _viewModel = new();
     private TapePlayerWindow? _view;
+
+    private IConfiguration Model => _modules.Configuration;
 
     public TapePlayerManager(IModules modules)
     {
@@ -54,7 +57,7 @@ public class TapePlayerManager : ITapePlayer
     {
         _viewModel.Mode = TapeModes.Record;
 
-        _modules.ConfigurationManager.Model.CassetteRecorder.TapeMode = TapeModes.Record;
+        Model.CassetteRecorder.TapeMode = TapeModes.Record;
 
         SetTapeMode(TapeModes.Record);
     }
@@ -63,7 +66,7 @@ public class TapePlayerManager : ITapePlayer
     {
         _viewModel.Mode = TapeModes.Play;
 
-        _modules.ConfigurationManager.Model.CassetteRecorder.TapeMode = TapeModes.Play;
+        Model.CassetteRecorder.TapeMode = TapeModes.Play;
 
         SetTapeMode(TapeModes.Play);
     }
@@ -72,7 +75,7 @@ public class TapePlayerManager : ITapePlayer
     {
         _viewModel.Mode = TapeModes.Stop;
 
-        _modules.ConfigurationManager.Model.CassetteRecorder.TapeMode = TapeModes.Stop;
+        Model.CassetteRecorder.TapeMode = TapeModes.Stop;
 
         SetTapeMode(TapeModes.Stop);
     }
@@ -81,7 +84,7 @@ public class TapePlayerManager : ITapePlayer
     {
         _viewModel.Mode = TapeModes.Eject;
 
-        _modules.ConfigurationManager.Model.CassetteRecorder.TapeMode = TapeModes.Eject;
+        Model.CassetteRecorder.TapeMode = TapeModes.Eject;
 
         SetTapeMode(TapeModes.Eject);
     }
@@ -90,7 +93,7 @@ public class TapePlayerManager : ITapePlayer
     {
         _viewModel.Counter = 0;
 
-        _modules.ConfigurationManager.Model.CassetteRecorder.TapeCounter = 0;
+        Model.CassetteRecorder.TapeCounter = 0;
 
         SetTapeCounter(0);
     }
@@ -140,7 +143,7 @@ public class TapePlayerManager : ITapePlayer
     {
         var configuration = _modules.Configuration;
 
-        string? szFileName = _modules.ConfigurationManager.Model.CassetteRecorder.TapeFileName;
+        string? szFileName = Model.CassetteRecorder.TapeFileName;
         string appPath = configuration.FilePaths.Cassette ?? "C:\\";
 
         var openFileDlg = new Microsoft.Win32.OpenFileDialog
@@ -182,7 +185,7 @@ public class TapePlayerManager : ITapePlayer
 
             configuration.FilePaths.Cassette = path;
 
-            _modules.ConfigurationManager.Model.CassetteRecorder.TapeCounter = 0;
+            Model.CassetteRecorder.TapeCounter = 0;
 
             SetTapeCounter(0);
 

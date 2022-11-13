@@ -31,11 +31,12 @@ public class Draw : IDraw
     #region Properties
 
     private readonly IModules _modules;
-    private readonly IConfiguration _configuration;
     private readonly IUser32 _user32;
     private readonly IGdi32 _gdi32;
 
     private readonly IDxDraw _draw;
+
+    private IConfiguration Configuration => _modules.Configuration;
 
     private int _textX, _textY;
     private byte _counter, _counter1 = 32, _phase = 1;
@@ -52,10 +53,9 @@ public class Draw : IDraw
 
     #endregion
 
-    public Draw(IModules modules, IConfiguration configuration, IUser32 user32, IGdi32 gdi32, IDxDraw draw)
+    public Draw(IModules modules, IUser32 user32, IGdi32 gdi32, IDxDraw draw)
     {
         _modules = modules;
-        _configuration = configuration;
         _user32 = user32;
         _gdi32 = gdi32;
         _draw = draw;
@@ -158,7 +158,7 @@ public class Draw : IDraw
 
     public void SetAspect()
     {
-        _forceAspect = _configuration.Video.ForceAspect;
+        _forceAspect = Configuration.Video.ForceAspect;
     }
 
     public void SetStatusBarText(string text)

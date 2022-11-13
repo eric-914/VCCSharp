@@ -17,15 +17,15 @@ public interface IMenuCallbacks : IModule
 public class MenuCallbacks : IMenuCallbacks
 {
     private readonly IModules _modules;
-    private readonly IConfiguration _configuration;
     private readonly ICartridge _cartridge;
+
+    private IConfiguration Configuration => _modules.Configuration;
 
     private bool _loadPakDialogOpen;
 
-    public MenuCallbacks(IModules modules, IConfiguration configuration, ICartridge cartridge)
+    public MenuCallbacks(IModules modules, ICartridge cartridge)
     {
         _modules = modules;
-        _configuration = configuration;
         _cartridge = cartridge;
     }
 
@@ -114,7 +114,7 @@ public class MenuCallbacks : IMenuCallbacks
         {
             filename = openFileDlg.FileName;
 
-            _configuration.Accessories.ModulePath = filename;
+            Configuration.Accessories.ModulePath = filename;
             if (_modules.PAKInterface.InsertModule() != 0)
             {
                 return 0;

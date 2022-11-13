@@ -1,5 +1,6 @@
 ﻿using DX8;
 using VCCSharp.Enums;
+using VCCSharp.IoC;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Joystick;
 using VCCSharp.Shared.Dx;
@@ -33,9 +34,11 @@ public class Joysticks : IJoysticks
     //--Goal is to bring the horizontal/vertical direction to within CoCo's 0-63 range.
     private const int Max = 63;
 
-    private readonly IConfiguration _configuration;
+    private readonly IModules _modules;
     private readonly IDxManager _manager;
     private readonly IKeyboardAsJoystick _keyboardHandler;
+
+    private IConfiguration Configuration => _modules.Configuration;
 
     public ushort StickValue { get; set; }
 
@@ -43,9 +46,9 @@ public class Joysticks : IJoysticks
     public JoystickState Left { get; private set; } = new();
     public JoystickState Right { get; private set; } = new();
 
-    public Joysticks(IConfiguration configuration, IDxManager manager, IKeyboardAsJoystick keyboardHandler)
+    public Joysticks(IModules modules, IDxManager manager, IKeyboardAsJoystick keyboardHandler)
     {
-        _configuration = configuration;
+        _modules = modules;
         _manager = manager;
         _keyboardHandler = keyboardHandler;
     }
@@ -55,15 +58,15 @@ public class Joysticks : IJoysticks
         JoystickList = _manager.Devices;
     }
 
-    public IDxJoystickState JoystickPoll(int index)
+    private IDxJoystickState JoystickPoll(int index)
     {
         return _manager.State(index);
     }
 
     public int GetPotValue(Pots pot)
     {
-        var left = _configuration.Joysticks.Left;
-        var right = _configuration.Joysticks.Right;
+        var left = Configuration.Joysticks.Left;
+        var right = Configuration.Joysticks.Right;
 
         if (left.InputSource.Value == JoystickDevices.Joystick)
         {
@@ -104,7 +107,7 @@ public class Joysticks : IJoysticks
     {
         byte buttonStatus = (byte)((side << 1) | state);
 
-        if (_configuration.Joysticks.Left.InputSource.Value == JoystickDevices.Mouse)
+        if (Configuration.Joysticks.Left.InputSource.Value == JoystickDevices.Mouse)
         {
             switch (buttonStatus)
             {
@@ -126,7 +129,7 @@ public class Joysticks : IJoysticks
             }
         }
 
-        if (_configuration.Joysticks.Right.InputSource.Value == JoystickDevices.Mouse)
+        if (Configuration.Joysticks.Right.InputSource.Value == JoystickDevices.Mouse)
         {
             switch (buttonStatus)
             {
@@ -170,13 +173,13 @@ public class Joysticks : IJoysticks
             y = Max;
         }
 
-        if (_configuration.Joysticks.Left.InputSource.Value == JoystickDevices.Mouse)
+        if (Configuration.Joysticks.Left.InputSource.Value == JoystickDevices.Mouse)
         {
             Left.X = x;
             Left.Y = y;
         }
 
-        if (_configuration.Joysticks.Right.InputSource.Value == JoystickDevices.Mouse)
+        if (Configuration.Joysticks.Right.InputSource.Value == JoystickDevices.Mouse)
         {
             Right.X = x;
             Right.Y = y;
