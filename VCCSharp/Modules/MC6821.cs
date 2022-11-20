@@ -1,4 +1,5 @@
-﻿using VCCSharp.Enums;
+﻿using System.Diagnostics;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
@@ -518,6 +519,8 @@ public class MC6821 : IMC6821
 
     public void ModuleReset()
     {
+        Debug.WriteLine("MC6821.ModuleReset()");
+
         _addLf = false;
         _monState = false;
 

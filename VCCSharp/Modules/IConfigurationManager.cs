@@ -4,8 +4,7 @@ namespace VCCSharp.Modules;
 
 public interface IConfigurationManager
 {
-    event ConfigurationChanged OnConfigurationChanged;
-    event ConfigurationSave OnConfigurationSave;
+    event ConfigurationSynch OnConfigurationSynch;
 
     IConfiguration Model { get; }
 

@@ -1,4 +1,5 @@
-﻿using VCCSharp.Enums;
+﻿using System.Diagnostics;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
 using VCCSharp.Models.Audio;
@@ -115,6 +116,8 @@ public class CoCo : ICoCo
         _picosThisLine = 0;
         _intEnable = false;
         _audioIndex = 0;
+
+        OverClock = 1;
     }
 
     #region RenderFrame
@@ -716,6 +719,8 @@ public class CoCo : ICoCo
 
     public void ModuleReset()
     {
+        Debug.WriteLine("CoCo.ModuleReset()");
+
         CocoReset();
 
         //private Action _audioEvent = () => { };

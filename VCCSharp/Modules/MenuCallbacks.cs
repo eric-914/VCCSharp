@@ -114,8 +114,7 @@ public class MenuCallbacks : IMenuCallbacks
         {
             filename = openFileDlg.FileName;
 
-            Configuration.Accessories.ModulePath = filename;
-            if (_modules.PAKInterface.InsertModule() != 0)
+            if (_modules.PAKInterface.InsertModule(filename) != 0)
             {
                 return 0;
             }

@@ -1,5 +1,7 @@
-﻿using VCCSharp.Enums;
+﻿using System.Diagnostics;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
+using VCCSharp.Models.Configuration;
 using VCCSharp.Modules.TCC1014.Masks;
 using VCCSharp.Modules.TCC1014.Modes;
 
@@ -44,6 +46,7 @@ public class TCC1014 : ITCC1014
     private IEmu Emu => _modules.Emu;
     private ICoCo CoCo => _modules.CoCo;
     private IKeyboard Keyboard => _modules.Keyboard;
+    private IConfiguration Configuration => _modules.ConfigurationManager.Model;
 
     private readonly VectorMasks _vectorMask = new();
     private readonly VectorMasksAlt _vectorMaskAlt = new();
@@ -464,6 +467,10 @@ public class TCC1014 : ITCC1014
 
     public void ChipReset()
     {
+        Debug.WriteLine("TCC1014.ChipReset()");
+
+        Initialize(Configuration.Memory.Ram.Value);
+
         _ramVectors = XFEXX.RAM;
 
         _gime.Initialize();

@@ -1,4 +1,5 @@
-﻿using VCCSharp.Models.Configuration;
+﻿using System.Diagnostics;
+using VCCSharp.Models.Configuration;
 using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
 using VCCSharp.Modules;
@@ -105,6 +106,8 @@ public class Modules : IModules
     /// </summary>
     public void Reset()
     {
+        Debug.WriteLine("Modules.Reset()");
+
         Audio.ModuleReset();
         //CPU.ModuleReset();
         Cassette.ModuleReset();

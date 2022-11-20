@@ -1,6 +1,8 @@
-﻿using VCCSharp.Enums;
+﻿using System.Diagnostics;
+using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models.Configuration;
+using VCCSharp.Modules;
 
 namespace VCCSharp;
 
@@ -22,12 +24,13 @@ public class VccApp : IVccApp
         _modules = modules;
 
         //TODO: Not sure this is proper place.  Probably should have each module respond accordingly.
-        _modules.ConfigurationManager.OnConfigurationChanged += ConfigurationLoaded;
-        _modules.ConfigurationManager.OnConfigurationSave += ConfigurationSave;
+        _modules.ConfigurationManager.OnConfigurationSynch += ConfigurationSynchronize;
     }
 
     public void LoadConfiguration(string? iniFile)
     {
+        Debug.WriteLine("LoadConfiguration(...)");
+
         if (iniFile == null) throw new ArgumentNullException(nameof(iniFile));
 
         _modules.ConfigurationManager.Load(iniFile);
@@ -35,6 +38,8 @@ public class VccApp : IVccApp
 
     public void Startup(string? qLoadFile)
     {
+        Debug.WriteLine("Startup(...)");
+
         _modules.Reset();
 
         _modules.CoCo.SetAudioEventAudioOut();
@@ -59,7 +64,7 @@ public class VccApp : IVccApp
 
         if (!string.IsNullOrEmpty(qLoadFile))
         {
-            if (_modules.QuickLoad.QuickStart(qLoadFile) == (int)QuickStartStatuses.Ok)
+            if (_modules.QuickLoad.QuickStart(qLoadFile) == QuickStartStatuses.Ok)
             {
                 _modules.Vcc.SetAppTitle(qLoadFile); //TODO: No app title if no quick load
             }
@@ -70,48 +75,48 @@ public class VccApp : IVccApp
 
     public void Run()
     {
+        Debug.WriteLine("Run(...)");
+
         _modules.Vcc.EmuLoop();
     }
 
     public void SetWindow(IntPtr hWnd)
     {
+        Debug.WriteLine("SetWindow(...)");
+
         _modules.Emu.WindowHandle = hWnd;
     }
 
-    /// <summary>
-    /// Invoked when the configuration has loaded/changed
-    /// </summary>
-    /// <param name="model"></param>
-    private void ConfigurationLoaded(IConfiguration model)
+    private void ConfigurationSynchronize(SynchDirection direction, IConfiguration model)
     {
-        _modules.Emu.SetWindowSize(model.Window);
-        _modules.Joysticks.Configure(model.Joysticks);
+        Debug.WriteLine("ConfigurationSynchronize(...)");
 
-        if (!string.IsNullOrEmpty(_modules.Emu.PakPath))
+        if (direction == SynchDirection.ConfigurationChanged)
         {
-            model.Accessories.MultiPak.FilePath = _modules.Emu.PakPath;
+            _modules.Emu.SetWindowSize(model.Window);
+            _modules.Joysticks.Configure(model.Joysticks);
+
+            if (!string.IsNullOrEmpty(_modules.Emu.PakPath))
+            {
+                model.Accessories.MultiPak.FilePath = _modules.Emu.PakPath;
+            }
         }
-    }
-
-    /// <summary>
-    /// Invoked when the configuration is about to save
-    /// </summary>
-    /// <param name="model"></param>
-    private void ConfigurationSave(IConfiguration model)
-    {
-        model.Window.Width = (short)_modules.Emu.WindowSize.X;
-        model.Window.Height = (short)_modules.Emu.WindowSize.Y;
-
-        string? modulePath = model.Accessories.ModulePath;
-
-        if (string.IsNullOrEmpty(modulePath))
+        else //--SynchDirection.SaveConfiguration
         {
-            modulePath = _modules.PAKInterface.GetCurrentModule();
-        }
+            model.Window.Width = (short)_modules.Emu.WindowSize.X;
+            model.Window.Height = (short)_modules.Emu.WindowSize.Y;
 
-        if (!string.IsNullOrEmpty(modulePath))
-        {
-            model.Accessories.ModulePath = modulePath;
+            string? modulePath = model.Accessories.ModulePath;
+
+            if (string.IsNullOrEmpty(modulePath))
+            {
+                modulePath = _modules.PAKInterface.GetCurrentModule();
+            }
+
+            if (!string.IsNullOrEmpty(modulePath))
+            {
+                model.Accessories.ModulePath = modulePath;
+            }
         }
     }
 }

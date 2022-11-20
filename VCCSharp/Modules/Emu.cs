@@ -90,12 +90,9 @@ public class Emu : IEmu
 
     public void HardReset()
     {
-        _modules.TCC1014.Initialize(Configuration.Memory.Ram.Value);
         _modules.TCC1014.ChipReset();  //Captures internal rom pointer for CPU Interrupt Vectors
         _modules.MC6821.ChipReset();
-
-        _modules.CPU.Init(Configuration.CPU.Type.Value);
-        _modules.CPU.ChipReset();   // Zero all CPU Registers and sets the PC to VRESET
+        _modules.CPU.ChipReset();      // Zero all CPU Registers and sets the PC to VRESET
 
         _modules.Graphics.ResetGraphicsState();
         _modules.Graphics.SetPaletteType();
@@ -104,8 +101,6 @@ public class Emu : IEmu
 
         _modules.PAKInterface.UpdateBusPointer();
         _modules.PAKInterface.ResetBus();
-
-        _modules.CoCo.OverClock = 1;
     }
 
     private void SetCpuMultiplier()

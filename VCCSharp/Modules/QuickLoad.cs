@@ -8,7 +8,7 @@ namespace VCCSharp.Modules;
 
 public interface IQuickLoad
 {
-    int QuickStart(string binFileName);
+    QuickStartStatuses QuickStart(string binFileName);
 }
 
 public class QuickLoad : IQuickLoad
@@ -22,18 +22,18 @@ public class QuickLoad : IQuickLoad
         _modules = modules;
     }
 
-    public int QuickStart(string binFileName)
+    public QuickStartStatuses QuickStart(string binFileName)
     {
         if (string.IsNullOrEmpty(binFileName))
         {
-            return (int)QuickStartStatuses.NoAction;
+            return QuickStartStatuses.NoAction;
         }
 
         if (!File.Exists(binFileName))
         {
             MessageBox.Show($"Cannot find file: {binFileName}");
 
-            return (int)QuickStartStatuses.FileNotFound;
+            return QuickStartStatuses.FileNotFound;
         }
 
         try
@@ -44,7 +44,7 @@ public class QuickLoad : IQuickLoad
         {
             MessageBox.Show($"Cannot open file: {binFileName}");
 
-            return (int)QuickStartStatuses.CannotOpenFile;
+            return QuickStartStatuses.CannotOpenFile;
         }
 
         string extension = Path.GetExtension(binFileName).ToLower();
@@ -53,8 +53,9 @@ public class QuickLoad : IQuickLoad
 
         if (modules.Contains(extension))
         {
-            Configuration.Accessories.ModulePath = binFileName;
-            _modules.PAKInterface.InsertModule();
+            _modules.PAKInterface.InsertModule(binFileName);
+
+            return QuickStartStatuses.Ok;
         }
 
         if (extension == ".bin")
@@ -62,10 +63,10 @@ public class QuickLoad : IQuickLoad
             return LoadBinFile(binFileName);
         }
 
-        return (int)QuickStartStatuses.Unknown;
+        return QuickStartStatuses.Unknown;
     }
 
-    private int LoadBinFile(string binFileName)
+    private QuickStartStatuses LoadBinFile(string binFileName)
     {
         byte[] memImage;
 
@@ -77,41 +78,44 @@ public class QuickLoad : IQuickLoad
         {
             MessageBox.Show("Can't allocate ram", "Error");
 
-            return (int)QuickStartStatuses.OutOfMemory;
+            return QuickStartStatuses.OutOfMemory;
         }
 
-        while (true)
+        //--Looks like first 5 bytes are special
+        byte fileType = memImage[0];
+        ushort fileLength = (ushort)(memImage[1] << 8 + memImage[2]);
+        ushort startAddress = (ushort)(memImage[3] << 8 + memImage[4]);
+
+        if (fileType != 0x00 && fileType != 0xFF)
         {
-            //--Looks like first 5 bytes are special
-            byte fileType = memImage[0];
-            ushort fileLength = (ushort)(memImage[1] << 8 + memImage[2]);
-            ushort startAddress = (ushort)(memImage[3] << 8 + memImage[4]);
+            MessageBox.Show(".Bin file is corrupt or invalid", "Error");
 
-            if (fileType != 0x00 && fileType != 0xFF)
+            return QuickStartStatuses.InvalidFileType;
+        }
+
+        //TODO: Investigate all this.  It feels incomplete.
+        throw new Exception("TODO: Investigate this code if you reached here.");
+
+        if (fileType == 0)
+        {
+            for (ushort memIndex = 0; memIndex < fileLength; memIndex++)
             {
-                MessageBox.Show(".Bin file is corrupt or invalid", "Error");
-
-                return (int)QuickStartStatuses.InvalidFileType;
-            }
-
-            if (fileType == 0)
-            {
-                for (ushort memIndex = 0; memIndex < fileLength; memIndex++)
-                { //Kluge!!!
-                    _modules.TCC1014.MemWrite8(memImage[memIndex], (ushort)(startAddress + memIndex));
-                }
-            }
-            else
-            {
-                if (startAddress == 0 || startAddress > 32767 || fileLength != 0)
-                {
-                    MessageBox.Show(".Bin file is corrupt or invalid Transfer Address", "Error");
-
-                    return (int)QuickStartStatuses.InvalidTransfer;
-                }
-
-                _modules.CPU.ForcePC(startAddress);
+                //Kluge!!!
+                _modules.TCC1014.MemWrite8(memImage[memIndex], (ushort)(startAddress + memIndex));
             }
         }
+        else
+        {
+            if (startAddress == 0 || startAddress > 32767 || fileLength != 0)
+            {
+                MessageBox.Show(".Bin file is corrupt or invalid Transfer Address", "Error");
+
+                return QuickStartStatuses.InvalidTransfer;
+            }
+
+            _modules.CPU.ForcePC(startAddress);
+        }
+
+        return QuickStartStatuses.Ok;
     }
 }

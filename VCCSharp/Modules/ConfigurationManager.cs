@@ -1,18 +1,20 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using VCCSharp.IoC;
 using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Modules;
 
-public delegate void ConfigurationChanged(IConfiguration model);
+public enum SynchDirection
+{
+    ConfigurationChanged,
+    SaveConfiguration
+}
 
-public delegate void ConfigurationSave(IConfiguration model);
+public delegate void ConfigurationSynch(SynchDirection direction, IConfiguration model);
 
 public class ConfigurationManager : IConfigurationManager
 {
-    public event ConfigurationChanged? OnConfigurationChanged;
-    public event ConfigurationSave? OnConfigurationSave;
+    public event ConfigurationSynch? OnConfigurationSynch;
 
     private readonly IConfigurationPersistenceManager _persistenceManager;
 
@@ -29,11 +31,13 @@ public class ConfigurationManager : IConfigurationManager
 
     public void Load(string filePath)
     {
+        Debug.WriteLine("Load(...)");
+
         _filePath = GetConfigurationFilePath(filePath);  //--Use default if needed
 
         Model = _persistenceManager.Load(_filePath);
 
-        OnConfigurationChanged?.Invoke(Model);
+        OnConfigurationSynch?.Invoke(SynchDirection.ConfigurationChanged, Model);
 
         if (_persistenceManager.IsNew(_filePath))
         {
@@ -63,7 +67,7 @@ public class ConfigurationManager : IConfigurationManager
 
     public void Save()
     {
-        OnConfigurationSave?.Invoke(Model);
+        OnConfigurationSynch?.Invoke(SynchDirection.SaveConfiguration, Model);
 
         _persistenceManager.Save(_filePath, Model);
     }

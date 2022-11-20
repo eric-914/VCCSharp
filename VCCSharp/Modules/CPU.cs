@@ -1,6 +1,7 @@
 ﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
+using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Modules;
 
@@ -25,6 +26,8 @@ public class CPU : ICPU
     private readonly IModules _modules;
 
     private IProcessor _processor;
+
+    private IConfiguration Configuration => _modules.ConfigurationManager.Model;
 
     public CPU(IModules modules)
     {
@@ -66,6 +69,7 @@ public class CPU : ICPU
 
     public void ChipReset()
     {
+        Init(Configuration.CPU.Type.Value);
         _processor.Reset();
     }
 }

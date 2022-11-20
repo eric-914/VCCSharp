@@ -4,7 +4,6 @@ using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
-using VCCSharp.Models.Configuration;
 using static System.IntPtr;
 using HINSTANCE = System.IntPtr;
 
@@ -17,7 +16,7 @@ public interface IPAKInterface : IModule
     void GetModuleStatus();
     void ResetBus();
     void UpdateBusPointer();
-    int InsertModule();
+    int InsertModule(string filename);
     void PakTimer();
     string? GetCurrentModule();
     byte PakPortRead(byte port);
@@ -36,8 +35,6 @@ public class PAKInterface : IPAKInterface
 {
     private readonly IModules _modules;
     private readonly IKernel _kernel;
-
-    private IConfiguration _configuration => _modules.Configuration;
 
     // ReSharper disable once InconsistentNaming
     private static readonly object _lock = new();
@@ -111,10 +108,9 @@ public class PAKInterface : IPAKInterface
         }
     }
 
-    public int InsertModule()
+    public int InsertModule(string modulePath)
     {
         bool emulationRunning = _modules.Emu.EmulationRunning;
-        string modulePath = _configuration.Accessories.ModulePath;
         int fileType = FileId(modulePath);
 
         return fileType switch
@@ -122,15 +118,15 @@ public class PAKInterface : IPAKInterface
             0 => //File doesn't exist
                 Define.NOMODULE,
             1 => //File is a DLL
-                InsertModuleCase1(emulationRunning, modulePath),
+                InsertLibraryModule(emulationRunning, modulePath),
             2 => //File is a ROM image
-                InsertModuleCase2(emulationRunning, modulePath),
+                InsertRomModule(emulationRunning, modulePath),
             _ => Define.NOMODULE
         };
     }
 
     //File is a DLL
-    private int InsertModuleCase1(bool emulationRunning, string modulePath)
+    private int InsertLibraryModule(bool emulationRunning, string modulePath)
     {
         ushort moduleParams = 0;
         //string catNumber = "";
@@ -276,7 +272,7 @@ public class PAKInterface : IPAKInterface
     }
 
     //File is a ROM image
-    private int InsertModuleCase2(bool emulationRunning, string modulePath)
+    private int InsertRomModule(bool emulationRunning, string modulePath)
     {
         UnloadDll(emulationRunning);
 
@@ -344,9 +340,9 @@ public class PAKInterface : IPAKInterface
     }
 
     /**
-            Load a ROM pack
-            return total bytes loaded, or 0 on failure
-        */
+        Load a ROM pack
+        return total bytes loaded, or 0 on failure
+    */
     private int LoadRomPack(bool emulationRunning, string filename)
     {
         _externalRomBuffer = new byte[Define.PAK_MAX_MEM];
@@ -358,7 +354,7 @@ public class PAKInterface : IPAKInterface
             _externalRomBuffer[i] = rom[i];
         }
 
-        UnloadDll(emulationRunning);
+        //UnloadDll(emulationRunning);
 
         _bankedCartOffset = 0;
         _romPackLoaded = true;
@@ -699,13 +695,14 @@ public class PAKInterface : IPAKInterface
 
         CartInserted = 0;
         ModuleName = "Blank";
+
         _romPackLoaded = false;
         _bankedCartOffset = 0;
 
         _externalRomBuffer = new byte[Define.PAK_MAX_MEM];
 
-        _hInstLib = IntPtr.Zero;
+        _hInstLib = Zero;
 
-        InsertModule();   // Should this be here?
+        //InsertModule();   // Should this be here?
     }
 }
