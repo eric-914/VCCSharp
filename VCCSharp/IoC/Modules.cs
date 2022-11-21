@@ -108,7 +108,7 @@ public class Modules : IModules
     {
         Debug.WriteLine("Modules.Reset()");
 
-        Audio.ModuleReset();
+        //Audio.ModuleReset();
         //CPU.ModuleReset();
         Cassette.ModuleReset();
         CoCo.ModuleReset();

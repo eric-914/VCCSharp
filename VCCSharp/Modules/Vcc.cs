@@ -170,7 +170,7 @@ public class Vcc : IVcc
 
     public void ApplyConfigurationChanges()
     {
-        var configuration = _modules.Configuration;
+        //var configuration = _modules.Configuration;
 
         _modules.Emu.ResetPending = ResetPendingStates.ClsSynch;
 
@@ -178,10 +178,10 @@ public class Vcc : IVcc
         //emuState->ResetPending = (byte)ResetPendingStates.Hard;
         //}
 
-        string audioDevice = configuration.Audio.Device;
-        int audioDeviceIndex = _modules.Audio.FindSoundDevices().IndexOf(audioDevice);
+        //string audioDevice = configuration.Audio.Device;
+        //int audioDeviceIndex = _modules.Audio.FindSoundDevices().IndexOf(audioDevice);
 
-        _modules.Audio.SoundInit(_modules.Emu.WindowHandle, audioDeviceIndex, configuration.Audio.Rate.Value);
+        //_modules.Audio.SoundInit(_modules.Emu.WindowHandle, audioDeviceIndex, configuration.Audio.Rate.Value);
 
         _modules.Keyboard.KeyboardBuildRuntimeTable();
     }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
@@ -37,16 +38,14 @@ public class Cassette : ICassette
     private readonly IModules _modules;
     private readonly IKernel _kernel;
 
-    private IConfiguration Configuration => _modules.Configuration;
-
-    public byte MotorState { get; set; }
+    public byte MotorState { get; private set; }
     public TapeModes TapeMode { get; set; } = TapeModes.Stop;
 
     private readonly byte[] _one = { 0x80, 0xA8, 0xC8, 0xE8, 0xE8, 0xF8, 0xF8, 0xE8, 0xC8, 0xA8, 0x78, 0x50, 0x50, 0x30, 0x10, 0x00, 0x00, 0x10, 0x30, 0x30, 0x50 };
     private readonly byte[] _zero = { 0x80, 0x90, 0xA8, 0xB8, 0xC8, 0xD8, 0xE8, 0xE8, 0xF0, 0xF8, 0xF8, 0xF8, 0xF0, 0xE8, 0xD8, 0xC8, 0xB8, 0xA8, 0x90, 0x78, 0x78, 0x68, 0x50, 0x40, 0x30, 0x20, 0x10, 0x08, 0x00, 0x00, 0x00, 0x08, 0x10, 0x10, 0x20, 0x30, 0x40, 0x50, 0x68, 0x68 };
 
     public string? TapeFileName { get; set; } //[Define.MAX_PATH];
-    public uint TapeOffset { get; set; }
+    public uint TapeOffset { get; private set; }
 
     private byte _fileType;
 
@@ -61,7 +60,7 @@ public class Cassette : ICassette
     private uint _bytesMoved;
     private uint _totalSize;
 
-    public HANDLE TapeHandle { get; set; }
+    public HANDLE TapeHandle { get; private set; }
 
     private uint _tempIndex;
     private readonly byte[] _tempBuffer = new byte[8192];
@@ -70,10 +69,12 @@ public class Cassette : ICassette
 
     public Action<int> UpdateTapeDialog { get; set; }
 
-    public Cassette(IModules modules, IKernel kernel)
+    public Cassette(IModules modules, IKernel kernel, IConfigurationManager configurationManager)
     {
         _modules = modules;
         _kernel = kernel;
+
+        configurationManager.OnConfigurationSynch += OnConfigurationSynch;
 
         UpdateTapeDialog = _ => { }; //_modules.ConfigurationManager.UpdateTapeDialog((uint) offset);
     }
@@ -516,11 +517,6 @@ public class Cassette : ICassette
     public void ModuleReset()
     {
         MotorState = 0;
-        TapeFileName = Configuration.CassetteRecorder.TapeFileName;
-        TapeMode = Configuration.CassetteRecorder.TapeMode;
-
-        //TODO: This may be a problem.
-        TapeOffset = 0; //(uint)_configuration.CassetteRecorder.TapeCounter;
 
         UpdateTapeDialog = _ => { };
 
@@ -536,5 +532,18 @@ public class Cassette : ICassette
 
         _bytesMoved = 0;
         _totalSize = 0;
+    }
+
+    private void OnConfigurationSynch(SynchDirection direction, IConfiguration model)
+    {
+        Debug.WriteLine($"Cassette:OnConfigurationSynch({direction})");
+
+        if (direction == SynchDirection.SaveConfiguration) return;
+
+        TapeFileName = model.CassetteRecorder.TapeFileName;
+        TapeMode = model.CassetteRecorder.TapeMode;
+
+        //TODO: This may be a problem.
+        TapeOffset = 0; //(uint)model.CassetteRecorder.TapeCounter;
     }
 }

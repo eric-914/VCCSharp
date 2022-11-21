@@ -1,4 +1,5 @@
 ﻿using DX8;
+using System.Diagnostics;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
@@ -12,11 +13,9 @@ public interface IAudio : IModule
 {
     List<string> FindSoundDevices();
 
-    void SoundInit();
-    void SoundInit(HWND hWnd, int index, AudioRates rate);
-    short SoundDeInit();
+    void Shutdown();
 
-    bool PauseAudio(bool pause);
+    void PauseAudio(bool pause);
     void ResetAudio();
     void FlushAudioBuffer(int[] buffer, int length);
     int GetFreeBlockCount();
@@ -30,10 +29,8 @@ public class Audio : IAudio
     private readonly IModules _modules;
     private readonly IDxSound _sound;
 
-    private IConfiguration Configuration => _modules.Configuration;
-
     public AudioSpectrum Spectrum { get; } = new();
-    public AudioRates CurrentRate { get; set; }
+    public AudioRates CurrentRate { get; private set; }
 
     private bool _initialized;
     private bool _audioPause;
@@ -48,68 +45,17 @@ public class Audio : IAudio
 
     private bool _mute;
 
-    public Audio(IModules modules, IDxSound sound)
+    public List<string> FindSoundDevices() => _sound.EnumerateSoundCards();
+
+    public Audio(IModules modules, IDxSound sound, IConfigurationManager configurationManager)
     {
         _modules = modules;
         _sound = sound;
+
+        configurationManager.OnConfigurationSynch += OnConfigurationSynch;
     }
 
-    public void SoundInit()
-    {
-        int deviceIndex = FindSoundDevices().IndexOf(Configuration.Audio.Device);
-
-        SoundInit(_modules.Emu.WindowHandle, deviceIndex, Configuration.Audio.Rate.Value);
-    }
-
-    public void SoundInit(HWND hWnd, int index, AudioRates rate)
-    {
-        if (rate != AudioRates.Disabled)
-        {
-            //TODO: Since there is only 44100 or mute, remove the other options and make this a boolean
-            //Force 44100 or Disabled
-            rate = AudioRates._44100Hz;
-        }
-
-        CurrentRate = rate;
-
-        _buffOffset = 0;
-        _bitRate = _kHzRate[(int)rate];
-        _blockSize = (ushort)(_bitRate * 4 / Define.TARGETFRAMERATE);
-        _sndBuffLength = (ushort)(_blockSize * Define.AUDIOBUFFERS);
-
-        if (!_initialized)
-        {
-            if (!_sound.CreateDirectSound(index)) return;
-
-            // set cooperation level normal
-            if (!_sound.SetCooperativeLevel(hWnd)) return;
-
-            if (!_sound.CreateDirectSoundBuffer(_bitRate, _sndBuffLength)) return;
-
-            // Clear out sound buffers
-            if (!_sound.Lock(_buffOffset, (ushort)_sndBuffLength)) return;
-
-            _sound.CopyBuffer(new int[_sndBuffLength >> 2]);
-
-            if (!_sound.Unlock()) return;
-
-            _sound.Reset();
-
-            if (!_mute)
-            {
-                _sound.Play();
-            }
-
-            _initialized = true;
-        }
-
-        _audioPause = false;
-        _modules.CoCo.SetAudioRate(_kHzRate[(int)rate]);
-
-        _mute = (rate == 0);
-    }
-
-    public short SoundDeInit()
+    public void Shutdown()
     {
         if (_initialized)
         {
@@ -117,8 +63,6 @@ public class Audio : IAudio
 
             _sound.Stop();
         }
-
-        return 0;
     }
 
     public void ResetAudio()
@@ -178,7 +122,7 @@ public class Audio : IAudio
         return (int)(maxSize / _blockSize);
     }
 
-    public bool PauseAudio(bool pause)
+    public void PauseAudio(bool pause)
     {
         _audioPause = pause;
 
@@ -196,16 +140,63 @@ public class Audio : IAudio
                 }
             }
         }
-
-        return _audioPause;
     }
 
-    public List<string> FindSoundDevices() => _sound.EnumerateSoundCards();
-        
     public void ModuleReset()
     {
-        //_initialized = false; //--I think we don't need to re-initialize DxSound
+    }
 
-        SoundInit();
+    private void OnConfigurationSynch(SynchDirection direction, IConfiguration model)
+    {
+        Debug.WriteLine($"Audio:OnConfigurationSynch({direction})");
+
+        if (direction == SynchDirection.SaveConfiguration) return;
+
+        Shutdown(); //--Shutdown any previous audio configuration.  Initialized = false
+
+        HWND hWnd = _modules.Emu.WindowHandle;
+        AudioRates rate = model.Audio.Rate.Value;
+
+        int deviceIndex = FindSoundDevices().IndexOf(model.Audio.Device);
+        
+        if (rate != AudioRates.Disabled)
+        {
+            //TODO: Since there is only 44100 or mute, remove the other options and make this a boolean
+            //Force 44100 or Disabled
+            rate = AudioRates._44100Hz;
+        }
+
+        CurrentRate = rate;
+
+        _bitRate = _kHzRate[(int)rate];
+        _blockSize = (ushort)(_bitRate * 4 / Define.TARGETFRAMERATE);
+        _sndBuffLength = (ushort)(_blockSize * Define.AUDIOBUFFERS);
+
+        if (!_sound.CreateDirectSound(deviceIndex)) return;
+
+        // set cooperation level normal
+        if (!_sound.SetCooperativeLevel(hWnd)) return;
+
+        if (!_sound.CreateDirectSoundBuffer(_bitRate, _sndBuffLength)) return;
+
+        // Clear out sound buffers
+        if (!_sound.Lock(_buffOffset, (ushort)_sndBuffLength)) return;
+
+        _sound.CopyBuffer(new int[_sndBuffLength >> 2]);
+
+        if (!_sound.Unlock()) return;
+
+        _initialized = true;
+
+        ResetAudio();
+
+        if (!_mute)
+        {
+            _sound.Play();
+        }
+
+        _audioPause = false;
+
+        _mute = rate == AudioRates.Disabled;
     }
 }

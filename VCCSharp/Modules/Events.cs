@@ -71,7 +71,7 @@ namespace VCCSharp.Modules
         {
             Debug.WriteLine("Shutdown...");
             _modules.PAKInterface.UnloadDll(false);
-            _modules.Audio.SoundDeInit();
+            _modules.Audio.Shutdown();
         }
 
         public void SlowDown() //F3
