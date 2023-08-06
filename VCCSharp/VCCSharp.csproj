@@ -14,9 +14,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="Resources\3guys.bmp" />
+		<None Remove="Resources\audio.ico" />
+		<None Remove="Resources\composite.ico" />
+		<None Remove="Resources\eject.png" />
+		<None Remove="Resources\hitachi.ico" />
 		<None Remove="Resources\joystick.ico" />
 		<None Remove="Resources\keyboard.ico" />
+		<None Remove="Resources\moto.ico" />
 		<None Remove="Resources\mouse.ico" />
+		<None Remove="Resources\record.png" />
+		<None Remove="Resources\rewind.png" />
+		<None Remove="Resources\rgb.ico" />
+		<None Remove="Resources\Stop.png" />
+		<None Remove="Resources\vcc.bmp" />
 		<None Remove="VCCSharp.sln.DotSettings" />
 	</ItemGroup>
 
@@ -32,13 +43,46 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Resource Include="Resources\3guys.bmp">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\audio.ico">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\composite.ico">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\eject.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\hitachi.ico">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
 	  <Resource Include="Resources\joystick.ico">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Resource>
 	  <Resource Include="Resources\keyboard.ico">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Resource>
+	  <Resource Include="Resources\moto.ico">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
 	  <Resource Include="Resources\mouse.ico">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\record.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\rewind.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\rgb.ico">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Stop.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\vcc.bmp">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Resource>
 	</ItemGroup>

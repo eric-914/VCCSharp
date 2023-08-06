@@ -6,32 +6,32 @@
         xmlns:local="clr-namespace:VCCSharp"
         mc:Ignorable="d"
         Title="About" Height="640" Width="810" ResizeMode="NoResize">
-  <StackPanel Orientation="Vertical">
-    <StackPanel Background="Black">
-      <Image Source="/Resources/vcc.bmp" Height="80" Stretch="Uniform"/>
-    </StackPanel>
-    <StackPanel Orientation="Horizontal">
-      <StackPanel Orientation="Vertical" Width="520">
+    <StackPanel Orientation="Vertical">
+        <StackPanel Background="Black">
+            <Image Source="pack://application:,,,/Resources/vcc.bmp" Height="80" Stretch="Uniform"/>
+        </StackPanel>
         <StackPanel Orientation="Horizontal">
-          <Image Source="/Resources/3guys.bmp" Stretch="Uniform" Width="120" VerticalAlignment="Top"/>
-          <TextBlock TextWrapping="WrapWithOverflow" Margin="10,20,10,0">
+            <StackPanel Orientation="Vertical" Width="520">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="pack://application:,,,/Resources/3guys.bmp" Stretch="Uniform" Width="120" VerticalAlignment="Top"/>
+                    <TextBlock TextWrapping="WrapWithOverflow" Margin="10,20,10,0">
             Another classic computer canceled before it's time!<LineBreak />
             Copyright 2015 By Joseph Forgione<LineBreak />
             <LineBreak />
-          </TextBlock>
-        </StackPanel>
-        <TextBlock TextWrapping="WrapWithOverflow" Margin="50,0,10,10">
+                    </TextBlock>
+                </StackPanel>
+                <TextBlock TextWrapping="WrapWithOverflow" Margin="50,0,10,10">
           VCC Repository and Release Packages maintained by Bill Pierce<LineBreak />
           Rebased to more "modern" compilers by Gary Coulbourne<LineBreak />
           Adapted to VS2015 and Minor Bug Fixes by Wes Gale<LineBreak />
           Bug fixes and Enhancements by Bill Pierce, James Ross, <LineBreak />
           Peter Westberg, James Rye, EJ Jaquay, &amp; Trey Tomes<LineBreak />
           Some code from OVCC by Walter Zambotti
-        </TextBlock>
-      </StackPanel>
+                </TextBlock>
+            </StackPanel>
 
-      <GroupBox Header="Keyboard Special keys" Margin="30,0,0,0">
-        <TextBlock>
+            <GroupBox Header="Keyboard Special keys" Margin="30,0,0,0">
+                <TextBlock>
             F3 = Decrease Overclock<LineBreak />
             F4 = Increase Overclock<LineBreak />
             F5 = Soft Reset<LineBreak />
@@ -41,12 +41,12 @@
             F9 = Hard Reset (Power Cycle)<LineBreak />
             F10 = Fullscreen Status Toggle<LineBreak />
             F11 = Fullscreen Toggle
-        </TextBlock>
-      </GroupBox>
-    </StackPanel>
+                </TextBlock>
+            </GroupBox>
+        </StackPanel>
 
-    <StackPanel Orientation="Vertical" Margin="10">
-      <TextBlock TextWrapping="WrapWithOverflow">
+        <StackPanel Orientation="Vertical" Margin="10">
+            <TextBlock TextWrapping="WrapWithOverflow">
         VCC (Virtual Color Computer) is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
         <LineBreak /><LineBreak />
         VCC (Virtual Color Computer) is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -54,8 +54,8 @@
         See the GNU General Public License for more details.
         <LineBreak />
         You should have received a copy of the GNU General Public License along with VCC (Virtual Color Computer). If not, see http://www.gnu.org/licenses/.
-      </TextBlock>
+            </TextBlock>
+        </StackPanel>
+        <Button Click="OnOkClicked" Width="100">Ok</Button>
     </StackPanel>
-    <Button Click="OnOkClicked" Width="100">Ok</Button>
-  </StackPanel>
 </Window>

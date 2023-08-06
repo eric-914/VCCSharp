@@ -8,91 +8,91 @@
              xmlns:enums="clr-namespace:VCCSharp.Enums"
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="800">
-  <UserControl.DataContext>
-    <display:DisplayTabViewModel/>
-  </UserControl.DataContext>
-  <UserControl.Resources>
-    <converters:EnumToSelectionConverter x:Key="Selection"/>
-    <converters:EnumIsSelectedConverter x:Key="Enabled"/>
-    <converters:EnumToVisibilityConverter x:Key="Visibility"/>
-  </UserControl.Resources>
+    <UserControl.DataContext>
+        <display:DisplayTabViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <converters:EnumToSelectionConverter x:Key="Selection"/>
+        <converters:EnumIsSelectedConverter x:Key="Enabled"/>
+        <converters:EnumToVisibilityConverter x:Key="Visibility"/>
+    </UserControl.Resources>
 
-  <Grid Margin="10">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="70"/>
-      <RowDefinition Height="10"/>
-      <RowDefinition Height="*"/>
-    </Grid.RowDefinitions>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-    <StackPanel Orientation="Vertical">
-      <Label>Frame Skip</Label>
-      <Grid>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*"/>
-          <ColumnDefinition Width="50"/>
-        </Grid.ColumnDefinitions>
-        <Slider Grid.Column="0" Minimum="1" Maximum="6" Value="{Binding FrameSkip}"/>
-        <Border Grid.Column="1">
-          <Label HorizontalContentAlignment="Right" Content="{Binding FrameSkip}" />
-        </Border>
-      </Grid>
-    </StackPanel>
-
-    <Grid Grid.Row="2" >
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="3*"/>
-        <ColumnDefinition Width="5*"/>
-      </Grid.ColumnDefinitions>
-
-      <StackPanel Grid.Column="0" Orientation="Horizontal">
         <StackPanel Orientation="Vertical">
-          <Label Content="[F6] Monitor Type" />
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="50"/>
-              <ColumnDefinition Width="20"/>
-              <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="30"/>
-              <RowDefinition Height="30"/>
-              <RowDefinition Height="30"/>
-              <RowDefinition Height="30"/>
-            </Grid.RowDefinitions>
-            <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
-              <Image Source="/Resources/composite.ico" Stretch="None" Visibility="{Binding MonitorType, Converter={StaticResource Visibility}, ConverterParameter={x:Static enums:MonitorTypes.Composite}}"/>
-              <Image Source="/Resources/rgb.ico" Stretch="None" Visibility="{Binding MonitorType, Converter={StaticResource Visibility}, ConverterParameter={x:Static enums:MonitorTypes.RGB}}"/>
+            <Label>Frame Skip</Label>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <Slider Grid.Column="0" Minimum="1" Maximum="6" Value="{Binding FrameSkip}"/>
+                <Border Grid.Column="1">
+                    <Label HorizontalContentAlignment="Right" Content="{Binding FrameSkip}" />
+                </Border>
             </Grid>
-            <RadioButton Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Content="RGB" IsChecked="{Binding MonitorType, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MonitorTypes.RGB}}"/>
-            <RadioButton Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Content="Composite" IsChecked="{Binding MonitorType, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MonitorTypes.Composite}}"/>
-            <RadioButton Grid.Column="2" Grid.Row="2" Content="Updated Palette" IsEnabled="{Binding MonitorType, Converter={StaticResource Enabled}, ConverterParameter={x:Static enums:MonitorTypes.Composite}}" IsChecked="{Binding PaletteType, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:PaletteTypes.Updated}}"/>
-            <RadioButton Grid.Column="2" Grid.Row="3" Content="Original Palette" IsEnabled="{Binding MonitorType, Converter={StaticResource Enabled}, ConverterParameter={x:Static enums:MonitorTypes.Composite}}" IsChecked="{Binding PaletteType, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:PaletteTypes.Original}}"/>
-          </Grid>
         </StackPanel>
-      </StackPanel>
 
-      <StackPanel Grid.Column="1">
-        <Grid>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-          </Grid.ColumnDefinitions>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="15"/>
-          </Grid.RowDefinitions>
-          <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding ScanLines}">Scan Lines</CheckBox>
-          <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding RememberSize}">Remember Screen Size</CheckBox>
-          <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding ForceAspect}">Force Aspect</CheckBox>
-          <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding SpeedThrottle}">[F8] Throttle Speed</CheckBox>
-        </Grid>
-        <Border>
-          <TextBlock TextWrapping="Wrap">
+        <Grid Grid.Row="2" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="5*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <StackPanel Orientation="Vertical">
+                    <Label Content="[F6] Monitor Type" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
+                            <Image Source="pack://application:,,,/Resources/composite.ico" Stretch="None" Visibility="{Binding MonitorType, Converter={StaticResource Visibility}, ConverterParameter={x:Static enums:MonitorTypes.Composite}}"/>
+                            <Image Source="pack://application:,,,/Resources/rgb.ico" Stretch="None" Visibility="{Binding MonitorType, Converter={StaticResource Visibility}, ConverterParameter={x:Static enums:MonitorTypes.RGB}}"/>
+                        </Grid>
+                        <RadioButton Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Content="RGB" IsChecked="{Binding MonitorType, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MonitorTypes.RGB}}"/>
+                        <RadioButton Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Content="Composite" IsChecked="{Binding MonitorType, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MonitorTypes.Composite}}"/>
+                        <RadioButton Grid.Column="2" Grid.Row="2" Content="Updated Palette" IsEnabled="{Binding MonitorType, Converter={StaticResource Enabled}, ConverterParameter={x:Static enums:MonitorTypes.Composite}}" IsChecked="{Binding PaletteType, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:PaletteTypes.Updated}}"/>
+                        <RadioButton Grid.Column="2" Grid.Row="3" Content="Original Palette" IsEnabled="{Binding MonitorType, Converter={StaticResource Enabled}, ConverterParameter={x:Static enums:MonitorTypes.Composite}}" IsChecked="{Binding PaletteType, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:PaletteTypes.Original}}"/>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="15"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding ScanLines}">Scan Lines</CheckBox>
+                    <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding RememberSize}">Remember Screen Size</CheckBox>
+                    <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding ForceAspect}">Force Aspect</CheckBox>
+                    <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding SpeedThrottle}">[F8] Throttle Speed</CheckBox>
+                </Grid>
+                <Border>
+                    <TextBlock TextWrapping="Wrap">
             WARNING: Unchecking the "Throttle Speed" can greatly affect many functions of the VCC emulation including keyboard operation. Use with CAUTION! Please use "Over-Clocking" instead
-          </TextBlock>
-        </Border>
-      </StackPanel>
+                    </TextBlock>
+                </Border>
+            </StackPanel>
+        </Grid>
     </Grid>
-  </Grid>
 </UserControl>
