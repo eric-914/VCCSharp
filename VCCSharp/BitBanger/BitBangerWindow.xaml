@@ -5,40 +5,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VCCSharp.BitBanger"
         mc:Ignorable="d"
-        Title="BitBangerWindow" Height="250" Width="400">
-  <Window.DataContext>
-    <local:BitBangerViewModel/>
-  </Window.DataContext>
-  <Window.Resources>
-    <Style TargetType="Button">
-      <Setter Property="FontSize" Value="20" />
-      <Setter Property="Width" Value="100" />
-      <Setter Property="Margin" Value="5,2,5,2" />
-    </Style>
-    <Style TargetType="Label">
-      <Setter Property="FontSize" Value="20" />
-      <Setter Property="Margin" Value="-2" />
-    </Style>
-    <Style TargetType="CheckBox">
-      <Setter Property="Margin" Value="2,2,0,0" />
-    </Style>
-  </Window.Resources>
-  <Grid Margin="10">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="30"/>
-      <RowDefinition Height="5"/>
-      <RowDefinition Height="35"/>
-      <RowDefinition Height="10"/>
-      <RowDefinition Height="*"/>
-    </Grid.RowDefinitions>
-    <TextBox Grid.Row="0" Text="{Binding SerialCaptureFile}"/>
-    <StackPanel Grid.Row="2" Orientation="Horizontal">
-      <Button Content="Open" Click="Open"/>
-      <Button Content="Close" Click="Close"/>
-    </StackPanel>
-    <StackPanel Grid.Row="4" Orientation="Vertical">
-      <CheckBox IsChecked="{Binding AddLineFeed}" Content="Add LF to CR"/>
-      <CheckBox IsChecked="{Binding Print}" Content="Print Monitor Window"/>
-    </StackPanel>
-  </Grid>
+        Title="BitBangerWindow" Height="180" Width="654">
+    <Window.DataContext>
+        <local:BitBangerViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <Style TargetType="{x:Type Window}">
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Margin" Value="5,2,5,2" />
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Margin" Value="-2" />
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Margin" Value="2,2,0,0" />
+        </Style>
+    </Window.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBox Grid.Row="0" Text="{Binding SerialCaptureFile}"/>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Button Content="Open" Click="Open"/>
+            <Button Content="Close" Click="Close"/>
+        </StackPanel>
+        <StackPanel Grid.Row="4" Orientation="Vertical">
+            <CheckBox IsChecked="{Binding AddLineFeed}" Content="Add LF to CR"/>
+            <CheckBox IsChecked="{Binding Print}" Content="Print Monitor Window"/>
+        </StackPanel>
+    </Grid>
 </Window>
