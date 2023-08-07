@@ -5,52 +5,40 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:keyboard="clr-namespace:VCCSharp.Configuration.TabControls.Keyboard"
              xmlns:converters="clr-namespace:VCCSharp.Converters"
+             xmlns:enums="clr-namespace:VCCSharp.Enums"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="580">
     <UserControl.DataContext>
         <keyboard:KeyboardTabViewModel/>
     </UserControl.DataContext>
     <UserControl.Resources>
-        <converters:KeyboardLayoutConverter x:Key="KeyboardLayoutConverter"/>
+        <converters:EnumToSelectionConverter x:Key="Selection"/>
     </UserControl.Resources>
 
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="35"/>
                 <RowDefinition Height="35"/>
-                <RowDefinition Height="60"/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="35"/>
                 <RowDefinition Height="35"/>
                 <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
             <Label Grid.Row="0" Content="Keyboard Mapping"/>
-            <ComboBox Grid.Row="1" ItemsSource="{Binding KeyboardLayouts}" SelectedIndex="{Binding KeyboardLayout, Converter={StaticResource KeyboardLayoutConverter}}"/>
-            <Label Grid.Row="3" HorizontalContentAlignment="Center">Edit Custom Keyboard</Label>
-            <!-- Doesn't look like this was ever implemented -->
-            <Button Grid.Row="4" Content="EDIT" IsEnabled="False"/>
+
+            <RadioButton Grid.Row="1" IsChecked="{Binding KeyboardLayout, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:KeyboardLayouts.CoCo}}" Content="Coco 1/2: Layout physically resembles the Coco 1/2 keyboard as close as possible."/>
+            <RadioButton Grid.Row="2" IsChecked="{Binding KeyboardLayout, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:KeyboardLayouts.CoCo3}}" Content="Coco 3: Layout physically resembles the Coco 3 keyboard as close as possible."/>
+            <RadioButton Grid.Row="3" IsChecked="{Binding KeyboardLayout, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:KeyboardLayouts.PC}}" Content="Standard PC keyboard layout."/>
+
+            <RadioButton Grid.Row="4" IsEnabled="False">
+                <!-- Doesn't look like this was ever implemented -->
+                <Button Content="Edit Custom Keyboard" IsEnabled="False"/>
+            </RadioButton>
         </Grid>
-        <StackPanel Grid.Column="1">
-            <StackPanel.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="Margin" Value="5,0,0,10"/>
-                </Style>
-            </StackPanel.Resources>
-            <TextBlock TextWrapping="Wrap">
-                Keyboard Map Descriptions
-            </TextBlock>
-            <TextBlock TextWrapping="Wrap">
-                Coco 1/2: Layout physically resembles the Coco 1/2 keyboard as close as possible.
-            </TextBlock>
-            <TextBlock TextWrapping="Wrap">
-                Coco 3: Layout physically resembles the Coco 3 keyboard as close as possible.
-            </TextBlock>
-            <TextBlock TextWrapping="Wrap">
-                Standard PC keyboard layout.
-            </TextBlock>
-        </StackPanel>
     </Grid>
 </UserControl>

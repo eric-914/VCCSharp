@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:VCCSharp.TapePlayer"
         xmlns:converters="clr-namespace:VCCSharp.Converters"
         mc:Ignorable="d"
-        Title="TapePlayerWindow" Height="180" Width="780">
+        Title="TapePlayerWindow" Height="180" Width="654">
     <Window.DataContext>
         <local:TapePlayerViewModel/>
     </Window.DataContext>
@@ -50,7 +50,7 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="624"/>
+                <ColumnDefinition Width="495"/>
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="120"/>
             </Grid.ColumnDefinitions>
@@ -60,13 +60,13 @@
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="110"/>
-                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="17"/>
                 <ColumnDefinition Width="110"/>
-                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="17"/>
                 <ColumnDefinition Width="110"/>
-                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="17"/>
                 <ColumnDefinition Width="110"/>
-                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="17"/>
                 <ColumnDefinition Width="110"/>
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Click="Record">

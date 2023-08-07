@@ -7,7 +7,7 @@
              xmlns:enums="clr-namespace:VCCSharp.Shared.Enums;assembly=VCCSharp.Shared"
              xmlns:viewModels="clr-namespace:VCCSharp.Shared.ViewModels;assembly=VCCSharp.Shared"
              mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="800">
+             d:DesignHeight="54" d:DesignWidth="580" Background="Moccasin">
     <UserControl.DataContext>
         <viewModels:JoystickConfigurationViewModel/>
     </UserControl.DataContext>
@@ -17,24 +17,40 @@
             <Setter Property="Margin" Value="6,6,6,0"/>
         </Style>
     </UserControl.Resources>
-
-    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-        <Label Content="Emulation:" />
-
-        <RadioButton Content="Standard Joystick" 
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Label Content="Emulation:" />
+        </Grid>
+        <Grid Grid.Row="0" Grid.Column="2">
+            <RadioButton Content="Standard Joystick" 
                      IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.Standard}}"/>
-
+        </Grid>
         <!-- TODO: Need to research these other options which is why they are disabled -->
-        <RadioButton Content="Tandy Hi-Res Joystick" 
+        <Grid Grid.Row="0" Grid.Column="4">
+            <RadioButton Content="Tandy Hi-Res Joystick" 
                      IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.TandyHiRes}}"
                      IsEnabled="False"/>
-
-        <RadioButton Content="CoCo-MAX Mouse" 
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="2">
+            <RadioButton Content="CoCo-MAX Mouse" 
                      IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.CoCoMaxMouse}}"
                      IsEnabled="False"/>
-
-        <RadioButton Content="X-Pad" 
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="4">
+            <RadioButton Content="X-Pad" 
                      IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.XPad}}"
                      IsEnabled="False"/>
-    </StackPanel>
+        </Grid>
+    </Grid>
 </UserControl>

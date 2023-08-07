@@ -11,23 +11,27 @@
         xmlns:miscellaneous="clr-namespace:VCCSharp.Configuration.TabControls.Miscellaneous"
         xmlns:viewModel="clr-namespace:VCCSharp.Configuration.ViewModel"
         mc:Ignorable="d"
-        Title="Vcc Options" Height="550" Width="850">
+        Title="Vcc Options" Height="575" Width="654">
     <Window.DataContext>
         <viewModel:ConfigurationViewModel/>
     </Window.DataContext>
     <Window.Resources>
+        <Style TargetType="{x:Type Window}">
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+        <Style TargetType="{x:Type Control}">
+            <Setter Property="FontSize" Value="16" />
+        </Style>
         <Style TargetType="Button">
-            <Setter Property="FontSize" Value="20" />
             <Setter Property="Width" Value="100" />
             <Setter Property="Margin" Value="5,2,5,2" />
         </Style>
         <Style TargetType="Label">
-            <Setter Property="FontSize" Value="20" />
             <Setter Property="Margin" Value="-2" />
         </Style>
         <Style TargetType="ComboBox">
-            <Setter Property="FontSize" Value="20" />
             <Setter Property="Margin" Value="2"/>
+            <Setter Property="Height" Value="24"/>
         </Style>
         <Style TargetType="RadioButton">
             <Setter Property="Margin" Value="2,2,0,0" />
@@ -48,11 +52,6 @@
             <Button Content="Cancel" IsCancel="True" Click="OnCancelClick"/>
         </StackPanel>
         <TabControl Name="TabControl">
-            <TabControl.Resources>
-                <Style TargetType="TabItem">
-                    <Setter Property="FontSize" Value="20" />
-                </Style>
-            </TabControl.Resources>
             <TabItem Header="Audio">
                 <audio:AudioTabControl DataContext="{Binding Audio}"/>
             </TabItem>

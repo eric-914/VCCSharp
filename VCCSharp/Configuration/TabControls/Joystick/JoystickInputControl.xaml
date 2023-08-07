@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:VCCSharp.Configuration.TabControls.Joystick"
              xmlns:viewModels="clr-namespace:VCCSharp.Shared.ViewModels;assembly=VCCSharp.Shared"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="654">
     <UserControl.DataContext>
         <viewModels:JoystickConfigurationViewModel/>
     </UserControl.DataContext>
@@ -18,7 +18,7 @@
     </UserControl.Resources>
 
     <DockPanel>
-        <Border DockPanel.Dock="Top" Height="40">
+        <Border DockPanel.Dock="Top" Height="54">
             <local:JoystickEmulationControl 
                 DataContext="{Binding }"/>
         </Border>

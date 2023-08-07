@@ -7,7 +7,7 @@
              xmlns:controls="clr-namespace:VCCSharp.Shared.Controls;assembly=VCCSharp.Shared"
              xmlns:viewModels="clr-namespace:VCCSharp.Shared.ViewModels;assembly=VCCSharp.Shared"
              mc:Ignorable="d" 
-             d:DesignHeight="350" d:DesignWidth="500">
+             d:DesignHeight="350" d:DesignWidth="580">
   <UserControl.DataContext>
     <viewModels:JoystickConfigurationViewModel/>
   </UserControl.DataContext>

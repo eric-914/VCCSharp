@@ -7,7 +7,7 @@
              xmlns:converters="clr-namespace:VCCSharp.Converters"
              xmlns:enums="clr-namespace:VCCSharp.Enums"
              mc:Ignorable="d" 
-             d:DesignHeight="250" d:DesignWidth="800">
+             d:DesignHeight="250" d:DesignWidth="580">
     <UserControl.DataContext>
         <display:DisplayTabViewModel/>
     </UserControl.DataContext>
@@ -40,8 +40,8 @@
 
         <Grid Grid.Row="2" >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*"/>
-                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="320"/>
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal">
@@ -89,7 +89,7 @@
                 </Grid>
                 <Border>
                     <TextBlock TextWrapping="Wrap">
-            WARNING: Unchecking the "Throttle Speed" can greatly affect many functions of the VCC emulation including keyboard operation. Use with CAUTION! Please use "Over-Clocking" instead
+                        WARNING: Unchecking the "Throttle Speed" can greatly affect many functions of the VCC emulation including keyboard operation. Use with CAUTION! Please use "Over-Clocking" instead
                     </TextBlock>
                 </Border>
             </StackPanel>
