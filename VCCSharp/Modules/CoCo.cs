@@ -367,14 +367,7 @@ public class CoCo : ICoCo
     {
         _cyclesThisLine = _cycleDrift + (_picosThisLine * CyclesPerLine * OverClock / PicosPerLine);
 
-        if (_cyclesThisLine >= 1)
-        {   //Avoid un-needed CPU engine calls
-            _cycleDrift = _modules.CPU.Exec((int)Math.Floor(_cyclesThisLine)) + (_cyclesThisLine - Math.Floor(_cyclesThisLine));
-        }
-        else
-        {
-            _cycleDrift = _cyclesThisLine;
-        }
+        _cycleDrift = _cyclesThisLine >= 1 ? _modules.CPU.Exec(_cyclesThisLine) : _cyclesThisLine;
 
         _picosToInterrupt -= _picosThisLine;
         _picosToSoundSample -= _picosThisLine;
@@ -387,14 +380,7 @@ public class CoCo : ICoCo
         _picosThisLine -= _picosToInterrupt;
         _cyclesThisLine = _cycleDrift + (_picosToInterrupt * CyclesPerLine * OverClock / PicosPerLine);
 
-        if (_cyclesThisLine >= 1)
-        {
-            _cycleDrift = _modules.CPU.Exec((int)Math.Floor(_cyclesThisLine)) + (_cyclesThisLine - Math.Floor(_cyclesThisLine));
-        }
-        else
-        {
-            _cycleDrift = _cyclesThisLine;
-        }
+        _cycleDrift = _cyclesThisLine >= 1 ? _modules.CPU.Exec(_cyclesThisLine) : _cyclesThisLine;
 
         _modules.TCC1014.GimeAssertTimerInterrupt();
 
@@ -408,14 +394,7 @@ public class CoCo : ICoCo
         _picosThisLine -= _picosToSoundSample;
         _cyclesThisLine = _cycleDrift + (_picosToSoundSample * CyclesPerLine * OverClock / PicosPerLine);
 
-        if (_cyclesThisLine >= 1)
-        {
-            _cycleDrift = _modules.CPU.Exec((int)Math.Floor(_cyclesThisLine)) + (_cyclesThisLine - Math.Floor(_cyclesThisLine));
-        }
-        else
-        {
-            _cycleDrift = _cyclesThisLine;
-        }
+        _cycleDrift = _cyclesThisLine >= 1 ? _modules.CPU.Exec(_cyclesThisLine) : _cyclesThisLine;
 
         _audioEvent();
 
@@ -431,15 +410,7 @@ public class CoCo : ICoCo
             _picosThisLine -= _picosToSoundSample;
             _cyclesThisLine = _cycleDrift + (_picosToSoundSample * CyclesPerLine * OverClock / PicosPerLine);
 
-            if (_cyclesThisLine >= 1)
-            {
-                _cycleDrift = _modules.CPU.Exec((int)Math.Floor(_cyclesThisLine)) +
-                              (_cyclesThisLine - Math.Floor(_cyclesThisLine));
-            }
-            else
-            {
-                _cycleDrift = _cyclesThisLine;
-            }
+            _cycleDrift = _cyclesThisLine >= 1 ? _modules.CPU.Exec(_cyclesThisLine) : _cyclesThisLine;
 
             _audioEvent();
 
@@ -449,15 +420,7 @@ public class CoCo : ICoCo
 
             _cyclesThisLine = _cycleDrift + (_picosToInterrupt * CyclesPerLine * OverClock / PicosPerLine);
 
-            if (_cyclesThisLine >= 1)
-            {
-                _cycleDrift = _modules.CPU.Exec((int)Math.Floor(_cyclesThisLine)) +
-                              (_cyclesThisLine - Math.Floor(_cyclesThisLine));
-            }
-            else
-            {
-                _cycleDrift = _cyclesThisLine;
-            }
+            _cycleDrift = _cyclesThisLine >= 1 ? _modules.CPU.Exec(_cyclesThisLine) : _cyclesThisLine;
 
             _modules.TCC1014.GimeAssertTimerInterrupt();
 
@@ -472,15 +435,7 @@ public class CoCo : ICoCo
             _picosThisLine -= _picosToInterrupt;
             _cyclesThisLine = _cycleDrift + (_picosToInterrupt * CyclesPerLine * OverClock / PicosPerLine);
 
-            if (_cyclesThisLine >= 1)
-            {
-                _cycleDrift = _modules.CPU.Exec((int)Math.Floor(_cyclesThisLine)) +
-                              (_cyclesThisLine - Math.Floor(_cyclesThisLine));
-            }
-            else
-            {
-                _cycleDrift = _cyclesThisLine;
-            }
+            _cycleDrift = _cyclesThisLine >= 1 ? _modules.CPU.Exec(_cyclesThisLine) : _cyclesThisLine;
 
             _modules.TCC1014.GimeAssertTimerInterrupt();
 
@@ -489,15 +444,7 @@ public class CoCo : ICoCo
             _picosThisLine -= _picosToSoundSample;
             _cyclesThisLine = _cycleDrift + (_picosToSoundSample * CyclesPerLine * OverClock / PicosPerLine);
 
-            if (_cyclesThisLine >= 1)
-            {
-                _cycleDrift = _modules.CPU.Exec((int)Math.Floor(_cyclesThisLine)) +
-                              (_cyclesThisLine - Math.Floor(_cyclesThisLine));
-            }
-            else
-            {
-                _cycleDrift = _cyclesThisLine;
-            }
+            _cycleDrift = _cyclesThisLine >= 1 ? _modules.CPU.Exec(_cyclesThisLine) : _cyclesThisLine;
 
             _audioEvent();
 
@@ -511,15 +458,7 @@ public class CoCo : ICoCo
         _picosThisLine -= _picosToInterrupt;
         _cyclesThisLine = _cycleDrift + (_picosToSoundSample * CyclesPerLine * OverClock / PicosPerLine);
 
-        if (_cyclesThisLine > 1)
-        {
-            _cycleDrift = _modules.CPU.Exec((int)Math.Floor(_cyclesThisLine)) +
-                          (_cyclesThisLine - Math.Floor(_cyclesThisLine));
-        }
-        else
-        {
-            _cycleDrift = _cyclesThisLine;
-        }
+        _cycleDrift = _cyclesThisLine >= 1 ? _modules.CPU.Exec(_cyclesThisLine) : _cyclesThisLine;
 
         _modules.TCC1014.GimeAssertTimerInterrupt();
 

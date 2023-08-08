@@ -10,7 +10,7 @@ public interface ICPU : IModule, IChip
 {
     void Init(CPUTypes cpu);
     void ForcePC(ushort address);
-    int Exec(int cycle);
+    double Exec(double cycle);
     void AssertInterrupt(CPUInterrupts irq, byte flag);
     void DeAssertInterrupt(CPUInterrupts irq);
 }
@@ -47,9 +47,9 @@ public class CPU : ICPU
         _processor.ForcePc(address);
     }
 
-    public int Exec(int cycle)
+    public double Exec(double cycle)
     {
-        return _processor.Exec(cycle);
+        return _processor.Exec((int)Math.Floor(cycle)) + (cycle - Math.Floor(cycle));
     }
 
     public void AssertInterrupt(CPUInterrupts irq, byte flag)
