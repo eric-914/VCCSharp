@@ -10,6 +10,12 @@ public partial class MC6809
 {
     #region CC Masks Macros
 
+    public byte CC
+    {
+        get => _cpu.cc.bits;
+        set => _cpu.cc.bits = value;
+    }
+
     public bool CC_E
     {
         get => _cpu.cc.E;
@@ -216,8 +222,8 @@ public partial class MC6809
     private static bool ZTEST(byte value) => value == 0;
     private static bool ZTEST(ushort value) => value == 0;
 
-    private static  bool OVERFLOW8(bool c, byte a, ushort b, byte r) => ((c ? 1 : 0) ^ (((a ^ b ^ r) >> 7) & 1)) != 0;
-    private static  bool OVERFLOW16(bool c, uint a, ushort b, ushort r) => ((c ? (byte)1 : (byte)0) ^ (((a ^ b ^ r) >> 15) & 1)) != 0;
+    private static bool OVERFLOW8(bool c, byte a, ushort b, byte r) => ((c ? 1 : 0) ^ (((a ^ b ^ r) >> 7) & 1)) != 0;
+    private static bool OVERFLOW16(bool c, uint a, ushort b, ushort r) => ((c ? (byte)1 : (byte)0) ^ (((a ^ b ^ r) >> 15) & 1)) != 0;
 
     #endregion
 }

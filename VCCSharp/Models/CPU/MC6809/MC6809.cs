@@ -5,9 +5,7 @@ using VCCSharp.Models.CPU.MC6809.Registers;
 namespace VCCSharp.Models.CPU.MC6809;
 
 // ReSharper disable once InconsistentNaming
-public interface IMC6809 : IProcessor
-{
-}
+public interface IMC6809 : ICpuProcessor { }
 
 // ReSharper disable once InconsistentNaming
 public partial class MC6809 : IMC6809

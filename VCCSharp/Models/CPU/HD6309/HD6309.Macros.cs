@@ -10,6 +10,12 @@ partial class HD6309
 {
     #region CC Masks Macros
 
+    public byte CC
+    {
+        get => _cpu.cc.bits;
+        set => _cpu.cc.bits = value;
+    }
+
     public bool CC_E
     {
         get => _cpu.cc.E;

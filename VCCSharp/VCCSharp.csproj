@@ -118,4 +118,9 @@
 		</None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Models\CPU\OpCodes\Page3\" />
+	  <Folder Include="Models\CPU\OpCodes\Page2\" />
+	</ItemGroup>
+
 </Project>

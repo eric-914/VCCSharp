@@ -16,7 +16,7 @@ namespace VCCSharp.Models.CPU.Registers
         private readonly byte _V = 1 << (byte)CCFlagMasks.V;
         private readonly byte _C = 1 << (byte)CCFlagMasks.C;
 
-        public byte bits;
+        public byte bits { get; set; }
 
         public bool E { get { return Get(_E); } set { Set(_E, value); } }
         public bool F { get { return Get(_F); } set { Set(_F, value); } }

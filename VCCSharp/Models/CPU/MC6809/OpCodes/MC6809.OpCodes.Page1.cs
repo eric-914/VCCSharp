@@ -32,8 +32,8 @@ public partial class MC6809
 
         CC_Z = ZTEST(_temp8);
         CC_N = NTEST8(_temp8);
-        CC_C = true; //1;
-        CC_V = false; //0;
+        CC_C = true;
+        CC_V = false;
 
         MemWrite8(_temp8, _temp16);
 
@@ -959,8 +959,8 @@ public partial class MC6809
 
         _cycleCounter += 19;
 
-        CC_I = true; //1;
-        CC_F = true; //1;
+        CC_I = true;
+        CC_F = true;
     }
 
     #endregion
@@ -991,8 +991,8 @@ public partial class MC6809
 
         CC_Z = ZTEST(A_REG);
         CC_N = NTEST8(A_REG);
-        CC_C = true; //1;
-        CC_V = false; //0;
+        CC_C = true;
+        CC_V = false;
 
         _cycleCounter += 2;
     }
@@ -1004,7 +1004,7 @@ public partial class MC6809
         A_REG = (byte)(A_REG >> 1);
 
         CC_Z = ZTEST(A_REG);
-        CC_N = false; //0;
+        CC_N = false;
 
         _cycleCounter += 2;
     }
@@ -1093,7 +1093,7 @@ public partial class MC6809
     {
         CC_Z = ZTEST(A_REG);
         CC_N = NTEST8(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 2;
     }
@@ -1104,10 +1104,10 @@ public partial class MC6809
     {
         A_REG = 0;
 
-        CC_C = false; //0;
-        CC_V = false; //0;
-        CC_N = false; //0;
-        CC_Z = true; //1;
+        CC_C = false;
+        CC_V = false;
+        CC_N = false;
+        CC_Z = true;
 
         _cycleCounter += 2;
     }
@@ -1139,8 +1139,8 @@ public partial class MC6809
 
         CC_Z = ZTEST(B_REG);
         CC_N = NTEST8(B_REG);
-        CC_C = true; //1;
-        CC_V = false; //0;
+        CC_C = true;
+        CC_V = false;
 
         _cycleCounter += 2;
     }
@@ -1152,7 +1152,7 @@ public partial class MC6809
         B_REG = (byte)(B_REG >> 1);
 
         CC_Z = ZTEST(B_REG);
-        CC_N = false; //0;
+        CC_N = false;
 
         _cycleCounter += 2;
     }
@@ -1241,7 +1241,7 @@ public partial class MC6809
     {
         CC_Z = ZTEST(B_REG);
         CC_N = NTEST8(B_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 2;
     }
@@ -1252,10 +1252,10 @@ public partial class MC6809
     {
         B_REG = 0;
 
-        CC_C = false; //0;
-        CC_N = false; //0;
-        CC_V = false; //0;
-        CC_Z = true; //1;
+        CC_C = false;
+        CC_N = false;
+        CC_V = false;
+        CC_Z = true;
 
         _cycleCounter += 2;
     }
@@ -1291,8 +1291,8 @@ public partial class MC6809
 
         CC_Z = ZTEST(_temp8);
         CC_N = NTEST8(_temp8);
-        CC_V = false; //0;
-        CC_C = true; //1;
+        CC_V = false;
+        CC_C = true;
 
         MemWrite8(_temp8, _temp16);
 
@@ -1309,7 +1309,7 @@ public partial class MC6809
         _temp8 = (byte)(_temp8 >> 1);
 
         CC_Z = ZTEST(_temp8);
-        CC_N = false; //0;
+        CC_N = false;
 
         MemWrite8(_temp8, _temp16);
 
@@ -1428,7 +1428,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(_temp8);
         CC_N = NTEST8(_temp8);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 6;
     }
@@ -1444,10 +1444,10 @@ public partial class MC6809
     {
         MemWrite8(0, INDADDRESS(PC_REG++));
 
-        CC_C = false; //0;
-        CC_N = false; //0;
-        CC_V = false; //0;
-        CC_Z = true; //1;
+        CC_C = false;
+        CC_N = false;
+        CC_V = false;
+        CC_Z = true;
 
         _cycleCounter += 6;
     }
@@ -1485,8 +1485,8 @@ public partial class MC6809
 
         CC_Z = ZTEST(_temp8);
         CC_N = NTEST8(_temp8);
-        CC_C = true; //1;
-        CC_V = false; //0;
+        CC_C = true;
+        CC_V = false;
 
         MemWrite8(_temp8, _temp16);
 
@@ -1505,7 +1505,7 @@ public partial class MC6809
         _temp8 = (byte)(_temp8 >> 1);
 
         CC_Z = ZTEST(_temp8);
-        CC_N = false; //0;
+        CC_N = false;
 
         MemWrite8(_temp8, _temp16);
 
@@ -1638,7 +1638,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(_temp8);
         CC_N = NTEST8(_temp8);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -1656,10 +1656,10 @@ public partial class MC6809
     {
         MemWrite8(0, MemRead16(PC_REG));
 
-        CC_C = false; //0;
-        CC_N = false; //0;
-        CC_V = false; //0;
-        CC_Z = true; //1;
+        CC_C = false;
+        CC_N = false;
+        CC_V = false;
+        CC_Z = true;
 
         PC_REG += 2;
 
@@ -1739,7 +1739,7 @@ public partial class MC6809
 
         CC_N = NTEST8(A_REG);
         CC_Z = ZTEST(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 2;
     }
@@ -1750,7 +1750,7 @@ public partial class MC6809
 
         CC_N = NTEST8(_temp8);
         CC_Z = ZTEST(_temp8);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 2;
     }
@@ -1761,7 +1761,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(A_REG);
         CC_N = NTEST8(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 2;
     }
@@ -1774,7 +1774,7 @@ public partial class MC6809
 
         CC_N = NTEST8(A_REG);
         CC_Z = ZTEST(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 2;
     }
@@ -1802,7 +1802,7 @@ public partial class MC6809
 
         CC_N = NTEST8(A_REG);
         CC_Z = ZTEST(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 2;
     }
@@ -1859,7 +1859,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(X_REG);
         CC_N = NTEST16(X_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -1939,7 +1939,7 @@ public partial class MC6809
 
         CC_N = NTEST8(A_REG);
         CC_Z = ZTEST(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -1950,7 +1950,7 @@ public partial class MC6809
 
         CC_N = NTEST8(_temp8);
         CC_Z = ZTEST(_temp8);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -1961,7 +1961,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(A_REG);
         CC_N = NTEST8(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -1972,7 +1972,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(A_REG);
         CC_N = NTEST8(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -1983,7 +1983,7 @@ public partial class MC6809
 
         CC_N = NTEST8(A_REG);
         CC_Z = ZTEST(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -2011,7 +2011,7 @@ public partial class MC6809
 
         CC_N = NTEST8(A_REG);
         CC_Z = ZTEST(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -2066,7 +2066,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(X_REG);
         CC_N = NTEST16(X_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 5;
     }
@@ -2077,7 +2077,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(X_REG);
         CC_N = NTEST16(X_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 5;
     }
@@ -2153,7 +2153,7 @@ public partial class MC6809
 
         CC_N = NTEST8(A_REG);
         CC_Z = ZTEST(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -2164,7 +2164,7 @@ public partial class MC6809
 
         CC_N = NTEST8(_temp8);
         CC_Z = ZTEST(_temp8);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -2175,7 +2175,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(A_REG);
         CC_N = NTEST8(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -2186,7 +2186,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(A_REG);
         CC_N = NTEST8(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -2197,7 +2197,7 @@ public partial class MC6809
 
         CC_N = NTEST8(A_REG);
         CC_Z = ZTEST(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -2225,7 +2225,7 @@ public partial class MC6809
 
         CC_N = NTEST8(A_REG);
         CC_Z = ZTEST(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -2279,7 +2279,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(X_REG);
         CC_N = NTEST16(X_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 5;
     }
@@ -2290,7 +2290,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(X_REG);
         CC_N = NTEST16(X_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 5;
     }
@@ -2376,7 +2376,7 @@ public partial class MC6809
 
         CC_N = NTEST8(A_REG);
         CC_Z = ZTEST(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -2389,7 +2389,7 @@ public partial class MC6809
 
         CC_N = NTEST8(_temp8);
         CC_Z = ZTEST(_temp8);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -2402,7 +2402,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(A_REG);
         CC_N = NTEST8(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -2415,7 +2415,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(A_REG);
         CC_N = NTEST8(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -2428,7 +2428,7 @@ public partial class MC6809
 
         CC_N = NTEST8(A_REG);
         CC_Z = ZTEST(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -2460,7 +2460,7 @@ public partial class MC6809
 
         CC_N = NTEST8(A_REG);
         CC_Z = ZTEST(A_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -2523,7 +2523,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(X_REG);
         CC_N = NTEST16(X_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -2536,7 +2536,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(X_REG);
         CC_N = NTEST16(X_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -2616,7 +2616,7 @@ public partial class MC6809
 
         CC_N = NTEST8(B_REG);
         CC_Z = ZTEST(B_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 2;
     }
@@ -2627,7 +2627,7 @@ public partial class MC6809
 
         CC_N = NTEST8(_temp8);
         CC_Z = ZTEST(_temp8);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 2;
     }
@@ -2638,7 +2638,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(B_REG);
         CC_N = NTEST8(B_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 2;
     }
@@ -2651,7 +2651,7 @@ public partial class MC6809
 
         CC_N = NTEST8(B_REG);
         CC_Z = ZTEST(B_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 2;
     }
@@ -2679,7 +2679,7 @@ public partial class MC6809
 
         CC_N = NTEST8(B_REG);
         CC_Z = ZTEST(B_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 2;
     }
@@ -2707,7 +2707,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(D_REG);
         CC_N = NTEST16(D_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -2722,7 +2722,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(U_REG);
         CC_N = NTEST16(U_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -2802,7 +2802,7 @@ public partial class MC6809
 
         CC_N = NTEST8(B_REG);
         CC_Z = ZTEST(B_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -2813,7 +2813,7 @@ public partial class MC6809
 
         CC_N = NTEST8(_temp8);
         CC_Z = ZTEST(_temp8);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -2824,7 +2824,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(B_REG);
         CC_N = NTEST8(B_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -2835,7 +2835,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(B_REG);
         CC_N = NTEST8(B_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -2846,7 +2846,7 @@ public partial class MC6809
 
         CC_N = NTEST8(B_REG);
         CC_Z = ZTEST(B_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -2874,7 +2874,7 @@ public partial class MC6809
 
         CC_N = NTEST8(B_REG);
         CC_Z = ZTEST(B_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 4;
     }
@@ -2902,7 +2902,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(D_REG);
         CC_N = NTEST16(D_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 5;
     }
@@ -2913,7 +2913,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(D_REG);
         CC_N = NTEST16(D_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 5;
     }
@@ -2924,7 +2924,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(U_REG);
         CC_N = NTEST16(U_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 5;
     }
@@ -2935,7 +2935,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(U_REG);
         CC_N = NTEST16(U_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         _cycleCounter += 5;
     }
@@ -3228,7 +3228,7 @@ public partial class MC6809
 
         CC_N = NTEST8(B_REG);
         CC_Z = ZTEST(B_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -3241,7 +3241,7 @@ public partial class MC6809
 
         CC_N = NTEST8(_temp8);
         CC_Z = ZTEST(_temp8);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -3254,7 +3254,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(B_REG);
         CC_N = NTEST8(B_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -3267,7 +3267,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(B_REG);
         CC_N = NTEST8(B_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -3280,7 +3280,7 @@ public partial class MC6809
 
         CC_N = NTEST8(B_REG);
         CC_Z = ZTEST(B_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -3312,7 +3312,7 @@ public partial class MC6809
 
         CC_N = NTEST8(B_REG);
         CC_Z = ZTEST(B_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -3344,7 +3344,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(D_REG);
         CC_N = NTEST16(D_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -3357,7 +3357,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(D_REG);
         CC_N = NTEST16(D_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -3370,7 +3370,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(U_REG);
         CC_N = NTEST16(U_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
@@ -3383,7 +3383,7 @@ public partial class MC6809
 
         CC_Z = ZTEST(U_REG);
         CC_N = NTEST16(U_REG);
-        CC_V = false; //0;
+        CC_V = false;
 
         PC_REG += 2;
 
