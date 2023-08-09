@@ -9,14 +9,14 @@ public partial class MC6809
 
     //0x1020
 
-    public void LBRN_R() //0x1021
+    public void LBrn_R() //0x1021
     {
         PC_REG += 2;
 
         _cycleCounter += 5;
     }
 
-    public void LBHI_R() //0x1022
+    public void LBhi_R() //0x1022
     {
         if (!(CC_C | CC_Z))
         {
@@ -30,7 +30,7 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void LBLS_R() //0x1023
+    public void LBls_R() //0x1023
     {
         if (CC_C | CC_Z)
         {
@@ -44,7 +44,7 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void LBHS_R() //0x1024
+    public void LBhs_R() //0x1024
     {
         if (!CC_C)
         {
@@ -58,7 +58,7 @@ public partial class MC6809
         _cycleCounter += 6;
     }
 
-    public void LBCS_R() //0x1025
+    public void LBcs_R() //0x1025
     {
         if (CC_C)
         {
@@ -72,7 +72,7 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void LBNE_R() //0x1026
+    public void LBne_R() //0x1026
     {
         if (!CC_Z)
         {
@@ -86,7 +86,7 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void LBEQ_R() //0x1027
+    public void LBeq_R() //0x1027
     {
         if (CC_Z)
         {
@@ -100,7 +100,7 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void LBVC_R() //0x1028
+    public void LBvc_R() //0x1028
     {
         if (!CC_V)
         {
@@ -114,7 +114,7 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void LBVS_R() //0x1029
+    public void LBvs_R() //0x1029
     {
         if (CC_V)
         {
@@ -128,7 +128,7 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void LBPL_R() //0x102A
+    public void LBpl_R() //0x102A
     {
         if (!CC_N)
         {
@@ -142,7 +142,7 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void LBMI_R() //0x102B
+    public void LBmi_R() //0x102B
     {
         if (CC_N)
         {
@@ -156,7 +156,7 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void LBGE_R() //0x102C
+    public void LBge_R() //0x102C
     {
         if (!(CC_N ^ CC_V))
         {
@@ -170,7 +170,7 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void LBLT_R() //0x102D
+    public void LBlt_R() //0x102D
     {
         if (CC_V ^ CC_N)
         {
@@ -184,7 +184,7 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void LBGT_R() //0x102E
+    public void LBgt_R() //0x102E
     {
         if (!(CC_Z | (CC_N ^ CC_V)))
         {
@@ -198,7 +198,7 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void LBLE_R() //0x102F
+    public void LBle_R() //0x102F
     {
         if (CC_Z | (CC_N ^ CC_V))
         {
@@ -218,7 +218,7 @@ public partial class MC6809
 
     //0x1030 - 0x103E
 
-    public void SWI2_I() //0x103F
+    public void Swi2_I() //0x103F
     {
         CC_E = true; //1;
         MemWrite8(PC_L, --S_REG);
@@ -247,7 +247,7 @@ public partial class MC6809
 
     //0x1080 - 0x1082
 
-    public void CMPD_M() //0x1083
+    public void Cmpd_M() //0x1083
     {
         _postWord = MemRead16(PC_REG);
         _temp16 = (ushort)(D_REG - _postWord);
@@ -262,7 +262,7 @@ public partial class MC6809
 
     //0x1084 - 0x108B
 
-    public void CMPY_M() //0x108C
+    public void Cmpy_M() //0x108C
     {
         _postWord = MemRead16(PC_REG);
         _temp16 = (ushort)(Y_REG - _postWord);
@@ -275,7 +275,7 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void LDY_M() //0x108E
+    public void Ldy_M() //0x108E
     {
         Y_REG = MemRead16(PC_REG);
         CC_Z = ZTEST(Y_REG);
@@ -294,7 +294,7 @@ public partial class MC6809
 
     //0x1090 - 0x1092
 
-    public void CMPD_D() //0x1093
+    public void Cmpd_D() //0x1093
     {
         _postWord = MemRead16(DPADDRESS(PC_REG++));
         _temp16 = (ushort)(D_REG - _postWord);
@@ -308,7 +308,7 @@ public partial class MC6809
 
     //0x1094 - 0x109B
 
-    public void CMPY_D()	//0x109C
+    public void Cmpy_D()	//0x109C
     {
         _postWord = MemRead16(DPADDRESS(PC_REG++));
         _temp16 = (ushort)(Y_REG - _postWord);
@@ -322,7 +322,7 @@ public partial class MC6809
 
     //0x109D
 
-    public void LDY_D() //0x109E
+    public void Ldy_D() //0x109E
     {
         Y_REG = MemRead16(DPADDRESS(PC_REG++));
         CC_Z = ZTEST(Y_REG);
@@ -332,7 +332,7 @@ public partial class MC6809
         _cycleCounter += 6;
     }
 
-    public void STY_D() //0x109F
+    public void Sty_D() //0x109F
     {
         MemWrite16(Y_REG, DPADDRESS(PC_REG++));
         CC_Z = ZTEST(Y_REG);
@@ -348,7 +348,7 @@ public partial class MC6809
 
     //0x10A0 - 0x10A2
 
-    public void CMPD_X() //0x10A3
+    public void Cmpd_X() //0x10A3
     {
         _postWord = MemRead16(INDADDRESS(PC_REG++));
         _temp16 = (ushort)(D_REG - _postWord);
@@ -362,7 +362,7 @@ public partial class MC6809
 
     //0x10A4 - 0x10AB
 
-    public void CMPY_X() //0x10AC
+    public void Cmpy_X() //0x10AC
     {
         _postWord = MemRead16(INDADDRESS(PC_REG++));
         _temp16 = (ushort)(Y_REG - _postWord);
@@ -376,7 +376,7 @@ public partial class MC6809
 
     //0x10AD
 
-    public void LDY_X() //0x10AE
+    public void Ldy_X() //0x10AE
     {
         Y_REG = MemRead16(INDADDRESS(PC_REG++));
         CC_Z = ZTEST(Y_REG);
@@ -386,7 +386,7 @@ public partial class MC6809
         _cycleCounter += 6;
     }
 
-    public void STY_X() //0x10AF
+    public void Sty_X() //0x10AF
     {
         MemWrite16(Y_REG, INDADDRESS(PC_REG++));
         CC_Z = ZTEST(Y_REG);
@@ -402,7 +402,7 @@ public partial class MC6809
 
     //0x10B0 - 0x10B2
 
-    public void CMPD_E() //0x10B3
+    public void Cmpd_E() //0x10B3
     {
         _postWord = MemRead16(MemRead16(PC_REG));
         _temp16 = (ushort)(D_REG - _postWord);
@@ -417,7 +417,7 @@ public partial class MC6809
 
     //0x10B4 - 0x10BB
 
-    public void CMPY_E() //0x10BC
+    public void Cmpy_E() //0x10BC
     {
         _postWord = MemRead16(MemRead16(PC_REG));
         _temp16 = (ushort)(Y_REG - _postWord);
@@ -432,7 +432,7 @@ public partial class MC6809
 
     //0x10BD
 
-    public void LDY_E() //0x10BE
+    public void Ldy_E() //0x10BE
     {
         Y_REG = MemRead16(MemRead16(PC_REG));
         CC_Z = ZTEST(Y_REG);
@@ -443,7 +443,7 @@ public partial class MC6809
         _cycleCounter += 7;
     }
 
-    public void STY_E() //0x10BF
+    public void Sty_E() //0x10BF
     {
         MemWrite16(Y_REG, MemRead16(PC_REG));
         CC_Z = ZTEST(Y_REG);
@@ -460,7 +460,7 @@ public partial class MC6809
 
     //0x10C0 - 0x10CD
 
-    public void LDS_I() //0x10CE
+    public void Lds_I() //0x10CE
     {
         S_REG = MemRead16(PC_REG);
         CC_Z = ZTEST(S_REG);
@@ -479,7 +479,7 @@ public partial class MC6809
 
     //0x10D0 - 0x10DD
 
-    public void LDS_D() //0x10DE
+    public void Lds_D() //0x10DE
     {
         S_REG = MemRead16(DPADDRESS(PC_REG++));
         CC_Z = ZTEST(S_REG);
@@ -489,7 +489,7 @@ public partial class MC6809
         _cycleCounter += 6;
     }
 
-    public void STS_D() //0x10DF
+    public void Sts_D() //0x10DF
     {
         MemWrite16(S_REG, DPADDRESS(PC_REG++));
         CC_Z = ZTEST(S_REG);
@@ -505,7 +505,7 @@ public partial class MC6809
 
     //0x10E0 - 0x10ED
 
-    public void LDS_X() //0x10EE
+    public void Lds_X() //0x10EE
     {
         S_REG = MemRead16(INDADDRESS(PC_REG++));
         CC_Z = ZTEST(S_REG);
@@ -515,7 +515,7 @@ public partial class MC6809
         _cycleCounter += 6;
     }
 
-    public void STS_X() //0x10EF
+    public void Sts_X() //0x10EF
     {
         MemWrite16(S_REG, INDADDRESS(PC_REG++));
         CC_Z = ZTEST(S_REG);
@@ -531,7 +531,7 @@ public partial class MC6809
 
     //0x10F0 - 0x10FD
 
-    public void LDS_E() //0x10FE
+    public void Lds_E() //0x10FE
     {
         S_REG = MemRead16(MemRead16(PC_REG));
         CC_Z = ZTEST(S_REG);
@@ -542,7 +542,7 @@ public partial class MC6809
         _cycleCounter += 7;
     }
 
-    public void STS_E() //0x10FF
+    public void Sts_E() //0x10FF
     {
         MemWrite16(S_REG, MemRead16(PC_REG));
         CC_Z = ZTEST(S_REG);

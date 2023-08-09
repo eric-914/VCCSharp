@@ -188,14 +188,14 @@ public partial class MC6809
     {
         byte opCode = MemRead8(PC_REG++);
 
-        _jmpVec2[opCode]();
+        _jumpVectors0x10[opCode]();
     }
 
     public void Page_3() // 11
     {
         byte opCode = MemRead8(PC_REG++);
 
-        _jmpVec3[opCode]();
+        _jumpVectors0x11[opCode]();
     }
 
     public void Nop_I() // 12

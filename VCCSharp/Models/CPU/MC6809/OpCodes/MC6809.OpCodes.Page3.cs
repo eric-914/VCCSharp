@@ -4,7 +4,7 @@
 // ReSharper disable IdentifierTypo
 public partial class MC6809
 {
-    public void SWI3_I() //113F 
+    public void Swi3_I() //113F 
     {
         CC_E = true; //1;
         MemWrite8(PC_L, --S_REG);
@@ -24,7 +24,7 @@ public partial class MC6809
         _cycleCounter += 20;
     }
 
-    public void CMPU_M() //1183 
+    public void Cmpu_M() //1183 
     {
         _postWord = MemRead16(PC_REG);
         _temp16 = (ushort)(U_REG - _postWord);
@@ -37,7 +37,7 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void CMPS_M() //118C 
+    public void Cmps_M() //118C 
     {
         _postWord = MemRead16(PC_REG);
         _temp16 = (ushort)(S_REG - _postWord);
@@ -50,7 +50,7 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void CMPU_D() //1193 
+    public void Cmpu_D() //1193 
     {
         _postWord = MemRead16(DPADDRESS(PC_REG++));
         _temp16 = (ushort)(U_REG - _postWord);
@@ -62,7 +62,7 @@ public partial class MC6809
         _cycleCounter += 7;
     }
 
-    public void CMPS_D() //119C 
+    public void Cmps_D() //119C 
     {
         _postWord = MemRead16(DPADDRESS(PC_REG++));
         _temp16 = (ushort)(S_REG - _postWord);
@@ -74,7 +74,7 @@ public partial class MC6809
         _cycleCounter += 7;
     }
 
-    public void CMPU_X() //11A3 
+    public void Cmpu_X() //11A3 
     {
         _postWord = MemRead16(INDADDRESS(PC_REG++));
         _temp16 = (ushort)(U_REG - _postWord);
@@ -86,7 +86,7 @@ public partial class MC6809
         _cycleCounter += 7;
     }
 
-    public void CMPS_X() //11AC 
+    public void Cmps_X() //11AC 
     {
         _postWord = MemRead16(INDADDRESS(PC_REG++));
         _temp16 = (ushort)(S_REG - _postWord);
@@ -98,7 +98,7 @@ public partial class MC6809
         _cycleCounter += 7;
     }
 
-    public void CMPU_E() //11B3 
+    public void Cmpu_E() //11B3 
     {
         _postWord = MemRead16(MemRead16(PC_REG));
         _temp16 = (ushort)(U_REG - _postWord);
@@ -111,7 +111,7 @@ public partial class MC6809
         _cycleCounter += 8;
     }
 
-    public void CMPS_E() //11BC 
+    public void Cmps_E() //11BC 
     {
         _postWord = MemRead16(MemRead16(PC_REG));
         _temp16 = (ushort)(S_REG - _postWord);
