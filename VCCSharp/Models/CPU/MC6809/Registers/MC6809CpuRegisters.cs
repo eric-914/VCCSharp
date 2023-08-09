@@ -1,6 +1,8 @@
 ﻿#pragma warning disable IDE1006
 
 
+using VCCSharp.Models.CPU.Registers;
+
 namespace VCCSharp.Models.CPU.MC6809.Registers;
 
 // ReSharper disable once InconsistentNaming
@@ -9,17 +11,15 @@ public class MC6809CpuRegisters
     // ReSharper disable InconsistentNaming
     // ReSharper disable IdentifierTypo
 
-    public MC6809CpuRegister pc { get; } = new();
-    public MC6809CpuRegister d { get; } = new();
-    public MC6809CpuRegister x { get; } = new();
-    public MC6809CpuRegister y { get; } = new();
-    public MC6809CpuRegister u { get; } = new();
-    public MC6809CpuRegister s { get; } = new();
-    public MC6809CpuRegister dp { get; } = new();
+    public Register16 pc { get; } = new();
+    public Register16 d { get; } = new();
+    public Register16 x { get; } = new();
+    public Register16 y { get; } = new();
+    public Register16 u { get; } = new();
+    public Register16 s { get; } = new();
+    public Register16 dp { get; } = new();
 
-    public byte ccbits;
-
-    public bool[] cc = new bool[8];
+    public RegisterCC cc { get; } = new();
 
     public Reg8 ureg8 { get; }
     public Reg16 xfreg16 { get; }

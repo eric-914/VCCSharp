@@ -18,7 +18,7 @@ public class Reg8
             {
                 0 => _cpu.q.lswmsb,
                 1 => _cpu.q.lswlsb,
-                2 => _cpu.ccbits,
+                2 => _cpu.cc.bits,
                 3 => _cpu.dp.msb,
                 4 => _cpu.z.msb,
                 5 => _cpu.z.lsb,
@@ -38,7 +38,7 @@ public class Reg8
                     _cpu.q.lswlsb = value;
                     break;
                 case 2:
-                    _cpu.ccbits = value;
+                    _cpu.cc.bits = value;
                     break;
                 case 3:
                     _cpu.dp.msb = value;

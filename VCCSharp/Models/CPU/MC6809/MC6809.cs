@@ -142,7 +142,7 @@ public partial class MC6809 : IMC6809
 
     public void Cpu_Nmi()
     {
-        _cpu.cc[(int)CCFlagMasks.E] = true;
+        _cpu.cc.E = true;
 
         _modules.TCC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
         _modules.TCC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
@@ -159,8 +159,8 @@ public partial class MC6809 : IMC6809
 
         _modules.TCC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
 
-        _cpu.cc[(int)CCFlagMasks.I] = true;
-        _cpu.cc[(int)CCFlagMasks.F] = true;
+        _cpu.cc.I = true;
+        _cpu.cc.F = true;
 
         _cpu.pc.Reg = MemRead16(Define.VNMI);
 
@@ -169,19 +169,19 @@ public partial class MC6809 : IMC6809
 
     public void Cpu_Firq()
     {
-        if (!_cpu.cc[(int)CCFlagMasks.F])
+        if (!_cpu.cc.F)
         {
             _inInterrupt = 1; //Flag to indicate FIRQ has been asserted
 
-            _cpu.cc[(int)CCFlagMasks.E] = false; // Turn E flag off
+            _cpu.cc.E = false; // Turn E flag off
 
             _modules.TCC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
             _modules.TCC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
 
             _modules.TCC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
 
-            _cpu.cc[(int)CCFlagMasks.I] = true;
-            _cpu.cc[(int)CCFlagMasks.F] = true;
+            _cpu.cc.I = true;
+            _cpu.cc.F = true;
 
             _cpu.pc.Reg = MemRead16(Define.VFIRQ);
         }
@@ -197,9 +197,9 @@ public partial class MC6809 : IMC6809
             return;
         }
 
-        if (!_cpu.cc[(int)CCFlagMasks.I])
+        if (!_cpu.cc.I)
         {
-            _cpu.cc[(int)CCFlagMasks.E] = true;
+            _cpu.cc.E = true;
 
             _modules.TCC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
             _modules.TCC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
@@ -216,7 +216,7 @@ public partial class MC6809 : IMC6809
             _modules.TCC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
 
             _cpu.pc.Reg = MemRead16(Define.VIRQ);
-            _cpu.cc[(int)CCFlagMasks.I] = true;
+            _cpu.cc.I = true;
         }
 
         _pendingInterrupts &= 254;
@@ -241,25 +241,6 @@ public partial class MC6809 : IMC6809
         Test(CC_C, CCFlagMasks.C);
 
         return (byte)cc;
-    }
-
-    public void SetCC(byte cc)
-    {
-        _cpu.ccbits = cc;
-
-        bool Test(CCFlagMasks mask)
-        {
-            return (cc & (1 << (int)mask)) != 0;
-        }
-
-        CC_E = Test(CCFlagMasks.E);
-        CC_F = Test(CCFlagMasks.F);
-        CC_H = Test(CCFlagMasks.H);
-        CC_I = Test(CCFlagMasks.I);
-        CC_N = Test(CCFlagMasks.N);
-        CC_Z = Test(CCFlagMasks.Z);
-        CC_V = Test(CCFlagMasks.V);
-        CC_C = Test(CCFlagMasks.C);
     }
 
     public ushort CalculateEA(byte postByte)

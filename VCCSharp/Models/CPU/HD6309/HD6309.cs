@@ -89,7 +89,7 @@ public partial class HD6309 : IHD6309
         MD_ILLEGAL = false;
         MD_ZERODIV = false;
 
-        _cpu.mdbits = GetMD();
+        _cpu.md.bits = GetMD();
 
         _syncWaiting = 0;
 
@@ -152,7 +152,7 @@ public partial class HD6309 : IHD6309
 
     public void Cpu_Nmi()
     {
-        _cpu.cc[(int)CCFlagMasks.E] = true;
+        _cpu.cc.E = true;
 
         MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
         MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
@@ -175,8 +175,8 @@ public partial class HD6309 : IHD6309
 
         MemWrite8(GetCC(), --_cpu.s.Reg);
 
-        _cpu.cc[(int)CCFlagMasks.I] = true;
-        _cpu.cc[(int)CCFlagMasks.F] = true;
+        _cpu.cc.I = true;
+        _cpu.cc.F = true;
 
         _cpu.pc.Reg = MemRead16(Define.VNMI);
 
@@ -185,29 +185,29 @@ public partial class HD6309 : IHD6309
 
     public void Cpu_Firq()
     {
-        if (!_cpu.cc[(int)CCFlagMasks.F])
+        if (!_cpu.cc.F)
         {
             _inInterrupt = 1; //Flag to indicate FIRQ has been asserted
 
             switch (MD_FIRQMODE)
             {
                 case false:
-                    _cpu.cc[(int)CCFlagMasks.E] = false; // Turn E flag off
+                    _cpu.cc.E = false; // Turn E flag off
 
                     MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
                     MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
 
                     MemWrite8(GetCC(), --_cpu.s.Reg);
 
-                    _cpu.cc[(int)CCFlagMasks.I] = true;
-                    _cpu.cc[(int)CCFlagMasks.F] = true;
+                    _cpu.cc.I = true;
+                    _cpu.cc.F = true;
 
                     _cpu.pc.Reg = MemRead16(Define.VFIRQ);
 
                     break;
 
                 case true:		//6309
-                    _cpu.cc[(int)CCFlagMasks.E] = true;
+                    _cpu.cc.E = true;
 
                     MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
                     MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
@@ -230,8 +230,8 @@ public partial class HD6309 : IHD6309
 
                     MemWrite8(GetCC(), --_cpu.s.Reg);
 
-                    _cpu.cc[(int)CCFlagMasks.I] = true;
-                    _cpu.cc[(int)CCFlagMasks.F] = true;
+                    _cpu.cc.I = true;
+                    _cpu.cc.F = true;
 
                     _cpu.pc.Reg = MemRead16(Define.VFIRQ);
 
@@ -250,9 +250,9 @@ public partial class HD6309 : IHD6309
             return;
         }
 
-        if (!_cpu.cc[(int)CCFlagMasks.I])
+        if (!_cpu.cc.I)
         {
-            _cpu.cc[(int)CCFlagMasks.E] = true;
+            _cpu.cc.E = true;
 
             MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
             MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
@@ -275,7 +275,7 @@ public partial class HD6309 : IHD6309
 
             MemWrite8(GetCC(), --_cpu.s.Reg);
 
-            _cpu.cc[(int)CCFlagMasks.I] = true;
+            _cpu.cc.I = true;
 
             _cpu.pc.Reg = MemRead16(Define.VIRQ);
         }
@@ -306,7 +306,7 @@ public partial class HD6309 : IHD6309
 
     public void SetCC(byte cc)
     {
-        _cpu.ccbits = cc;
+        _cpu.cc.bits = cc;
 
         bool Test(CCFlagMasks mask)
         {

@@ -12,50 +12,50 @@ partial class HD6309
 
     public bool CC_E
     {
-        get => _cpu.cc[(int)CCFlagMasks.E];
-        set => _cpu.cc[(int)CCFlagMasks.E] = value;
+        get => _cpu.cc.E;
+        set => _cpu.cc.E = value;
     }
 
     public bool CC_F
     {
-        get => _cpu.cc[(int)CCFlagMasks.F];
-        set => _cpu.cc[(int)CCFlagMasks.F] = value;
+        get => _cpu.cc.F;
+        set => _cpu.cc.F = value;
     }
 
     public bool CC_H
     {
-        get => _cpu.cc[(int)CCFlagMasks.H];
-        set => _cpu.cc[(int)CCFlagMasks.H] = value;
+        get => _cpu.cc.H;
+        set => _cpu.cc.H = value;
     }
 
     public bool CC_I
     {
-        get => _cpu.cc[(int)CCFlagMasks.I];
-        set => _cpu.cc[(int)CCFlagMasks.I] = value;
+        get => _cpu.cc.I;
+        set => _cpu.cc.I = value;
     }
 
     public bool CC_N
     {
-        get => _cpu.cc[(int)CCFlagMasks.N];
-        set => _cpu.cc[(int)CCFlagMasks.N] = value;
+        get => _cpu.cc.N;
+        set => _cpu.cc.N = value;
     }
 
     public bool CC_Z
     {
-        get => _cpu.cc[(int)CCFlagMasks.Z];
-        set => _cpu.cc[(int)CCFlagMasks.Z] = value;
+        get => _cpu.cc.Z;
+        set => _cpu.cc.Z = value;
     }
 
     public bool CC_V
     {
-        get => _cpu.cc[(int)CCFlagMasks.V];
-        set => _cpu.cc[(int)CCFlagMasks.V] = value;
+        get => _cpu.cc.V;
+        set => _cpu.cc.V = value;
     }
 
     public bool CC_C
     {
-        get => _cpu.cc[(int)CCFlagMasks.C];
-        set => _cpu.cc[(int)CCFlagMasks.C] = value;
+        get => _cpu.cc.C;
+        set => _cpu.cc.C = value;
     }
 
     #endregion
@@ -266,50 +266,50 @@ partial class HD6309
 
     public bool MD_NATIVE6309
     {
-        get => _cpu.md[(int)MDFlagMasks.NATIVE6309];
-        set => _cpu.md[(int)MDFlagMasks.NATIVE6309] = value;
+        get => _cpu.md.NATIVE6309;
+        set => _cpu.md.NATIVE6309 = value;
     }
 
     public bool MD_FIRQMODE
     {
-        get => _cpu.md[(int)MDFlagMasks.FIRQMODE];
-        set => _cpu.md[(int)MDFlagMasks.FIRQMODE] = value;
+        get => _cpu.md.FIRQMODE;
+        set => _cpu.md.FIRQMODE = value;
     }
 
     public bool MD_UNDEFINED2
     {
-        get => _cpu.md[(int)MDFlagMasks.MD_UNDEF2];
-        set => _cpu.md[(int)MDFlagMasks.MD_UNDEF2] = value;
+        get => _cpu.md.MD_UNDEF2;
+        set => _cpu.md.MD_UNDEF2 = value;
     }
 
     public bool MD_UNDEFINED3
     {
-        get => _cpu.md[(int)MDFlagMasks.MD_UNDEF3];
-        set => _cpu.md[(int)MDFlagMasks.MD_UNDEF3] = value;
+        get => _cpu.md.MD_UNDEF3;
+        set => _cpu.md.MD_UNDEF3 = value;
     }
 
     public bool MD_UNDEFINED4
     {
-        get => _cpu.md[(int)MDFlagMasks.MD_UNDEF4];
-        set => _cpu.md[(int)MDFlagMasks.MD_UNDEF4] = value;
+        get => _cpu.md.MD_UNDEF4;
+        set => _cpu.md.MD_UNDEF4 = value;
     }
 
     public bool MD_UNDEFINED5
     {
-        get => _cpu.md[(int)MDFlagMasks.MD_UNDEF5];
-        set => _cpu.md[(int)MDFlagMasks.MD_UNDEF5] = value;
+        get => _cpu.md.MD_UNDEF5;
+        set => _cpu.md.MD_UNDEF5 = value;
     }
 
     public bool MD_ILLEGAL
     {
-        get => _cpu.md[(int)MDFlagMasks.ILLEGAL];
-        set => _cpu.md[(int)MDFlagMasks.ILLEGAL] = value;
+        get => _cpu.md.ILLEGAL;
+        set => _cpu.md.ILLEGAL = value;
     }
 
     public bool MD_ZERODIV
     {
-        get => _cpu.md[(int)MDFlagMasks.ZERODIV];
-        set => _cpu.md[(int)MDFlagMasks.ZERODIV] = value;
+        get => _cpu.md.ZERODIV;
+        set => _cpu.md.ZERODIV = value;
     }
 
     #endregion

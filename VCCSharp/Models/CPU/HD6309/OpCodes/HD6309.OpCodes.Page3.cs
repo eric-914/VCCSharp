@@ -19,7 +19,7 @@ partial class HD6309
 
         if (_postByte == 3)
         {
-            InvalidInsHandler();
+            _____();
             return;
         }
 
@@ -52,7 +52,7 @@ partial class HD6309
 
         if (_postByte == 3)
         {
-            InvalidInsHandler();
+            _____();
             return;
         }
 
@@ -85,7 +85,7 @@ partial class HD6309
 
         if (_postByte == 3)
         {
-            InvalidInsHandler();
+            _____();
             return;
         }
 
@@ -118,7 +118,7 @@ partial class HD6309
 
         if (_postByte == 3)
         {
-            InvalidInsHandler();
+            _____();
             return;
         }
 
@@ -151,7 +151,7 @@ partial class HD6309
 
         if (_postByte == 3)
         {
-            InvalidInsHandler();
+            _____();
             return;
         }
 
@@ -183,7 +183,7 @@ partial class HD6309
 
         if (_postByte == 3)
         {
-            InvalidInsHandler();
+            _____();
             return;
         }
 
@@ -216,7 +216,7 @@ partial class HD6309
 
         if (_postByte == 3)
         {
-            InvalidInsHandler();
+            _____();
             return;
         }
 
@@ -263,7 +263,7 @@ partial class HD6309
 
         if (_postByte == 3)
         {
-            InvalidInsHandler();
+            _____();
             return;
         }
 
@@ -307,7 +307,7 @@ partial class HD6309
 
         if (_source > 4 || _dest > 4)
         {
-            InvalidInsHandler();
+            _____();
             return;
         }
 
@@ -335,7 +335,7 @@ partial class HD6309
 
         if (_source > 4 || _dest > 4)
         {
-            InvalidInsHandler();
+            _____();
             return;
         }
 
@@ -363,7 +363,7 @@ partial class HD6309
 
         if (_source > 4 || _dest > 4)
         {
-            InvalidInsHandler();
+            _____();
             return;
         }
 
@@ -390,7 +390,7 @@ partial class HD6309
 
         if (_source > 4 || _dest > 4)
         {
-            InvalidInsHandler();
+            _____();
             return;
         }
 
@@ -416,8 +416,8 @@ partial class HD6309
 
     public void Ldmd_M() // 3D 
     {
-        _cpu.mdbits = (byte)(MemRead8(PC_REG++) & 0x03);
-        SetMD(_cpu.mdbits);
+        _cpu.md.bits = (byte)(MemRead8(PC_REG++) & 0x03);
+        SetMD(_cpu.md.bits);
         _cycleCounter += 5;
     }
 

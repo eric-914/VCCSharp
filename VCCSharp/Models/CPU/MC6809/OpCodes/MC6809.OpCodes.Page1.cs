@@ -273,7 +273,7 @@ public partial class MC6809
         _temp8 = GetCC();
         _temp8 = (byte)(_temp8 | _postByte);
 
-        SetCC(_temp8);
+        _cpu.cc.bits = _temp8;
 
         _cycleCounter += 3;
     }
@@ -286,7 +286,7 @@ public partial class MC6809
         _temp8 = GetCC();
         _temp8 = (byte)(_temp8 & _postByte);
 
-        SetCC(_temp8);
+        _cpu.cc.bits = _temp8;
 
         _cycleCounter += 3;
     }
@@ -304,7 +304,7 @@ public partial class MC6809
     {
         _postByte = MemRead8(PC_REG++);
 
-        _cpu.ccbits = GetCC();
+        _cpu.cc.bits = GetCC();
 
         if (((_postByte & 0x80) >> 4) == (_postByte & 0x08)) //Verify like size registers
         {
@@ -322,7 +322,6 @@ public partial class MC6809
             }
         }
 
-        SetCC(_cpu.ccbits);
         _cycleCounter += 8;
     }
 
@@ -362,7 +361,7 @@ public partial class MC6809
             case 11:
             case 14:
             case 15:
-                _cpu.ccbits = GetCC();
+                _cpu.cc.bits = GetCC();
 
                 PUR(dest & 7, 0xFF);
 
@@ -374,8 +373,6 @@ public partial class MC6809
                 {
                     PUR(dest & 7, PUR(source & 7));
                 }
-
-                SetCC(_cpu.ccbits);
 
                 break;
         }
@@ -680,7 +677,7 @@ public partial class MC6809
 
         if ((_postByte & 0x01) != 0)
         {
-            SetCC(MemRead8(S_REG++));
+            _cpu.cc.bits = MemRead8(S_REG++);
 
             _cycleCounter += 1;
         }
@@ -814,7 +811,7 @@ public partial class MC6809
 
         if ((_postByte & 0x01) != 0)
         {
-            SetCC(MemRead8(U_REG++));
+            _cpu.cc.bits = MemRead8(U_REG++);
 
             _cycleCounter += 1;
         }
@@ -894,7 +891,7 @@ public partial class MC6809
 
     public void Rti_I() // 3B
     {
-        SetCC(MemRead8(S_REG++));
+        _cpu.cc.bits = MemRead8(S_REG++);
 
         _cycleCounter += 6;
         _inInterrupt = 0;
@@ -922,10 +919,8 @@ public partial class MC6809
     {
         _postByte = MemRead8(PC_REG++);
 
-        _cpu.ccbits = GetCC();
-        _cpu.ccbits &= _postByte;
-
-        SetCC(_cpu.ccbits);
+        _cpu.cc.bits = GetCC();
+        _cpu.cc.bits &= _postByte;
 
         _cycleCounter = _gCycleFor;
         _syncWaiting = 1;

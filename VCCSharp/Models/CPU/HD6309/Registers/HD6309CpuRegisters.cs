@@ -1,6 +1,8 @@
 ﻿#pragma warning disable IDE1006
 
 
+using VCCSharp.Models.CPU.Registers;
+
 namespace VCCSharp.Models.CPU.HD6309.Registers;
 
 // ReSharper disable once InconsistentNaming
@@ -9,22 +11,19 @@ public class HD6309CpuRegisters
     // ReSharper disable InconsistentNaming
     // ReSharper disable IdentifierTypo
 
-    public HD6309CpuRegister pc { get; } = new();
-    public HD6309CpuRegister x { get; } = new();
-    public HD6309CpuRegister y { get; } = new();
-    public HD6309CpuRegister u { get; } = new();
-    public HD6309CpuRegister s { get; } = new();
-    public HD6309CpuRegister dp { get; } = new();
-    public HD6309CpuRegister v { get; } = new();
-    public HD6309CpuRegister z { get; } = new();
+    public Register16 pc { get; } = new();
+    public Register16 x { get; } = new();
+    public Register16 y { get; } = new();
+    public Register16 u { get; } = new();
+    public Register16 s { get; } = new();
+    public Register16 dp { get; } = new();
+    public Register16 v { get; } = new();
+    public Register16 z { get; } = new();
 
     public HD6309WideRegister q { get; } = new();
 
-    public byte ccbits;
-    public byte mdbits;
-
-    public bool[] cc = new bool[8];
-    public bool[] md = new bool[8];
+    public RegisterCC cc { get; } = new();
+    public RegisterMD md { get; } = new();
 
     public Reg8 ureg8 { get; }
     public Reg16 xfreg16 { get; }

@@ -333,7 +333,7 @@ partial class HD6309
         _source = (byte)(_postByte >> 4);
         _dest = (byte)(_postByte & 15);
 
-        _cpu.ccbits = GetCC();
+        _cpu.cc.bits = GetCC();
 
         if ((_source & 0x08) == (_dest & 0x08)) //Verify like size registers
         {
@@ -396,7 +396,7 @@ partial class HD6309
             }
         }
 
-        SetCC(_cpu.ccbits);
+        SetCC(_cpu.cc.bits);
         _cycleCounter += _instance._85;
     }
 
@@ -419,7 +419,7 @@ partial class HD6309
         }
         else
         {
-            _cpu.ccbits = GetCC();
+            _cpu.cc.bits = GetCC();
             _dest &= 7;
 
             if (_source < 8)
@@ -442,7 +442,7 @@ partial class HD6309
             }
 
             O_REG = 0;
-            SetCC(_cpu.ccbits);
+            SetCC(_cpu.cc.bits);
         }
 
         _cycleCounter += _instance._64;
@@ -935,9 +935,9 @@ partial class HD6309
     public void Cwai_I()// 3C
     {
         _postByte = MemRead8(PC_REG++);
-        _cpu.ccbits = GetCC();
-        _cpu.ccbits = (byte)(_cpu.ccbits & _postByte);
-        SetCC(_cpu.ccbits);
+        _cpu.cc.bits = GetCC();
+        _cpu.cc.bits = (byte)(_cpu.cc.bits & _postByte);
+        SetCC(_cpu.cc.bits);
         _cycleCounter = _gCycleFor;
         _syncWaiting = 1;
     }

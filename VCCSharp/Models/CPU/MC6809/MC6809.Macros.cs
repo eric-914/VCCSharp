@@ -12,50 +12,50 @@ public partial class MC6809
 
     public bool CC_E
     {
-        get => _cpu.cc[(int)CCFlagMasks.E];
-        set => _cpu.cc[(int)CCFlagMasks.E] = value;
+        get => _cpu.cc.E;
+        set => _cpu.cc.E = value;
     }
 
     public bool CC_F
     {
-        get => _cpu.cc[(int)CCFlagMasks.F];
-        set => _cpu.cc[(int)CCFlagMasks.F] = value;
+        get => _cpu.cc.F;
+        set => _cpu.cc.F = value;
     }
 
     public bool CC_H
     {
-        get => _cpu.cc[(int)CCFlagMasks.H];
-        set => _cpu.cc[(int)CCFlagMasks.H] = value;
+        get => _cpu.cc.H;
+        set => _cpu.cc.H = value;
     }
 
     public bool CC_I
     {
-        get => _cpu.cc[(int)CCFlagMasks.I];
-        set => _cpu.cc[(int)CCFlagMasks.I] = value;
+        get => _cpu.cc.I;
+        set => _cpu.cc.I = value;
     }
 
     public bool CC_N
     {
-        get => _cpu.cc[(int)CCFlagMasks.N];
-        set => _cpu.cc[(int)CCFlagMasks.N] = value;
+        get => _cpu.cc.N;
+        set => _cpu.cc.N = value;
     }
 
     public bool CC_Z
     {
-        get => _cpu.cc[(int)CCFlagMasks.Z];
-        set => _cpu.cc[(int)CCFlagMasks.Z] = value;
+        get => _cpu.cc.Z;
+        set => _cpu.cc.Z = value;
     }
 
     public bool CC_V
     {
-        get => _cpu.cc[(int)CCFlagMasks.V];
-        set => _cpu.cc[(int)CCFlagMasks.V] = value;
+        get => _cpu.cc.V;
+        set => _cpu.cc.V = value;
     }
 
     public bool CC_C
     {
-        get => _cpu.cc[(int)CCFlagMasks.C];
-        set => _cpu.cc[(int)CCFlagMasks.C] = value;
+        get => _cpu.cc.C;
+        set => _cpu.cc.C = value;
     }
 
     #endregion
