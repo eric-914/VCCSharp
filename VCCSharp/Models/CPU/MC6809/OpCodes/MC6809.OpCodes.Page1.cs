@@ -205,8 +205,8 @@ public partial class MC6809
 
     public void Sync_I() // 13
     {
-        _cycleCounter = _gCycleFor;
-        _syncWaiting = 1;
+        _cycleCounter = SyncCycle;
+        IsSyncWaiting = true;
     }
 
     // 14       //InvalidInsHandler
@@ -894,7 +894,7 @@ public partial class MC6809
         _cpu.cc.bits = MemRead8(S_REG++);
 
         _cycleCounter += 6;
-        _inInterrupt = 0;
+        IsInInterrupt = false;
 
         if (CC_E)
         {
@@ -922,8 +922,8 @@ public partial class MC6809
         _cpu.cc.bits = GetCC();
         _cpu.cc.bits &= _postByte;
 
-        _cycleCounter = _gCycleFor;
-        _syncWaiting = 1;
+        _cycleCounter = SyncCycle;
+        IsSyncWaiting = true;
     }
 
     public void Mul_I() // 3D

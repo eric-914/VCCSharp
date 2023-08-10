@@ -228,8 +228,8 @@ partial class HD6309
 
     public void Sync_I()// 13
     {
-        _cycleCounter = _gCycleFor;
-        _syncWaiting = 1;
+        _cycleCounter = SyncCycle;
+        IsSyncWaiting = true;
     }
 
     //6309 CHECK
@@ -903,7 +903,7 @@ partial class HD6309
     {
         SetCC(MemRead8(S_REG++));
         _cycleCounter += 6;
-        _inInterrupt = 0;
+        IsInInterrupt = false;
 
         if (CC_E)
         {
@@ -937,8 +937,8 @@ partial class HD6309
         _cpu.cc.bits = GetCC();
         _cpu.cc.bits = (byte)(_cpu.cc.bits & _postByte);
         SetCC(_cpu.cc.bits);
-        _cycleCounter = _gCycleFor;
-        _syncWaiting = 1;
+        _cycleCounter = SyncCycle;
+        IsSyncWaiting = true;
     }
 
     public void Mul_I()// 3D
@@ -948,6 +948,8 @@ partial class HD6309
         CC_Z = ZTEST(D_REG);
         _cycleCounter += _instance._1110;
     }
+
+    // 3E		//InvalidInsHandler
 
     public void Swi1_I()// 3F
     {
@@ -1029,7 +1031,6 @@ partial class HD6309
         CC_Z = ZTEST(A_REG);
         CC_N = NTEST8(A_REG);
         _cycleCounter += _instance._21;
-
     }
 
     public void Asra_I()// 47

@@ -3,16 +3,20 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
-    public class _13_Sync_I : OpCode, IOpCode
+    public class _3C_Cwai_I : OpCode, IOpCode
     {
-        public static int Exec(ICpuProcessor cpu, int cycles)
+        private static int Exec(ICpuProcessor cpu, int cycles)
         {
+            var _postByte = cpu.MemRead8(cpu.PC_REG++);
+
+            cpu.CC &= _postByte;
+
             cpu.IsSyncWaiting = true;
 
             return cycles;
         }
 
         public int Exec(IMC6809 cpu) => Exec(cpu, cpu.SyncCycle);
-        public int Exec(IHD6309 cpu) => Exec(cpu, cpu.SyncCycle);
+        public int Exec(IHD6309 cpu)=> Exec(cpu, cpu.SyncCycle);
     }
 }

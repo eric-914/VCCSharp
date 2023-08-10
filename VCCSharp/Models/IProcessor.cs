@@ -12,4 +12,4 @@ public interface IProcessor
     void DeAssertInterrupt(byte irq);
 }
 
-public interface ICpuProcessor : IProcessor, IRegisters, IBus { }
+public interface ICpuProcessor : IProcessor, IRegisters, IBus, IInterrupt { }

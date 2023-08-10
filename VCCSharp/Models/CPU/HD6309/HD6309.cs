@@ -8,9 +8,15 @@ namespace VCCSharp.Models.CPU.HD6309;
 // ReSharper disable once InconsistentNaming
 public interface IHD6309 : ICpuProcessor
 {
+    byte E_REG { get; set; }
+    byte F_REG { get; set; }
+
     uint Q_REG { get; set; }
-    ushort W_REG { get; set; }
+
     ushort O_REG { get; set; }
+    ushort W_REG { get; set; }
+
+    bool MD_NATIVE6309 { get; }
 }
 
 // ReSharper disable once InconsistentNaming
@@ -21,14 +27,15 @@ public partial class HD6309 : IHD6309
     private readonly HD6309CpuRegisters _cpu = new();
     private readonly HD6309NatEmuCycles _instance = new();
 
-    private byte _inInterrupt;
     private int _cycleCounter;
-    private uint _syncWaiting;
-    private int _gCycleFor;
 
     //--Interrupt states
     private byte _irqWaiter;
     private byte _pendingInterrupts;
+
+    public bool IsInInterrupt { get; set; }
+    public bool IsSyncWaiting { get; set; }
+    public int SyncCycle { get; set; }
 
     public HD6309(IModules modules)
     {
@@ -47,18 +54,18 @@ public partial class HD6309 : IHD6309
         _cpu.pc.Reg = address;
 
         _pendingInterrupts = 0;
-        _syncWaiting = 0;
+        IsSyncWaiting = false;
     }
 
     public void DeAssertInterrupt(byte irq)
     {
         _pendingInterrupts &= (byte)~(1 << (irq - 1));
-        _inInterrupt = 0;
+        IsInInterrupt = false;
     }
 
     public void AssertInterrupt(byte irq, byte flag)
     {
-        _syncWaiting = 0;
+        IsSyncWaiting = false;
         _pendingInterrupts |= (byte)(1 << (irq - 1));
         _irqWaiter = flag;
     }
@@ -96,7 +103,7 @@ public partial class HD6309 : IHD6309
 
         _cpu.md.bits = GetMD();
 
-        _syncWaiting = 0;
+        IsSyncWaiting = false;
 
         DP_REG = 0;
         PC_REG = MemRead16(Define.VRESET);	//PC gets its reset vector
@@ -138,14 +145,14 @@ public partial class HD6309 : IHD6309
                 }
             }
 
-            if (_syncWaiting == 1)
+            if (IsSyncWaiting)
             {
                 //Abort the run nothing happens asynchronously from the CPU
                 // WDZ - Experimental SyncWaiting should still return used cycles (and not zero) by breaking from loop
                 break;
             }
 
-            _gCycleFor = cycleFor;
+            SyncCycle = cycleFor;
 
             byte opCode = _modules.TCC1014.MemRead8(_cpu.pc.Reg++); //PC_REG
 
@@ -192,7 +199,7 @@ public partial class HD6309 : IHD6309
     {
         if (!_cpu.cc.F)
         {
-            _inInterrupt = 1; //Flag to indicate FIRQ has been asserted
+            IsInInterrupt = true; //Flag to indicate FIRQ has been asserted
 
             switch (MD_FIRQMODE)
             {
@@ -249,7 +256,7 @@ public partial class HD6309 : IHD6309
 
     public void Cpu_Irq()
     {
-        if (_inInterrupt == 1)
+        if (IsInInterrupt)
         {
             //If FIRQ is running postpone the IRQ
             return;

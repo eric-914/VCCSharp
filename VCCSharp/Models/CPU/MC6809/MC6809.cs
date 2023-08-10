@@ -14,14 +14,15 @@ public partial class MC6809 : IMC6809
 
     private readonly MC6809CpuRegisters _cpu = new();
 
-    private byte _inInterrupt;
     private int _cycleCounter;
-    private uint _syncWaiting;
-    private int _gCycleFor;
 
     //--Interrupt states
     private byte _irqWaiter;
     private byte _pendingInterrupts;
+
+    public bool IsInInterrupt { get; set; }
+    public bool IsSyncWaiting { get; set; }
+    public int SyncCycle { get; set; }
 
     public MC6809(IModules modules)
     {
@@ -39,18 +40,18 @@ public partial class MC6809 : IMC6809
         _cpu.pc.Reg = address;
 
         _pendingInterrupts = 0;
-        _syncWaiting = 0;
+        IsSyncWaiting = false;
     }
 
     public void DeAssertInterrupt(byte irq)
     {
         _pendingInterrupts &= (byte)~(1 << (irq - 1));
-        _inInterrupt = 0;
+        IsInInterrupt = false;
     }
 
     public void AssertInterrupt(byte irq, byte flag)
     {
-        _syncWaiting = 0;
+        IsSyncWaiting = false;
         _pendingInterrupts |= (byte)(1 << (irq - 1));
         _irqWaiter = flag;
     }
@@ -80,7 +81,7 @@ public partial class MC6809 : IMC6809
 
         DP_REG = 0;
 
-        _syncWaiting = 0;
+        IsSyncWaiting = false;
 
         PC_REG = MemRead16(Define.VRESET);	//PC gets its reset vector
 
@@ -121,14 +122,14 @@ public partial class MC6809 : IMC6809
                 }
             }
 
-            if (_syncWaiting == 1)
+            if (IsSyncWaiting)
             {
                 //Abort the run nothing happens asynchronously from the CPU
                 // WDZ - Experimental SyncWaiting should still return used cycles (and not zero) by breaking from loop
                 break;
             }
 
-            _gCycleFor = cycleFor;
+            SyncCycle = cycleFor;
 
             byte opCode = _modules.TCC1014.MemRead8(_cpu.pc.Reg++);   //PC_REG
 
@@ -169,7 +170,7 @@ public partial class MC6809 : IMC6809
     {
         if (!_cpu.cc.F)
         {
-            _inInterrupt = 1; //Flag to indicate FIRQ has been asserted
+            IsInInterrupt = true; //Flag to indicate FIRQ has been asserted
 
             _cpu.cc.E = false; // Turn E flag off
 
@@ -189,7 +190,7 @@ public partial class MC6809 : IMC6809
 
     public void Cpu_Irq()
     {
-        if (_inInterrupt == 1)
+        if (IsInInterrupt)
         {
             //If FIRQ is running postpone the IRQ
             return;
