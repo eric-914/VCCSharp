@@ -9,5 +9,6 @@
         void MemWrite8(byte data, ushort address);
 
         ushort MemRead16(ushort address);
+        void MemWrite16(ushort data, ushort address);
     }
 }

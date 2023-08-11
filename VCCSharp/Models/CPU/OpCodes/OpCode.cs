@@ -21,6 +21,9 @@ namespace VCCSharp.Models.CPU.OpCodes
         protected static bool ZTEST(byte value) => value == 0;
         protected static bool ZTEST(ushort value) => value == 0;
         protected static bool ZTEST(uint value) => value == 0;
+
+        protected static bool OVERFLOW8(bool c, byte a, ushort b, byte r) => ((c ? 1 : 0) ^ (((a ^ b ^ r) >> 7) & 1)) != 0;
+        protected static bool OVERFLOW16(bool c, uint a, ushort b, ushort r) => ((c ? (byte)1 : (byte)0) ^ (((a ^ b ^ r) >> 15) & 1)) != 0;
     }
 
     public class UndefinedOpCode : OpCode, IOpCode
