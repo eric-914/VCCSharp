@@ -391,7 +391,7 @@ public partial class HD6309 : IHD6309
         {
             switch (postByte & 0x1F)
             {
-                case 0: // Post inc by 1
+                case 0: // post inc by 1
                     ea = PXF(reg);
 
                     PXF(reg, (ushort)(PXF(reg) + 1));
