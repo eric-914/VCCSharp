@@ -2034,7 +2034,7 @@ partial class HD6309
         _cycleCounter += 4;
     }
 
-    public void Eora_X()// a8
+    public void Eora_X()// A8
     {
         A_REG ^= MemRead8(INDADDRESS(PC_REG++));
         CC_N = NTEST8(A_REG);
