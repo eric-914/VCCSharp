@@ -2714,7 +2714,7 @@ public partial class MC6809
         _cycleCounter += 2;
     }
 
-    // CD
+    // CD	//InvalidInsHandler
 
     public void Ldu_M() // CE
     {

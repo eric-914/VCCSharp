@@ -17,6 +17,8 @@ public interface IHD6309 : ICpuProcessor
     ushort W_REG { get; set; }
 
     bool MD_NATIVE6309 { get; }
+
+    uint MemRead32(ushort address);
 }
 
 // ReSharper disable once InconsistentNaming
