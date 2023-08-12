@@ -958,6 +958,10 @@ partial class HD6309
         _cycleCounter += 6;
     }
 
+    // 3C
+    // 3D
+    // 3E
+
     public void Swi2_I() // 3F 
     {
         CC_E = true; //1;
@@ -992,12 +996,15 @@ partial class HD6309
     public void Negd_I() // 40 
     {
         D_REG = (ushort)(0 - D_REG);
-        CC_C = _temp16 > 0;
+        CC_C = D_REG > 0;
         CC_V = D_REG == 0x8000;
         CC_N = NTEST16(D_REG);
         CC_Z = ZTEST(D_REG);
         _cycleCounter += _instance._32;
     }
+
+    // 41
+    // 42
 
     public void Comd_I() // 43 
     {
@@ -1017,6 +1024,8 @@ partial class HD6309
         CC_N = false; //0;
         _cycleCounter += _instance._32;
     }
+
+    // 45
 
     public void Rord_I() // 46 
     {
@@ -1067,6 +1076,8 @@ partial class HD6309
         _cycleCounter += _instance._32;
     }
 
+    // 4B
+
     public void Incd_I() // 4C 
     {
         D_REG++;
@@ -1083,6 +1094,8 @@ partial class HD6309
         CC_V = false; //0;
         _cycleCounter += _instance._32;
     }
+
+    // 4E
 
     public void Clrd_I() // 4F 
     {
