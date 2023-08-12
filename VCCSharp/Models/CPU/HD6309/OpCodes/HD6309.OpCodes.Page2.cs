@@ -1111,6 +1111,10 @@ partial class HD6309
 
     #region 0x50 - 0x5F
 
+    // 50
+    // 51
+    // 52
+
     public void Comw_I() // 53 
     {
         W_REG = (ushort)(0xFFFF - W_REG);
@@ -1119,7 +1123,6 @@ partial class HD6309
         CC_C = true; //1;
         CC_V = false; //0;
         _cycleCounter += _instance._32;
-
     }
 
     public void Lsrw_I() // 54 
@@ -1131,6 +1134,8 @@ partial class HD6309
         _cycleCounter += _instance._32;
     }
 
+    // 55
+
     public void Rorw_I() // 56 
     {
         _postWord = (ushort)((CC_C ? 1 : 0) << 15);
@@ -1140,6 +1145,9 @@ partial class HD6309
         CC_N = NTEST16(W_REG);
         _cycleCounter += _instance._32;
     }
+
+    // 57
+    // 58
 
     public void Rolw_I() // 59 
     {
@@ -1161,6 +1169,8 @@ partial class HD6309
         _cycleCounter += _instance._32;
     }
 
+    // 5B
+
     public void Incw_I() // 5C 
     {
         W_REG++;
@@ -1177,6 +1187,8 @@ partial class HD6309
         CC_V = false; //0;
         _cycleCounter += _instance._32;
     }
+
+    // 5E 
 
     public void Clrw_I() // 5F 
     {
@@ -1275,6 +1287,8 @@ partial class HD6309
         _cycleCounter += _instance._54;
     }
 
+    // 87
+
     public void Eord_M() // 88 
     {
         D_REG ^= MemRead16(PC_REG);
@@ -1334,6 +1348,8 @@ partial class HD6309
         _cycleCounter += _instance._54;
     }
 
+    // 8D
+
     public void Ldy_M() // 8E  
     {
         Y_REG = MemRead16(PC_REG);
@@ -1343,6 +1359,8 @@ partial class HD6309
         PC_REG += 2;
         _cycleCounter += _instance._54;
     }
+
+    // 8F
 
     #endregion
 
