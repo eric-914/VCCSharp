@@ -1,4 +1,5 @@
-﻿using VCCSharp.Models.CPU.HD6309;
+﻿using System.Security.Policy;
+using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.HD6309.OpCodes;
 using VCCSharp.Models.CPU.MC6809;
 
@@ -29,6 +30,46 @@ namespace VCCSharp.Models.CPU.OpCodes
     public class UndefinedOpCode : OpCode, IOpCode
     {
         public int Exec(IMC6809 cpu) => throw new NotImplementedException();
-        public int Exec(IHD6309 cpu) => throw new NotImplementedException();
+
+        //--Apparently Hitachi has an error handler
+        public int Exec(IHD6309 cpu)
+        {
+            cpu.MD_ILLEGAL = true;
+
+            return ErrorVector(cpu, 0);
+        }
+
+        private int ErrorVector(IHD6309 cpu, int cycles)
+        {
+            cpu.CC_E = true;
+
+            cpu.MemWrite8(cpu.PC_L, --cpu.S_REG);
+            cpu.MemWrite8(cpu.PC_H, --cpu.S_REG);
+            cpu.MemWrite8(cpu.U_L, --cpu.S_REG);
+            cpu.MemWrite8(cpu.U_H, --cpu.S_REG);
+            cpu.MemWrite8(cpu.Y_L, --cpu.S_REG);
+            cpu.MemWrite8(cpu.Y_H, --cpu.S_REG);
+            cpu.MemWrite8(cpu.X_L, --cpu.S_REG);
+            cpu.MemWrite8(cpu.X_H, --cpu.S_REG);
+            cpu.MemWrite8(cpu.DPA, --cpu.S_REG);
+
+            if (cpu.MD_NATIVE6309)
+            {
+                cpu.MemWrite8(cpu.F_REG, --cpu.S_REG);
+                cpu.MemWrite8(cpu.E_REG, --cpu.S_REG);
+
+                cycles += 2;
+            }
+
+            cpu.MemWrite8(cpu.B_REG, --cpu.S_REG);
+            cpu.MemWrite8(cpu.A_REG, --cpu.S_REG);
+            cpu.MemWrite8(cpu.CC, --cpu.S_REG);
+
+            cpu.PC_REG = cpu.MemRead16(Define.VTRAP);
+
+            cycles += 12 + Cycles._54;  //One for each byte +overhead? Guessing from PSHS
+
+            return cycles;
+        }
     }
 }

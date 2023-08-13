@@ -16,7 +16,11 @@ public interface IHD6309 : ICpuProcessor
     ushort O_REG { get; set; }
     ushort W_REG { get; set; }
 
+    byte MD { get; set; }
+
     bool MD_NATIVE6309 { get; }
+    bool MD_ILLEGAL { set; }
+    bool MD_ZERODIV { set; }
 
     uint MemRead32(ushort address);
     void MemWrite32(uint data, ushort address);

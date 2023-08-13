@@ -64,6 +64,12 @@ partial class HD6309
         set => _cpu.cc.C = value;
     }
 
+    public byte MD
+    {
+        get => _cpu.md.bits;
+        set => _cpu.md.bits = value;
+    }
+
     #endregion
 
     #region Register Macros
@@ -224,6 +230,10 @@ partial class HD6309
 
     public byte PUR(int i) => _cpu.ureg8[i];
     public void PUR(int i, byte value) => _cpu.ureg8[i] = value;
+
+    public void AUR(int i, byte value) => _cpu.ureg8[i] &= (byte)~(1 << value); //AND
+    public void OUR(int i, byte value) => _cpu.ureg8[i] |= (byte)~(1 << value); //OR
+    public void XUR(int i, byte value) => _cpu.ureg8[i] ^= (byte)~(1 << value); //XOR
 
     public ushort PXF(int i) => _cpu.xfreg16[i];
     public void PXF(int i, ushort value) => _cpu.xfreg16[i] = value;

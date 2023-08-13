@@ -198,6 +198,10 @@ public partial class MC6809
     public ushort PXF(int i) => _cpu.xfreg16[i];
     public void PXF(int i, ushort value) => _cpu.xfreg16[i] = value;
 
+    public void AUR(int i, byte value) => _cpu.ureg8[i] &= (byte)~(1 << value); //AND
+    public void OUR(int i, byte value) => _cpu.ureg8[i] |= (byte)~(1 << value); //OR
+    public void XUR(int i, byte value) => _cpu.ureg8[i] ^= (byte)~(1 << value); //XOR
+
     public ushort DPADDRESS(ushort r) => (ushort)(_cpu.dp.Reg | MemRead8(r));
 
     public byte MemRead8(ushort address) => _modules.TCC1014.MemRead8(address);

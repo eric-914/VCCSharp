@@ -25,10 +25,10 @@
         byte X_L { get; set; }
         byte X_H { get; set; }
 
-        byte S_L { get;set; }
-        byte S_H { get;set; }
+        byte S_L { get; set; }
+        byte S_H { get; set; }
 
-        byte DPA { get;set; }
+        byte DPA { get; set; }
 
         bool CC_E { get; set; }
         bool CC_F { get; set; }
@@ -46,5 +46,9 @@
 
         ushort PXF(int i);
         void PXF(int i, ushort value);
+
+        void AUR(int i, byte value);
+        void OUR(int i, byte value);
+        void XUR(int i, byte value);
     }
 }

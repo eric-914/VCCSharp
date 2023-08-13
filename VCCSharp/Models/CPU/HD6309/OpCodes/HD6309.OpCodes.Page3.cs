@@ -203,7 +203,6 @@ partial class HD6309
         }
 
         _cycleCounter += _instance._76;
-
     }
 
     public void Ldbt() // 36 
