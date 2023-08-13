@@ -1,9 +1,9 @@
 ﻿using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
 
-namespace VCCSharp.Models.CPU.OpCodes.Page3
+namespace VCCSharp.Models.CPU.OpCodes.Page3.A
 {
-    public class _119D_Divd_D : OpCode, IOpCode
+    public class _11AD_Divd_X : OpCode, IOpCode
     {
         private static IOpCode DivByZero = new DivByZero();
 
@@ -11,7 +11,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page3
 
         public int Exec(IHD6309 cpu)
         {
-            ushort address = cpu.DPADDRESS(cpu.PC_REG++);
+            ushort address = cpu.INDADDRESS(cpu.PC_REG++);
             sbyte denominator = (sbyte)cpu.MemRead8(address);
 
             if (denominator == 0)
