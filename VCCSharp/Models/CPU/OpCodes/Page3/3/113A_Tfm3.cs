@@ -5,7 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page3
 {
     public class _113A_Tfm3 : OpCode, IOpCode
     {
-        private static readonly IOpCode InvalidOpCode = new UndefinedOpCode();
+        private static readonly IOpCode InvalidOpCode = new InvalidOpCode();
 
         public int Exec(IMC6809 cpu) => throw new NotImplementedException();
 

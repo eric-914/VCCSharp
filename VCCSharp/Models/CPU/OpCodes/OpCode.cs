@@ -30,16 +30,13 @@ namespace VCCSharp.Models.CPU.OpCodes
     public class UndefinedOpCode : OpCode, IOpCode
     {
         public int Exec(IMC6809 cpu) => throw new NotImplementedException();
+        public int Exec(IHD6309 cpu) => throw new NotImplementedException();
+    }
 
-        //--Apparently Hitachi has an error handler
-        public int Exec(IHD6309 cpu)
-        {
-            cpu.MD_ILLEGAL = true;
-
-            return ErrorVector(cpu, 0);
-        }
-
-        private int ErrorVector(IHD6309 cpu, int cycles)
+    //--Apparently Hitachi has an error handlers
+    public abstract class ErrorOpCode : UndefinedOpCode, IOpCode
+    {
+        protected int ErrorVector(IHD6309 cpu, int cycles)
         {
             cpu.CC_E = true;
 
@@ -70,6 +67,26 @@ namespace VCCSharp.Models.CPU.OpCodes
             cycles += 12 + Cycles._54;  //One for each byte +overhead? Guessing from PSHS
 
             return cycles;
+        }
+    }
+
+    public class InvalidOpCode : ErrorOpCode, IOpCode
+    {
+        int IOpCode.Exec(IHD6309 cpu)
+        {
+            cpu.MD_ILLEGAL = true;
+
+            return ErrorVector(cpu, 0);
+        }
+    }
+
+    public class DivByZero : ErrorOpCode, IOpCode
+    {
+        int IOpCode.Exec(IHD6309 cpu)
+        {
+            cpu.MD_ZERODIV = true;
+
+            return ErrorVector(cpu, 0);
         }
     }
 }
