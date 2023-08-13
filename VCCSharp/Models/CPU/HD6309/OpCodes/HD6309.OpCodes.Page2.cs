@@ -1503,6 +1503,8 @@ partial class HD6309
         _cycleCounter += _instance._75;
     }
 
+    // 9D
+
     public void Ldy_D() // 9E 
     {
         Y_REG = MemRead16(DPADDRESS(PC_REG++));
@@ -1660,6 +1662,8 @@ partial class HD6309
         CC_Z = ZTEST(_temp16);
         _cycleCounter += _instance._76;
     }
+
+    // AD
 
     public void Ldy_X() // AE 
     {
