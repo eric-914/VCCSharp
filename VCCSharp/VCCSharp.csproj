@@ -118,8 +118,4 @@
 		</None>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Models\CPU\OpCodes\Page3\" />
-	</ItemGroup>
-
 </Project>

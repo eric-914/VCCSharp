@@ -421,9 +421,11 @@ partial class HD6309
         _cycleCounter += 5;
     }
 
+    // 3E
+
     public void Swi3_I() // 3F 
     {
-        CC_E = true; //1;
+        CC_E = true;
         MemWrite8(PC_L, --S_REG);
         MemWrite8(PC_H, --S_REG);
         MemWrite8(U_L, --S_REG);
@@ -452,15 +454,26 @@ partial class HD6309
 
     #region 0x40 - 0x4F
 
+    //40
+    //41
+    //42
+
     public void Come_I() // 43 
     {
         E_REG = (byte)(0xFF - E_REG);
         CC_Z = ZTEST(E_REG);
         CC_N = NTEST8(E_REG);
-        CC_C = true; //1;
+        CC_C = true;
         CC_V = false;
         _cycleCounter += _instance._32;
     }
+
+    // 44
+    // 45
+    // 46
+    // 47
+    // 48
+    // 49
 
     public void Dece_I() // 4A 
     {
@@ -470,6 +483,8 @@ partial class HD6309
         CC_V = E_REG == 0x7F;
         _cycleCounter += _instance._32;
     }
+
+    // 4B
 
     public void Ince_I() // 4C 
     {
@@ -488,13 +503,15 @@ partial class HD6309
         _cycleCounter += _instance._32;
     }
 
+    // 4E
+
     public void Clre_I() // 4F 
     {
         E_REG = 0;
         CC_C = false;
         CC_V = false;
         CC_N = false;
-        CC_Z = true; //1;
+        CC_Z = true;
         _cycleCounter += _instance._32;
     }
 
@@ -502,15 +519,26 @@ partial class HD6309
 
     #region 0x50 - 0x5F
 
+    // 50
+    // 51
+    // 52
+
     public void Comf_I() // 53 
     {
         F_REG = (byte)(0xFF - F_REG);
         CC_Z = ZTEST(F_REG);
         CC_N = NTEST8(F_REG);
-        CC_C = true; //1;
+        CC_C = true;
         CC_V = false;
         _cycleCounter += _instance._32;
     }
+
+    // 54
+    // 55
+    // 56
+    // 57
+    // 58
+    // 59
 
     public void Decf_I() // 5A 
     {
@@ -520,6 +548,8 @@ partial class HD6309
         CC_V = F_REG == 0x7F;
         _cycleCounter += _instance._21;
     }
+
+    // 5B
 
     public void Incf_I() // 5C 
     {
@@ -538,13 +568,15 @@ partial class HD6309
         _cycleCounter += _instance._32;
     }
 
+    // 5E
+
     public void Clrf_I() // 5F 
     {
         F_REG = 0;
         CC_C = false;
         CC_V = false;
         CC_N = false;
-        CC_Z = true; //1;
+        CC_Z = true;
         _cycleCounter += _instance._32;
     }
 
@@ -578,6 +610,8 @@ partial class HD6309
         _cycleCounter += 3;
     }
 
+    // 82
+
     public void Cmpu_M() // 83 
     {
         _postWord = MemRead16(PC_REG);
@@ -590,6 +624,9 @@ partial class HD6309
         _cycleCounter += _instance._54;
     }
 
+    // 84
+    // 85
+
     public void Lde_M() // 86 
     {
         E_REG = MemRead8(PC_REG++);
@@ -598,6 +635,11 @@ partial class HD6309
         CC_V = false;
         _cycleCounter += 3;
     }
+
+    // 87
+    // 88
+    // 89
+    // 8A
 
     public void Adde_M() // 8B 
     {
@@ -640,7 +682,7 @@ partial class HD6309
 
         if (_signedShort > 255 || _signedShort < -256) //Abort
         {
-            CC_V = true; //1;
+            CC_V = true;
             CC_N = false;
             CC_Z = false;
             CC_C = false;
@@ -653,8 +695,8 @@ partial class HD6309
 
         if (_signedShort > 127 || _signedShort < -128)
         {
-            CC_V = true; //1;
-            CC_N = true; //1;
+            CC_V = true;
+            CC_N = true;
         }
         else
         {
@@ -684,7 +726,7 @@ partial class HD6309
 
         if (_signedInt > 65535 || _signedInt < -65536) //Abort
         {
-            CC_V = true; //1;
+            CC_V = true;
             CC_N = false;
             CC_Z = false;
             CC_C = false;
@@ -697,8 +739,8 @@ partial class HD6309
 
         if (_signedShort > 32767 || _signedShort < -32768)
         {
-            CC_V = true; //1;
-            CC_N = true; //1;
+            CC_V = true;
+            CC_N = true;
         }
         else
         {
@@ -749,6 +791,8 @@ partial class HD6309
         _cycleCounter += _instance._54;
     }
 
+    // 92
+
     public void Cmpu_D() // 93 
     {
         _postWord = MemRead16(DPADDRESS(PC_REG++));
@@ -759,6 +803,9 @@ partial class HD6309
         CC_Z = ZTEST(_temp16);
         _cycleCounter += _instance._75;
     }
+
+    // 94
+    // 95
 
     public void Lde_D() // 96 
     {
@@ -777,6 +824,10 @@ partial class HD6309
         CC_V = false;
         _cycleCounter += _instance._54;
     }
+
+    // 98
+    // 99
+    // 9A
 
     public void Adde_D() // 9B 
     {
@@ -818,7 +869,7 @@ partial class HD6309
 
         if (_signedShort > 255 || _signedShort < -256) //Abort
         {
-            CC_V = true; //1;
+            CC_V = true;
             CC_N = false;
             CC_Z = false;
             CC_C = false;
@@ -831,8 +882,8 @@ partial class HD6309
 
         if (_signedShort > 127 || _signedShort < -128)
         {
-            CC_V = true; //1;
-            CC_N = true; //1;
+            CC_V = true;
+            CC_N = true;
         }
         else
         {
@@ -861,7 +912,7 @@ partial class HD6309
 
         if (_signedInt > 65535 || _signedInt < -65536) //Abort
         {
-            CC_V = true; //1;
+            CC_V = true;
             CC_N = false;
             CC_Z = false;
             CC_C = false;
@@ -874,8 +925,8 @@ partial class HD6309
 
         if (_signedShort > 32767 || _signedInt < -32768)
         {
-            CC_V = true; //1;
-            CC_N = true; //1;
+            CC_V = true;
+            CC_N = true;
         }
         else
         {
@@ -925,6 +976,8 @@ partial class HD6309
         _cycleCounter += 5;
     }
 
+    // A2
+
     public void Cmpu_X() // A3 
     {
         _postWord = MemRead16(INDADDRESS(PC_REG++));
@@ -935,6 +988,9 @@ partial class HD6309
         CC_Z = ZTEST(_temp16);
         _cycleCounter += _instance._76;
     }
+
+    // A4
+    // A5
 
     public void Lde_X() // A6 
     {
@@ -953,6 +1009,10 @@ partial class HD6309
         CC_V = false;
         _cycleCounter += 5;
     }
+
+    // A8
+    // A9
+    // AA
 
     public void Adde_X() // AB 
     {
@@ -994,7 +1054,7 @@ partial class HD6309
 
         if (_signedShort > 255 || _signedShort < -256) //Abort
         {
-            CC_V = true; //1;
+            CC_V = true;
             CC_N = false;
             CC_Z = false;
             CC_C = false;
@@ -1007,8 +1067,8 @@ partial class HD6309
 
         if (_signedShort > 127 || _signedShort < -128)
         {
-            CC_V = true; //1;
-            CC_N = true; //1;
+            CC_V = true;
+            CC_N = true;
         }
         else
         {
@@ -1037,7 +1097,7 @@ partial class HD6309
 
         if (_signedInt > 65535 || _signedInt < -65536) //Abort
         {
-            CC_V = true; //1;
+            CC_V = true;
             CC_N = false;
             CC_Z = false;
             CC_C = false;
@@ -1050,8 +1110,8 @@ partial class HD6309
 
         if (_signedShort > 32767 || _signedShort < -32768)
         {
-            CC_V = true; //1;
-            CC_N = true; //1;
+            CC_V = true;
+            CC_N = true;
         }
         else
         {
@@ -1103,6 +1163,8 @@ partial class HD6309
         _cycleCounter += _instance._65;
     }
 
+    // B2
+
     public void Cmpu_E() // B3 
     {
         _postWord = MemRead16(MemRead16(PC_REG));
@@ -1114,6 +1176,9 @@ partial class HD6309
         PC_REG += 2;
         _cycleCounter += _instance._86;
     }
+
+    // B4
+    // B5
 
     public void Lde_E() // B6 
     {
@@ -1134,6 +1199,10 @@ partial class HD6309
         PC_REG += 2;
         _cycleCounter += _instance._65;
     }
+
+    // B8
+    // B9
+    // BA
 
     public void Adde_E() // BB 
     {
@@ -1178,7 +1247,7 @@ partial class HD6309
 
         if (_signedShort > 255 || _signedShort < -256) //Abort
         {
-            CC_V = true; //1;
+            CC_V = true;
             CC_N = false;
             CC_Z = false;
             CC_C = false;
@@ -1191,8 +1260,8 @@ partial class HD6309
 
         if (_signedShort > 127 || _signedShort < -128)
         {
-            CC_V = true; //1;
-            CC_N = true; //1;
+            CC_V = true;
+            CC_N = true;
         }
         else
         {
@@ -1221,7 +1290,7 @@ partial class HD6309
 
         if (_signedInt > 65535 || _signedInt < -65536) //Abort
         {
-            CC_V = true; //1;
+            CC_V = true;
             CC_N = false;
             CC_Z = false;
             CC_C = false;
@@ -1234,8 +1303,8 @@ partial class HD6309
 
         if (_signedShort > 32767 || _signedShort < -32768)
         {
-            CC_V = true; //1;
-            CC_N = true; //1;
+            CC_V = true;
+            CC_N = true;
         }
         else
         {
@@ -1285,6 +1354,11 @@ partial class HD6309
         _cycleCounter += 3;
     }
 
+    // C2
+    // C3
+    // C4
+    // C5
+
     public void Ldf_M() // C6 
     {
         F_REG = MemRead8(PC_REG++);
@@ -1293,6 +1367,11 @@ partial class HD6309
         CC_V = false;
         _cycleCounter += 3;
     }
+
+    // C7
+    // C8
+    // C9
+    // CA
 
     public void Addf_M() // CB 
     {
@@ -1306,6 +1385,11 @@ partial class HD6309
         CC_Z = ZTEST(F_REG);
         _cycleCounter += 3;
     }
+
+    // CC
+    // CD
+    // CE
+    // CF
 
     #endregion
 
@@ -1334,6 +1418,11 @@ partial class HD6309
         _cycleCounter += _instance._54;
     }
 
+    // D2
+    // D3
+    // D4
+    // D5
+
     public void Ldf_D() // D6 
     {
         F_REG = MemRead8(DPADDRESS(PC_REG++));
@@ -1352,6 +1441,10 @@ partial class HD6309
         _cycleCounter += _instance._54;
     }
 
+    // D8
+    // D9
+    // DA
+
     public void Addf_D() // DB 
     {
         _postByte = MemRead8(DPADDRESS(PC_REG++));
@@ -1364,6 +1457,11 @@ partial class HD6309
         CC_Z = ZTEST(F_REG);
         _cycleCounter += _instance._54;
     }
+
+    // DC
+    // DD
+    // DE
+    // DF
 
     #endregion
 
@@ -1392,6 +1490,11 @@ partial class HD6309
         _cycleCounter += 5;
     }
 
+    // E2
+    // E3
+    // E4
+    // E5
+
     public void Ldf_X() // E6 
     {
         F_REG = MemRead8(INDADDRESS(PC_REG++));
@@ -1410,6 +1513,10 @@ partial class HD6309
         _cycleCounter += 5;
     }
 
+    // E8
+    // E9
+    // EA
+
     public void Addf_X() // EB 
     {
         _postByte = MemRead8(INDADDRESS(PC_REG++));
@@ -1422,6 +1529,11 @@ partial class HD6309
         CC_Z = ZTEST(F_REG);
         _cycleCounter += 5;
     }
+
+    // EC
+    // ED
+    // EE
+    // EF
 
     #endregion
 
@@ -1452,6 +1564,11 @@ partial class HD6309
         _cycleCounter += _instance._65;
     }
 
+    // F2
+    // F3
+    // F4
+    // F5
+
     public void Ldf_E() // F6 
     {
         F_REG = MemRead8(MemRead16(PC_REG));
@@ -1472,6 +1589,10 @@ partial class HD6309
         _cycleCounter += _instance._65;
     }
 
+    // F8
+    // F9
+    // FA
+
     public void Addf_E() // FB 
     {
         _postByte = MemRead8(MemRead16(PC_REG));
@@ -1485,6 +1606,11 @@ partial class HD6309
         PC_REG += 2;
         _cycleCounter += _instance._65;
     }
+
+    // FC
+    // FD
+    // FE
+    // FF
 
     #endregion
 }
