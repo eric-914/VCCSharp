@@ -1836,6 +1836,8 @@ partial class HD6309
         _cycleCounter += _instance._86;
     }
 
+    // BD
+
     public void Ldy_E() // BE 
     {
         Y_REG = MemRead16(MemRead16(PC_REG));
