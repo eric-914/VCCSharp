@@ -152,3 +152,4 @@ NOTE: D may be pushed (pulled) to either stack with PSHS, PSHU (PULS, PULU) inst
 ## Sources
 * [MC6809E Technical Specifications](https://ia803209.us.archive.org/33/items/Motorola_MC6809E_HMOS_8_Bit_Microprocessor_1984_Motorola/Motorola_MC6809E_HMOS_8_Bit_Microprocessor_1984_Motorola_text.pdf)
 * [Machine Code to Instruction Cross Reference](https://www.maddes.net/m6809pm/appendix_c.htm)
+* [6x09 Instruction Set](https://thezippsterzone.com/wp-content/uploads/2018/06/6x09_Instruction_Sets.pdf)

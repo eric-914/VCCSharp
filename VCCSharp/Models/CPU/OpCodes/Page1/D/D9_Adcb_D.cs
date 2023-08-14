@@ -3,9 +3,31 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1.D
 {
-    //ADCB
-    //Add memory to accumulator with carry
-    //DIRECT
+    /// <summary>
+    ///ADCB
+    ///Add memory to accumulator with carry
+    ///DIRECT
+    ///Add Memory Byte plus Carry with Accumulator A or B
+    ///r’ ← r + (M) + C
+    /// SOURCE FORM   ADDRESSING MODE     OPCODE       CYCLES      BYTE COUNT
+    /// ADCB          DIRECT              D9           4 / 3       2
+    ///   [E F H I N Z V C]
+    ///   [    ↕   ↕ ↕ ↕ ↕]
+    /// </summary>
+    /// <remarks>
+    /// These instructions add the contents of a byte in memory plus the contents of the Carry flag with either Accumulator A or B. 
+    /// The 8-bit result is placed back into the specified accumulator.
+    ///     H The Half-Carry flag is set if a carry into bit 4 occurred; cleared otherwise.
+    ///     N The Negative flag is set equal to the new value of bit 7 of the accumulator.
+    ///     Z The Zero flag is set if the new accumulator value is zero; cleared otherwise.
+    ///     V The Overflow flag is set if an overflow occurred; cleared otherwise.
+    ///     C The Carry flag is set if a carry out of bit 7 occurred; cleared otherwise.
+    /// The ADC instruction is most often used to perform addition of the subsequent bytes of a multi-byte addition. 
+    /// This allows the carry from a previous ADD or ADC instruction to be included when doing addition for the next higher-order byte.
+    /// Since the 6x09 provides a 16-bit ADD instruction, it is not necessary to use the 8-bit ADD and ADC instructions for performing 16-bit addition.
+    /// 
+    /// See Also: ADCD, ADCR
+    /// </remarks>
     public class D9_Adcb_D : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)
