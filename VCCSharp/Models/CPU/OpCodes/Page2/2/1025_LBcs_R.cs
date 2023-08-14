@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
     //LBCS
     //Branch if carry set 
+    //LBLO
     //Branch if lower (unsigned)
     //RELATIVE
     public class _1025_LBcs_R : OpCode, IOpCode

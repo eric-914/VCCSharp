@@ -5,6 +5,8 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //BHS
     //Branch if higher or same (unsigned)
+    //BCC
+    //Branch if carry clear
     //RELATIVE
     public class _24_Bhs_R : OpCode, IOpCode
     {

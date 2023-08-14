@@ -3,10 +3,10 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1.B
 {
-    //BSR
+    //JSR
     //Branch to subroutine 
     //EXTENDED
-    public class BD_Bsr_E : OpCode, IOpCode
+    public class BD_Jsr_E : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)
         {

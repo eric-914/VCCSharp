@@ -6,7 +6,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     //SWI
     //Software interrupt (absolute indirect) 
     //INHERENT
-    public class _3F_Swi1_I : OpCode, IOpCode
+    public class _3F_Swi_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles, Func<int> addendum)
         {
