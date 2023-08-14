@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //BLT
+    //Branch if less than (signed)
     public class _2D_Blt_R : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

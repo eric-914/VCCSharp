@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
+    //LBMI
+    //Branch if minus 
     public class _102B_LBmi_R : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

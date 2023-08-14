@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3
 {
+    //SWI
+    //Software interrupt (absolute indirect) 
     public class _113F_Swi3_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles, Func<int> addendum)

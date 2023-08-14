@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
+    //LBHS
+    //Branch if higher or same (unsigned)
     public class _1024_LBhs_R : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //ANDCC
+    //AND condition code register
     public class _1C_Andcc_M : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //JSR
+    //Jump to subroutine
     public class _9D_Jsr_D : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

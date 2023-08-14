@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //RTI
+    //Return from interrupt 
     public class _3B_Rti_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles, Func<int> addendum)

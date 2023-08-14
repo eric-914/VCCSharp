@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //LBSR
+    //Branch to subroutine 
     internal class _17_Lbsr_R : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //RTS
+    //Return from subroutine
     public class _39_Rts_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

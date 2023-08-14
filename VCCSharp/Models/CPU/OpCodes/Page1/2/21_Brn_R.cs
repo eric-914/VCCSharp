@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //BRN
+    //Branch never
     public class _21_Brn_R : OpCode, IOpCode
     {
         public int Exec(IMC6809 cpu)
