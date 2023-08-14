@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3
 {
+    // --[HITACHI]--
+    //TFM3
     public class _113A_Tfm3 : OpCode, IOpCode
     {
         private static readonly IOpCode InvalidOpCode = new InvalidOpCode();

@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    // --[HITACHI]--
+    //TIM
     //EXTENDED
     public class _7B_Tim_E : OpCode, IOpCode
     {

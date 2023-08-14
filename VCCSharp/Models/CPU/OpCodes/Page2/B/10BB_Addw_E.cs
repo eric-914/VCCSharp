@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2.B
 {
+    // --[HITACHI]--
+    //ADDW
     //EXTENDED
     public class _10BB_Addw_E : OpCode, IOpCode
     {
@@ -16,7 +18,9 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2.B
 
             cpu.CC_C = (sum & 0x10000) >> 16 != 0;
             cpu.CC_V = OVERFLOW16(cpu.CC_C, sum, value, cpu.W_REG);
+          
             cpu.W_REG = (ushort)sum;
+            
             cpu.CC_Z = ZTEST(cpu.W_REG);
             cpu.CC_N = NTEST16(cpu.W_REG);
 

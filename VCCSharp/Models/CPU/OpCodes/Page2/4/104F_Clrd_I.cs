@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
+    // --[HITACHI]--
+    //CLRD
     //INHERENT
     public class _104F_Clrd_I : OpCode, IOpCode
     {

@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
+    // --[HITACHI]--
+    //COMW
     //INHERENT
     public class _1053_Comw_I : OpCode, IOpCode
     {

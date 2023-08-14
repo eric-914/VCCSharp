@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
+    // --[HITACHI]--
+    //SUBW
     //DIRECT
     public class _1090_Subw_D : OpCode, IOpCode
     {
@@ -16,7 +18,9 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
 
             cpu.CC_C = (difference & 0x10000) >> 16 != 0;
             cpu.CC_V = OVERFLOW16(cpu.CC_C, difference, value, cpu.W_REG);
+
             cpu.W_REG = (ushort)difference;
+            
             cpu.CC_Z = ZTEST(cpu.W_REG);
             cpu.CC_N = NTEST16(cpu.W_REG);
 

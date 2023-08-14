@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
+    // --[HITACHI]--
+    //LDW
     //DIRECT
     public class _1096_Ldw_D : OpCode, IOpCode
     {
@@ -13,6 +15,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
             ushort address = cpu.DPADDRESS(cpu.PC_REG++);
 
             cpu.W_REG = cpu.MemRead16(address);
+
             cpu.CC_Z = ZTEST(cpu.W_REG);
             cpu.CC_N = NTEST16(cpu.W_REG);
             cpu.CC_V = false;

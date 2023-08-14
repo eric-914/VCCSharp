@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3
 {
+    // --[HITACHI]--
+    //CLRE
     //INHERENT
     public class _114F_Clre_I : OpCode, IOpCode
     {

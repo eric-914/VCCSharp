@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
+    // --[HITACHI]--
+    //ANDD
     //DIRECT
     public class _1094_Andd_D : OpCode, IOpCode
     {
@@ -11,9 +13,10 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
         public int Exec(IHD6309 cpu)
         {
             ushort address = cpu.DPADDRESS(cpu.PC_REG++);
-            var value = cpu.MemRead16(address);
+            ushort value = cpu.MemRead16(address);
 
             cpu.D_REG &= value;
+
             cpu.CC_N = NTEST16(cpu.D_REG);
             cpu.CC_Z = ZTEST(cpu.D_REG);
             cpu.CC_V = false;

@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3.F
 {
+    // --[HITACHI]--
+    //STF
     //EXTENDED
     public class _11F7_Stf_E : OpCode, IOpCode
     {

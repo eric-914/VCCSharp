@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
+    // --[HITACHI]--
+    //ASLD
     //INHERENT
     public class _1048_Asld_I : OpCode, IOpCode
     {

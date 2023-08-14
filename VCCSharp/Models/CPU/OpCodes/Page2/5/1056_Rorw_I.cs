@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
+    // --[HITACHI]--
+    //RORW
     //INHERENT
     public class _1056_Rorw_I : OpCode, IOpCode
     {

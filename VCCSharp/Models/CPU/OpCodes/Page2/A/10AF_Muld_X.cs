@@ -3,9 +3,14 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2.A
 {
-    public class _10AF_ : OpCode, IOpCode
+    // --[HITACHI]--
+    //MULD
+    //INDEXED
+    public class _10AF_Muld_X : OpCode, IOpCode
     {
-        private static int Exec(ICpuProcessor cpu, int cycles)
+        public int Exec(IMC6809 cpu) => throw new NotImplementedException();
+
+        public int Exec(IHD6309 cpu)
         {
             ushort address = cpu.INDADDRESS(cpu.PC_REG++);
 
@@ -15,10 +20,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2.A
             cpu.CC_N = NTEST16(cpu.Y_REG);
             cpu.CC_V = false;
 
-            return cycles;
+            return 6;
         }
-
-        public int Exec(IMC6809 cpu) => Exec(cpu, 6);
-        public int Exec(IHD6309 cpu) => Exec(cpu, 6);
     }
 }

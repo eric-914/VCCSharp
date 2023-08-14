@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3.A
 {
+    // --[HITACHI]--
+    //CMPE
     //INDEXED
     public class _11A1_Cmpe_X : OpCode, IOpCode
     {

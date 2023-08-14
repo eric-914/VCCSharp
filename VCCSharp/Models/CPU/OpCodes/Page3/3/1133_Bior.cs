@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3
 {
+    // --[HITACHI]--
+    //BIOR
     public class _1133_Bior : OpCode, IOpCode
     {
         private static readonly IOpCode InvalidOpCode = new InvalidOpCode();

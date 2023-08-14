@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
+    // --[HITACHI]--
+    //DECD
     //INHERENT
     public class _104A_Decd_I : OpCode, IOpCode
     {

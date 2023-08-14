@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3
 {
+    // --[HITACHI]--
+    //BIAND
     public class _1131_Biand : OpCode, IOpCode
     {
         private static readonly IOpCode InvalidOpCode = new InvalidOpCode();

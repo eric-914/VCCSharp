@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    // --[HITACHI]--
+    //OIM
     //INDEXED
     public class _61_Oim_X : OpCode, IOpCode
     {

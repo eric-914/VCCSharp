@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3
 {
+    // --[HITACHI]--
+    //CLRF
     //INHERENT
     public class _115F_Clrf_I : OpCode, IOpCode
     {

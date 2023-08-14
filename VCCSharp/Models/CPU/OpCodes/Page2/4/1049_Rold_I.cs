@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
+    // --[HITACHI]--
+    //ROLD
     //INHERENT
     public class _1049_Rold_I : OpCode, IOpCode
     {

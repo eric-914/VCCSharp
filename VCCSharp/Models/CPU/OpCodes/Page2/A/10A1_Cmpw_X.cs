@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2.A
 {
+    // --[HITACHI]--
+    //CMPW
     //INDEXED
     public class _10A1_Cmpw_X : OpCode, IOpCode
     {

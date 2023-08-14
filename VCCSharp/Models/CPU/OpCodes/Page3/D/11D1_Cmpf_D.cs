@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3.D
 {
+    // --[HITACHI]--
+    //CMPF
     //DIRECT
     public class _11D1_Cmpf_D : OpCode, IOpCode
     {

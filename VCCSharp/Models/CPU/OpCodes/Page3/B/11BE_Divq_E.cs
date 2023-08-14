@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3.B
 {
+    // --[HITACHI]--
+    //DIVQ
     //EXTENDED
     public class _11BE_Divq_E : OpCode, IOpCode
     {

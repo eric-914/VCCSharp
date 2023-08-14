@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3.D
 {
+    // --[HITACHI]--
+    //ADDF
     //DIRECT
     public class _11DB_Addf_D : OpCode, IOpCode
     {

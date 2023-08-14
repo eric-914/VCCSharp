@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    // --[HITACHI]--
+    //SEXW
     //INHERENT
     public class _14_Sexw_I : OpCode, IOpCode
     {

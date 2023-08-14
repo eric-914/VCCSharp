@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3
 {
+    // --[HITACHI]--
+    //TFM2
     public class _1139_Tfm2 : OpCode, IOpCode
     {
         private static readonly IOpCode InvalidOpCode = new InvalidOpCode();
@@ -28,7 +30,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page3
                 return InvalidOpCode.Exec(cpu);
             }
 
-            var mask = cpu.MemRead8(cpu.PXF(source));
+            byte mask = cpu.MemRead8(cpu.PXF(source));
 
             cpu.MemWrite8(mask, cpu.PXF(destination));
 

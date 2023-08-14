@@ -10,7 +10,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2.B
     {
         private static int Exec(ICpuProcessor cpu, int cycles)
         {
-            var address = cpu.MemRead16(cpu.PC_REG);
+            ushort address = cpu.MemRead16(cpu.PC_REG);
 
             cpu.MemWrite16(cpu.Y_REG, address);
 

@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3.E
 {
+    // --[HITACHI]--
+    //SUBF
     //INDEXED
     public class _11E0_Subf_X : OpCode, IOpCode
     {

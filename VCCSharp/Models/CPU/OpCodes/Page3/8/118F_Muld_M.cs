@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3
 {
+    // --[HITACHI]--
+    //MULD
     //IMMEDIATE
     public class _118F_Muld_M : OpCode, IOpCode
     {

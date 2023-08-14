@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
+    // --[HITACHI]--
+    //SUBW
     //IMMEDIATE
     public class _1080_Subw_M : OpCode, IOpCode
     {

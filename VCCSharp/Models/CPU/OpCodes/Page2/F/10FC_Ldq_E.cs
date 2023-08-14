@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2.F
 {
+    // --[HITACHI]--
+    //LDQ
     //EXTENDED
     public class _10FC_Ldq_E : OpCode, IOpCode
     {

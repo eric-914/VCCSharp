@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3
 {
+    // --[HITACHI]--
+    //BIEOR
     public class _1135_Bieor : OpCode, IOpCode
     {
         private static readonly IOpCode InvalidOpCode = new InvalidOpCode();
@@ -11,12 +13,12 @@ namespace VCCSharp.Models.CPU.OpCodes.Page3
 
         public int Exec(IHD6309 cpu)
         {
-            var value = cpu.MemRead8(cpu.PC_REG++);
-            var address = cpu.DPADDRESS(cpu.PC_REG++);
-            var mask = cpu.MemRead8(address);
+            byte value = cpu.MemRead8(cpu.PC_REG++);
+            ushort address = cpu.DPADDRESS(cpu.PC_REG++);
+            byte mask = cpu.MemRead8(address);
 
-            var source = (byte)((value >> 3) & 7);
-            var destination = (byte)(value & 7);
+            byte source = (byte)((value >> 3) & 7);
+            byte destination = (byte)(value & 7);
 
             value >>= 6;
 

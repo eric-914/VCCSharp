@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3
 {
+    // --[HITACHI]--
+    //TFM1
     public class _1138_Tfm1 : OpCode, IOpCode
     {
         private static readonly IOpCode InvalidOpCode = new InvalidOpCode();
@@ -18,17 +20,17 @@ namespace VCCSharp.Models.CPU.OpCodes.Page3
                 return 6;
             }
 
-            var value = cpu.MemRead8(cpu.PC_REG);
+            byte value = cpu.MemRead8(cpu.PC_REG);
 
-            var source = (byte)(value >> 4);
-            var destination = (byte)(value & 15);
+            byte source = (byte)(value >> 4);
+            byte destination = (byte)(value & 15);
 
             if (source > 4 || destination > 4)
             {
                 return InvalidOpCode.Exec(cpu);
             }
 
-            var mask = cpu.MemRead8(cpu.PXF(source));
+            byte mask = cpu.MemRead8(cpu.PXF(source));
 
             cpu.MemWrite8(mask, cpu.PXF(destination));
 

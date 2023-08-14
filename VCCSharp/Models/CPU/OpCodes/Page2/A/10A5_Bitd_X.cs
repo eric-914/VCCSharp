@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2.A
 {
+    // --[HITACHI]--
+    //BITD
     //INDEXED
     public class _10A5_Bitd_X : OpCode, IOpCode
     {
@@ -10,9 +12,9 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2.A
 
         public int Exec(IHD6309 cpu)
         {
-            var address = cpu.INDADDRESS(cpu.PC_REG++);
-            var value = cpu.MemRead16(address);
-            var and = (ushort)(cpu.D_REG & value);
+            ushort address = cpu.INDADDRESS(cpu.PC_REG++);
+            ushort value = cpu.MemRead16(address);
+            ushort and = (ushort)(cpu.D_REG & value);
 
             cpu.CC_N = NTEST16(and);
             cpu.CC_Z = ZTEST(and);

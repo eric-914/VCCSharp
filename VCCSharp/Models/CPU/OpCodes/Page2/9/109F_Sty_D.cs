@@ -13,6 +13,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
             ushort address = cpu.DPADDRESS(cpu.PC_REG++);
 
             cpu.MemWrite16(cpu.Y_REG, address);
+
             cpu.CC_Z = ZTEST(cpu.Y_REG);
             cpu.CC_N = NTEST16(cpu.Y_REG);
             cpu.CC_V = false; //0;

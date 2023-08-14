@@ -10,12 +10,13 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
     {
         private static int Exec(ICpuProcessor cpu, int cycles)
         {
-            var address = cpu.DPADDRESS(cpu.PC_REG++);
+            ushort address = cpu.DPADDRESS(cpu.PC_REG++);
 
             cpu.Y_REG = cpu.MemRead16(address);
+
             cpu.CC_Z = ZTEST(cpu.Y_REG);
             cpu.CC_N = NTEST16(cpu.Y_REG);
-            cpu.CC_V = false; //0;
+            cpu.CC_V = false;
 
             return cycles;
         }
