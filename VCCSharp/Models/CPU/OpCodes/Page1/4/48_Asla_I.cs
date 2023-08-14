@@ -5,6 +5,8 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //ASLA
     //Arithmetic shift of accumulator or memory 
+    //LSLA
+    //Logical shift left accumulator or memory location
     //INHERENT
     public class _48_Asla_I : OpCode, IOpCode
     {

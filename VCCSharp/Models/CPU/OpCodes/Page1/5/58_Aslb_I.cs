@@ -3,8 +3,10 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
-    //ASL
+    //ASLB
     //Arithmetic shift of accumulator or memory 
+    //LSLB
+    //Logical shift left accumulator or memory location
     //INHERENT
     public class _58_Aslb_I : OpCode, IOpCode
     {

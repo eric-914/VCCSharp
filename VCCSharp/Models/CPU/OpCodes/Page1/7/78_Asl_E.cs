@@ -5,6 +5,8 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //ASL
     //Arithmetic shift of accumulator or memory 
+    //LSL
+    //Logical shift left accumulator or memory location
     //EXTENDED
     public class _78_Asl_E : OpCode, IOpCode
     {
