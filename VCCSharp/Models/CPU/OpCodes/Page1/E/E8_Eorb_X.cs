@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1.E
 {
     //EORB
     //Exclusive or memory with accumulator
+    //INDEXED
     public class E8_Eorb_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

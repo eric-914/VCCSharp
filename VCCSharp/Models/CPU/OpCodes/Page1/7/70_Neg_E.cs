@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //NEG
     //Negate accumulator or memory
+    //EXTENDED
     public class _70_Neg_E : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

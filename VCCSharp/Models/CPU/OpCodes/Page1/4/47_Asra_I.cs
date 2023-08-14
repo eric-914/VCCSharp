@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //ASRA
     //Arithmetic shift of accumulator or memory right 
+    //INHERENT
     public class _47_Asra_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

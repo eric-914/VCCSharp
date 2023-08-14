@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1.D
 {
     //LDB
     //Load accumulator from memory
+    //DIRECT
     public class D6_Ldb_D : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

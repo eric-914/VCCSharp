@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //SUBA
     //Subtract memory from accumulator
+    //DIRECT
     public class _90_Suba_D : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

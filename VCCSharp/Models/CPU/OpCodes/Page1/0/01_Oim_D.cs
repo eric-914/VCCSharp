@@ -3,6 +3,9 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    // --[HITACHI]--
+    //OIM
+    //DIRECT
     public class _01_Oim_D : OpCode, IOpCode
     {
         public int Exec(IMC6809 cpu) => throw new NotImplementedException();

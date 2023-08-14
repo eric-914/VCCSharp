@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
     //LBHI
     //Branch if higher (unsigned)
+    //RELATIVE
     public class _1022_LBhi_R : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

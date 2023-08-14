@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //BSR
     //Branch to subroutine 
+    //RELATIVE
     public class _8D_Bsr_R : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

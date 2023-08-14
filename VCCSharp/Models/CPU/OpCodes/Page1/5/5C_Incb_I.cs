@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //INCB
     //Increment accumulator or memory location
+    //INHERENT
     public class _5C_Incb_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

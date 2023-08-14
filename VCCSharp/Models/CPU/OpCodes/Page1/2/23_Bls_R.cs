@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //BLS
     //Branch if lower or same (unsigned)
+    //RELATIVE
     public class _23_Bls_R : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

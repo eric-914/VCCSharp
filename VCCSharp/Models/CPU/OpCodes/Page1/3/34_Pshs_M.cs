@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //PSHS
     //Push A, B, CC, DP, D, X, Y, U, or PC onto hardware stack
+    //IMMEDIATE
     public class _34_Pshs_M : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

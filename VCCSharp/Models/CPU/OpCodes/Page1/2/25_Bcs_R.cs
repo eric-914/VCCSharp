@@ -6,6 +6,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     //BCS
     //Branch if carry set 
     //Branch if lower (unsigned)
+    //RELATIVE
     public class _25_Bcs_R : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

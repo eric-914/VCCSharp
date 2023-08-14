@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //MUL
     //Unsigned multiply (A x B —> D)
+    //INHERENT
     public class _3D_Mul_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

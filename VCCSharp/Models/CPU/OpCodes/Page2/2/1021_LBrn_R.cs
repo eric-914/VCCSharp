@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
     //BRN
     //Branch never
+    //RELATIVE
     public class _1021_LBrn_R : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

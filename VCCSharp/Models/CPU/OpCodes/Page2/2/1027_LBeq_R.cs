@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
     //LBEQ
     //Branch if equal
+    //RELATIVE
     public class _1027_LBeq_R : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

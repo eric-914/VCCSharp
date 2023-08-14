@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //RTI
     //Return from interrupt 
+    //INHERENT
     public class _3B_Rti_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles, Func<int> addendum)

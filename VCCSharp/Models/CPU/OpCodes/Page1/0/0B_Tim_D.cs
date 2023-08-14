@@ -3,6 +3,9 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    // --[HITACHI]--
+    //TIM
+    //DIRECT
     public class _0B_Tim_D : OpCode, IOpCode
     {
         public int Exec(IMC6809 cpu)

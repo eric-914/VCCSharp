@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1.E
 {
     //ADCB
     //Add memory to accumulator with carry
+    //INDEXED
     public class E9_Adcb_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

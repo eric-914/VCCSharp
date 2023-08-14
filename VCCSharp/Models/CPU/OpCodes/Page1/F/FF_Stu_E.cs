@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1.F
 {
     //STU
     //Store stack pointer to memory
+    //EXTENDED
     public class FF_Stu_E : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

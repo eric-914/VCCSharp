@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
     //LDY
     //Load index register from memory
+    //DIRECT
     public class _109E_Ldy_D : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

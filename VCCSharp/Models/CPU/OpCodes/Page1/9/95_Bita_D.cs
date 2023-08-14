@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //BITA
     //Bit test memory with accumulator
+    //DIRECT
     public class _95_Bita_D : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

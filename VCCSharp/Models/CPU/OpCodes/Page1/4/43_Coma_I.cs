@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //COMA
     //Complement accumulator or memory location
+    //INHERENT
     public class _43_Coma_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1.E
 {
     //STU
     //Store stack pointer to memory
+    //INDEXED
     public class EF_Stu_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

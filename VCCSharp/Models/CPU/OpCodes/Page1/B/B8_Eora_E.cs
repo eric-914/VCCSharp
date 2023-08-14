@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1.B
 {
     //EORA
     //Exclusive or memory with accumulator
+    //EXTENDED
     public class B8_Eora_E : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

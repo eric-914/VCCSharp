@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1.D
 {
     //STB
     //Store accumulator to memory
+    //DIRECT
     public class D7_Stb_D : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

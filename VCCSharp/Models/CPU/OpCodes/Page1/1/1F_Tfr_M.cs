@@ -5,6 +5,9 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //TFR R1, R2
     //Transfer R1 to R2 (R1, R2 = A, B, CC, DP)
+    //Transfer D to X, Y, S, U or PC
+    //Transfer X, Y, S, U or PC to D
+    //IMMEDIATE
     public class _1F_Tfr_M : OpCode, IOpCode
     {
         public int Exec(IMC6809 cpu)

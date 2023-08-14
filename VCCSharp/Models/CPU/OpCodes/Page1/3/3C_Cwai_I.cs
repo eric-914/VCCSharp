@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //CWAI
     //AND condition code register, then wait for interrupt
+    //INHERENT
     public class _3C_Cwai_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

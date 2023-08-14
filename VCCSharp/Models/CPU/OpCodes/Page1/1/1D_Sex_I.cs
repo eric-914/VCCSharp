@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //SEX
     //Sign Extend B accumulator into A accumulator 
+    //INHERENT
     public class _1D_Sex_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

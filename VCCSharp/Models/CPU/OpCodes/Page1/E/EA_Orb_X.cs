@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1.E
 {
     //ORB
     //Or memory with accumulator
+    //INDEXED
     public class EA_Orb_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

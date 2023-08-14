@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //STX
     //Store index register to memory
+    //DIRECT
     public class _9F_Stx_D : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

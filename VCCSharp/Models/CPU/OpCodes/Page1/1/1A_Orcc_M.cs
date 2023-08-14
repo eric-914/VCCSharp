@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //ORCC
     //OR condition code register 
+    //IMMEDIATE
     public class _1A_Orcc_M : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

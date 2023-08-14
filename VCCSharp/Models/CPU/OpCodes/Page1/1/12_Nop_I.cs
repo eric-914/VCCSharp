@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //NOP
     //No operation
+    //INHERENT
     public class _12_Nop_I : OpCode, IOpCode
     {
         public int Exec(IMC6809 cpu)

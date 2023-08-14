@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //DAA
     //Decimal adjust A accumulator
+    //INHERENT
     public class _19_Daa_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

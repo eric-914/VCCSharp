@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2.E
 {
     //STS
     //Store stack pointer to memory
+    //INDEXED
     public class _10EF_Sts_X : OpCode, IOpCode
     {
         public static int Exec(ICpuProcessor cpu, int cycles)
@@ -15,7 +16,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2.E
 
             cpu.CC_Z = ZTEST(cpu.S_REG);
             cpu.CC_N = NTEST16(cpu.S_REG);
-            cpu.CC_V = false; //0;
+            cpu.CC_V = false;
 
             return cycles;
         }

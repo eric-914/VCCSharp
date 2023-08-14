@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //SYNC
     //Synchronize with interrupt line
+    //INHERENT
     public class _13_Sync_I : OpCode, IOpCode
     {
         public static int Exec(ICpuProcessor cpu, int cycles)

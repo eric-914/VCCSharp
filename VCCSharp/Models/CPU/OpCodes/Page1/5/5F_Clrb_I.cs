@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //CLRB
     //Clear accumulator or memory location
+    //INHERENT
     public class _5F_Clrb_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

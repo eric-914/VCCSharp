@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //ASLA
     //Arithmetic shift of accumulator or memory 
+    //INHERENT
     public class _48_Asla_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

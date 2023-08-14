@@ -3,6 +3,7 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3.F
 {
+    //EXTENDED
     public class _11F6_Ldf_E : OpCode, IOpCode
     {
         public int Exec(IMC6809 cpu) => throw new NotImplementedException();

@@ -3,6 +3,7 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3
 {
+    //IMMEDIATE
     public class _118D_Divd_M : OpCode, IOpCode
     {
         private static IOpCode DivByZero = new DivByZero();

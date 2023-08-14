@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //CMPA
     //Compare memory from accumulator 
+    //DIRECT
     public class _91_Cmpa_D : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

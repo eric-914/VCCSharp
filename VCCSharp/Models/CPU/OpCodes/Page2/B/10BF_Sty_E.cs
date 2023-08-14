@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2.B
 {
     //STY
     //Store index register to memory
+    //EXTENDED
     public class _10BF_Sty_E : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

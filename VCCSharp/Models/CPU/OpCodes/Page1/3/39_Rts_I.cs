@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //RTS
     //Return from subroutine
+    //INHERENT
     public class _39_Rts_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

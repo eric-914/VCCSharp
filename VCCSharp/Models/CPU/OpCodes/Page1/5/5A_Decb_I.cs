@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //DECB
     //Decrement accumulator or memory location
+    //INHERENT
     public class _5A_Decb_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

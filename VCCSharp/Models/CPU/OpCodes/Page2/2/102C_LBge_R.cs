@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
     //LBGE
     //Branch if greater than or equal (signed)
+    //RELATIVE
     public class _102C_LBge_R : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

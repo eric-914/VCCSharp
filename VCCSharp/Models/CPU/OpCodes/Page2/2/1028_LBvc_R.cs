@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
     //LBVC
     //Branch if overflow clear 
+    //RELATIVE
     public class _1028_LBvc_R : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

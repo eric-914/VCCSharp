@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //CLRA
     //Clear accumulator or memory location
+    //INHERENT
     public class _4F_Clra_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

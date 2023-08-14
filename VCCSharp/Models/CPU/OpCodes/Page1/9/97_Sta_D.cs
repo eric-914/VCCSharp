@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //STA
     //Store accumulator to memory
+    //DIRECT
     public class _97_Sta_D : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

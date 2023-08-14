@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2.D
 {
     //LDS
     //Load stack pointer from memory
+    //DIRECT
     public class _10DE_Lds_D : OpCode, IOpCode
     {
         public static int Exec(ICpuProcessor cpu, int cycles)

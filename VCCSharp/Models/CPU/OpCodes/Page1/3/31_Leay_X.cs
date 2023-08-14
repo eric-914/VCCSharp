@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //LEAY
     //Load effective address into index register 
+    //INDEXED
     public class _31_Leay_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

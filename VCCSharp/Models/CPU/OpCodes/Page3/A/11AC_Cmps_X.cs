@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page3.A
 {
     //CMPS
     //Compare memory from stack pointer
+    //INDEXED
     public class _11AC_Cmps_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

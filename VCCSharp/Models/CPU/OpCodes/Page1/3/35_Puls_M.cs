@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //PULS
     //Pull A, B, CC, DP, D, X, Y, U or PC from hardware stack
+    //IMMEDIATE
     public class _35_Puls_M : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1.A
 {
     //ANDA
     //And memory with accumulator
+    //INDEXED
     public class A4_Anda_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

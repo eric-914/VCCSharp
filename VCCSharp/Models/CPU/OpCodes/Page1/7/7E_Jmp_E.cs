@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //JMP
     //Jump
+    //EXTENDED
     public class _7E_Jmp_E : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

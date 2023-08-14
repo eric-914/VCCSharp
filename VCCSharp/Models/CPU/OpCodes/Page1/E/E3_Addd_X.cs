@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1.E
 {
     //ADDD
     //Add memory to D accumulator 
+    //INDEXED
     public class E3_Addd_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1.A
 {
     //CMPX
     //Compare memory from index register
+    //INDEXED
     public class AC_Cmpx_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

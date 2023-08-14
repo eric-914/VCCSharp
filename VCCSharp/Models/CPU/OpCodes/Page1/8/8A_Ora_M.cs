@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //ORA
     //Or memory with accumulator
+    //IMMEDIATE
     public class _8A_Ora_M : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

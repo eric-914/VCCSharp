@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //LSR
     //Logical shift right accumulator or memory location
+    //INDEXED
     public class _64_Lsr_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

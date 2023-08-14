@@ -6,6 +6,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
     //LBVS
     //Branch if overflow set
     //Branch if invalid 2's complement result 
+    //RELATIVE
     public class _1029_LBvs_R : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

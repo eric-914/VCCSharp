@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //BMI
     //Branch if minus 
+    //RELATIVE
     public class _2B_Bmi_R : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1.C
 {
     //SBCB
     //Subtract memory from accumulator with borrow
+    //IMMEDIATE
     public class C2_Sbcb_M : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

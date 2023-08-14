@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //ASL
     //Arithmetic shift of accumulator or memory 
+    //DIRECT
     public class _08_Asl_D : OpCode, IOpCode
     {
         public static int Exec(ICpuProcessor cpu, int cycles)

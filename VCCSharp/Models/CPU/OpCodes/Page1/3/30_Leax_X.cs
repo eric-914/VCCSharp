@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //LEAX
     //Load effective address into index register 
+    //INDEXED
     public class _30_Leax_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

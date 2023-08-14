@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //ROLA
     //Rotate accumulator or memory left
+    //INHERENT
     public class _49_Rola_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

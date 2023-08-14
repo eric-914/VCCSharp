@@ -5,6 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     //TST
     //Test accumulator or memory location 
+    //INDEXED
     public class _6D_Tst_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)
