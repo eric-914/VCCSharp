@@ -3,8 +3,35 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
-    // --[HITACHI]--
-    //ADDR
+    /// <summary>
+    /// ADDR
+    /// --> 6309 ONLY <--
+    /// Add Source Register to Destination Register
+    /// r1’ ← r1 + r0
+    /// SOURCE FORM   ADDRESSING MODE     OPCODE       CYCLES      BYTE COUNT
+    /// ADDR r0,r1    IMMEDIATE           1030         4           3
+    ///   [E F H I N Z V C]
+    ///   [        ↕ ↕ ↕ ↕]
+    /// </summary>
+    /// <remarks>
+    /// The ADDR instruction adds the contents of a source register with the contents of a destination register. 
+    /// The result is placed into the destination register.
+    ///     H The Half-Carry flag is not affected by the ADDR instruction.
+    ///     N The Negative flag is set equal to the value of the result’s high-order bit.
+    ///     Z The Zero flag is set if the new value of the destination register is zero; cleared otherwise.
+    ///     V The Overflow flag is set if an overflow occurred; cleared otherwise.
+    ///     C The Carry flag is set if a carry out of the high-order bit occurred; cleared otherwise.
+    /// Any of the 6309 registers except Q and MD may be specified as the source operand, destination operand or both; however specifying the PC register as either the source or destination produces undefined results.
+    /// The ADDR instruction will perform either 8-bit or 16-bit addition according to the size of the destination register. 
+    /// When registers of different sizes are specified, the source will be promoted, demoted or substituted depending on the size of the destination and on which specific 8-bit register is involved. 
+    /// See “6309 Inter-Register Operations” on page 143 for further details.
+    /// A Load Effective Address instruction which adds one of the 16-bit accumulators to an index register (such as LEAX D,X) could be replaced by an ADDR instruction (ADDR D,X) in order to save 4 cycles (2 cycles in Native Mode). 
+    /// However, since more Condition Code flags are affected by the ADDR instruction, you should avoid this optimization if preservation of the affected flags is desired.
+    /// The Immediate operand for this instruction is a postbyte which uses the same format as that used by the TFR and EXG instructions. 
+    /// See the description of the TFR instruction for further details.
+    /// 
+    /// See Also: ADD (8-bit), ADD (16-bit)
+    /// </remarks>
     public class _1030_Addr : OpCode, IOpCode
     {
         public int Exec(IMC6809 cpu) => throw new NotImplementedException();
