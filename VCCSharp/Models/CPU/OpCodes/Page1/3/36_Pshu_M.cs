@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //PSHU
+    //Push A, B, CC, DP, D, X, Y, S, or PC onto user stack
     public class _36_Pshu_M : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

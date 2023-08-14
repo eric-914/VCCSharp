@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3
 {
+    //CMPU
+    //Compare memory from stack pointer
     public class _1183_Cmpu_M : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

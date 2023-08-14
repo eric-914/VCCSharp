@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //ROLB
+    //Rotate accumulator or memory left
     public class _59_Rolb_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

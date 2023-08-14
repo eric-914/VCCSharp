@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //SBCA
+    //Subtract memory from accumulator with borrow
     public class _82_Sbca_M : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

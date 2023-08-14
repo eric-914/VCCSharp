@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //NEGB
+    //Negate accumulator or memory
     public class _50_Negb_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

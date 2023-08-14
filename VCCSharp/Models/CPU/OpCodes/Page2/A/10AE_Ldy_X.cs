@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2.A
 {
+    //LDY
+    //Load index register from memory
     public class _10AE_Ldy_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

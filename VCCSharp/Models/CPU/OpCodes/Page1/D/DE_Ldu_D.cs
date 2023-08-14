@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1.D
 {
+    //LDU
+    //Load stack pointer from memory
     public class DE_Ldu_D : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

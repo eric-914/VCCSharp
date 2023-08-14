@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1.B
 {
+    //STX
+    //Store index register to memory
     public class BF_Stx_E : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

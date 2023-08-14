@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //EXG R1, R2
+    //Exchange R1 with R2 (R1, R2 = A, B, CC, DP)
     //TODO: Need to verify all this
     public class _1E_Exg_M : OpCode, IOpCode
     {

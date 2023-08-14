@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //LSRA
+    //Logical shift right accumulator or memory location
     public class _44_Lsra_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

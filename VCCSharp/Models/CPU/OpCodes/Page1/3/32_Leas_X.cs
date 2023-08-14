@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //LEAS
+    //Load effective address into stack pointer
     public class _32_Leas_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

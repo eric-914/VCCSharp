@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1.C
 {
+    //ADCB
+    //Add memory to accumulator with carry
     public class C9_Adcb_M : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

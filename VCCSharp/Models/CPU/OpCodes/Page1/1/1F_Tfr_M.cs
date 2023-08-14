@@ -3,7 +3,9 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
-    internal class _1F_Tfr_M : OpCode, IOpCode
+    //TFR R1, R2
+    //Transfer R1 to R2 (R1, R2 = A, B, CC, DP)
+    public class _1F_Tfr_M : OpCode, IOpCode
     {
         public int Exec(IMC6809 cpu)
         {

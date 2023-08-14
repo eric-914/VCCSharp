@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //DAA
+    //Decimal adjust A accumulator
     public class _19_Daa_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

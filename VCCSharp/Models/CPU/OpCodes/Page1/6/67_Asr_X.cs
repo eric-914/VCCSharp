@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //ASR
+    //Arithmetic shift of accumulator or memory right 
     public class _67_Asr_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

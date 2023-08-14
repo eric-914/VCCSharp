@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //LDA
+    //Load accumulator from memory
     public class _96_Lda_D : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1.E
 {
+    //ANDB
+    //And memory with accumulator
     public class E4_Andb_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

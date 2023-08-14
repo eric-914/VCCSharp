@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //SUBD
+    //Subtract memory from D accumulator
     public class _83_Subd_M : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

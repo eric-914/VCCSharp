@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //CLR
+    //Clear accumulator or memory location
     public class _0F_Clr_D : OpCode, IOpCode
     {
         public static int Exec(ICpuProcessor cpu, int cycles)

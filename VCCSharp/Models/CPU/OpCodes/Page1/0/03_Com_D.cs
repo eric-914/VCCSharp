@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //COM
+    //Complement accumulator or memory location
     public class _03_Com_D : OpCode, IOpCode
     {
         public static int Exec(ICpuProcessor cpu, int cycles)

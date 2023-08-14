@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //ASL
+    //Arithmetic shift of accumulator or memory 
     public class _78_Asl_E : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

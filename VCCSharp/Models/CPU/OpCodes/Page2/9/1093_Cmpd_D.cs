@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
+    //CMPD
+    //Compare memory from D accumulator
     public class _1093_Cmpd_D : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //TST
+    //Test accumulator or memory location 
     public class _6D_Tst_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

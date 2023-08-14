@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1.A
 {
+    //ORA
+    //Or memory with accumulator
     public class AA_Ora_X : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

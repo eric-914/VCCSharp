@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //DECA
+    //Decrement accumulator or memory location
     public class _4A_Deca_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

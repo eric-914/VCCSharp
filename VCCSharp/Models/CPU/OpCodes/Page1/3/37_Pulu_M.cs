@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //PULU
+    //Pull A, B, CC, DP, D, X, Y, S or PC from hardware stack
     public class _37_Pulu_M : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)

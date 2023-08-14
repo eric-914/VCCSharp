@@ -3,6 +3,8 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
+    //SEX
+    //Sign Extend B accumulator into A accumulator 
     public class _1D_Sex_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)
