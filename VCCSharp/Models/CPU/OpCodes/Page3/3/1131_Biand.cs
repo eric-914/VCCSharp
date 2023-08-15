@@ -7,7 +7,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page3
     /// BIAND
     /// 🚫 6309 ONLY 🚫
     /// Logically AND Register Bit with Inverted Memory Bit
-    /// DIRECT                   ＿＿＿＿＿＿＿  
+    /// DIRECT                   ＿＿＿＿＿＿＿
     /// r.dstBit’ ← r.dstBit AND (DPM).srcBit
     /// SOURCE FORM             ADDRESSING MODE     OPCODE       CYCLES      BYTE COUNT
     /// BIAND r,sBit,dBit,addr  DIRECT              1131         7 / 6       4

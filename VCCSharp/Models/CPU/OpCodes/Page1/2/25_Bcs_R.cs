@@ -12,6 +12,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// IF CC.C ≠ 0 then PC’ ← PC + IMM
     /// SOURCE FORM   ADDRESSING MODE     OPCODE       CYCLES      BYTE COUNT
     /// BCS address   RELATIVE            25           3           2
+    /// BLO address   RELATIVE            25           3           2
     ///   [E F H I N Z V C]
     ///   [               ]
     /// </summary>
@@ -28,6 +29,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// If a larger range is required then the LBCS instruction may be used instead.
     /// 
     /// See Also: BCC, BLT, LBCS
+    /// See Also: BHS, BLT, LBLO
     /// </remarks>
     public class _25_Bcs_R : OpCode, IOpCode
     {

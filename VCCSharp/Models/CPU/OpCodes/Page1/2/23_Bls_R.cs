@@ -3,9 +3,31 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
-    //BLS
-    //Branch if lower or same (unsigned)
-    //RELATIVE
+    /// <summary>
+    /// BLS
+    /// Branch if lower or same (unsigned)
+    /// RELATIVE
+    /// IF (CC.Z ≠ 0) OR (CC.C ≠ 0) then PC’ ← PC + IMM
+    /// SOURCE FORM     ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT
+    /// BLS address     RELATIVE            23          3           2
+    ///   [E F H I N Z V C]
+    ///   [               ]
+    /// </summary>
+    /// <remarks>
+    /// This instruction tests the Zero (Z) and Carry (C) flags in the CC register and, if either are set, causes a relative branch. 
+    /// If both the Z and C flags are clear then the CPU continues executing the next instruction in sequence. 
+    /// None of the Condition Code flags are affected by this instruction.
+    /// 
+    /// When used following a subtract or compare of unsigned binary values, the BLS instruction will branch if the source value was lower than or the same as the original destination value.
+    /// 
+    /// BLS is generally not useful following INC, DEC, LD, ST or TST instructions since none of those affect the Carry flag.
+    /// 
+    /// The branch address is calculated by adding the current value of the PC register (after the BLS instruction bytes have been fetched) with the 8-bit twos-complement value contained in the second byte of the instruction. 
+    /// The range of the branch destination is limited to -126 to +129 bytes from the address of the BLS instruction. 
+    /// If a larger range is required then the LBLS instruction may be used instead.
+    /// 
+    /// See Also: BHI, BLE, LBLS
+    /// </remarks>
     public class _23_Bls_R : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)
