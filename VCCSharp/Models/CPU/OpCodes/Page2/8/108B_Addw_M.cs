@@ -5,7 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
     /// <summary>
     /// ADDW
-    /// --> 6309 ONLY <--
+    /// 🚫 6309 ONLY 🚫
     /// Add memory to W accumulator
     /// Add Memory Word to 16-Bit Accumulator
     /// IMMEDIATE

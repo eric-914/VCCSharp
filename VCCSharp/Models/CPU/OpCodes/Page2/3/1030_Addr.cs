@@ -5,7 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
     /// <summary>
     /// ADDR
-    /// --> 6309 ONLY <--
+    /// 🚫 6309 ONLY 🚫
     /// Add Source Register to Destination Register
     /// r1’ ← r1 + r0
     /// SOURCE FORM   ADDRESSING MODE     OPCODE       CYCLES      BYTE COUNT

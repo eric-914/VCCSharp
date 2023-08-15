@@ -5,7 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
     /// <summary>
     /// ASRD
-    /// --> 6309 ONLY <--
+    /// 🚫 6309 ONLY 🚫
     /// Arithmetic Shift Right of Accumulator D
     /// INHERENT
     ///      ⤿□□□□□□□□□□□□□□□□ → □

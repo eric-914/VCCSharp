@@ -5,7 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
     /// <summary>
     /// ANDR
-    /// --> 6309 ONLY <--
+    /// 🚫 6309 ONLY 🚫
     /// Logically AND Source Register with Destination Register
     /// IMMEDIATE
     /// r1’ ← r1 AND r0

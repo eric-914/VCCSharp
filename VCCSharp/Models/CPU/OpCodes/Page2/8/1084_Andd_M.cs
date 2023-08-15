@@ -5,7 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
     /// <summary>
     /// ANDD
-    /// --> 6309 ONLY <--
+    /// 🚫 6309 ONLY 🚫
     /// Add Source Register plus Carry to Destination Register
     /// Logically AND Memory Word with Accumulator D
     /// IMMEDIATE

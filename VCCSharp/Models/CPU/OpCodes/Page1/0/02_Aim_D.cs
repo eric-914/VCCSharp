@@ -5,7 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
     /// <summary>
     /// AIM
-    /// --> 6309 ONLY <--
+    /// 🚫 6309 ONLY 🚫
     /// Logical AND of Immediate Value with Memory Byte
     /// DIRECT
     /// M’ ← (M) AND IMM

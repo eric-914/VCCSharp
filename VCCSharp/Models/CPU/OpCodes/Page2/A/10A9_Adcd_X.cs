@@ -5,7 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2.A
 {
     /// <summary>
     /// ADCD
-    /// --> 6309 ONLY <--
+    /// 🚫 6309 ONLY 🚫
     /// Add Memory Word plus Carry with Accumulator D
     /// INDEXED
     /// ACCD’ ← ACCD + (M:M+1) + C

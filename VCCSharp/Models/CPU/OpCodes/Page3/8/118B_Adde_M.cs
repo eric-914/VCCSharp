@@ -5,7 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page3
 {
     /// <summary>
     /// ADDE
-    /// --> 6309 ONLY <--
+    /// 🚫 6309 ONLY 🚫
     /// Add memory to accumulator
     /// Add Memory Byte to 8-Bit Accumulator
     /// IMMEDIATE

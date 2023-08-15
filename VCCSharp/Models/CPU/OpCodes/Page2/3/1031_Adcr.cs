@@ -5,7 +5,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
     /// <summary>
     /// ADCR
-    /// --> 6309 ONLY <--
+    /// 🚫 6309 ONLY 🚫
     /// Add Source Register plus Carry to Destination Register
     /// IMMEDIATE
     /// r1’ ← r1 + r0 + C
