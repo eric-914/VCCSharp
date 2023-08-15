@@ -3,8 +3,50 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3
 {
-    // --[HITACHI]--
-    //BIEOR
+    /// <summary>
+    /// BIEOR
+    /// 🚫 6309 ONLY 🚫
+    /// Exclusively-OR Register Bit with Inverted Memory Bit
+    /// DIRECT                 ＿＿＿＿＿＿＿  
+    /// r.dstBit’ ← r.dstBit ⊕ (DPM).srcBit
+    /// SOURCE FORM             ADDRESSING MODE     OPCODE       CYCLES      BYTE COUNT
+    /// BIEOR r,sBit,dBit,addr  DIRECT              1135         7 / 6       4
+    /// </summary>
+    /// <remarks>
+    /// The BIEOR instruction exclusively ORs the value of a specified bit in either the A, B or CC registers with the inverted value of a specified bit in memory. 
+    /// The resulting value is placed back into the register bit. 
+    /// None of the Condition Code flags are affected by the operation unless CC is specified as the register, in which case only the destination bit may be affected. 
+    /// The usefulness of the BIEOR instruction is limited by the fact that only Direct Addressing is permitted.
+    /// 
+    /// ──────────────────────────────────────────────────────────────────────────────────
+    ///               Accumulator A                      Memory Location $0040
+    ///       7   6   5   4   3   2   1   0           7   6   5   4   3   2   1   0
+    ///     ╭───┬───┬───┬───┬───┬───┬───┬───╮       ╭───┬───┬───┬───┬───┬───┬───┬───╮
+    ///     │ 0 │ 0 │ 0 │ 0 │ 1 │ 1 │ 1 │ 1 │ $0F   │ 1 │ 1 │ 0 │ 0 │ 0 │ 1 │ 1 │ 0 │ $C6
+    ///  │  ╰───┴───┴───┴───┴─┬─┴───┴───┴───╯       ╰───┴───┴───┴───┴───┴───┴───┴─┬─╯
+    ///  │                    │         ╭───╮       ╭───╮                         │
+    ///  │                    ╰───────▶ │ 1 │  EOR  │ 1 │ ◀──────INVERT──────────-╯
+    ///  │                              ╰───╯   │   ╰───╯
+    ///  │                    ╭─────────────────╯
+    ///  │                    ▼      
+    ///  ▼  ╭───┬───┬───┬───┬───┬───┬───┬───╮
+    ///     │ 0 │ 0 │ 0 │ 0 │ 0 │ 1 │ 1 │ 1 │ $07   BIEOR A,0,3,$40
+    ///     ╰───┴───┴───┴───┴───┴───┴───┴───╯
+    /// ──────────────────────────────────────────────────────────────────────────────────
+    /// 
+    /// The figure above shows an example of the BIEOR instruction where bit 3 of Accumulator A is Exclusively ORed with the inverted value of bit 0 from the byte in memory at address $0040 (DP = 0).
+    /// The assembler syntax for this instruction can be confusing due to the ordering of the operands: destination register, source bit, destination bit, source address.
+    /// Since the Condition Code flags are not affected by the operation, additional instructions would be needed to test the result for conditional branching.
+    /// 
+    /// The object code format for the BIEOR instruction is:
+    /// ╭─────┬─────┬─────────-┬────────────-╮
+    /// │ $11 │ $35 │ POSTBYTE │ ADDRESS LSB │
+    /// ╰─────┴─────┴─────────-┴────────────-╯
+    /// 
+    /// See the description of the BAND instruction on page 20 for details about the Postbyte format used by this instruction.
+    /// 
+    /// See Also: BAND, BEOR, BIAND, BIOR, BOR, LDBT, STBT
+    ///</remarks>
     public class _1135_Bieor : OpCode, IOpCode
     {
         private static readonly IOpCode InvalidOpCode = new InvalidOpCode();
