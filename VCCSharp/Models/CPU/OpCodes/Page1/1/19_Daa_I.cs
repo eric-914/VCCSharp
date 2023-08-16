@@ -3,17 +3,49 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
-    //DAA
-    //Decimal adjust A accumulator
-    //INHERENT
+    /// <summary>
+    /// DAA
+    /// Decimal adjust A accumulator
+    /// Decimal Addition Adjust
+    /// INHERENT
+    /// A[4..7]’ ← A[4..7] + 6 IF:
+    ///     CC.C = 1
+    ///     OR: A[4..7] > 9
+    ///     OR: A[4..7] > 8 AND A[0..3] > 9
+    /// A[0..3]’ ← A[0..3] + 6 IF:
+    ///     CC.H = 1
+    ///     OR: A[0..3] > 9
+    /// SOURCE FORM     ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT
+    /// DAA             INHERENT            19          2 / 1       1
+    ///   [E F H I N Z V C]
+    ///   [        ↕ ↕ ~ ↕]
+    /// </summary>
+    /// <remarks>
+    /// The DAA instruction is used after performing an 8-bit addition of Binary Coded Decimal values using either the ADDA or ADCA instructions. 
+    /// DAA adjusts the value resulting from the binary addition in accumulator A so that it contains the desired BCD result instead. 
+    /// The Carry flag is also updated to properly reflect BCD addition. 
+    /// That is, the Carry flag is set when addition of the most-significant digits (plus any carry from the addition of the least-significant digits) produces a value greater than 9.
+    ///         H The Half-Carry flag is not affected by this instruction.
+    ///         N The Negative flag is set equal to the new value of bit 7 in Accumulator A.
+    ///         Z The Zero flag is set if the new value of Accumulator A is zero; cleared otherwise.
+    ///         V The affect this instruction has on the Overflow flag is undefined.
+    ///         C The Carry flag is set if the BCD addition produced a carry; cleared otherwise.
+    ///         
+    /// The code below adds the BCD values of 64 and 27, producing the BCD sum of 91:
+    ///         LDA #$64
+    ///         ADDA #$27   ; Produces binary result of $8B
+    ///         DAA         ; Adjusts A to $91 (BCD result of 64 + 27)
+    ///         
+    /// DAA is the only instruction which is affected by the value of the Half Carry flag (H) in the Condition Codes register.
+    /// 
+    /// See Also: ADCA, ADDA
+    /// </remarks>
     public class _19_Daa_I : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)
         {
-            byte msn, lsn;
-
-            msn = (byte)(cpu.A_REG & 0xF0);
-            lsn = (byte)(cpu.A_REG & 0xF);
+            byte msn = (byte)(cpu.A_REG & 0xF0);
+            byte lsn = (byte)(cpu.A_REG & 0xF);
 
             byte mask = 0;
 
