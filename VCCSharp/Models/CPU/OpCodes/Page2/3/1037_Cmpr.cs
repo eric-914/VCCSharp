@@ -3,8 +3,37 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
-    // --[HITACHI]--
-    //CMPR
+    /// <summary>
+    /// CMPR
+    /// 🚫 6309 ONLY 🚫
+    /// Compare Source Register from Destination Register
+    /// IMMEDIATE
+    /// TEMP ← r1 - r0
+    /// SOURCE FORM     ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT
+    /// CMPR r0,r1      IMMEDIATE           1037        4           3
+    ///   [E F H I N Z V C]
+    ///   [        ↕ ↕ ↕ ↕]
+    /// </summary>
+    /// <remarks>
+    /// The CMPR instruction subtracts the contents of a source register from the contents of a destination register and sets the Condition Codes accordingly. 
+    /// Neither register is modified.
+    ///         H The Half-Carry flag is not affected by this instruction.
+    ///         N The Negative flag is set equal to the value of the high-order bit of the result.
+    ///         Z The Zero flag is set if the resulting value is zero; cleared otherwise.
+    ///         V The Overflow flag is set if an overflow occurred; cleared otherwise.
+    ///         C The Carry flag is set if a borrow into the high-order bit was needed; cleared otherwise.
+    /// 
+    /// Any of the 6309 registers except Q and MD may be specified as the source operand, destination operand or both; however specifying the PC register as either the source or destination produces undefined results.
+    /// 
+    /// The CMPR instruction will perform either an 8-bit or 16-bit comparison according to the size of the destination register. 
+    /// When registers of different sizes are specified, the source will be promoted, demoted or substituted depending on the size of the destination and on which specific 8-bit register is involved. 
+    /// See “6309 Inter-Register Operations” on page 143 for further details.
+    /// 
+    /// The Immediate operand for this instruction is a postbyte which uses the same format as that used by the TFR and EXG instructions. 
+    /// See the description of the TFR instruction starting on page 137 for further details.
+    /// 
+    /// See Also: ADD (8-bit), ADD (16-bit)
+    /// </remarks>
     public class _1037_Cmpr : OpCode, IOpCode
     {
         public int Exec(IMC6809 cpu) => throw new NotImplementedException();
