@@ -20,10 +20,11 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// <remarks>
     /// The AIM instruction logically ANDs the contents of a byte in memory with an 8-bit immediate value. 
     /// The resulting value is placed back into the designated memory location.
-    ///     N The Negative flag is set equal to the new value of bit 7 of the memory byte.
-    ///     Z The Zero flag is set if the new value of the memory byte is zero; cleared otherwise.
-    ///     V The Overflow flag is cleared by this instruction.
-    ///     C The Carry flag is not affected by this instruction.
+    ///         N The Negative flag is set equal to the new value of bit 7 of the memory byte.
+    ///         Z The Zero flag is set if the new value of the memory byte is zero; cleared otherwise.
+    ///         V The Overflow flag is cleared by this instruction.
+    ///         C The Carry flag is not affected by this instruction.
+    ///         
     /// AIM is one of the more useful additions to the 6309 instruction set. 
     /// It takes three separate instructions to perform the same operation on a 6809:
     /// 
@@ -38,9 +39,9 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// Some assemblers may require a comma (,) rather than a semicolon (;) between the immediate operand and the address operand.
     /// 
     /// The object code format for the AIM instruction is:
-    ///     +--------+-------------+------------------------+
-    ///     | OPCODE | IMMED VALUE |ADDRESS / INDEX BYTE(S) |
-    ///     +--------+-------------+------------------------+
+    ///     ╭────────┬─────────────┬─────────────────────────╮
+    ///     │ OPCODE │ IMMED VALUE │ ADDRESS / INDEX BYTE(S) │
+    ///     ╰────────┴─────────────┴─────────────────────────╯
     ///     
     /// See Also: AND, EIM, OIM, TIM
     /// </remarks>

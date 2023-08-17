@@ -38,9 +38,9 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// Some assemblers may require a comma (,) rather than a semicolon (;) between the immediate operand and the address operand.
     /// 
     /// The object code format for the AIM instruction is:
-    ///     +--------+-------------+------------------------+
-    ///     | OPCODE | IMMED VALUE |ADDRESS / INDEX BYTE(S) |
-    ///     +--------+-------------+------------------------+
+    ///     ╭────────┬─────────────┬─────────────────────────╮
+    ///     │ OPCODE │ IMMED VALUE │ ADDRESS / INDEX BYTE(S) │
+    ///     ╰────────┴─────────────┴─────────────────────────╯
     ///     
     /// See Also: AND, EIM, OIM, TIM
     /// </remarks>
