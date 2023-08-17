@@ -1,16 +1,17 @@
 ﻿using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
 
-namespace VCCSharp.Models.CPU.OpCodes.Page1.B
+namespace VCCSharp.Models.CPU.OpCodes.Page3.E
 {
     /// <summary>
-    /// LDA
+    /// LDF
+    /// 🚫 6309 ONLY 🚫
     /// Load accumulator from memory
     /// Load Data into 8-Bit Accumulator
-    /// EXTENDED
+    /// INDEXED
     /// r’ ← IMM8|(M)
     /// SOURCE FORM     ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT
-    /// LDA             EXTENDED            B6          5 / 4       3
+    /// LDF             INDEXED             11E6        5+          3+ 
     ///   [E F H I N Z V C]
     ///   [        ↕ ↕ 0  ]
     /// </summary>
@@ -24,24 +25,21 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1.B
     /// 
     /// See Also: LD (16-bit), LDQ
     /// </remarks>
-    public class B6_Lda_E : OpCode, IOpCode
+    public class _11E6_Ldf_X : OpCode, IOpCode
     {
-        private static int Exec(ICpuProcessor cpu, int cycles)
+        public int Exec(IMC6809 cpu) => throw new NotImplementedException();
+
+        public int Exec(IHD6309 cpu)
         {
-            ushort address = cpu.MemRead16(cpu.PC_REG);
+            ushort address = cpu.INDADDRESS(cpu.PC_REG++);
 
-            cpu.A_REG = cpu.MemRead8(address);
+            cpu.F_REG = cpu.MemRead8(address);
 
-            cpu.CC_Z = ZTEST(cpu.A_REG);
-            cpu.CC_N = NTEST8(cpu.A_REG);
+            cpu.CC_Z = ZTEST(cpu.F_REG);
+            cpu.CC_N = NTEST8(cpu.F_REG);
             cpu.CC_V = false;
 
-            cpu.PC_REG += 2;
-
-            return cycles;
+            return 5;
         }
-
-        public int Exec(IMC6809 cpu) => Exec(cpu, 5);
-        public int Exec(IHD6309 cpu) => Exec(cpu, Cycles._54);
     }
 }
