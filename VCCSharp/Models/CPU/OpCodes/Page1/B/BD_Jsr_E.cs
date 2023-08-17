@@ -1,18 +1,18 @@
 ﻿using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
 
-namespace VCCSharp.Models.CPU.OpCodes.Page1
+namespace VCCSharp.Models.CPU.OpCodes.Page1.B
 {
     /// <summary>
     /// JSR
     /// Jump to subroutine
     /// Unconditional Jump to Subroutine
-    /// DIRECT
+    /// EXTENDED
     ///      S’ ← S - 2
     /// (S:S+1) ← PC
     ///     PC’ ← EA
     /// SOURCE FORM     ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT
-    /// JSR             DIRECT              9D          7 / 6       2 
+    /// JSR             EXTENDED            BD          8 / 7       3
     ///   [E F H I N Z V C]
     ///   [               ]
     /// </summary>
@@ -38,11 +38,13 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// 
     /// See Also: BSR, JMP, LBSR, PULS, RTS
     /// </remarks>
-    public class _9D_Jsr_D : OpCode, IOpCode
+    public class BD_Jsr_E : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)
         {
-            var address = cpu.DPADDRESS(cpu.PC_REG++);
+            ushort address = cpu.MemRead16(cpu.PC_REG);
+
+            cpu.PC_REG += 2;
 
             cpu.S_REG--;
 
@@ -54,7 +56,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
             return cycles;
         }
 
-        public int Exec(IMC6809 cpu) => Exec(cpu, 7);
-        public int Exec(IHD6309 cpu) => Exec(cpu, Cycles._76);
+        public int Exec(IMC6809 cpu) => Exec(cpu, 8);
+        public int Exec(IHD6309 cpu) => Exec(cpu, Cycles._87);
     }
 }
