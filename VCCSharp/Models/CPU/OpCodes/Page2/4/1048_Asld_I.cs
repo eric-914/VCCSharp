@@ -7,21 +7,25 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
     /// ASLD
     /// 🚫 6309 ONLY 🚫
     /// Arithmetic Shift Left of Accumulator D
+    /// LSLD
+    /// Logical Shift Left of Accumulator D
     /// INHERENT
     /// □   ←   □□□□□□□□□□□□□□□□ ← 0
     /// C  bit 15      ←       0
     /// SOURCE FORM   ADDRESSING MODE     OPCODE       CYCLES      BYTE COUNT
     /// ASLD          INHERENT            1048         3 / 2       2
+    /// LSLD          INHERENT            1048         3 / 2       2
     ///   [E F H I N Z V C]
     ///   [        ↕ ↕ ↕ ↕]
     /// </summary>
     /// <remarks>
     /// This instruction shifts the contents of Accumulator D to the left by one bit, clearing bit 0.
     /// Bit 15 is shifted into the Carry flag of the Condition Codes register.
-    ///     N The Negative flag is set equal to the new value of bit 15; previously bit 14.
-    ///     Z The Zero flag is set if the new 16-bit value is zero; cleared otherwise.
-    ///     V The Overflow flag is set to the Exclusive-OR of the original values of bits 14 and 15.
-    ///     C The Carry flag receives the value shifted out of bit 15.
+    ///         N The Negative flag is set equal to the new value of bit 15; previously bit 14.
+    ///         Z The Zero flag is set if the new 16-bit value is zero; cleared otherwise.
+    ///         V The Overflow flag is set to the Exclusive-OR of the original values of bits 14 and 15.
+    ///         C The Carry flag receives the value shifted out of bit 15.
+    ///     
     /// The ASL instruction can be used for simple multiplication (a single left-shift multiplies the value by 2). 
     /// Other uses include conversion of data from serial to parallel and viseversa.
     /// 
@@ -31,10 +35,12 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
     /// 
     /// A left-shift of the 32-bit Q accumulator can be achieved as follows:
     ///     ADDR W,W ; Shift Low-word, Hi-bit into Carry
-    ///     ROLD ; Shift Hi-word, Carry into Low-bit
+    ///     ROLD     ; Shift Hi-word, Carry into Low-bit
+    ///     
     /// The ASLD and LSLD mnemonics are duplicates. Both produce the same object code.
     /// 
     /// See Also: ASL (8-bit), ROL (16-bit)
+    /// See Also: LSL (8-bit), ROL (16-bit)
     /// </remarks>
     public class _1048_Asld_I : OpCode, IOpCode
     {

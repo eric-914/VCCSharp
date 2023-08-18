@@ -9,11 +9,13 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// Arithmetic Shift Left of 8-Bit Accumulator or Memory Byte
     /// LSL
     /// Logical shift left accumulator or memory location
+    /// Logical Shift Left of 8-Bit Accumulator or Memory Byte
     /// INHERENT
     /// □  ←  □□□□□□□□ ← 0
     /// C bit 7      0
     /// SOURCE FORM   ADDRESSING MODE     OPCODE       CYCLES      BYTE COUNT
     /// ASLB          INHERENT            58           2 / 1       1
+    /// LSLB          INHERENT            58           2 / 1       1
     ///   [E F H I N Z V C]
     ///   [    ~   ↕ ↕ ↕ ↕]
     /// </summary>
@@ -35,6 +37,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// The ASL and LSL mnemonics are duplicates. Both produce the same object code.
     /// 
     /// See Also: ASLD
+    /// See Also: LSLD
     /// </remarks>    
     public class _58_Aslb_I : OpCode, IOpCode
     {
