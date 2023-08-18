@@ -17,7 +17,6 @@ namespace VCCSharp.Models.CPU.OpCodes.Page3
     /// The resulting value is placed back into the register bit. 
     /// None of the Condition Code flags are affected by the operation unless CC is specified as the register, in which case only the destination bit may be affected. 
     /// The usefulness of the BAND instruction is limited by the fact that only Direct Addressing is permitted.
-    /// 
     /// ──────────────────────────────────────────────────────────────────────────────────
     ///               Accumulator A                      Memory Location $0040
     ///       7   6   5   4   3   2   1   0           7   6   5   4   3   2   1   0
@@ -31,7 +30,6 @@ namespace VCCSharp.Models.CPU.OpCodes.Page3
     ///     │ 0 │ 0 │ 0 │ 0 │ 1 │ 1 │ 0 │ 1 | $0D   BAND A,5,1,$40
     ///     ╰───┴───┴───┴───┴───┴───┴───┴───╯
     /// ──────────────────────────────────────────────────────────────────────────────────
-    /// 
     /// The figure above shows an example of the BAND instruction where bit 1 of Accumulator A is ANDed with bit 5 of the byte in memory at address $0040 (DP = 0).
     /// The assembler syntax for this instruction can be confusing due to the ordering of the operands: destination register, source bit, destination bit, source address.
     /// Since the Condition Code flags are not affected by the operation, additional instructions would be needed to test the result for conditional branching.
@@ -40,7 +38,6 @@ namespace VCCSharp.Models.CPU.OpCodes.Page3
     /// ╭─────┬─────┬─────────-┬────────────-╮
     /// │ $11 │ $30 │ POSTBYTE │ ADDRESS LSB │
     /// ╰─────┴─────┴─────────-┴────────────-╯
-    /// 
     /// ────────────────────────────────────────────────────────────────────────────────────────────────────────────
     ///                                 POSTBYTE FORMAT
     ///       7   6   5   4   3   2   1   0                                                  ╭────────┬─────────-╮

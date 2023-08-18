@@ -2684,7 +2684,7 @@ partial class HD6309
         B_REG &= MemRead8(INDADDRESS(PC_REG++));
         CC_N = NTEST8(B_REG);
         CC_Z = ZTEST(B_REG);
-        CC_V = false;//0;
+        CC_V = false;
         _cycleCounter += 4;
     }
 
@@ -2693,7 +2693,7 @@ partial class HD6309
         _temp8 = (byte)(B_REG & MemRead8(INDADDRESS(PC_REG++)));
         CC_N = NTEST8(_temp8);
         CC_Z = ZTEST(_temp8);
-        CC_V = false;//0;
+        CC_V = false;
         _cycleCounter += 4;
     }
 
@@ -2702,7 +2702,7 @@ partial class HD6309
         B_REG = MemRead8(INDADDRESS(PC_REG++));
         CC_Z = ZTEST(B_REG);
         CC_N = NTEST8(B_REG);
-        CC_V = false;//0;
+        CC_V = false;
         _cycleCounter += 4;
     }
 
@@ -2711,7 +2711,7 @@ partial class HD6309
         MemWrite8(B_REG, CalculateEA(MemRead8(PC_REG++)));
         CC_Z = ZTEST(B_REG);
         CC_N = NTEST8(B_REG);
-        CC_V = false;//0;
+        CC_V = false;
         _cycleCounter += 4;
     }
 
@@ -2720,7 +2720,7 @@ partial class HD6309
         B_REG ^= MemRead8(INDADDRESS(PC_REG++));
         CC_N = NTEST8(B_REG);
         CC_Z = ZTEST(B_REG);
-        CC_V = false;//0;
+        CC_V = false;
         _cycleCounter += 4;
     }
 
@@ -2742,7 +2742,7 @@ partial class HD6309
         B_REG |= MemRead8(INDADDRESS(PC_REG++));
         CC_N = NTEST8(B_REG);
         CC_Z = ZTEST(B_REG);
-        CC_V = false;//0;
+        CC_V = false;
         _cycleCounter += 4;
     }
 
@@ -2764,7 +2764,7 @@ partial class HD6309
         D_REG = MemRead16(INDADDRESS(PC_REG++));
         CC_Z = ZTEST(D_REG);
         CC_N = NTEST16(D_REG);
-        CC_V = false;//0;
+        CC_V = false;
         _cycleCounter += 5;
     }
 
@@ -2773,7 +2773,7 @@ partial class HD6309
         MemWrite16(D_REG, INDADDRESS(PC_REG++));
         CC_Z = ZTEST(D_REG);
         CC_N = NTEST16(D_REG);
-        CC_V = false;//0;
+        CC_V = false;
         _cycleCounter += 5;
     }
 
@@ -2782,7 +2782,7 @@ partial class HD6309
         U_REG = MemRead16(INDADDRESS(PC_REG++));
         CC_Z = ZTEST(U_REG);
         CC_N = NTEST16(U_REG);
-        CC_V = false;//0;
+        CC_V = false;
         _cycleCounter += 5;
     }
 
@@ -2791,7 +2791,7 @@ partial class HD6309
         MemWrite16(U_REG, INDADDRESS(PC_REG++));
         CC_Z = ZTEST(U_REG);
         CC_N = NTEST16(U_REG);
-        CC_V = false;//0;
+        CC_V = false;
         _cycleCounter += 5;
     }
 
