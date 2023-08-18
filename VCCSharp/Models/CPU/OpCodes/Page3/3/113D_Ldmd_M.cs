@@ -31,7 +31,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page3
     /// Bits 2 through 7 of the MD register are not affected by this instruction, so it cannot be used to alter the /0 and IL status bits.
     /// 
     /// The figure below shows the layout of the MD register:
-    ///        7    6   5   4   3   2   1   0  
+    ///        7    6    5    4    3    2    1    0  
     ///     ╭────┬────┬────┬────┬────┬────┬────┬────╮
     ///     │ /0 │ IL │    │    │    │    │ FM │ NM |
     ///     ╰────┴────┴────┴────┴────┴────┴────┴────╯

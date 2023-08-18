@@ -8,7 +8,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page3
     /// 🚫 6309 ONLY 🚫
     /// Bit Test the MD Register with an Immediate Value
     /// IMMEDIATE
-    /// CC.Z ← (MD.IL AND IMM.6 = 0) AND (MD./0 AND IMM.7 = 0)
+    ///   CC.Z ← (MD.IL AND IMM.6 = 0) AND (MD./0 AND IMM.7 = 0)
     ///                    ＿＿＿
     /// MD.IL’ ← MD.IL AND IMM.6
     ///                    ＿＿＿
@@ -36,8 +36,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page3
     /// See “Determining the 6309 Execution Mode” on page 144 for more information on this topic.
     /// 
     /// The figure below shows the layout of the MD register:
-    /// 
-    ///        7    6   5   4   3   2   1   0  
+    ///        7    6    5    4    3    2    1    0  
     ///     ╭────┬────┬────┬────┬────┬────┬────┬────╮
     ///     │ /0 │ IL │    │    │    │    │ FM │ NM |
     ///     ╰────┴────┴────┴────┴────┴────┴────┴────╯
