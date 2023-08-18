@@ -3,9 +3,50 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
-    //PULU
-    //Pull A, B, CC, DP, D, X, Y, S or PC from hardware stack
-    //IMMEDIATE
+    /// <summary>
+    /// PULU
+    /// Pull A, B, CC, DP, D, X, Y, U or PC from hardware stack
+    /// Pull Registers from Stack
+    /// IMMEDIATE
+    /// SOURCE FORM         ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT
+    /// PULU r0,r1,...rN    IMMEDIATE 37 5+ / 4+ 2
+    /// PULU #i8            IMMEDIATE 37 5+ / 4+ 2
+    /// (One additional cycle is used for each BYTE pulled.)
+    /// I8 : 8-bit Immediate value
+    /// </summary>
+    /// <remarks>
+    /// These instructions pull values for none, one or multiple registers from either the Hardware (PULS) or User (PULU) stack. 
+    /// None of the Condition Code flags are affected by these instructions unless the CC register is specified as one of the registers to pull.
+    /// 
+    /// Only the registers present in the 6809 architecture can be pulled by these instructions.
+    /// The stack pointer used by the instruction (S or U) cannot be pulled. 
+    /// A value is pulled from the stack for each register specified in the operand field one at a time in the order shown below (the order you list them in the operand field is irrelevant).
+    /// 
+    ///                 Lower Memory Addresses
+    ///                     ╷   CC
+    ///                     │   A
+    ///                     │   B
+    ///                     │   DP
+    ///                     │   X
+    ///                     │   Y
+    ///                     │   U or S
+    ///                     ▼   PC
+    ///                 Higher Memory Addresses
+    /// 
+    /// For each 8-bit register specified, a byte is read from the memory location pointed to by the stack pointer and then the stack pointer is incremented by one. 
+    /// For each 16-bit register specified, the register’s high-order byte is read from the address pointed to by the stack pointer and then the stack pointer is incremented by one. 
+    /// Next, the register’s loworder byte is read and the stack pointer is again incremented by one.
+    /// 
+    /// The PUL instructions use a postbyte wherein each bit position corresponds to one of the registers which may be pulled. 
+    /// Bits that are set (1) specify the registers to be pulled.
+    /// 
+    ///             ╭───┬───┬───┬───┬───┬───┬───┬───╮
+    /// POSTBYTE:   | PC|U/S| Y | X | DP| B | A | CC|
+    ///             ╰───┴───┴───┴───┴───┴───┴───┴───╯
+    ///               7                           0
+    /// 
+    /// See Also: PSH, PULSW, PULUW
+    /// </remarks>
     public class _37_Pulu_M : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)
