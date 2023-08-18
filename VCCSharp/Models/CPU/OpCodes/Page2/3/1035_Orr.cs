@@ -3,8 +3,35 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page2
 {
-    // --[HITACHI]--
-    //ORR
+    /// <summary>
+    /// ORR
+    /// 🚫 6309 ONLY 🚫
+    /// Logically OR Source Register with Destination Register
+    /// r1’ ← r1 OR r0
+    /// SOURCE FORM     ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT
+    /// ORR r0,r1       IMMEDIATE           1035        4           3
+    ///   [E F H I N Z V C]
+    ///   [        ↕ ↕ 0  ]
+    /// </summary>
+    /// <remarks>
+    /// The ORR instruction logically ORs the contents of a source register with the contents of a destination register. 
+    /// The result is placed into the destination register.
+    ///         N The Negative flag is set equal to the value of the result’s high-order bit.
+    ///         Z The Zero flag is set if the new value of the destination register is zero; cleared otherwise.
+    ///         V The Overflow flag is cleared by this instruction.
+    ///         C The Carry flag is not affected by this instruction.
+    ///         
+    /// All of the 6309 registers except Q and MD can be specified as either the source or destination; however specifying the PC register as either the source or destination produces undefined results.
+    /// 
+    /// Although the ORR instruction is capable of altering the flow of program execution by specifying the PC register as the destination, you should avoid doing so because the prefetch capability of the 6309 can produce un-predictable results.
+    /// 
+    /// See “6309 Inter-Register Operations” on page 143 for details on how this instruction operates when registers of different sizes are specified.
+    /// 
+    /// The Immediate operand for this instruction is a postbyte which uses the same format as that used by the TFR and EXG instructions. 
+    /// For details, see the description of the TFR instruction.
+    /// 
+    /// See Also: OR (8-bit), ORD
+    /// </remarks>
     public class _1035_Orr : OpCode, IOpCode
     {
         public int Exec(IMC6809 cpu) => throw new NotImplementedException();

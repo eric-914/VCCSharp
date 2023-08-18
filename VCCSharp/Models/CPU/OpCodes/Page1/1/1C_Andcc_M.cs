@@ -12,6 +12,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// SOURCE FORM   ADDRESSING MODE     OPCODE       CYCLES      BYTE COUNT
     /// ANDCC #i8     IMMEDIATE           1C           3           2
     /// 
+    /// I8 : 8-bit Immediate value
     /// This instruction logically ANDs the contents of the Condition Codes register with the immediate byte specified in the instruction. 
     /// The result is placed back into the Condition Codes register.
     /// The ANDCC instruction provides a method to clear specific flags in the Condition Codes register. 
