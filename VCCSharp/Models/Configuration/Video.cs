@@ -1,15 +1,8 @@
-﻿using VCCSharp.Enums;
-using VCCSharp.Models.Configuration.Support;
+﻿using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Options;
+using VCCSharp.Configuration.Support;
 
 namespace VCCSharp.Models.Configuration;
-
-public interface IVideoConfiguration
-{
-    RangeSelect<MonitorTypes> Monitor { get; }
-    RangeSelect<PaletteTypes> Palette { get; }
-    bool ScanLines { get; set; }
-    bool ForceAspect { get; set; }
-}
 
 public class Video : IVideoConfiguration
 {

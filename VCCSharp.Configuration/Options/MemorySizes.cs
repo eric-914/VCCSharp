@@ -1,4 +1,4 @@
-﻿namespace VCCSharp.Enums;
+﻿namespace VCCSharp.Configuration.Options;
 
 public enum MemorySizes
 {

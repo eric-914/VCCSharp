@@ -1,5 +1,6 @@
 ﻿using Ninject;
-using VCCSharp.Enums;
+using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Options;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Shared.ViewModels;
 

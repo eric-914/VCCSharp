@@ -1,13 +1,8 @@
-﻿using VCCSharp.Enums;
-using VCCSharp.Models.Configuration.Support;
+﻿using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Options;
+using VCCSharp.Configuration.Support;
 
 namespace VCCSharp.Models.Configuration;
-
-public interface IAudioConfiguration
-{
-    string Device { get; set; }
-    RangeSelect<AudioRates> Rate { get; }
-}
 
 public class Audio : IAudioConfiguration
 {

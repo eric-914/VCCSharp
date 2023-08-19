@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:keyboard="clr-namespace:VCCSharp.Configuration.TabControls.Keyboard"
              xmlns:converters="clr-namespace:VCCSharp.Converters"
-             xmlns:enums="clr-namespace:VCCSharp.Enums"
+             xmlns:keyboardLayouts="clr-namespace:VCCSharp.Configuration.Options;assembly=VCCSharp.Configuration"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="580">
     <UserControl.DataContext>
@@ -31,9 +31,9 @@
             </Grid.RowDefinitions>
             <Label Grid.Row="0" Content="Keyboard Mapping"/>
 
-            <RadioButton Grid.Row="1" IsChecked="{Binding KeyboardLayout, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:KeyboardLayouts.CoCo}}" Content="Coco 1/2: Layout physically resembles the Coco 1/2 keyboard as close as possible."/>
-            <RadioButton Grid.Row="2" IsChecked="{Binding KeyboardLayout, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:KeyboardLayouts.CoCo3}}" Content="Coco 3: Layout physically resembles the Coco 3 keyboard as close as possible."/>
-            <RadioButton Grid.Row="3" IsChecked="{Binding KeyboardLayout, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:KeyboardLayouts.PC}}" Content="Standard PC keyboard layout."/>
+      <RadioButton Grid.Row="1" IsChecked="{Binding KeyboardLayout, Converter={StaticResource Selection}, ConverterParameter={x:Static keyboardLayouts:KeyboardLayouts.CoCo}}" Content="Coco 1/2: Layout physically resembles the Coco 1/2 keyboard as close as possible."/>
+      <RadioButton Grid.Row="2" IsChecked="{Binding KeyboardLayout, Converter={StaticResource Selection}, ConverterParameter={x:Static keyboardLayouts:KeyboardLayouts.CoCo3}}" Content="Coco 3: Layout physically resembles the Coco 3 keyboard as close as possible."/>
+      <RadioButton Grid.Row="3" IsChecked="{Binding KeyboardLayout, Converter={StaticResource Selection}, ConverterParameter={x:Static keyboardLayouts:KeyboardLayouts.PC}}" Content="Standard PC keyboard layout."/>
 
             <RadioButton Grid.Row="4" IsEnabled="False">
                 <!-- Doesn't look like this was ever implemented -->

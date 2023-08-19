@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows;
-using VCCSharp.Enums;
+using VCCSharp.Configuration.Options;
 using VCCSharp.IoC;
 using VCCSharp.Models.Keyboard.Mappings;
 

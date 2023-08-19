@@ -1,17 +1,8 @@
-﻿using VCCSharp.Enums;
-using VCCSharp.Models.Configuration.Support;
+﻿using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Options;
+using VCCSharp.Configuration.Support;
 
 namespace VCCSharp.Models.Configuration;
-
-public interface ICPUConfiguration
-{
-    RangeSelect<CPUTypes> Type { get; }
-    bool ThrottleSpeed { get; set; }
-    int CpuMultiplier { get; set; }
-    int FrameSkip { get; set; }
-    int MaxOverclock { get; set; }
-    void AdjustOverclockSpeed(int change);
-}
 
 public class CPU : ICPUConfiguration
 {

@@ -1,4 +1,5 @@
-﻿using VCCSharp.Models.Configuration.Support;
+﻿using VCCSharp.Configuration.Support;
+using VCCSharp.Models.Configuration.Support;
 
 namespace VCCSharp.Models.Configuration;
 

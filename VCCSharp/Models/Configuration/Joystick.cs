@@ -1,6 +1,7 @@
-﻿using VCCSharp.Models.Configuration.Support;
+﻿using VCCSharp.Configuration.Options;
+using VCCSharp.Configuration.Support;
+using VCCSharp.Models.Configuration.Support;
 using VCCSharp.Shared.Configuration;
-using VCCSharp.Shared.Enums;
 
 namespace VCCSharp.Models.Configuration;
 

@@ -1,14 +1,8 @@
-﻿using VCCSharp.Enums;
-using VCCSharp.Models.Configuration.Support;
+﻿using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Options;
+using VCCSharp.Configuration.Support;
 
 namespace VCCSharp.Models.Configuration;
-
-public interface IMemoryConfiguration
-{
-    RangeSelect<MemorySizes> Ram { get; }
-    string ExternalBasicImage { get; } //## READ-ONLY ##//
-    void SetExternalBasicImage(string value);
-}
 
 public class Memory : IMemoryConfiguration
 {

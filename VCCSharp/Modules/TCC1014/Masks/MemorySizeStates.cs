@@ -1,4 +1,4 @@
-﻿using VCCSharp.Enums;
+﻿using VCCSharp.Configuration.Options;
 
 namespace VCCSharp.Modules.TCC1014.Masks;
 

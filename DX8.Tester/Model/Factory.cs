@@ -1,7 +1,7 @@
 ﻿using System.Windows;
+using VCCSharp.Configuration.Options;
 using VCCSharp.Shared.Configuration;
 using VCCSharp.Shared.Dx;
-using VCCSharp.Shared.Enums;
 using VCCSharp.Shared.Models;
 using VCCSharp.Shared.Threading;
 using VCCSharp.Shared.ViewModels;

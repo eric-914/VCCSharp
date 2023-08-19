@@ -1,6 +1,6 @@
 ﻿using DX8;
 using System.Diagnostics;
-using VCCSharp.Enums;
+using VCCSharp.Configuration.Options;
 using VCCSharp.IoC;
 using VCCSharp.Models;
 using VCCSharp.Models.Audio;

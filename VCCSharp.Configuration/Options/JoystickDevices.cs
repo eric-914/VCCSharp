@@ -1,4 +1,4 @@
-﻿namespace VCCSharp.Shared.Enums;
+﻿namespace VCCSharp.Configuration.Options;
 
 public enum JoystickDevices
 {

@@ -5,7 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:display="clr-namespace:VCCSharp.Configuration.TabControls.Display"
              xmlns:converters="clr-namespace:VCCSharp.Converters"
-             xmlns:enums="clr-namespace:VCCSharp.Enums"
+             xmlns:monitorTypes="clr-namespace:VCCSharp.Configuration.Options;assembly=VCCSharp.Configuration"
+             xmlns:paletteTypes="clr-namespace:VCCSharp.Configuration.Options;assembly=VCCSharp.Configuration"
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="580">
     <UserControl.DataContext>
@@ -60,13 +61,13 @@
                             <RowDefinition Height="30"/>
                         </Grid.RowDefinitions>
                         <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
-                            <Image Source="pack://application:,,,/Resources/composite.ico" Stretch="None" Visibility="{Binding MonitorType, Converter={StaticResource Visibility}, ConverterParameter={x:Static enums:MonitorTypes.Composite}}"/>
-                            <Image Source="pack://application:,,,/Resources/rgb.ico" Stretch="None" Visibility="{Binding MonitorType, Converter={StaticResource Visibility}, ConverterParameter={x:Static enums:MonitorTypes.RGB}}"/>
+              <Image Source="pack://application:,,,/Resources/composite.ico" Stretch="None" Visibility="{Binding MonitorType, Converter={StaticResource Visibility}, ConverterParameter={x:Static monitorTypes:MonitorTypes.Composite}}"/>
+              <Image Source="pack://application:,,,/Resources/rgb.ico" Stretch="None" Visibility="{Binding MonitorType, Converter={StaticResource Visibility}, ConverterParameter={x:Static monitorTypes:MonitorTypes.RGB}}"/>
                         </Grid>
-                        <RadioButton Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Content="RGB" IsChecked="{Binding MonitorType, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MonitorTypes.RGB}}"/>
-                        <RadioButton Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Content="Composite" IsChecked="{Binding MonitorType, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MonitorTypes.Composite}}"/>
-                        <RadioButton Grid.Column="2" Grid.Row="2" Content="Updated Palette" IsEnabled="{Binding MonitorType, Converter={StaticResource Enabled}, ConverterParameter={x:Static enums:MonitorTypes.Composite}}" IsChecked="{Binding PaletteType, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:PaletteTypes.Updated}}"/>
-                        <RadioButton Grid.Column="2" Grid.Row="3" Content="Original Palette" IsEnabled="{Binding MonitorType, Converter={StaticResource Enabled}, ConverterParameter={x:Static enums:MonitorTypes.Composite}}" IsChecked="{Binding PaletteType, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:PaletteTypes.Original}}"/>
+            <RadioButton Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Content="RGB" IsChecked="{Binding MonitorType, Converter={StaticResource Selection}, ConverterParameter={x:Static monitorTypes:MonitorTypes.RGB}}"/>
+            <RadioButton Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Content="Composite" IsChecked="{Binding MonitorType, Converter={StaticResource Selection}, ConverterParameter={x:Static monitorTypes:MonitorTypes.Composite}}"/>
+            <RadioButton Grid.Column="2" Grid.Row="2" Content="Updated Palette" IsEnabled="{Binding MonitorType, Converter={StaticResource Enabled}, ConverterParameter={x:Static monitorTypes:MonitorTypes.Composite}}" IsChecked="{Binding PaletteType, Converter={StaticResource Selection}, ConverterParameter={x:Static paletteTypes:PaletteTypes.Updated}}"/>
+            <RadioButton Grid.Column="2" Grid.Row="3" Content="Original Palette" IsEnabled="{Binding MonitorType, Converter={StaticResource Enabled}, ConverterParameter={x:Static monitorTypes:MonitorTypes.Composite}}" IsChecked="{Binding PaletteType, Converter={StaticResource Selection}, ConverterParameter={x:Static paletteTypes:PaletteTypes.Original}}"/>
                     </Grid>
                 </StackPanel>
             </StackPanel>

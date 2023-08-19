@@ -1,14 +1,6 @@
-﻿namespace VCCSharp.Shared.Configuration;
+﻿using VCCSharp.Configuration.Support;
 
-public interface IRangeSelect<T> where T : struct
-{
-    T Value { get; set; }
-}
-
-public interface IRangeSelect
-{
-    int Value { get; set; }
-}
+namespace VCCSharp.Shared.Configuration;
 
 public class NullRangeSelect<T> : IRangeSelect<T> where T : struct
 {
