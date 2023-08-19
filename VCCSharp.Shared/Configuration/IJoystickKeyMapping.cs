@@ -1,4 +1,5 @@
-﻿using VCCSharp.Shared.Models;
+﻿using VCCSharp.Configuration.Models;
+using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Shared.Configuration;
 
@@ -12,7 +13,6 @@ public interface IJoystickKeyMapping : ILeft<IJoystickKeyMapping>, IRight<IJoyst
 
     IEnumerable<string> KeyNames { get; }
 }
-
 
 public class NullJoystickKeyMapping : IJoystickKeyMapping
 {

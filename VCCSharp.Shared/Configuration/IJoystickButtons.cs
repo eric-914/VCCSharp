@@ -1,4 +1,6 @@
-﻿namespace VCCSharp.Shared.Configuration;
+﻿using VCCSharp.Configuration.Models;
+
+namespace VCCSharp.Shared.Configuration;
 
 public interface IJoystickButtons
 {

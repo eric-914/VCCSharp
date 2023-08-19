@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Windows.Input;
+using VCCSharp.Configuration.Models;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Shared.Configuration;
 

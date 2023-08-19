@@ -1,12 +1,7 @@
 ﻿using System.Windows.Input;
+using VCCSharp.Configuration.Models;
 
 namespace VCCSharp.Shared.Configuration;
-
-public interface IKeySelect
-{
-    Key Value { get; set; }
-    string Selected { get; set; }
-}
 
 public class NullJoystickKeySelect : IKeySelect
 {
