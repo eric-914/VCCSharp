@@ -15,11 +15,9 @@ public interface IModules
     ICassette Cassette { get; }
     IClipboard Clipboard { get; }
     ICoCo CoCo { get; }
-    IConfigurationManager ConfigurationManager { get; }
     IConfiguration Configuration { get; }
     IDraw Draw { get; }
     IEmu Emu { get; }
-    IEvents Events { get; }
     IGraphics Graphics { get; }
     IIOBus IOBus { get; }
     IJoysticks Joysticks { get; }
@@ -27,7 +25,6 @@ public interface IModules
     IMC6821 MC6821 { get; }
     IMenuCallbacks MenuCallbacks { get; }
     IPAKInterface PAKInterface { get; }
-    IQuickLoad QuickLoad { get; }
     IScreen Screen { get; }
     ITCC1014 TCC1014 { get; }
     IThrottle Throttle { get; }
@@ -44,16 +41,15 @@ public class Modules : IModules
 {
     private readonly IFactory _factory;
 
+    public IConfiguration Configuration { get; private set; } = default!;
+
     public IAudio Audio { get; private set; } = default!;
     public ICPU CPU { get; private set; } = default!;
     public ICassette Cassette { get; private set; } = default!;
     public IClipboard Clipboard { get; private set; } = default!;
     public ICoCo CoCo { get; private set; } = default!;
-    public IConfigurationManager ConfigurationManager { get; private set; } = default!;
-    public IConfiguration Configuration => ConfigurationManager.Model;
     public IDraw Draw { get; private set; } = default!;
     public IEmu Emu { get; private set; } = default!;
-    public IEvents Events { get; private set; } = default!;
     public IGraphics Graphics { get; private set; } = default!;
     public IIOBus IOBus { get; private set; } = default!;
     public IJoysticks Joysticks { get; private set; } = default!;
@@ -61,7 +57,6 @@ public class Modules : IModules
     public IMC6821 MC6821 { get; private set; } = default!;
     public IMenuCallbacks MenuCallbacks { get; private set; } = default!;
     public IPAKInterface PAKInterface { get; private set; } = default!;
-    public IQuickLoad QuickLoad { get; private set; } = default!;
     public IScreen Screen { get; private set; } = default!;
     public ITCC1014 TCC1014 { get; private set; } = default!;
     public IThrottle Throttle { get; private set; } = default!;
@@ -74,9 +69,8 @@ public class Modules : IModules
 
     public void Initialize()
     {
-        ConfigurationManager = _factory.Get<IConfigurationManager>();
-        Events = _factory.Get<IEvents>();
-        QuickLoad = _factory.Get<IQuickLoad>();
+        //TODO: _factory.Get<IConfiguration>() is mapped to ConfigurationRoot.
+        Configuration = _factory.Get<IConfigurationManager>().Model;
 
         Audio = _factory.Get<IAudio>();
         CPU = _factory.Get<ICPU>();

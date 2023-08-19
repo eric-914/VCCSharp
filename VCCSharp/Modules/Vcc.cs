@@ -24,6 +24,7 @@ public interface IVcc : IModule
 public class Vcc : IVcc
 {
     private readonly IModules _modules;
+    private readonly IEvents _events;
     private readonly IStatus _status;
 
     private IConfiguration Configuration => _modules.Configuration;
@@ -43,9 +44,10 @@ public class Vcc : IVcc
 
     private string AppName { get; set; } = "(app)";
 
-    public Vcc(IModules modules, IStatus status)
+    public Vcc(IModules modules, IEvents events, IStatus status)
     {
         _modules = modules;
+        _events = events;
         _status = status;
     }
 
@@ -116,7 +118,7 @@ public class Vcc : IVcc
             }
         }
 
-        _modules.Events.Shutdown();
+        _events.Shutdown();
     }
 
     private float Render()

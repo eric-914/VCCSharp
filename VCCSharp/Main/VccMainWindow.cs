@@ -2,6 +2,7 @@
 using VCCSharp.IoC;
 using VCCSharp.Menu;
 using VCCSharp.Models;
+using VCCSharp.Modules;
 
 namespace VCCSharp.Main
 {
@@ -30,7 +31,7 @@ namespace VCCSharp.Main
             window.ViewModel = _factory.Get<IViewModelFactory>().CreateMainWindowViewModel(commands.MenuItems);
 
             //TODO: Figure out how to get Actions instance and do this right.
-            Actions.TestItAction = () => _factory.Get<IModules>().Events.ResetWindow(window);
+            Actions.TestItAction = () => _factory.Get<IEvents>().ResetWindow(window);
 
             _factory.Get<IMainWindowEvents>().Bind(window, commands);
 

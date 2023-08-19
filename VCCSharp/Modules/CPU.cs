@@ -1,7 +1,6 @@
 ﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
-using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Modules;
 
@@ -24,14 +23,14 @@ public interface ICPU : IModule, IChip
 public class CPU : ICPU
 {
     private readonly IModules _modules;
-
+    private readonly IConfigurationManager _configurationManager;
     private IProcessor _processor;
 
-    private IConfiguration Configuration => _modules.ConfigurationManager.Model;
-
-    public CPU(IModules modules)
+    public CPU(IModules modules, IConfigurationManager configurationManager)
     {
         _modules = modules;
+        _configurationManager = configurationManager;
+
         _processor = _modules.MC6809; //--Default to 6809 until specified otherwise.
     }
 
@@ -69,7 +68,7 @@ public class CPU : ICPU
 
     public void ChipReset()
     {
-        Init(Configuration.CPU.Type.Value);
+        Init(_configurationManager.Model.CPU.Type.Value);
         _processor.Reset();
     }
 }

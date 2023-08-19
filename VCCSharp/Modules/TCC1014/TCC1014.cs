@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Configuration;
+using System.Diagnostics;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models.Configuration;
@@ -39,6 +40,7 @@ public interface ITCC1014 : IModule, IChip
 public class TCC1014 : ITCC1014
 {
     private readonly IModules _modules;
+    private readonly IConfigurationManager _configurationManager;
 
     private IGraphics Graphics => _modules.Graphics;
     private IIOBus IO => _modules.IOBus;
@@ -46,7 +48,6 @@ public class TCC1014 : ITCC1014
     private IEmu Emu => _modules.Emu;
     private ICoCo CoCo => _modules.CoCo;
     private IKeyboard Keyboard => _modules.Keyboard;
-    private IConfiguration Configuration => _modules.ConfigurationManager.Model;
 
     private readonly VectorMasks _vectorMask = new();
     private readonly VectorMasksAlt _vectorMaskAlt = new();
@@ -57,9 +58,10 @@ public class TCC1014 : ITCC1014
     private RomMapping _romMap;		// $FF90 bit 1-0
     private MapTypes _mapType;	    // $FFDE/FFDF toggle Map type 0 = ram/rom
 
-    public TCC1014(IModules modules, IGIME gime)
+    public TCC1014(IModules modules, IConfigurationManager configurationManager, IGIME gime)
     {
         _modules = modules;
+        _configurationManager = configurationManager;
         _gime = gime;
     }
 
@@ -469,7 +471,7 @@ public class TCC1014 : ITCC1014
     {
         Debug.WriteLine("TCC1014.ChipReset()");
 
-        Initialize(Configuration.Memory.Ram.Value);
+        Initialize(_configurationManager.Model.Memory.Ram.Value);
 
         _ramVectors = XFEXX.RAM;
 

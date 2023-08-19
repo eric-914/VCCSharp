@@ -28,6 +28,9 @@ internal static class ModuleBinding
             .Singleton<ITCC1014, TCC1014.TCC1014>()
             .Singleton<IThrottle, Throttle>()
             .Singleton<IVcc, Vcc>()
+
+            //TODO: _factory.Get<IConfiguration>() is mapped to ConfigurationRoot.
+            //.Singleton(binder => binder.Get<IConfigurationManager>().Model)  //--IConfiguration
             ;
     }
 

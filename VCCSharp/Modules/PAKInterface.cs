@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Configuration;
+using System.IO;
 using System.Runtime.InteropServices;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
@@ -34,6 +35,7 @@ public interface IPAKInterface : IModule
 public class PAKInterface : IPAKInterface
 {
     private readonly IModules _modules;
+    private readonly IConfigurationManager _configurationManager;
     private readonly IKernel _kernel;
 
     // ReSharper disable once InconsistentNaming
@@ -54,9 +56,10 @@ public class PAKInterface : IPAKInterface
 
     private readonly PakInterfaceDelegates _d = new();
 
-    public PAKInterface(IModules modules, IKernel kernel)
+    public PAKInterface(IModules modules, IConfigurationManager configurationManager, IKernel kernel)
     {
         _modules = modules;
+        _configurationManager = configurationManager;
         _kernel = kernel;
     }
 
@@ -250,7 +253,7 @@ public class PAKInterface : IPAKInterface
         {
             moduleParams |= 2048;
 
-            InvokeSetIniPath(_modules.ConfigurationManager.GetFilePath());
+            InvokeSetIniPath(_configurationManager.GetFilePath());
         }
 
         if (HasPakSetCart())

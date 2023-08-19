@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Configuration;
+using System.Diagnostics;
 using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
@@ -35,11 +36,14 @@ namespace VCCSharp.Modules
     public class Events : IEvents
     {
         private readonly IModules _modules;
+        private readonly IConfigurationManager _configurationManager;
+
         private IGraphics Graphics => _modules.Graphics;
 
-        public Events(IModules modules)
+        public Events(IModules modules, IConfigurationManager configurationManager)
         {
             _modules = modules;
+            _configurationManager = configurationManager;
         }
 
         public void EmuRun()
@@ -62,7 +66,7 @@ namespace VCCSharp.Modules
         public void EmuExit()
         {
             Debug.WriteLine("Exiting...");
-            _modules.ConfigurationManager.Save(); //Save any changes to ini File
+            _configurationManager.Save(); //Save any changes to ini File
 
             _modules.Vcc.BinaryRunning = false;
         }

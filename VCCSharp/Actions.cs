@@ -1,23 +1,28 @@
 ﻿using System.Windows;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
+using VCCSharp.Modules;
 
 namespace VCCSharp
 {
     public class Actions
     {
         private readonly IModules _modules;
+        private readonly IConfigurationManager _configurationManager;
+        private readonly IEvents _events;
         private readonly IOptions _options;
 
-        public Actions(IModules modules, IOptions options)
+        public Actions(IModules modules, IConfigurationManager configurationManager, IEvents events, IOptions options)
         {
             _modules = modules;
+            _configurationManager = configurationManager;
+            _events = events;
             _options = options;
         }
 
         public void ApplicationExit()
         {
-            _modules.Events.EmuExit();
+            _events.EmuExit();
             Application.Current.MainWindow?.Close();
         }
 
@@ -28,23 +33,23 @@ namespace VCCSharp
 
         public void SaveConfiguration()
         {
-            _modules.ConfigurationManager.SaveAs();
+            _configurationManager.SaveAs();
         }
 
         public void LoadConfiguration()
         {
-            _modules.ConfigurationManager.LoadFrom();
+            _configurationManager.LoadFrom();
             _modules.Emu.ResetPending = ResetPendingStates.Hard;
         }
 
         public void HardReset() //F9
         {
-            _modules.Events.ToggleOnOff();
+            _events.ToggleOnOff();
         }
 
         public void SoftReset() //F5
         {
-            _modules.Events.EmuReset(ResetPendingStates.Soft);
+            _events.EmuReset(ResetPendingStates.Soft);
         }
 
         public void CopyText()
@@ -74,7 +79,7 @@ namespace VCCSharp
 
         public void TapeRecorder()
         {
-            _options.TapePlayer.ShowDialog(_modules.ConfigurationManager);
+            _options.TapePlayer.ShowDialog(_configurationManager);
         }
 
         public void BitBanger()
@@ -99,37 +104,37 @@ namespace VCCSharp
 
         public void Run()
         {
-            _modules.Events.EmuRun();
+            _events.EmuRun();
         }
 
         public void SlowDown() //F3
         {
-            _modules.Events.SlowDown();
+            _events.SlowDown();
         }
 
         public void SpeedUp() //F4
         {
-            _modules.Events.SpeedUp();
+            _events.SpeedUp();
         }
 
         public void ToggleMonitorType() //F6
         {
-            _modules.Events.ToggleMonitorType();
+            _events.ToggleMonitorType();
         }
 
         public void ToggleThrottle() //F8
         {
-            _modules.Events.ToggleThrottle();
+            _events.ToggleThrottle();
         }
 
         public void ToggleInfoBand() //F10
         {
-            _modules.Events.ToggleInfoBand();
+            _events.ToggleInfoBand();
         }
 
         public void ToggleFullScreen() //F11
         {
-            _modules.Events.ToggleFullScreen();
+            _events.ToggleFullScreen();
         }
 
         public void TestIt() //Ctrl-F12 -- Might keep this around
@@ -142,7 +147,7 @@ namespace VCCSharp
 
         public void Cancel() //ESC
         {
-            _modules.Events.Cancel();
+            _events.Cancel();
         }
 
         public void OpenBitBanger()

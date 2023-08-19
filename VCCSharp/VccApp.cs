@@ -18,13 +18,17 @@ public interface IVccApp
 public class VccApp : IVccApp
 {
     private readonly IModules _modules;
+    private readonly IConfigurationManager _configurationManager;
+    private readonly IQuickLoad _quickLoad;
 
-    public VccApp(IModules modules)
+    public VccApp(IModules modules, IConfigurationManager configurationManager, IQuickLoad quickLoad)
     {
         _modules = modules;
+        _configurationManager = configurationManager;
+        _quickLoad = quickLoad;
 
         //TODO: Not sure this is proper place.  Probably should have each module respond accordingly.
-        _modules.ConfigurationManager.OnConfigurationSynch += ConfigurationSynchronize;
+        _configurationManager.OnConfigurationSynch += ConfigurationSynchronize;
     }
 
     public void LoadConfiguration(string? iniFile)
@@ -33,7 +37,7 @@ public class VccApp : IVccApp
 
         if (iniFile == null) throw new ArgumentNullException(nameof(iniFile));
 
-        _modules.ConfigurationManager.Load(iniFile);
+        _configurationManager.Load(iniFile);
     }
 
     public void Startup(string? qLoadFile)
@@ -56,7 +60,7 @@ public class VccApp : IVccApp
 
         _modules.Emu.ResetPending = ResetPendingStates.Hard;
 
-        _modules.Emu.EmulationRunning = _modules.ConfigurationManager.Model.Startup.AutoStart;
+        _modules.Emu.EmulationRunning = _configurationManager.Model.Startup.AutoStart;
 
         _modules.Vcc.BinaryRunning = true;
 
@@ -64,7 +68,7 @@ public class VccApp : IVccApp
 
         if (!string.IsNullOrEmpty(qLoadFile))
         {
-            if (_modules.QuickLoad.QuickStart(qLoadFile) == QuickStartStatuses.Ok)
+            if (_quickLoad.QuickStart(qLoadFile) == QuickStartStatuses.Ok)
             {
                 _modules.Vcc.SetAppTitle(qLoadFile); //TODO: No app title if no quick load
             }

@@ -10,7 +10,6 @@ namespace VCCSharp.TapePlayer;
 public class TapePlayerManager : ITapePlayer
 {
     private readonly IModules _modules;
-
     private readonly TapePlayerViewModel _viewModel = new();
     private TapePlayerWindow? _view;
 
@@ -41,7 +40,7 @@ public class TapePlayerManager : ITapePlayer
 
     public void ShowDialog(IConfigurationManager state)
     {
-        _viewModel.ConfigurationManager = _modules.ConfigurationManager;
+        _viewModel.ConfigurationManager = state;
 
         _view ??= new TapePlayerWindow(_viewModel, this);
 
@@ -197,8 +196,6 @@ public class TapePlayerManager : ITapePlayer
 
     private void SetTapeCounter(int counter)
     {
-        //_modules.Cassette.SetTapeCounter((uint)counter);
-        //_modules.ConfigurationManager.UpdateTapeDialog((uint) counter);
         _viewModel.Counter = counter;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Ninject;
+using System.Formats.Asn1;
 
 namespace VCCSharp.IoC;
 
@@ -22,6 +23,7 @@ public interface IBinder : IFactory
 
     IBinder Singleton<TInterface, TClass>() where TClass : class, TInterface;
     IBinder Singleton<TInterface, TClass>(TClass instance) where TClass : class, TInterface;
+    IBinder Singleton<TInterface>(Func<IBinder, TInterface> fn);
 
     IBinder Bind<TInterface, TClass>() where TClass : class, TInterface;
     IBinder Bind<TInterface>(Func<TInterface> fn);
@@ -64,6 +66,9 @@ public class Factory : IBinder
     public IBinder Singleton<TInterface,TClass>(TClass instance) where TClass : class, TInterface 
         => BindThis(() => _kernel.Bind<TInterface>().ToMethod(_ => instance));
 
+    public IBinder Singleton<TInterface>(Func<IBinder, TInterface> fn)
+        => BindThis(() => _kernel.Bind<TInterface>().ToMethod(_ => fn(this)).InSingletonScope());
+
     #region Binding Delegates
 
     public IBinder Include(Action<IBinder> action)
@@ -83,7 +88,6 @@ public class Factory : IBinder
     private IBinder BindThis(Action action)
     {
         action();
-
         return this;
     }
 

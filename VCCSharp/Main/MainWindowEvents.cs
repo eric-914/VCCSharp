@@ -19,9 +19,9 @@ namespace VCCSharp.Main
         private readonly IKeyboard _keyboard;
         private readonly IJoysticks _joysticks;
 
-        public MainWindowEvents(IModules modules)
+        public MainWindowEvents(IModules modules, IEvents events)
         {
-            _events = modules.Events;
+            _events = events;
             _keyboard = modules.Keyboard;
             _joysticks = modules.Joysticks;
         }

@@ -2,32 +2,34 @@
 using System.Windows;
 using VCCSharp.IoC;
 using VCCSharp.Models.Configuration;
+using VCCSharp.Modules;
 
 namespace VCCSharp.BitBanger;
 
 public class BitBangerManager : IBitBanger
 {
     private readonly IModules _modules;
-
+    private readonly IConfigurationManager _configurationManager;
     private readonly BitBangerViewModel _viewModel = new();
     private BitBangerWindow? _view;
 
     private IConfiguration Model => _modules.Configuration;
 
-    public BitBangerManager(IModules modules)
+    public BitBangerManager(IModules modules, IConfigurationManager configurationManager)
     {
         _modules = modules;
+        _configurationManager = configurationManager;
 
         _viewModel.PropertyChanged += (_, args) =>
         {
             switch (args.PropertyName)
             {
                 case "AddLineFeed":
-                    _modules.MC6821.SetSerialParams(_modules.ConfigurationManager.Model.SerialPort.TextMode);
+                    _modules.MC6821.SetSerialParams(_configurationManager.Model.SerialPort.TextMode);
                     break;
 
                 case "Print":
-                    _modules.MC6821.SetMonState(_modules.ConfigurationManager.Model.SerialPort.PrintMonitorWindow);
+                    _modules.MC6821.SetMonState(_configurationManager.Model.SerialPort.PrintMonitorWindow);
                     break;
             }
         };
@@ -35,7 +37,7 @@ public class BitBangerManager : IBitBanger
 
     public void ShowDialog()
     {
-        _viewModel.ConfigurationManager = _modules.ConfigurationManager;
+        _viewModel.ConfigurationManager = _configurationManager;
 
         _view ??= new BitBangerWindow(_viewModel, this);
 
