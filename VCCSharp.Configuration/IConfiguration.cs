@@ -1,7 +1,6 @@
 ﻿using VCCSharp.Configuration.Models;
-using VCCSharp.Configuration.Models.Implementation;
 
-namespace VCCSharp.Models.Configuration;
+namespace VCCSharp.Configuration;
 
 public interface IConfiguration
 {
@@ -17,7 +16,7 @@ public interface IConfiguration
     IStartupConfiguration Startup { get; }
 
     IFilePaths FilePaths { get; }
-    Accessories Accessories { get; }
-    CassetteRecorder CassetteRecorder { get; }
-    SerialPort SerialPort { get; }
+    IAccessories Accessories { get; }
+    ICassetteRecorder CassetteRecorder { get; }
+    ISerialPort SerialPort { get; }
 }

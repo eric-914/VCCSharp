@@ -1,8 +1,8 @@
-﻿using VCCSharp.Enums;
+﻿using VCCSharp.Configuration.Options;
 
-namespace VCCSharp.Models.Configuration;
+namespace VCCSharp.Configuration.Models.Implementation;
 
-public class CassetteRecorder
+public class CassetteRecorder : ICassetteRecorder
 {
     public int TapeCounter { get; set; }
     public TapeModes TapeMode { get; set; } = TapeModes.Stop;

@@ -1,9 +1,9 @@
 ﻿using DX8;
+using VCCSharp.Configuration;
 using VCCSharp.Configuration.Models;
 using VCCSharp.Configuration.Options;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Joystick;
 using VCCSharp.Shared.Dx;
 

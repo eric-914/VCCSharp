@@ -1,9 +1,9 @@
 ﻿using System.IO;
+using VCCSharp.Configuration;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Menu;
 using VCCSharp.Models;
-using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Modules;
 

@@ -1,8 +1,7 @@
-﻿using VCCSharp.Configuration.Models;
-using VCCSharp.Configuration.Options;
+﻿using VCCSharp.Configuration.Options;
 using VCCSharp.Configuration.Support;
 
-namespace VCCSharp.Models.Configuration;
+namespace VCCSharp.Configuration.Models.Implementation;
 
 public class Audio : IAudioConfiguration
 {

@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Windows;
+using VCCSharp.Configuration;
 using VCCSharp.Configuration.Options;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
-using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Graphics;
 using VCCSharp.Modules.TCC1014;
 using VCCSharp.Modules.TCC1014.Masks;

@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Windows;
-using VCCSharp.Enums;
+using VCCSharp.Configuration;
+using VCCSharp.Configuration.Options;
 using VCCSharp.IoC;
-using VCCSharp.Models.Configuration;
 using VCCSharp.Modules;
 
 namespace VCCSharp.TapePlayer;

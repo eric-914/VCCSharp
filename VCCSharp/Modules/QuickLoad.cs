@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Windows;
+using VCCSharp.Configuration;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Modules;
 

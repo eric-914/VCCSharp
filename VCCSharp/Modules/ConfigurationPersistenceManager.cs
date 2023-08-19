@@ -1,7 +1,7 @@
 ﻿using Microsoft.Win32;
 using System.IO;
+using VCCSharp.Configuration;
 using VCCSharp.IoC;
-using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Configuration.Support;
 
 namespace VCCSharp.Modules;

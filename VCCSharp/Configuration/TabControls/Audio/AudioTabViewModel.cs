@@ -3,12 +3,13 @@ using VCCSharp.Configuration.Models;
 using VCCSharp.Configuration.Options;
 using VCCSharp.Models.Audio;
 using VCCSharp.Modules;
+using Implementation = VCCSharp.Configuration.Models.Implementation;
 
 namespace VCCSharp.Configuration.TabControls.Audio;
 
 public class AudioTabViewModel
 {
-    private readonly IAudioConfiguration _model = new VCCSharp.Models.Configuration.Audio();
+    private readonly IAudioConfiguration _model = new Implementation.Audio();
 
     public AudioSpectrum Spectrum { get; } = new();
 

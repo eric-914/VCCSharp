@@ -1,4 +1,5 @@
-﻿using VCCSharp.Configuration.Models;
+﻿using VCCSharp.Configuration;
+using VCCSharp.Configuration.Models;
 using VCCSharp.Configuration.Models.Implementation;
 using Implementation = VCCSharp.Configuration.Models.Implementation;
 
@@ -10,15 +11,15 @@ public class ConfigurationRoot : IConfiguration
 
     public IWindowConfiguration Window { get; } = new Window();
     public ICPUConfiguration CPU { get; } = new CPU();
-    public IAudioConfiguration Audio { get; } = new Audio();
+    public IAudioConfiguration Audio { get; } = new Implementation.Audio();
     public IVideoConfiguration Video { get; } = new Video();
     public IMemoryConfiguration Memory { get; } = new Memory();
-    public IKeyboardConfiguration Keyboard { get; } = new Keyboard();
+    public IKeyboardConfiguration Keyboard { get; } = new Implementation.Keyboard();
     public IJoysticksConfiguration Joysticks { get; } = new Joysticks();
     public IStartupConfiguration Startup { get; } = new Startup();
 
     public IFilePaths FilePaths { get; } = new FilePaths();
-    public Accessories Accessories { get; } = new();
-    public SerialPort SerialPort { get; } = new();
-    public CassetteRecorder CassetteRecorder { get; } = new();
+    public IAccessories Accessories { get; } = new Accessories();
+    public ISerialPort SerialPort { get; } = new SerialPort();
+    public ICassetteRecorder CassetteRecorder { get; } = new CassetteRecorder();
 }

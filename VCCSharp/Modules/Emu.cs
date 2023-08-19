@@ -1,10 +1,10 @@
 ﻿using System.Windows;
+using VCCSharp.Configuration;
 using VCCSharp.Configuration.Models;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
-using VCCSharp.Models.Configuration;
 using static System.IntPtr;
 using HWND = System.IntPtr;
 

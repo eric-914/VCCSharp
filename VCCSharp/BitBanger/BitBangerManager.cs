@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
+using VCCSharp.Configuration;
 using VCCSharp.IoC;
-using VCCSharp.Models.Configuration;
 using VCCSharp.Modules;
 
 namespace VCCSharp.BitBanger;

@@ -1,4 +1,5 @@
-﻿using VCCSharp.Configuration.Models;
+﻿using VCCSharp.Configuration;
+using VCCSharp.Configuration.Models;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Configuration.Support;
 using VCCSharp.Modules;

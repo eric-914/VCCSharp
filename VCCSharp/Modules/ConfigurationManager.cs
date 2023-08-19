@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using VCCSharp.Models.Configuration;
+using VCCSharp.Configuration;
 
 namespace VCCSharp.Modules;
 

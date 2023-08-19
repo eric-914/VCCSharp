@@ -1,4 +1,4 @@
-﻿using VCCSharp.Models.Configuration;
+﻿using VCCSharp.Configuration;
 
 namespace VCCSharp.Modules;
 

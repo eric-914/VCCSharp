@@ -1,12 +1,7 @@
 ﻿using VCCSharp.Configuration.Options;
 using VCCSharp.Configuration.Support;
 
-namespace VCCSharp.Models.Configuration;
-
-public interface IKeyboardConfiguration
-{
-    RangeSelect<KeyboardLayouts> Layout { get; }
-}
+namespace VCCSharp.Configuration.Models.Implementation;
 
 public class Keyboard : IKeyboardConfiguration
 {

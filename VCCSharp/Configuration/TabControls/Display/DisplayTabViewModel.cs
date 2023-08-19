@@ -1,5 +1,6 @@
 ﻿using Ninject;
 using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Models.Implementation;
 using VCCSharp.Configuration.Options;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Shared.ViewModels;
