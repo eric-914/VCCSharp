@@ -3,9 +3,18 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3
 {
-    // --[HITACHI]--
-    //SUBE
-    //DIRECT
+    /// <summary>
+    /// SUBE
+    /// 🚫 6309 ONLY 🚫
+    /// Subtract memory from accumulator
+    /// Subtract from value in 8-Bit Accumulator
+    /// DIRECT
+    /// r’ ← r - IMM8|(M)
+    /// SOURCE FORM     ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT
+    /// SUBE            DIRECT              1190        5 / 4       3 
+    ///   [E F H I N Z V C]
+    ///   [    ~   ↕ ↕ ↕ ↕]
+    /// </summary>
     public class _1190_Sube_D : OpCode, IOpCode
     {
         public int Exec(IMC6809 cpu) => throw new NotImplementedException();

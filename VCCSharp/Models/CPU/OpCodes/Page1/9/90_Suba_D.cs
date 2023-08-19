@@ -3,9 +3,17 @@ using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
 {
-    //SUBA
-    //Subtract memory from accumulator
-    //DIRECT
+    /// <summary>
+    /// SUBA
+    /// Subtract memory from accumulator
+    /// Subtract from value in 8-Bit Accumulator
+    /// DIRECT
+    /// r’ ← r - IMM8|(M)
+    /// SOURCE FORM     ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT
+    /// SUBA            DIRECT              90          4 / 3       2 
+    ///   [E F H I N Z V C]
+    ///   [    ~   ↕ ↕ ↕ ↕]
+    /// </summary>
     public class _90_Suba_D : OpCode, IOpCode
     {
         private static int Exec(ICpuProcessor cpu, int cycles)
