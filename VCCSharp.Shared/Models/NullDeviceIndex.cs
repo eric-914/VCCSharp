@@ -1,12 +1,7 @@
-﻿using VCCSharp.Configuration.Options;
+﻿using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Options;
 
 namespace VCCSharp.Shared.Models;
-
-public interface IDeviceIndex
-{
-    int GetDeviceIndex(JoystickSides side);
-    void SetDeviceIndex(JoystickSides side, int value);
-}
 
 public class NullDeviceIndex : IDeviceIndex
 {

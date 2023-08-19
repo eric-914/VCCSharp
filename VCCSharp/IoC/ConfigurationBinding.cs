@@ -1,7 +1,7 @@
-﻿using VCCSharp.Models.Configuration;
+﻿using VCCSharp.Configuration.Models;
+using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Configuration.Support;
 using VCCSharp.Modules;
-using VCCSharp.Shared.Configuration;
 using VCCSharp.Shared.Models;
 using VCCSharp.Shared.ViewModels;
 

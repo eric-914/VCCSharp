@@ -1,5 +1,4 @@
 ﻿using VCCSharp.Configuration.Models;
-using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Models.Configuration;
 

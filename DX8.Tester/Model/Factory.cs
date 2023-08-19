@@ -1,6 +1,6 @@
 ﻿using System.Windows;
+using VCCSharp.Configuration.Models;
 using VCCSharp.Configuration.Options;
-using VCCSharp.Shared.Configuration;
 using VCCSharp.Shared.Dx;
 using VCCSharp.Shared.Models;
 using VCCSharp.Shared.Threading;

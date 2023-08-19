@@ -1,4 +1,5 @@
-﻿using VCCSharp.Configuration.Options;
+﻿using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Options;
 using VCCSharp.Configuration.Support;
 using VCCSharp.Shared.Configuration;
 
@@ -10,4 +11,6 @@ internal class MockJoystickConfiguration : IJoystickConfiguration
     public IRangeSelect<JoystickDevices> InputSource { get; } = new NullRangeSelect<JoystickDevices>();
     public IRangeSelect<JoystickEmulations> Type { get; } = new NullRangeSelect<JoystickEmulations>();
     public IJoystickKeyMapping KeyMap { get; } = new NullJoystickKeyMapping();
+
+    IJoystickKeyMapping IJoystickConfiguration.KeyMap => throw new NotImplementedException();
 }

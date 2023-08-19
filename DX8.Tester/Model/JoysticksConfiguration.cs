@@ -1,7 +1,6 @@
 ﻿using DX8.Tester.Mock;
+using VCCSharp.Configuration.Models;
 using VCCSharp.Configuration.Options;
-using VCCSharp.Shared.Configuration;
-using VCCSharp.Shared.Models;
 
 namespace DX8.Tester.Model;
 

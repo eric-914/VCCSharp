@@ -1,4 +1,4 @@
-﻿using VCCSharp.Shared.Models;
+﻿using VCCSharp.Configuration.Models;
 
 namespace VCCSharp.Shared.ViewModels;
 

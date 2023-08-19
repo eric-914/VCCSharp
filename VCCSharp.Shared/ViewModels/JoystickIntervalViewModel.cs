@@ -1,5 +1,5 @@
-﻿using VCCSharp.Shared.Dx;
-using VCCSharp.Shared.Models;
+﻿using VCCSharp.Configuration.Models;
+using VCCSharp.Shared.Dx;
 
 namespace VCCSharp.Shared.ViewModels;
 

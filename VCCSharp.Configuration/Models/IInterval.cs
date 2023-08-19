@@ -1,4 +1,4 @@
-﻿namespace VCCSharp.Shared.Models;
+﻿namespace VCCSharp.Configuration.Models;
 
 public interface IInterval
 {

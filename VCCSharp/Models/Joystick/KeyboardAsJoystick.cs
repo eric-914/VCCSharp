@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using VCCSharp.Configuration.Models;
 using VCCSharp.Configuration.Options;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Shared.Configuration;

@@ -1,8 +1,7 @@
 ﻿using VCCSharp.Configuration.Options;
 using VCCSharp.Configuration.Support;
-using VCCSharp.Shared.Models;
 
-namespace VCCSharp.Shared.Configuration;
+namespace VCCSharp.Configuration.Models;
 
 public interface IJoystickConfiguration : ILeft<IJoystickConfiguration>, IRight<IJoystickConfiguration>
 {

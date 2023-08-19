@@ -1,7 +1,6 @@
 ﻿using System.Windows.Input;
 using VCCSharp.Configuration.Models;
 using VCCSharp.Shared.Configuration;
-using VCCSharp.Shared.Models;
 
 namespace VCCSharp.Shared.ViewModels;
 

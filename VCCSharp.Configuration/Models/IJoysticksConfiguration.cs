@@ -1,6 +1,4 @@
-﻿using VCCSharp.Shared.Configuration;
-
-namespace VCCSharp.Shared.Models;
+﻿namespace VCCSharp.Configuration.Models;
 
 public interface IJoysticksConfiguration : IDeviceIndex, IInterval
 {
