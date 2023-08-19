@@ -41,8 +41,6 @@ public class Modules : IModules
 {
     private readonly IFactory _factory;
 
-    public IConfiguration Configuration { get; private set; } = default!;
-
     public IAudio Audio { get; private set; } = default!;
     public ICPU CPU { get; private set; } = default!;
     public ICassette Cassette { get; private set; } = default!;
@@ -62,6 +60,10 @@ public class Modules : IModules
     public IThrottle Throttle { get; private set; } = default!;
     public IVcc Vcc { get; private set; } = default!;
 
+    //TODO: Model is null during Initialize() below.
+    public IConfiguration Configuration => _configurationManager.Model;
+    private IConfigurationManager _configurationManager = default!;
+
     public Modules(IFactory factory)
     {
         _factory = factory;
@@ -70,7 +72,7 @@ public class Modules : IModules
     public void Initialize()
     {
         //TODO: _factory.Get<IConfiguration>() is mapped to ConfigurationRoot.
-        Configuration = _factory.Get<IConfigurationManager>().Model;
+        _configurationManager = _factory.Get<IConfigurationManager>();
 
         Audio = _factory.Get<IAudio>();
         CPU = _factory.Get<ICPU>();
