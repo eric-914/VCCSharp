@@ -1,9 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System.Windows.Input;
 using VCCSharp.Configuration.Models;
-using VCCSharp.Configuration.Support;
 
-namespace VCCSharp.Models.Configuration.Support;
+namespace VCCSharp.Configuration.Support;
 
 /// <summary>
 /// Special range select for Input.Key

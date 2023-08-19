@@ -18,5 +18,5 @@ public class MultiPak : IMultiPak
 
     public string FilePath { get; set; } = ""; //C:\CoCo
 
-    public MultiSlots Slots { get; } = new();
+    public IMultiSlots Slots { get; } = new MultiSlots();
 }

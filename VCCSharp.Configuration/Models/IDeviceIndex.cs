@@ -2,6 +2,7 @@
 
 namespace VCCSharp.Configuration.Models;
 
+//TODO: This isn't really configuration related
 public interface IDeviceIndex
 {
     int GetDeviceIndex(JoystickSides side);

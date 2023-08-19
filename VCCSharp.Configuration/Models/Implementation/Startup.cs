@@ -1,6 +1,4 @@
-﻿using VCCSharp.Configuration.Models;
-
-namespace VCCSharp.Models.Configuration;
+﻿namespace VCCSharp.Configuration.Models.Implementation;
 
 public class Startup : IStartupConfiguration
 {

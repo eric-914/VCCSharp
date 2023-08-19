@@ -1,9 +1,7 @@
-﻿#pragma warning disable IDE1006 // Naming Styles
-
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Windows.Input;
 using VCCSharp.Configuration.Models;
-using VCCSharp.Shared.Configuration;
+using VCCSharp.Configuration.Support;
 
 namespace VCCSharp.Models.Configuration.Support;
 

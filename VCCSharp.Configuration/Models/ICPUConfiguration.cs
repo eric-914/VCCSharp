@@ -10,5 +10,7 @@ public interface ICPUConfiguration
     int CpuMultiplier { get; set; }
     int FrameSkip { get; set; }
     int MaxOverclock { get; set; }
+
+    //TODO: Probably not configuration related
     void AdjustOverclockSpeed(int change);
 }

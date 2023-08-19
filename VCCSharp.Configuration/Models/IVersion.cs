@@ -4,6 +4,7 @@
     {
         string Release { set; }
 
+        //TODO: Probably not configuration persistence related.
         string GetRelease();
     }
 }

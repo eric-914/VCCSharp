@@ -7,5 +7,7 @@ public interface IMemoryConfiguration
 {
     RangeSelect<MemorySizes> Ram { get; }
     string ExternalBasicImage { get; } //## READ-ONLY ##//
+
+    //TODO: Probably not configuration related
     void SetExternalBasicImage(string value);
 }
