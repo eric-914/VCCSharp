@@ -7,7 +7,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// COMA
     /// Complement accumulator or memory location
     /// INHERENT
-    /// r’ ← r
+    /// r’ ← ~r
     /// SOURCE FORM     ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT
     /// COMA            INHERENT            43          2 / 1       1
     ///   [E F H I N Z V C]

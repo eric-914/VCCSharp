@@ -1,7 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-using System.Windows.Documents;
-using System;
-using VCCSharp.Models.CPU.HD6309;
+﻿using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3

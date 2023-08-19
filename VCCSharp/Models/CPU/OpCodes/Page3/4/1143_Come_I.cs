@@ -8,7 +8,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page3
     /// 🚫 6309 ONLY 🚫
     /// Complement accumulator or memory location
     /// INHERENT
-    /// r’ ← r
+    /// r’ ← ~r
     /// SOURCE FORM     ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT
     /// COME            INHERENT            1143        3 / 2       2
     ///   [E F H I N Z V C]

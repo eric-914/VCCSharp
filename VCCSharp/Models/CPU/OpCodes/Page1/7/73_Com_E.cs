@@ -8,7 +8,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// Complement accumulator or memory location
     /// Complement a Byte in Memory
     /// EXTENDED
-    /// (M)’ ← (M)
+    /// (M)’ ← ~(M)
     /// SOURCE FORM     ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT
     /// COM             EXTENDED            73          7 / 6       3
     ///   [E F H I N Z V C]
