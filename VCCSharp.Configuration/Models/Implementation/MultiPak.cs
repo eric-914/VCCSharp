@@ -1,4 +1,5 @@
-﻿using VCCSharp.Configuration.Support;
+﻿using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Support;
 using VCCSharp.Models.Configuration.Support;
 
 namespace VCCSharp.Models.Configuration;
@@ -11,7 +12,7 @@ namespace VCCSharp.Models.Configuration;
 /// simply select another "slot."
 /// </summary>
 /// <see href="https://colorcomputerarchive.com/repo/Documents/Manuals/Hardware/Multi-Pak%20Interface%20Owners%20Manual%20%28Tandy%29.pdf"/>
-public class MultiPak
+public class MultiPak : IMultiPak
 {
     public RangeSelect SwitchPosition { get; } = new(1, 2, 3, 4);
 

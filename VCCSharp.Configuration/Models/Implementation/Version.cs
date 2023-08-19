@@ -1,6 +1,6 @@
-﻿namespace VCCSharp.Models.Configuration;
+﻿namespace VCCSharp.Configuration.Models.Implementation;
 
-public class Version
+public class Version : IVersion
 {
     private const string AppTitleDefault = "VCCSharp 1.0 Tandy Color Computer 1/2/3 Emulator";
 

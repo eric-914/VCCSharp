@@ -1,10 +1,12 @@
 ﻿using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Models.Implementation;
+using Implementation = VCCSharp.Configuration.Models.Implementation;
 
 namespace VCCSharp.Models.Configuration;
 
 public class ConfigurationRoot : IConfiguration
 {
-    public Version Version { get; } = new();
+    public IVersion Version { get; } = new Implementation.Version();
 
     public IWindowConfiguration Window { get; } = new Window();
     public ICPUConfiguration CPU { get; } = new CPU();
@@ -15,7 +17,7 @@ public class ConfigurationRoot : IConfiguration
     public IJoysticksConfiguration Joysticks { get; } = new Joysticks();
     public IStartupConfiguration Startup { get; } = new Startup();
 
-    public FilePaths FilePaths { get; } = new();
+    public IFilePaths FilePaths { get; } = new FilePaths();
     public Accessories Accessories { get; } = new();
     public SerialPort SerialPort { get; } = new();
     public CassetteRecorder CassetteRecorder { get; } = new();

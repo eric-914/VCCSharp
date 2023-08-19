@@ -1,10 +1,12 @@
 ﻿using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Models.Implementation;
 
 namespace VCCSharp.Models.Configuration;
 
 public interface IConfiguration
 {
-    Version Version { get; }
+    IVersion Version { get; }
+
     IWindowConfiguration Window { get; }
     ICPUConfiguration CPU { get; }
     IAudioConfiguration Audio { get; }
@@ -14,7 +16,7 @@ public interface IConfiguration
     IJoysticksConfiguration Joysticks { get; }
     IStartupConfiguration Startup { get; }
 
-    FilePaths FilePaths { get; }
+    IFilePaths FilePaths { get; }
     Accessories Accessories { get; }
     CassetteRecorder CassetteRecorder { get; }
     SerialPort SerialPort { get; }

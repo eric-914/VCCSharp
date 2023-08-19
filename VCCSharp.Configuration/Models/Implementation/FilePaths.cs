@@ -1,6 +1,6 @@
-﻿namespace VCCSharp.Models.Configuration;
+﻿namespace VCCSharp.Configuration.Models.Implementation;
 
-public class FilePaths
+public class FilePaths : IFilePaths
 {
     //[DefaultPaths]
     public string? Cassette { get; set; } = "";   //C:\CoCo

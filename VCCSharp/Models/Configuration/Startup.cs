@@ -1,10 +1,6 @@
-﻿namespace VCCSharp.Models.Configuration;
+﻿using VCCSharp.Configuration.Models;
 
-public interface IStartupConfiguration
-{
-    bool AutoStart { get; set; }
-    bool CartridgeAutoStart { get; set; }
-}
+namespace VCCSharp.Models.Configuration;
 
 public class Startup : IStartupConfiguration
 {

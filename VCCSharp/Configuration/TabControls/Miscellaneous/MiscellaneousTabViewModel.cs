@@ -1,4 +1,5 @@
 ﻿using Ninject;
+using VCCSharp.Configuration.Models;
 using VCCSharp.Models.Configuration;
 
 namespace VCCSharp.Configuration.TabControls.Miscellaneous;

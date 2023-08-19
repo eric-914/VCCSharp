@@ -1,13 +1,14 @@
-﻿using VCCSharp.Models.Configuration.Support;
+﻿using VCCSharp.Configuration.Models;
+using VCCSharp.Models.Configuration.Support;
 
 namespace VCCSharp.Models.Configuration;
 
 //[FD-502] ### MODULE SPECIFIC ###
-public class FloppyDisk
+public class FloppyDisk : IFloppyDisk
 {
     public string FilePath { get; set; } = "";
 
-    public MultiSlots Slots { get; } = new();
+    public IMultiSlots Slots { get; } = new MultiSlots();
 
     //DiskRom=1
     //RomPath=

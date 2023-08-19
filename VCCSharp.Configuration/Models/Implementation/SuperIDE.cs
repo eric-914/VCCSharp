@@ -1,4 +1,6 @@
-﻿namespace VCCSharp.Models.Configuration;
+﻿using VCCSharp.Configuration.Models;
+
+namespace VCCSharp.Models.Configuration;
 
 /// <summary>
 /// * Supports hard drives and CompactFlash devices
@@ -10,7 +12,7 @@
 /// * Real-time clock
 /// </summary>
 /// <see href="https://www.cocopedia.com/wiki/index.php/Cloud-9_SuperIDE_Interface"/>
-public class SuperIDE
+public class SuperIDE : ISuperIDE
 {
     public string FilePath { get; set; } = "";
 }

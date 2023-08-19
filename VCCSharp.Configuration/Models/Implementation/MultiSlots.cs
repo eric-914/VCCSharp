@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
+using VCCSharp.Configuration.Models;
 
 namespace VCCSharp.Models.Configuration.Support;
 
-public class MultiSlots
+public class MultiSlots : IMultiSlots
 {
     private readonly Dictionary<int, Func<string>> _get;
     private readonly Dictionary<int, Action<string>> _set;
@@ -39,7 +40,7 @@ public class MultiSlots
 
     [JsonProperty("3")]
     public string _3 { get; set; } = "";
-        
+
     [JsonProperty("4")]
     public string _4 { get; set; } = ""; //="C:\CoCo\Mega-Bug (1982) (26-3076) (Tandy).ccc"
 }
