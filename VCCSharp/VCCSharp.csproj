@@ -118,4 +118,8 @@
 		</None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Models\Configuration\Support\" />
+	</ItemGroup>
+
 </Project>

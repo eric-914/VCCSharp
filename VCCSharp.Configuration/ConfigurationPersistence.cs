@@ -1,7 +1,7 @@
-﻿using VCCSharp.Configuration;
+﻿using VCCSharp.Configuration.Support;
 using VCCSharp.IoC;
 
-namespace VCCSharp.Models.Configuration.Support;
+namespace VCCSharp.Configuration;
 
 public interface IConfigurationPersistence : IPersistence<IConfiguration> { }
 

@@ -4,7 +4,7 @@ using System.IO;
 using System.Windows;
 using VCCSharp.IoC;
 
-namespace VCCSharp.Models.Configuration.Support;
+namespace VCCSharp.Configuration.Support;
 
 /// <summary>
 /// Load/Save an object via the given path.
@@ -15,7 +15,7 @@ public interface IPersistence<T>
     void Save(string path, T model);
 }
 
-public abstract class Persistence<T> : IPersistence<T> 
+public abstract class Persistence<T> : IPersistence<T>
 {
     private readonly IFactory _factory;
 
