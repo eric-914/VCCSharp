@@ -1,4 +1,4 @@
-﻿namespace VCCSharp.Configuration.Options;
+﻿namespace VCCSharp.Modules;
 
 public enum SynchDirection
 {

@@ -1,56 +1,28 @@
 ﻿using Microsoft.Win32;
 using System.IO;
-using VCCSharp.Configuration;
-using VCCSharp.IoC;
 
-namespace VCCSharp.Modules;
+namespace VCCSharp.Configuration.Persistence;
 
-/// <summary>
-/// Handles the File I/O of the configuration for ConfigurationManager
-/// </summary>
+public interface IConfigurationPersistenceManager
+{
+    IConfiguration Load(string? filePath);
+    void LoadFrom(string? filePath, Action<string> onContinue);
+
+    void Save(string? filePath, IConfiguration model);
+    void SaveAs(string? filePath, Action<string> onContinue);
+
+    bool IsNew(string? filePath);
+}
+
 public class ConfigurationPersistenceManager : IConfigurationPersistenceManager
 {
-    private readonly IModules _modules;
     private readonly IConfigurationPersistence _persistence;
+    private readonly IConfigurationValidator _validator;
 
-    public ConfigurationPersistenceManager(IModules modules, IConfigurationPersistence persistence)
+    public ConfigurationPersistenceManager(IConfigurationPersistence persistence, IConfigurationSystem system)
     {
-        _modules = modules;
         _persistence = persistence;
-    }
-
-    public IConfiguration Load(string? filePath)
-    {
-        if (filePath == null) throw new ArgumentNullException(nameof(filePath));
-
-        var model = _persistence.Load(filePath);
-
-        ValidateModel(model);
-
-        return model;
-    }
-
-    public void LoadFrom(string? filePath, Action<string> onContinue)
-    {
-        if (filePath == null) throw new ArgumentNullException(nameof(filePath));
-
-        Dialog(filePath, LoadFrom, onContinue);
-    }
-
-    public void Save(string? filePath, IConfiguration model)
-    {
-        if (filePath == null) throw new ArgumentNullException(nameof(filePath));
-
-        ValidateModel(model);
-
-        _persistence.Save(filePath, model);
-    }
-
-    public void SaveAs(string? filePath, Action<string> onContinue)
-    {
-        if (filePath == null) throw new ArgumentNullException(nameof(filePath));
-
-        Dialog(filePath, SaveAs, onContinue);
+        _validator = new ConfigurationValidator(system);
     }
 
     public bool IsNew(string? filePath)
@@ -77,6 +49,40 @@ public class ConfigurationPersistenceManager : IConfigurationPersistenceManager
         }
 
         return true;
+    }
+
+    public IConfiguration Load(string? filePath)
+    {
+        if (filePath == null) throw new ArgumentNullException(nameof(filePath));
+
+        var model = _persistence.Load(filePath);
+
+        _validator.Validate(model);
+
+        return model;
+    }
+
+    public void LoadFrom(string? filePath, Action<string> onContinue)
+    {
+        if (filePath == null) throw new ArgumentNullException(nameof(filePath));
+
+        Dialog(filePath, LoadFrom, onContinue);
+    }
+
+    public void Save(string? filePath, IConfiguration model)
+    {
+        if (filePath == null) throw new ArgumentNullException(nameof(filePath));
+
+        _validator.Validate(model);
+
+        _persistence.Save(filePath, model);
+    }
+
+    public void SaveAs(string? filePath, Action<string> onContinue)
+    {
+        if (filePath == null) throw new ArgumentNullException(nameof(filePath));
+
+        Dialog(filePath, SaveAs, onContinue);
     }
 
     private static FileDialog LoadFrom(string filePath)
@@ -106,40 +112,6 @@ public class ConfigurationPersistenceManager : IConfigurationPersistenceManager
             Title = "Save Vcc Configuration File",
             AddExtension = true
         };
-    }
-
-    private void ValidateModel(IConfiguration model)
-    {
-        string? exePath = Path.GetDirectoryName(_modules.Vcc.GetExecPath());
-
-        if (string.IsNullOrEmpty(exePath))
-        {
-            throw new Exception("Invalid exePath");
-        }
-
-        string modulePath = model.Accessories.ModulePath;
-        string externalBasicImage = model.Memory.ExternalBasicImage;
-
-        //--If module is in same location as .exe, strip off path portion, leaving only module name
-
-        //--If relative to EXE path, simplify
-        if (!string.IsNullOrEmpty(modulePath) && modulePath.StartsWith(exePath))
-        {
-            modulePath = modulePath[exePath.Length..];
-        }
-
-        //--If relative to EXE path, simplify
-        if (!string.IsNullOrEmpty(externalBasicImage) && externalBasicImage.StartsWith(exePath))
-        {
-            externalBasicImage = externalBasicImage[exePath.Length..];
-        }
-
-        if (!string.IsNullOrEmpty(modulePath))
-        {
-            model.Accessories.ModulePath = modulePath;
-        }
-
-        model.Memory.SetExternalBasicImage(externalBasicImage);
     }
 
     private static void Dialog(string filePath, Func<string, FileDialog> fn, Action<string> onContinue)

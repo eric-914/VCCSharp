@@ -1,7 +1,7 @@
 ﻿using VCCSharp.Configuration;
 using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Persistence;
 using VCCSharp.Configuration.Support;
-using VCCSharp.Modules;
 using VCCSharp.Shared.Models;
 using VCCSharp.Shared.ViewModels;
 
@@ -16,6 +16,7 @@ internal static class ConfigurationBinding
         binder
             .Singleton<IConfigurationPersistence, ConfigurationPersistence>()
             .Singleton<IConfiguration, RootConfiguration>()
+            .Singleton<IConfigurationSystem, ConfigurationSystem>()
             .Singleton<IConfigurationPersistenceManager, ConfigurationPersistenceManager>()
 
             //--Bind a configuration for each of the configuration tabs

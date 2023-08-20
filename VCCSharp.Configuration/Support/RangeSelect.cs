@@ -2,6 +2,16 @@
 
 namespace VCCSharp.Configuration.Support;
 
+public interface IRangeSelect<T> where T : struct
+{
+    T Value { get; set; }
+}
+
+public interface IRangeSelect
+{
+    int Value { get; set; }
+}
+
 /// <summary>
 /// The purpose of the RangeSelect class is to convert a range the app uses into something readable when stored in the configuration file.
 /// </summary>

@@ -1,16 +1,24 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using VCCSharp.Configuration;
+using VCCSharp.Configuration.Persistence;
+using VCCSharp.Modules;
 
-namespace VCCSharp.Modules;
-
-public enum SynchDirection
-{
-    ConfigurationChanged,
-    SaveConfiguration
-}
+namespace VCCSharp.Configuration;
 
 public delegate void ConfigurationSynch(SynchDirection direction, IConfiguration model);
+
+public interface IConfigurationManager
+{
+    event ConfigurationSynch OnConfigurationSynch;
+
+    IConfiguration Model { get; }
+
+    string? GetFilePath();
+    void Load(string filePath);
+    void LoadFrom();
+    void Save();
+    void SaveAs();
+}
 
 public class ConfigurationManager : IConfigurationManager
 {

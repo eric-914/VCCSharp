@@ -1,6 +1,6 @@
-﻿using System.Configuration;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows;
+using VCCSharp.Configuration;
 using VCCSharp.Configuration.Options;
 using VCCSharp.Enums;
 using VCCSharp.IoC;

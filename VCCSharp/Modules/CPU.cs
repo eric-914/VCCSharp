@@ -1,4 +1,5 @@
-﻿using VCCSharp.Configuration.Options;
+﻿using VCCSharp.Configuration;
+using VCCSharp.Configuration.Options;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;

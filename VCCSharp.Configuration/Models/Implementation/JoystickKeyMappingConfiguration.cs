@@ -14,7 +14,7 @@ internal class JoystickKeyMappingConfiguration : IJoystickKeyMappingConfiguratio
     //--Mainly just mapping 'default' to the number-pad.
 
     [JsonIgnore]
-    public IKeySelectConfiguration Left { get; } = new KeySelect { Value = Key.D4 };
+    public IKeySelectConfiguration Left { get; } = new KeySelectConfiguration { Value = Key.D4 };
 
     [JsonProperty("Left")]
     public virtual string LeftText
@@ -24,7 +24,7 @@ internal class JoystickKeyMappingConfiguration : IJoystickKeyMappingConfiguratio
     }
 
     [JsonIgnore]
-    public IKeySelectConfiguration Right { get; } = new KeySelect { Value = Key.D6 };
+    public IKeySelectConfiguration Right { get; } = new KeySelectConfiguration { Value = Key.D6 };
 
     [JsonProperty("Right")]
     public virtual string RightText
@@ -34,7 +34,7 @@ internal class JoystickKeyMappingConfiguration : IJoystickKeyMappingConfiguratio
     }
 
     [JsonIgnore]
-    public IKeySelectConfiguration Up { get; } = new KeySelect { Value = Key.D8 };
+    public IKeySelectConfiguration Up { get; } = new KeySelectConfiguration { Value = Key.D8 };
 
     [JsonProperty("Up")]
     public virtual string UpText
@@ -44,7 +44,7 @@ internal class JoystickKeyMappingConfiguration : IJoystickKeyMappingConfiguratio
     }
 
     [JsonIgnore]
-    public IKeySelectConfiguration Down { get; } = new KeySelect { Value = Key.D6 };
+    public IKeySelectConfiguration Down { get; } = new KeySelectConfiguration { Value = Key.D6 };
 
     [JsonProperty("Down")]
     public virtual string DownText

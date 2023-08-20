@@ -3,7 +3,6 @@ using System.Windows;
 using VCCSharp.Configuration;
 using VCCSharp.Configuration.Options;
 using VCCSharp.IoC;
-using VCCSharp.Modules;
 
 namespace VCCSharp.TapePlayer;
 

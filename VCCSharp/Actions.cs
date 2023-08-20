@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using VCCSharp.Configuration;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Modules;
