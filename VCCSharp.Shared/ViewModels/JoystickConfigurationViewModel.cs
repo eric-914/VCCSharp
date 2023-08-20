@@ -1,6 +1,6 @@
-﻿using VCCSharp.Shared.Configuration;
-using VCCSharp.Shared.Enums;
-using VCCSharp.Shared.Models;
+﻿using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Options;
+using VCCSharp.Configuration.Support;
 
 namespace VCCSharp.Shared.ViewModels;
 

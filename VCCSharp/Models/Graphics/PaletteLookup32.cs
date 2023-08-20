@@ -1,4 +1,4 @@
-﻿using VCCSharp.Enums;
+﻿using VCCSharp.Configuration.Options;
 
 namespace VCCSharp.Models.Graphics;
 

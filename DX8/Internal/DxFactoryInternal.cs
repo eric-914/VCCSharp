@@ -33,9 +33,9 @@ namespace DX8.Internal
         /// </remarks>
         private static T GetObjectForIUnknown<T>(IntPtr p) where T : class
         {
-//#pragma warning disable CA1416
+#pragma warning disable CA1416 // Validate platform compatibility
             return (T)Marshal.GetObjectForIUnknown(p);
-//#pragma warning restore CA1416
+#pragma warning restore CA1416 // Validate platform compatibility
         }
 
         private static T? Create<T>(CreateDelegate fn) where T : class

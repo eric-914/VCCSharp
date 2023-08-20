@@ -1,12 +1,12 @@
 ﻿using Ninject;
-using VCCSharp.Enums;
-using VCCSharp.Models.Configuration;
+using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Options;
 
 namespace VCCSharp.Configuration.TabControls.Keyboard;
 
 public class KeyboardTabViewModel
 {
-    private readonly IKeyboardConfiguration _model = new Models.Configuration.Keyboard();
+    private readonly IKeyboardConfiguration _model = ConfigurationFactory.KeyboardConfiguration();
 
     public List<string> KeyboardLayouts { get; } = new()
     {

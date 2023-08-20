@@ -16,8 +16,6 @@ namespace VCCSharp.Models.Keyboard.Mappings;
 /// </summary>
 public class KeyDefinitions : List<IKey>
 {
-    public static KeyDefinitions Instance { get; } = new();
-
     private static IEnumerable<Key> Arrows => new[] { Key.Left, Key.Right, Key.Up, Key.Down };
     private static IEnumerable<Key> Control => new[] { Key.Tab, Key.Back, Key.Enter, Key.Escape };
     private static IEnumerable<Key> ExtendedControl => new[] { Key.Insert, Key.Delete, Key.Home, Key.End, Key.PageUp, Key.PageDown };
@@ -34,10 +32,10 @@ public class KeyDefinitions : List<IKey>
         Text = ChrText.None
     };
 
-    public static IKey Shift => Instance.ByKey(Key.LeftShift);
-    public static IKey Return => Instance.ByKey(Key.Return);
+    public IKey Shift => ByKey(Key.LeftShift);
+    public IKey Return => ByKey(Key.Return);
 
-    private KeyDefinitions()
+    public KeyDefinitions()
     {
         // ReSharper disable once InconsistentNaming
         const bool SHIFT = true;

@@ -1,4 +1,4 @@
-﻿using VCCSharp.Enums;
+﻿using VCCSharp.Configuration.Options;
 using VCCSharp.Models.Keyboard.Definitions;
 
 namespace VCCSharp.Models.Keyboard.Layouts;

@@ -1,4 +1,5 @@
-﻿using VCCSharp.Models.Configuration;
+﻿using VCCSharp.Configuration;
+using VCCSharp.Configuration.Models;
 using VCCSharp.Modules;
 using VCCSharp.Shared.ViewModels;
 
@@ -10,7 +11,7 @@ public class BitBangerViewModel : NotifyViewModel
 
     private string _serialCaptureFile = NoFile;
 
-    public SerialPort Model { get; set; } = new();
+    public ISerialPortConfiguration Model { get; set; } = ConfigurationFactory.SerialPortConfiguration();
 
     public IConfigurationManager ConfigurationManager
     {

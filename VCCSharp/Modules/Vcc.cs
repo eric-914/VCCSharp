@@ -1,9 +1,10 @@
 ﻿using System.Windows;
+using VCCSharp.Configuration;
+using VCCSharp.Configuration.Options;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Main;
 using VCCSharp.Models;
-using VCCSharp.Models.Configuration;
 using VCCSharp.Properties;
 
 namespace VCCSharp.Modules;

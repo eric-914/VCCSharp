@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
-using VCCSharp.Enums;
+using VCCSharp.Configuration.Options;
 
 namespace VCCSharp.Converters;
 

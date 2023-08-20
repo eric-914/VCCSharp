@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:VCCSharp.Converters"
-             xmlns:enums="clr-namespace:VCCSharp.Shared.Enums;assembly=VCCSharp.Shared"
+             xmlns:joystickEmulations="clr-namespace:VCCSharp.Configuration.Options;assembly=VCCSharp.Configuration"
              xmlns:viewModels="clr-namespace:VCCSharp.Shared.ViewModels;assembly=VCCSharp.Shared"
              mc:Ignorable="d" 
              d:DesignHeight="54" d:DesignWidth="580" Background="Moccasin">
@@ -34,22 +34,22 @@
         </Grid>
         <Grid Grid.Row="0" Grid.Column="2">
             <RadioButton Content="Standard Joystick" 
-                     IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.Standard}}"/>
+                     IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static joystickEmulations:JoystickEmulations.Standard}}"/>
         </Grid>
         <!-- TODO: Need to research these other options which is why they are disabled -->
         <Grid Grid.Row="0" Grid.Column="4">
             <RadioButton Content="Tandy Hi-Res Joystick" 
-                     IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.TandyHiRes}}"
+                     IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static joystickEmulations:JoystickEmulations.TandyHiRes}}"
                      IsEnabled="False"/>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="2">
             <RadioButton Content="CoCo-MAX Mouse" 
-                     IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.CoCoMaxMouse}}"
+                     IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static joystickEmulations:JoystickEmulations.CoCoMaxMouse}}"
                      IsEnabled="False"/>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="4">
             <RadioButton Content="X-Pad" 
-                     IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static enums:JoystickEmulations.XPad}}"
+                     IsChecked="{Binding Emulation, Converter={StaticResource Converter}, ConverterParameter={x:Static joystickEmulations:JoystickEmulations.XPad}}"
                      IsEnabled="False"/>
         </Grid>
     </Grid>

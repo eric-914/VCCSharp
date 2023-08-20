@@ -1,8 +1,9 @@
 ﻿using System.Windows.Input;
+using VCCSharp.Configuration;
+using VCCSharp.Configuration.Options;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
-using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Keyboard;
 using VCCSharp.Models.Keyboard.Definitions;
 using VCCSharp.Models.Keyboard.Layouts;

@@ -1,13 +1,13 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Input;
-using VCCSharp.Models.Keyboard;
+using VCCSharp.Models.Keyboard.Mappings;
 
 namespace VCCSharp.Converters;
 
 public class ScanCodeToDisplayTextConverter : IValueConverter
 {
-    private static readonly List<Key> Keys = KeyScanMapper.KeyIndexes.ToList();
+    private static IList<Key> Keys = MappableKeyDefinitions.Keys;
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {

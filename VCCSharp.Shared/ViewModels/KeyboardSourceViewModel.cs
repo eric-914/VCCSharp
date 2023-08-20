@@ -1,27 +1,25 @@
 ﻿using System.Windows.Input;
-using VCCSharp.Shared.Configuration;
-using VCCSharp.Shared.Models;
+using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Support;
 
 namespace VCCSharp.Shared.ViewModels;
 
 public class KeyboardSourceViewModel : NotifyViewModel, ILeft<KeyboardSourceViewModel>, IRight<KeyboardSourceViewModel>
 {
-    private readonly IJoystickKeyMapping? _model;
+    private readonly IJoystickKeyMappingConfiguration? _model;
 
     public KeyboardSourceViewModel() { }
 
-    public KeyboardSourceViewModel(IJoystickKeyMapping model)
+    public KeyboardSourceViewModel(IJoystickKeyMappingConfiguration model)
     {
         _model = model;
     }
 
-    public IEnumerable<string> KeyNames => _model?.KeyNames ?? new List<string>();
-
     #region Key Mapping
 
-    private static Key GetKey(IKeySelect? source) => source?.Value ?? Key.None;
+    private static Key GetKey(IKeySelectConfiguration? source) => source?.Value ?? Key.None;
 
-    private static bool SetKey(IKeySelect? source, Key value)
+    private static bool SetKey(IKeySelectConfiguration? source, Key value)
     {
         if (source == null) return false;
         source.Value = value;
@@ -69,12 +67,12 @@ public class KeyboardSourceViewModel : NotifyViewModel, ILeft<KeyboardSourceView
 
 public class LeftKeyboardSourceViewModel : KeyboardSourceViewModel
 {
-    public LeftKeyboardSourceViewModel(ILeft<IJoystickKeyMapping> model) 
-        : base((IJoystickKeyMapping)model) { }
+    public LeftKeyboardSourceViewModel(ILeft<IJoystickKeyMappingConfiguration> model) 
+        : base((IJoystickKeyMappingConfiguration)model) { }
 }
 
 public class RightKeyboardSourceViewModel : KeyboardSourceViewModel
 {
-    public RightKeyboardSourceViewModel(IRight<IJoystickKeyMapping> model) 
-        : base((IJoystickKeyMapping)model) { }
+    public RightKeyboardSourceViewModel(IRight<IJoystickKeyMappingConfiguration> model) 
+        : base((IJoystickKeyMappingConfiguration)model) { }
 }

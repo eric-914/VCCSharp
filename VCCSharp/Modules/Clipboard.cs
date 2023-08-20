@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows;
-using VCCSharp.Enums;
+using VCCSharp.Configuration.Options;
 using VCCSharp.IoC;
 using VCCSharp.Models.Keyboard.Mappings;
 
@@ -55,6 +55,7 @@ public class Clipboard : IClipboard
     #endregion
 
     private List<IKey> _clipboardText = new();
+    private KeyDefinitions _keyDefintions = new();
 
     private readonly IModules _modules;
     private IGraphics Graphics => _modules.Graphics;
@@ -138,7 +139,7 @@ public class Clipboard : IClipboard
 
         text = ParseText(text, CodePaste);
 
-        var data = text.Select(x => KeyDefinitions.Instance.ByCharacter(x));
+        var data = text.Select(x => _keyDefintions.ByCharacter(x));
 
         _clipboardText = data.ToList();
     }

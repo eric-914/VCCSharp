@@ -1,6 +1,6 @@
-﻿using System.Configuration;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.InteropServices;
+using VCCSharp.Configuration;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;

@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using VCCSharp.Models.Configuration;
+using VCCSharp.Configuration;
 using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
 using VCCSharp.Modules;

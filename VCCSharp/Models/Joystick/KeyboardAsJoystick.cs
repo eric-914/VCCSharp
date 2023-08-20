@@ -1,7 +1,8 @@
 ﻿using System.Windows.Input;
-using VCCSharp.Models.Configuration;
+using VCCSharp.Configuration;
+using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Options;
 using VCCSharp.Shared.Configuration;
-using VCCSharp.Shared.Enums;
 
 namespace VCCSharp.Models.Joystick;
 
@@ -49,7 +50,7 @@ public class KeyboardAsJoystick : IKeyboardAsJoystick
         return retValue;
     }
 
-    private static byte SetJoystickFromKey(byte scanCode, IJoystickKeyMapping keyMap, JoystickState state, IKeyJoystickState keyState)
+    private static byte SetJoystickFromKey(byte scanCode, IJoystickKeyMappingConfiguration keyMap, JoystickState state, IKeyJoystickState keyState)
     {
         byte retValue = scanCode;
 

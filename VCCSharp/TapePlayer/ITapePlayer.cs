@@ -1,4 +1,4 @@
-﻿using VCCSharp.Modules;
+﻿using VCCSharp.Configuration;
 
 namespace VCCSharp.TapePlayer
 {

@@ -1,11 +1,12 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using VCCSharp.Configuration;
+using VCCSharp.Configuration.Options;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
-using VCCSharp.Models.Configuration;
 using static System.IntPtr;
 using HANDLE = System.IntPtr;
 

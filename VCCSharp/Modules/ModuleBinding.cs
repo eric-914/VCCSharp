@@ -1,4 +1,5 @@
-﻿using VCCSharp.IoC;
+﻿using VCCSharp.Configuration;
+using VCCSharp.IoC;
 using VCCSharp.Modules.TCC1014;
 
 namespace VCCSharp.Modules;

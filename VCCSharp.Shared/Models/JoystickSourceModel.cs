@@ -1,5 +1,7 @@
-﻿using VCCSharp.Shared.Dx;
-using VCCSharp.Shared.Enums;
+﻿using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Options;
+using VCCSharp.Configuration.Support;
+using VCCSharp.Shared.Dx;
 
 namespace VCCSharp.Shared.Models;
 

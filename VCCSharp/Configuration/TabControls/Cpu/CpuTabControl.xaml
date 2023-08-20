@@ -5,7 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:cpu="clr-namespace:VCCSharp.Configuration.TabControls.Cpu"
              xmlns:converters="clr-namespace:VCCSharp.Converters"
-             xmlns:enums="clr-namespace:VCCSharp.Enums"
+             xmlns:cpuTypes="clr-namespace:VCCSharp.Configuration.Options;assembly=VCCSharp.Configuration"
+             xmlns:memorySizes="clr-namespace:VCCSharp.Configuration.Options;assembly=VCCSharp.Configuration"
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="580">
     <UserControl.DataContext>
@@ -37,22 +38,22 @@
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Vertical" >
                 <Label Content="Memory Size" />
-                <RadioButton Content="128K" IsChecked="{Binding Memory, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MemorySizes._128K}}"/>
-                <RadioButton Content="512K" IsChecked="{Binding Memory, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MemorySizes._512K}}"/>
-                <RadioButton Content="2048K" IsChecked="{Binding Memory, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MemorySizes._2048K}}"/>
-                <RadioButton Content="8192K" IsChecked="{Binding Memory, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:MemorySizes._8192K}}"/>
+        <RadioButton Content="128K" IsChecked="{Binding Memory, Converter={StaticResource Selection}, ConverterParameter={x:Static memorySizes:MemorySizes._128K}}"/>
+        <RadioButton Content="512K" IsChecked="{Binding Memory, Converter={StaticResource Selection}, ConverterParameter={x:Static memorySizes:MemorySizes._512K}}"/>
+        <RadioButton Content="2048K" IsChecked="{Binding Memory, Converter={StaticResource Selection}, ConverterParameter={x:Static memorySizes:MemorySizes._2048K}}"/>
+        <RadioButton Content="8192K" IsChecked="{Binding Memory, Converter={StaticResource Selection}, ConverterParameter={x:Static memorySizes:MemorySizes._8192K}}"/>
             </StackPanel>
             <Grid Grid.Column="2" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Image Grid.Column="0" Source="pack://application:,,,/Resources/hitachi.ico" Stretch="None" Visibility="{Binding Cpu, Converter={StaticResource Visibility}, ConverterParameter={x:Static enums:CPUTypes.HD6309}}" />
-                <Image Grid.Column="0" Source="pack://application:,,,/Resources/moto.ico" Stretch="None"  Visibility="{Binding Cpu, Converter={StaticResource Visibility}, ConverterParameter={x:Static enums:CPUTypes.MC6809}}" />
+        <Image Grid.Column="0" Source="pack://application:,,,/Resources/hitachi.ico" Stretch="None" Visibility="{Binding Cpu, Converter={StaticResource Visibility}, ConverterParameter={x:Static cpuTypes:CPUTypes.HD6309}}" />
+        <Image Grid.Column="0" Source="pack://application:,,,/Resources/moto.ico" Stretch="None"  Visibility="{Binding Cpu, Converter={StaticResource Visibility}, ConverterParameter={x:Static cpuTypes:CPUTypes.MC6809}}" />
                 <StackPanel Grid.Column="1" Orientation="Vertical" >
                     <Label Content="CPU" />
-                    <RadioButton Content="Motorola MC6809 CPU" IsChecked="{Binding Cpu, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:CPUTypes.MC6809}}"/>
-                    <RadioButton Content="Hitachi HD6309 CPU" IsChecked="{Binding Cpu, Converter={StaticResource Selection}, ConverterParameter={x:Static enums:CPUTypes.HD6309}}"/>
+          <RadioButton Content="Motorola MC6809 CPU" IsChecked="{Binding Cpu, Converter={StaticResource Selection}, ConverterParameter={x:Static cpuTypes:CPUTypes.MC6809}}"/>
+          <RadioButton Content="Hitachi HD6309 CPU" IsChecked="{Binding Cpu, Converter={StaticResource Selection}, ConverterParameter={x:Static cpuTypes:CPUTypes.HD6309}}"/>
                 </StackPanel>
             </Grid>
         </Grid>

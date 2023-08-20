@@ -1,10 +1,10 @@
 ﻿using DX8;
 using System.Diagnostics;
-using VCCSharp.Enums;
+using VCCSharp.Configuration;
+using VCCSharp.Configuration.Options;
 using VCCSharp.IoC;
 using VCCSharp.Models;
 using VCCSharp.Models.Audio;
-using VCCSharp.Models.Configuration;
 using HWND = System.IntPtr;
 
 namespace VCCSharp.Modules;

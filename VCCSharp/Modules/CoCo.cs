@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
+using VCCSharp.Configuration;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models;
 using VCCSharp.Models.Audio;
-using VCCSharp.Models.Configuration;
 using VCCSharp.Models.Keyboard.Mappings;
 
 namespace VCCSharp.Modules;
@@ -90,14 +90,19 @@ public class CoCo : ICoCo
 
     public int OverClock { get; set; }
 
-    private static readonly IKey ShiftKey = KeyDefinitions.Shift;
-    private static readonly IKey ReturnKey = KeyDefinitions.Return;
+    private IKey ShiftKey { get; }
+    private IKey ReturnKey { get; }
 
     public CoCo(IModules modules)
     {
         _modules = modules;
 
         UpdateTapeDialog = _ => { }; //_modules.ConfigurationManager.UpdateTapeDialog((uint)offset);
+
+        KeyDefinitions keyDefinitions = new();
+
+        ShiftKey = keyDefinitions.Shift;
+        ReturnKey = keyDefinitions.Return;
     }
 
     public void CocoReset()
@@ -687,7 +692,7 @@ public class CoCo : ICoCo
         _clipCycle = 1;
         _waitCycle = 2000;
         _sndEnable = true;
-            
+
         _audioBuffer.Initialize();
         _cassetteBuffer.Initialize();
     }

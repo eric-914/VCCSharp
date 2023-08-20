@@ -1,8 +1,8 @@
-﻿using System.Configuration;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using VCCSharp.Configuration;
+using VCCSharp.Configuration.Options;
 using VCCSharp.Enums;
 using VCCSharp.IoC;
-using VCCSharp.Models.Configuration;
 using VCCSharp.Modules.TCC1014.Masks;
 using VCCSharp.Modules.TCC1014.Modes;
 
