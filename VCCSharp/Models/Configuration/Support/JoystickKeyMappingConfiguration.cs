@@ -2,8 +2,6 @@
 using System.Windows.Input;
 using VCCSharp.Configuration.Models;
 using VCCSharp.Configuration.Support;
-using VCCSharp.Models.Keyboard;
-using VCCSharp.Models.Keyboard.Mappings;
 
 namespace VCCSharp.Models.Configuration.Support;
 
@@ -56,7 +54,4 @@ public class JoystickKeyMappingConfiguration : IJoystickKeyMappingConfiguration
     }
 
     public IJoystickButtonsConfiguration Buttons { get; } = new JoystickButtonsConfiguration();
-
-    [JsonIgnore]
-    public IEnumerable<string> KeyNames => new MappableKeyDefinitions().Values;
 }

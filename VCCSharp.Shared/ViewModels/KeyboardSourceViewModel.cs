@@ -15,8 +15,6 @@ public class KeyboardSourceViewModel : NotifyViewModel, ILeft<KeyboardSourceView
         _model = model;
     }
 
-    public IEnumerable<string> KeyNames => _model?.KeyNames ?? new List<string>();
-
     #region Key Mapping
 
     private static Key GetKey(IKeySelectConfiguration? source) => source?.Value ?? Key.None;

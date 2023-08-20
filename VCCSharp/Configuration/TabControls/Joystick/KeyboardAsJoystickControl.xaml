@@ -5,50 +5,52 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:VCCSharp.Converters"
              xmlns:viewModels="clr-namespace:VCCSharp.Shared.ViewModels;assembly=VCCSharp.Shared"
+             xmlns:mappings="clr-namespace:VCCSharp.Models.Keyboard.Mappings"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="580">
-    <UserControl.DataContext>
-        <viewModels:KeyboardSourceViewModel/>
-    </UserControl.DataContext>
-    <UserControl.Resources>
-        <converters:ScanCodeToDisplayTextConverter x:Key="ScanCode"/>
-    </UserControl.Resources>
+  <UserControl.DataContext>
+    <viewModels:KeyboardSourceViewModel/>
+  </UserControl.DataContext>
+  <UserControl.Resources>
+    <converters:ScanCodeToDisplayTextConverter x:Key="ScanCode"/>
+    <mappings:MappableKeyDefinitions x:Key="mappableKeyDefinitions"/>
+  </UserControl.Resources>
 
-    <StackPanel>
-        <Image Stretch="None" Source="/Resources/Keyboard.ico" />
+  <StackPanel>
+    <Image Stretch="None" Source="/Resources/Keyboard.ico" />
 
-        <Grid >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="32"/>
-                <RowDefinition Height="32"/>
-                <RowDefinition Height="32"/>
-                <RowDefinition Height="32"/>
-                <RowDefinition Height="32"/>
-                <RowDefinition Height="32"/>
-            </Grid.RowDefinitions>
+    <Grid >
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="32"/>
+        <RowDefinition Height="32"/>
+        <RowDefinition Height="32"/>
+        <RowDefinition Height="32"/>
+        <RowDefinition Height="32"/>
+        <RowDefinition Height="32"/>
+      </Grid.RowDefinitions>
 
-            <Label Grid.Row="0" Grid.Column="0" Content="Left"/>
-            <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding KeyNames}" SelectedIndex="{Binding Left, Converter={StaticResource ScanCode}}"/>
+      <Label Grid.Row="0" Grid.Column="0" Content="Left"/>
+      <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Source={StaticResource mappableKeyDefinitions}, Path=Values}" SelectedIndex="{Binding Left, Converter={StaticResource ScanCode}}"/>
 
-            <Label Grid.Row="1" Grid.Column="0" Content="Right"/>
-            <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding KeyNames}" SelectedIndex="{Binding Right, Converter={StaticResource ScanCode}}"/>
+      <Label Grid.Row="1" Grid.Column="0" Content="Right"/>
+      <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Source={StaticResource mappableKeyDefinitions}, Path=Values}" SelectedIndex="{Binding Right, Converter={StaticResource ScanCode}}"/>
 
-            <Label Grid.Row="2" Grid.Column="0" Content="Up"/>
-            <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding KeyNames}" SelectedIndex="{Binding Up, Converter={StaticResource ScanCode}}"/>
+      <Label Grid.Row="2" Grid.Column="0" Content="Up"/>
+      <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Source={StaticResource mappableKeyDefinitions}, Path=Values}" SelectedIndex="{Binding Up, Converter={StaticResource ScanCode}}"/>
 
-            <Label Grid.Row="3" Grid.Column="0" Content="Down"/>
-            <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding KeyNames}" SelectedIndex="{Binding Down, Converter={StaticResource ScanCode}}"/>
+      <Label Grid.Row="3" Grid.Column="0" Content="Down"/>
+      <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Source={StaticResource mappableKeyDefinitions}, Path=Values}" SelectedIndex="{Binding Down, Converter={StaticResource ScanCode}}"/>
 
-            <Label Grid.Row="4" Grid.Column="0" Content="Fire 1"/>
-            <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding KeyNames}" SelectedIndex="{Binding Fire1, Converter={StaticResource ScanCode}}"/>
+      <Label Grid.Row="4" Grid.Column="0" Content="Fire 1"/>
+      <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Source={StaticResource mappableKeyDefinitions}, Path=Values}" SelectedIndex="{Binding Fire1, Converter={StaticResource ScanCode}}"/>
 
-            <Label Grid.Row="5" Grid.Column="0" Content="Fire 2"/>
-            <ComboBox Grid.Row="5" Grid.Column="1" ItemsSource="{Binding KeyNames}" SelectedIndex="{Binding Fire2, Converter={StaticResource ScanCode}}"/>
-        </Grid>
+      <Label Grid.Row="5" Grid.Column="0" Content="Fire 2"/>
+      <ComboBox Grid.Row="5" Grid.Column="1" ItemsSource="{Binding Source={StaticResource mappableKeyDefinitions}, Path=Values}" SelectedIndex="{Binding Fire2, Converter={StaticResource ScanCode}}"/>
+    </Grid>
 
-    </StackPanel>
+  </StackPanel>
 </UserControl>

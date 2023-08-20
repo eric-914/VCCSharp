@@ -7,7 +7,7 @@ namespace VCCSharp.Converters;
 
 public class ScanCodeToDisplayTextConverter : IValueConverter
 {
-    private static IList<Key> Keys = new MappableKeyDefinitions().Keys;
+    private static IList<Key> Keys = MappableKeyDefinitions.Keys;
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {

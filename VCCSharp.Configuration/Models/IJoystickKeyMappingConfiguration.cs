@@ -9,6 +9,4 @@ public interface IJoystickKeyMappingConfiguration : ILeft<IJoystickKeyMappingCon
     IKeySelectConfiguration Up { get; }
     IKeySelectConfiguration Down { get; }
     IJoystickButtonsConfiguration Buttons { get; }
-
-    IEnumerable<string> KeyNames { get; }
 }
