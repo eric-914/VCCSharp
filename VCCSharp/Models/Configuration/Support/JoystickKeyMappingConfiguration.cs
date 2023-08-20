@@ -3,10 +3,11 @@ using System.Windows.Input;
 using VCCSharp.Configuration.Models;
 using VCCSharp.Configuration.Support;
 using VCCSharp.Models.Keyboard;
+using VCCSharp.Models.Keyboard.Mappings;
 
 namespace VCCSharp.Models.Configuration.Support;
 
-public class JoystickKeyMapping : IJoystickKeyMappingConfiguration
+public class JoystickKeyMappingConfiguration : IJoystickKeyMappingConfiguration
 {
     //--Too many keys to list out, just go look at the source
     [JsonProperty("(Comment)")]
@@ -57,5 +58,5 @@ public class JoystickKeyMapping : IJoystickKeyMappingConfiguration
     public IJoystickButtonsConfiguration Buttons { get; } = new JoystickButtonsConfiguration();
 
     [JsonIgnore]
-    public IEnumerable<string> KeyNames => KeyScanMapper.KeyText;
+    public IEnumerable<string> KeyNames => KeyDefinitions.Instance.Where(x => x.IsMappable).Select(x => x.Text).ToList();
 }

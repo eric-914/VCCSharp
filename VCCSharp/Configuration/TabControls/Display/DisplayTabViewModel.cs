@@ -1,14 +1,13 @@
 ﻿using Ninject;
 using VCCSharp.Configuration.Models;
 using VCCSharp.Configuration.Options;
-using VCCSharp.Models.Configuration;
 using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.Configuration.TabControls.Display;
 
 public class DisplayTabViewModel : NotifyViewModel
 {
-    private readonly ICPUConfiguration _cpu = new CPU();
+    private readonly ICPUConfiguration _cpu = ConfigurationFactory.CPUConfiguration();
     private readonly IVideoConfiguration _video = ConfigurationFactory.VideoConfiguration();
     private readonly IWindowConfiguration _window = ConfigurationFactory.WindowConfiguration();
 

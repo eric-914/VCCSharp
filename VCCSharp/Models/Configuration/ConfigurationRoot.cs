@@ -8,7 +8,7 @@ public class ConfigurationRoot : IConfiguration
     public IVersionConfiguration Version { get; } = ConfigurationFactory.VersionConfiguration();
 
     public IWindowConfiguration Window { get; } = ConfigurationFactory.WindowConfiguration();
-    public ICPUConfiguration CPU { get; } = new CPU();
+    public ICPUConfiguration CPU { get; } = ConfigurationFactory.CPUConfiguration();
     public IAudioConfiguration Audio { get; } = ConfigurationFactory.AudioConfiguration();
     public IVideoConfiguration Video { get; } = ConfigurationFactory.VideoConfiguration();
     public IMemoryConfiguration Memory { get; } = ConfigurationFactory.MemoryConfiguration();

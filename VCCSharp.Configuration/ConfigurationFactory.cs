@@ -9,6 +9,7 @@ namespace VCCSharp.Configuration
         public static IAccessoriesConfiguration AccessoriesConfiguration() => new AccessoriesConfiguration();
         public static IAudioConfiguration AudioConfiguration() => new AudioConfiguration();
         public static ICassetteRecorderConfiguration CassetteRecorderConfiguration() => new CassetteRecorderConfiguration();
+        public static ICPUConfiguration CPUConfiguration() => new CPUConfiguration();
         public static IFilePathsConfiguration FilePathsConfiguration() => new FilePathsConfiguration();
         public static IKeyboardConfiguration KeyboardConfiguration() => new KeyboardConfiguration();
         public static IMemoryConfiguration MemoryConfiguration() => new MemoryConfiguration();

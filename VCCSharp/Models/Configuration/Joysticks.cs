@@ -5,8 +5,8 @@ namespace VCCSharp.Models.Configuration;
 
 public class Joysticks : IJoysticksConfiguration
 {
-    public IJoystickConfiguration Left { get; } = new Joystick();
-    public IJoystickConfiguration Right { get; } = new Joystick();
+    public IJoystickConfiguration Left { get; } = new JoystickConfiguration();
+    public IJoystickConfiguration Right { get; } = new JoystickConfiguration();
 
     public int GetDeviceIndex(JoystickSides side)
     {

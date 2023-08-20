@@ -4,7 +4,7 @@ using VCCSharp.Configuration.Support;
 
 namespace VCCSharp.Models.Configuration;
 
-public class CPU : ICPUConfiguration
+internal class CPUConfiguration : ICPUConfiguration
 {
     public RangeSelect<CPUTypes> Type { get; } = new();
 
@@ -13,6 +13,7 @@ public class CPU : ICPUConfiguration
     public int FrameSkip { get; set; } = 1;
     public int MaxOverclock { get; set; } = 227;
 
+    //TODO: This probably shouldn't be part of the configuration object.
     /**
      * Increase/Decrease the overclock speed, as seen after a POKE 65497,0.
      * Valid values are [2,100].
