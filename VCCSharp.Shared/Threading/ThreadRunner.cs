@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using VCCSharp.Configuration.Models;
+using VCCSharp.Configuration.Support;
 
 namespace VCCSharp.Shared.Threading;
 

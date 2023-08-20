@@ -6,7 +6,7 @@ using VCCSharp.Models.Keyboard;
 
 namespace VCCSharp.Models.Configuration.Support;
 
-public class JoystickKeyMapping : IJoystickKeyMapping
+public class JoystickKeyMapping : IJoystickKeyMappingConfiguration
 {
     //--Too many keys to list out, just go look at the source
     [JsonProperty("(Comment)")]
@@ -15,7 +15,7 @@ public class JoystickKeyMapping : IJoystickKeyMapping
     //--Mainly just mapping 'default' to the number-pad.
 
     [JsonIgnore]
-    public IKeySelect Left { get; } = new KeySelect { Value = Key.D4 };
+    public IKeySelectConfiguration Left { get; } = new KeySelect { Value = Key.D4 };
 
     [JsonProperty("Left")]
     public virtual string LeftText
@@ -25,7 +25,7 @@ public class JoystickKeyMapping : IJoystickKeyMapping
     }
 
     [JsonIgnore]
-    public IKeySelect Right { get; } = new KeySelect { Value = Key.D6 };
+    public IKeySelectConfiguration Right { get; } = new KeySelect { Value = Key.D6 };
 
     [JsonProperty("Right")]
     public virtual string RightText
@@ -35,7 +35,7 @@ public class JoystickKeyMapping : IJoystickKeyMapping
     }
 
     [JsonIgnore]
-    public IKeySelect Up { get; } = new KeySelect { Value = Key.D8 };
+    public IKeySelectConfiguration Up { get; } = new KeySelect { Value = Key.D8 };
 
     [JsonProperty("Up")]
     public virtual string UpText
@@ -45,7 +45,7 @@ public class JoystickKeyMapping : IJoystickKeyMapping
     }
 
     [JsonIgnore]
-    public IKeySelect Down { get; } = new KeySelect { Value = Key.D6 };
+    public IKeySelectConfiguration Down { get; } = new KeySelect { Value = Key.D6 };
 
     [JsonProperty("Down")]
     public virtual string DownText
@@ -54,7 +54,7 @@ public class JoystickKeyMapping : IJoystickKeyMapping
         set => Down.Selected = value;
     }
 
-    public IJoystickButtons Buttons { get; } = new JoystickButtons();
+    public IJoystickButtonsConfiguration Buttons { get; } = new JoystickButtonsConfiguration();
 
     [JsonIgnore]
     public IEnumerable<string> KeyNames => KeyScanMapper.KeyText;

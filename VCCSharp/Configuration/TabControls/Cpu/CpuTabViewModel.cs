@@ -3,14 +3,13 @@ using VCCSharp.Configuration.Models;
 using VCCSharp.Configuration.Options;
 using VCCSharp.Models.Configuration;
 using VCCSharp.Shared.ViewModels;
-using Implementation = VCCSharp.Configuration.Models.Implementation;
 
 namespace VCCSharp.Configuration.TabControls.Cpu;
 
 public class CpuTabViewModel : NotifyViewModel
 {
     private readonly ICPUConfiguration _cpu = new CPU();
-    private readonly IMemoryConfiguration _memory = new Implementation.Memory();
+    private readonly IMemoryConfiguration _memory = ConfigurationFactory.MemoryConfiguration();
 
     public int MaxOverclock => _cpu.MaxOverclock;
 

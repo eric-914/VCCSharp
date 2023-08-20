@@ -13,7 +13,5 @@ public class Joystick : IJoystickConfiguration
 
     public IRangeSelect<JoystickEmulations> Type { get; } = new RangeSelect<JoystickEmulations> { Value = JoystickEmulations.Standard };
 
-    public IJoystickKeyMapping KeyMap { get; } = new JoystickKeyMapping();
-
-    IJoystickKeyMapping IJoystickConfiguration.KeyMap => throw new NotImplementedException();
+    public IJoystickKeyMappingConfiguration KeyMap { get; } = new JoystickKeyMapping();
 }

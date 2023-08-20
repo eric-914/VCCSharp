@@ -2,7 +2,7 @@
 
 namespace VCCSharp.Shared.Configuration;
 
-public class NullJoystickButtons : IJoystickButtons
+public class NullJoystickButtons : IJoystickButtonsConfiguration
 {
-    public IKeySelect this[int index] => new NullJoystickKeySelect();
+    public IKeySelectConfiguration this[int index] => new NullJoystickKeySelect();
 }

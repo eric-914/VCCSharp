@@ -2,6 +2,7 @@
 using DX8.Models;
 using VCCSharp.Configuration.Models;
 using VCCSharp.Configuration.Options;
+using VCCSharp.Configuration.Support;
 using VCCSharp.Shared.Dx;
 
 namespace VCCSharp.Shared.ViewModels;

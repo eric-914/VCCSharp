@@ -1,5 +1,5 @@
-﻿using VCCSharp.Configuration.Models;
-using VCCSharp.Configuration.Options;
+﻿using VCCSharp.Configuration.Options;
+using VCCSharp.Configuration.Support;
 
 namespace VCCSharp.Shared.Models;
 

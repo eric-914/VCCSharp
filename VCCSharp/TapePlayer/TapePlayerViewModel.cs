@@ -1,5 +1,5 @@
-﻿using VCCSharp.Configuration.Models;
-using VCCSharp.Configuration.Models.Implementation;
+﻿using VCCSharp.Configuration;
+using VCCSharp.Configuration.Models;
 using VCCSharp.Configuration.Options;
 using VCCSharp.Modules;
 using VCCSharp.Shared.ViewModels;
@@ -14,7 +14,7 @@ public class TapePlayerViewModel : NotifyViewModel
     private TapeModes _mode = TapeModes.Stop;
     private int _counter;
 
-    public ICassetteRecorder Model { get; set; } = new CassetteRecorder();
+    public ICassetteRecorderConfiguration Model { get; set; } = ConfigurationFactory.CassetteRecorderConfiguration();
 
     public IConfigurationManager ConfigurationManager
     {

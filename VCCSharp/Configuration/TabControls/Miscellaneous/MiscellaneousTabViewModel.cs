@@ -1,12 +1,11 @@
 ﻿using Ninject;
 using VCCSharp.Configuration.Models;
-using Implementation=VCCSharp.Configuration.Models.Implementation;
 
 namespace VCCSharp.Configuration.TabControls.Miscellaneous;
 
 public class MiscellaneousTabViewModel
 {
-    private readonly IStartupConfiguration _model = new Implementation.Startup();
+    private readonly IStartupConfiguration _model = ConfigurationFactory.StartupConfiguration();
 
     public MiscellaneousTabViewModel() { }
 

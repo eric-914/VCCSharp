@@ -4,7 +4,7 @@ namespace VCCSharp.Configuration;
 
 public interface IConfiguration
 {
-    IVersion Version { get; }
+    IVersionConfiguration Version { get; }
 
     IWindowConfiguration Window { get; }
     ICPUConfiguration CPU { get; }
@@ -15,8 +15,8 @@ public interface IConfiguration
     IJoysticksConfiguration Joysticks { get; }
     IStartupConfiguration Startup { get; }
 
-    IFilePaths FilePaths { get; }
-    IAccessories Accessories { get; }
-    ICassetteRecorder CassetteRecorder { get; }
-    ISerialPort SerialPort { get; }
+    IFilePathsConfiguration FilePaths { get; }
+    IAccessoriesConfiguration Accessories { get; }
+    ICassetteRecorderConfiguration CassetteRecorder { get; }
+    ISerialPortConfiguration SerialPort { get; }
 }

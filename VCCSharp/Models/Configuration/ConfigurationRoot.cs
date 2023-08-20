@@ -1,25 +1,23 @@
 ﻿using VCCSharp.Configuration;
 using VCCSharp.Configuration.Models;
-using VCCSharp.Configuration.Models.Implementation;
-using Implementation = VCCSharp.Configuration.Models.Implementation;
 
 namespace VCCSharp.Models.Configuration;
 
 public class ConfigurationRoot : IConfiguration
 {
-    public IVersion Version { get; } = new Implementation.Version();
+    public IVersionConfiguration Version { get; } = ConfigurationFactory.VersionConfiguration();
 
-    public IWindowConfiguration Window { get; } = new Window();
+    public IWindowConfiguration Window { get; } = ConfigurationFactory.WindowConfiguration();
     public ICPUConfiguration CPU { get; } = new CPU();
-    public IAudioConfiguration Audio { get; } = new Implementation.Audio();
-    public IVideoConfiguration Video { get; } = new Video();
-    public IMemoryConfiguration Memory { get; } = new Memory();
-    public IKeyboardConfiguration Keyboard { get; } = new Implementation.Keyboard();
+    public IAudioConfiguration Audio { get; } = ConfigurationFactory.AudioConfiguration();
+    public IVideoConfiguration Video { get; } = ConfigurationFactory.VideoConfiguration();
+    public IMemoryConfiguration Memory { get; } = ConfigurationFactory.MemoryConfiguration();
+    public IKeyboardConfiguration Keyboard { get; } = ConfigurationFactory.KeyboardConfiguration();
     public IJoysticksConfiguration Joysticks { get; } = new Joysticks();
-    public IStartupConfiguration Startup { get; } = new Startup();
+    public IStartupConfiguration Startup { get; } = ConfigurationFactory.StartupConfiguration();
 
-    public IFilePaths FilePaths { get; } = new FilePaths();
-    public IAccessories Accessories { get; } = new Accessories();
-    public ISerialPort SerialPort { get; } = new SerialPort();
-    public ICassetteRecorder CassetteRecorder { get; } = new CassetteRecorder();
+    public IFilePathsConfiguration FilePaths { get; } = ConfigurationFactory.FilePathsConfiguration();
+    public IAccessoriesConfiguration Accessories { get; } = ConfigurationFactory.AccessoriesConfiguration();
+    public ISerialPortConfiguration SerialPort { get; } = ConfigurationFactory.SerialPortConfiguration();
+    public ICassetteRecorderConfiguration CassetteRecorder { get; } = ConfigurationFactory.CassetteRecorderConfiguration();
 }

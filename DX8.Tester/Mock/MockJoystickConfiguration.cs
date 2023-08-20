@@ -10,7 +10,5 @@ internal class MockJoystickConfiguration : IJoystickConfiguration
     public int DeviceIndex { get; set; }
     public IRangeSelect<JoystickDevices> InputSource { get; } = new NullRangeSelect<JoystickDevices>();
     public IRangeSelect<JoystickEmulations> Type { get; } = new NullRangeSelect<JoystickEmulations>();
-    public IJoystickKeyMapping KeyMap { get; } = new NullJoystickKeyMapping();
-
-    IJoystickKeyMapping IJoystickConfiguration.KeyMap => throw new NotImplementedException();
+    public IJoystickKeyMappingConfiguration KeyMap { get; } = new NullJoystickKeyMapping();
 }

@@ -8,5 +8,5 @@ public interface IJoystickConfiguration : ILeft<IJoystickConfiguration>, IRight<
     int DeviceIndex { get; set; }
     IRangeSelect<JoystickDevices> InputSource { get; }
     IRangeSelect<JoystickEmulations> Type { get; }
-    IJoystickKeyMapping KeyMap { get; }
+    IJoystickKeyMappingConfiguration KeyMap { get; }
 }

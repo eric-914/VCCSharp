@@ -50,7 +50,7 @@ public class KeyboardAsJoystick : IKeyboardAsJoystick
         return retValue;
     }
 
-    private static byte SetJoystickFromKey(byte scanCode, IJoystickKeyMapping keyMap, JoystickState state, IKeyJoystickState keyState)
+    private static byte SetJoystickFromKey(byte scanCode, IJoystickKeyMappingConfiguration keyMap, JoystickState state, IKeyJoystickState keyState)
     {
         byte retValue = scanCode;
 
