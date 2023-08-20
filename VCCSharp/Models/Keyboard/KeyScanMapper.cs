@@ -13,5 +13,7 @@ public interface IKeyScanMapper
 /// </summary>
 public class KeyScanMapper : IKeyScanMapper
 {
-    public byte ToScanCode(Key key) => KeyDefinitions.Instance.ByKey(key).DIK;
+    KeyDefinitions keyDefinitions = new();
+    
+    public byte ToScanCode(Key key) => keyDefinitions.ByKey(key).DIK;
 }

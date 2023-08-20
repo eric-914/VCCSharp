@@ -58,5 +58,5 @@ public class JoystickKeyMappingConfiguration : IJoystickKeyMappingConfiguration
     public IJoystickButtonsConfiguration Buttons { get; } = new JoystickButtonsConfiguration();
 
     [JsonIgnore]
-    public IEnumerable<string> KeyNames => KeyDefinitions.Instance.Where(x => x.IsMappable).Select(x => x.Text).ToList();
+    public IEnumerable<string> KeyNames => new MappableKeyDefinitions().Values;
 }
