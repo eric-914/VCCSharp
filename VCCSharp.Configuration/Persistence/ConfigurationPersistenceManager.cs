@@ -19,10 +19,10 @@ public class ConfigurationPersistenceManager : IConfigurationPersistenceManager
     private readonly IConfigurationPersistence _persistence;
     private readonly IConfigurationValidator _validator;
 
-    public ConfigurationPersistenceManager(IConfigurationPersistence persistence, IConfigurationSystem system)
+    public ConfigurationPersistenceManager(IConfigurationPersistence persistence, IConfigurationValidator validator)
     {
         _persistence = persistence;
-        _validator = new ConfigurationValidator(system);
+        _validator = validator;
     }
 
     public bool IsNew(string? filePath)
