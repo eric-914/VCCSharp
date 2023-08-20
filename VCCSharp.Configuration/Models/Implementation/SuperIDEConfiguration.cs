@@ -12,7 +12,7 @@ namespace VCCSharp.Models.Configuration;
 /// * Real-time clock
 /// </summary>
 /// <see href="https://www.cocopedia.com/wiki/index.php/Cloud-9_SuperIDE_Interface"/>
-public class SuperIDEConfiguration : ISuperIDEConfiguration
+internal class SuperIDEConfiguration : ISuperIDEConfiguration
 {
     public string FilePath { get; set; } = "";
 }

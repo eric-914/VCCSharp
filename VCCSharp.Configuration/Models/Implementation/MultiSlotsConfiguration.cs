@@ -3,7 +3,7 @@ using VCCSharp.Configuration.Models;
 
 namespace VCCSharp.Models.Configuration.Support;
 
-public class MultiSlotsConfiguration : IMultiSlotsConfiguration
+internal class MultiSlotsConfiguration : IMultiSlotsConfiguration
 {
     private readonly Dictionary<int, Func<string>> _get;
     private readonly Dictionary<int, Action<string>> _set;

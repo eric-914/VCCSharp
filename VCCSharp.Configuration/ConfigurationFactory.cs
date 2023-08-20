@@ -12,6 +12,7 @@ namespace VCCSharp.Configuration
         public static ICPUConfiguration CPUConfiguration() => new CPUConfiguration();
         public static IFilePathsConfiguration FilePathsConfiguration() => new FilePathsConfiguration();
         public static IKeyboardConfiguration KeyboardConfiguration() => new KeyboardConfiguration();
+        public static IJoysticksConfiguration JoysticksConfiguration() => new JoysticksConfiguration();
         public static IMemoryConfiguration MemoryConfiguration() => new MemoryConfiguration();
         public static ISerialPortConfiguration SerialPortConfiguration() => new SerialPortConfiguration();
         public static IStartupConfiguration StartupConfiguration() => new StartupConfiguration();

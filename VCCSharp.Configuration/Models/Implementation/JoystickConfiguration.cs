@@ -1,11 +1,9 @@
-﻿using VCCSharp.Configuration.Models;
-using VCCSharp.Configuration.Options;
+﻿using VCCSharp.Configuration.Options;
 using VCCSharp.Configuration.Support;
-using VCCSharp.Models.Configuration.Support;
 
-namespace VCCSharp.Models.Configuration;
+namespace VCCSharp.Configuration.Models.Implementation;
 
-public class JoystickConfiguration : IJoystickConfiguration
+internal class JoystickConfiguration : IJoystickConfiguration
 {
     public int DeviceIndex { get; set; } = -1;
 

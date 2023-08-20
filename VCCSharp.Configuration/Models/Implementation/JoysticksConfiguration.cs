@@ -1,9 +1,8 @@
-﻿using VCCSharp.Configuration.Models;
-using VCCSharp.Configuration.Options;
+﻿using VCCSharp.Configuration.Options;
 
-namespace VCCSharp.Models.Configuration;
+namespace VCCSharp.Configuration.Models.Implementation;
 
-public class Joysticks : IJoysticksConfiguration
+internal class JoysticksConfiguration : IJoysticksConfiguration
 {
     public IJoystickConfiguration Left { get; } = new JoystickConfiguration();
     public IJoystickConfiguration Right { get; } = new JoystickConfiguration();

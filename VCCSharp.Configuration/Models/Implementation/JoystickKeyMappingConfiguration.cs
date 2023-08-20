@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System.Windows.Input;
-using VCCSharp.Configuration.Models;
 using VCCSharp.Configuration.Support;
+using VCCSharp.Models.Configuration.Support;
 
-namespace VCCSharp.Models.Configuration.Support;
+namespace VCCSharp.Configuration.Models.Implementation;
 
-public class JoystickKeyMappingConfiguration : IJoystickKeyMappingConfiguration
+internal class JoystickKeyMappingConfiguration : IJoystickKeyMappingConfiguration
 {
     //--Too many keys to list out, just go look at the source
     [JsonProperty("(Comment)")]

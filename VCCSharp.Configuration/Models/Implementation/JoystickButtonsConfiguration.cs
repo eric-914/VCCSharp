@@ -5,7 +5,7 @@ using VCCSharp.Configuration.Support;
 
 namespace VCCSharp.Models.Configuration.Support;
 
-public class JoystickButtonsConfiguration : IJoystickButtonsConfiguration
+internal class JoystickButtonsConfiguration : IJoystickButtonsConfiguration
 {
     private readonly Dictionary<int, Func<IKeySelectConfiguration>> _get;
 
