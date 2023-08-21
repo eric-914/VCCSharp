@@ -1,5 +1,4 @@
-﻿using Ninject;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using VCCSharp.IoC;
 
 namespace VCCSharp.Menu;
@@ -12,7 +11,7 @@ public interface IMainMenu
 /// <summary>
 /// This is in itself a MenuItems(VM) containing child MenuItems
 /// </summary>
-public class MainMenuViewModel : MenuItemsViewModel, IMainMenu
+public abstract class MainMenuViewModelBase : MenuItemsViewModel, IMainMenu
 {
     /// <summary>
     /// Menu Separator
@@ -21,17 +20,18 @@ public class MainMenuViewModel : MenuItemsViewModel, IMainMenu
 
     public MenuItemViewModel Plugins { get; } = new();
 
-    private readonly IViewModelFactory _factory;
+    private readonly Func<string, Action, MenuItemViewModel> _menu;
 
     //--Here for XAML template purposes only
-    public MainMenuViewModel()
+    protected MainMenuViewModelBase()
     {
-        _factory = Factory.Instance.Get<IViewModelFactory>();
+        _menu = (_,_) => new MenuItemViewModel();
     }
 
-    [Inject]
-    public MainMenuViewModel(Actions actions) : this()
+    protected MainMenuViewModelBase(IViewModelFactory factory, Actions actions)
     {
+        _menu = factory.CreateMenuItemViewModel;
+
         //--The "plug-ins" menu is dynamic that plug-ins can customize it
         Plugins = Cartridge();
 
@@ -42,7 +42,7 @@ public class MainMenuViewModel : MenuItemsViewModel, IMainMenu
         Add(Help(actions));
     }
 
-    private MenuItemViewModel Menu(string header, Action action) => _factory.CreateMenuItemViewModel(header, action);
+    private MenuItemViewModel Menu(string header, Action action) => _menu(header, action);
 
     private MenuItemViewModel File(Actions actions) => new()
     {
@@ -100,4 +100,14 @@ public class MainMenuViewModel : MenuItemsViewModel, IMainMenu
             Menu("About Vcc", actions.AboutVcc)
         }
     };
+}
+
+public class MainMenuViewModelStub : MainMenuViewModelBase
+{
+    public MainMenuViewModelStub() : base() { }
+}
+
+public class MainMenuViewModel : MainMenuViewModelBase
+{
+    public MainMenuViewModel(Actions actions) : base(Factory.Instance.Get<IViewModelFactory>(), actions) { }
 }
