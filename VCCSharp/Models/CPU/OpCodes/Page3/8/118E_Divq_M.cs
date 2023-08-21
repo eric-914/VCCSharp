@@ -1,10 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Numerics;
-using System.Security.Cryptography;
-using VCCSharp.Models.CPU.HD6309;
+﻿using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
-using VCCSharp.Modules.TCC1014;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page3
 {

@@ -33,10 +33,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\DX8\DX8.csproj" />
 		<ProjectReference Include="..\VCCSharp.Libraries\VCCSharp.Libraries.csproj" />
 		<ProjectReference Include="..\VCCSharp.Shared\VCCSharp.Shared.csproj" />
