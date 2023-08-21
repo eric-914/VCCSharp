@@ -1,21 +1,27 @@
-﻿using Ninject;
-using VCCSharp.Configuration.Models;
+﻿using VCCSharp.Configuration.Models;
 using VCCSharp.Configuration.Options;
 using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.Configuration.TabControls.Cpu;
 
-public class CpuTabViewModel : NotifyViewModel
+public interface ICpuTabViewModel
 {
-    private readonly ICPUConfiguration _cpu = ConfigurationFactory.CPUConfiguration();
-    private readonly IMemoryConfiguration _memory = ConfigurationFactory.MemoryConfiguration();
+    CPUTypes? Cpu { get; set; }
+    int CpuMultiplier { get; set; }
+    CPUTypes CpuType { get; set; }
+    int MaxOverclock { get; }
+    MemorySizes? Memory { get; set; }
+    MemorySizes RamSize { get; set; }
+}
+
+public abstract class CpuTabViewModelBase : NotifyViewModel, ICpuTabViewModel
+{
+    private readonly ICPUConfiguration _cpu;
+    private readonly IMemoryConfiguration _memory;
 
     public int MaxOverclock => _cpu.MaxOverclock;
 
-    public CpuTabViewModel() { }
-
-    [Inject]
-    public CpuTabViewModel(ICPUConfiguration cpu, IMemoryConfiguration memory)
+    protected CpuTabViewModelBase(ICPUConfiguration cpu, IMemoryConfiguration memory)
     {
         _cpu = cpu;
         _memory = memory;
@@ -71,4 +77,14 @@ public class CpuTabViewModel : NotifyViewModel
         set => _memory.Ram.Value = value;
     }
 
+}
+
+public class CpuTabViewModelStub : CpuTabViewModelBase
+{
+    public CpuTabViewModelStub() : base(ConfigurationFactory.CPUConfiguration(), ConfigurationFactory.MemoryConfiguration()) { }
+}
+
+public class CpuTabViewModel : CpuTabViewModelBase
+{
+    public CpuTabViewModel(ICPUConfiguration cpu, IMemoryConfiguration memory) : base(cpu, memory) { }
 }

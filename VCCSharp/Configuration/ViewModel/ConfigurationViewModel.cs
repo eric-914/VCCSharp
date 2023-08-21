@@ -10,12 +10,12 @@ namespace VCCSharp.Configuration.ViewModel;
 
 public class ConfigurationViewModel : NotifyViewModel
 {
-    public AudioTabViewModel Audio { get; } = new();
-    public DisplayTabViewModel Display { get; } = new();
-    public CpuTabViewModel Cpu { get; } = new();
-    public KeyboardTabViewModel Keyboard { get; } = new();
-    public JoystickPairViewModel Joystick { get; } = new();
-    public MiscellaneousTabViewModel Miscellaneous { get; } = new();
+    public IAudioTabViewModel Audio { get; } = new AudioTabViewModelStub();
+    public IDisplayTabViewModel Display { get; } = new DisplayTabViewModelStub();
+    public ICpuTabViewModel Cpu { get; } = new CpuTabViewModelStub();
+    public IKeyboardTabViewModel Keyboard { get; } = new KeyboardTabViewModelStub();
+    public IJoystickPairViewModel Joystick { get; } = new JoystickPairViewModelStub();
+    public IMiscellaneousTabViewModel Miscellaneous { get; } = new MiscellaneousTabViewModelStub();
 
     public ConfigurationViewModel() { }
 

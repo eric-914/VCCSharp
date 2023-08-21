@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200">
   <UserControl.DataContext>
-    <miscellaneous:MiscellaneousTabViewModel/>
+    <miscellaneous:MiscellaneousTabViewModelStub/>
   </UserControl.DataContext>
 
   <StackPanel Orientation="Vertical">

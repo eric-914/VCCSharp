@@ -2,7 +2,13 @@
 
 namespace VCCSharp.Shared.ViewModels;
 
-public class JoystickPairViewModel : NotifyViewModel
+public interface IJoystickPairViewModel
+{
+    JoystickConfigurationViewModel Left { get; }
+    JoystickConfigurationViewModel Right { get; }
+}
+
+public abstract class JoystickPairViewModelBase : NotifyViewModel, IJoystickPairViewModel
 {
     //[LeftJoyStick]
     public JoystickConfigurationViewModel Left { get; } = new();
@@ -10,11 +16,19 @@ public class JoystickPairViewModel : NotifyViewModel
     //[RightJoyStick]
     public JoystickConfigurationViewModel Right { get; } = new();
 
-    public JoystickPairViewModel() { }
-
-    public JoystickPairViewModel(ILeft<JoystickConfigurationViewModel> left, IRight<JoystickConfigurationViewModel> right)
+    protected JoystickPairViewModelBase(ILeft<JoystickConfigurationViewModel> left, IRight<JoystickConfigurationViewModel> right)
     {
         Left = (JoystickConfigurationViewModel)left;
         Right = (JoystickConfigurationViewModel)right;
     }
+}
+
+public class JoystickPairViewModelStub : JoystickPairViewModelBase
+{
+    public JoystickPairViewModelStub() : base(new JoystickConfigurationViewModel(), new JoystickConfigurationViewModel()) { }
+}
+
+public class JoystickPairViewModel : JoystickPairViewModelBase
+{
+    public JoystickPairViewModel(ILeft<JoystickConfigurationViewModel> left, IRight<JoystickConfigurationViewModel> right) : base(left, right) { }
 }

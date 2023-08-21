@@ -1,16 +1,18 @@
-﻿using Ninject;
-using VCCSharp.Configuration.Models;
+﻿using VCCSharp.Configuration.Models;
 
 namespace VCCSharp.Configuration.TabControls.Miscellaneous;
 
-public class MiscellaneousTabViewModel
+public interface IMiscellaneousTabViewModel
 {
-    private readonly IStartupConfiguration _model = ConfigurationFactory.StartupConfiguration();
+    bool AutoStart { get; set; }
+    bool CartAutoStart { get; set; }
+}
 
-    public MiscellaneousTabViewModel() { }
+public abstract class MiscellaneousTabViewModelBase : IMiscellaneousTabViewModel
+{
+    private readonly IStartupConfiguration _model;
 
-    [Inject]
-    public MiscellaneousTabViewModel(IStartupConfiguration model)
+    protected MiscellaneousTabViewModelBase(IStartupConfiguration model)
     {
         _model = model;
     }
@@ -26,4 +28,14 @@ public class MiscellaneousTabViewModel
         get => _model.CartridgeAutoStart;
         set => _model.CartridgeAutoStart = value;
     }
+}
+
+public class MiscellaneousTabViewModelStub : MiscellaneousTabViewModelBase
+{
+    public MiscellaneousTabViewModelStub() : base(ConfigurationFactory.StartupConfiguration()) { }
+}
+
+public class MiscellaneousTabViewModel : MiscellaneousTabViewModelBase
+{
+    public MiscellaneousTabViewModel(IStartupConfiguration model) : base(model) { }
 }

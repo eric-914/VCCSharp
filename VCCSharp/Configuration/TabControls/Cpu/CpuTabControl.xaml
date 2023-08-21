@@ -10,7 +10,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="580">
     <UserControl.DataContext>
-        <cpu:CpuTabViewModel/>
+        <cpu:CpuTabViewModelStub/>
     </UserControl.DataContext>
     <UserControl.Resources>
         <converters:EnumToSelectionConverter x:Key="Selection"/>

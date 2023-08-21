@@ -1,20 +1,27 @@
-﻿using Ninject;
-using VCCSharp.Configuration.Models;
+﻿using VCCSharp.Configuration.Models;
 using VCCSharp.Configuration.Options;
 using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.Configuration.TabControls.Display;
 
-public class DisplayTabViewModel : NotifyViewModel
+public interface IDisplayTabViewModel
+{
+    bool ForceAspect { get; set; }
+    int FrameSkip { get; set; }
+    MonitorTypes? MonitorType { get; set; }
+    PaletteTypes? PaletteType { get; set; }
+    bool RememberSize { get; set; }
+    bool ScanLines { get; set; }
+    bool SpeedThrottle { get; set; }
+}
+
+public abstract class DisplayTabViewModelBase : NotifyViewModel, IDisplayTabViewModel
 {
     private readonly ICPUConfiguration _cpu = ConfigurationFactory.CPUConfiguration();
     private readonly IVideoConfiguration _video = ConfigurationFactory.VideoConfiguration();
     private readonly IWindowConfiguration _window = ConfigurationFactory.WindowConfiguration();
 
-    public DisplayTabViewModel() { }
-
-    [Inject]
-    public DisplayTabViewModel(ICPUConfiguration cpu, IVideoConfiguration video, IWindowConfiguration window)
+    protected DisplayTabViewModelBase(ICPUConfiguration cpu, IVideoConfiguration video, IWindowConfiguration window)
     {
         _cpu = cpu;
         _video = video;
@@ -103,5 +110,17 @@ public class DisplayTabViewModel : NotifyViewModel
             _cpu.ThrottleSpeed = value;
             OnPropertyChanged();
         }
+    }
+}
+
+public class DisplayTabViewModelStub : DisplayTabViewModelBase
+{
+    public DisplayTabViewModelStub() : base(ConfigurationFactory.CPUConfiguration(), ConfigurationFactory.VideoConfiguration(), ConfigurationFactory.WindowConfiguration()) { }
+}
+
+public class DisplayTabViewModel : DisplayTabViewModelBase
+{
+    public DisplayTabViewModel(ICPUConfiguration cpu, IVideoConfiguration video, IWindowConfiguration window) : base(cpu, video, window)
+    {
     }
 }
