@@ -1,5 +1,4 @@
-﻿using Ninject;
-using VCCSharp.Configuration.TabControls.Audio;
+﻿using VCCSharp.Configuration.TabControls.Audio;
 using VCCSharp.Configuration.TabControls.Cpu;
 using VCCSharp.Configuration.TabControls.Display;
 using VCCSharp.Configuration.TabControls.Keyboard;
@@ -8,7 +7,25 @@ using VCCSharp.Shared.ViewModels;
 
 namespace VCCSharp.Configuration.ViewModel;
 
-public class ConfigurationViewModel : NotifyViewModel
+public interface IConfigurationViewModel
+{
+    IAudioTabViewModel Audio { get; }
+    ICpuTabViewModel Cpu { get; }
+    IDisplayTabViewModel Display { get; }
+    IJoystickPairViewModel Joystick { get; }
+    IKeyboardTabViewModel Keyboard { get; }
+    IMiscellaneousTabViewModel Miscellaneous { get; }
+    string CassettePath { get; set; }
+    string CoCoRomPath { get; set; }
+    string ExternalBasicImage { get; set; }
+    string FloppyPath { get; set; }
+    string ModulePath { get; set; }
+    string PakPath { get; set; }
+    string Release { get; set; }
+    string SerialCaptureFilePath { get; set; }
+}
+
+public abstract class ConfigurationViewModelBase : NotifyViewModel, IConfigurationViewModel
 {
     public IAudioTabViewModel Audio { get; } = new AudioTabViewModelStub();
     public IDisplayTabViewModel Display { get; } = new DisplayTabViewModelStub();
@@ -17,10 +34,7 @@ public class ConfigurationViewModel : NotifyViewModel
     public IJoystickPairViewModel Joystick { get; } = new JoystickPairViewModelStub();
     public IMiscellaneousTabViewModel Miscellaneous { get; } = new MiscellaneousTabViewModelStub();
 
-    public ConfigurationViewModel() { }
-
-    [Inject]
-    public ConfigurationViewModel(AudioTabViewModel audio, CpuTabViewModel cpu, DisplayTabViewModel display, KeyboardTabViewModel keyboard, JoystickPairViewModel joystick, MiscellaneousTabViewModel miscellaneous)
+    protected ConfigurationViewModelBase(IAudioTabViewModel audio, ICpuTabViewModel cpu, IDisplayTabViewModel display, IKeyboardTabViewModel keyboard, IJoystickPairViewModel joystick, IMiscellaneousTabViewModel miscellaneous)
     {
         Audio = audio;
         Cpu = cpu;
@@ -39,10 +53,10 @@ public class ConfigurationViewModel : NotifyViewModel
     public string Release { get; set; } = "Release";
 
     public string ExternalBasicImage { get; set; } = "External Basic Image";
-    
+
     //[Module]
     public string ModulePath { get; set; } = "Module Path";
-    
+
     //[DefaultPaths]
     public string CassettePath { get; set; } = "Cassette Path";
     public string PakPath { get; set; } = "Pak Path";
@@ -79,4 +93,15 @@ public class ConfigurationViewModel : NotifyViewModel
     //"SuperIDEPath"  //TODO: Originally in [DefaultPaths]
 
     #endregion
+}
+
+public class ConfigurationViewModelStub : ConfigurationViewModelBase
+{
+    public ConfigurationViewModelStub() : base(new AudioTabViewModelStub(), new CpuTabViewModelStub(), new DisplayTabViewModelStub(), new KeyboardTabViewModelStub(), new JoystickPairViewModelStub(), new MiscellaneousTabViewModelStub()) { }
+}
+
+public class ConfigurationViewModel : ConfigurationViewModelBase
+{
+    public ConfigurationViewModel(AudioTabViewModel audio, CpuTabViewModel cpu, DisplayTabViewModel display, KeyboardTabViewModel keyboard, JoystickPairViewModel joystick, MiscellaneousTabViewModel miscellaneous)
+        : base(audio, cpu, display, keyboard, joystick, miscellaneous) { }
 }

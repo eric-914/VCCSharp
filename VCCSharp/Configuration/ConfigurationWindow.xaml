@@ -13,7 +13,7 @@
         mc:Ignorable="d"
         Title="Vcc Options" Height="575" Width="654">
     <Window.DataContext>
-        <viewModel:ConfigurationViewModel/>
+        <viewModel:ConfigurationViewModelStub/>
     </Window.DataContext>
     <Window.Resources>
         <Style TargetType="{x:Type Window}">
