@@ -59,7 +59,7 @@ internal static class Binding
             .Bind<IInterrupts, Interrupts>()
 
             //--Menu
-            .Singleton<IMainMenu, MainMenu>()
+            .Singleton<IMainMenu, MainMenuViewModel>()
 
             //--Options
             .Bind<ICartridge, MenuManager>()

@@ -9,7 +9,10 @@ public interface IMainMenu
     public MenuItemViewModel Plugins { get; }
 }
 
-public class MainMenu : MenuItems, IMainMenu
+/// <summary>
+/// This is in itself a MenuItems(VM) containing child MenuItems
+/// </summary>
+public class MainMenuViewModel : MenuItemsViewModel, IMainMenu
 {
     /// <summary>
     /// Menu Separator
@@ -21,13 +24,13 @@ public class MainMenu : MenuItems, IMainMenu
     private readonly IViewModelFactory _factory;
 
     //--Here for XAML template purposes only
-    public MainMenu()
+    public MainMenuViewModel()
     {
         _factory = Factory.Instance.Get<IViewModelFactory>();
     }
 
     [Inject]
-    public MainMenu(Actions actions) : this()
+    public MainMenuViewModel(Actions actions) : this()
     {
         //--The "plug-ins" menu is dynamic that plug-ins can customize it
         Plugins = Cartridge();
@@ -44,7 +47,7 @@ public class MainMenu : MenuItems, IMainMenu
     private MenuItemViewModel File(Actions actions) => new()
     {
         Header = "_File",
-        MenuItems = new MenuItems
+        MenuItems = new MenuItemsViewModel
         {
             Menu("Run", actions.Run),
             Menu("Save Configuration", actions.SaveConfiguration),
@@ -60,7 +63,7 @@ public class MainMenu : MenuItems, IMainMenu
     private MenuItemViewModel Edit(Actions actions) => new()
     {
         Header = "_Edit",
-        MenuItems = new MenuItems
+        MenuItems = new MenuItemsViewModel
         {
             Menu("Copy Text", actions.CopyText),
             Menu("Paste Text", actions.PasteText),
@@ -72,7 +75,7 @@ public class MainMenu : MenuItems, IMainMenu
     private MenuItemViewModel Configuration(Actions actions) => new()
     {
         Header = "_Options",
-        MenuItems = new MenuItems
+        MenuItems = new MenuItemsViewModel
         {
             Menu("Flip Artifact Colors", actions.FlipArtifactColors),
             Menu("Tape Recorder", actions.TapeRecorder),
@@ -92,7 +95,7 @@ public class MainMenu : MenuItems, IMainMenu
     private MenuItemViewModel Help(Actions actions) => new()
     {
         Header = "_Help",
-        MenuItems = new MenuItems
+        MenuItems = new MenuItemsViewModel
         {
             Menu("About Vcc", actions.AboutVcc)
         }

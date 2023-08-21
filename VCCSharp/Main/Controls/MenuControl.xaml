@@ -10,7 +10,7 @@
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
   </UserControl.Resources>
   <UserControl.DataContext>
-    <model:MenuItems/>
+    <model:MenuItemsViewModel/>
   </UserControl.DataContext>
   <Menu Name="Menu" ItemsSource="{Binding}">
     <Menu.ItemContainerStyle>
