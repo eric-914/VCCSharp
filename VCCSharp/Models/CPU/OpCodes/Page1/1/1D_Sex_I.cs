@@ -9,9 +9,9 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// Sign Extend the 8-bit Value in B to a 16-bit Value in D
     /// INHERENT
     ///          ╭──────────────────Accumulator D──────────────────╮ 
-    ///      N   |     Accumulator A             Accumulator B     |
+    ///      N   │     Accumulator A             Accumulator B     │
     ///     ╭──╮ ╭──┬──┬──┬──┬──┬──┬──┬──╮ ╭──┬──┬──┬──┬──┬──┬──┬──╮ 
-    ///     |  | │  │  │  │  │  │  │  │  | │b7│  │  │  │  │  │  │  | 
+    ///     │  │ │  │  │  │  │  │  │  │  │ │b7│  │  │  │  │  │  │  │ 
     ///     ╰──╯ ╰──┴──┴──┴──┴──┴──┴──┴──╯ ╰──┴──┴──┴──┴──┴──┴──┴──╯ 
     ///      ▲    ▲  ▲  ▲  ▲  ▲  ▲  ▲  ▲    │
     ///      ╰────┴──┴──┴──┴──┴──┴──┴──┴────╯

@@ -9,7 +9,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// Logical Shift Right of 8-Bit Accumulator or Memory Byte
     /// INDEXED
     ///          ╭──┬──┬──┬──┬──┬──┬──┬──╮     ╭──╮
-    ///    0 ──▶ │  │  │  │  │  │  │  │  | ──▶ |  |
+    ///    0 ──▶ │  │  │  │  │  │  │  │  │ ──▶ │  │
     ///          ╰──┴──┴──┴──┴──┴──┴──┴──╯     ╰──╯
     ///           b7 ────────────────▶ b0       C
     /// SOURCE FORM     ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT

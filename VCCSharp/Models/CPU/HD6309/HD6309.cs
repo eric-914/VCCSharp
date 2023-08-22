@@ -405,7 +405,7 @@ public partial class HD6309 : IHD6309
 
                     break;
 
-                case 1: // post in by 2
+                case 1: // post inc by 2
                     ea = PXF(reg);
 
                     PXF(reg, (ushort)(PXF(reg) + 2));

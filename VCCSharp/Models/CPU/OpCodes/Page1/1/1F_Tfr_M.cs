@@ -1,5 +1,4 @@
-﻿using System.Runtime.Intrinsics.Arm;
-using VCCSharp.Models.CPU.HD6309;
+﻿using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.MC6809;
 
 namespace VCCSharp.Models.CPU.OpCodes.Page1
@@ -48,10 +47,10 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
     ///                                                      ╭────────┬─────────-╮╭────────┬─────────-╮╭────────┬─────────-╮╭────────┬─────────-╮
     ///             ╭───┬───┬───┬───┬───┬───┬───┬───╮        │  Code  │ Register ││  Code  │ Register ││  Code  │ Register ││  Code  │ Register │
-    /// POSTBYTE:   | b7|   |   | b4| b3|   |   | b0|        ├────────┼──────────┤├────────┼──────────┤├────────┼──────────┤├────────┼──────────┤
+    /// POSTBYTE:   │ b7│   │   │ b4│ b3│   │   │ b0│        ├────────┼──────────┤├────────┼──────────┤├────────┼──────────┤├────────┼──────────┤
     ///             ╰─┬─┴───┴───┴─┬─┴─┬─┴───┴───┴─┬─╯        │  0000  │    D     ││  1000  │    A     ││  0100  │    S     ││▒▒1100▒▒│▒▒▒▒0▒▒▒▒▒│
     ///               ╰─────┬─────╯   ╰─────┬─────╯          │  0001  │    X     ││  1001  │    B     ││  0101  │    PC    ││▒▒1101▒▒│▒▒▒▒0▒▒▒▒▒│
-    ///        r0  ─────────╯               |                │  0010  │    Y     ││  1010  │    CC    ││▒▒0110▒▒│▒▒▒▒W▒▒▒▒▒││▒▒1110▒▒│▒▒▒▒E▒▒▒▒▒│
+    ///        r0  ─────────╯               │                │  0010  │    Y     ││  1010  │    CC    ││▒▒0110▒▒│▒▒▒▒W▒▒▒▒▒││▒▒1110▒▒│▒▒▒▒E▒▒▒▒▒│
     ///        r1  ─────────────────────────╯                │  0011  │    U     ││  1011  │    DP    ││▒▒0111▒▒│▒▒▒▒V▒▒▒▒▒││▒▒1111▒▒│▒▒▒▒F▒▒▒▒▒│
     ///                                                      ╰────────┴─────────-╯╰────────┴─────────-╯╰────────┴─────────-╯╰────────┴─────────-╯
     ///                                                      ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒Shaded encodings are invalid on 6809 microprocessors▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
@@ -66,10 +65,11 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// The TFR instruction can be used to alter the flow of execution by specifying PC as the destination register.
     /// Any of the 6809 registers may be specified as either the source, destination or both. 
     /// Specifying the same register for both the source and destination produces an instruction which, like NOP, has no effect.
-    /// The table below explains how the destination register is affected when the source and destination sizes are different. This behavior differs from the 6309 implementation.
+    /// The table below explains how the destination register is affected when the source and destination sizes are different. 
+    /// This behavior differs from the 6309 implementation.
     /// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
     ///         ╭───────────┬─────────────────────┬─────────────────────────────────────────-╮
-    ///         | Operation | 8-bit Register Used |                Results                   |
+    ///         │ Operation │ 8-bit Register Used │                Results                   │
     ///         ├───────────┼─────────────────────┼──────────────────────────────────────────┤
     ///         │  16 → 8   │        Any          │ Destination = LSB from Source            │
     ///         │   8 → 16  │      A or B         │ MSB of Destination = FF16 ; LSB = Source │
@@ -80,10 +80,10 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
     ///                                                      ╭────────┬─────────-╮╭────────┬─────────-╮╭────────┬─────────-╮╭────────┬─────────-╮
     ///             ╭───┬───┬───┬───┬───┬───┬───┬───╮        │  Code  │ Register ││  Code  │ Register ││  Code  │ Register ││  Code  │ Register │
-    /// POSTBYTE:   | b7|   |   | b4| b3|   |   | b0|        ├────────┼──────────┤├────────┼──────────┤├────────┼──────────┤├────────┼──────────┤
+    /// POSTBYTE:   │ b7│   │   │ b4│ b3│   │   │ b0│        ├────────┼──────────┤├────────┼──────────┤├────────┼──────────┤├────────┼──────────┤
     ///             ╰─┬─┴───┴───┴─┬─┴─┬─┴───┴───┴─┬─╯        │  0000  │    D     ││  1000  │    A     ││  0100  │    S     ││  1100  │ invalid  │
     ///               ╰─────┬─────╯   ╰─────┬─────╯          │  0001  │    X     ││  1001  │    B     ││  0101  │    PC    ││  1101  │ invalid  │
-    ///        r0  ─────────╯               |                │  0010  │    Y     ││  1010  │    CC    ││  0110  │ invalid  ││  1110  │ invalid  │
+    ///        r0  ─────────╯               │                │  0010  │    Y     ││  1010  │    CC    ││  0110  │ invalid  ││  1110  │ invalid  │
     ///        r1  ─────────────────────────╯                │  0011  │    U     ││  1011  │    DP    ││  0111  │ invalid  ││  1111  │ invalid  │
     ///                                                      ╰────────┴─────────-╯╰────────┴─────────-╯╰────────┴─────────-╯╰────────┴─────────-╯
     /// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

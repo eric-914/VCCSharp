@@ -1,5 +1,4 @@
-﻿using System.Security.Policy;
-using VCCSharp.Models.CPU.HD6309;
+﻿using VCCSharp.Models.CPU.HD6309;
 using VCCSharp.Models.CPU.HD6309.OpCodes;
 using VCCSharp.Models.CPU.MC6809;
 

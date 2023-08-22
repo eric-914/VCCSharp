@@ -9,7 +9,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page2
     /// Logical Shift Right of 16-Bit Accumulator
     /// INHERENT
     ///          ╭──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──╮     ╭──╮
-    ///    0 ──▶ │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  | ──▶ |  |
+    ///    0 ──▶ │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │ ──▶ │  │
     ///          ╰──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──╯     ╰──╯
     ///           b15 ───────────────────────────────────────▶ b0       C
     /// SOURCE FORM     ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT

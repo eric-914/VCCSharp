@@ -202,7 +202,7 @@ public partial class MC6809
     public void OUR(int i, byte value) => _cpu.ureg8[i] |= (byte)~(1 << value); //OR
     public void XUR(int i, byte value) => _cpu.ureg8[i] ^= (byte)~(1 << value); //XOR
 
-    public ushort DPADDRESS(ushort r) => (ushort)(_cpu.dp.Reg | MemRead8(r));
+    public ushort DPADDRESS(ushort r) => (ushort)(_cpu.dp.Reg | MemRead8(r)); //DIRECT PAGE REGISTER
 
     public byte MemRead8(ushort address) => _modules.TCC1014.MemRead8(address);
     public void MemWrite8(byte data, ushort address) => _modules.TCC1014.MemWrite8(data, address);

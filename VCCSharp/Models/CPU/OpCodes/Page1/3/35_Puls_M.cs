@@ -41,7 +41,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// Bits that are set (1) specify the registers to be pulled.
     /// 
     ///             ╭───┬───┬───┬───┬───┬───┬───┬───╮
-    /// POSTBYTE:   | PC|U/S| Y | X | DP| B | A | CC|
+    /// POSTBYTE:   │ PC│U/S│ Y │ X │ DP│ B │ A │ CC│
     ///             ╰───┴───┴───┴───┴───┴───┴───┴───╯
     ///               7                           0
     /// 

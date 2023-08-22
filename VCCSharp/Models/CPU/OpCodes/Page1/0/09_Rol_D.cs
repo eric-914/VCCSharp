@@ -9,8 +9,8 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// Rotate 8-Bit Accumulator or Memory Byte Left through Carry
     /// DIRECT
     ///   ╭────────────────────────────────────────╮
-    ///   │  ╭──╮     ╭──┬──┬──┬──┬──┬──┬──┬──╮    |
-    ///   ╰─ |  | ◀── │  │  │  │  │  │  │  │  | ◀──╯
+    ///   │  ╭──╮     ╭──┬──┬──┬──┬──┬──┬──┬──╮    │
+    ///   ╰─ │  │ ◀── │  │  │  │  │  │  │  │  │ ◀──╯
     ///      ╰──╯     ╰──┴──┴──┴──┴──┴──┴──┴──╯
     ///       C        b7 ────────────────▶ b0       
     /// SOURCE FORM     ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT

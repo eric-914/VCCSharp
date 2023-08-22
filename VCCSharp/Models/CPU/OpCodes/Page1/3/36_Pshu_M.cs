@@ -39,7 +39,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
     /// The PSH instructions use a postbyte wherein each bit position corresponds to one of the registers which may be pushed. Bits that are set (1) specify the registers to be pushed.
     /// 
     ///             ╭───┬───┬───┬───┬───┬───┬───┬───╮
-    /// POSTBYTE:   | PC|U/S| Y | X | DP| B | A | CC|
+    /// POSTBYTE:   │ PC│U/S│ Y │ X │ DP│ B │ A │ CC│
     ///             ╰───┴───┴───┴───┴───┴───┴───┴───╯
     ///               7                           0
     ///               
