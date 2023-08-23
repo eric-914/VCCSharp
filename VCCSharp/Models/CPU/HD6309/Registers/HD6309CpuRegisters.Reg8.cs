@@ -20,10 +20,10 @@ public class Reg8
                 1 => _cpu.q.lswlsb,
                 2 => _cpu.cc.bits,
                 3 => _cpu.dp.msb,
-                4 => _cpu.z.msb,
-                5 => _cpu.z.lsb,
-                6 => _cpu.q.mswmsb,
-                7 => _cpu.q.mswlsb,
+                4 => _cpu.z.msb, //ZERO
+                5 => _cpu.z.lsb, //ZERO
+                6 => _cpu.q.mswmsb, //E
+                7 => _cpu.q.mswlsb, //F
                 _ => throw new NotImplementedException()
             };
         }
@@ -44,16 +44,16 @@ public class Reg8
                     _cpu.dp.msb = value;
                     break;
                 case 4:
-                    _cpu.z.msb = value;
+                    _cpu.z.msb = value; //ZERO
                     break;
                 case 5:
-                    _cpu.z.lsb = value;
+                    _cpu.z.lsb = value; //ZERO
                     break;
                 case 6:
-                    _cpu.q.mswmsb = value;
+                    _cpu.q.mswmsb = value; //E
                     break;
                 case 7:
-                    _cpu.q.mswlsb = value;
+                    _cpu.q.mswlsb = value; //F
                     break;
             }
         }

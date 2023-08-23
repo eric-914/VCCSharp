@@ -1,4 +1,5 @@
 ﻿using VCCSharp.Models.CPU.OpCodes;
+using VCCSharp.OpCodes.Definitions;
 
 namespace VCCSharp.OpCodes.Model;
 

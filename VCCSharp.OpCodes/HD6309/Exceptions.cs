@@ -1,4 +1,5 @@
-﻿using VCCSharp.OpCodes.Model.OpCodes;
+﻿using VCCSharp.OpCodes.Definitions;
+using VCCSharp.OpCodes.Model.OpCodes;
 
 namespace VCCSharp.OpCodes.HD6309;
 

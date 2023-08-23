@@ -1,4 +1,4 @@
-﻿namespace VCCSharp.OpCodes;
+﻿namespace VCCSharp.OpCodes.Definitions;
 
 internal static class Define
 {

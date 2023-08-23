@@ -13,6 +13,8 @@
         public static bool Bit6(this byte source) => (source & 0x40) != 0;
         public static bool Bit0(this byte source) => (source & 0x01) != 0;
 
+        public static bool Bit15(this ushort source) => (source & 0x8000) != 0;
+
         public static byte ToByte(this bool source) => source ? (byte)1 : (byte)0;
     }
 }

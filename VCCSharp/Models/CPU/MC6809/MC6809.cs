@@ -153,8 +153,8 @@ public partial class MC6809 : IMC6809
         _modules.TCC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
         _modules.TCC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
 
-        _modules.TCC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg);
-        _modules.TCC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg);
+        _modules.TCC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg); //B
+        _modules.TCC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg); //A
 
         _modules.TCC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
 
@@ -209,8 +209,8 @@ public partial class MC6809 : IMC6809
             _modules.TCC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
             _modules.TCC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
             _modules.TCC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
-            _modules.TCC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg);
-            _modules.TCC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg); //B
+            _modules.TCC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg); //A
 
             _modules.TCC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
 

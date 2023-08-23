@@ -1,4 +1,5 @@
 ﻿using VCCSharp.OpCodes.Model.Memory;
+using VCCSharp.OpCodes.Registers;
 
 namespace VCCSharp.OpCodes.Model.OpCodes;
 
@@ -14,6 +15,9 @@ internal abstract class OpCode : OpCodeBase<MC6809.IState>
     protected MemoryDP DIRECT { get; }
     protected MemoryIndexed INDEXED { get; }
 
+    protected IRegisters8Bit R8 { get; }
+    protected IRegisters16Bit R16 { get; }
+
     protected OpCode(MC6809.IState cpu) : base(cpu)
     {
         _cpu = cpu;
@@ -23,6 +27,9 @@ internal abstract class OpCode : OpCodeBase<MC6809.IState>
         M16 = memory.Word;
         DIRECT = memory.DP;
         INDEXED = memory.Indexed;
+
+        R8 = new MC6809.Registers8Bit<MC6809.IState>(cpu);
+        R16 = new MC6809.Registers16Bit<MC6809.IState>(cpu);
     }
 
     protected byte A { get => _cpu.A_REG; set => _cpu.A_REG = value; }

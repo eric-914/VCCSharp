@@ -45,7 +45,7 @@ namespace VCCSharp.Models.CPU.OpCodes.Page1
         private static int Exec(ICpuProcessor cpu, int cycles)
         {
             byte msn = (byte)(cpu.A_REG & 0xF0);
-            byte lsn = (byte)(cpu.A_REG & 0xF);
+            byte lsn = (byte)(cpu.A_REG & 0x0F);
 
             byte mask = 0;
 

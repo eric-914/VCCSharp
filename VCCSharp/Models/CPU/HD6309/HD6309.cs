@@ -185,12 +185,12 @@ public partial class HD6309 : IHD6309
 
         if (MD_NATIVE6309)
         {
-            MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
-            MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
+            MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg); //F
+            MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg); //E
         }
 
-        MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg);
-        MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg);
+        MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg); //B
+        MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg); //A
 
         MemWrite8(GetCC(), --_cpu.s.Reg);
 
@@ -240,12 +240,12 @@ public partial class HD6309 : IHD6309
 
                     if (MD_NATIVE6309)
                     {
-                        MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
-                        MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
+                        MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg); //F
+                        MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg); //E
                     }
 
-                    MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg);
-                    MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg);
+                    MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg); //B
+                    MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg); //A
 
                     MemWrite8(GetCC(), --_cpu.s.Reg);
 
@@ -285,12 +285,12 @@ public partial class HD6309 : IHD6309
 
             if (MD_NATIVE6309)
             {
-                MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg);
-                MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg);
+                MemWrite8(_cpu.q.mswlsb, --_cpu.s.Reg); //F
+                MemWrite8(_cpu.q.mswmsb, --_cpu.s.Reg); //E
             }
 
-            MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg);
-            MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg);
+            MemWrite8(_cpu.q.lswlsb, --_cpu.s.Reg); //B
+            MemWrite8(_cpu.q.lswmsb, --_cpu.s.Reg); //A
 
             MemWrite8(GetCC(), --_cpu.s.Reg);
 

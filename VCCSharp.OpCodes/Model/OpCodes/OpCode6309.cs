@@ -1,4 +1,5 @@
 ﻿using VCCSharp.OpCodes.Model.Memory;
+using VCCSharp.OpCodes.Registers;
 
 namespace VCCSharp.OpCodes.Model.OpCodes;
 
@@ -16,6 +17,9 @@ internal abstract class OpCode6309 : OpCodeBase<HD6309.IState>
     protected MemoryDP DIRECT { get; }
     protected MemoryIndexed INDEXED { get; }
 
+    protected IRegisters8Bit R8 { get;}
+    protected IRegisters16Bit R16 { get; }
+
     protected HD6309.Exceptions Exceptions { get; }
 
     protected OpCode6309(HD6309.IState cpu) : base(cpu)
@@ -28,6 +32,9 @@ internal abstract class OpCode6309 : OpCodeBase<HD6309.IState>
         M32 = memory.DWord;
         DIRECT = memory.DP;
         INDEXED = memory.Indexed;
+
+        R8 = new HD6309.Registers8Bit<HD6309.IState>(cpu);
+        R16 = new MC6809.Registers16Bit<HD6309.IState>(cpu);
 
         Exceptions = new HD6309.Exceptions(cpu);
     }
@@ -66,6 +73,9 @@ internal abstract class OpCode6309 : OpCodeBase<HD6309.IState>
     protected bool CC_N { get => _cpu.CC_N; set => _cpu.CC_N = value; }
     protected bool CC_V { get => _cpu.CC_V; set => _cpu.CC_V = value; }
     protected bool CC_Z { get => _cpu.CC_Z; set => _cpu.CC_Z = value; }
+
+    protected ushort W { get => _cpu.W_REG; set => _cpu.W_REG = value; }
+    protected uint Q { get => _cpu.Q_REG; set => _cpu.Q_REG = value; }
 
     protected byte MD { get => _cpu.MD; set => _cpu.MD = value; }
 

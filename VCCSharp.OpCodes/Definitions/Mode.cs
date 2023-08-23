@@ -1,4 +1,4 @@
-﻿namespace VCCSharp.Models.CPU.OpCodes;
+﻿namespace VCCSharp.OpCodes.Definitions;
 
 /// <summary>
 /// Use by the cycles calculation.  Some opcodes execute faster on the 6309.
