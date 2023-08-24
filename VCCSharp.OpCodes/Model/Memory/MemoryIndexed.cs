@@ -11,6 +11,8 @@ internal class MemoryIndexed
         _cpu = cpu;
     }
 
+    //TODO: Inline this to use regular memory accessors.  This process takes cpu cycles in itself and needs to accommodate that fact.
+    //SEE: ushort CalculateEA(byte postByte)
     public ushort this[ushort address]
     {
         get { return _cpu.INDADDRESS(address); }

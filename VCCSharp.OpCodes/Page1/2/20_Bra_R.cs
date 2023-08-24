@@ -33,9 +33,7 @@ internal class _20_Bra_R : OpCode, IOpCode
 
     public int Exec()
     {
-        sbyte offset = (sbyte)M8[PC++];
-
-        PC += (ushort)offset;
+        PC += (ushort)(sbyte)M8[PC++];
 
         return 3;
     }

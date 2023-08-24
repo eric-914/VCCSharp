@@ -4,17 +4,14 @@ using VCCSharp.OpCodes.Model.Registers;
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// TFR
-/// Transfer R1 to R2 (R1, R2 = A, B, CC, DP)
-/// Transfer D to X, Y, S, U or PC
-/// Transfer X, Y, S, U or PC to D
-/// Transfer Register to Register
-/// IMMEDIATE
-/// r0 → r1
-/// SOURCE FORM     ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT
-/// TFR r0,r1       IMMEDIATE           1F          6 / 4       2
+/// <code>1F/TFR/IMMEDIATE</code>
+/// Transfer Register to Register: 
+/// <code>{ A, B, CC, DP, D, X, Y, S, U, PC, E, F, W, V, Z }</code>
+/// <code>r0 → r1</code>
 /// </summary>
 /// <remarks>
+/// <c>TFR</c> copies the contents of a source register into a destination register. 
+/// </remarks>
 /// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 /// ╭─────────────────────╮
 /// │ 6309 IMPLEMENTATION │
@@ -54,8 +51,11 @@ namespace VCCSharp.OpCodes.Page1;
 ///                                                      ╰────────┴─────────-╯╰────────┴─────────-╯╰────────┴─────────-╯╰────────┴─────────-╯
 ///                                                      ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒Shaded encodings are invalid on 6809 microprocessors▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
 /// ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+/// 
+/// Cycles (6 / 4)
+/// Byte Count (2)
+/// 
 /// See Also: EXG, TFR (6809 implementation)
-/// </remarks>
 internal class _1F_Tfr_M_6309 : OpCode, IOpCode
 {
     private readonly Action<byte, byte, bool>[] _mixed;

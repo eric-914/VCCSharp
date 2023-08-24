@@ -3,19 +3,19 @@ using VCCSharp.OpCodes.Model.Registers;
 
 namespace VCCSharp.OpCodes.Page1;
 
-/// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-/// ╭─────────────────────╮
-/// │ 6809 IMPLEMENTATION │
-/// ╰─────────────────────╯
-/// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 /// <summary>
 /// <code>1E/EXG/IMMEDIATE</code>
-/// Exchange R1 with R2 (R1, R2 = A, B, CC, DP)
+/// Exchange Register to Register: 
+/// <code>{ A, B, CC, DP, D, X, Y, S, U, PC }</code>
 /// <code>r0 ↔ r1</code>
 /// </summary>
 /// <remarks>
 /// This instruction exchanges the contents of two registers.
 /// </remarks>
+/// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/// ╭─────────────────────╮
+/// │ 6809 IMPLEMENTATION │
+/// ╰─────────────────────╯
 /// 
 /// None of the Condition Code flags are affected unless CC is one of the registers involved in the exchange.
 /// 

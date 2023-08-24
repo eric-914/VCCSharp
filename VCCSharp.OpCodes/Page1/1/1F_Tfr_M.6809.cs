@@ -4,17 +4,14 @@ using VCCSharp.OpCodes.Model.Registers;
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// TFR
-/// Transfer R1 to R2 (R1, R2 = A, B, CC, DP)
-/// Transfer D to X, Y, S, U or PC
-/// Transfer X, Y, S, U or PC to D
-/// Transfer Register to Register
-/// IMMEDIATE
-/// r0 → r1
-/// SOURCE FORM     ADDRESSING MODE     OPCODE      CYCLES      BYTE COUNT
-/// TFR r0,r1       IMMEDIATE           1F          6           2
+/// <code>1F/TFR/IMMEDIATE</code>
+/// Transfer Register to Register: 
+/// <code>{ A, B, CC, DP, D, X, Y, S, U, PC }</code>
+/// <code>r0 → r1</code>
 /// </summary>
 /// <remarks>
+/// <c>TFR</c> copies the contents of a source register into a destination register. 
+/// </remarks>
 /// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 /// ╭─────────────────────╮
 /// │ 6809 IMPLEMENTATION │
@@ -22,6 +19,7 @@ namespace VCCSharp.OpCodes.Page1;
 /// TFR copies the contents of a source register into a destination register. 
 /// None of the Condition Code flags are affected unless CC is specified as the destination register.
 /// The TFR instruction can be used to alter the flow of execution by specifying PC as the destination register.
+/// 
 /// Any of the 6809 registers may be specified as either the source, destination or both. 
 /// Specifying the same register for both the source and destination produces an instruction which, like NOP, has no effect.
 /// The table below explains how the destination register is affected when the source and destination sizes are different. 
@@ -50,9 +48,10 @@ namespace VCCSharp.OpCodes.Page1;
 /// If an invalid register encoding is used for the destination, then the instruction will have no effect. 
 /// The invalid register encodings have valid meanings when executed on 6309 processors, and should be avoided in code that needs to work the same way on both CPU’s. 
 /// 
+/// Cycles (6)
+/// Byte Count (2)
+/// 
 /// See Also: EXG, TFR (6309 implementation)
-/// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-/// </remarks>
 internal class _1F_Tfr_M_6809 : OpCode, IOpCode
 {
     private new const byte A = RegisterMap4Bit.A;

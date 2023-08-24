@@ -21,6 +21,10 @@ internal abstract class OpCode : OpCodeBase<MC6809.IState>
     protected Memory16Bit M16 { get; }
 
     protected MemoryDP DIRECT { get; }
+
+    /// <summary>
+    /// 8-bit "Effective Address" memory access
+    /// </summary>
     protected MemoryIndexed INDEXED { get; }
 
     protected IRegisters8Bit R8 { get; }
@@ -89,6 +93,8 @@ internal abstract class OpCode : OpCodeBase<MC6809.IState>
     protected byte X_H { get => _cpu.X_H; set => _cpu.X_H = value; }
     protected byte Y_L { get => _cpu.Y_L; set => _cpu.Y_L = value; }
     protected byte Y_H { get => _cpu.Y_H; set => _cpu.Y_H = value; }
+    protected byte S_L { get => _cpu.S_L; set => _cpu.S_L = value; }
+    protected byte S_H { get => _cpu.S_H; set => _cpu.S_H = value; }
     protected byte U_L { get => _cpu.U_L; set => _cpu.U_L = value; }
     protected byte U_H { get => _cpu.U_H; set => _cpu.U_H = value; }
 

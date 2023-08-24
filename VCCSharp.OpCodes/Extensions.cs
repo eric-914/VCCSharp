@@ -11,6 +11,11 @@
 
         public static bool Bit7(this byte source) => (source & 0x80) != 0;
         public static bool Bit6(this byte source) => (source & 0x40) != 0;
+        public static bool Bit5(this byte source) => (source & 0x20) != 0;
+        public static bool Bit4(this byte source) => (source & 0x10) != 0;
+        public static bool Bit3(this byte source) => (source & 0x08) != 0;
+        public static bool Bit2(this byte source) => (source & 0x04) != 0;
+        public static bool Bit1(this byte source) => (source & 0x02) != 0;
         public static bool Bit0(this byte source) => (source & 0x01) != 0;
 
         public static bool Bit15(this ushort source) => (source & 0x8000) != 0;
