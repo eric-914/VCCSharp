@@ -3,12 +3,12 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>4F/CLRA/INHERENT</code>
-/// Clear Accumulator <c>A</c>
-/// <code>A’ ← 0</code>
+/// <code>5F/CLRB/INHERENT</code>
+/// Clear Accumulator <c>B</c>
+/// <code>B’ ← 0</code>
 /// </summary>
 /// <remarks>
-/// The <c>CLRA</c> instruction clears (sets to zero) the <c>A</c> accumulator. 
+/// The <c>CLRB</c> instruction clears (sets to zero) the <c>B</c> accumulator. 
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
@@ -26,13 +26,13 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (1)
 /// 
 /// See Also: CLR (memory), LD
-internal class _4F_Clra_I : OpCode, IOpCode
+internal class _5F_Clrb_I : OpCode, IOpCode
 {
-    internal _4F_Clra_I(MC6809.IState cpu) : base(cpu) { }
+    internal _5F_Clrb_I(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        A = 0;
+        B = 0;
 
         CC_N = false;
         CC_Z = true;

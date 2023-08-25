@@ -3,12 +3,12 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>44/LSRA/INHERENT</code>
-/// Logical Shift Right of 8-Bit Accumulator <c>A</c>
+/// <code>54/LSRB/INHERENT</code>
+/// Logical Shift Right of 8-Bit Accumulator <c>B</c>
 /// <code>0 → b7 → ... → b0 → C’</code>
 /// </summary>
 /// <remarks>
-/// The <c>LSRA</c> instructions logically shifts the contents of the <c>A</c> accumulator to the right by one bit, clearing bit 7. 
+/// The <c>LSRB</c> instructions logically shifts the contents of the <c>B</c> accumulator to the right by one bit, clearing bit 7. 
 /// </remarks>
 /// 
 ///          ╭──┬──┬──┬──┬──┬──┬──┬──╮     ╭──╮
@@ -30,19 +30,19 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (1)
 /// 
 /// See Also: LSR (16-bit)
-internal class _44_Lsra_I : OpCode, IOpCode
+internal class _54_Lsrb_I : OpCode, IOpCode
 {
-    internal _44_Lsra_I(MC6809.IState cpu) : base(cpu) { }
+    internal _54_Lsrb_I(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        byte result = (byte)(A >> 1);
+        byte result = (byte)(B >> 1);
 
         CC_N = false;
         CC_Z = result == 0;
-        CC_C = A.Bit0();
+        CC_C = B.Bit0();
 
-        A = result;
+        B = result;
 
         return Cycles._21;
     }

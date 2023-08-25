@@ -3,17 +3,17 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>40/NEGA/INHERENT</code>
-/// Negation (Twos-Complement) of Accumulator <c>A</c>
-/// <code>A’ ← 0 - A</code>
+/// <code>50/NEGB/INHERENT</code>
+/// Negation (Twos-Complement) of Accumulator <c>B</c>
+/// <code>B’ ← 0 - B</code>
 /// </summary>
 /// <remarks>
-/// The <c>NEGA</c> instruction changes the value of the <c>A</c> accumulator to that of it’s twos-complement; that is the value which when added to the original value produces a sum of zero. 
+/// The <c>NEGB</c> instruction changes the value of the <c>B</c> accumulator to that of it’s twos-complement; that is the value which when added to the original value produces a sum of zero. 
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
 /// [        ↕ ↕ ↕ ↕]
-/// 
+///   
 /// The Condition Code flags are also modified as follows:
 ///         N The Negative flag is set equal to the new value of the accumulators high-order bit.
 ///         Z The Zero flag is set if the new value of the accumulator is zero; cleared otherwise.
@@ -34,20 +34,20 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (1)
 /// 
 /// See Also: COM, NEG (memory)
-internal class _40_Nega_I : OpCode, IOpCode
+internal class _50_Negb_I : OpCode, IOpCode
 {
-    internal _40_Nega_I(MC6809.IState cpu) : base(cpu) { }
+    internal _50_Negb_I(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        byte value = (byte)(0 - A);
+        byte value = (byte)(0 - B);
 
         CC_N = value.Bit7();
         CC_Z = value == 0;
-        CC_V = A == 0x80;
-        CC_C = !(A == 0);
+        CC_V = B == 0x80;
+        CC_C = !(B == 0);
 
-        A = value;
+        B = value;
 
         return Cycles._21;
     }

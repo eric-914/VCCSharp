@@ -3,12 +3,12 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>4A/DECA/INHERENT</code>
-/// Decrement Accumulator <c>A</c>
-/// <code>A’ ← A - 1</code>
+/// <code>5A/DECB/INHERENT</code>
+/// Decrement Accumulator <c>B</c>
+/// <code>B’ ← B - 1</code>
 /// </summary>
 /// <remarks>
-/// The <c>DECA</c> instructions subtracts 1 from the <c>A</c> accumulator. 
+/// The <c>DECB</c> instructions subtracts 1 from the <c>B</c> accumulator. 
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
@@ -20,7 +20,7 @@ namespace VCCSharp.OpCodes.Page1;
 ///         V The Overflow flag is set if the original value was 0x80 (8-bit); cleared otherwise.
 ///         
 /// It is important to note that the DEC instructions do not affect the Carry flag. 
-/// This means that it is not always possible to optimize code by simply replacing a SUBA #1 instruction with a corresponding DECA.
+/// This means that it is not always possible to optimize code by simply replacing a SUBB #1 instruction with a corresponding DECB. 
 /// Because the DEC instructions do not affect the Carry flag, they can be used to implement loop counters within multiple precision computations.
 /// 
 /// When used to decrement an unsigned value, only the BEQ and BNE branches will always behave as expected. 
@@ -30,19 +30,19 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (1)
 /// 
 /// See Also: DEC (memory), INC, SUB
-internal class _4A_Deca_I : OpCode, IOpCode
+internal class _5A_Decb_I : OpCode, IOpCode
 {
-    internal _4A_Deca_I(MC6809.IState cpu) : base(cpu) { }
+    internal _5A_Decb_I(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        byte result = (byte)(A - 1);
+        byte result = (byte)(B - 1);
 
         CC_N = result.Bit7();
         CC_Z = result == 0;
-        CC_V = A == 0x80;
+        CC_V = B == 0x80;
 
-        A = result;
+        B = result;
 
         return Cycles._21;
     }

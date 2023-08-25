@@ -3,12 +3,12 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>4D/TSTA/INHERENT</code>
-/// Test Value in Accumulator <c>A</c>
-/// <code>TEMP ← A</code>
+/// <code>5D/TSTB/INHERENT</code>
+/// Test Value in Accumulator <c>B</c>
+/// <code>TEMP ← B</code>
 /// </summary>
 /// <remarks>
-/// The <c>TSTA</c> instruction tests the value in a accumulator <c>A</c> to setup the Condition Codes register with minimal status for that value. 
+/// The <c>TSTB</c> instruction tests the value in a accumulator <c>B</c> to setup the Condition Codes register with minimal status for that value. 
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
@@ -29,14 +29,14 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (1)
 /// 
 /// See Also: CMP, STQ, TST (memory)
-internal class _4D_Tsta_I : OpCode, IOpCode
+internal class _5D_Tstb_I : OpCode, IOpCode
 {
-    internal _4D_Tsta_I(MC6809.IState cpu) : base(cpu) { }
+    internal _5D_Tstb_I(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        CC_N = A.Bit7();
-        CC_Z = A == 0;
+        CC_N = B.Bit7();
+        CC_Z = B == 0;
         CC_V = false;
 
         return Cycles._21;

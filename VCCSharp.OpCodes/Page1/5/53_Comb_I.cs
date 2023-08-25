@@ -3,17 +3,17 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>43/COMA/INHERENT</code>
-/// Complement accumulator <c>A</c>
-/// <code>A’ ← ~A</code>
+/// <code>53/COMB/INHERENT</code>
+/// Complement accumulator <c>B</c>
+/// <code>B’ ← ~B</code>
 /// </summary>
 /// <remarks>
-/// The <c>COMA</c> instructions change the value of the <c>A</c> accumulator to that of it’s logical complement; that is each 1 bit is changed to a 0, and each 0 bit is changed to a 1.
+/// The <c>COMB</c> instructions change the value of the <c>B</c> accumulator to that of it’s logical complement; that is each 1 bit is changed to a 0, and each 0 bit is changed to a 1.
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
 /// [        ↕ ↕ 0 1]
-/// 
+///   
 /// The Condition Code flags are also modified as follows:
 ///         N The Negative flag is set equal to the new value of the accumulators high-order bit.
 ///         Z The Zero flag is set if the new value of the accumulator is zero; cleared otherwise.
@@ -29,20 +29,20 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (1)
 /// 
 /// See Also: COM (memory), NEG
-internal class _43_Coma_I : OpCode, IOpCode
+internal class _53_Comb_I : OpCode, IOpCode
 {
-    internal _43_Coma_I(MC6809.IState cpu) : base(cpu) { }
+    internal _53_Comb_I(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        byte result = (byte)(0xFF - A);
+        byte result = (byte)(0xFF - B);
 
         CC_N = result.Bit7();
         CC_Z = result == 0;
         CC_V = false;
         CC_C = true;
 
-        A = result;
+        B = result;
 
         return Cycles._21;
     }

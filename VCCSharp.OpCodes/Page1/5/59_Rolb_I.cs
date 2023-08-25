@@ -3,12 +3,12 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>49/ROLA/INHERENT</code>
+/// <code>59/ROLB/INHERENT</code>
 /// Rotate 8-Bit Accumulator <c>A</c> Left through Carry
 /// <code>C’ ← b7 ← ... ← b0 ← C</code>
 /// </summary>
 /// <remarks>
-/// The <c>ROLA</c> instruction rotates the contents of the <c>A</c> accumulator to the left by one bit, through the Carry bit of the <c>CC</c> register (effectively a 9-bit rotation). 
+/// The <c>ROLB</c> instruction rotates the contents of the <c>C</c> accumulator to the left by one bit, through the Carry bit of the <c>CC</c> register (effectively a 9-bit rotation). 
 /// </remarks>
 /// 
 ///      ╭───────────────────────────────────╮
@@ -33,22 +33,22 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (1)
 /// 
 /// See Also: ADCR, ROL (16-bit)
-internal class _49_Rola_I : OpCode, IOpCode
+internal class _59_Rolb_I : OpCode, IOpCode
 {
-    internal _49_Rola_I(MC6809.IState cpu) : base(cpu) { }
+    internal _59_Rolb_I(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
         byte bit = CC_C.ToByte();
 
-        byte result = (byte)((A << 1) | bit);
+        byte result = (byte)((B << 1) | bit);
 
         CC_N = result.Bit7();
         CC_Z = result == 0;
-        CC_V = A.Bit7() ^ A.Bit6();
-        CC_C = A.Bit7();
+        CC_V = B.Bit7() ^ B.Bit6();
+        CC_C = B.Bit7();
 
-        A = result;
+        B = result;
 
         return Cycles._21;
     }

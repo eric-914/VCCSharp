@@ -3,12 +3,12 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>46/RORA/INHERENT</code>
-/// Rotate 8-Bit Accumulator <c>A</c> Right through Carry
+/// <code>56/RORB/INHERENT</code>
+/// Rotate 8-Bit Accumulator <c>B</c> Right through Carry
 /// <code>C → b7 → ... → b0 → C’</code>
 /// </summary>
 /// <remarks>
-/// The <c>RORA</c> instruction rotates the contents of the <c>A</c> accumulator to the right by one bit, through the Carry bit of the <c>CC</c> register (effectively a 9-bit rotation). 
+/// The <c>RORB</c> instruction rotates the contents of the <c>B</c> accumulator to the right by one bit, through the Carry bit of the <c>CC</c> register (effectively a 9-bit rotation). 
 /// </remarks>
 /// 
 ///    ╭───────────────────────────────╮
@@ -16,7 +16,7 @@ namespace VCCSharp.OpCodes.Page1;
 ///    ╰─▶│  │  │  │  │  │  │  │  │──▶│  │
 ///       ╰──┴──┴──┴──┴──┴──┴──┴──╯   ╰──╯
 ///        b7 ────────────────▶ b0     C
-///           
+///        
 /// [E F H I N Z V C]
 /// [        ↕ ↕   ↕]
 /// 
@@ -32,21 +32,21 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (1)
 /// 
 /// See Also: ROR (16-bit)
-internal class _46_Rora_I : OpCode, IOpCode
+internal class _56_Rorb_I : OpCode, IOpCode
 {
-    internal _46_Rora_I(MC6809.IState cpu) : base(cpu) { }
+    internal _56_Rorb_I(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
         byte bit = CC_C.ToByte();
 
-        byte result = (byte)((A >> 1) | (bit << 7));
+        byte result = (byte)((B >> 1) | (bit << 7));
 
         CC_N = result.Bit7();
         CC_Z = !(result == 0);
-        CC_C = A.Bit0();
+        CC_C = B.Bit0();
 
-        A = result;
+        B = result;
 
         return Cycles._21;
     }
