@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>01/OIM/DIRECT</code>
+/// <code>71/OIM/EXTENDED</code>
 /// Logical OR of Immediate Value with Memory Byte
 /// <code>(M)’ ← (M) OR IMM</code>
 /// </summary>
@@ -37,21 +37,21 @@ namespace VCCSharp.OpCodes.Page1;
 ///     │ OPCODE │ IMMED VALUE │ ADDRESS / INDEX BYTE(S) │
 ///     ╰────────┴─────────────┴─────────────────────────╯
 ///     
-/// Cycles (6)
-/// Byte Count (3)
+/// Cycles (7)
+/// Byte Count (4)
 /// 
 /// OIM #i8;EA
 /// I8 : 8-bit Immediate value
 /// 
 /// See Also: AIM, EIM, TIM
-internal class _01_Oim_D : OpCode6309, IOpCode
+internal class _71_Oim_E : OpCode6309, IOpCode
 {
-    internal _01_Oim_D(HD6309.IState cpu) : base(cpu) { }
+    internal _71_Oim_E(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
         byte value = M8[PC++];
-        ushort address = DIRECT[PC++];
+        ushort address = M16[PC+=2];
         byte mask = M8[address];
 
         byte result = (byte)(value | mask);
@@ -62,6 +62,6 @@ internal class _01_Oim_D : OpCode6309, IOpCode
 
         M8[address] = result;
 
-        return 6;
+        return 7;
     }
 }

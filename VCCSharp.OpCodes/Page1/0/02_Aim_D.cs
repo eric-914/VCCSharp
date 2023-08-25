@@ -58,11 +58,11 @@ internal class _02_Aim_D : OpCode6309, IOpCode
 
         byte result = (byte)(value & mask);
 
-        M8[address] = result;
-
         CC_N = result.Bit7();
         CC_Z = result == 0;
         CC_V = false;
+
+        M8[address] = result;
 
         return 6;
     }
