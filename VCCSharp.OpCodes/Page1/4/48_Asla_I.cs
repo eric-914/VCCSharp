@@ -3,21 +3,21 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>08/ASL/DIRECT</code>
-/// Arithmetic Shift Left of 8-Bit Memory byte
-/// <code>08/LSL/DIRECT</code>
-/// Logical Shift Left of 8-Bit Memory byte
+/// <code>48/ASLA/INHERENT</code>
+/// Arithmetic Shift Left of 8-Bit Accumulator <c>A</c>
+/// <code>48/LSLA/INHERENT</code>
+/// Logical Shift Left of 8-Bit Accumulator <c>A</c>
 /// <code>C ← b7 ← ... ← b0 ← 0</code>
 /// </summary>
 /// <remarks>
-/// The <c>ASL/LSL</c> instruction shifts the contents of the specified byte in memory to the left by one bit, clearing bit 0. 
+/// The <c>ASLA/LSLA</c> instruction shifts the contents of the <c>A</c> accumulator to the left by one bit, clearing bit 0. 
 /// </remarks>
 /// 
 ///    ╭──╮     ╭──┬──┬──┬──┬──┬──┬──┬──╮     
 ///    │  │ ◀── │  │  │  │  │  │  │  │  │ ◀── 0
 ///    ╰──╯     ╰──┴──┴──┴──┴──┴──┴──┴──╯     
 ///     C        b7 ◀──────────────── b0      
-///           
+/// 
 /// [E F H I N Z V C]
 /// [    ~   ↕ ↕ ↕ ↕]
 /// 
@@ -28,35 +28,30 @@ namespace VCCSharp.OpCodes.Page1;
 ///         V The Overflow flag is set to the XOR of the original values of bits 6 and 7.
 ///         C The Carry flag receives the value shifted out of bit 7.
 ///     
-/// The ASL/LSL instruction can be used for simple multiplication (a single left-shift multiplies the value by 2). 
+/// The ASLA/LSLA instruction can be used for simple multiplication (a single left-shift multiplies the value by 2). 
 /// Other uses include conversion of data from serial to parallel and viseversa.
 /// 
-/// The ASL and LSL mnemonics are duplicates. Both produce the same object code.
-/// 
-/// Cycles (6 / 5)
-/// Byte Count (2)
+/// Cycles (2 / 1)
+/// Byte Count (1)
 /// 
 /// See Also: ASLD
 /// See Also: LSLD
-internal class _08_Asl_D : OpCode, IOpCode
+internal class _48_Asla_I : OpCode, IOpCode
 {
-    internal _08_Asl_D(MC6809.IState cpu) : base(cpu) { }
+    internal _48_Asla_I(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
-        byte value = M8[address];
-
-        byte result = (byte)(value << 1);
+        byte result = (byte)(A << 1);
 
         //CC_H = undefined;
         CC_N = result.Bit7();
         CC_Z = result == 0;
-        CC_V = value.Bit7() ^ value.Bit6();
-        CC_C = value.Bit7();
+        CC_V = A.Bit7() ^ A.Bit6();
+        CC_C = A.Bit7();
 
-        M8[address] = result;
+        A = result;
 
-        return Cycles._65;
+        return Cycles._21;
     }
 }

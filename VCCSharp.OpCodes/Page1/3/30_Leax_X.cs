@@ -8,7 +8,7 @@ namespace VCCSharp.OpCodes.Page1;
 /// <code>X’ ← EA</code>
 /// </summary>
 /// <remarks>
-/// These instructions compute the effective address from an Indexed Addressing Mode operand and place that address into the Index Registers <c>X</c>.
+/// The <c>LEAX</c> instruction computes the effective address from an Indexed Addressing Mode operand and place that address into the Index Registers <c>X</c>.
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
