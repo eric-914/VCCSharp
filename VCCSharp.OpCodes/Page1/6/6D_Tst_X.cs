@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>0D/TST/DIRECT</code>
+/// <code>6D/TST/INDEXED</code>
 /// Test Value in Memory Byte
 /// <code>TEMP ← (M)</code>
 /// </summary>
@@ -27,23 +27,23 @@ namespace VCCSharp.OpCodes.Page1;
 /// 
 /// You can obtain the same information in fewer cycles by loading the byte into an 8-bit accumulator (LDA and LDB are fastest). For this reason it is usually preferable to avoid using TST on a memory byte if there is an available accumulator.
 /// 
-/// Cycles (6 / 4)
-/// Byte Count (2)
+/// Cycles (6+ / 5+)
+/// Byte Count (2+)
 /// 
 /// See Also: CMP, LD (8-bit),TST (accumulator)
-internal class _0D_Tst_D : OpCode, IOpCode
+internal class _6D_Tst_X : OpCode, IOpCode
 {
-    internal _0D_Tst_D(MC6809.IState cpu) : base(cpu) { }
+    internal _6D_Tst_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
         byte value = M8[address];
 
         CC_N = value.Bit7();
         CC_Z = value == 0;
         CC_V = false;
 
-        return Cycles._64;
+        return Cycles._65;
     }
 }

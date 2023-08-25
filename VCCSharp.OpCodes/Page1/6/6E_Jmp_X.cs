@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>0E/JMP/DIRECT</code>
+/// <code>6E/JMP/INDEXED</code>
 /// Unconditional Jump
 /// <code>PC’ ← EA</code>
 /// </summary>
@@ -32,22 +32,20 @@ namespace VCCSharp.OpCodes.Page1;
 /// 
 /// Using Direct or Extended operands with the JMP instruction should be avoided in position-independent code unless the destination address is within non-relocatable code (such as a ROM routine).
 /// 
-/// Cycles (3 / 2)
-/// Byte Count (2)
+/// Cycles (3+)
+/// Byte Count (2+)
 /// 
 /// See Also: BRA, JSR, LBRA
-internal class _0E_Jmp_D : OpCode, IOpCode
+internal class _6E_Jmp_X : OpCode, IOpCode
 {
-    internal _0E_Jmp_D(MC6809.IState cpu) : base(cpu) { }
+    internal _6E_Jmp_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        byte offset = M8[PC];
-
-        ushort address = (ushort)((DP * 0x100) | offset);
+        ushort address = INDEXED[PC];
 
         PC = address;
 
-        return Cycles._32;
+        return 3;
     }
 }

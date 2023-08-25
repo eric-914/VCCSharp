@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>02/AIM/DIRECT</code>
+/// <code>62/AIM/INDEXED</code>
 /// Logical AND of Immediate Value with Memory Byte
 /// <code>M’ ← (M) AND IMM</code>
 /// </summary>
@@ -14,12 +14,12 @@ namespace VCCSharp.OpCodes.Page1;
 /// 
 /// [E F H I N Z V C]
 /// [        ↕ ↕ 0  ]
-///   
+/// 
 /// The resulting value is placed back into the designated memory location.
 ///         N The Negative flag is set equal to the new value of bit 7 of the memory byte.
 ///         Z The Zero flag is set if the new value of the memory byte is zero; cleared otherwise.
 ///         V The Overflow flag is cleared by this instruction.
-///     
+///         
 /// AIM is one of the more useful additions to the 6309 instruction set. 
 /// It takes three separate instructions to perform the same operation on a 6809:
 /// 
@@ -38,22 +38,22 @@ namespace VCCSharp.OpCodes.Page1;
 ///     │ OPCODE │ IMMED VALUE │ ADDRESS / INDEX BYTE(S) │
 ///     ╰────────┴─────────────┴─────────────────────────╯
 ///     
-/// Cycles (6)
-/// Byte Count (3)
+/// Cycles (7+)
+/// Byte Count (3+)
 /// 
 /// AIM #i8;EA
 /// I8 : 8-bit Immediate value
 /// EA : Effective Address
 /// 
 /// See Also: AND, EIM, OIM, TIM
-internal class _02_Aim_D : OpCode6309, IOpCode
+internal class _62_Aim_X : OpCode6309, IOpCode
 {
-    internal _02_Aim_D(HD6309.IState cpu) : base(cpu) { }
+    internal _62_Aim_X(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
         byte value = M8[PC++];
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
         byte mask = M8[address];
 
         byte result = (byte)(value & mask);

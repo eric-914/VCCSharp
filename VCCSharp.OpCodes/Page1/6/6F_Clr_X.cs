@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>0F/CLR/DIRECT</code>
+/// <code>6F/CLR/INDEXED</code>
 /// Store Zero into a Memory byte
 /// <code>(M) ← 0</code>
 /// </summary>
@@ -35,17 +35,17 @@ namespace VCCSharp.OpCodes.Page1;
 ///         STA $210 ; 5 cycles
 ///         STA $220 ; 5 cycles
 ///         
-/// Cycles (6 / 5)
-/// Byte Count (2)
+/// Cycles (6+)
+/// Byte Count (2+)
 /// 
 /// See Also: CLR (accumulator), ST
-internal class _0F_Clr_D : OpCode, IOpCode
+internal class _6F_Clr_X : OpCode, IOpCode
 {
-    internal _0F_Clr_D(MC6809.IState cpu) : base(cpu) { }
+    internal _6F_Clr_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
 
         M8[address] = 0;
 
@@ -54,6 +54,6 @@ internal class _0F_Clr_D : OpCode, IOpCode
         CC_V = false;
         CC_C = false;
 
-        return Cycles._65;
+        return 6;
     }
 }

@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>0B/TIM/DIRECT</code>
+/// <code>6B/TIM/INDEXED</code>
 /// Bit Test Immediate Value with Memory Byte
 /// <code>TEMP ← (M) AND IMM8</code>
 /// </summary>
@@ -37,21 +37,21 @@ namespace VCCSharp.OpCodes.Page1;
 ///     │ OPCODE │ IMMED VALUE │ ADDRESS / INDEX BYTE(S) │
 ///     ╰────────┴─────────────┴─────────────────────────╯
 /// 
-/// Cycles (6)
-/// Byte Count (3)
+/// Cycles (7+)
+/// Byte Count (3+)
 /// 
 /// TIM #i8;EA
 /// I8 : 8-bit Immediate value
 /// 
 /// See Also: AIM, AND, EIM, OIM
-internal class _0B_Tim_D : OpCode6309, IOpCode
+internal class _6B_Tim_X : OpCode6309, IOpCode
 {
-    internal _0B_Tim_D(HD6309.IState cpu) : base(cpu) { }
+    internal _6B_Tim_X(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
         byte value = M8[PC++];
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
         byte mask = M8[address];
 
         byte result = (byte)(value & mask);
@@ -60,6 +60,6 @@ internal class _0B_Tim_D : OpCode6309, IOpCode
         CC_Z = result == 0;
         CC_V = false;
 
-        return 6;
+        return 7;
     }
 }

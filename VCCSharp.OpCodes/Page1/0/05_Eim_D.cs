@@ -5,7 +5,7 @@ namespace VCCSharp.OpCodes.Page1;
 /// <summary>
 /// <code>05/EIM/DIRECT</code>
 /// XOR of Immediate Value with Memory Byte
-/// <code>(M)’ ← (M) ⊕ IMM</code>
+/// <code>(M)’ ← (M) ⨁ IMM</code>
 /// </summary>
 /// <remarks>
 /// The <c>EIM</c> instruction exclusively-ORs the contents of a byte in memory with an 8-bit immediate value. 
@@ -15,7 +15,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// [E F H I N Z V C]
 /// [        ↕ ↕ 0  ]
 ///   
-/// The EIM instruction exclusively-ORs the contents of a byte in memory with an 8-bit immediate value. 
 /// The resulting value is placed back into the designated memory location.
 ///         N The Negative flag is set equal to the new value of bit 7 of the memory byte.
 ///         Z The Zero flag is set if the new value of the memory byte is zero; cleared otherwise.
@@ -60,11 +59,11 @@ internal class _05_Eim_D : OpCode6309, IOpCode
 
         byte result = (byte)(value ^ mask);
 
-        M8[address] = result;
-
         CC_N = result.Bit7();
         CC_Z = result == 0;
         CC_V = false;
+
+        M8[address] = result;
 
         return 6;
     }

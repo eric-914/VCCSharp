@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>00/NEG/DIRECT</code>
+/// <code>60/NEG/INDEXED</code>
 /// Negate (Twos Complement) a Byte in Memory
 /// <code>(M)’ ← 0 - (M)</code>
 /// </summary>
@@ -30,17 +30,17 @@ namespace VCCSharp.OpCodes.Page1;
 /// This instruction performs a twos-complement operation. 
 /// A ones-complement can be achieved with the COM instruction.
 /// 
-/// Cycles (6 / 5)
-/// Byte Count (2)
+/// Cycles (6+)
+/// Byte Count (2+)
 /// 
 /// See Also: COM, NEG (accumulator)
-internal class _00_Neg_D : OpCode, IOpCode
+internal class _60_Neg_X : OpCode, IOpCode
 {
-    internal _00_Neg_D(MC6809.IState cpu) : base(cpu) { }
+    internal _60_Neg_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
         byte value = M8[address];
 
         byte result = (byte)(0 - value);
@@ -52,6 +52,6 @@ internal class _00_Neg_D : OpCode, IOpCode
 
         M8[address] = result;
 
-        return Cycles._65;
+        return 6;
     }
 }

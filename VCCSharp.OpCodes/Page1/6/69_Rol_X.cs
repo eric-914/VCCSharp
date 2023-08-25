@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>09/ROL/DIRECT</code>
+/// <code>69/ROL/INDEXED</code>
 /// Rotate 8-Bit Memory byte Left through Carry
 /// <code>C’ ← b7 ← ... ← b0 ← C</code>
 /// </summary>
@@ -29,17 +29,17 @@ namespace VCCSharp.OpCodes.Page1;
 /// The ROL instructions can be used for subsequent bytes of a multi-byte shift to bring in the carry bit from previous shift or rotate instructions. 
 /// Other uses include conversion of data from serial to parallel and vise-versa.
 /// 
-/// Cycles (6 / 5)
-/// Byte Count (2)
+/// Cycles (6+)
+/// Byte Count (2+)
 /// 
 /// See Also: ADCR, ROL (16-bit)
-internal class _09_Rol_D : OpCode, IOpCode
+internal class _69_Rol_X : OpCode, IOpCode
 {
-    internal _09_Rol_D(MC6809.IState cpu) : base(cpu) { }
+    internal _69_Rol_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
         byte value = M8[address];
 
         byte bit = CC_C.ToByte();
@@ -53,6 +53,6 @@ internal class _09_Rol_D : OpCode, IOpCode
 
         M8[address] = result;
 
-        return Cycles._65;
+        return 6;
     }
 }

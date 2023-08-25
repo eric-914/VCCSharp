@@ -15,7 +15,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// [E F H I N Z V C]
 /// [        ↕ ↕ 0  ]
 /// 
-/// The OIM instruction logically ORs the contents of a byte in memory with an 8-bit immediate value. 
 /// The resulting value is placed back into the designated memory location.
 ///         N The Negative flag is set equal to the new value of bit 7 of the memory byte.
 ///         Z The Zero flag is set if the new value of the memory byte is zero; cleared otherwise.

@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>0C/INC/DIRECT</code>
+/// <code>6C/INC/INDEXED</code>
 /// Increment a byte in Memory
 /// <code>(M)’ ← (M) + 1</code>
 /// </summary>
@@ -24,17 +24,17 @@ namespace VCCSharp.OpCodes.Page1;
 /// When used to increment an unsigned value, only the BEQ and BNE branches will consistently behave as expected. 
 /// When operating on a signed value, all of the signed conditional branch instructions will behave as expected.
 /// 
-/// Cycles (6 / 5)
-/// Byte Count (2)
+/// Cycles (6+)
+/// Byte Count (2+)
 /// 
 /// See Also: ADD, DEC, INC (accumulator)
-internal class _0C_Inc_D : OpCode, IOpCode
+internal class _6C_Inc_X : OpCode, IOpCode
 {
-    internal _0C_Inc_D(MC6809.IState cpu) : base(cpu) { }
+    internal _6C_Inc_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
         byte value = M8[address];
 
         byte result = (byte)(value + 1);
@@ -45,6 +45,6 @@ internal class _0C_Inc_D : OpCode, IOpCode
 
         M8[address] = result;
 
-        return Cycles._65;
+        return 6;
     }
 }

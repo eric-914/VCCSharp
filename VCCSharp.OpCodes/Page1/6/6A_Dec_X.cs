@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>0A/DEC/DIRECT</code>
+/// <code>6A/DEC/INDEXED</code>
 /// Decrement a byte in Memory
 /// <code>(M)’ ← (M) - 1</code>
 /// </summary>
@@ -24,17 +24,17 @@ namespace VCCSharp.OpCodes.Page1;
 /// When used to decrement an unsigned value, only the BEQ and BNE branches will always behave as expected. 
 /// When operating on a signed value, all of the signed conditional branch instructions will behave as expected.
 /// 
-/// Cycles (6 / 5)
-/// Byte Count (2)
+/// Cycles (6+)
+/// Byte Count (2+)
 /// 
 /// See Also: DEC (accumulator), INC, SUB
-internal class _0A_Dec_D : OpCode, IOpCode
+internal class _6A_Dec_X : OpCode, IOpCode
 {
-    internal _0A_Dec_D(MC6809.IState cpu) : base(cpu) { }
+    internal _6A_Dec_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
         byte value = M8[address];
 
         byte result = (byte)(value - 1);
@@ -45,6 +45,6 @@ internal class _0A_Dec_D : OpCode, IOpCode
 
         M8[address] = result;
 
-        return Cycles._65;
+        return 6;
     }
 }
