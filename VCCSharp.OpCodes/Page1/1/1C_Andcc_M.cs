@@ -8,7 +8,7 @@ namespace VCCSharp.OpCodes.Page1;
 /// <code>CC’ ← CC AND IMM</code>
 /// </summary>
 /// <remarks>
-/// This instruction logically ANDs the contents of the Condition Codes register with the immediate byte specified in the instruction with the result placed back into the CC register.
+/// The <c>ANDCC</c> instruction logically ANDs the contents of the Condition Codes register with the immediate byte specified in the instruction with the result placed back into the CC register.
 /// </remarks>
 /// 
 /// This instruction logically ANDs the contents of the Condition Codes register with the immediate byte specified in the instruction. 

@@ -41,7 +41,7 @@ internal class _66_Ror_X : OpCode, IOpCode
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
-        byte bit = CC_C.ToByte();
+        byte bit = CC_C.ToBit();
 
         byte result = (byte)((value >> 1) | (bit << 7));
 

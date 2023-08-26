@@ -2,24 +2,27 @@
 {
     internal static class Extensions
     {
-        public static byte H(this ushort source) => (byte)(source >> 8);
-        public static byte L(this ushort source) => (byte)(source & 0xFF);
+        public static byte H(this ushort w) => (byte)(w >> 8);
+        public static byte L(this ushort w) => (byte)(w & 0xFF);
 
-        public static bool IsNegative(this byte source) => source > 0x7F;
+        public static bool Bit7(this byte b) => (b & 0x80) != 0;
+        public static bool Bit6(this byte b) => (b & 0x40) != 0;
+        public static bool Bit5(this byte b) => (b & 0x20) != 0;
+        public static bool Bit4(this byte b) => (b & 0x10) != 0;
+        public static bool Bit3(this byte b) => (b & 0x08) != 0;
+        public static bool Bit2(this byte b) => (b & 0x04) != 0;
+        public static bool Bit1(this byte b) => (b & 0x02) != 0;
+        public static bool Bit0(this byte b) => (b & 0x01) != 0;
 
-        public static bool IsZero(this byte source) => source == 0;
+        public static bool Bit7(this ushort w) => (w & 0x0080) != 0;
+        public static bool Bit8(this ushort w) => (w & 0x0100) != 0;
+        public static bool Bit15(this ushort w) => (w & 0x8000) != 0;
 
-        public static bool Bit7(this byte source) => (source & 0x80) != 0;
-        public static bool Bit6(this byte source) => (source & 0x40) != 0;
-        public static bool Bit5(this byte source) => (source & 0x20) != 0;
-        public static bool Bit4(this byte source) => (source & 0x10) != 0;
-        public static bool Bit3(this byte source) => (source & 0x08) != 0;
-        public static bool Bit2(this byte source) => (source & 0x04) != 0;
-        public static bool Bit1(this byte source) => (source & 0x02) != 0;
-        public static bool Bit0(this byte source) => (source & 0x01) != 0;
+        public static byte TwosComplement(this byte b) => (byte)(~b + 1);
+        public static ushort TwosComplement(this ushort w) => (ushort)(~w + 1);
 
-        public static bool Bit15(this ushort source) => (source & 0x8000) != 0;
+        public static byte ToBit(this bool b) => b ? (byte)1 : (byte)0;
 
-        public static byte ToByte(this bool source) => source ? (byte)1 : (byte)0;
+        public static byte Plus(this byte value, bool bit) => (byte)(value + bit.ToBit());
     }
 }

@@ -1,4 +1,5 @@
 ﻿using VCCSharp.OpCodes.Model.Memory;
+using VCCSharp.OpCodes.Model.Support;
 using VCCSharp.OpCodes.Registers;
 
 namespace VCCSharp.OpCodes.Model.OpCodes;
@@ -142,4 +143,20 @@ internal abstract class OpCode : OpCodeBase<MC6809.IState>
     /// Condition Code Zero Flag
     /// </summary>
     protected bool CC_Z { get => _cpu.CC_Z; set => _cpu.CC_Z = value; }
+
+    /// <summary>
+    /// Handles the intracies of adding two values: <c>a+b</c>
+    /// </summary>
+    /// <param name="a">first 8-bit</param>
+    /// <param name="b">second 8-bit</param>
+    /// <returns>object with summation results</returns>
+    protected Sum Sum(byte a, byte b) => new Sum(a, b);
+
+    /// <summary>
+    /// Handles the intracies of adding two values: <c>a+b</c>
+    /// </summary>
+    /// <param name="a">first 16-bit</param>
+    /// <param name="b">second 16-bit</param>
+    /// <returns>object with summation results</returns>
+    protected Sum Sum(ushort a, ushort b) => new Sum(a, b);
 }

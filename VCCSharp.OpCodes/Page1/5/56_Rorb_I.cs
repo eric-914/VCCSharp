@@ -38,7 +38,7 @@ internal class _56_Rorb_I : OpCode, IOpCode
 
     public int Exec()
     {
-        byte bit = CC_C.ToByte();
+        byte bit = CC_C.ToBit();
 
         byte result = (byte)((B >> 1) | (bit << 7));
 
