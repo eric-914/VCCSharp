@@ -2,6 +2,6 @@
 
 namespace VCCSharp.OpCodes.HD6309;
 
-public interface IState : IMode, IInterrupt, IRegisters, IMemory
+public interface IState : MC6809.IState, IMode, IInterrupt, IRegisters, IMemory
 {
 }

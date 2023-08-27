@@ -2,4 +2,4 @@
 
 namespace VCCSharp.OpCodes.Page1;
 
-internal class CF : UndefinedOpCode { }
+internal class _CF : UndefinedOpCode { }

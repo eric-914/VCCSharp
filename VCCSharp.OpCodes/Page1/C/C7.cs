@@ -2,4 +2,4 @@
 
 namespace VCCSharp.OpCodes.Page1;
 
-internal class C7 : UndefinedOpCode { }
+internal class _C7 : UndefinedOpCode { }

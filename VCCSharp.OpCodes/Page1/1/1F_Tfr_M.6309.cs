@@ -56,12 +56,12 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (2)
 /// 
 /// See Also: EXG, TFR (6809 implementation)
-internal class _1F_Tfr_M_6309 : OpCode, IOpCode
+internal class _1F_Tfr_M_6309 : OpCode6309, IOpCode
 {
     private readonly Action<byte, byte, bool>[] _mixed;
     private readonly RegisterMap4Bit _map;
 
-    internal _1F_Tfr_M_6309(MC6809.IState cpu) : base(cpu)
+    internal _1F_Tfr_M_6309(HD6309.IState cpu) : base(cpu)
     {
         //--From mapping in above documentation
         var A = MSB;

@@ -49,9 +49,9 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (1)
 /// 
 /// See Also: RTI
-internal class _3F_Swi_I : OpCode, IOpCode
+internal class _3F_Swi_I_6809 : OpCode, IOpCode
 {
-    internal _3F_Swi_I(MC6809.IState cpu) : base(cpu) { }
+    internal _3F_Swi_I_6809(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
