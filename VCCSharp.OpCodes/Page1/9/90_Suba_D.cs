@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>80/SUBA/IMMEDIATE</code>
+/// <code>90/SUBA/DIRECT</code>
 /// Subtract from value in 8-Bit Accumulator <c>A</c>
 /// <code>A’ ← A - IMM8|(M)</code>
 /// </summary>
@@ -25,17 +25,18 @@ namespace VCCSharp.OpCodes.Page1;
 /// The 8-bit SUB instructions are used for single-byte subtraction, and for subtraction of the least-significant byte in multi-byte subtractions.
 /// Since the 6809 and 6309 both provide 16-bit SUB instructions for the accumulators, it is not necessary to use the 8-bit SUB and SBC instructions to perform 16-bit subtraction.
 /// 
-/// Cycles (2)
+/// Cycles (4 / 3)
 /// Byte Count (2)
 /// 
 /// See Also: SUB (16-bit), SUBR
-internal class _80_Suba_M : OpCode, IOpCode
+internal class _90_Suba_D : OpCode, IOpCode
 {
-    internal _80_Suba_M(MC6809.IState cpu) : base(cpu) { }
+    public _90_Suba_D(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        byte value = M8[PC++];
+        ushort address = DIRECT[PC++];
+        byte value = M8[address];
 
         var sum = Sum(A, value.TwosComplement()); //--Take advantage of: a-b ⇔ a+(-b)
 
@@ -47,6 +48,6 @@ internal class _80_Suba_M : OpCode, IOpCode
 
         A = (byte)sum.Result;
 
-        return 2;
+        return Cycles._43;
     }
 }

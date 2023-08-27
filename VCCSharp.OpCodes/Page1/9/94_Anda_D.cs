@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>84/ANDA/IMMEDIATE</code>
+/// <code>94/ANDA/DIRECT</code>
 /// Logically AND Memory Byte with Accumulator <c>A</c>
 /// <code>A’ ← A AND (M)</code>
 /// </summary>
@@ -27,18 +27,20 @@ namespace VCCSharp.OpCodes.Page1;
 /// 
 /// When testing bits, it is often preferable to use the BIT instructions instead, since they perform the same logical AND operation without modifying the contents of the accumulator.    
 /// 
-/// Cycles (2)
+/// Cycles (4 / 3)
 /// Byte Count (2)
 /// 
 /// See Also: AIM, ANDCC, ANDD, ANDR, BAND, BIAND, BIT
-internal class _84_Anda_M : OpCode, IOpCode
+internal class _94_Anda_D : OpCode, IOpCode
 {
-    internal _84_Anda_M(MC6809.IState cpu) : base(cpu) { }
+    public _94_Anda_D(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        byte value = M8[PC++];
+        ushort address = DIRECT[PC++];
 
+        byte value = M8[address];
+        
         byte result = (byte)(A & value);
 
         CC_N = A.Bit7();
@@ -47,6 +49,6 @@ internal class _84_Anda_M : OpCode, IOpCode
 
         A = result;
 
-        return 2;
+        return Cycles._43;
     }
 }

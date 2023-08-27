@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>83/SUBD/IMMEDIATE</code>
+/// <code>93/SUBD/DIRECT</code>
 /// Subtract from value in 16-Bit Accumulator <c>D</c>
 /// <code>D’ ← D - IMM16|(M:M+1)</code>
 /// </summary>
@@ -14,7 +14,7 @@ namespace VCCSharp.OpCodes.Page1;
 /// 
 /// [E F H I N Z V C]
 /// [        ↕ ↕ ↕ ↕]
-/// 
+///   
 /// Note that since subtraction is performed, the purpose of the Carry flag is to represent a Borrow.
 ///         N The Negative flag is set equal to the new value of bit 15 of the accumulator.
 ///         Z The Zero flag is set if the new accumulator value is zero; cleared otherwise.
@@ -23,17 +23,18 @@ namespace VCCSharp.OpCodes.Page1;
 ///         
 /// The 16-bit SUB instructions are used for 16-bit subtraction, and for subtraction of the least-significant word of multi-byte subtractions. 
 /// 
-/// Cycles (4 / 3)
-/// Byte Count (3)
+/// Cycles (6 / 4)
+/// Byte Count (2)
 /// 
 /// See Also: SUB (8-bit), SUBR
-internal class _83_Subd_M : OpCode, IOpCode
+internal class _93_Subd_D : OpCode, IOpCode
 {
-    internal _83_Subd_M(MC6809.IState cpu) : base(cpu) { }
+    public _93_Subd_D(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort value = M16[PC += 2];
+        ushort address = DIRECT[PC++];
+        ushort value = M16[address];
 
         var sum = Subtract(A, value);
 
@@ -45,6 +46,6 @@ internal class _83_Subd_M : OpCode, IOpCode
 
         D = (ushort)sum.Result;
 
-        return Cycles._43;
+        return Cycles._64;
     }
 }
