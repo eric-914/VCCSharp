@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>98/EORA/DIRECT</code>
+/// <code>A8/EORA/INDEXED</code>
 /// Exclusive-OR (XOR) Memory Byte with Accumulator <c>A</c>
 /// <code>A’ ← A ⨁ (M)</code>
 /// </summary>
@@ -26,17 +26,17 @@ namespace VCCSharp.OpCodes.Page1;
 /// For example:
 ///         EORA #%00000100 ;Invert value of bit 2 in Accumulator A
 ///         
-/// Cycles (4 / 3)
-/// Byte Count (2)
-///         
+/// Cycles (4+)
+/// Byte Count (2+)
+/// 
 /// See Also: BEOR, BIEOR, EIM, EORD, EORR
-internal class _98_Eora_D : OpCode, IOpCode
+internal class _A8_Eora_X : OpCode, IOpCode
 {
-    internal _98_Eora_D(MC6809.IState cpu) : base(cpu) { }
+    internal _A8_Eora_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
 
         A ^= M8[address];
 
@@ -44,6 +44,6 @@ internal class _98_Eora_D : OpCode, IOpCode
         CC_Z = A == 0;
         CC_V = false;
 
-        return Cycles._43;
+        return 4;
     }
 }

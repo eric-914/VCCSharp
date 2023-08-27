@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>9F/STX/DIRECT</code>
+/// <code>AF/STX/INDEXED</code>
 /// Store 16-Bit Register <c>X</c> to Memory
 /// <code>(M:M+1)’ ← X</code>
 /// </summary>
@@ -19,17 +19,17 @@ namespace VCCSharp.OpCodes.Page1;
 ///         Z The Zero flag is set if the register value is zero; cleared otherwise.
 ///         V The Overflow flag is always cleared.
 ///         
-/// Cycles (5 / 4)
-/// Byte Count (2)
+/// Cycles (5+)
+/// Byte Count (2+)
 /// 
 /// See Also: ST (8-bit), STQ
-internal class _9F_Stx_D : OpCode, IOpCode
+internal class _AF_Stx_X : OpCode, IOpCode
 {
-    internal _9F_Stx_D(MC6809.IState cpu) : base(cpu) { }
+    internal _AF_Stx_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
 
         M16[address] = X;
 
@@ -37,6 +37,6 @@ internal class _9F_Stx_D : OpCode, IOpCode
         CC_Z = X == 0;
         CC_V = false;
 
-        return Cycles._54;
+        return 5;
     }
 }

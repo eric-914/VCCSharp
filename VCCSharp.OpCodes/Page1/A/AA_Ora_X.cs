@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>9A/ORA/DIRECT</code>
+/// <code>AA/ORA/INDEXED</code>
 /// Logically OR Accumulator <c>A</c> with a Byte from Memory
 /// <code>A’ ← A OR IMM8|(M)</code>
 /// </summary>
@@ -24,17 +24,17 @@ namespace VCCSharp.OpCodes.Page1;
 ///         ORA #%00010000  ;Sets bit 4 in A
 ///         ORB #$7F        ;Sets all bits in B except bit 7
 ///         
-/// Cycles (4 / 3)
-/// Byte Count (2)
-///         
+/// Cycles (4+)
+/// Byte Count (2+)
+/// 
 /// See Also: BIOR, BOR, OIM, ORCC, ORD, ORR
-internal class _9A_Ora_D : OpCode, IOpCode
+internal class _AA_Ora_X : OpCode, IOpCode
 {
-    internal _9A_Ora_D(MC6809.IState cpu) : base(cpu) { }
+    internal _AA_Ora_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
 
         A |= M8[address];
 
@@ -42,6 +42,6 @@ internal class _9A_Ora_D : OpCode, IOpCode
         CC_Z = A == 0;
         CC_V = false;
 
-        return Cycles._43;
+        return 4;
     }
 }

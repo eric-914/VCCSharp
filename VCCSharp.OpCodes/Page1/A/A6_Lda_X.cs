@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>96/LDA/DIRECT</code>
+/// <code>A6/LDA/INDEXED</code>
 /// Load Data into 8-Bit Accumulator <c>A</c>
 /// <code>A’ ← IMM8|(M)</code>
 /// </summary>
@@ -19,17 +19,17 @@ namespace VCCSharp.OpCodes.Page1;
 ///         Z The Zero flag is set if the new accumulator value is zero; cleared otherwise.
 ///         V The Overflow flag is always cleared.
 /// 
-/// Cycles (4 / 3)
-/// Byte Count (2)
+/// Cycles (4+)
+/// Byte Count (2+)
 /// 
 /// See Also: LD (16-bit), LDQ
-internal class _96_Lda_D : OpCode, IOpCode
+internal class _A6_Lda_X : OpCode, IOpCode
 {
-    internal _96_Lda_D(MC6809.IState cpu) : base(cpu) { }
+    internal _A6_Lda_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
 
         A = M8[address];
 
@@ -37,6 +37,6 @@ internal class _96_Lda_D : OpCode, IOpCode
         CC_N = A.Bit7();
         CC_V = false;
 
-        return Cycles._43;
+        return 4;
     }
 }

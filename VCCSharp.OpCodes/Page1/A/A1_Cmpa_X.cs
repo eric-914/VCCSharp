@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>81/CMPA/IMMEDIATE</code>
+/// <code>A1/CMPA/INDEXED</code>
 /// Compare Memory Byte from 8-Bit Accumulator <c>A</c>
 /// <code>TEMP ← A - (M)</code>
 /// </summary>
@@ -13,7 +13,7 @@ namespace VCCSharp.OpCodes.Page1;
 /// 
 /// [E F H I N Z V C]
 /// [    ~   ↕ ↕ ↕ ↕]
-///   
+/// 
 /// Neither the memory byte nor the accumulator are modified.
 ///         H The affect on the Half-Carry flag is undefined for these instructions.
 ///         N The Negative flag is set equal to the value of bit 7 of the result.
@@ -23,20 +23,21 @@ namespace VCCSharp.OpCodes.Page1;
 /// 
 /// The Compare instructions are usually used to set the Condition Code flags prior to executing a conditional branch instruction.
 /// 
-/// The 8-bit CMPA instruction performs exactly the same operation as the 8-bit SUBA instruction, with the exception that the value in the accumulator is not changed. 
+/// The 8-bit CMPA instructions perform exactly the same operation as the 8-bit SUBA instructions, with the exception that the value in the accumulator is not changed. 
 /// Note that since a subtraction is performed, the Carry flag actually represents a Borrow.
 /// 
-/// Cycles (2)
-/// Byte Count (2)
+/// Cycles (4+)
+/// Byte Count (2+)
 /// 
 /// See Also: CMP (16-bit), CMPR
-internal class _81_Cmpa_M : OpCode, IOpCode
+internal class _A1_Cmpa_X : OpCode, IOpCode
 {
-    internal _81_Cmpa_M(MC6809.IState cpu) : base(cpu) { }
+    internal _A1_Cmpa_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        byte value = M8[PC++];
+        ushort address = INDEXED[PC++];
+        byte value = M8[address];
 
         var sum = Subtract(A, value);
 
@@ -46,6 +47,6 @@ internal class _81_Cmpa_M : OpCode, IOpCode
         CC_V = sum.V;
         CC_C = sum.C;
 
-        return 2;
+        return 4;
     }
 }

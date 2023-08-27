@@ -32,14 +32,14 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CMP (16-bit), CMPR
 internal class _91_Cmpa_D : OpCode, IOpCode
 {
-    public _91_Cmpa_D(MC6809.IState cpu) : base(cpu) { }
+    internal _91_Cmpa_D(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
         ushort address = DIRECT[PC++];
         byte value = M8[address];
 
-        var sum = Sum(A, value.TwosComplement()); //--Take advantage of: a-b ⇔ a+(-b)
+        var sum = Subtract(A, value);
 
         //CC_H = undefined
         CC_N = sum.N;

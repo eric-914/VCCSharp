@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>93/SUBD/DIRECT</code>
+/// <code>A3/SUBD/INDEXED</code>
 /// Subtract from value in 16-Bit Accumulator <c>D</c>
 /// <code>D’ ← D - IMM16|(M:M+1)</code>
 /// </summary>
@@ -23,17 +23,17 @@ namespace VCCSharp.OpCodes.Page1;
 ///         
 /// The 16-bit SUB instructions are used for 16-bit subtraction, and for subtraction of the least-significant word of multi-byte subtractions. 
 /// 
-/// Cycles (6 / 4)
+/// Cycles (6+ / 5+)
 /// Byte Count (2)
 /// 
 /// See Also: SUB (8-bit), SUBR
-internal class _93_Subd_D : OpCode, IOpCode
+internal class _A3_Subd_X : OpCode, IOpCode
 {
-    internal _93_Subd_D(MC6809.IState cpu) : base(cpu) { }
+    internal _A3_Subd_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
         ushort value = M16[address];
 
         var sum = Subtract(D, value);
@@ -46,6 +46,6 @@ internal class _93_Subd_D : OpCode, IOpCode
 
         D = (ushort)sum.Result;
 
-        return Cycles._64;
+        return Cycles._65;
     }
 }

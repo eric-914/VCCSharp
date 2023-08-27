@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>9C/CMPX/DIRECT</code>
+/// <code>AC/CMPX/INDEXED</code>
 /// Compare Memory Word from 16-Bit <c>X</c> Register
 /// <code>TEMP ← X - (M:M+1)</code>
 /// </summary>
@@ -25,17 +25,17 @@ namespace VCCSharp.OpCodes.Page1;
 /// The 16-bit CMP instructions for accumulators perform exactly the same operation as the 16-bit SUB instructions, with the exception that the value in the accumulator is not changed. 
 /// Note that since a subtraction is performed, the Carry flag actually represents a Borrow.
 /// 
-/// Cycles (6 / 4)
-/// Byte Count (3)
+/// Cycles (6+ / 5+)
+/// Byte Count (2+)
 /// 
 /// See Also: CMP (8-bit), CMPR
-internal class _9C_Cmpx_D : OpCode, IOpCode
+internal class _AC_Cmpx_X : OpCode, IOpCode
 {
-    internal _9C_Cmpx_D(MC6809.IState cpu) : base(cpu) { }
+    internal _AC_Cmpx_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
         ushort value = M16[address];
 
         var sum = Subtract(X, value);
@@ -45,6 +45,6 @@ internal class _9C_Cmpx_D : OpCode, IOpCode
         CC_V = sum.V;
         CC_C = sum.C;
 
-        return Cycles._64;
+        return 4;
     }
 }

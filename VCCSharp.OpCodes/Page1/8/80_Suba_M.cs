@@ -37,7 +37,7 @@ internal class _80_Suba_M : OpCode, IOpCode
     {
         byte value = M8[PC++];
 
-        var sum = Sum(A, value.TwosComplement()); //--Take advantage of: a-b ⇔ a+(-b)
+        var sum = Subtract(A, value);
 
         CC_H = sum.H;
         CC_N = sum.N;

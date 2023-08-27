@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>95/BITA/DIRECT</code>
+/// <code>A5/BITA/INDEXED</code>
 /// Bit Test Accumulator <c>A</c> with Memory Byte Value
 /// <code>TEMP ← A AND (M)</code>
 /// </summary>
@@ -26,17 +26,17 @@ namespace VCCSharp.OpCodes.Page1;
 ///     
 /// BIT instructions differ from AND instructions only in that they do not modify the specified accumulator.
 /// 
-/// Cycles (4 / 3)
-/// Byte Count (2)
+/// Cycles (4+)
+/// Byte Count (2+)
 /// 
 /// See Also: AND (8-bit), BITD, BITMD
-internal class _95_Bita_D : OpCode, IOpCode
+internal class _A5_Bita_X : OpCode, IOpCode
 {
-    internal _95_Bita_D(MC6809.IState cpu) : base(cpu) { }
+    internal _A5_Bita_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
         byte value = M8[address];
 
         byte result = (byte)(A & value);
@@ -45,6 +45,6 @@ internal class _95_Bita_D : OpCode, IOpCode
         CC_Z = result == 0;
         CC_V = false;
 
-        return Cycles._43;
+        return 4;
     }
 }

@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>9D/JSR/DIRECT</code>
+/// <code>AD/JSR/INDEXED</code>
 /// Jump to subroutine
 /// <code>
 ///      S’ ← S - 2
@@ -37,17 +37,17 @@ namespace VCCSharp.OpCodes.Page1;
 /// The use of an Indirect Indexing mode is frequently used to call subroutines through a jump-table in memory.
 /// Using Direct or Extended operands with the JSR instruction should be avoided in position-independent code unless the destination address is within non-relocatable code (such as a ROM routine).
 /// 
-/// Cycles (7 / 6)
-/// Byte Count (2)
+/// Cycles (7+ / 6+)
+/// Byte Count (2+)
 /// 
 /// See Also: BSR, JMP, LBSR, PULS, RTS
-internal class _9D_Jsr_D : OpCode, IOpCode
+internal class _AD_Jsr_X : OpCode, IOpCode
 {
-    internal _9D_Jsr_D(MC6809.IState cpu) : base(cpu) { }
+    internal _AD_Jsr_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
 
         M8[--S] = PC_L;
         M8[--S] = PC_H;

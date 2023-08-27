@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>97/STA/DIRECT</code>
+/// <code>A7/STA/INDEXED</code>
 /// Store 8-Bit Accumulator <c>A</c> to Memory
 /// <code>(M)’ ← A</code>
 /// </summary>
@@ -19,17 +19,17 @@ namespace VCCSharp.OpCodes.Page1;
 ///         Z The Zero flag is set if the accumulator’s value is zero; cleared otherwise.
 ///         V The Overflow flag is always cleared.
 ///         
-/// Cycles (4 / 3)
-/// Byte Count (2)
+/// Cycles (4+)
+/// Byte Count (2+)
 /// 
 /// See Also: ST (16-bit), STQ
-internal class _97_Sta_D : OpCode, IOpCode
+internal class _A7_Sta_X : OpCode, IOpCode
 {
-    internal _97_Sta_D(MC6809.IState cpu) : base(cpu) { }
+    internal _A7_Sta_X(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
 
         M8[address] = A;
 
@@ -37,6 +37,6 @@ internal class _97_Sta_D : OpCode, IOpCode
         CC_N = A.Bit7();
         CC_V = false;
 
-        return Cycles._43;
+        return 4;
     }
 }
