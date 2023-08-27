@@ -27,9 +27,9 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (3)
 /// 
 /// See Also: SUB (8-bit), SUBR
-internal class B3_Subd_E : OpCode, IOpCode
+internal class _B3_Subd_E : OpCode, IOpCode
 {
-    internal B3_Subd_E(MC6809.IState cpu) : base(cpu) { }
+    internal _B3_Subd_E(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {

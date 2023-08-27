@@ -3,12 +3,12 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>B6/LDA/EXTENDED</code>
-/// Load Data into 8-Bit Accumulator <c>A</c>
-/// <code>A’ ← IMM8|(M)</code>
+/// <code>C6/LDB/IMMEDIATE</code>
+/// Load Data into 8-Bit Accumulator <c>B</c>
+/// <code>B’ ← IMM8|(M)</code>
 /// </summary>
 /// <remarks>
-/// The <c>LDA</c> instruction loads the contents of a memory byte into the 8-bit <c>A</c> accumulator.
+/// The <c>LDB</c> instruction loads the contents of a memory byte into the 8-bit <c>B</c> accumulator.
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
@@ -18,27 +18,23 @@ namespace VCCSharp.OpCodes.Page1;
 ///         N The Negative flag is set equal to the new value of bit 7 of the accumulator.
 ///         Z The Zero flag is set if the new accumulator value is zero; cleared otherwise.
 ///         V The Overflow flag is always cleared.
-/// 
-/// Cycles (5 / 4)
-/// Byte Count (3)
+///         
+/// Cycles (2)
+/// Byte Count (2)
 /// 
 /// See Also: LD (16-bit), LDQ
-internal class _B6_Lda_E : OpCode, IOpCode
+internal class _C6_Ldb_M : OpCode, IOpCode
 {
-    internal _B6_Lda_E(MC6809.IState cpu) : base(cpu) { }
+    internal _C6_Ldb_M(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = M16[PC];
+        B = M8[PC++];
 
-        A = M8[address];
-
-        CC_Z = A == 0;
-        CC_N = A.Bit7();
+        CC_N = B.Bit7();
+        CC_Z = B == 0;
         CC_V = false;
 
-        PC += 2;
-
-        return Cycles._54;
+        return 2;
     }
 }

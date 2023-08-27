@@ -3,13 +3,13 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>B2/SBCA/EXTENDED</code>
-/// Subtract Memory Byte and Carry (borrow) from Accumulator <c>A</c>
-/// <code>A’ ← A - IMM8|(M) - C</code>
+/// <code>82/SBCA/IMMEDIATE</code>
+/// Subtract Memory Byte and Carry (borrow) from Accumulator <c>B</c>
+/// <code>B’ ← B - IMM8|(M) - C</code>
 /// </summary>
 /// <remarks>
-/// The <c>SBCA</c> instruction subtracts the 8-bit immediate value and the value of the Carry flag from the <c>A</c> accumulator. 
-/// The 8-bit result is placed back into the <c>A</c> accumulator. 
+/// The <c>SBCB</c> instruction subtracts the 8-bit immediate value and the value of the Carry flag from the <c>B</c> accumulator. 
+/// The 8-bit result is placed back into the <c>B</c> accumulator. 
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
@@ -26,20 +26,19 @@ namespace VCCSharp.OpCodes.Page1;
 /// This allows the borrow from a previous SUB or SBC instruction to be included when doing subtraction for the next higher-order byte.
 /// Since the 6809 and 6309 both provide 16-bit SUB instructions for the accumulators, it is not necessary to use the 8-bit SUB and SBC instructions to perform 16-bit subtraction.
 /// 
-/// Cycles (5 / 4)
-/// Byte Count (3)
+/// Cycles (2)
+/// Byte Count (2)
 /// 
 /// See Also: SBCD, SBCR
-internal class _B2_Sbca_E : OpCode, IOpCode
+internal class _C2_Sbcb_M : OpCode, IOpCode
 {
-    internal _B2_Sbca_E(MC6809.IState cpu) : base(cpu) { }
+    internal _C2_Sbcb_M(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        var address = M16[PC+=2];
-        byte value = M8[address];
+        byte value = M8[PC++].Plus(CC_C);
 
-        var sum = Subtract(A, value);
+        var sum = Subtract(B, value);
 
         //CC_H = undefined;
         CC_N = sum.N;
@@ -47,8 +46,8 @@ internal class _B2_Sbca_E : OpCode, IOpCode
         CC_V = sum.V;
         CC_C = sum.C;
 
-        A = (byte)sum.Result;
+        B = (byte)sum.Result;
 
-        return Cycles._54;
+        return 2;
     }
 }

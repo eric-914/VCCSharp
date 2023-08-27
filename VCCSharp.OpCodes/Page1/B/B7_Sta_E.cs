@@ -23,9 +23,9 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (3)
 /// 
 /// See Also: ST (16-bit), STQ
-internal class B7_Sta_E : OpCode, IOpCode
+internal class _B7_Sta_E : OpCode, IOpCode
 {
-    internal B7_Sta_E(MC6809.IState cpu) : base(cpu) { }
+    internal _B7_Sta_E(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {

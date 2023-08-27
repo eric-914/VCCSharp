@@ -18,6 +18,8 @@
         public static bool Bit8(this ushort w) => (w & 0x0100) != 0;
         public static bool Bit15(this ushort w) => (w & 0x8000) != 0;
 
+        public static bool Bit31(this uint d) => (d & 0x80000000) != 0;
+
         public static byte TwosComplement(this byte b) => (byte)(~b + 1);
         public static ushort TwosComplement(this ushort w) => (ushort)(~w + 1);
 

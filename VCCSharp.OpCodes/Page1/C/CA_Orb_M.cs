@@ -3,17 +3,17 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>8A/ORA/IMMEDIATE</code>
-/// Logically OR Accumulator <c>A</c> with a Byte from Memory
-/// <code>A’ ← A OR IMM8|(M)</code>
+/// <code>CA/ORB/IMMEDIATE</code>
+/// Logically OR Accumulator <c>B</c> with a Byte from Memory
+/// <code>B’ ← B OR IMM8|(M)</code>
 /// </summary>
 /// <remarks>
-/// The <c>ORA</c> instruction logically ORs the contents of Accumulator <c>A</c> with the contents of a memory byte. 
+/// The <c>ORB</c> instruction logically ORs the contents of Accumulator <c>B</c> with the contents of a memory byte. 
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
 /// [        ↕ ↕ 0  ]
-/// 
+///   
 /// The 8-bit result is then placed back in the specified accumulator.
 ///         N The Negative flag is set equal to the new value of bit 7 of the accumulator.
 ///         Z The Zero flag is set if the new value of the accumulator is zero; cleared otherwise.
@@ -26,18 +26,18 @@ namespace VCCSharp.OpCodes.Page1;
 ///         
 /// Cycles (2)
 /// Byte Count (2)
-/// 
+///         
 /// See Also: BIOR, BOR, OIM, ORCC, ORD, ORR
-internal class _8A_Ora_M : OpCode, IOpCode
+internal class _CA_Orb_M : OpCode, IOpCode
 {
-    internal _8A_Ora_M(MC6809.IState cpu) : base(cpu) { }
+    internal _CA_Orb_M(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        A |= M8[PC++];
+        B |= M8[PC++];
 
-        CC_N = A.Bit7();
-        CC_Z = A == 0;
+        CC_N = B.Bit7();
+        CC_Z = B == 0;
         CC_V = false;
 
         return 2;

@@ -3,12 +3,12 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>B4/ANDA/EXTENDED</code>
-/// Logically AND Memory Byte with Accumulator <c>A</c>
-/// <code>A’ ← A AND (M)</code>
+/// <code>C4/ANDB/IMMEDIATE</code>
+/// Logically AND Memory Byte with Accumulator <c>B</c>
+/// <code>B’ ← B AND (M)</code>
 /// </summary>
 /// <remarks>
-/// The <c>ANDA</c> instruction logically ANDs the contents of a byte in memory with Accumulator <c>A</c>. 
+/// The <c>ANDB</c> instruction logically ANDs the contents of a byte in memory with Accumulator <c>B</c>. 
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
@@ -27,27 +27,26 @@ namespace VCCSharp.OpCodes.Page1;
 /// 
 /// When testing bits, it is often preferable to use the BIT instructions instead, since they perform the same logical AND operation without modifying the contents of the accumulator.    
 /// 
-/// Cycles (5 / 4)
-/// Byte Count (3)
+/// Cycles (2)
+/// Byte Count (2)
 /// 
 /// See Also: AIM, ANDCC, ANDD, ANDR, BAND, BIAND, BIT
-internal class _B4_Anda_E : OpCode, IOpCode
+internal class _C4_Andb_M : OpCode, IOpCode
 {
-    internal _B4_Anda_E(MC6809.IState cpu) : base(cpu) { }
+    internal _C4_Andb_M(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = M16[PC+=2];
-        byte value = M8[address];
+        byte value = M8[PC++];
 
-        byte result = (byte)(A & value);
+        byte result = (byte)(B & value);
 
-        CC_N = A.Bit7();
-        CC_Z = A == 0;
+        CC_N = B.Bit7();
+        CC_Z = B == 0;
         CC_V = false;
 
-        A = result;
+        B = result;
 
-        return Cycles._54;
+        return 2;
     }
 }

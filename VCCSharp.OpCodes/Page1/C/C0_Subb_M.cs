@@ -3,12 +3,12 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>B0/SUBA/EXTENDED</code>
-/// Subtract from value in 8-Bit Accumulator <c>A</c>
-/// <code>A’ ← A - IMM8|(M)</code>
+/// <code>C0/SUBB/IMMEDIATE</code>
+/// Subtract from value in 8-Bit Accumulator <c>B</c>
+/// <code>B’ ← B - IMM8|(M)</code>
 /// </summary>
 /// <remarks>
-/// The <c>SUBA</c> instruction subtracts an 8-bit immediate value from one of the 8-bit accumulator <c>A</c>.
+/// The <c>SUBB</c> instruction subtracts an 8-bit immediate value from one of the 8-bit accumulator <c>B</c>.
 /// The 8-bit result is placed back into the specified accumulator
 /// </remarks>
 /// 
@@ -25,20 +25,19 @@ namespace VCCSharp.OpCodes.Page1;
 /// The 8-bit SUB instructions are used for single-byte subtraction, and for subtraction of the least-significant byte in multi-byte subtractions.
 /// Since the 6809 and 6309 both provide 16-bit SUB instructions for the accumulators, it is not necessary to use the 8-bit SUB and SBC instructions to perform 16-bit subtraction.
 /// 
-/// Cycles (5 / 4)
-/// Byte Count (3)
+/// Cycles (2)
+/// Byte Count (2)
 /// 
 /// See Also: SUB (16-bit), SUBR
-internal class _B0_Suba_E : OpCode, IOpCode
+internal class _C0_Subb_M : OpCode, IOpCode
 {
-    internal _B0_Suba_E(MC6809.IState cpu) : base(cpu) { }
+    internal _C0_Subb_M(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = M16[PC+=2];
-        byte value = M8[address];
+        byte value = M8[PC++];
 
-        var sum = Subtract(A, value);
+        var sum = Subtract(B, value);
 
         CC_H = sum.H;
         CC_N = sum.N;
@@ -46,8 +45,8 @@ internal class _B0_Suba_E : OpCode, IOpCode
         CC_V = sum.V;
         CC_C = sum.C;
 
-        A = (byte)sum.Result;
+        B = (byte)sum.Result;
 
-        return Cycles._54;
+        return 2;
     }
 }

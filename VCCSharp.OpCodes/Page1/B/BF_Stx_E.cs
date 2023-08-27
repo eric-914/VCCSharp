@@ -23,9 +23,9 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (3)
 /// 
 /// See Also: ST (8-bit), STQ
-internal class BF_Stx_E : OpCode, IOpCode
+internal class _BF_Stx_E : OpCode, IOpCode
 {
-    internal BF_Stx_E(MC6809.IState cpu) : base(cpu) { }
+    internal _BF_Stx_E(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {

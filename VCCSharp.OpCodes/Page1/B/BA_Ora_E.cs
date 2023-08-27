@@ -28,9 +28,9 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (3)
 /// 
 /// See Also: BIOR, BOR, OIM, ORCC, ORD, ORR
-internal class BA_Ora_E : OpCode, IOpCode
+internal class _BA_Ora_E : OpCode, IOpCode
 {
-    internal BA_Ora_E(MC6809.IState cpu) : base(cpu) { }
+    internal _BA_Ora_E(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {

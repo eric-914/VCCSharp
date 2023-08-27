@@ -41,9 +41,9 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (3)
 /// 
 /// See Also: BSR, JMP, LBSR, PULS, RTS
-internal class BD_Jsr_E : OpCode, IOpCode
+internal class _BD_Jsr_E : OpCode, IOpCode
 {
-    internal BD_Jsr_E(MC6809.IState cpu) : base(cpu) { }
+    internal _BD_Jsr_E(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {

@@ -29,9 +29,9 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (3)
 /// 
 /// See Also: CMP (8-bit), CMPR
-internal class BC_Cmpx_E : OpCode, IOpCode
+internal class _BC_Cmpx_E : OpCode, IOpCode
 {
-    internal BC_Cmpx_E(MC6809.IState cpu) : base(cpu) { }
+    internal _BC_Cmpx_E(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {

@@ -28,9 +28,9 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (3)
 /// 
 /// See Also: ADD (16-bit), ADDR
-internal class BB_Adda_E : OpCode, IOpCode
+internal class _BB_Adda_E : OpCode, IOpCode
 {
-    internal BB_Adda_E(MC6809.IState cpu) : base(cpu) { }
+    internal _BB_Adda_E(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {

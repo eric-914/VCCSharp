@@ -3,12 +3,12 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>B8/EORA/EXTENDED</code>
-/// Exclusive-OR (XOR) Memory Byte with Accumulator <c>A</c>
-/// <code>A’ ← A ⨁ (M)</code>
+/// <code>C8/EORB/IMMEDIATE</code>
+/// Exclusive-OR (XOR) Memory Byte with Accumulator <c>B</c>
+/// <code>B’ ← B ⨁ (M)</code>
 /// </summary>
 /// <remarks>
-/// The <c>EORA</c> instruction XORs the contents of a byte in memory with Accumulator <c>A</c>.
+/// The <c>EORB</c> instruction XORs the contents of a byte in memory with Accumulator <c>B</c>.
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
@@ -26,26 +26,22 @@ namespace VCCSharp.OpCodes.Page1;
 /// For example:
 ///         EORA #%00000100 ;Invert value of bit 2 in Accumulator A
 ///         
-/// Cycles (5 / 4)
-/// Byte Count (3)
-/// 
+/// Cycles (2)
+/// Byte Count (2)
+///         
 /// See Also: BEOR, BIEOR, EIM, EORD, EORR
-internal class _B8_Eora_E : OpCode, IOpCode
+internal class _C8_Eorb_M : OpCode, IOpCode
 {
-    internal _B8_Eora_E(MC6809.IState cpu) : base(cpu) { }
+    internal _C8_Eorb_M(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = M16[PC];
+        B ^= M8[PC++];
 
-        A ^= M8[address];
-
-        CC_N = A.Bit7();
-        CC_Z = A == 0;
+        CC_N = B.Bit7();
+        CC_Z = B == 0;
         CC_V = false;
 
-        PC += 2;
-
-        return Cycles._54;
+        return 2;
     }
 }

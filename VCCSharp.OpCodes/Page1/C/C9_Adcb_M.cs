@@ -3,14 +3,14 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>B9/ADCA/EXTENDED</code>
-/// Add Memory Byte plus Carry with Accumulator <c>A</c>
-/// <code>A’ ← A + (M) + C</code>
+/// <code>C9/ADCB/IMMEDIATE</code>
+/// Add Memory Byte plus Carry with Accumulator <c>B</c>
+/// <code>B’ ← B + (M) + C</code>
 /// </summary>
 /// <remarks>
-/// The <c>ADCA</c> instruction adds the contents of a byte in memory plus the contents of the Carry flag with Accumulator <c>A</c>.
+/// The <c>ADCB</c> instruction adds the contents of a byte in memory plus the contents of the Carry flag with Accumulator <c>B</c>.
 /// </remarks>
-/// 
+///
 /// [E F H I N Z V C]
 /// [    ↕   ↕ ↕ ↕ ↕]
 /// 
@@ -25,20 +25,19 @@ namespace VCCSharp.OpCodes.Page1;
 /// This allows the carry from a previous ADD or ADC instruction to be included when doing addition for the next higher-order byte.
 /// Since the 6x09 provides a 16-bit ADD instruction, it is not necessary to use the 8-bit ADD and ADC instructions for performing 16-bit addition.
 /// 
-/// Cycles (5 / 4)
-/// Byte Count (3)
+/// Cycles (2)
+/// Byte Count (2)
 /// 
 /// See Also: ADCD, ADCR
-internal class _B9_Adca_E : OpCode, IOpCode
+internal class _C9_Adcb_M : OpCode, IOpCode
 {
-    internal _B9_Adca_E(MC6809.IState cpu) : base(cpu) { }
+    internal _C9_Adcb_M(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = M16[PC+=2];
-        byte value = M8[address];
+        byte value = M8[PC++].Plus(CC_C);
 
-        var sum = Sum(A, value);
+        var sum = Sum(B, value);
 
         CC_H = sum.H;
         CC_N = sum.N;
@@ -46,8 +45,8 @@ internal class _B9_Adca_E : OpCode, IOpCode
         CC_V = sum.V;
         CC_C = sum.C;
 
-        A = (byte)sum.Result;
+        B = (byte)sum.Result;
 
-        return Cycles._54;
+        return 2;
     }
 }
