@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>CC/LDD/IMMEDIATE</code>
+/// <code>DC/LDD/DIRECT</code>
 /// Load Data into 16-Bit Register <c>D</c>
 /// <code>D’ ← IMM16|(M:M+1)</code>
 /// </summary>
@@ -19,22 +19,24 @@ namespace VCCSharp.OpCodes.Page1;
 ///         Z The Zero flag is set if the new register value is zero; cleared otherwise.
 ///         V The Overflow flag is always cleared.
 ///         
-/// Cycles (3)
-/// Byte Count (3)
-/// 
+/// Cycles (5 / 4)
+/// Byte Count (2)
+///         
 /// See Also: LD (8-bit), LDQ, LEA
-internal class _CC_Ldd_M : OpCode, IOpCode
+internal class _DC_Ldd_D : OpCode, IOpCode
 {
-    internal _CC_Ldd_M(MC6809.IState cpu) : base(cpu) { }
+    internal _DC_Ldd_D(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        D = M16[PC += 2];
+        ushort address = DIRECT[PC++];
+
+        D = M16[address];
 
         CC_N = D.Bit15();
         CC_Z = D == 0;
         CC_V = false;
 
-        return 3;
+        return Cycles._54;
     }
 }

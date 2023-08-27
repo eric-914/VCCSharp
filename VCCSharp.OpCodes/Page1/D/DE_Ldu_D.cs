@@ -3,12 +3,12 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>CC/LDD/IMMEDIATE</code>
-/// Load Data into 16-Bit Register <c>D</c>
-/// <code>D’ ← IMM16|(M:M+1)</code>
+/// <code>DE/LDU/DIRECT</code>
+/// Load Data into 16-Bit Register <c>U</c>
+/// <code>U’ ← IMM16|(M:M+1)</code>
 /// </summary>
 /// <remarks>
-/// The <c>LDD</c> instruction loads the contents from a pair of memory bytes (in big-endian order) into the 16-bit <c>D</c> accumulator.
+/// The <c>LDU</c> instruction loads the contents from a pair of memory bytes (in big-endian order) into the 16-bit <c>U</c> accumulator.
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
@@ -19,22 +19,24 @@ namespace VCCSharp.OpCodes.Page1;
 ///         Z The Zero flag is set if the new register value is zero; cleared otherwise.
 ///         V The Overflow flag is always cleared.
 ///         
-/// Cycles (3)
-/// Byte Count (3)
-/// 
+/// Cycles (5 / 4)
+/// Byte Count (2)
+///         
 /// See Also: LD (8-bit), LDQ, LEA
-internal class _CC_Ldd_M : OpCode, IOpCode
+internal class _DE_Ldu_D : OpCode, IOpCode
 {
-    internal _CC_Ldd_M(MC6809.IState cpu) : base(cpu) { }
+    internal _DE_Ldu_D(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        D = M16[PC += 2];
+        ushort address = DIRECT[PC+=2];
 
-        CC_N = D.Bit15();
-        CC_Z = D == 0;
+        U = M16[address];
+
+        CC_N = U.Bit15();
+        CC_Z = U == 0;
         CC_V = false;
 
-        return 3;
+        return Cycles._54;
     }
 }

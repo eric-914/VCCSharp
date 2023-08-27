@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>C2/SBCA/IMMEDIATE</code>
+/// <code>D2/SBCA/IMMEDIATE</code>
 /// Subtract Memory Byte and Carry (borrow) from Accumulator <c>B</c>
 /// <code>B’ ← B - IMM8|(M) - C</code>
 /// </summary>
@@ -26,17 +26,18 @@ namespace VCCSharp.OpCodes.Page1;
 /// This allows the borrow from a previous SUB or SBC instruction to be included when doing subtraction for the next higher-order byte.
 /// Since the 6809 and 6309 both provide 16-bit SUB instructions for the accumulators, it is not necessary to use the 8-bit SUB and SBC instructions to perform 16-bit subtraction.
 /// 
-/// Cycles (2)
+/// Cycles (4 / 3)
 /// Byte Count (2)
-/// 
+///         
 /// See Also: SBCD, SBCR
-internal class _C2_Sbcb_M : OpCode, IOpCode
+internal class _D2_Sbcb_D : OpCode, IOpCode
 {
-    internal _C2_Sbcb_M(MC6809.IState cpu) : base(cpu) { }
+    internal _D2_Sbcb_D(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        byte value = M8[PC++].Plus(CC_C);
+        ushort address = DIRECT[PC++];
+        byte value = M8[address];
 
         var sum = Subtract(B, value);
 
@@ -48,6 +49,6 @@ internal class _C2_Sbcb_M : OpCode, IOpCode
 
         B = (byte)sum.Result;
 
-        return 2;
+        return Cycles._43;
     }
 }
