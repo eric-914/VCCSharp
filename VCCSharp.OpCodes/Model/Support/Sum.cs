@@ -3,7 +3,7 @@
 /// <summary>
 /// Handles the intracies of adding two values: <c>a+b</c>
 /// </summary>
-internal class Sum
+internal class Sum : IFunction
 {
     public int Result { get; }
 
@@ -27,6 +27,10 @@ internal class Sum
     /// <c>C</c>: The Carry flag is set if a carry out of bit 7/15 (into bit 8/16) occurred; cleared otherwise.
     /// </summary>
     public bool C { get; }
+
+    public bool I => throw new NotImplementedException();
+    public bool F => throw new NotImplementedException();
+    public bool E => throw new NotImplementedException();
 
     private bool Carry(bool A, bool B, bool C) => (A && B) || (A && !C) || (B && !C);
     private bool Carry(byte a, byte b, byte c) => Carry(a.Bit7(), b.Bit7(), c.Bit7());

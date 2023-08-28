@@ -1,4 +1,5 @@
 ﻿using VCCSharp.OpCodes.Model.Memory;
+using VCCSharp.OpCodes.Model.Support;
 using VCCSharp.OpCodes.Registers;
 
 namespace VCCSharp.OpCodes.Model.OpCodes;
@@ -29,8 +30,8 @@ internal abstract class OpCode6309 : OpCodeBase<HD6309.IState>
     protected MemoryDP DIRECT { get; }
     protected MemoryIndexed INDEXED { get; }
 
-    protected IRegisters8Bit R8 { get;}
-    protected IRegisters16Bit R16 { get; }
+    public IRegisters8Bit R8 { get;}
+    public IRegisters16Bit R16 { get; }
 
     protected HD6309.Exceptions Exceptions { get; }
 
@@ -72,7 +73,7 @@ internal abstract class OpCode6309 : OpCodeBase<HD6309.IState>
     protected byte F { get => _cpu.F_REG; set => _cpu.F_REG = value; }
 
     //TODO: See details in IRegisterDP
-    protected byte DP { get => _cpu.DP; set => _cpu.DP = value; }
+    public byte DP { get => _cpu.DP; set => _cpu.DP = value; }
 
     /// <summary>
     /// Program Counter
@@ -82,7 +83,7 @@ internal abstract class OpCode6309 : OpCodeBase<HD6309.IState>
     /// <summary>
     /// 16-bit register <c>A.B</c>
     /// </summary>
-    protected ushort D { get => _cpu.D_REG; set => _cpu.D_REG = value; }
+    public ushort D { get => _cpu.D_REG; set => _cpu.D_REG = value; }
 
     /// <summary>
     /// 16-bit register
@@ -116,7 +117,7 @@ internal abstract class OpCode6309 : OpCodeBase<HD6309.IState>
     /// <summary>
     /// Condition Codes Register
     /// </summary>
-    protected byte CC { get => _cpu.CC; set => _cpu.CC = value; }
+    public byte CC { get => _cpu.CC; set => _cpu.CC = value; }
 
     /// <summary>
     /// Condition Code Carry Flag
@@ -161,7 +162,7 @@ internal abstract class OpCode6309 : OpCodeBase<HD6309.IState>
     /// <summary>
     /// 16-bit register <c>E.F</c>
     /// </summary>
-    protected ushort W { get => _cpu.W_REG; set => _cpu.W_REG = value; }
+    public ushort W { get => _cpu.W_REG; set => _cpu.W_REG = value; }
 
     /// <summary>
     /// 32-bit register <c>D.W</c> or <c>A.B.E.F</c>
@@ -192,4 +193,39 @@ internal abstract class OpCode6309 : OpCodeBase<HD6309.IState>
     /// <c>(/0)</c> Divide-by-zero Exception
     /// </summary>
     protected bool MD_ZERODIV { set => _cpu.MD_ZERODIV = value; }
+
+    /// <summary>
+    /// Handles the intracies of calculating the sum two values: <c>a+b</c>
+    /// </summary>
+    /// <param name="a">first 8-bit</param>
+    /// <param name="b">second 8-bit</param>
+    /// <returns>object with summation results</returns>
+    protected Sum Add(byte a, byte b) => new(a, b);
+
+    /// <summary>
+    /// Handles the intracies of calculating the sum two values: <c>a+b</c>
+    /// </summary>
+    /// <param name="a">first 16-bit</param>
+    /// <param name="b">second 16-bit</param>
+    /// <returns>object with summation results</returns>
+    protected Sum Add(ushort a, ushort b) => new(a, b);
+
+    /// <summary>
+    /// Handles the intracies of calculating the difference two values: <c>a-b</c>
+    /// </summary>
+    /// <param name="a">first 16-bit</param>
+    /// <param name="b">second 16-bit</param>
+    /// <returns>object with summation results</returns>
+    protected Sum Subtract(byte a, byte b) => new(a, b.TwosComplement()); //--Take advantage of: a-b ⇔ a+(-b)
+
+    /// <summary>
+    /// Handles the intracies of calculating the difference two values: <c>a-b</c>
+    /// </summary>
+    /// <param name="a">first 16-bit</param>
+    /// <param name="b">second 16-bit</param>
+    /// <returns>object with summation results</returns>
+    protected Sum Subtract(ushort a, ushort b) => new(a, b.TwosComplement()); //--Take advantage of: a-b ⇔ a+(-b)
+
+    protected Support.Boolean Boolean(byte result) => new(result);
+    protected Support.Boolean Boolean(ushort result) => new(result);
 }

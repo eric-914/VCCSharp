@@ -1,57 +1,69 @@
 ﻿using VCCSharp.OpCodes.Definitions;
 using VCCSharp.OpCodes.Model.OpCodes;
 
-namespace VCCSharp.OpCodes.Page1;
+namespace VCCSharp.OpCodes.Page2;
 
 /// <summary>
-/// <code>3F/SWI/INHERENT</code>
+/// <code>103F/SWI2/INHERENT</code>
 /// Software Interrupt
 /// </summary>
 /// <remarks>
-/// The <c>SWI</c> instruction invokes a Software Interrupt.
+/// The <c>SWI2</c> instruction invokes a Software Interrupt.
 /// </remarks>
-/// 
-/// The SWI, SWI2 and SWI3 instructions each invoke a Software Interrupt.
+/// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/// ╭─────────────────────╮
+/// │ 6809 IMPLEMENTATION │
+/// ╰─────────────────────╯
 /// 
 /// Each of these instructions first set the E flag in the CC register and then push the machine state onto the hardware stack (S).
 /// 
 /// After stacking the machine state, the SWI instruction sets the I and F interrupt masks in the CC register. 
+/// SWI2 and SWI3 do not modify the mask.
 /// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ///     ╭─────────────────╮  ╭───────────────╮
-///     │       SWI       │  │               ▼
-///     ╰────────┬────────╯  │       ┌───────────────┐  
+///     │      SWI2       │  │               ▼
+///     ╰────────┬────────╯  │       ┌───────────────┐      
 ///              ▼           │       │ PUSH B, A, CC │
 ///       ┌────────────┐     │       └───────┬───────┘
 ///       │ SET: E = 1 │     │               ▼
 ///       └──────┬─────┘     │     ┌───────────────────┐
-///              ▼           │     │        SWI        │  
+///              ▼           │     │       SWI2        │  
 ///      ┌─────────────────┐ │     └─────────┬─────────┘
-///      │      PUSH       │ │               ▼          
-///      │ PC, U, Y, X, DP │ │     ┌───────────────────┐
-///      └───────┬─────────┘ │     │ SET: I = 1; F = 1 │
-///              │           │     └─────────┬─────────┘
+///      │      PUSH       │ │               │     
+///      │ PC, U, Y, X, DP │ │               │     
+///      └───────┬─────────┘ │               │     
+///              │           │               │     
 ///              │           │               ▼
-///              ╰───────────╯       ┌───────────────┐
-///                                  │ PC ← [FFFA:B] │
-///                                  └───────┬───────┘
+///              ╰───────────╯       ┌───────────────┐     
+///                                  │ PC ← [FFF4:5] │
+///                                  └───────┬───────┘        
 ///                                          │
 ///                                          ▼
 ///                                       ╭──────╮
 ///                                       │ DONE │
 ///                                       ╰──────╯
-///                                 
-///                                 
+///                                       
+/// 
 ///     SWI Instruction Flow
 /// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 /// Finally, control is transferred to the interrupt service routine whose address is obtained from the vector which corresponds to the particular instruction.
 /// 
-/// Cycles (19 / 21)
-/// Byte Count (1)
+/// The state of the NM bit in the MD register determines whether or not the E and F accumulators are included in the stacked machine state. 
+/// Service routines should be written to work properly regardless of the current state of the NM bit. 
+/// This is best accomplished by avoiding modification of the NM bit and using the RTI instruction to return control to the interrupted task. 
+/// If an SWI service routine needs to examine or modify the stacked machine state, it may first need to determine the current state of the NM bit. 
+/// See page 144 for the listing of a subroutine that will accomplish this task. 
+/// 
+/// NOTE: When Motorola introduced the 6809, they designated SWI2 as an instruction reserved for the end user, and not to be used in packaged software. 
+/// Under the OS9 operating system, SWI2 is used to invoke Service Requests.
+/// 
+/// Cycles (20 / 22)
+/// Byte Count (2)
 /// 
 /// See Also: RTI
-internal class _3F_Swi_I_6809 : OpCode, IOpCode
+internal class _103F_Swi2_I_6809 : OpCode, IOpCode
 {
-    internal _3F_Swi_I_6809(MC6809.IState cpu) : base(cpu) { }
+    internal _103F_Swi2_I_6809(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
@@ -66,16 +78,12 @@ internal class _3F_Swi_I_6809 : OpCode, IOpCode
         M8[--S] = X_L;
         M8[--S] = X_H;
         M8[--S] = DP;
-
         M8[--S] = B;
         M8[--S] = A;
         M8[--S] = CC;
 
-        CC_I = true;
-        CC_F = true;
+        PC = M16[Define.VSWI2];
 
-        PC = M8[Define.VSWI];
-
-        return 19;
+        return 20;
     }
 }

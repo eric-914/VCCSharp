@@ -26,5 +26,6 @@
         public static byte ToBit(this bool b) => b ? (byte)1 : (byte)0;
 
         public static byte Plus(this byte value, bool bit) => (byte)(value + bit.ToBit());
+        public static ushort Plus(this ushort value, bool bit) => (ushort )(value + bit.ToBit());
     }
 }
