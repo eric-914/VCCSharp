@@ -14,9 +14,11 @@
         public static bool Bit1(this byte b) => (b & 0x02) != 0;
         public static bool Bit0(this byte b) => (b & 0x01) != 0;
 
-        public static bool Bit7(this ushort w) => (w & 0x0080) != 0;
-        public static bool Bit8(this ushort w) => (w & 0x0100) != 0;
         public static bool Bit15(this ushort w) => (w & 0x8000) != 0;
+        public static bool Bit14(this ushort w) => (w & 0x4000) != 0;
+        public static bool Bit8(this ushort w) => (w & 0x0100) != 0;
+        public static bool Bit7(this ushort w) => (w & 0x0080) != 0;
+        public static bool Bit0(this ushort w) => (w & 0x0001) != 0;
 
         public static bool Bit31(this uint d) => (d & 0x80000000) != 0;
 
