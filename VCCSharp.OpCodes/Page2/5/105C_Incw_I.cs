@@ -3,12 +3,12 @@
 namespace VCCSharp.OpCodes.Page2;
 
 /// <summary>
-/// <code>104C/INCD/INHERENT</code>
-/// Increment Accumulator <c>D</c>
-/// <code>D’ ← D + 1</code>
+/// <code>105C/INCW/INHERENT</code>
+/// Increment Accumulator <c>W</c>
+/// <code>W’ ← W + 1</code>
 /// </summary>
 /// <remarks>
-/// The <c>INCD</c> instruction adds 1 to the contents of the <c>D</c> accumulator. 
+/// The <c>INCW</c> instruction adds 1 to the contents of the <c>W</c> accumulator. 
 /// <code>🚫 6309 ONLY 🚫</code>
 /// </remarks>
 /// 
@@ -30,19 +30,19 @@ namespace VCCSharp.OpCodes.Page2;
 /// Byte Count (2)
 /// 
 /// See Also: ADD, DEC, INC (memory)
-internal class _104C_Incd_I : OpCode6309, IOpCode
+internal class _105C_Incw_I : OpCode6309, IOpCode
 {
-    internal _104C_Incd_I(HD6309.IState cpu) : base(cpu) { }
+    internal _105C_Incw_I(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort result = (ushort)(D + 1);
+        ushort result = (ushort)(W + 1);
 
         CC_N = result.Bit15();
         CC_Z = result == 0;
-        CC_V = D == 0x7FFF;
+        CC_V = W == 0x7FFF;
 
-        D = result;
+        W = result;
 
         return Cycles._32;
     }

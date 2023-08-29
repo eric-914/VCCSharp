@@ -3,12 +3,12 @@
 namespace VCCSharp.OpCodes.Page2;
 
 /// <summary>
-/// <code>104F/CLRD/INHERENT</code>
-/// Load Zero into Accumulator <c>D</c>
-/// <code>D’ ← 0</code>
+/// <code>105F/CLRW/INHERENT</code>
+/// Load Zero into Accumulator <c>W</c>
+/// <code>W’ ← 0</code>
 /// </summary>
 /// <remarks>
-/// The <c>CLRD</c> instructions clears (sets to zero) the <c>D</c> accumulator. 
+/// The <c>CLRW</c> instructions clears (sets to zero) the <c>W</c> accumulator. 
 /// <code>🚫 6309 ONLY 🚫</code>
 /// </remarks>
 /// 
@@ -29,9 +29,9 @@ namespace VCCSharp.OpCodes.Page2;
 /// Byte Count (2)
 /// 
 /// See Also: CLR (memory), LD
-internal class _104F_Clrd_I : OpCode6309, IOpCode
+internal class _105F_Clrw_I : OpCode6309, IOpCode
 {
-    internal _104F_Clrd_I(HD6309.IState cpu) : base(cpu) { }
+    internal _105F_Clrw_I(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
@@ -40,7 +40,7 @@ internal class _104F_Clrd_I : OpCode6309, IOpCode
         CC_V = false;
         CC_C = false;
 
-        D = 0;
+        W = 0;
 
         return Cycles._32;
     }
