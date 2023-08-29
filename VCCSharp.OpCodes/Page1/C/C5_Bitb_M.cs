@@ -9,6 +9,7 @@ namespace VCCSharp.OpCodes.Page1;
 /// </summary>
 /// <remarks>
 /// The <c>BITB</c> instruction logically ANDs the contents of a byte in memory with Accumulator <c>B</c>.
+/// <code>🚫 6309 ONLY 🚫</code>
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
@@ -24,7 +25,7 @@ namespace VCCSharp.OpCodes.Page1;
 /// Consider the following example:
 ///     ANDA #%00000100 ;Sets Z flag if bit 2 is not set
 ///     
-/// BIT instructions differ from AND instructions only in that they do not modify the specified accumulator.
+/// The BITB instruction differs from ANDB only in that Accumulator B is not modified.
 /// 
 /// Cycles (2)
 /// Byte Count (2)

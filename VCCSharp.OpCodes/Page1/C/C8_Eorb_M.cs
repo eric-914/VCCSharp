@@ -9,12 +9,13 @@ namespace VCCSharp.OpCodes.Page1;
 /// </summary>
 /// <remarks>
 /// The <c>EORB</c> instruction XORs the contents of a byte in memory with Accumulator <c>B</c>.
+/// The 8-bit result is then placed in the <c>B</c> accumulator.
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
 /// [        ↕ ↕ 0  ]
 ///   
-/// The 8-bit result is then placed in the specified accumulator.
+/// The Condition Codes are affected as follows.
 ///         N The Negative flag is set equal to the new value of bit 7 of the accumulator.
 ///         Z The Zero flag is set if the new value of the accumulator is zero; cleared otherwise.
 ///         V The Overflow flag is cleared by this instruction.

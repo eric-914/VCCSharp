@@ -22,7 +22,7 @@ namespace VCCSharp.OpCodes.Page1;
 ///         V The Overflow flag is set if an overflow occurred; cleared otherwise.
 ///         C The Carry flag is set if a borrow into bit-7 was needed; cleared otherwise.
 /// 
-/// The SBC instruction is most often used to perform subtraction of the subsequent bytes of a multi-byte subtraction. 
+/// The SBCA instruction is most often used to perform subtraction of the subsequent bytes of a multi-byte subtraction. 
 /// This allows the borrow from a previous SUB or SBC instruction to be included when doing subtraction for the next higher-order byte.
 /// Since the 6809 and 6309 both provide 16-bit SUB instructions for the accumulators, it is not necessary to use the 8-bit SUB and SBC instructions to perform 16-bit subtraction.
 /// 
@@ -36,9 +36,9 @@ internal class _82_Sbca_M : OpCode, IOpCode
 
     public int Exec()
     {
-        byte value = M8[PC++].Plus(CC_C);
+        byte value = M8[PC++];
 
-        var sum = Subtract(A, value);
+        var sum = Subtract(A, value.Plus(CC_C));
 
         //CC_H = undefined;
         CC_N = sum.N;

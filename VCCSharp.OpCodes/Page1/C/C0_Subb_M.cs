@@ -9,7 +9,7 @@ namespace VCCSharp.OpCodes.Page1;
 /// </summary>
 /// <remarks>
 /// The <c>SUBB</c> instruction subtracts an 8-bit immediate value from one of the 8-bit accumulator <c>B</c>.
-/// The 8-bit result is placed back into the specified accumulator
+/// The 8-bit result is placed back into the accumulator <c>B</c>
 /// </remarks>
 /// 
 /// [E F H I N Z V C]

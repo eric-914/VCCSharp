@@ -19,7 +19,7 @@ namespace VCCSharp.OpCodes.Page1;
 ///     Z The Zero flag is set if the new value of the accumulator is zero; cleared otherwise.
 ///     V The Overflow flag is cleared by this instruction.
 ///     
-/// The AND instructions are commonly used for clearing bits and for testing bits. 
+/// The ANDA instructions are commonly used for clearing bits and for testing bits. 
 /// 
 /// Consider the following examples:
 ///     ANDA #%11101111 ;Clears bit 4 in A

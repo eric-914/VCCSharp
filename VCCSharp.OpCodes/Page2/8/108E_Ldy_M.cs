@@ -1,14 +1,14 @@
 ﻿using VCCSharp.OpCodes.Model.OpCodes;
 
-namespace VCCSharp.OpCodes.Page1;
+namespace VCCSharp.OpCodes.Page2;
 
 /// <summary>
-/// <code>8E/LDX/IMMEDIATE</code>
-/// Load Data into 16-Bit Register <c>X</c>
-/// <code>X’ ← IMM16|(M:M+1)</code>
+/// <code>108E/LDY/IMMEDIATE</code>
+/// Load Data into 16-Bit Register <c>Y</c>
+/// <code>Y’ ← IMM16|(M:M+1)</code>
 /// </summary>
 /// <remarks>
-/// The <c>LDX</c> instruction loads the contents from a pair of memory bytes (in big-endian order) into the 16-bit <c>X</c> accumulator.
+/// The <c>LDY</c> instruction loads the contents from a pair of memory bytes (in big-endian order) into the 16-bit <c>Y</c> accumulator.
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
@@ -19,22 +19,22 @@ namespace VCCSharp.OpCodes.Page1;
 ///         Z The Zero flag is set if the new register value is zero; cleared otherwise.
 ///         V The Overflow flag is always cleared.
 ///         
-/// Cycles (3)
-/// Byte Count (3)
-/// 
+/// Cycles (4)
+/// Byte Count (4)
+///         
 /// See Also: LD (8-bit), LDQ, LEA
-internal class _8E_Ldx_M : OpCode, IOpCode
+internal class _108E_Ldy_M : OpCode, IOpCode
 {
-    internal _8E_Ldx_M(MC6809.IState cpu) : base(cpu) { }
+    internal _108E_Ldy_M(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        X = M16[PC += 2];
+        Y = M16[PC += 2];
 
-        CC_N = X.Bit15();
-        CC_Z = X == 0;
+        CC_N = Y.Bit15();
+        CC_Z = Y == 0;
         CC_V = false;
 
-        return 3;
+        return 4;
     }
 }

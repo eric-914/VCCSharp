@@ -9,17 +9,18 @@ namespace VCCSharp.OpCodes.Page1;
 /// </summary>
 /// <remarks>
 /// The <c>EORA</c> instruction XORs the contents of a byte in memory with Accumulator <c>A</c>.
+/// The 8-bit result is then placed in the <c>A</c> accumulator.
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
 /// [        ↕ ↕ 0  ]
 ///   
-/// The 8-bit result is then placed in the specified accumulator.
+/// The Condition Codes are affected as follows.
 ///         N The Negative flag is set equal to the new value of bit 7 of the accumulator.
 ///         Z The Zero flag is set if the new value of the accumulator is zero; cleared otherwise.
 ///         V The Overflow flag is cleared by this instruction.
 ///         
-/// The EOR instruction produces a result containing '1' bits in the positions where the corresponding bits in the two operands have different values. 
+/// The EORA instruction produces a result containing '1' bits in the positions where the corresponding bits in the two operands have different values. 
 /// Exclusive-OR logic is often used in parity functions.
 /// 
 /// EOR can also be used to perform "bit-flipping" since a '1' bit in the source operand will invert the value of the corresponding bit in the destination operand. 
@@ -36,11 +37,15 @@ internal class _88_Eora_M : OpCode, IOpCode
 
     public int Exec()
     {
-        A ^= M8[PC++];
+        byte value = M8[PC++];
 
-        CC_N = A.Bit7();
-        CC_Z = A == 0;
+        byte result = (byte)(A ^ value);
+
+        CC_N = result.Bit7();
+        CC_Z = result == 0;
         CC_V = false;
+
+        A = result;
 
         return 2;
     }

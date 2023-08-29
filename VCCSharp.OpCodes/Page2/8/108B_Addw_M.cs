@@ -1,15 +1,16 @@
 ﻿using VCCSharp.OpCodes.Model.OpCodes;
 
-namespace VCCSharp.OpCodes.Page1;
+namespace VCCSharp.OpCodes.Page2;
 
 /// <summary>
-/// <code>C3/ADDD/IMMEDIATE</code>
-/// Add Memory Word to 16-Bit Accumulator <c>D</c>
-/// <code>D’ ← D + (M:M+1)</code>
+/// <code>108B/ADDW/IMMEDIATE</code>
+/// Add Memory Word to 16-Bit Accumulator <c>W</c>
+/// <code>W’ ← W + (M:M+1)</code>
 /// </summary>
 /// <remarks>
-/// The <c>ADDD</c> instruction adds the contents of a double-byte value in memory with the 16-bit <c>D</c> accumulator.
-/// The 16-bit result is placed back into the <c>D</c> accumulator. 
+/// The <c>ADDW</c> instruction adds the contents of a double-byte value in memory with the 16-bit <c>W</c> accumulator.
+/// The 16-bit result is placed back into the <c>W</c> accumulator. 
+/// <code>🚫 6309 ONLY 🚫</code>
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
@@ -21,31 +22,30 @@ namespace VCCSharp.OpCodes.Page1;
 ///         V The Overflow flag is set if an overflow occurred; cleared otherwise.
 ///         C The Carry flag is set if a carry out of bit 15 occurred; cleared otherwise.
 ///     
-/// The 16-bit ADDD instruction is used for double-byte addition, and for addition of the least-significant word of multi-byte additions. 
+/// The 16-bit ADDW instruction is used for double-byte addition, and for addition of the least-significant word of multi-byte additions. 
 /// See the description of the ADCD instruction for an example of how 32-bit addition can be performed on a 6309 processor.
 /// 
-/// Cycles (4 / 3)
-/// Byte Count (3)
+/// Cycles (5 / 4)
+/// Byte Count (4)
 /// 
 /// See Also: ADD (8-bit), ADDR
-internal class _C3_Addd_M : OpCode, IOpCode
+internal class _108B_Addw_M : OpCode6309, IOpCode
 {
-    internal _C3_Addd_M(MC6809.IState cpu) : base(cpu) { }
+    internal _108B_Addw_M(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
         ushort value = M16[PC += 2];
 
-        var sum = Add(A, value);
+        var sum = Add(W, value);
 
-        //CC_H = sum.H; //--Not applicable
         CC_N = sum.N;
         CC_Z = sum.Z;
         CC_V = sum.V;
         CC_C = sum.C;
 
-        D = (ushort)sum.Result;
+        W = (ushort)sum.Result;
 
-        return Cycles._43;
+        return Cycles._54;
     }
 }
