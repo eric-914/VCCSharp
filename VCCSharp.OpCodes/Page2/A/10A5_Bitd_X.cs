@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page2;
 
 /// <summary>
-/// <code>1095/BITD/DIRECT</code>
+/// <code>10A5/BITD/INDEXED</code>
 /// Bit Test Accumulator <c>D</c> with Memory Byte Value
 /// <code>TEMP ← D AND (M)</code>
 /// </summary>
@@ -24,17 +24,17 @@ namespace VCCSharp.OpCodes.Page2;
 /// 
 /// The BITD instruction differs from ANDD only in that Accumulator D is not modified.
 /// 
-/// Cycles (5 / 4)
-/// Byte Count (4)
+/// Cycles (7+ / 6+)
+/// Byte Count (3+)
 /// 
 /// See Also: ANDD, BIT (8-bit), BITMD
-internal class _1095_Bitd_D : OpCode6309, IOpCode
+internal class _10A5_Bitd_X : OpCode6309, IOpCode
 {
-    internal _1095_Bitd_D(HD6309.IState cpu) : base(cpu) { }
+    internal _10A5_Bitd_X(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
         ushort value = M16[address];
 
         ushort result = (ushort)(D & value);
@@ -43,6 +43,6 @@ internal class _1095_Bitd_D : OpCode6309, IOpCode
         CC_Z = result == 0;
         CC_V = false;
 
-        return Cycles._75;
+        return Cycles._76;
     }
 }

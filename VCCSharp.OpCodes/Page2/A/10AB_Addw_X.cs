@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page2;
 
 /// <summary>
-/// <code>109B/ADDW/DIRECT</code>
+/// <code>10AB/ADDW/INDEXED</code>
 /// Add Memory Word to 16-Bit Accumulator <c>W</c>
 /// <code>W’ ← W + (M:M+1)</code>
 /// </summary>
@@ -26,16 +26,16 @@ namespace VCCSharp.OpCodes.Page2;
 /// See the description of the ADCD instruction for an example of how 32-bit addition can be performed on a 6309 processor.
 /// 
 /// Cycles (7 / 5)
-/// Byte Count (4)
+/// Byte Count (3)
 /// 
 /// See Also: ADD (8-bit), ADDR
-internal class _109B_Addw_D : OpCode6309, IOpCode
+internal class _10AB_Addw_X : OpCode6309, IOpCode
 {
-    internal _109B_Addw_D(HD6309.IState cpu) : base(cpu) { }
+    internal _10AB_Addw_X(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
         ushort value = M16[address];
 
         var sum = Add(W, value);
@@ -47,6 +47,6 @@ internal class _109B_Addw_D : OpCode6309, IOpCode
 
         W = (ushort)sum.Result;
 
-        return Cycles._75;
+        return Cycles._76;
     }
 }
