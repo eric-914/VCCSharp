@@ -23,9 +23,9 @@ namespace VCCSharp.OpCodes.Page2;
 /// Byte Count (4)
 ///         
 /// See Also: LD (8-bit), LDQ, LEA
-internal class _10CE_Lds_M : OpCode, IOpCode
+internal class _10CE_Lds_I : OpCode, IOpCode
 {
-    internal _10CE_Lds_M(MC6809.IState cpu) : base(cpu) { }
+    internal _10CE_Lds_I(MC6809.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
