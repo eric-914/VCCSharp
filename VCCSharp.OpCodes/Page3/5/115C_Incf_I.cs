@@ -3,12 +3,12 @@
 namespace VCCSharp.OpCodes.Page3;
 
 /// <summary>
-/// <code>114C/INCE/INHERENT</code>
-/// Increment Accumulator <c>E</c>
-/// <code>E’ ← E + 1</code>
+/// <code>115C/INCF/INHERENT</code>
+/// Increment Accumulator <c>F</c>
+/// <code>F’ ← F + 1</code>
 /// </summary>
 /// <remarks>
-/// The <c>INCE</c> instruction adds 1 to the contents of the <c>E</c> accumulator. 
+/// The <c>INCF</c> instruction adds 1 to the contents of the <c>F</c> accumulator. 
 /// <code>🚫 6309 ONLY 🚫</code>
 /// </remarks>
 /// 
@@ -30,19 +30,19 @@ namespace VCCSharp.OpCodes.Page3;
 /// Byte Count (2)
 /// 
 /// See Also: ADD, DEC, INC (memory)
-internal class _114C_Ince_I : OpCode6309, IOpCode
+internal class _115C_Incf_I : OpCode6309, IOpCode
 {
-    internal _114C_Ince_I(HD6309.IState cpu) : base(cpu) { }
+    internal _115C_Incf_I(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        byte result = (byte)(E + 1);
+        byte result = (byte)(F + 1);
 
         CC_N = result.Bit7();
         CC_Z = result == 0;
-        CC_V = E == 0x7F;
+        CC_V = F == 0x7F;
 
-        E = result;
+        result = F;
 
         return Cycles._32;
     }
