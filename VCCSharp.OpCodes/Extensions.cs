@@ -4,6 +4,8 @@
     {
         public static byte H(this ushort w) => (byte)(w >> 8);
         public static byte L(this ushort w) => (byte)(w & 0xFF);
+        public static ushort H(this ushort w, byte b) => (ushort)((w & 0xFF00) | (b << 8));
+        public static ushort L(this ushort w, byte b) => (ushort)((w & 0x00FF) | b);
 
         public static bool Bit7(this byte b) => (b & 0x80) != 0;
         public static bool Bit6(this byte b) => (b & 0x40) != 0;
