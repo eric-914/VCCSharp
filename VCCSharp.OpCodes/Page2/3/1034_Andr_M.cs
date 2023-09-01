@@ -4,12 +4,12 @@ using VCCSharp.OpCodes.Model.Support;
 namespace VCCSharp.OpCodes.Page2;
 
 /// <summary>
-/// <code>1035/ORR/IMMEDIATE</code>
-/// Logically OR Source Register with Destination Register
-/// <code>r1’ ← r1 OR r0</code>
+/// <code>1034/ANDR/IMMEDIATE</code>
+/// Logically AND Source Register with Destination Register
+/// <code>r1’ ← r1 AND r0</code>
 /// </summary>
 /// <remarks>
-/// The <c>ORR</c> instruction logically ORs the contents of a source register with the contents of a destination register. 
+/// The <c>ANDR</c> instruction logically ANDs the contents of a source register with the contents of a destination register. 
 /// <code>🚫 6309 ONLY 🚫</code>
 /// </remarks>
 /// 
@@ -22,11 +22,11 @@ namespace VCCSharp.OpCodes.Page2;
 ///         V The Overflow flag is cleared by this instruction.
 ///         C The Carry flag is not affected by this instruction.
 ///         
-/// All of the 6309 registers except Q and MD can be specified as either the source or destination; however specifying the PC register as either the source or destination produces undefined results.
+/// Any of the 6309 registers except Q and MD may be specified as the source operand, destination operand or both; however specifying the PC register as either the source or destination produces undefined results.
 /// 
-/// Although the ORR instruction is capable of altering the flow of program execution by specifying the PC register as the destination, you should avoid doing so because the prefetch capability of the 6309 can produce un-predictable results.
-/// 
-/// See “6309 Inter-Register Operations” on page 143 for details on how this instruction operates when registers of different sizes are specified.
+/// The ANDR instruction will perform either an 8-bit or 16-bit operation according to the size of the destination register. 
+/// When registers of different sizes are specified, the source will be promoted, demoted or substituted depending on the size of the destination and on which specific 8-bit register is involved. 
+/// See “6309 Inter-Register Operations” on page 143 for further details.
 /// 
 /// The Immediate operand for this instruction is a postbyte which uses the same format as that used by the TFR and EXG instructions. 
 /// For details, see the description of the TFR instruction.
@@ -34,17 +34,17 @@ namespace VCCSharp.OpCodes.Page2;
 /// Cycles (4)
 /// Byte Count (3)
 /// 
-/// See Also: OR (8-bit), ORD
-internal class _1035_Orr : OpCode6309, IOpCode, IIndexedRegisterSwap
+/// See Also: AND (8-bit), ANDCC, ANDD
+internal class _1034_Andr_M : OpCode6309, IOpCode, IIndexedRegisterSwap
 {
     private readonly IndexedRegisterSwap _irs;
 
-    internal _1035_Orr(HD6309.IState cpu) : base(cpu)
+    internal _1034_Andr_M(HD6309.IState cpu) : base(cpu)
     {
         _irs = new IndexedRegisterSwap(this, true)
         {
-            F8 = (d,s) => Boolean((byte)(d | s)),
-            F16 = (d,s) => Boolean((ushort)(d | s))
+            F8 = (d,s) => Boolean((byte)(d & s)),
+            F16 = (d,s) => Boolean((ushort)(d & s))
         };
     }
 

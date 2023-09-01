@@ -62,18 +62,18 @@ internal class Page2Opcodes6809
     private IOpCode _2E_LBgt_R => new _102E_LBgt_R(_cpu);
     private IOpCode _2F_LBle_R => new _102F_LBle_R(_cpu);
 
-    //_30_Addr
-    //_31_Adcr
-    //_32_Subr
-    //_33_Sbcr
-    //_34_Andr
-    //_35_Orr
-    //_36_Eorr
-    //_37_Cmpr
-    //_38_Pshsw
-    //_39_Pulsw
-    //_3A_Pshuw
-    //_3B_Puluw
+    //_30_Addr_M
+    //_31_Adcr_M
+    //_32_Subr_M
+    //_33_Sbcr_M
+    //_34_Andr_M
+    //_35_Orr_M
+    //_36_Eorr_M
+    //_37_Cmpr_M
+    //_38_Pshsw_I
+    //_39_Pulsw_I
+    //_3A_Pshuw_I
+    //_3B_Puluw_I
     //_3C
     //_3D
     //_3E

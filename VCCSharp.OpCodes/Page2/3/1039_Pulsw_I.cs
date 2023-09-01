@@ -28,9 +28,9 @@ namespace VCCSharp.OpCodes.Page2;
 /// Byte Count (2)
 /// 
 /// See Also: PSHSW, PSHUW, PUL, PULUW
-internal class _1039_Pulsw : OpCode6309, IOpCode
+internal class _1039_Pulsw_I : OpCode6309, IOpCode
 {
-    internal _1039_Pulsw(HD6309.IState cpu) : base(cpu) { }
+    internal _1039_Pulsw_I(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {

@@ -4,12 +4,12 @@ using VCCSharp.OpCodes.Model.Support;
 namespace VCCSharp.OpCodes.Page2;
 
 /// <summary>
-/// <code>1036/EORR/IMMEDIATE</code>
-/// XOR Source Register with Destination Register
-/// <code>r1’ ← r1 ⨁ r0</code>
+/// <code>1035/ORR/IMMEDIATE</code>
+/// Logically OR Source Register with Destination Register
+/// <code>r1’ ← r1 OR r0</code>
 /// </summary>
 /// <remarks>
-/// The <c>EORR</c> instruction exclusively-ORs the contents of a source register with the contents of a destination register. 
+/// The <c>ORR</c> instruction logically ORs the contents of a source register with the contents of a destination register. 
 /// <code>🚫 6309 ONLY 🚫</code>
 /// </remarks>
 /// 
@@ -24,8 +24,7 @@ namespace VCCSharp.OpCodes.Page2;
 ///         
 /// All of the 6309 registers except Q and MD can be specified as either the source or destination; however specifying the PC register as either the source or destination produces undefined results.
 /// 
-/// The EORR instruction produces a result containing '1' bits in the positions where the corresponding bits in the two operands have different values. 
-/// Exclusive-OR logic is often used in parity functions.
+/// Although the ORR instruction is capable of altering the flow of program execution by specifying the PC register as the destination, you should avoid doing so because the prefetch capability of the 6309 can produce un-predictable results.
 /// 
 /// See “6309 Inter-Register Operations” on page 143 for details on how this instruction operates when registers of different sizes are specified.
 /// 
@@ -35,17 +34,17 @@ namespace VCCSharp.OpCodes.Page2;
 /// Cycles (4)
 /// Byte Count (3)
 /// 
-/// See Also: EOR (8-bit), EORD
-internal class _1036_Eorr : OpCode6309, IOpCode, IIndexedRegisterSwap
+/// See Also: OR (8-bit), ORD
+internal class _1035_Orr_M : OpCode6309, IOpCode, IIndexedRegisterSwap
 {
     private readonly IndexedRegisterSwap _irs;
 
-    internal _1036_Eorr(HD6309.IState cpu) : base(cpu)
+    internal _1035_Orr_M(HD6309.IState cpu) : base(cpu)
     {
         _irs = new IndexedRegisterSwap(this, true)
         {
-            F8 = (d,s) => Boolean((byte)(d ^ s)),
-            F16 = (d,s) => Boolean((ushort)(d ^ s))
+            F8 = (d,s) => Boolean((byte)(d | s)),
+            F16 = (d,s) => Boolean((ushort)(d | s))
         };
     }
 

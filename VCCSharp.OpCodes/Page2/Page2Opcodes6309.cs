@@ -62,18 +62,18 @@ internal class Page2Opcodes6309
     private IOpCode _2E_LBgt_R => new _102E_LBgt_R(_cpu);
     private IOpCode _2F_LBle_R => new _102F_LBle_R(_cpu);
     
-    private IOpCode _30_Addr => new _1030_Addr(_cpu);
-    private IOpCode _31_Adcr => new _1031_Adcr(_cpu);
-    private IOpCode _32_Subr => new _1032_Subr(_cpu);
-    private IOpCode _33_Sbcr => new _1033_Sbcr(_cpu);
-    private IOpCode _34_Andr => new _1034_Andr(_cpu);
-    private IOpCode _35_Orr => new _1035_Orr(_cpu);
-    private IOpCode _36_Eorr => new _1036_Eorr(_cpu);
-    private IOpCode _37_Cmpr => new _1037_Cmpr(_cpu);
-    private IOpCode _38_Pshsw => new _1038_Pshsw(_cpu);
-    private IOpCode _39_Pulsw => new _1039_Pulsw(_cpu);
-    private IOpCode _3A_Pshuw => new _103A_Pshuw(_cpu);
-    private IOpCode _3B_Puluw => new _103B_Puluw(_cpu);
+    private IOpCode _30_Addr_M => new _1030_Addr_M(_cpu);
+    private IOpCode _31_Adcr_M => new _1031_Adcr_M(_cpu);
+    private IOpCode _32_Subr_M => new _1032_Subr_M(_cpu);
+    private IOpCode _33_Sbcr_M => new _1033_Sbcr_M(_cpu);
+    private IOpCode _34_Andr_M => new _1034_Andr_M(_cpu);
+    private IOpCode _35_Orr__M => new _1035_Orr_M(_cpu);
+    private IOpCode _36_Eorr_M => new _1036_Eorr_M(_cpu);
+    private IOpCode _37_Cmpr_M => new _1037_Cmpr_M(_cpu);
+    private IOpCode _38_Pshsw_I => new _1038_Pshsw_I(_cpu);
+    private IOpCode _39_Pulsw_I => new _1039_Pulsw_I(_cpu);
+    private IOpCode _3A_Pshuw_I => new _103A_Pshuw_I(_cpu);
+    private IOpCode _3B_Puluw_I => new _103B_Puluw_I(_cpu);
     //_3C
     //_3D
     //_3E
@@ -295,7 +295,7 @@ internal class Page2Opcodes6309
         /* 0_ */ _           , _           , _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _           , _          ,  _          ,  _           ,
         /* 1_ */ _           , _           , _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _           , _          ,  _          ,  _           ,
         /* 2_ */ _           , _21_LBrn_R  , _22_LBhi_R ,  _23_LBls_R ,  _24_LBhs_R ,  _25_LBcs_R ,  _26_LBne_R ,  _27_LBeq_R ,  _28_LBvc_R ,  _29_LBvs_R ,  _2A_LBpl_R ,  _2B_LBmi_R ,  _2C_LBge_R  , _2D_LBlt_R ,  _2E_LBgt_R ,  _2F_LBle_R  ,
-        /* 3_ */ _30_Addr    , _31_Adcr    , _32_Subr   ,  _33_Sbcr   ,  _34_Andr   ,  _35_Orr    ,  _36_Eorr   ,  _37_Cmpr   ,  _38_Pshsw  ,  _39_Pulsw  ,  _3A_Pshuw  ,  _3B_Puluw  ,  _           , _          ,  _          ,  _3F_Swi2_I  ,
+        /* 3_ */ _30_Addr_M  , _31_Adcr_M  , _32_Subr_M ,  _33_Sbcr_M ,  _34_Andr_M ,  _35_Orr__M ,  _36_Eorr_M ,  _37_Cmpr_M ,  _38_Pshsw_I,  _39_Pulsw_I,  _3A_Pshuw_I,  _3B_Puluw_I,  _           , _          ,  _          ,  _3F_Swi2_I  ,
         /* 4_ */ _40_Negd_I  , _           , _          ,  _43_Comd_I ,  _44_Lsrd_I ,  _          ,  _46_Rord_I ,  _47_Asrd_I ,  _48_Asld_I ,  _49_Rold_I ,  _4A_Decd_I ,  _          ,  _4C_Incd_I  , _4D_Tstd_I ,  _          ,  _4F_Clrd_I  ,
         /* 5_ */ _           , _           , _          ,  _53_Comw_I ,  _54_Lsrw_I ,  _          ,  _56_Rorw_I ,  _          ,  _          ,  _59_Rolw_I ,  _5A_Decw_I ,  _          ,  _5C_Incw_I  , _5D_Tstw_I ,  _          ,  _5F_Clrw_I  ,
         /* 6_ */ _           , _           , _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _           , _          ,  _          ,  _           ,
