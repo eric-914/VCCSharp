@@ -3,12 +3,12 @@
 namespace VCCSharp.OpCodes.Page3;
 
 /// <summary>
-/// <code>11A7/STE/EXTENDED</code>
-/// Store 8-Bit Accumulator <c>E</c> to Memory
-/// <code>(M)’ ← E</code>
+/// <code>11D7/STF/DIRECT</code>
+/// Store 8-Bit Accumulator <c>F</c> to Memory
+/// <code>(M)’ ← F</code>
 /// </summary>
 /// <remarks>
-/// The <c>STE</c> instruction stores the contents of the 8-bit <c>E</c> accumulator to a byte in memory.
+/// The <c>STF</c> instruction stores the contents of the 8-bit <c>F</c> accumulator to a byte in memory.
 /// <code>🚫 6309 ONLY 🚫</code>
 /// </remarks>
 /// 
@@ -20,17 +20,17 @@ namespace VCCSharp.OpCodes.Page3;
 ///         Z The Zero flag is set if the accumulator’s value is zero; cleared otherwise.
 ///         V The Overflow flag is always cleared.
 ///         
-/// Cycles (6 / 5)
-/// Byte Count (4)
+/// Cycles (5 / 4)
+/// Byte Count (3)
 ///         
 /// See Also: ST (16-bit), STQ
-internal class _11B7_Ste_E : OpCode6309, IOpCode
+internal class _11D7_Stf_D : OpCode6309, IOpCode
 {
-    internal _11B7_Ste_E(HD6309.IState cpu) : base(cpu) { }
+    internal _11D7_Stf_D(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = M16[PC += 2];
+        ushort address = DIRECT[PC++];
 
         M8[address] = E;
 
@@ -38,6 +38,6 @@ internal class _11B7_Ste_E : OpCode6309, IOpCode
         CC_Z = E == 0;
         CC_V = false;
 
-        return Cycles._65;
+        return Cycles._54;
     }
 }
