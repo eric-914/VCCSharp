@@ -1,4 +1,5 @@
 ﻿using VCCSharp.OpCodes.Model.OpCodes;
+using VCCSharp.OpCodes.Page3;
 
 namespace VCCSharp.OpCodes.Page1;
 
@@ -6,19 +7,15 @@ namespace VCCSharp.OpCodes.Page1;
 //0x11__
 internal class _11_Page_3 : OpCode, IOpCode
 {
-    internal _11_Page_3(MC6809.IState cpu) : base(cpu) { }
+    private readonly IOpCode[] _jumpVectors0x11;
+
+    internal _11_Page_3(MC6809.IState cpu) : base(cpu) => _jumpVectors0x11 = new Page3Opcodes6809(cpu).OpCodes;
+    internal _11_Page_3(HD6309.IState cpu) : base(cpu) => _jumpVectors0x11 = new Page3Opcodes6309(cpu).OpCodes;
 
     public int Exec()
     {
-        throw new NotImplementedException();
-
         byte opCode = M8[PC++];
 
-        //TODO: Need jump vectors defined here...
-
-        //_jumpVectors0x11[opCode]();
-
-        //TODO: Need cycle count penalty.  Probably from Page 3 opcodes.
-        return 0;
+        return _jumpVectors0x11[opCode].Exec();
     }
 }
