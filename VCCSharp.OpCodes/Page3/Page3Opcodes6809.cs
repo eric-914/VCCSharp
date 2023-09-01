@@ -67,13 +67,13 @@ internal class Page3Opcodes6809
     //_32_Bor_D
     //_33_Bior_D
     //_34_Beor_D
-    //_35_Bieor
-    //_36_Ldbt
-    //_37_Stbt
-    //_38_Tfm1
-    //_39_Tfm2
-    //_3A_Tfm3
-    //_3B_Tfm4
+    //_35_Bieor_D
+    //_36_Ldbt_D
+    //_37_Stbt_D
+    //_38_Tfm1_M
+    //_39_Tfm2_M
+    //_3A_Tfm3_M
+    //_3B_Tfm4_M
     //_3C_Bitmd_M
     //_3D_Ldmd_M
     //_3E

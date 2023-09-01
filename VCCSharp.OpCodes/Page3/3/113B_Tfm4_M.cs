@@ -39,9 +39,9 @@ namespace VCCSharp.OpCodes.Page3;
 /// Cycles (6 + 3n)
 /// Byte Count (3)
 /// (Three additional cycles are used for each BYTE transferred.)
-internal class _113B_Tfm4 : OpCode6309, IOpCode
+internal class _113B_Tfm4_M : OpCode6309, IOpCode
 {
-    internal _113B_Tfm4(HD6309.IState cpu) : base(cpu) { }
+    internal _113B_Tfm4_M(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {

@@ -3,36 +3,44 @@
 namespace VCCSharp.OpCodes.Page3;
 
 /// <summary>
-/// <code>1136/LDBT/DIRECT</code>
-/// Load Memory Bit into Register Bit
-/// <code>r.dstBit’ ← (DPM).srcBit</code>
+/// <code>1135/BIEOR/DIRECT</code>
+/// Exclusively-OR Register Bit with Inverted Memory Bit
+/// <code>
+///                         ＿＿＿＿＿＿＿  
+/// r.dstBit’ ← r.dstBit ⨁ (DPM).srcBit
+/// </code>
 /// </summary>
 /// <remarks>
-/// The <c>LDBT</c> instruction loads the value of a specified bit in memory into a specified bit of either the A, B or CC registers. 
+/// The <c>BIEOR</c> instruction exclusively ORs the value of a specified bit in either the A, B or CC registers with the inverted value of a specified bit in memory. 
+/// The resulting value is placed back into the register bit. 
 /// <code>🚫 6309 ONLY 🚫</code>
 /// </remarks>
 /// 
-/// None of the Condition Code flags are affected by the operation unless CC is specified as the register, in which case only the destination bit will be affected. 
-/// The usefulness of the LDBT instruction is limited by the fact that only Direct Addressing is permitted.
+/// None of the Condition Code flags are affected by the operation unless CC is specified as the register, in which case only the destination bit may be affected. 
+/// The usefulness of the BIEOR instruction is limited by the fact that only Direct Addressing is permitted.
 /// ──────────────────────────────────────────────────────────────────────────────────
 ///               Accumulator A                      Memory Location $0040
 ///       7   6   5   4   3   2   1   0           7   6   5   4   3   2   1   0
 ///     ╭───┬───┬───┬───┬───┬───┬───┬───╮       ╭───┬───┬───┬───┬───┬───┬───┬───╮
 ///     │ 0 │ 0 │ 0 │ 0 │ 1 │ 1 │ 1 │ 1 │ $0F   │ 1 │ 1 │ 0 │ 0 │ 0 │ 1 │ 1 │ 0 │ $C6
-///  │  ╰───┴───┴───┴───┴───┴───┴───┴───╯       ╰───┴───┴─┬─┴───┴───┴───┴───┴───╯
-///  │                                                    │
-///  │                            ╭───────────────────────╯
-///  │                            ▼
+///  │  ╰───┴───┴───┴───┴─┬─┴───┴───┴───╯       ╰───┴───┴───┴───┴───┴───┴───┴─┬─╯
+///  │                    │         ╭───╮       ╭───╮                         │
+///  │                    ╰───────▶ │ 1 │  EOR  │ 1 │ ◀──────INVERT──────────-╯
+///  │                              ╰───╯   │   ╰───╯
+///  │                    ╭─────────────────╯
+///  │                    ▼      
 ///  ▼  ╭───┬───┬───┬───┬───┬───┬───┬───╮
-///     │ 0 │ 0 │ 0 │ 0 │ 1 │ 1 │ 0 │ 1 │ $0D   LDBT A,5,1,$40
+///     │ 0 │ 0 │ 0 │ 0 │ 0 │ 1 │ 1 │ 1 │ $07   BIEOR A,0,3,$40
 ///     ╰───┴───┴───┴───┴───┴───┴───┴───╯
 /// ──────────────────────────────────────────────────────────────────────────────────
-/// The figure above shows an example of the LDBT instruction where bit 1 of Accumulator A is Loaded with bit 5 of the byte in memory at address $0040 (DP = 0).
-/// The assembler syntax for this instruction can be confusing due to the ordering of the operands: destination register, source bit, destination bit, source address.
 /// 
-/// The object code format for the LDBT instruction is:
+/// The figure above shows an example of the BIEOR instruction where bit 3 of Accumulator A is Exclusively ORed with the inverted value of bit 0 from the byte in memory at address $0040 (DP = 0).
+/// The assembler syntax for this instruction can be confusing due to the ordering of the operands: destination register, source bit, destination bit, source address.
+/// Since the Condition Code flags are not affected by the operation, additional instructions would be needed to test the result for conditional branching.
+/// 
+/// The object code format for the BIEOR instruction is:
 /// ╭─────┬─────┬─────────-┬────────────-╮
-/// │ $11 │ $36 │ POSTBYTE │ ADDRESS LSB │
+/// │ $11 │ $35 │ POSTBYTE │ ADDRESS LSB │
 /// ╰─────┴─────┴─────────-┴────────────-╯
 /// ────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ///                                 POSTBYTE FORMAT
@@ -46,15 +54,15 @@ namespace VCCSharp.OpCodes.Page3;
 ///         ╰────────────────────────────── Register Code                                ╰────────┴─────────-╯   
 /// ────────────────────────────────────────────────────────────────────────────────────────────────────────────
 /// 
-/// LDBT r,sBit,dBit,addr
-///
+/// BIEOR r,sBit,dBit,addr
+/// 
 /// Cycles (7 / 6)
 /// Byte Count (4)
 /// 
-/// See Also: BAND, BEOR, BIAND, BIEOR, BIOR, BOR, STBT
-internal class _1136_Ldbt : OpCode6309, IOpCode
+/// See Also: BAND, BEOR, BIAND, BIOR, BOR, LDBT, STBT
+internal class _1135_Bieor_D : OpCode6309, IOpCode
 {
-    internal _1136_Ldbt(HD6309.IState cpu) : base(cpu) { }
+    internal _1135_Bieor_D(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
@@ -71,23 +79,15 @@ internal class _1136_Ldbt : OpCode6309, IOpCode
             return Exceptions.IllegalInstruction();
         }
 
-        //TODO: Verify the following:
-
-        byte data = M8[address];
-
         byte sBit = (byte)(1 << source);
+        byte dBit = (byte)~(1 << destination);
 
-        if ((data & sBit) != 0)
+        if ((mask & sBit) != 0)
         {
-            mask |= destination.ToSetMask();
-        }
-        else
-        {
-            mask &= destination.ToClearMask();
+            R8[register] ^= dBit;
         }
 
-        R8[register] = mask;
-
+        // Else nothing changes
         return Cycles._76;
     }
 }

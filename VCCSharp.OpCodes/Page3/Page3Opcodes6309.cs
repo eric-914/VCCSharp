@@ -67,13 +67,13 @@ internal class Page3Opcodes6309
     private IOpCode _32_Bor__D => new _1132_Bor_D(_cpu);
     private IOpCode _33_Bior_D => new _1133_Bior_D(_cpu);
     private IOpCode _34_Beor_D => new _1134_Beor_D(_cpu);
-    private IOpCode _35_Bieor => new _1135_Bieor(_cpu);
-    private IOpCode _36_Ldbt => new _1136_Ldbt(_cpu);
-    private IOpCode _37_Stbt => new _1137_Stbt(_cpu);
-    private IOpCode _38_Tfm1 => new _1138_Tfm1(_cpu);
-    private IOpCode _39_Tfm2 => new _1139_Tfm2(_cpu);
-    private IOpCode _3A_Tfm3 => new _113A_Tfm3(_cpu);
-    private IOpCode _3B_Tfm4 => new _113B_Tfm4(_cpu);
+    private IOpCode _35_Bieor_D => new _1135_Bieor_D(_cpu);
+    private IOpCode _36_Ldbt_D => new _1136_Ldbt_D(_cpu);
+    private IOpCode _37_Stbt_D => new _1137_Stbt_D(_cpu);
+    private IOpCode _38_Tfm1_M => new _1138_Tfm1_M(_cpu);
+    private IOpCode _39_Tfm2_M => new _1139_Tfm2_M(_cpu);
+    private IOpCode _3A_Tfm3_M => new _113A_Tfm3_M(_cpu);
+    private IOpCode _3B_Tfm4_M => new _113B_Tfm4_M(_cpu);
     private IOpCode _3C_Bitmd_M => new _113C_Bitmd_M(_cpu);
     private IOpCode _3D_Ldmd_M => new _113D_Ldmd_M(_cpu);
     //_3E
@@ -296,7 +296,7 @@ internal class Page3Opcodes6309
         /* 0_ */ _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _            , _          , _           , _           ,
         /* 1_ */ _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _            , _          , _           , _           ,
         /* 2_ */ _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _            , _          , _           , _           ,
-        /* 3_ */ _30_Band_D  , _31_Biand_D , _32_Bor__D  , _33_Bior_D  , _34_Beor_D  , _35_Bieor   , _36_Ldbt    , _37_Stbt    , _38_Tfm1    , _39_Tfm2    , _3A_Tfm3    , _3B_Tfm4    , _3C_Bitmd_M  , _3D_Ldmd_M , _           , _3F_Swi3_I  ,
+        /* 3_ */ _30_Band_D  , _31_Biand_D , _32_Bor__D  , _33_Bior_D  , _34_Beor_D  , _35_Bieor_D , _36_Ldbt_D  , _37_Stbt_D  , _38_Tfm1_M  , _39_Tfm2_M  , _3A_Tfm3_M  , _3B_Tfm4_M  , _3C_Bitmd_M  , _3D_Ldmd_M , _           , _3F_Swi3_I  ,
         /* 4_ */ _           , _           , _           , _43_Come_I  , _           , _           , _           , _           , _           , _           , _4A_Dece_I  , _           , _4C_Ince_I   , _4D_Tste_I , _           , _4F_Clre_I  ,
         /* 5_ */ _           , _           , _           , _53_Comf_I  , _           , _           , _           , _           , _           , _           , _5A_Decf_I  , _           , _5C_Incf_I   , _5D_Tstf_I , _           , _5F_Clrf_I  ,
         /* 6_ */ _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _            , _          , _           , _           ,

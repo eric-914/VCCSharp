@@ -3,12 +3,12 @@
 namespace VCCSharp.OpCodes.Page3;
 
 /// <summary>
-/// <code>113B/TFM3/IMMEDIATE</code>
+/// <code>113B/TFM1/IMMEDIATE</code>
 /// Transfer Memory
-/// <code>TFM r0+, r1</code>
+/// <code>TFM r0+, r1+</code>
 /// </summary>
 /// <remarks>
-/// The <c>TFM3</c> instruction transfers the number of bytes specified in the W accumulator from a source address pointed to by the X, Y, U, S or D registers to a destination address also pointed to by one of those registers. 
+/// The <c>TFM1</c> instruction transfers the number of bytes specified in the W accumulator from a source address pointed to by the X, Y, U, S or D registers to a destination address also pointed to by one of those registers. 
 /// <code>🚫 6309 ONLY 🚫</code>
 /// </remarks>
 /// 
@@ -35,13 +35,13 @@ namespace VCCSharp.OpCodes.Page3;
 /// It is also important to remember that in emulation mode (NM=0), the W register is not automatically preserved. 
 /// If a service routine modifies W but does not explicitly preserve its original value, it could alter the actual number of bytes processed by a TFM instruction.
 /// 
-/// TFM r0+, r1
+/// TFM r0+, r1+
 /// Cycles (6 + 3n)
 /// Byte Count (3)
 /// (Three additional cycles are used for each BYTE transferred.)
-internal class _113A_Tfm3 : OpCode6309, IOpCode
+internal class _1138_Tfm1_M : OpCode6309, IOpCode
 {
-    internal _113A_Tfm3(HD6309.IState cpu) : base(cpu) { }
+    internal _1138_Tfm1_M(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
@@ -63,16 +63,16 @@ internal class _113A_Tfm3 : OpCode6309, IOpCode
         }
 
         byte mask = M8[R16[source]];
-        
-        M8[R16[destination]] = mask;
-        
 
+        M8[R16[destination]] = mask;
+
+        R16[destination] = (ushort)(R16[destination] + 1);
         R16[source] = (ushort)(R16[source] + 1);
-        
+
         W--;
 
         //SNEAKY!!!  Force the CPU to call the same OpCode over and over until done.
-        PC -= 2; //Hit the same instruction on the next loop if not done copying
+        PC -= 2;
 
         return 3;
     }
