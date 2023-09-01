@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page3;
 
 /// <summary>
-/// <code>119B/ADDE/DIRECT</code>
+/// <code>11AB/ADDE/INDEXED</code>
 /// Add Memory Byte to 8-Bit Accumulator <c>E</c>
 /// <code>E’ ← E + (M)</code>
 /// </summary>
@@ -25,17 +25,17 @@ namespace VCCSharp.OpCodes.Page3;
 /// The 8-bit ADD instructions are used for single-byte addition, and for addition of the least-significant byte in multi-byte additions. 
 /// Since the 6x09 also provides a 16-bit ADD instruction, it is not necessary to use the 8-bit ADD and ADC instructions for performing 16-bit addition.
 /// 
-/// Cycles (5 / 4)
-/// Byte Count (3)
+/// Cycles (5+)
+/// Byte Count (3+)
 /// 
 /// See Also: ADD (16-bit), ADDR
-internal class _119B_Adde_D : OpCode6309, IOpCode
+internal class _11AB_Adde_X : OpCode6309, IOpCode
 {
-    internal _119B_Adde_D(HD6309.IState cpu) : base(cpu) { }
+    internal _11AB_Adde_X(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
         byte value = M8[address];
 
         var sum = Add(E, value);
@@ -48,6 +48,6 @@ internal class _119B_Adde_D : OpCode6309, IOpCode
 
         E = (byte)sum.Result;
 
-        return Cycles._54;
+        return 5;
     }
 }

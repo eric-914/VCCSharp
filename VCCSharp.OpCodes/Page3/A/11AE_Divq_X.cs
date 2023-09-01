@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page3;
 
 /// <summary>
-/// <code>119E/DIVQ/DIRECT</code>
+/// <code>11AE/DIVQ/INDEXED</code>
 /// Signed Divide of Accumulator Q by 16-bit value in Memory
 /// <code>
 /// W’ ← Q ÷ (M:M+1)
@@ -41,21 +41,21 @@ namespace VCCSharp.OpCodes.Page3;
 ///   bit range. In this case, the CPU aborts the operation, leaving the accumulators
 ///   unmodified while setting the Overflow flag (V) and clearing the N, Z and C flags.
 ///   
-/// Cycles (36 / 35•)
-/// Byte Count (3)
+/// Cycles (36+•)
+/// Byte Count (3+)
 /// • When a range overflow occurs, the DIVQ instruction uses 21 fewer cycles than what is shown in the table.
 ///   
 /// See Also: DIVD
-internal class _119E_Divq_D : OpCode6309, IOpCode
+internal class _11AE_Divq_X : OpCode6309, IOpCode
 {
-    internal _119E_Divq_D(HD6309.IState cpu) : base(cpu) { }
+    internal _11AE_Divq_X(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
         const ushort abort = 0xFFFF;
         const ushort overflow = 0x8000;
 
-        ushort address = DIRECT[PC++];
+        ushort address = INDEXED[PC++];
 
         short denominator = (short)M16[address];
 
