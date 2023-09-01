@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page3;
 
 /// <summary>
-/// <code>118D/DIVD/IMMEDIATE</code>
+/// <code>119D/DIVD/DIRECT</code>
 /// Signed Divide of Accumulator D by 8-bit value in Memory
 /// <code>
 /// B’ ← D ÷ (M)
@@ -40,22 +40,23 @@ namespace VCCSharp.OpCodes.Page3;
 ///   this case, the CPU aborts the operation, leaving the accumulators unmodified while
 ///   setting the Overflow flag (V) and clearing the N, Z and C flags.
 ///   
-/// Cycles (25•)
+/// Cycles (27 / 26•)
 /// Byte Count (3)
 /// • If a two’s complement overflow occurs, the DIVD instruction uses one fewer cycle than what is shown in the table. 
 ///   If a range overflow occurs, DIVD uses 13 fewer cycles than what is shown in the table.
-///   
+/// 
 /// See Also: DIVQ
-internal class _118D_Divd_M : OpCode6309, IOpCode
+internal class _119D_Divd_D : OpCode6309, IOpCode
 {
-    internal _118D_Divd_M(HD6309.IState cpu) : base(cpu) { }
+    internal _119D_Divd_D(HD6309.IState cpu) : base(cpu) { }
 
     public int Exec()
     {
         const byte abort = 0xFF;
         const byte overflow = 0x80;
 
-        sbyte denominator = (sbyte)M8[PC++];
+        ushort address = DIRECT[PC++];
+        sbyte denominator = (sbyte)M8[address];
 
         if (denominator == 0)
         {
@@ -72,7 +73,7 @@ internal class _118D_Divd_M : OpCode6309, IOpCode
             CC_V = true;
             CC_C = false;
 
-            return 12; //25 - 13
+            return Cycles._2726 - 13;
         }
 
         byte remainder = (byte)(numerator % denominator);
@@ -85,6 +86,6 @@ internal class _118D_Divd_M : OpCode6309, IOpCode
         CC_V = result > ~overflow || result < overflow;
         CC_C = (B & 1) != 0;
 
-        return 25;
+        return Cycles._2726;
     }
 }
