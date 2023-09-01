@@ -229,7 +229,7 @@ internal class Page2Opcodes6809
     //_CB
     //_CC
     //_CD
-    private IOpCode _CE_Lds__I => new _10CE_Lds_I(_cpu);
+    private IOpCode _CE_Lds__M => new _10CE_Lds_M(_cpu);
     //_CF
 
     //_D0
@@ -305,7 +305,7 @@ internal class Page2Opcodes6809
         /* 9_ */ _           , _           , _           , _93_Cmpd_D  , _           , _           , _           , _           , _           , _           , _           , _           , _9C_Cmpy_D  , _           , _9E_Ldy__D  , _9F_Sty__D  ,
         /* A_ */ _           , _           , _           , _A3_Cmpd_X  , _           , _           , _           , _           , _           , _           , _           , _           , _AC_Cmpy_X  , _           , _AE_Ldy__X  , _AF_Sty__X  ,
         /* B_ */ _           , _           , _           , _B3_Cmpd_E  , _           , _           , _           , _           , _           , _           , _           , _           , _BC_Cmpy_E  , _           , _BE_Ldy__E  , _BF_Sty__E  ,
-        /* C_ */ _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _CE_Lds__I  , _           ,
+        /* C_ */ _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _CE_Lds__M  , _           ,
         /* D_ */ _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _DE_Lds__D  , _DF_Sts__D  ,
         /* E_ */ _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _EE_Lds__X  , _EF_Sts__X  ,
         /* F_ */ _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _           , _FE_Lds__E  , _FF_Sts__E 

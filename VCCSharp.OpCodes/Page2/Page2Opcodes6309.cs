@@ -228,7 +228,7 @@ internal class Page2Opcodes6309
     //_CB
     //_CC
     //_CD
-    private IOpCode _CE_Lds__I => new _10CE_Lds_I(_cpu);
+    private IOpCode _CE_Lds__M => new _10CE_Lds_M(_cpu);
     //_CF
     
     //_D0
@@ -304,7 +304,7 @@ internal class Page2Opcodes6309
         /* 9_ */ _90_Subw_D  , _91_Cmpw_D  , _92_Sbcd_D ,  _93_Cmpd_D ,  _94_Andd_D ,  _95_Bitd_D ,  _96_Ldw_D  ,  _97_Stw__D ,  _98_Eord_D ,  _99_Adcd_D ,  _9A_Ord_D  ,  _9B_Addw_D ,  _9C_Cmpy_D  , _          ,  _9E_Ldy__D ,  _9F_Sty__D  ,
         /* A_ */ _A0_Subw_X  , _A1_Cmpw_X  , _A2_Sbcd_X ,  _A3_Cmpd_X ,  _A4_Andd_X ,  _A5_Bitd_X ,  _A6_Ldw_X  ,  _A7_Stw__X ,  _A8_Eord_X ,  _A9_Adcd_X ,  _AA_Ord_X  ,  _AB_Addw_X ,  _AC_Cmpy_X  , _          ,  _AE_Ldy__X ,  _AF_Sty__X  ,
         /* B_ */ _B0_Subw_E  , _B1_Cmpw_E  , _B2_Sbcd_E ,  _B3_Cmpd_E ,  _B4_Andd_E ,  _B5_Bitd_E ,  _B6_Ldw_E  ,  _B7_Stw__E ,  _B8_Eord_E ,  _B9_Adcd_E ,  _BA_Ord_E  ,  _BB_Addw_E ,  _BC_Cmpy_E  , _          ,  _BE_Ldy__E ,  _BF_Sty__E  ,
-        /* C_ */ _           , _           , _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _           , _          ,  _CE_Lds__I ,  _           ,
+        /* C_ */ _           , _           , _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _           , _          ,  _CE_Lds__M ,  _           ,
         /* D_ */ _           , _           , _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _DC_Ldq__D  , _DD_Stq__D ,  _DE_Lds__D ,  _DF_Sts__D  ,
         /* E_ */ _           , _           , _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _EC_Ldq__X  , _ED_Stq__X ,  _EE_Lds__X ,  _EF_Sts__X  ,
         /* F_ */ _           , _           , _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _          ,  _FC_Ldq__E  , _FD_Stq__E ,  _FE_Lds__E ,  _FF_Sts__E   
