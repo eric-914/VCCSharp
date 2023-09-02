@@ -25,8 +25,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: LD (16-bit), LDQ
 internal class _F6_Ldb_E : OpCode, IOpCode
 {
-    internal _F6_Ldb_E(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = M16[PC += 2];

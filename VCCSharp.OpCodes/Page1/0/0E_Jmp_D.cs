@@ -38,8 +38,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BRA, JSR, LBRA
 internal class _0E_Jmp_D : OpCode, IOpCode
 {
-    internal _0E_Jmp_D(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte offset = M8[PC];

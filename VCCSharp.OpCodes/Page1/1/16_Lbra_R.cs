@@ -29,8 +29,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BRA, LBRN, JMP
 internal class _16_Lbra_R : OpCode, IOpCode
 {
-    internal _16_Lbra_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort word = M16[PC];

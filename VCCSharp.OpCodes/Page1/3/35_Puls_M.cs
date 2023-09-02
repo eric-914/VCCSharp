@@ -48,8 +48,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: PSH, PULSW, PULUW
 internal class _35_Puls_M : OpCode, IOpCode
 {
-    internal _35_Puls_M(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         int cycles = DynamicCycles._54;

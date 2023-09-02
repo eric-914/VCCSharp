@@ -60,8 +60,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: BAND, BEOR, BIAND, BIEOR, BIOR, LDBT, STBT
 internal class _1132_Bor_D : OpCode6309, IOpCode
 {
-    internal _1132_Bor_D(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte value = M8[PC++];

@@ -26,8 +26,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: LD (8-bit), LD (16-bit)
 internal class _10EC_Ldq_X : OpCode6309, IOpCode
 {
-    internal _10EC_Ldq_X(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

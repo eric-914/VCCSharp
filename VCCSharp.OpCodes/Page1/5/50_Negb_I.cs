@@ -36,8 +36,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: COM, NEG (memory)
 internal class _50_Negb_I : OpCode, IOpCode
 {
-    internal _50_Negb_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte value = (byte)(0 - B);

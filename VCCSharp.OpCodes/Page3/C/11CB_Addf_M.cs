@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: ADD (16-bit), ADDR
 internal class _11CB_Addf_M : OpCode6309, IOpCode
 {
-    internal _11CB_Addf_M(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte value = M8[PC++];

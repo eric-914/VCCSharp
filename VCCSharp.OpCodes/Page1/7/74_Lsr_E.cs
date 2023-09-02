@@ -33,8 +33,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// </remarks>
 internal class _74_Lsr_E : OpCode, IOpCode
 {
-    internal _74_Lsr_E(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = M16[PC+=2];

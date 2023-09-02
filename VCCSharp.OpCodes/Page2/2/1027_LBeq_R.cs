@@ -40,8 +40,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: BEQ, LBNE
 internal class _1027_LBeq_R : OpCode, IOpCode
 {
-    internal _1027_LBeq_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         int cycles = 5;

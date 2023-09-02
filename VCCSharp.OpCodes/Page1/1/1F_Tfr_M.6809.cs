@@ -61,7 +61,7 @@ internal class _1F_Tfr_M_6809 : OpCode, IOpCode
 
     private readonly RegisterMap4Bit _map;
 
-    internal _1F_Tfr_M_6809(MC6809.IState cpu) : base(cpu)
+    internal _1F_Tfr_M_6809()
     {
         _map = new RegisterMap4Bit
         {

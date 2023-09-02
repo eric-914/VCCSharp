@@ -25,8 +25,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: LD (8-bit), LDQ, LEA
 internal class _FC_Ldd_E : OpCode, IOpCode
 {
-    internal _FC_Ldd_E(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = M16[PC += 2];

@@ -38,8 +38,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: LSLD
 internal class _58_Aslb_I : OpCode, IOpCode
 {
-    internal _58_Aslb_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte result = (byte)(B << 1);

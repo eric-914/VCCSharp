@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADCD, ADCR
 internal class _E9_Adcb_X : OpCode, IOpCode
 {
-    internal _E9_Adcb_X(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

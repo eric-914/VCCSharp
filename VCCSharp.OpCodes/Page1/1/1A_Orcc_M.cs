@@ -42,8 +42,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ANDCC, OR (8-bit), ORD, ORR
 internal class _1A_Orcc_M : OpCode, IOpCode
 {
-    internal _1A_Orcc_M(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte value = M8[PC++];

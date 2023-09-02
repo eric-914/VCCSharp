@@ -26,8 +26,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: MUL
 internal class _119F_Muld_D : OpCode6309, IOpCode
 {
-    internal _119F_Muld_D(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = DIRECT[PC++];

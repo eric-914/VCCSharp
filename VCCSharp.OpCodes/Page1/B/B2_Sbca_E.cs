@@ -32,8 +32,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: SBCD, SBCR
 internal class _B2_Sbca_E : OpCode, IOpCode
 {
-    internal _B2_Sbca_E(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         var address = M16[PC+=2];

@@ -33,8 +33,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: AIM, ANDCC, ANDD, ANDR, BAND, BIAND, BIT
 internal class _B4_Anda_E : OpCode, IOpCode
 {
-    internal _B4_Anda_E(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = M16[PC+=2];

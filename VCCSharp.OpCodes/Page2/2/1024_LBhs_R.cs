@@ -36,8 +36,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: BCC, LBCS, LBGE
 internal class _1024_LBhs_R : OpCode, IOpCode
 {
-    internal _1024_LBhs_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         int cycles = 6;

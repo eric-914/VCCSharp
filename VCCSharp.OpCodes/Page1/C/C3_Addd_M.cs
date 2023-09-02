@@ -30,8 +30,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADD (8-bit), ADDR
 internal class _C3_Addd_M : OpCode, IOpCode
 {
-    internal _C3_Addd_M(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort value = M16[PC += 2];

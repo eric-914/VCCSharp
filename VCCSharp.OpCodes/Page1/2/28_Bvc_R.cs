@@ -29,8 +29,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BVS, LBVC
 internal class _28_Bvc_R : OpCode, IOpCode
 {
-    internal _28_Bvc_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         if (!CC_V)

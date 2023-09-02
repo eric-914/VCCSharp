@@ -49,8 +49,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: LSL (8-bit), ROL (16-bit)
 internal class _1048_Asld_I : OpCode6309, IOpCode
 {
-    internal _1048_Asld_I(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort result = (ushort)(D << 1);

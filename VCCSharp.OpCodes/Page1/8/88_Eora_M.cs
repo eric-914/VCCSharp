@@ -33,8 +33,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BEOR, BIEOR, EIM, EORD, EORR
 internal class _88_Eora_M : OpCode, IOpCode
 {
-    internal _88_Eora_M(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte value = M8[PC++];

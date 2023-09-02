@@ -36,8 +36,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: COM, NEG (accumulator)
 internal class _60_Neg_X : OpCode, IOpCode
 {
-    internal _60_Neg_X(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: BVC, LBVS
 internal class _1028_LBvc_R : OpCode, IOpCode
 {
-    internal _1028_LBvc_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         int cycles = 5;

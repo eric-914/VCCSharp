@@ -33,8 +33,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: CMP (16-bit), CMPR
 internal class _1181_Cmpe_M : OpCode6309, IOpCode
 {
-    internal _1181_Cmpe_M(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte value = M8[PC++];

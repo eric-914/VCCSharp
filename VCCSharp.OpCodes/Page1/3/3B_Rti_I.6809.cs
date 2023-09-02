@@ -64,8 +64,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CWAI, RTS, SWI, SWI2, SWI3
 internal class _3B_Rti_I_6809 : OpCode, IOpCode
 {
-    internal _3B_Rti_I_6809(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         int cycles = 6;

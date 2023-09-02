@@ -10,11 +10,7 @@ namespace VCCSharp.OpCodes.Model.OpCodes;
 /// </summary>
 internal abstract class OpCode 
 {
-    public ISystemState SS { get;set; }
-
-    protected OpCode(ISystemState ss) => SS = ss;
-
-    protected OpCode(IState cpu) : this(new SystemState(cpu)) { }
+    public ISystemState SS { get;set; } = default!;
 
     private IState cpu => SS.cpu;
 

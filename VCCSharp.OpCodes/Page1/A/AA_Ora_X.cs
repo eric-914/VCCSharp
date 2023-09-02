@@ -30,8 +30,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BIOR, BOR, OIM, ORCC, ORD, ORR
 internal class _AA_Ora_X : OpCode, IOpCode
 {
-    internal _AA_Ora_X(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

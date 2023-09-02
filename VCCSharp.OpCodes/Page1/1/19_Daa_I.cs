@@ -42,8 +42,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADCA, ADDA
 internal class _19_Daa_I : OpCode, IOpCode
 {
-    internal _19_Daa_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte msn = (byte)(A >> 4);  // -- A[4..7]

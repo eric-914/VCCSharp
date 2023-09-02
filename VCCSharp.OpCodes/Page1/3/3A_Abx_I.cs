@@ -33,8 +33,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// 
 internal class _3A_Abx_I : OpCode, IOpCode
 {
-    internal _3A_Abx_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         X += B;

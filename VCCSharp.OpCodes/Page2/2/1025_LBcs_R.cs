@@ -36,8 +36,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: BLO, LBHS, LBLT
 internal class _1025_LBcs_R : OpCode, IOpCode
 {
-    internal _1025_LBcs_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         int cycles = 5;

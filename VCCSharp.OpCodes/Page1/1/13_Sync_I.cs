@@ -30,8 +30,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ANDCC, CWAI, RTI, SYNC
 internal class _13_Sync_I : OpCode, IOpCode
 {
-    internal _13_Sync_I (MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         IsSyncWaiting = true;

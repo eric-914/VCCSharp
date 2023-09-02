@@ -25,8 +25,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: LD (16-bit), LDQ
 internal class _C6_Ldb_M : OpCode, IOpCode
 {
-    internal _C6_Ldb_M(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         B = M8[PC++];

@@ -33,8 +33,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: AND (8-bit), BITD, BITMD
 internal class _C5_Bitb_M : OpCode, IOpCode
 {
-    internal _C5_Bitb_M(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte value = M8[PC++];

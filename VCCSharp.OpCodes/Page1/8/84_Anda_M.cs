@@ -33,8 +33,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: AIM, ANDCC, ANDD, ANDR, BAND, BIAND, BIT
 internal class _84_Anda_M : OpCode, IOpCode
 {
-    internal _84_Anda_M(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte value = M8[PC++];

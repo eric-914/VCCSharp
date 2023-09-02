@@ -30,8 +30,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: PSHSW, PSHUW, PUL, PULSW
 internal class _103B_Puluw_I : OpCode6309, IOpCode
 {
-    internal _103B_Puluw_I(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         E = M8[U++];

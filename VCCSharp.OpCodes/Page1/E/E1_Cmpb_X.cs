@@ -32,8 +32,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CMP (16-bit), CMPR
 internal class _E1_Cmpb_X : OpCode, IOpCode
 {
-    internal _E1_Cmpb_X(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

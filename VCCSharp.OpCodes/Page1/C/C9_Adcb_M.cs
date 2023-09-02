@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADCD, ADCR
 internal class _C9_Adcb_M : OpCode, IOpCode
 {
-    internal _C9_Adcb_M(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte value = M8[PC++].Plus(CC_C);

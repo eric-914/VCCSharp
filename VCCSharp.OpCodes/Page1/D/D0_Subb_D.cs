@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: SUB (16-bit), SUBR
 internal class _D0_Subb_D : OpCode, IOpCode
 {
-    internal _D0_Subb_D(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = DIRECT[PC++];

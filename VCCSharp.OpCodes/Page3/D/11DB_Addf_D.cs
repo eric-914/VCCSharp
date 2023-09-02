@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: ADD (16-bit), ADDR
 internal class _11DB_Addf_D : OpCode6309, IOpCode
 {
-    internal _11DB_Addf_D(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = DIRECT[PC++];

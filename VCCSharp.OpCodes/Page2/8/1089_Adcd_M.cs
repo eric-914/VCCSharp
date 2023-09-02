@@ -36,8 +36,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: ADC (8-bit), ADCR
 internal class _1089_Adcd_M : OpCode6309, IOpCode
 {
-    internal _1089_Adcd_M(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort value = M16[PC += 2];

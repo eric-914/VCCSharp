@@ -41,8 +41,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: SBC (8-bit), SBCR
 internal class _1092_Sbcd_D : OpCode6309, IOpCode
 {
-    internal _1092_Sbcd_D(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = DIRECT[PC++];

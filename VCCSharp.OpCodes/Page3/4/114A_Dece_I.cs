@@ -33,8 +33,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: DEC (memory), INC, SUB
 internal class _114A_Dece_I : OpCode6309, IOpCode
 {
-    internal _114A_Dece_I(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte result = (byte)(E - 1);

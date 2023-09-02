@@ -38,8 +38,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: ROR (8-bit)
 internal class _1046_Rord_I : OpCode6309, IOpCode
 {
-    internal _1046_Rord_I(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         var result = (ushort)((D >> 1) | CC_C.ToBit());

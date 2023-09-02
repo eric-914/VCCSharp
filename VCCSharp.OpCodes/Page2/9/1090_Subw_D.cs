@@ -33,8 +33,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: SUB (8-bit), SUBR
 internal class _1090_Subw_D : OpCode6309, IOpCode
 {
-    internal _1090_Subw_D(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = DIRECT[PC++];

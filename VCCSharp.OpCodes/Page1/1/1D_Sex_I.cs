@@ -42,8 +42,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: SEXW
 internal class _1D_Sex_I : OpCode, IOpCode
 {
-    internal _1D_Sex_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         bool bit = B.Bit7();

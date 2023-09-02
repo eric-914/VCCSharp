@@ -41,7 +41,7 @@ internal class _1033_Sbcr_M : OpCode6309, IOpCode, IIndexedRegisterSwap
 {
     private readonly IndexedRegisterSwap _irs;
 
-    internal _1033_Sbcr_M(HD6309.IState cpu) : base(cpu)
+    internal _1033_Sbcr_M()
     {
         _irs = new IndexedRegisterSwap(this, true)
         {

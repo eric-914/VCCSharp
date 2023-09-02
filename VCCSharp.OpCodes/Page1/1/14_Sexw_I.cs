@@ -45,8 +45,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: SEX
 internal class _14_Sexw_I : OpCode6309, IOpCode
 {
-    internal _14_Sexw_I(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         D = (W & 32768) != 0 ? (ushort)0xFFFF : (ushort)0;

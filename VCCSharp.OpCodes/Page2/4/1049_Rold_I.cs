@@ -39,8 +39,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: ROL (8-bit)
 internal class _1049_Rold_I : OpCode6309, IOpCode
 {
-    internal _1049_Rold_I(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort result = (ushort)((D << 1) | CC_C.ToBit());;

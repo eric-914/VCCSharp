@@ -1,12 +1,9 @@
 ﻿namespace VCCSharp.OpCodes.Page2;
 
 using VCCSharp.OpCodes.Model.OpCodes;
-using Motorola = MC6809.IState;
 
 internal class Page2Opcodes6809
 {
-    private readonly Motorola _cpu;
-
     #region Factory
 
     private IOpCode _ => new UndefinedOpCode();
@@ -46,21 +43,21 @@ internal class Page2Opcodes6809
     //_1F
 
     //_20
-    private IOpCode _21_LBrn_R => new _1021_LBrn_R(_cpu);
-    private IOpCode _22_LBhi_R => new _1022_LBhi_R(_cpu);
-    private IOpCode _23_LBls_R => new _1023_LBls_R(_cpu);
-    private IOpCode _24_LBhs_R => new _1024_LBhs_R(_cpu);
-    private IOpCode _25_LBcs_R => new _1025_LBcs_R(_cpu);
-    private IOpCode _26_LBne_R => new _1026_LBne_R(_cpu);
-    private IOpCode _27_LBeq_R => new _1027_LBeq_R(_cpu);
-    private IOpCode _28_LBvc_R => new _1028_LBvc_R(_cpu);
-    private IOpCode _29_LBvs_R => new _1029_LBvs_R(_cpu);
-    private IOpCode _2A_LBpl_R => new _102A_LBpl_R(_cpu);
-    private IOpCode _2B_LBmi_R => new _102B_LBmi_R(_cpu);
-    private IOpCode _2C_LBge_R => new _102C_LBge_R(_cpu);
-    private IOpCode _2D_LBlt_R => new _102D_LBlt_R(_cpu);
-    private IOpCode _2E_LBgt_R => new _102E_LBgt_R(_cpu);
-    private IOpCode _2F_LBle_R => new _102F_LBle_R(_cpu);
+    private IOpCode _21_LBrn_R => new _1021_LBrn_R();
+    private IOpCode _22_LBhi_R => new _1022_LBhi_R();
+    private IOpCode _23_LBls_R => new _1023_LBls_R();
+    private IOpCode _24_LBhs_R => new _1024_LBhs_R();
+    private IOpCode _25_LBcs_R => new _1025_LBcs_R();
+    private IOpCode _26_LBne_R => new _1026_LBne_R();
+    private IOpCode _27_LBeq_R => new _1027_LBeq_R();
+    private IOpCode _28_LBvc_R => new _1028_LBvc_R();
+    private IOpCode _29_LBvs_R => new _1029_LBvs_R();
+    private IOpCode _2A_LBpl_R => new _102A_LBpl_R();
+    private IOpCode _2B_LBmi_R => new _102B_LBmi_R();
+    private IOpCode _2C_LBge_R => new _102C_LBge_R();
+    private IOpCode _2D_LBlt_R => new _102D_LBlt_R();
+    private IOpCode _2E_LBgt_R => new _102E_LBgt_R();
+    private IOpCode _2F_LBle_R => new _102F_LBle_R();
 
     //_30_Addr_M
     //_31_Adcr_M
@@ -77,7 +74,7 @@ internal class Page2Opcodes6809
     //_3C
     //_3D
     //_3E
-    private IOpCode _3F_Swi2_I => new _103F_Swi2_I_6809(_cpu);
+    private IOpCode _3F_Swi2_I => new _103F_Swi2_I_6809();
 
     //_40_Negd_I
     //_41
@@ -150,7 +147,7 @@ internal class Page2Opcodes6809
     //_80_Subw_M
     //_81_Cmpw_M
     //_82_Sbcd_M
-    private IOpCode _83_Cmpd_M => new _1083_Cmpd_M(_cpu);
+    private IOpCode _83_Cmpd_M => new _1083_Cmpd_M();
     //_84_Andd_M
     //_85_Bitd_M
     //_86_Ldw_M
@@ -159,15 +156,15 @@ internal class Page2Opcodes6809
     //_89_Adcd_M
     //_8A_Ord_M
     //_8B_Addw_M
-    private IOpCode _8C_Cmpy_M => new _108C_Cmpy_M(_cpu);
+    private IOpCode _8C_Cmpy_M => new _108C_Cmpy_M();
     //_8D
-    private IOpCode _8E_Ldy__M => new _108E_Ldy_M(_cpu);
+    private IOpCode _8E_Ldy__M => new _108E_Ldy_M();
     //_8F
 
     //_90_Subw_D
     //_91_Cmpw_D
     //_92_Sbcd_D
-    private IOpCode _93_Cmpd_D => new _1093_Cmpd_D(_cpu);
+    private IOpCode _93_Cmpd_D => new _1093_Cmpd_D();
     //_94_Andd_D
     //_95_Bitd_D
     //_96_Ldw_D
@@ -176,15 +173,15 @@ internal class Page2Opcodes6809
     //_99_Adcd_D
     //_9A_Ord_D
     //_9B_Addw_D
-    private IOpCode _9C_Cmpy_D => new _109C_Cmpy_D(_cpu);
+    private IOpCode _9C_Cmpy_D => new _109C_Cmpy_D();
     //_9D
-    private IOpCode _9E_Ldy__D => new _109E_Ldy_D(_cpu);
-    private IOpCode _9F_Sty__D => new _109F_Sty_D(_cpu);
+    private IOpCode _9E_Ldy__D => new _109E_Ldy_D();
+    private IOpCode _9F_Sty__D => new _109F_Sty_D();
 
     //_A0_Subw_X
     //_A1_Cmpw_X
     //_A2_Sbcd_X
-    private IOpCode _A3_Cmpd_X => new _10A3_Cmpd_X(_cpu);
+    private IOpCode _A3_Cmpd_X => new _10A3_Cmpd_X();
     //_A4_Andd_X
     //_A5_Bitd_X
     //_A6_Ldw_X
@@ -193,15 +190,15 @@ internal class Page2Opcodes6809
     //_A9_Adcd_X
     //_AA_Ord_X
     //_AB_Addw_X
-    private IOpCode _AC_Cmpy_X => new _10AC_Cmpy_X(_cpu);
+    private IOpCode _AC_Cmpy_X => new _10AC_Cmpy_X();
     //_AD
-    private IOpCode _AE_Ldy__X => new _10AE_Ldy_X(_cpu);
-    private IOpCode _AF_Sty__X => new _10AF_Sty_X(_cpu);
+    private IOpCode _AE_Ldy__X => new _10AE_Ldy_X();
+    private IOpCode _AF_Sty__X => new _10AF_Sty_X();
 
     //_B0_Subw_E
     //_B1_Cmpw_E
     //_B2_Sbcd_E
-    private IOpCode _B3_Cmpd_E => new _10B3_Cmpd_E(_cpu);
+    private IOpCode _B3_Cmpd_E => new _10B3_Cmpd_E();
     //_B4_Andd_E
     //_B5_Bitd_E
     //_B6_Ldw_E
@@ -210,10 +207,10 @@ internal class Page2Opcodes6809
     //_B9_Adcd_E
     //_BA_Ord_E
     //_BB_Addw_E
-    private IOpCode _BC_Cmpy_E => new _10BC_Cmpy_E(_cpu);
+    private IOpCode _BC_Cmpy_E => new _10BC_Cmpy_E();
     //_BD
-    private IOpCode _BE_Ldy__E => new _10BE_Ldy_E(_cpu);
-    private IOpCode _BF_Sty__E => new _10BF_Sty_E(_cpu);
+    private IOpCode _BE_Ldy__E => new _10BE_Ldy_E();
+    private IOpCode _BF_Sty__E => new _10BF_Sty_E();
 
     //_C0
     //_C1
@@ -229,7 +226,7 @@ internal class Page2Opcodes6809
     //_CB
     //_CC
     //_CD
-    private IOpCode _CE_Lds__M => new _10CE_Lds_M(_cpu);
+    private IOpCode _CE_Lds__M => new _10CE_Lds_M();
     //_CF
 
     //_D0
@@ -246,8 +243,8 @@ internal class Page2Opcodes6809
     //_DB
     //_DC_Ldq_D
     //_DD_Stq_D
-    private IOpCode _DE_Lds__D => new _10DE_Lds_D(_cpu);
-    private IOpCode _DF_Sts__D => new _10DF_Sts_D(_cpu);
+    private IOpCode _DE_Lds__D => new _10DE_Lds_D();
+    private IOpCode _DF_Sts__D => new _10DF_Sts_D();
 
     //_E0
     //_E1
@@ -263,8 +260,8 @@ internal class Page2Opcodes6809
     //_EB
     //_EC_Ldq_X
     //_ED_Stq_X
-    private IOpCode _EE_Lds__X => new _10EE_Lds_X(_cpu);
-    private IOpCode _EF_Sts__X => new _10EF_Sts_X(_cpu);
+    private IOpCode _EE_Lds__X => new _10EE_Lds_X();
+    private IOpCode _EF_Sts__X => new _10EF_Sts_X();
 
     //_F0
     //_F1
@@ -280,15 +277,10 @@ internal class Page2Opcodes6809
     //_FB
     //_FC_Ldq_E
     //_FD_Stq_E
-    private IOpCode _FE_Lds__E => new _10FE_Lds_E(_cpu);
-    private IOpCode _FF_Sts__E => new _10FF_Sts_E(_cpu);
+    private IOpCode _FE_Lds__E => new _10FE_Lds_E();
+    private IOpCode _FF_Sts__E => new _10FF_Sts_E();
 
     #endregion
-
-    public Page2Opcodes6809(Motorola cpu)
-    {
-        _cpu = cpu;
-    }
 
     public IOpCode[] OpCodes => new IOpCode[256]
     {

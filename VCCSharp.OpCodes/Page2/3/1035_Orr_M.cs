@@ -39,7 +39,7 @@ internal class _1035_Orr_M : OpCode6309, IOpCode, IIndexedRegisterSwap
 {
     private readonly IndexedRegisterSwap _irs;
 
-    internal _1035_Orr_M(HD6309.IState cpu) : base(cpu)
+    internal _1035_Orr_M()
     {
         _irs = new IndexedRegisterSwap(this, true)
         {

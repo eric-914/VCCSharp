@@ -25,8 +25,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: LD (8-bit), LDQ, LEA
 internal class _CE_Ldu_M : OpCode, IOpCode
 {
-    internal _CE_Ldu_M(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         U = M16[PC+=2];

@@ -43,8 +43,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: COM, NEG (memory)
 internal class _1040_Negd_I : OpCode6309, IOpCode
 {
-    internal _1040_Negd_I(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort result = (ushort)(0 - D);

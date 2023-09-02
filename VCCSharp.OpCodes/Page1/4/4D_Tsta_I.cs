@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CMP, STQ, TST (memory)
 internal class _4D_Tsta_I : OpCode, IOpCode
 {
-    internal _4D_Tsta_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         CC_N = A.Bit7();

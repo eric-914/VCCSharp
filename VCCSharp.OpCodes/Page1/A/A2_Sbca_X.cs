@@ -32,8 +32,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: SBCD, SBCR
 internal class _A2_Sbca_X : OpCode, IOpCode
 {
-    internal _A2_Sbca_X(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

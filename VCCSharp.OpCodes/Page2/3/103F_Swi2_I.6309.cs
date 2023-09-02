@@ -63,8 +63,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: RTI
 internal class _103F_Swi2_I_6309 : OpCode6309, IOpCode
 {
-    internal _103F_Swi2_I_6309(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         int cycles = 20;

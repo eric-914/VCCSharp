@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BHI, BLE, LBLS
 internal class _23_Bls_R : OpCode, IOpCode
 {
-    internal _23_Bls_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         if (CC_C | CC_Z)

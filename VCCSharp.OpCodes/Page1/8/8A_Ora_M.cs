@@ -30,8 +30,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BIOR, BOR, OIM, ORCC, ORD, ORR
 internal class _8A_Ora_M : OpCode, IOpCode
 {
-    internal _8A_Ora_M(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         A |= M8[PC++];

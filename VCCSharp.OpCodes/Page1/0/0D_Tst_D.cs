@@ -33,8 +33,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CMP, LD (8-bit),TST (accumulator)
 internal class _0D_Tst_D : OpCode, IOpCode
 {
-    internal _0D_Tst_D(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = DIRECT[PC++];

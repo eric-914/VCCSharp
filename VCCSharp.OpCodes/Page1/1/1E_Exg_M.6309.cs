@@ -64,7 +64,7 @@ internal class _1E_Exg_M_6309 : OpCode6309, IOpCode
     private readonly Action<byte, byte>[] _mixed;
     private readonly RegisterMap4Bit _map;
 
-    internal _1E_Exg_M_6309(HD6309.IState cpu) : base(cpu)
+    internal _1E_Exg_M_6309()
     {
         //--From mapping in above documentation
         var A = MSB;

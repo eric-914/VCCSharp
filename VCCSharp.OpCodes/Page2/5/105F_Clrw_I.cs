@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: CLR (memory), LD
 internal class _105F_Clrw_I : OpCode6309, IOpCode
 {
-    internal _105F_Clrw_I(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         CC_N = false;

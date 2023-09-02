@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: ADD (8-bit), ADDR
 internal class _108B_Addw_M : OpCode6309, IOpCode
 {
-    internal _108B_Addw_M(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort value = M16[PC += 2];

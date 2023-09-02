@@ -32,8 +32,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BEOR, BIEOR, EIM, EORD, EORR
 internal class _F8_Eorb_E : OpCode, IOpCode
 {
-    internal _F8_Eorb_E(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = M16[PC += 2];

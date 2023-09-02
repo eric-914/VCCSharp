@@ -48,8 +48,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: DIVQ
 internal class _11BD_Divd_E : OpCode6309, IOpCode
 {
-    internal _11BD_Divd_E(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         const byte abort = 0xFF;

@@ -47,8 +47,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BRA, NOP, LBRN
 internal class _21_Brn_R : OpCode, IOpCode
 {
-    internal _21_Brn_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         PC++;

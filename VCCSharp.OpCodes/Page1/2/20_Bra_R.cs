@@ -29,8 +29,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BRN, JMP, LBRA
 internal class _20_Bra_R : OpCode, IOpCode
 {
-    internal _20_Bra_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         PC += (ushort)(sbyte)M8[PC++];

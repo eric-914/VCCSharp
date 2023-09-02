@@ -26,8 +26,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: LD (8-bit), LDQ, LEA
 internal class _1096_Ldw_D : OpCode6309, IOpCode
 {
-    internal _1096_Ldw_D(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = DIRECT[PC++];

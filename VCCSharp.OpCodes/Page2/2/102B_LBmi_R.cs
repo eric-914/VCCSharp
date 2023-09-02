@@ -32,8 +32,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: BMI, LBLT, LBPL
 internal class _102B_LBmi_R : OpCode, IOpCode
 {
-    internal _102B_LBmi_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         int cycles = 5;

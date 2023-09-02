@@ -34,8 +34,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ROR (16-bit)
 internal class _46_Rora_I : OpCode, IOpCode
 {
-    internal _46_Rora_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte bit = CC_C.ToBit();

@@ -55,7 +55,7 @@ internal class SystemState : ISystemState
         R8 = new Registers8Bit<IState>(cpu);
         R16 = new Registers16Bit<IState>(cpu);
 
-        Exceptions = new Exceptions(cpu);
+        Exceptions = new Exceptions() { SS = this };
 
         DynamicCycles = new DynamicCycles(cpu);
     }

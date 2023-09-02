@@ -29,8 +29,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: COM (accumulator), NEG
 internal class _73_Com_E : OpCode, IOpCode
 {
-    internal _73_Com_E(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = M16[PC+=2];

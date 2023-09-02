@@ -32,8 +32,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: LSR (16-bit)
 internal class _54_Lsrb_I : OpCode, IOpCode
 {
-    internal _54_Lsrb_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte result = (byte)(B >> 1);

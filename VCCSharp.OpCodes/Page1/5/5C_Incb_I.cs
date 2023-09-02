@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADD, DEC, INC (memory)
 internal class _5C_Incb_I : OpCode, IOpCode
 {
-    internal _5C_Incb_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte result = (byte)(B + 1);

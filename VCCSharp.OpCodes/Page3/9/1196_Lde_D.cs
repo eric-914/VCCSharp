@@ -26,8 +26,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: LD (16-bit), LDQ
 internal class _1196_Lde_D : OpCode6309, IOpCode
 {
-    internal _1196_Lde_D(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = DIRECT[PC++];

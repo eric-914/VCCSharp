@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CMP (8-bit), CMPR
 internal class _8C_Cmpx_M : OpCode, IOpCode
 {
-    internal _8C_Cmpx_M(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort value = M16[PC += 2];

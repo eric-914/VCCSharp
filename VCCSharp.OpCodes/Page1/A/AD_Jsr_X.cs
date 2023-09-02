@@ -43,8 +43,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BSR, JMP, LBSR, PULS, RTS
 internal class _AD_Jsr_X : OpCode, IOpCode
 {
-    internal _AD_Jsr_X(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

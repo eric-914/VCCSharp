@@ -37,8 +37,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BEQ, LBNE
 internal class _26_Bne_R : OpCode, IOpCode
 {
-    internal _26_Bne_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         if (!CC_Z)

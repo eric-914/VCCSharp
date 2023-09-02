@@ -30,8 +30,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADD (16-bit), ADDR
 internal class _8B_Adda_M : OpCode, IOpCode
 {
-    internal _8B_Adda_M(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte value = M8[PC++];

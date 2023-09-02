@@ -26,8 +26,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: ST (16-bit), STQ
 internal class _11F7_Stf_E : OpCode6309, IOpCode
 {
-    internal _11F7_Stf_E(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = M16[PC += 2];

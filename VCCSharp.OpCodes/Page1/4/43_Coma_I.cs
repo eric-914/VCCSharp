@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: COM (memory), NEG
 internal class _43_Coma_I : OpCode, IOpCode
 {
-    internal _43_Coma_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte result = (byte)(0xFF - A);

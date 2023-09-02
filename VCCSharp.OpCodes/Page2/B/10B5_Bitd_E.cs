@@ -30,8 +30,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: ANDD, BIT (8-bit), BITMD
 internal class _10B5_Bitd_E : OpCode6309, IOpCode
 {
-    internal _10B5_Bitd_E(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = M16[PC+=2];

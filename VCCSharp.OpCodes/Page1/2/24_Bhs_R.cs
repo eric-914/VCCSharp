@@ -36,8 +36,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BGE, BLO, LBHS
 internal class _24_Bhs_R : OpCode, IOpCode
 {
-    internal _24_Bhs_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         if (!CC_C)

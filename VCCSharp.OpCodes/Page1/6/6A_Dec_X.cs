@@ -30,8 +30,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: DEC (accumulator), INC, SUB
 internal class _6A_Dec_X : OpCode, IOpCode
 {
-    internal _6A_Dec_X(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

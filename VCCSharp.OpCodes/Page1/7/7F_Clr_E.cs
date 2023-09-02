@@ -41,8 +41,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CLR (accumulator), ST
 internal class _7F_Clr_E : OpCode, IOpCode
 {
-    internal _7F_Clr_E(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = M16[PC+=2];

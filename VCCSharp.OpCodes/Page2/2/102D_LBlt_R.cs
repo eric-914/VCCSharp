@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: BLT, LBGE, LBLO
 internal class _102D_LBlt_R : OpCode, IOpCode
 {
-    internal _102D_LBlt_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         int cycles = 5;

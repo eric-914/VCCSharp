@@ -32,8 +32,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: AND (8-bit), BITD, BITMD
 internal class _A5_Bita_X : OpCode, IOpCode
 {
-    internal _A5_Bita_X(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

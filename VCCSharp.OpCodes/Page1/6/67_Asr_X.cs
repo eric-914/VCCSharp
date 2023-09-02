@@ -36,8 +36,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ASRD
 internal class _67_Asr_X : OpCode, IOpCode
 {
-    internal _67_Asr_X(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

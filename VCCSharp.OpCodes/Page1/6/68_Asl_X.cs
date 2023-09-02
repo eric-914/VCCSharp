@@ -40,8 +40,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: LSLD
 internal class _68_Asl_X : OpCode, IOpCode
 {
-    internal _68_Asl_X(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

@@ -28,8 +28,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADCA, MULD
 internal class _3D_Mul_I : OpCode, IOpCode
 {
-    internal _3D_Mul_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         D = (ushort)(A * B);

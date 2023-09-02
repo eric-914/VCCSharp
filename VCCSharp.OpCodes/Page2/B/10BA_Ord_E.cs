@@ -38,8 +38,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: BIOR, BOR, OIM, OR (8-bit), ORCC, ORR
 internal class _10BA_Ord_E : OpCode6309, IOpCode
 {
-    internal _10BA_Ord_E(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = M16[PC += 2];

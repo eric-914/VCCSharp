@@ -35,8 +35,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADCR, ROL (16-bit)
 internal class _69_Rol_X : OpCode, IOpCode
 {
-    internal _69_Rol_X(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

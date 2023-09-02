@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: BLE, LBGT, LBLS
 internal class _102F_LBle_R : OpCode, IOpCode
 {
-    internal _102F_LBle_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         int cycles = 5;

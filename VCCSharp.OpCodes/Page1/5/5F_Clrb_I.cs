@@ -28,8 +28,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CLR (memory), LD
 internal class _5F_Clrb_I : OpCode, IOpCode
 {
-    internal _5F_Clrb_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         B = 0;

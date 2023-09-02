@@ -38,8 +38,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BRA, JSR, LBRA
 internal class _7E_Jmp_E : OpCode, IOpCode
 {
-    internal _7E_Jmp_E(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = M16[PC];

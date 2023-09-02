@@ -28,8 +28,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: BRN, LBRA, NOP
 internal class _1021_LBrn_R : OpCode, IOpCode
 {
-    internal _1021_LBrn_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         PC += 2;

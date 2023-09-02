@@ -30,8 +30,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BLT, BPL, LBMI
 internal class _2B_Bmi_R : OpCode, IOpCode
 {
-    internal _2B_Bmi_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         if (CC_N)

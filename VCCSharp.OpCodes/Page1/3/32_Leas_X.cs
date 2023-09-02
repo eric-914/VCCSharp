@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADDR, LD (16-bit), SUBR
 internal class _32_Leas_X : OpCode, IOpCode
 {
-    internal _32_Leas_X(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         S = INDEXED[PC++];

@@ -46,8 +46,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: AIM, AND, EIM, OIM
 internal class _7B_Tim_E : OpCode6309, IOpCode
 {
-    internal _7B_Tim_E(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte value = M8[PC++];

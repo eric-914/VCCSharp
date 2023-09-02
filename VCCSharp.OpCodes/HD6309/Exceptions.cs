@@ -6,8 +6,6 @@ namespace VCCSharp.OpCodes.HD6309;
 //--Apparently Hitachi has error handlers
 internal class Exceptions : OpCode6309
 {
-    public Exceptions(IState cpu) : base(cpu) { }
-
     private int ErrorVector()
     {
         int cycles = 0;

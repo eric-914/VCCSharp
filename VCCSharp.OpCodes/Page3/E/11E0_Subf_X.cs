@@ -32,8 +32,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: SUB (16-bit), SUBR
 internal class _11E0_Subf_X : OpCode6309, IOpCode
 {
-    internal _11E0_Subf_X(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

@@ -34,8 +34,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (1)
 internal class _57_Asrb_I : OpCode, IOpCode
 {
-    internal _57_Asrb_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte result = (byte)((B & 0x80) | (B >> 1));

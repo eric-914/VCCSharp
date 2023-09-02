@@ -34,8 +34,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: CMP (8-bit), CMPR
 internal class _10A1_Cmpw_X : OpCode6309, IOpCode
 {
-    internal _10A1_Cmpw_X(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

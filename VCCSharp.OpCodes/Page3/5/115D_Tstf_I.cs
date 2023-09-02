@@ -32,8 +32,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: CMP, STQ, TST (memory)
 internal class _115D_Tstf_I : OpCode6309, IOpCode
 {
-    internal _115D_Tstf_I(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         CC_N = F.Bit7();

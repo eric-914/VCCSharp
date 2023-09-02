@@ -43,8 +43,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: ASR (8-bit), ROR (16-bit)
 internal class _1047_Asrd_I : OpCode6309, IOpCode
 {
-    internal _1047_Asrd_I(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort result = (ushort)((D & 0x8000) | (D >> 1)); ;

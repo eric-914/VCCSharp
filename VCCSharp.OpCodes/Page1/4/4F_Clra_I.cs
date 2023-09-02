@@ -28,8 +28,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CLR (memory), LD
 internal class _4F_Clra_I : OpCode, IOpCode
 {
-    internal _4F_Clra_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         A = 0;

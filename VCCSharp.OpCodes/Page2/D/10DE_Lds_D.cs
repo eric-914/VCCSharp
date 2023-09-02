@@ -25,8 +25,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: LD (8-bit), LDQ, LEA
 internal class _10DE_Lds_D : OpCode, IOpCode
 {
-    internal _10DE_Lds_D(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = DIRECT[PC++];

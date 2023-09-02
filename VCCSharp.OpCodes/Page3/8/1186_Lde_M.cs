@@ -26,8 +26,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: LD (16-bit), LDQ
 internal class _1186_Lde_M : OpCode6309, IOpCode
 {
-    internal _1186_Lde_M(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         E = M8[PC++];

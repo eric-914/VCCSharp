@@ -28,8 +28,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BHS, BLT, LBGE
 internal class _2C_Bge_R : OpCode, IOpCode
 {
-    internal _2C_Bge_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         if (!(CC_N ^ CC_V))

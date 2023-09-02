@@ -35,8 +35,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BSR, JSR, PULS, RTS
 internal class _17_Lbsr_R : OpCode, IOpCode
 {
-    internal _17_Lbsr_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort word = M16[PC];

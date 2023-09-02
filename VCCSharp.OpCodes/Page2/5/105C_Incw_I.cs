@@ -32,8 +32,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: ADD, DEC, INC (memory)
 internal class _105C_Incw_I : OpCode6309, IOpCode
 {
-    internal _105C_Incw_I(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort result = (ushort)(W + 1);

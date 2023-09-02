@@ -26,8 +26,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: ST (8-bit), STQ
 internal class _10A7_Stw_X : OpCode6309, IOpCode
 {
-    internal _10A7_Stw_X(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

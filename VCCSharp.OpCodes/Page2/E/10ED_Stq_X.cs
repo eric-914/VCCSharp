@@ -26,8 +26,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: ST (8-bit), ST (16-bit)
 internal class _10ED_Stq_X : OpCode6309, IOpCode
 {
-    internal _10ED_Stq_X(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

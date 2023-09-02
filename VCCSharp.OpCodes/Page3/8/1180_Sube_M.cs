@@ -32,8 +32,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: SUB (16-bit), SUBR
 internal class _1180_Sube_M : OpCode6309, IOpCode
 {
-    internal _1180_Sube_M(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte value = M8[PC++];

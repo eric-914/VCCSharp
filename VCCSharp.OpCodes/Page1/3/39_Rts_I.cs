@@ -34,8 +34,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BSR, JSR, PULS, RTI
 internal class _39_Rts_I : OpCode, IOpCode
 {
-    internal _39_Rts_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         PC_H = M8[S++];

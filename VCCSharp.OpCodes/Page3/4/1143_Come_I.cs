@@ -32,8 +32,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: COM (memory), NEG
 internal class _1143_Come_I : OpCode6309, IOpCode
 {
-    internal _1143_Come_I(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte result = (byte)(0xFF - E);

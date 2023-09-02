@@ -30,8 +30,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BGT, BLS, LBHI
 internal class _22_Bhi_R : OpCode, IOpCode
 {
-    internal _22_Bhi_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         if (!(CC_C || CC_Z))

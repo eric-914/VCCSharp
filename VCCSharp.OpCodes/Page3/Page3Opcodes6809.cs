@@ -1,12 +1,9 @@
 ﻿namespace VCCSharp.OpCodes.Page3;
 
 using VCCSharp.OpCodes.Model.OpCodes;
-using Motorola = MC6809.IState;
 
 internal class Page3Opcodes6809
 {
-    private readonly Motorola _cpu;
-
     #region Factory
 
     private IOpCode _ => new UndefinedOpCode();
@@ -77,7 +74,7 @@ internal class Page3Opcodes6809
     //_3C_Bitmd_M
     //_3D_Ldmd_M
     //_3E
-    private IOpCode _3F_Swi3_I => new _113F_Swi3_I_6809(_cpu);
+    private IOpCode _3F_Swi3_I => new _113F_Swi3_I_6809();
 
     //_40
     //_41
@@ -150,7 +147,7 @@ internal class Page3Opcodes6809
     //_80_Sube_M
     //_81_Cmpe_M
     //_82
-    private IOpCode _83_Cmpu_M => new _1183_Cmpu_M(_cpu);
+    private IOpCode _83_Cmpu_M => new _1183_Cmpu_M();
     //_84
     //_85
     //_86_Lde_M
@@ -159,7 +156,7 @@ internal class Page3Opcodes6809
     //_89
     //_8A
     //_8B_Adde_M
-    private IOpCode _8C_Cmps_M => new _118C_Cmps_M(_cpu);
+    private IOpCode _8C_Cmps_M => new _118C_Cmps_M();
     //_8D_Divd_M
     //_8E_Divq_M
     //_8F_Muld_M
@@ -167,7 +164,7 @@ internal class Page3Opcodes6809
     //_90_Sube_D
     //_91_Cmpe_D
     //_92
-    private IOpCode _93_Cmpu_D => new _1193_Cmpu_D(_cpu);
+    private IOpCode _93_Cmpu_D => new _1193_Cmpu_D();
     //_94
     //_95
     //_96_Lde_D
@@ -176,7 +173,7 @@ internal class Page3Opcodes6809
     //_99
     //_9A
     //_9B_Adde_D
-    private IOpCode _9C_Cmps_D => new _119C_Cmps_D(_cpu);
+    private IOpCode _9C_Cmps_D => new _119C_Cmps_D();
     //_9D_Divd_D
     //_9E_Divq_D
     //_9F_Muld_D
@@ -184,7 +181,7 @@ internal class Page3Opcodes6809
     //_A0_Sube_X
     //_A1_Cmpe_X
     //_A2
-    private IOpCode _A3_Cmpu_X => new _11A3_Cmpu_X(_cpu);
+    private IOpCode _A3_Cmpu_X => new _11A3_Cmpu_X();
     //_A4
     //_A5
     //_A6_Lde_X
@@ -193,7 +190,7 @@ internal class Page3Opcodes6809
     //_A9
     //_AA
     //_AB_Adde_X
-    private IOpCode _AC_Cmps_X => new _11AC_Cmps_X(_cpu);
+    private IOpCode _AC_Cmps_X => new _11AC_Cmps_X();
     //_AD_Divd_X
     //_AE_Divq_X
     //_AF_Muld_X
@@ -210,7 +207,7 @@ internal class Page3Opcodes6809
     //_B9
     //_BA
     //_BB_Adde_E
-    private IOpCode _BC_Cmps_E => new _11BC_Cmps_E(_cpu);
+    private IOpCode _BC_Cmps_E => new _11BC_Cmps_E();
     //_BD_Divd_E
     //_BE_Divq_E
     //_BF_Muld_E
@@ -244,17 +241,17 @@ internal class Page3Opcodes6809
     //_D9
     //_DA
     //_DB_Addf_D
-    //_DC => new _11DC(_cpu);
-    //_DD => new _11DD(_cpu);
-    //_DE => new _11DE(_cpu);
-    //_DF => new _11DF(_cpu);
+    //_DC => new _11DC();
+    //_DD => new _11DD();
+    //_DE => new _11DE();
+    //_DF => new _11DF();
 
     //_E0_Subf_X
     //_E1_Cmpf_X
-    //_03 => new _1103(_cpu);
-    //_04 => new _1104(_cpu);
-    //_05 => new _1105(_cpu);
-    //_06 => new _1106(_cpu);
+    //_03 => new _1103();
+    //_04 => new _1104();
+    //_05 => new _1105();
+    //_06 => new _1106();
     //_E6_Ldf_X
     //_E7_Stf_X
     //_09
@@ -284,11 +281,6 @@ internal class Page3Opcodes6809
     //_FF
 
     #endregion
-
-    public Page3Opcodes6809(Motorola cpu)
-    {
-        _cpu = cpu;
-    }
 
     public IOpCode[] OpCodes => new IOpCode[256]
     {

@@ -45,8 +45,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ANDCC, RTI, SYNC
 internal class _3C_Cwai_I : OpCode, IOpCode
 {
-    internal _3C_Cwai_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte value = M8[PC++];

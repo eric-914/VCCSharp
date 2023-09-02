@@ -32,8 +32,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADDR, LD (16-bit), SUBR
 internal class _30_Leax_X : OpCode, IOpCode
 {
-    internal _30_Leax_X(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         X = INDEXED[PC++];

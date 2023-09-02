@@ -29,8 +29,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BRN, EXG, LBRN, LEA, PSH, PUL, TFR
 internal class _12_Nop_I : OpCode, IOpCode
 {
-    internal _12_Nop_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         return DynamicCycles._21;

@@ -35,8 +35,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: JSR, LBSR, RTS
 internal class _8D_Bsr_R : OpCode, IOpCode
 {
-    internal _8D_Bsr_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         sbyte offset = (sbyte)M8[PC++];

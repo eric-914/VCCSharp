@@ -34,8 +34,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: COM (memory), NEG
 internal class _1053_Comw_I : OpCode6309, IOpCode
 {
-    internal _1053_Comw_I(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         var result = (ushort)(0xFFFF - W);

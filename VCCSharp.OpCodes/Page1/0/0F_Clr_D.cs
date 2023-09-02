@@ -41,8 +41,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CLR (accumulator), ST
 internal class _0F_Clr_D : OpCode, IOpCode
 {
-    internal _0F_Clr_D(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = DIRECT[PC++];

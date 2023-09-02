@@ -30,8 +30,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADD, DEC, INC (accumulator)
 internal class _6C_Inc_X : OpCode, IOpCode
 {
-    internal _6C_Inc_X(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

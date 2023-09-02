@@ -34,8 +34,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ROR (16-bit)
 internal class _06_Ror_D : OpCode, IOpCode
 {
-    internal _06_Ror_D(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = DIRECT[PC++];

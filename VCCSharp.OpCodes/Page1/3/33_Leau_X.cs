@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADDR, LD (16-bit), SUBR
 internal class _33_Leau_X : OpCode, IOpCode
 {
-    internal _33_Leau_X(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         U = INDEXED[PC++];

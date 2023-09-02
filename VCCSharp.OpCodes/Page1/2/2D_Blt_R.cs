@@ -29,8 +29,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BGE, BLO, LBLT
 internal class _2D_Blt_R : OpCode, IOpCode
 {
-    internal _2D_Blt_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         if (CC_V ^ CC_N)

@@ -41,8 +41,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: SBC (8-bit), SBCR
 internal class _1082_Sbcd_M : OpCode6309, IOpCode
 {
-    internal _1082_Sbcd_M(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         var value = M16[PC += 2];

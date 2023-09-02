@@ -39,8 +39,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: LSR (8-bit), ROR (16-bit)
 internal class _1054_Lsrw_I : OpCode6309, IOpCode
 {
-    internal _1054_Lsrw_I(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort result = (ushort)(W >> 1);

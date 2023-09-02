@@ -41,8 +41,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: SBC (8-bit), SBCR
 internal class _10A2_Sbcd_X : OpCode6309, IOpCode
 {
-    internal _10A2_Sbcd_X(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

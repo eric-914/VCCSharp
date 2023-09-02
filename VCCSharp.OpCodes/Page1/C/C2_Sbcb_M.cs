@@ -32,8 +32,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: SBCD, SBCR
 internal class _C2_Sbcb_M : OpCode, IOpCode
 {
-    internal _C2_Sbcb_M(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte value = M8[PC++].Plus(CC_C);

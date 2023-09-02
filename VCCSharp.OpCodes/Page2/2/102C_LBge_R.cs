@@ -31,8 +31,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: BGE, LBHS, LBLT
 internal class _102C_LBge_R : OpCode, IOpCode
 {
-    internal _102C_LBge_R(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         int cycles = 5;

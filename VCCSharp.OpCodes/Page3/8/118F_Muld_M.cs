@@ -26,8 +26,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: MUL
 internal class _118F_Muld_M : OpCode6309, IOpCode
 {
-    internal _118F_Muld_M(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         short value = (short)M16[PC += 2];

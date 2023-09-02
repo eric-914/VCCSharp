@@ -54,8 +54,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// The object code format for the STBT instruction is:
 internal class _1137_Stbt_D : OpCode6309, IOpCode
 {
-    internal _1137_Stbt_D(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte value = M8[PC++];

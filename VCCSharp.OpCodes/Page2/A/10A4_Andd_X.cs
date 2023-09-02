@@ -35,8 +35,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: AND (8-bit), ANDCC, ANDR, BITD
 internal class _10A4_Andd_X : OpCode6309, IOpCode
 {
-    internal _10A4_Andd_X(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];

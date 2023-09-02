@@ -35,8 +35,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADCR, ROL (16-bit)
 internal class _49_Rola_I : OpCode, IOpCode
 {
-    internal _49_Rola_I(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         byte bit = CC_C.ToBit();

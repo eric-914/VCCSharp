@@ -41,8 +41,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// (Three additional cycles are used for each BYTE transferred.)
 internal class _1139_Tfm2_M : OpCode6309, IOpCode
 {
-    internal _1139_Tfm2_M(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         if (W == 0)

@@ -66,7 +66,7 @@ internal class _1E_Exg_M_6809 : OpCode, IOpCode
 
     private readonly RegisterMap4Bit _map;
 
-    internal _1E_Exg_M_6809(MC6809.IState cpu) : base(cpu)
+    internal _1E_Exg_M_6809()
     {
         _map = new RegisterMap4Bit
         {

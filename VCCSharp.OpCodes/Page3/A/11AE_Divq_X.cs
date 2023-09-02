@@ -48,8 +48,6 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: DIVD
 internal class _11AE_Divq_X : OpCode6309, IOpCode
 {
-    internal _11AE_Divq_X(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         const ushort abort = 0xFFFF;

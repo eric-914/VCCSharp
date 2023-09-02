@@ -51,8 +51,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: RTI
 internal class _3F_Swi_I_6809 : OpCode, IOpCode
 {
-    internal _3F_Swi_I_6809(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         CC_E = true;

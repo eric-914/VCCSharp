@@ -26,8 +26,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: LD (8-bit), LDQ, LEA
 internal class _1086_Ldw_M : OpCode6309, IOpCode
 {
-    internal _1086_Ldw_M(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         W = M16[PC += 2];

@@ -32,8 +32,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: LSR (16-bit)
 internal class _04_Lsr_D : OpCode, IOpCode
 {
-    internal _04_Lsr_D(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = DIRECT[PC++];

@@ -29,8 +29,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: COM (accumulator), NEG
 internal class _03_Com_D : OpCode, IOpCode
 {
-    internal _03_Com_D(MC6809.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = DIRECT[PC++];

@@ -34,8 +34,6 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: EOR (8-bit), EORR
 internal class _10A8_Eord_X : OpCode6309, IOpCode
 {
-    internal _10A8_Eord_X(HD6309.IState cpu) : base(cpu) { }
-
     public int Exec()
     {
         ushort address = INDEXED[PC++];
