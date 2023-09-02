@@ -9,8 +9,5 @@
 /// </remarks>
 public interface IRegisterPC
 {
-    ushort PC_REG { get; set; }
-
-    byte PC_L { get; set; }
-    byte PC_H { get; set; }
+    ushort PC { get; set; }
 }

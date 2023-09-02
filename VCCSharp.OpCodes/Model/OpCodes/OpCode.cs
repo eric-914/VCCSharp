@@ -28,7 +28,14 @@ internal abstract class OpCode : OpCodeBase<MC6809.IState>
     /// </summary>
     protected MemoryIndexed INDEXED { get; }
 
+    /// <summary>
+    /// Index accessor for 8-bit registers
+    /// </summary>
     protected IRegisters8Bit R8 { get; }
+
+    /// <summary>
+    /// Index accessor for 16-bit registers
+    /// </summary>
     protected IRegisters16Bit R16 { get; }
 
     protected OpCode(MC6809.IState cpu) : base(cpu)
@@ -48,12 +55,12 @@ internal abstract class OpCode : OpCodeBase<MC6809.IState>
     /// <summary>
     /// 8-bit register
     /// </summary>
-    protected byte A { get => _cpu.A_REG; set => _cpu.A_REG = value; }
+    protected byte A { get => _cpu.A; set => _cpu.A = value; }
 
     /// <summary>
     /// 8-bit register
     /// </summary>
-    protected byte B { get => _cpu.B_REG; set => _cpu.B_REG = value; }
+    protected byte B { get => _cpu.B; set => _cpu.B = value; }
 
     //TODO: See details in IRegisterDP
     protected byte DP { get => _cpu.DP; set => _cpu.DP = value; }
@@ -61,43 +68,82 @@ internal abstract class OpCode : OpCodeBase<MC6809.IState>
     /// <summary>
     /// Program Counter
     /// </summary>
-    protected ushort PC { get => _cpu.PC_REG; set => _cpu.PC_REG = value; }
+    protected ushort PC { get => _cpu.PC; set => _cpu.PC = value; }
 
     /// <summary>
     /// 16-bit register <c>A.B</c>
     /// </summary>
-    protected ushort D { get => _cpu.D_REG; set => _cpu.D_REG = value; }
+    protected ushort D { get => _cpu.D; set => _cpu.D = value; }
 
     /// <summary>
     /// 16-bit register
     /// </summary>
-    protected ushort X { get => _cpu.X_REG; set => _cpu.X_REG = value; }
+    protected ushort X { get => _cpu.X; set => _cpu.X = value; }
 
     /// <summary>
     /// 16-bit register
     /// </summary>
-    protected ushort Y { get => _cpu.Y_REG; set => _cpu.Y_REG = value; }
+    protected ushort Y { get => _cpu.Y; set => _cpu.Y = value; }
 
     /// <summary>
     /// 16-bit <c>STACK</c> register
     /// </summary>
-    protected ushort S { get => _cpu.S_REG; set => _cpu.S_REG = value; }
+    protected ushort S { get => _cpu.S; set => _cpu.S = value; }
 
     /// <summary>
     /// 16-bit <c>USER-STACK</c> register
     /// </summary>
-    protected ushort U { get => _cpu.U_REG; set => _cpu.U_REG = value; }
+    protected ushort U { get => _cpu.U; set => _cpu.U = value; }
 
-    protected byte PC_L { get => _cpu.PC_L; set => _cpu.PC_L = value; }
-    protected byte PC_H { get => _cpu.PC_H; set => _cpu.PC_H = value; }
-    protected byte X_L { get => _cpu.X_L; set => _cpu.X_L = value; }
-    protected byte X_H { get => _cpu.X_H; set => _cpu.X_H = value; }
-    protected byte Y_L { get => _cpu.Y_L; set => _cpu.Y_L = value; }
-    protected byte Y_H { get => _cpu.Y_H; set => _cpu.Y_H = value; }
-    protected byte S_L { get => _cpu.S_L; set => _cpu.S_L = value; }
-    protected byte S_H { get => _cpu.S_H; set => _cpu.S_H = value; }
-    protected byte U_L { get => _cpu.U_L; set => _cpu.U_L = value; }
-    protected byte U_H { get => _cpu.U_H; set => _cpu.U_H = value; }
+    /// <summary>
+    /// <c>PC</c> low 8 bits
+    /// </summary>
+    protected byte PC_L { get => PC.L(); set => PC = PC.L(value); }
+
+    /// <summary>
+    /// <c>PC</c> high 8 bits
+    /// </summary>
+    protected byte PC_H { get => PC.H(); set => PC = PC.H(value); }
+
+    /// <summary>
+    /// <c>X</c> low 8 bits
+    /// </summary>
+    protected byte X_L { get => X.L(); set => X = X.L(value); }
+
+    /// <summary>
+    /// <c>X</c> high 8 bits
+    /// </summary>
+    protected byte X_H { get => X.H(); set => X = X.H(value); }
+
+    /// <summary>
+    /// <c>Y</c> low 8 bits
+    /// </summary>
+    protected byte Y_L { get => Y.L(); set => Y = Y.L(value); }
+
+    /// <summary>
+    /// <c>Y</c> high 8 bits
+    /// </summary>
+    protected byte Y_H { get => Y.H(); set => Y = Y.H(value); }
+
+    /// <summary>
+    /// <c>S</c> low 8 bits
+    /// </summary>
+    protected byte S_L { get => S.L(); set => S = S.L(value); }
+
+    /// <summary>
+    /// <c>S</c> high 8 bits
+    /// </summary>
+    protected byte S_H { get => S.H(); set => S = S.H(value); }
+
+    /// <summary>
+    /// <c>U</c> low 8 bits
+    /// </summary>
+    protected byte U_L { get => U.L(); set => U = U.L(value); }
+
+    /// <summary>
+    /// <c>U</c> high 8 bits
+    /// </summary>
+    protected byte U_H { get => U.H(); set => U = U.H(value); }
 
     /// <summary>
     /// Condition Codes Register
@@ -107,42 +153,42 @@ internal abstract class OpCode : OpCodeBase<MC6809.IState>
     /// <summary>
     /// Condition Code Carry Flag
     /// </summary>
-    protected bool CC_C { get => _cpu.CC_C; set => _cpu.CC_C = value; }
+    protected bool CC_C { get => _cpu.CC.BitC(); set => _cpu.CC = _cpu.CC.BitC(value); }
 
     /// <summary>
     /// Condition Code Entire Register State Stacked Flag
     /// </summary>
-    protected bool CC_E { get => _cpu.CC_E; set => _cpu.CC_E = value; }
+    protected bool CC_E { get => _cpu.CC.BitE(); set => _cpu.CC = _cpu.CC.BitE(value); }
 
     /// <summary>
     /// Condition Code FIRQ Flag
     /// </summary>
-    protected bool CC_F { get => _cpu.CC_F; set => _cpu.CC_F = value; }
+    protected bool CC_F { get => _cpu.CC.BitF(); set => _cpu.CC = _cpu.CC.BitF(value); }
 
     /// <summary>
     /// Condition Code Half-Carry Flag
     /// </summary>
-    protected bool CC_H { get => _cpu.CC_H; set => _cpu.CC_H = value; }
+    protected bool CC_H { get => _cpu.CC.BitH(); set => _cpu.CC = _cpu.CC.BitH(value); }
 
     /// <summary>
     /// Condition Code IRQ Flag
     /// </summary>
-    protected bool CC_I { get => _cpu.CC_I; set => _cpu.CC_I = value; }
+    protected bool CC_I { get => _cpu.CC.BitI(); set => _cpu.CC = _cpu.CC.BitI(value); }
 
     /// <summary>
     /// Condition Code Negative Flag
     /// </summary>
-    protected bool CC_N { get => _cpu.CC_N; set => _cpu.CC_N = value; }
+    protected bool CC_N { get => _cpu.CC.BitN(); set => _cpu.CC = _cpu.CC.BitN(value); }
 
     /// <summary>
     /// Condition Code Overflow Flag
     /// </summary>
-    protected bool CC_V { get => _cpu.CC_V; set => _cpu.CC_V = value; }
+    protected bool CC_V { get => _cpu.CC.BitV(); set => _cpu.CC = _cpu.CC.BitV(value); }
 
     /// <summary>
     /// Condition Code Zero Flag
     /// </summary>
-    protected bool CC_Z { get => _cpu.CC_Z; set => _cpu.CC_Z = value; }
+    protected bool CC_Z { get => _cpu.CC.BitZ(); set => _cpu.CC = _cpu.CC.BitZ(value); }
 
     /// <summary>
     /// Handles the intracies of calculating the sum two values: <c>a+b</c>
@@ -150,7 +196,7 @@ internal abstract class OpCode : OpCodeBase<MC6809.IState>
     /// <param name="a">first 8-bit</param>
     /// <param name="b">second 8-bit</param>
     /// <returns>object with summation results</returns>
-    protected Sum Sum(byte a, byte b) => new(a, b);
+    protected Sum Add(byte a, byte b) => new(a, b);
 
     /// <summary>
     /// Handles the intracies of calculating the sum two values: <c>a+b</c>

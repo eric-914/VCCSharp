@@ -36,7 +36,7 @@ internal class _8B_Adda_M : OpCode, IOpCode
     {
         byte value = M8[PC++];
 
-        var sum = Sum(A, value);
+        var sum = Add(A, value);
 
         CC_H = sum.H;
         CC_N = sum.N;

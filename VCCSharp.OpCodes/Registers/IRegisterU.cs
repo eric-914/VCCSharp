@@ -13,8 +13,5 @@
 /// </remarks>
 public interface IRegisterU
 {
-    ushort U_REG { get;set;}
-
-    byte U_L { get; set; }
-    byte U_H { get; set; }
+    ushort U { get;set;}
 }

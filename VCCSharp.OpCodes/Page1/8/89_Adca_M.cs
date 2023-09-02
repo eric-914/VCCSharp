@@ -37,7 +37,7 @@ internal class _89_Adca_M : OpCode, IOpCode
     {
         byte value = M8[PC++].Plus(CC_C);
 
-        var sum = Sum(A, value);
+        var sum = Add(A, value);
 
         CC_H = sum.H;
         CC_N = sum.N;

@@ -37,7 +37,7 @@ internal class _EB_Addb_X : OpCode, IOpCode
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
-        var sum = Sum(B, value);
+        var sum = Add(B, value);
 
         CC_H = sum.H;
         CC_N = sum.N;

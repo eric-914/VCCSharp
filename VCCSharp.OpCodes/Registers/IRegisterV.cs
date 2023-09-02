@@ -6,5 +6,5 @@
 /// </summary>
 public interface IRegisterV
 {
-    ushort V_REG { get; set; }
+    ushort V { get; set; }
 }

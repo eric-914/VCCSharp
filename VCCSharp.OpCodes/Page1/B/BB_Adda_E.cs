@@ -37,7 +37,7 @@ internal class _BB_Adda_E : OpCode, IOpCode
         ushort address = M16[PC+=2];
         byte value = M8[address];
 
-        var sum = Sum(A, value);
+        var sum = Add(A, value);
 
         CC_H = sum.H;
         CC_N = sum.N;

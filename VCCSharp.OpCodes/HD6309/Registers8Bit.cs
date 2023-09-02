@@ -24,12 +24,12 @@ internal class Registers8Bit<T> : IRegisters8Bit
         set => _setter[index](value);
     }
 
-    private byte A { get => _cpu.A_REG; set => _cpu.A_REG = value; }
-    private byte B { get => _cpu.B_REG; set => _cpu.B_REG = value; }
+    private byte A { get => _cpu.A; set => _cpu.A = value; }
+    private byte B { get => _cpu.B; set => _cpu.B = value; }
     private byte CC { get => _cpu.CC; set => _cpu.CC = value; }
     private byte DP { get => _cpu.DP; set => _cpu.DP = value; }
-    private byte E { get => _cpu.E_REG; set => _cpu.E_REG = value; }
-    private byte F { get => _cpu.F_REG; set => _cpu.F_REG = value; }
+    private byte E { get => _cpu.E; set => _cpu.E = value; }
+    private byte F { get => _cpu.F; set => _cpu.F = value; }
 
     private byte Z { get => 0; } //--ZERO Register
 }

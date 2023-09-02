@@ -37,7 +37,7 @@ internal class _C9_Adcb_M : OpCode, IOpCode
     {
         byte value = M8[PC++].Plus(CC_C);
 
-        var sum = Sum(B, value);
+        var sum = Add(B, value);
 
         CC_H = sum.H;
         CC_N = sum.N;

@@ -24,11 +24,11 @@ internal class Registers16Bit<T> : IRegisters16Bit
         set => _setter[index](value);
     }
 
-    private ushort D { get => _cpu.D_REG; set => _cpu.D_REG = value; }
-    private ushort X { get => _cpu.X_REG; set => _cpu.X_REG = value; }
-    private ushort Y { get => _cpu.Y_REG; set => _cpu.Y_REG = value; }
-    private ushort U { get => _cpu.U_REG; set => _cpu.U_REG = value; }
-    private ushort S { get => _cpu.S_REG; set => _cpu.S_REG = value; }
+    private ushort D { get => _cpu.D; set => _cpu.D = value; }
+    private ushort X { get => _cpu.X; set => _cpu.X = value; }
+    private ushort Y { get => _cpu.Y; set => _cpu.Y = value; }
+    private ushort U { get => _cpu.U; set => _cpu.U = value; }
+    private ushort S { get => _cpu.S; set => _cpu.S = value; }
 
     ushort invalid() => 0xFFFF;
     void nop(ushort _) { }
