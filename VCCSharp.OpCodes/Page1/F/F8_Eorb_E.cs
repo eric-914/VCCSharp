@@ -44,6 +44,6 @@ internal class _F8_Eorb_E : OpCode, IOpCode
         CC_Z = B == 0;
         CC_V = false;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

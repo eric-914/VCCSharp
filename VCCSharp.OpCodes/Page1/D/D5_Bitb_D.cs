@@ -43,6 +43,6 @@ internal class _D5_Bitb_D : OpCode, IOpCode
         CC_Z = value == 0;
         CC_V = false;
 
-        return Cycles._43;
+        return DynamicCycles._43;
     }
 }

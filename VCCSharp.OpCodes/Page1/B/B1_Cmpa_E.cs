@@ -47,6 +47,6 @@ internal class _B1_Cmpa_E : OpCode, IOpCode
         CC_V = sum.V;
         CC_C = sum.C;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

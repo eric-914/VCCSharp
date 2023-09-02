@@ -48,6 +48,6 @@ internal class _74_Lsr_E : OpCode, IOpCode
 
         M8[address] = result;
 
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }

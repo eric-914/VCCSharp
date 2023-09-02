@@ -44,6 +44,6 @@ internal class _54_Lsrb_I : OpCode, IOpCode
 
         B = result;
 
-        return Cycles._21;
+        return DynamicCycles._21;
     }
 }

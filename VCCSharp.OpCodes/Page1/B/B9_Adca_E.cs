@@ -48,6 +48,6 @@ internal class _B9_Adca_E : OpCode, IOpCode
 
         A = (byte)sum.Result;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

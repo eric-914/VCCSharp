@@ -46,6 +46,6 @@ internal class _B8_Eora_E : OpCode, IOpCode
 
         PC += 2;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

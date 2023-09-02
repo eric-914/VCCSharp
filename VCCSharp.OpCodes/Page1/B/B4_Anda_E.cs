@@ -48,6 +48,6 @@ internal class _B4_Anda_E : OpCode, IOpCode
 
         A = result;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

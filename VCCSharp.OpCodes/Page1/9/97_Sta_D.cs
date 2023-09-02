@@ -37,6 +37,6 @@ internal class _97_Sta_D : OpCode, IOpCode
         CC_Z = A == 0;
         CC_V = false;
 
-        return Cycles._43;
+        return DynamicCycles._43;
     }
 }

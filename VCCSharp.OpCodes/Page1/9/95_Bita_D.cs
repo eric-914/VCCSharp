@@ -45,6 +45,6 @@ internal class _95_Bita_D : OpCode, IOpCode
         CC_Z = result == 0;
         CC_V = false;
 
-        return Cycles._43;
+        return DynamicCycles._43;
     }
 }

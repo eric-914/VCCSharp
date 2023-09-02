@@ -47,6 +47,6 @@ internal class _FB_Addb_E : OpCode, IOpCode
 
         B = (byte)sum.Result;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

@@ -44,6 +44,6 @@ internal class _118C_Cmps_M : OpCode, IOpCode
         CC_V = sum.V;
         CC_C = sum.C;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

@@ -39,6 +39,6 @@ internal class _B6_Lda_E : OpCode, IOpCode
 
         PC += 2;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

@@ -42,6 +42,6 @@ internal class _FA_Orb_E : OpCode, IOpCode
         CC_Z = B == 0;
         CC_V = false;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

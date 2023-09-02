@@ -48,6 +48,6 @@ internal class _0E_Jmp_D : OpCode, IOpCode
 
         PC = address;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

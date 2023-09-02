@@ -54,6 +54,6 @@ internal class _9D_Jsr_D : OpCode, IOpCode
 
         PC = address;
 
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }

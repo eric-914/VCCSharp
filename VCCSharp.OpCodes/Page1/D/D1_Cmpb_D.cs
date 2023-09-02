@@ -47,6 +47,6 @@ internal class _D1_Cmpb_D : OpCode, IOpCode
         CC_V = sum.V;
         CC_C = sum.C;
 
-        return Cycles._43;
+        return DynamicCycles._43;
     }
 }

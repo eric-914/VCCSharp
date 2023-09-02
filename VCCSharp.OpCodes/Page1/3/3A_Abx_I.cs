@@ -39,6 +39,6 @@ internal class _3A_Abx_I : OpCode, IOpCode
     {
         X += B;
 
-        return Cycles._31;
+        return DynamicCycles._31;
     }
 }

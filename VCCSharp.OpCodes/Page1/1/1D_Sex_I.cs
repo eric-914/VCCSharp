@@ -53,6 +53,6 @@ internal class _1D_Sex_I : OpCode, IOpCode
         CC_Z = D == 0;
         CC_N = bit;
 
-        return Cycles._21;
+        return DynamicCycles._21;
     }
 }

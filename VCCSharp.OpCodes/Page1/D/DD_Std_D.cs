@@ -37,6 +37,6 @@ internal class _DD_Std_D : OpCode, IOpCode
         CC_Z = D == 0;
         CC_V = false;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

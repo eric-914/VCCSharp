@@ -53,6 +53,6 @@ internal class _79_Rol_E : OpCode, IOpCode
 
         M8[address] = result;
 
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }

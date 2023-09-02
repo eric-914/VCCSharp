@@ -48,6 +48,6 @@ internal class _56_Rorb_I : OpCode, IOpCode
 
         B = result;
 
-        return Cycles._21;
+        return DynamicCycles._21;
     }
 }

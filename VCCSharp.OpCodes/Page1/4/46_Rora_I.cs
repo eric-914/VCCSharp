@@ -48,6 +48,6 @@ internal class _46_Rora_I : OpCode, IOpCode
 
         A = result;
 
-        return Cycles._21;
+        return DynamicCycles._21;
     }
 }

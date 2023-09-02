@@ -39,6 +39,6 @@ internal class _16_Lbra_R : OpCode, IOpCode
 
         PC += word;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

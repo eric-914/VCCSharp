@@ -8,7 +8,7 @@ namespace VCCSharp.OpCodes.Model.OpCodes;
 /// For use on HD6309 specific opcodes
 /// <code>🚫 6309 ONLY 🚫</code>
 /// </summary>
-internal abstract class OpCode6309 : OpCodeBase<HD6309.IState>
+internal abstract class OpCode6309
 {
     private HD6309.IState _cpu;
 
@@ -46,7 +46,9 @@ internal abstract class OpCode6309 : OpCodeBase<HD6309.IState>
 
     protected HD6309.Exceptions Exceptions { get; }
 
-    protected OpCode6309(HD6309.IState cpu) : base(cpu)
+    protected DynamicCycles Cycles { get; }
+
+    protected OpCode6309(HD6309.IState cpu) 
     {
         _cpu = cpu;
 
@@ -61,7 +63,15 @@ internal abstract class OpCode6309 : OpCodeBase<HD6309.IState>
         R16 = new MC6809.Registers16Bit<HD6309.IState>(cpu);
 
         Exceptions = new HD6309.Exceptions(cpu);
+
+        Cycles = new DynamicCycles(cpu);
     }
+
+    protected bool IsInInterrupt { get => _cpu.IsInInterrupt; set => _cpu.IsInInterrupt = value; }
+
+    protected bool IsSyncWaiting { get => _cpu.IsSyncWaiting; set => _cpu.IsSyncWaiting = value; }
+
+    protected int SyncCycle { get => _cpu.SyncCycle; set => _cpu.SyncCycle = value; }
 
     /// <summary>
     /// 8-bit register

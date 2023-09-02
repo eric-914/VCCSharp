@@ -37,6 +37,6 @@ internal class _10BF_Sty_E : OpCode, IOpCode
         CC_Z = Y == 0;
         CC_V = false;
 
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }

@@ -46,6 +46,6 @@ internal class _1083_Cmpd_M : OpCode, IOpCode
         CC_V = sum.V;
         CC_C = sum.C;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

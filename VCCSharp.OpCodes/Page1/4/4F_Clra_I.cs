@@ -39,6 +39,6 @@ internal class _4F_Clra_I : OpCode, IOpCode
         CC_V = false;
         CC_C = false;
 
-        return Cycles._21;
+        return DynamicCycles._21;
     }
 }

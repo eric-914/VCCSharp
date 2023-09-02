@@ -43,6 +43,6 @@ internal class _5C_Incb_I : OpCode, IOpCode
 
         B = result;
 
-        return Cycles._21;
+        return DynamicCycles._21;
     }
 }

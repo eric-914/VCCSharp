@@ -47,6 +47,6 @@ internal class _BB_Adda_E : OpCode, IOpCode
 
         A = (byte)sum.Result;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

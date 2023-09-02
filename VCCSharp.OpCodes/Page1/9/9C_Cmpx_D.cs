@@ -45,6 +45,6 @@ internal class _9C_Cmpx_D : OpCode, IOpCode
         CC_V = sum.V;
         CC_C = sum.C;
 
-        return Cycles._64;
+        return DynamicCycles._64;
     }
 }

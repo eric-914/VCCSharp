@@ -39,6 +39,6 @@ internal class _4D_Tsta_I : OpCode, IOpCode
         CC_Z = A == 0;
         CC_V = false;
 
-        return Cycles._21;
+        return DynamicCycles._21;
     }
 }

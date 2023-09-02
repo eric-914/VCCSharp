@@ -52,6 +52,6 @@ internal class _77_Asr_E : OpCode, IOpCode
 
         M8[address] = result;
 
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }

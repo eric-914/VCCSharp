@@ -44,6 +44,6 @@ internal class _43_Coma_I : OpCode, IOpCode
 
         A = result;
 
-        return Cycles._21;
+        return DynamicCycles._21;
     }
 }

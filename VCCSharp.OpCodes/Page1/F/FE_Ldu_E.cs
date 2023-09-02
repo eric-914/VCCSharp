@@ -37,6 +37,6 @@ internal class _FE_Ldu_E : OpCode, IOpCode
         CC_Z = U == 0;
         CC_V = false;
 
-        return Cycles._65;
+        return DynamicCycles._65;
     }
 }

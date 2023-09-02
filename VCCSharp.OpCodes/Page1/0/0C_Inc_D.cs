@@ -45,6 +45,6 @@ internal class _0C_Inc_D : OpCode, IOpCode
 
         M8[address] = result;
 
-        return Cycles._65;
+        return DynamicCycles._65;
     }
 }

@@ -52,6 +52,6 @@ internal class _1A_Orcc_M : OpCode, IOpCode
 
         CC = result;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

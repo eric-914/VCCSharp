@@ -37,6 +37,6 @@ internal class _BE_Ldx_E : OpCode, IOpCode
         CC_Z = X == 0;
         CC_V = false;
 
-        return Cycles._65;
+        return DynamicCycles._65;
     }
 }

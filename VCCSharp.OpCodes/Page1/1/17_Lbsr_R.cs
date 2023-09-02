@@ -48,6 +48,6 @@ internal class _17_Lbsr_R : OpCode, IOpCode
 
         PC += word;
 
-        return Cycles._97;
+        return DynamicCycles._97;
     }
 }

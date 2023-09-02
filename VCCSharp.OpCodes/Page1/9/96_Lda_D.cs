@@ -37,6 +37,6 @@ internal class _96_Lda_D : OpCode, IOpCode
         CC_N = A.Bit7();
         CC_V = false;
 
-        return Cycles._43;
+        return DynamicCycles._43;
     }
 }

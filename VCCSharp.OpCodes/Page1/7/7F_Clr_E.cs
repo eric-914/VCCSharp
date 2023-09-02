@@ -54,6 +54,6 @@ internal class _7F_Clr_E : OpCode, IOpCode
         CC_V = false;
         CC_C = false;
 
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }

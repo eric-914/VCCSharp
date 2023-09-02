@@ -49,6 +49,6 @@ internal class _50_Negb_I : OpCode, IOpCode
 
         B = value;
 
-        return Cycles._21;
+        return DynamicCycles._21;
     }
 }

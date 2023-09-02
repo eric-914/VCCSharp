@@ -33,6 +33,6 @@ internal class _12_Nop_I : OpCode, IOpCode
 
     public int Exec()
     {
-        return Cycles._21;
+        return DynamicCycles._21;
     }
 }

@@ -46,6 +46,6 @@ internal class _F3_Addd_E : OpCode, IOpCode
 
         D = (ushort)sum.Result;
 
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }

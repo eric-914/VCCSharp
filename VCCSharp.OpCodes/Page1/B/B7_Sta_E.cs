@@ -37,6 +37,6 @@ internal class _B7_Sta_E : OpCode, IOpCode
         CC_N = A.Bit7();
         CC_V = false;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

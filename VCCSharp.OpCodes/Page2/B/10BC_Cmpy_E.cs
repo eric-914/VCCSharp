@@ -45,6 +45,6 @@ internal class _10BC_Cmpy_E : OpCode, IOpCode
         CC_V = sum.V;
         CC_C = sum.C;
 
-        return Cycles._86;
+        return DynamicCycles._86;
     }
 }

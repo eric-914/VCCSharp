@@ -39,6 +39,6 @@ internal class _5D_Tstb_I : OpCode, IOpCode
         CC_Z = B == 0;
         CC_V = false;
 
-        return Cycles._21;
+        return DynamicCycles._21;
     }
 }

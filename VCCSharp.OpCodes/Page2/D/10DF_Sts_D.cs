@@ -37,6 +37,6 @@ internal class _10DF_Sts_D : OpCode, IOpCode
         CC_Z = S == 0;
         CC_V = false;
 
-        return Cycles._65;
+        return DynamicCycles._65;
     }
 }

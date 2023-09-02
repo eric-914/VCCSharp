@@ -48,6 +48,6 @@ internal class _D0_Subb_D : OpCode, IOpCode
 
         B = (byte)sum.Result;
 
-        return Cycles._43;
+        return DynamicCycles._43;
     }
 }

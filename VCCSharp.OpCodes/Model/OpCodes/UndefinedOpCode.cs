@@ -1,9 +1,8 @@
-﻿namespace VCCSharp.OpCodes.Model.OpCodes
-{
-    internal class UndefinedOpCode : OpCode, IOpCode
-    {
-        public UndefinedOpCode() : base(null!) { }
+﻿namespace VCCSharp.OpCodes.Model.OpCodes;
 
-        public int Exec() => throw new NotImplementedException();
-    }
+internal class UndefinedOpCode : IOpCode
+{
+    public UndefinedOpCode() { }
+
+    public int Exec() => throw new NotImplementedException();
 }

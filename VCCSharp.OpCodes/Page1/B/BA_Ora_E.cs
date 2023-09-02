@@ -42,6 +42,6 @@ internal class _BA_Ora_E : OpCode, IOpCode
         CC_Z = A == 0;
         CC_V = false;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

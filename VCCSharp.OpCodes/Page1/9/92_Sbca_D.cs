@@ -49,6 +49,6 @@ internal class _92_Sbca_D : OpCode, IOpCode
 
         A = (byte)sum.Result;
 
-        return Cycles._43;
+        return DynamicCycles._43;
     }
 }

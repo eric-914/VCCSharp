@@ -49,6 +49,6 @@ internal class _D4_Andb_D : OpCode, IOpCode
 
         B = result;
 
-        return Cycles._43;
+        return DynamicCycles._43;
     }
 }

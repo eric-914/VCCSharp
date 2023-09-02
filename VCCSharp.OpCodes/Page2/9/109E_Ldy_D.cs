@@ -37,6 +37,6 @@ internal class _109E_Ldy_D : OpCode, IOpCode
         CC_Z = Y == 0;
         CC_V = false;
 
-        return Cycles._65;
+        return DynamicCycles._65;
     }
 }

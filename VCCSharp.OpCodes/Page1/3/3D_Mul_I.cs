@@ -37,6 +37,6 @@ internal class _3D_Mul_I : OpCode, IOpCode
         CC_Z = D == 0;
         CC_C = B.Bit7();
 
-        return Cycles._1110;
+        return DynamicCycles._1110;
     }
 }

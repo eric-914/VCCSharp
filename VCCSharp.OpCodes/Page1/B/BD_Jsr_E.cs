@@ -54,6 +54,6 @@ internal class _BD_Jsr_E : OpCode, IOpCode
 
         PC = address;
 
-        return Cycles._87;
+        return DynamicCycles._87;
     }
 }

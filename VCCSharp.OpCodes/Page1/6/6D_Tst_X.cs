@@ -44,6 +44,6 @@ internal class _6D_Tst_X : OpCode, IOpCode
         CC_Z = value == 0;
         CC_V = false;
 
-        return Cycles._65;
+        return DynamicCycles._65;
     }
 }

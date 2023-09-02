@@ -51,7 +51,7 @@ internal class _34_Pshs_M : OpCode, IOpCode
 
     public int Exec()
     {
-        int cycles = Cycles._54;
+        int cycles = DynamicCycles._54;
 
         void Write(byte value)
         {

@@ -48,6 +48,6 @@ internal class _F9_Adcb_E : OpCode, IOpCode
 
         B = (byte)sum.Result;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

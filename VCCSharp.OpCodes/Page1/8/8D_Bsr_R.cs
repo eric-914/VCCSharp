@@ -46,6 +46,6 @@ internal class _8D_Bsr_R : OpCode, IOpCode
 
         PC += (ushort)offset;
 
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }

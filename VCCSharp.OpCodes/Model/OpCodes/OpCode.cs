@@ -7,7 +7,7 @@ namespace VCCSharp.OpCodes.Model.OpCodes;
 /// <summary>
 /// Most OpCodes are 6809 compatible, so this is the default OpCode base class.
 /// </summary>
-internal abstract class OpCode : OpCodeBase<MC6809.IState>
+internal abstract class OpCode 
 {
     private MC6809.IState _cpu;
 
@@ -38,7 +38,9 @@ internal abstract class OpCode : OpCodeBase<MC6809.IState>
     /// </summary>
     protected IRegisters16Bit R16 { get; }
 
-    protected OpCode(MC6809.IState cpu) : base(cpu)
+    protected DynamicCycles DynamicCycles { get; }
+
+    protected OpCode(MC6809.IState cpu) 
     {
         _cpu = cpu;
 
@@ -50,7 +52,15 @@ internal abstract class OpCode : OpCodeBase<MC6809.IState>
 
         R8 = new MC6809.Registers8Bit<MC6809.IState>(cpu);
         R16 = new MC6809.Registers16Bit<MC6809.IState>(cpu);
+
+        DynamicCycles = new DynamicCycles(cpu);
     }
+
+    protected bool IsInInterrupt { get => _cpu.IsInInterrupt; set => _cpu.IsInInterrupt = value; }
+
+    protected bool IsSyncWaiting { get => _cpu.IsSyncWaiting; set => _cpu.IsSyncWaiting = value; }
+
+    protected int SyncCycle { get => _cpu.SyncCycle; set => _cpu.SyncCycle = value; }
 
     /// <summary>
     /// 8-bit register

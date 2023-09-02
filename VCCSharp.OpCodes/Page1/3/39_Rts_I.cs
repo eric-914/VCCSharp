@@ -41,6 +41,6 @@ internal class _39_Rts_I : OpCode, IOpCode
         PC_H = M8[S++];
         PC_L = M8[S++];
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

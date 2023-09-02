@@ -46,6 +46,6 @@ internal class _A3_Subd_X : OpCode, IOpCode
 
         D = (ushort)sum.Result;
 
-        return Cycles._65;
+        return DynamicCycles._65;
     }
 }

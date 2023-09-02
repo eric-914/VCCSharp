@@ -70,6 +70,6 @@ internal class _19_Daa_I : OpCode, IOpCode
         //CC_V = undefined
         CC_Z = A == 0;
 
-        return Cycles._21;
+        return DynamicCycles._21;
     }
 }

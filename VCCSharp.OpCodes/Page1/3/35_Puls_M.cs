@@ -52,7 +52,7 @@ internal class _35_Puls_M : OpCode, IOpCode
 
     public int Exec()
     {
-        int cycles = Cycles._54;
+        int cycles = DynamicCycles._54;
 
         byte Read()
         {

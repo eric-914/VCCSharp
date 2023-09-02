@@ -1,5 +1,4 @@
 ﻿using VCCSharp.Models.CPU.OpCodes;
-using VCCSharp.OpCodes.Definitions;
 
 namespace VCCSharp.OpCodes.Model;
 
@@ -9,7 +8,7 @@ namespace VCCSharp.OpCodes.Model;
 /// The MC6809 will always be the the longer count.
 /// The HD6309 will depend on if its running in native mode vs. emulation mode. (Mode ⇔ MD_NATIVE6309)
 /// </summary>
-internal class Cycles
+internal class DynamicCycles
 {
     private readonly IMode _cpu;
 
@@ -41,13 +40,9 @@ internal class Cycles
         {5, 3}     /* M53 */
     };
 
-    private static Dictionary<Mode, int> _lookup = new()
-    {
-        { Mode.MC6809, 0 },
-        { Mode.HD6309, 1 },
-    };
+    private byte T(int index) => _cycles[index, (int)_cpu.Mode];
 
-    private byte T(int index) => _cycles[index, _lookup[_cpu.Mode]];
+    #region Factory
 
     public byte _65 => T(0);
     public byte _64 => T(1);
@@ -74,7 +69,9 @@ internal class Cycles
     public byte _42 => T(22);
     public byte _53 => T(23);
 
-    public Cycles(IMode cpu)
+    #endregion
+
+    public DynamicCycles(IMode cpu)
     {
         _cpu = cpu;
     }

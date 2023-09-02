@@ -37,6 +37,6 @@ internal class _D7_Stb_D : OpCode, IOpCode
         CC_Z = B == 0;
         CC_V = false;
 
-        return Cycles._43;
+        return DynamicCycles._43;
     }
 }

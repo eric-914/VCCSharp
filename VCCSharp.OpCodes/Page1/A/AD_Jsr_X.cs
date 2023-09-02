@@ -54,6 +54,6 @@ internal class _AD_Jsr_X : OpCode, IOpCode
 
         PC = address;
 
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }
