@@ -10,42 +10,42 @@ namespace VCCSharp.OpCodes.Model.OpCodes;
 /// </summary>
 internal abstract class OpCode 
 {
-    private readonly ISystemState _ss;
+    public ISystemState SS { get;set; }
 
-    protected OpCode(ISystemState ss) => _ss = ss;
+    protected OpCode(ISystemState ss) => SS = ss;
 
     protected OpCode(IState cpu) : this(new SystemState(cpu)) { }
 
-    private IState cpu => _ss.cpu;
+    private IState cpu => SS.cpu;
 
     /// <summary>
     /// 8-bit memory access
     /// </summary>
-    protected Memory8Bit M8 => _ss.M8;
+    protected Memory8Bit M8 => SS.M8;
 
     /// <summary>
     /// 16-bit memory access
     /// </summary>
-    protected Memory16Bit M16 => _ss.M16;
+    protected Memory16Bit M16 => SS.M16;
 
-    protected MemoryDP DIRECT => _ss.DIRECT;
+    protected MemoryDP DIRECT => SS.DIRECT;
 
     /// <summary>
     /// 8-bit "Effective Address" memory access
     /// </summary>
-    protected MemoryIndexed INDEXED => _ss.INDEXED;
+    protected MemoryIndexed INDEXED => SS.INDEXED;
 
     /// <summary>
     /// Index accessor for 8-bit registers
     /// </summary>
-    public IRegisters8Bit R8 => _ss.R8;
+    public IRegisters8Bit R8 => SS.R8;
 
     /// <summary>
     /// Index accessor for 16-bit registers
     /// </summary>
-    public IRegisters16Bit R16 => _ss.R16;
+    public IRegisters16Bit R16 => SS.R16;
 
-    protected DynamicCycles DynamicCycles => _ss.DynamicCycles;
+    protected DynamicCycles DynamicCycles => SS.DynamicCycles;
 
     protected bool IsInInterrupt { get => cpu.IsInInterrupt; set => cpu.IsInInterrupt = value; }
 
@@ -154,42 +154,42 @@ internal abstract class OpCode
     /// <summary>
     /// Condition Code Carry Flag
     /// </summary>
-    protected bool CC_C { get => cpu.CC.BitC(); set => cpu.CC = cpu.CC.BitC(value); }
+    protected bool CC_C { get => CC.BitC(); set => CC = CC.BitC(value); }
 
     /// <summary>
     /// Condition Code Entire Register State Stacked Flag
     /// </summary>
-    protected bool CC_E { get => cpu.CC.BitE(); set => cpu.CC = cpu.CC.BitE(value); }
+    protected bool CC_E { get => CC.BitE(); set => CC = CC.BitE(value); }
 
     /// <summary>
     /// Condition Code FIRQ Flag
     /// </summary>
-    protected bool CC_F { get => cpu.CC.BitF(); set => cpu.CC = cpu.CC.BitF(value); }
+    protected bool CC_F { get => CC.BitF(); set => CC = CC.BitF(value); }
 
     /// <summary>
     /// Condition Code Half-Carry Flag
     /// </summary>
-    protected bool CC_H { get => cpu.CC.BitH(); set => cpu.CC = cpu.CC.BitH(value); }
+    protected bool CC_H { get => CC.BitH(); set => CC = CC.BitH(value); }
 
     /// <summary>
     /// Condition Code IRQ Flag
     /// </summary>
-    protected bool CC_I { get => cpu.CC.BitI(); set => cpu.CC = cpu.CC.BitI(value); }
+    protected bool CC_I { get => CC.BitI(); set => CC = CC.BitI(value); }
 
     /// <summary>
     /// Condition Code Negative Flag
     /// </summary>
-    protected bool CC_N { get => cpu.CC.BitN(); set => cpu.CC = cpu.CC.BitN(value); }
+    protected bool CC_N { get => CC.BitN(); set => CC = CC.BitN(value); }
 
     /// <summary>
     /// Condition Code Overflow Flag
     /// </summary>
-    protected bool CC_V { get => cpu.CC.BitV(); set => cpu.CC = cpu.CC.BitV(value); }
+    protected bool CC_V { get => CC.BitV(); set => CC = CC.BitV(value); }
 
     /// <summary>
     /// Condition Code Zero Flag
     /// </summary>
-    protected bool CC_Z { get => cpu.CC.BitZ(); set => cpu.CC = cpu.CC.BitZ(value); }
+    protected bool CC_Z { get => CC.BitZ(); set => CC = CC.BitZ(value); }
 
     /// <summary>
     /// Handles the intracies of calculating the sum two values: <c>a+b</c>

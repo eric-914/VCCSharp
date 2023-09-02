@@ -11,49 +11,49 @@ namespace VCCSharp.OpCodes.Model.OpCodes;
 /// </summary>
 internal abstract class OpCode6309
 {
-    private readonly ISystemState _ss;
+    public ISystemState SS { get;set; }
 
-    protected OpCode6309(ISystemState ss) => _ss = ss;
+    protected OpCode6309(ISystemState ss) => SS = ss;
 
     protected OpCode6309(IState cpu) : this(new SystemState(cpu)) { }
 
-    private IState cpu => _ss.cpu;
+    private IState cpu => SS.cpu;
 
     /// <summary>
     /// 8-bit memory access
     /// </summary>
-    protected Memory8Bit M8 => _ss.M8;
+    protected Memory8Bit M8 => SS.M8;
 
     /// <summary>
     /// 16-bit memory access
     /// </summary>
-    protected Memory16Bit M16 => _ss.M16;
+    protected Memory16Bit M16 => SS.M16;
 
     /// <summary>
     /// 32-bit memory access
     /// </summary>
-    protected Memory32Bit M32 => _ss.M32;
+    protected Memory32Bit M32 => SS.M32;
 
-    protected MemoryDP DIRECT => _ss.DIRECT;
+    protected MemoryDP DIRECT => SS.DIRECT;
 
     /// <summary>
     /// 8-bit "Effective Address" memory access
     /// </summary>
-    protected MemoryIndexed INDEXED => _ss.INDEXED;
+    protected MemoryIndexed INDEXED => SS.INDEXED;
 
     /// <summary>
     /// Index accessor for 8-bit registers
     /// </summary>
-    public IRegisters8Bit R8 => _ss.R8;
+    public IRegisters8Bit R8 => SS.R8;
 
     /// <summary>
     /// Index accessor for 16-bit registers
     /// </summary>
-    public IRegisters16Bit R16 => _ss.R16;
+    public IRegisters16Bit R16 => SS.R16;
 
-    protected Exceptions Exceptions => _ss.Exceptions;
+    protected Exceptions Exceptions => SS.Exceptions;
 
-    protected DynamicCycles DynamicCycles => _ss.DynamicCycles;
+    protected DynamicCycles DynamicCycles => SS.DynamicCycles;
 
     protected bool IsInInterrupt { get => cpu.IsInInterrupt; set => cpu.IsInInterrupt = value; }
 
