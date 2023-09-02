@@ -36,6 +36,6 @@ internal class _1086_Ldw_M : OpCode6309, IOpCode
         CC_Z = W == 0;
         CC_V = false;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

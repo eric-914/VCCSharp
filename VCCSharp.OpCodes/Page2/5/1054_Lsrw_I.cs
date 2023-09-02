@@ -51,6 +51,6 @@ internal class _1054_Lsrw_I : OpCode6309, IOpCode
 
         W = result;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

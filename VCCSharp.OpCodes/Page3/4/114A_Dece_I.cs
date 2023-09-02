@@ -45,6 +45,6 @@ internal class _114A_Dece_I : OpCode6309, IOpCode
 
         E = result;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

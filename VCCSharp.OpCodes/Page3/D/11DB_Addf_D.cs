@@ -48,6 +48,6 @@ internal class _11DB_Addf_D : OpCode6309, IOpCode
 
         F = (byte)sum.Result;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

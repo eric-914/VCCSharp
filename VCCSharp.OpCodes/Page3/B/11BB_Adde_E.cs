@@ -47,6 +47,6 @@ internal class _11BB_Adde_E : OpCode6309, IOpCode
 
         E = (byte)sum.Result;
 
-        return Cycles._65;
+        return DynamicCycles._65;
     }
 }

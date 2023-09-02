@@ -73,7 +73,7 @@ internal class _119D_Divd_D : OpCode6309, IOpCode
             CC_V = true;
             CC_C = false;
 
-            return Cycles._2726 - 13;
+            return DynamicCycles._2726 - 13;
         }
 
         byte remainder = (byte)(numerator % denominator);
@@ -86,6 +86,6 @@ internal class _119D_Divd_D : OpCode6309, IOpCode
         CC_V = result > ~overflow || result < overflow;
         CC_C = (B & 1) != 0;
 
-        return Cycles._2726;
+        return DynamicCycles._2726;
     }
 }

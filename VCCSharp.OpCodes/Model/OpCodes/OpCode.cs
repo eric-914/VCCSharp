@@ -1,4 +1,5 @@
-﻿using VCCSharp.OpCodes.Model.Memory;
+﻿using VCCSharp.OpCodes.MC6809;
+using VCCSharp.OpCodes.Model.Memory;
 using VCCSharp.OpCodes.Model.Support;
 using VCCSharp.OpCodes.Registers;
 
@@ -9,101 +10,91 @@ namespace VCCSharp.OpCodes.Model.OpCodes;
 /// </summary>
 internal abstract class OpCode 
 {
-    private MC6809.IState _cpu;
+    private readonly ISystemState _ss;
+
+    protected OpCode(ISystemState ss) => _ss = ss;
+
+    protected OpCode(IState cpu) : this(new SystemState(cpu)) { }
+
+    private IState cpu => _ss.cpu;
 
     /// <summary>
     /// 8-bit memory access
     /// </summary>
-    protected Memory8Bit M8 { get; }
+    protected Memory8Bit M8 => _ss.M8;
 
     /// <summary>
     /// 16-bit memory access
     /// </summary>
-    protected Memory16Bit M16 { get; }
+    protected Memory16Bit M16 => _ss.M16;
 
-    protected MemoryDP DIRECT { get; }
+    protected MemoryDP DIRECT => _ss.DIRECT;
 
     /// <summary>
     /// 8-bit "Effective Address" memory access
     /// </summary>
-    protected MemoryIndexed INDEXED { get; }
+    protected MemoryIndexed INDEXED => _ss.INDEXED;
 
     /// <summary>
     /// Index accessor for 8-bit registers
     /// </summary>
-    protected IRegisters8Bit R8 { get; }
+    public IRegisters8Bit R8 => _ss.R8;
 
     /// <summary>
     /// Index accessor for 16-bit registers
     /// </summary>
-    protected IRegisters16Bit R16 { get; }
+    public IRegisters16Bit R16 => _ss.R16;
 
-    protected DynamicCycles DynamicCycles { get; }
+    protected DynamicCycles DynamicCycles => _ss.DynamicCycles;
 
-    protected OpCode(MC6809.IState cpu) 
-    {
-        _cpu = cpu;
+    protected bool IsInInterrupt { get => cpu.IsInInterrupt; set => cpu.IsInInterrupt = value; }
 
-        var memory = new MC6809.Memory(cpu);
-        M8 = memory.Byte;
-        M16 = memory.Word;
-        DIRECT = memory.DP;
-        INDEXED = memory.Indexed;
+    protected bool IsSyncWaiting { get => cpu.IsSyncWaiting; set => cpu.IsSyncWaiting = value; }
 
-        R8 = new MC6809.Registers8Bit<MC6809.IState>(cpu);
-        R16 = new MC6809.Registers16Bit<MC6809.IState>(cpu);
-
-        DynamicCycles = new DynamicCycles(cpu);
-    }
-
-    protected bool IsInInterrupt { get => _cpu.IsInInterrupt; set => _cpu.IsInInterrupt = value; }
-
-    protected bool IsSyncWaiting { get => _cpu.IsSyncWaiting; set => _cpu.IsSyncWaiting = value; }
-
-    protected int SyncCycle { get => _cpu.SyncCycle; set => _cpu.SyncCycle = value; }
+    protected int SyncCycle { get => cpu.SyncCycle; set => cpu.SyncCycle = value; }
 
     /// <summary>
     /// 8-bit register
     /// </summary>
-    protected byte A { get => _cpu.A; set => _cpu.A = value; }
+    protected byte A { get => cpu.A; set => cpu.A = value; }
 
     /// <summary>
     /// 8-bit register
     /// </summary>
-    protected byte B { get => _cpu.B; set => _cpu.B = value; }
+    protected byte B { get => cpu.B; set => cpu.B = value; }
 
     //TODO: See details in IRegisterDP
-    protected byte DP { get => _cpu.DP; set => _cpu.DP = value; }
+    protected byte DP { get => cpu.DP; set => cpu.DP = value; }
 
     /// <summary>
     /// Program Counter
     /// </summary>
-    protected ushort PC { get => _cpu.PC; set => _cpu.PC = value; }
+    protected ushort PC { get => cpu.PC; set => cpu.PC = value; }
 
     /// <summary>
     /// 16-bit register <c>A.B</c>
     /// </summary>
-    protected ushort D { get => _cpu.D; set => _cpu.D = value; }
+    protected ushort D { get => cpu.D; set => cpu.D = value; }
 
     /// <summary>
     /// 16-bit register
     /// </summary>
-    protected ushort X { get => _cpu.X; set => _cpu.X = value; }
+    protected ushort X { get => cpu.X; set => cpu.X = value; }
 
     /// <summary>
     /// 16-bit register
     /// </summary>
-    protected ushort Y { get => _cpu.Y; set => _cpu.Y = value; }
+    protected ushort Y { get => cpu.Y; set => cpu.Y = value; }
 
     /// <summary>
     /// 16-bit <c>STACK</c> register
     /// </summary>
-    protected ushort S { get => _cpu.S; set => _cpu.S = value; }
+    protected ushort S { get => cpu.S; set => cpu.S = value; }
 
     /// <summary>
     /// 16-bit <c>USER-STACK</c> register
     /// </summary>
-    protected ushort U { get => _cpu.U; set => _cpu.U = value; }
+    protected ushort U { get => cpu.U; set => cpu.U = value; }
 
     /// <summary>
     /// <c>PC</c> low 8 bits
@@ -158,47 +149,47 @@ internal abstract class OpCode
     /// <summary>
     /// Condition Codes Register
     /// </summary>
-    protected byte CC { get => _cpu.CC; set => _cpu.CC = value; }
+    protected byte CC { get => cpu.CC; set => cpu.CC = value; }
 
     /// <summary>
     /// Condition Code Carry Flag
     /// </summary>
-    protected bool CC_C { get => _cpu.CC.BitC(); set => _cpu.CC = _cpu.CC.BitC(value); }
+    protected bool CC_C { get => cpu.CC.BitC(); set => cpu.CC = cpu.CC.BitC(value); }
 
     /// <summary>
     /// Condition Code Entire Register State Stacked Flag
     /// </summary>
-    protected bool CC_E { get => _cpu.CC.BitE(); set => _cpu.CC = _cpu.CC.BitE(value); }
+    protected bool CC_E { get => cpu.CC.BitE(); set => cpu.CC = cpu.CC.BitE(value); }
 
     /// <summary>
     /// Condition Code FIRQ Flag
     /// </summary>
-    protected bool CC_F { get => _cpu.CC.BitF(); set => _cpu.CC = _cpu.CC.BitF(value); }
+    protected bool CC_F { get => cpu.CC.BitF(); set => cpu.CC = cpu.CC.BitF(value); }
 
     /// <summary>
     /// Condition Code Half-Carry Flag
     /// </summary>
-    protected bool CC_H { get => _cpu.CC.BitH(); set => _cpu.CC = _cpu.CC.BitH(value); }
+    protected bool CC_H { get => cpu.CC.BitH(); set => cpu.CC = cpu.CC.BitH(value); }
 
     /// <summary>
     /// Condition Code IRQ Flag
     /// </summary>
-    protected bool CC_I { get => _cpu.CC.BitI(); set => _cpu.CC = _cpu.CC.BitI(value); }
+    protected bool CC_I { get => cpu.CC.BitI(); set => cpu.CC = cpu.CC.BitI(value); }
 
     /// <summary>
     /// Condition Code Negative Flag
     /// </summary>
-    protected bool CC_N { get => _cpu.CC.BitN(); set => _cpu.CC = _cpu.CC.BitN(value); }
+    protected bool CC_N { get => cpu.CC.BitN(); set => cpu.CC = cpu.CC.BitN(value); }
 
     /// <summary>
     /// Condition Code Overflow Flag
     /// </summary>
-    protected bool CC_V { get => _cpu.CC.BitV(); set => _cpu.CC = _cpu.CC.BitV(value); }
+    protected bool CC_V { get => cpu.CC.BitV(); set => cpu.CC = cpu.CC.BitV(value); }
 
     /// <summary>
     /// Condition Code Zero Flag
     /// </summary>
-    protected bool CC_Z { get => _cpu.CC.BitZ(); set => _cpu.CC = _cpu.CC.BitZ(value); }
+    protected bool CC_Z { get => cpu.CC.BitZ(); set => cpu.CC = cpu.CC.BitZ(value); }
 
     /// <summary>
     /// Handles the intracies of calculating the sum two values: <c>a+b</c>

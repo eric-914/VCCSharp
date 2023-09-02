@@ -46,6 +46,6 @@ internal class _104D_Tstd_I : OpCode6309, IOpCode
         CC_Z = D == 0;
         CC_V = false;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

@@ -45,6 +45,6 @@ internal class _115A_Decf_I : OpCode6309, IOpCode
 
         F = result;
 
-        return Cycles._21;
+        return DynamicCycles._21;
     }
 }

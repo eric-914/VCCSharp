@@ -38,6 +38,6 @@ internal class _11F6_Ldf_E : OpCode6309, IOpCode
         CC_Z = F == 0;
         CC_V = false;
 
-        return Cycles._65;
+        return DynamicCycles._65;
     }
 }

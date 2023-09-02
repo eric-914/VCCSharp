@@ -50,6 +50,6 @@ internal class _1046_Rord_I : OpCode6309, IOpCode
 
         D = result;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

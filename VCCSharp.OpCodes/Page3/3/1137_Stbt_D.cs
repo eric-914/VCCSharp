@@ -88,6 +88,6 @@ internal class _1137_Stbt_D : OpCode6309, IOpCode
 
         M8[address] = mask;
 
-        return Cycles._87;
+        return DynamicCycles._87;
     }
 }

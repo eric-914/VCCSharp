@@ -51,7 +51,7 @@ internal class Exceptions : OpCode6309
 
         PC = M16[Define.VTRAP];
 
-        cycles += 12 + Cycles._54;  //One for each byte +overhead? Guessing from PSHS
+        cycles += 12 + DynamicCycles._54;  //One for each byte +overhead? Guessing from PSHS
 
         return cycles;
     }

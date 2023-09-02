@@ -44,6 +44,6 @@ internal class _115C_Incf_I : OpCode6309, IOpCode
 
         result = F;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

@@ -52,6 +52,6 @@ internal class _1099_Adcd_D : OpCode6309, IOpCode
 
         D = (ushort)sum.Result;
 
-        return Cycles._75;
+        return DynamicCycles._75;
     }
 }

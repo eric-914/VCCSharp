@@ -45,6 +45,6 @@ internal class _104A_Decd_I : OpCode6309, IOpCode
 
         D = result;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

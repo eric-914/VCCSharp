@@ -38,6 +38,6 @@ internal class _10DC_Ldq_D : OpCode6309, IOpCode
         CC_Z = Q == 0;
         CC_V = false;
 
-        return Cycles._87;
+        return DynamicCycles._87;
     }
 }

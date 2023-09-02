@@ -49,6 +49,6 @@ internal class _1190_Sube_D : OpCode6309, IOpCode
 
         E = (byte)sum.Result;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

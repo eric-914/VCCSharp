@@ -62,6 +62,6 @@ internal class _1048_Asld_I : OpCode6309, IOpCode
 
         D = result;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

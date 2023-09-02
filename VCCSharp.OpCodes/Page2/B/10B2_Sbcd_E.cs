@@ -57,6 +57,6 @@ internal class _10B2_Sbcd_E : OpCode6309, IOpCode
         
         D = (ushort)sum.Result;
 
-        return Cycles._86;
+        return DynamicCycles._86;
     }
 }

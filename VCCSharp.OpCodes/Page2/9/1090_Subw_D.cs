@@ -49,6 +49,6 @@ internal class _1090_Subw_D : OpCode6309, IOpCode
 
         W = (ushort)sum.Result;
 
-        return Cycles._75;
+        return DynamicCycles._75;
     }
 }

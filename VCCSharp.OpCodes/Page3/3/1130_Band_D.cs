@@ -85,6 +85,6 @@ internal class _1130_Band_D : OpCode6309, IOpCode
         }
 
         // Else nothing changes
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }

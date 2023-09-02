@@ -74,7 +74,7 @@ internal class _11BE_Divq_E : OpCode6309, IOpCode
             CC_Z = false;
             CC_C = false;
 
-            return Cycles._3635 - 21;
+            return DynamicCycles._3635 - 21;
         }
 
         int remainder = numerator % denominator;
@@ -87,6 +87,6 @@ internal class _11BE_Divq_E : OpCode6309, IOpCode
         CC_V = result > ~overflow || result < overflow;
         CC_C = (B & 1) != 0;
 
-        return Cycles._3635; //TODO: Doesn't match
+        return DynamicCycles._3635; //TODO: Doesn't match
     }
 }

@@ -44,6 +44,6 @@ internal class _105C_Incw_I : OpCode6309, IOpCode
 
         W = result;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

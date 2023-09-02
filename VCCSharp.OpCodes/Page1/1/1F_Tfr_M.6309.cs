@@ -88,7 +88,7 @@ internal class _1F_Tfr_M_6309 : OpCode6309, IOpCode
 
         _map.Execute(value);
 
-        return Cycles._64;
+        return DynamicCycles._64;
     }
 
     private void _16Bit_and_16Bit(byte source, byte destination) => R16[destination] = R16[source];

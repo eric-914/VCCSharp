@@ -44,6 +44,6 @@ internal class _104C_Incd_I : OpCode6309, IOpCode
 
         D = result;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

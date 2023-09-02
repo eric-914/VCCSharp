@@ -42,6 +42,6 @@ internal class _1085_Bitd_M : OpCode6309, IOpCode
         CC_Z = result == 0;
         CC_V = false;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

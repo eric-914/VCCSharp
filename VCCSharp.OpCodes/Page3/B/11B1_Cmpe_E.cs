@@ -48,6 +48,6 @@ internal class _11B1_Cmpe_E : OpCode6309, IOpCode
         CC_V = sum.V;
         CC_C = sum.C;
 
-        return Cycles._65;
+        return DynamicCycles._65;
     }
 }

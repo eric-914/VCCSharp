@@ -53,6 +53,6 @@ internal class _10BA_Ord_E : OpCode6309, IOpCode
 
         D = result;
 
-        return Cycles._86;
+        return DynamicCycles._86;
     }
 }

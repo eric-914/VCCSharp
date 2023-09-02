@@ -55,6 +55,6 @@ internal class _1047_Asrd_I : OpCode6309, IOpCode
 
         D = result;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

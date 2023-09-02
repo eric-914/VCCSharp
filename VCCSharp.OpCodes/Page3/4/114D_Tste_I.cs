@@ -40,6 +40,6 @@ internal class _114D_Tste_I : OpCode6309, IOpCode
         CC_Z = E == 0;
         CC_V = false;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

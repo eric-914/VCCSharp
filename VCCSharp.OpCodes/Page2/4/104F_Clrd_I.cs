@@ -42,6 +42,6 @@ internal class _104F_Clrd_I : OpCode6309, IOpCode
 
         D = 0;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

@@ -91,7 +91,7 @@ internal class _1E_Exg_M_6309 : OpCode6309, IOpCode
 
         _map.Execute(value);
 
-        return Cycles._85;
+        return DynamicCycles._85;
     }
 
     private void _16Bit_and_16Bit(byte source, byte destination)

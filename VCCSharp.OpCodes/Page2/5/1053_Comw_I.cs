@@ -47,6 +47,6 @@ internal class _1053_Comw_I : OpCode6309, IOpCode
 
         W = result;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

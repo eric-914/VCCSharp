@@ -45,6 +45,6 @@ internal class _1153_Comf_I : OpCode6309, IOpCode
 
         F = result;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

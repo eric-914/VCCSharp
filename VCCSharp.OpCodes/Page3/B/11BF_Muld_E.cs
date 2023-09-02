@@ -38,6 +38,6 @@ internal class _11BF_Muld_E : OpCode6309, IOpCode
         CC_N = Q.Bit31();
         CC_Z = Q == 0;
 
-        return Cycles._3130;
+        return DynamicCycles._3130;
     }
 }

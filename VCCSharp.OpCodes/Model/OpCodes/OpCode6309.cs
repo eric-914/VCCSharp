@@ -1,4 +1,5 @@
-﻿using VCCSharp.OpCodes.Model.Memory;
+﻿using VCCSharp.OpCodes.HD6309;
+using VCCSharp.OpCodes.Model.Memory;
 using VCCSharp.OpCodes.Model.Support;
 using VCCSharp.OpCodes.Registers;
 
@@ -10,121 +11,108 @@ namespace VCCSharp.OpCodes.Model.OpCodes;
 /// </summary>
 internal abstract class OpCode6309
 {
-    private HD6309.IState _cpu;
+    private readonly ISystemState _ss;
+
+    protected OpCode6309(ISystemState ss) => _ss = ss;
+
+    protected OpCode6309(IState cpu) : this(new SystemState(cpu)) { }
+
+    private IState cpu => _ss.cpu;
 
     /// <summary>
     /// 8-bit memory access
     /// </summary>
-    protected Memory8Bit M8 { get; }
+    protected Memory8Bit M8 => _ss.M8;
 
     /// <summary>
     /// 16-bit memory access
     /// </summary>
-    protected Memory16Bit M16 { get; }
+    protected Memory16Bit M16 => _ss.M16;
 
     /// <summary>
     /// 32-bit memory access
     /// </summary>
-    protected Memory32Bit M32 { get; }
+    protected Memory32Bit M32 => _ss.M32;
 
-    protected MemoryDP DIRECT { get; }
+    protected MemoryDP DIRECT => _ss.DIRECT;
 
     /// <summary>
     /// 8-bit "Effective Address" memory access
     /// </summary>
-    protected MemoryIndexed INDEXED { get; }
+    protected MemoryIndexed INDEXED => _ss.INDEXED;
 
     /// <summary>
     /// Index accessor for 8-bit registers
     /// </summary>
-    public IRegisters8Bit R8 { get;}
+    public IRegisters8Bit R8 => _ss.R8;
 
     /// <summary>
     /// Index accessor for 16-bit registers
     /// </summary>
-    public IRegisters16Bit R16 { get; }
+    public IRegisters16Bit R16 => _ss.R16;
 
-    protected HD6309.Exceptions Exceptions { get; }
+    protected Exceptions Exceptions => _ss.Exceptions;
 
-    protected DynamicCycles Cycles { get; }
+    protected DynamicCycles DynamicCycles => _ss.DynamicCycles;
 
-    protected OpCode6309(HD6309.IState cpu) 
-    {
-        _cpu = cpu;
+    protected bool IsInInterrupt { get => cpu.IsInInterrupt; set => cpu.IsInInterrupt = value; }
 
-        var memory = new HD6309.Memory(cpu);
-        M8 = memory.Byte;
-        M16 = memory.Word;
-        M32 = memory.DWord;
-        DIRECT = memory.DP;
-        INDEXED = memory.Indexed;
+    protected bool IsSyncWaiting { get => cpu.IsSyncWaiting; set => cpu.IsSyncWaiting = value; }
 
-        R8 = new HD6309.Registers8Bit<HD6309.IState>(cpu);
-        R16 = new MC6809.Registers16Bit<HD6309.IState>(cpu);
-
-        Exceptions = new HD6309.Exceptions(cpu);
-
-        Cycles = new DynamicCycles(cpu);
-    }
-
-    protected bool IsInInterrupt { get => _cpu.IsInInterrupt; set => _cpu.IsInInterrupt = value; }
-
-    protected bool IsSyncWaiting { get => _cpu.IsSyncWaiting; set => _cpu.IsSyncWaiting = value; }
-
-    protected int SyncCycle { get => _cpu.SyncCycle; set => _cpu.SyncCycle = value; }
+    protected int SyncCycle { get => cpu.SyncCycle; set => cpu.SyncCycle = value; }
 
     /// <summary>
     /// 8-bit register
     /// </summary>
-    protected byte A { get => _cpu.A; set => _cpu.A = value; }
+    protected byte A { get => cpu.A; set => cpu.A = value; }
 
     /// <summary>
     /// 8-bit register
     /// </summary>
-    protected byte B { get => _cpu.B; set => _cpu.B = value; }
+    protected byte B { get => cpu.B; set => cpu.B = value; }
 
     /// <summary>
     /// 8-bit register
     /// </summary>
-    protected byte E { get => _cpu.E; set => _cpu.E = value; }
+    protected byte E { get => cpu.E; set => cpu.E = value; }
 
     /// <summary>
     /// 8-bit register
     /// </summary>
-    protected byte F { get => _cpu.F; set => _cpu.F = value; }
+    protected byte F { get => cpu.F; set => cpu.F = value; }
 
     //TODO: See details in IRegisterDP
-    public byte DP { get => _cpu.DP; set => _cpu.DP = value; }
+    public byte DP { get => cpu.DP; set => cpu.DP = value; }
 
     /// <summary>
     /// Program Counter
     /// </summary>
-    protected ushort PC { get => _cpu.PC; set => _cpu.PC = value; }
+    protected ushort PC { get => cpu.PC; set => cpu.PC = value; }
 
     /// <summary>
     /// 16-bit register <c>A.B</c>
     /// </summary>
-    public ushort D { get => _cpu.D; set => _cpu.D = value; }
+    public ushort D { get => cpu.D; set => cpu.D = value; }
 
     /// <summary>
     /// 16-bit register
     /// </summary>
-    protected ushort X { get => _cpu.X; set => _cpu.X = value; }
+    protected ushort X { get => cpu.X; set => cpu.X = value; }
 
     /// <summary>
     /// 16-bit register
     /// </summary>
-    protected ushort Y { get => _cpu.Y; set => _cpu.Y = value; }
+    protected ushort Y { get => cpu.Y; set => cpu.Y = value; }
 
     /// <summary>
     /// 16-bit <c>STACK</c> register
     /// </summary>
-    protected ushort S { get => _cpu.S; set => _cpu.S = value; }
+    protected ushort S { get => cpu.S; set => cpu.S = value; }
 
     /// <summary>
     /// 16-bit <c>USER-STACK</c> register
     /// </summary>
-    protected ushort U { get => _cpu.U; set => _cpu.U = value; }
+    protected ushort U { get => cpu.U; set => cpu.U = value; }
 
     /// <summary>
     /// <c>PC</c> low 8 bits
@@ -179,7 +167,7 @@ internal abstract class OpCode6309
     /// <summary>
     /// Condition Codes Register
     /// </summary>
-    public byte CC { get => _cpu.CC; set => _cpu.CC = value; }
+    public byte CC { get => cpu.CC; set => cpu.CC = value; }
 
     /// <summary>
     /// Condition Code Carry Flag
@@ -224,17 +212,17 @@ internal abstract class OpCode6309
     /// <summary>
     /// 16-bit register <c>E.F</c>
     /// </summary>
-    public ushort W { get => _cpu.W; set => _cpu.W = value; }
+    public ushort W { get => cpu.W; set => cpu.W = value; }
 
     /// <summary>
     /// 32-bit register <c>D.W</c> or <c>A.B.E.F</c>
     /// </summary>
-    protected uint Q { get => _cpu.Q; set => _cpu.Q = value; }
+    protected uint Q { get => cpu.Q; set => cpu.Q = value; }
 
     /// <summary>
     /// Mode Register
     /// </summary>
-    protected byte MD { get => _cpu.MD; set => _cpu.MD = value; }
+    protected byte MD { get => cpu.MD; set => cpu.MD = value; }
 
     /// <summary>
     /// <c>(NM)</c> Native Mode (reduced cycles, W stacked on interrupts)

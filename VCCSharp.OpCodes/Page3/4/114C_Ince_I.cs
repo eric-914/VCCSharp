@@ -44,6 +44,6 @@ internal class _114C_Ince_I : OpCode6309, IOpCode
 
         E = result;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

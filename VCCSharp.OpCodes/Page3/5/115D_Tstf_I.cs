@@ -40,6 +40,6 @@ internal class _115D_Tstf_I : OpCode6309, IOpCode
         CC_Z = F == 0;
         CC_V = false;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

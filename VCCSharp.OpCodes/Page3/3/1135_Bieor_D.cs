@@ -88,6 +88,6 @@ internal class _1135_Bieor_D : OpCode6309, IOpCode
         }
 
         // Else nothing changes
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }

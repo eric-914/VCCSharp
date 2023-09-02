@@ -49,6 +49,6 @@ internal class _11D0_Subf_D : OpCode6309, IOpCode
 
         F = (byte)sum.Result;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

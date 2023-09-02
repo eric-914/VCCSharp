@@ -38,6 +38,6 @@ internal class _11D7_Stf_D : OpCode6309, IOpCode
         CC_Z = E == 0;
         CC_V = false;
 
-        return Cycles._54;
+        return DynamicCycles._54;
     }
 }

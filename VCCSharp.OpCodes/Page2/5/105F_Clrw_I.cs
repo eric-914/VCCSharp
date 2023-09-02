@@ -42,6 +42,6 @@ internal class _105F_Clrw_I : OpCode6309, IOpCode
 
         W = 0;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

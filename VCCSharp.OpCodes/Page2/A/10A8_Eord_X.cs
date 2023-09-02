@@ -49,6 +49,6 @@ internal class _10A8_Eord_X : OpCode6309, IOpCode
 
         D = result;
 
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }

@@ -48,6 +48,6 @@ internal class _10A1_Cmpw_X : OpCode6309, IOpCode
         CC_V = sum.V;
         CC_C = sum.C;
 
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }

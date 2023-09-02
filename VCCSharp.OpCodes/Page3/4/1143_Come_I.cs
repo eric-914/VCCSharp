@@ -45,6 +45,6 @@ internal class _1143_Come_I : OpCode6309, IOpCode
 
         E = result;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

@@ -88,6 +88,6 @@ internal class _1136_Ldbt_D : OpCode6309, IOpCode
 
         R8[register] = mask;
 
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }

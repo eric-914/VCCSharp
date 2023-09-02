@@ -40,6 +40,6 @@ internal class _114F_Clre_I : OpCode6309, IOpCode
         CC_V = false;
         CC_C = false;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

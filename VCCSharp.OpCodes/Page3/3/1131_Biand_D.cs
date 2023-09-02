@@ -87,6 +87,6 @@ internal class _1131_Biand_D : OpCode6309, IOpCode
         }
 
         // Else do nothing
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }

@@ -47,6 +47,6 @@ internal class _10AB_Addw_X : OpCode6309, IOpCode
 
         W = (ushort)sum.Result;
 
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }

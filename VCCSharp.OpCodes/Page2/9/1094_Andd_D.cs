@@ -50,6 +50,6 @@ internal class _1094_Andd_D : OpCode6309, IOpCode
 
         D = result;
 
-        return Cycles._75;
+        return DynamicCycles._75;
     }
 }

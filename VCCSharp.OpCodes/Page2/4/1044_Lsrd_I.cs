@@ -51,6 +51,6 @@ internal class _1044_Lsrd_I : OpCode6309, IOpCode
 
         D = result;
 
-        return Cycles._32;
+        return DynamicCycles._32;
     }
 }

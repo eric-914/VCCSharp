@@ -90,6 +90,6 @@ internal class _1133_Bior_D : OpCode6309, IOpCode
         }
 
         // Else nothing changes
-        return Cycles._76;
+        return DynamicCycles._76;
     }
 }
