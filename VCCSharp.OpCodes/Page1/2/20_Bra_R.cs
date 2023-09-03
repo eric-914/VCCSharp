@@ -31,7 +31,9 @@ internal class _20_Bra_R : OpCode, IOpCode
 {
     public int Exec()
     {
-        PC += (ushort)(sbyte)M8[PC++];
+        sbyte value = (sbyte)M8[PC++];
+
+        PC += (ushort)value;
 
         return 3;
     }

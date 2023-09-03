@@ -205,186 +205,82 @@ public partial class MC6809
 
     public void Bra_R() // 20
     {
-        sbyte t = (sbyte)MemRead8(PC_REG++);
-
-        PC_REG += (ushort)t;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x20);
     }
 
     public void Brn_R() // 21
     {
-        PC_REG++;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x21);
     }
 
     public void Bhi_R() // 22
     {
-        if (!(CC_C || CC_Z))
-        {
-            PC_REG += (ushort)(sbyte)MemRead8(PC_REG);
-        }
-
-        PC_REG++;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x22);
     }
 
     public void Bls_R() // 23
     {
-        if (CC_C | CC_Z)
-        {
-            PC_REG += (ushort)(sbyte)MemRead8(PC_REG);
-        }
-
-        PC_REG++;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x23);
     }
 
     public void Bhs_R() // 24
     {
-        if (!CC_C)
-        {
-            PC_REG += (ushort)(sbyte)MemRead8(PC_REG);
-        }
-
-        PC_REG++;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x24);
     }
 
     public void Blo_R() // 25
     {
-        if (CC_C)
-        {
-            PC_REG += (ushort)(sbyte)MemRead8(PC_REG);
-        }
-
-        PC_REG++;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x25);
     }
 
     public void Bne_R() // 26
     {
-        if (!CC_Z)
-        {
-            PC_REG += (ushort)(sbyte)MemRead8(PC_REG);
-        }
-
-        PC_REG++;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x26);
     }
 
     public void Beq_R() // 27
     {
-        if (CC_Z)
-        {
-            PC_REG += (ushort)(sbyte)MemRead8(PC_REG);
-        }
-
-        PC_REG++;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x27);
     }
 
     public void Bvc_R() // 28
     {
-        if (!CC_V)
-        {
-            PC_REG += (ushort)(sbyte)MemRead8(PC_REG);
-        }
-
-        PC_REG++;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x28);
     }
 
     public void Bvs_R() // 29
     {
-        if (CC_V)
-        {
-            PC_REG += (ushort)(sbyte)MemRead8(PC_REG);
-        }
-
-        PC_REG++;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x29);
     }
 
     public void Bpl_R() // 2A
     {
-        if (!CC_N)
-        {
-            PC_REG += (ushort)(sbyte)MemRead8(PC_REG);
-        }
-
-        PC_REG++;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x2A);
     }
 
     public void Bmi_R() // 2B
     {
-        if (CC_N)
-        {
-            PC_REG += (ushort)(sbyte)MemRead8(PC_REG);
-        }
-
-        PC_REG++;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x2B);
     }
 
     public void Bge_R() // 2C
     {
-        if (!(CC_N ^ CC_V))
-        {
-            PC_REG += (ushort)(sbyte)MemRead8(PC_REG);
-        }
-
-        PC_REG++;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x2C);
     }
 
     public void Blt_R() // 2D
     {
-        if (CC_V ^ CC_N)
-        {
-            PC_REG += (ushort)(sbyte)MemRead8(PC_REG);
-        }
-
-        PC_REG++;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x2D);
     }
 
     public void Bgt_R() // 2E
     {
-        if (!(CC_Z | (CC_N ^ CC_V)))
-        {
-            PC_REG += (ushort)(sbyte)MemRead8(PC_REG);
-        }
-
-        PC_REG++;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x2E);
     }
 
     public void Ble_R() // 2F
     {
-        if (CC_Z | (CC_N ^ CC_V))
-        {
-            PC_REG += (ushort)(sbyte)MemRead8(PC_REG);
-        }
-
-        PC_REG++;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x2F);
     }
 
     #endregion
