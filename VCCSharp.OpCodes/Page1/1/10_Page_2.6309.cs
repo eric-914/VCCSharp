@@ -5,14 +5,14 @@ namespace VCCSharp.OpCodes.Page1;
 
 //PAGE 2
 //0x10__
-internal class _10_Page_2_6309 : OpCode, IOpCode
+internal class _10_Page_2_6309 : OpCode, IOpCode, IPage2
 {
-    private readonly IOpCode[] _jumpVectors0x10 = new Page2Opcodes6309().OpCodes;
+    public IOpCode[] Page2 { get; } = new Page2Opcodes6309().OpCodes;
 
     public int Exec()
     {
         byte opCode = M8[PC++];
 
-        return _jumpVectors0x10[opCode].Exec();
+        return Page2[opCode].Exec();
     }
 }

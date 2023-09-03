@@ -1,14 +1,13 @@
-﻿namespace VCCSharp.OpCodes
+﻿namespace VCCSharp.OpCodes;
+
+/// <summary>
+/// OpCodes are a particular instruction to be executed.
+/// </summary>
+public interface IOpCode
 {
     /// <summary>
-    /// OpCodes are a particular instruction to be executed.
+    /// Invokes the opcode
     /// </summary>
-    public interface IOpCode
-    {
-        /// <summary>
-        /// Invokes the opcode
-        /// </summary>
-        /// <returns>The execution cycle count</returns>
-        int Exec();
-    }
+    /// <returns>The execution cycle count</returns>
+    int Exec();
 }

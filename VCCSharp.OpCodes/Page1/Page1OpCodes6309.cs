@@ -1,12 +1,9 @@
 ﻿namespace VCCSharp.OpCodes.Page1;
 
 using VCCSharp.OpCodes.Model.OpCodes;
-using Hitachi = HD6309.IState;
 
 internal class Page1OpCodes6309
 {
-    private readonly Hitachi _cpu;
-
     #region Factory
 
     private IOpCode _ => new UndefinedOpCode();
@@ -284,11 +281,6 @@ internal class Page1OpCodes6309
     private IOpCode _FF_Stu__E => new _FF_Stu_E();
 
     #endregion
-
-    public Page1OpCodes6309(Hitachi cpu)
-    {
-        _cpu = cpu;
-    }
 
     public IOpCode[] OpCodes => new IOpCode[256]
     {

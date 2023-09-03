@@ -1,12 +1,9 @@
 ﻿namespace VCCSharp.OpCodes.Page1;
 
 using VCCSharp.OpCodes.Model.OpCodes;
-using Motorola = MC6809.IState;
 
 internal class Page1OpCodes6809
 {
-    private readonly Motorola _cpu;
-
     #region Factory
 
     private IOpCode _ => new UndefinedOpCode();
@@ -284,11 +281,6 @@ internal class Page1OpCodes6809
     private IOpCode _FF_Stu__E => new _FF_Stu_E();
 
     #endregion
-
-    public Page1OpCodes6809(Motorola cpu)
-    {
-        _cpu = cpu;
-    }
 
     public IOpCode[] OpCodes => new IOpCode[256]
     {
