@@ -181,13 +181,7 @@ public partial class MC6809
 
     public void Orcc_M() // 1A
     {
-        _postByte = MemRead8(PC_REG++);
-        _temp8 = GetCC();
-        _temp8 = (byte)(_temp8 | _postByte);
-
-        _cpu.cc.bits = _temp8;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x1A);
     }
 
     // 1B		//InvalidInsHandler
@@ -239,57 +233,7 @@ public partial class MC6809
 
     public void Tfr_M() // 1F
     {
-        _postByte = MemRead8(PC_REG++);
-
-        byte source = (byte)(_postByte >> 4);
-        byte dest = (byte)(_postByte & 15);
-
-        switch (dest)
-        {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:
-                PXF(dest, 0xFFFF);
-
-                if (source == 12 || source == 13)
-                {
-                    PXF(dest, 0);
-                }
-                else if (source <= 7)
-                {
-                    PXF(dest, PXF(source));
-                }
-
-                break;
-
-            case 8:
-            case 9:
-            case 10:
-            case 11:
-            case 14:
-            case 15:
-                _cpu.cc.bits = GetCC();
-
-                PUR(dest & 7, 0xFF);
-
-                if ((source == 12) || (source == 13))
-                {
-                    PUR(dest & 7, 0);
-                }
-                else if (source > 7)
-                {
-                    PUR(dest & 7, PUR(source & 7));
-                }
-
-                break;
-        }
-
-        _cycleCounter += 6;
+        _cycleCounter += OpCodes.Exec(0x1F);
     }
 
     #endregion

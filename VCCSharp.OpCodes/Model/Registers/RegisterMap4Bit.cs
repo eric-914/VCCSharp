@@ -48,13 +48,6 @@ internal class RegisterMap4Bit
     public Action<byte, byte> _8_16 { get; set; } = Undefined;
     public Action<byte, byte> _8_8 { get; set; } = Undefined;
 
-    private readonly Action<byte, byte>[] _paths;
-
-    public RegisterMap4Bit()
-    {
-        _paths = new Action<byte, byte>[] { _16_16, _16_8, _8_16, _8_8 };
-    }
-
     public void Execute(byte operand)
     {
         byte source = (byte)(operand >> 4);
@@ -62,7 +55,9 @@ internal class RegisterMap4Bit
 
         byte path = (byte)(((operand >> 6) & 0x02) | ((operand >> 3) & 0x01));
 
-        _paths[path]((byte)(source & MASK), (byte)(destination & MASK));
+        var handlers = new Action<byte, byte>[] { _16_16, _16_8, _8_16, _8_8 };
+
+        handlers[path]((byte)(source & MASK), (byte)(destination & MASK));
     }
 
     private static void Undefined(byte a, byte b) => throw new NotImplementedException();
