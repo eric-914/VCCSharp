@@ -53,7 +53,7 @@ internal class _118E_Divq_M : OpCode6309, IOpCode
         const ushort abort = 0xFFFF;
         const ushort overflow = 0x8000;
 
-        short denominator = (short)M16[PC += 2];
+        short denominator = (short)M16[PC]; PC += 2;
 
         if (denominator == 0)
         {

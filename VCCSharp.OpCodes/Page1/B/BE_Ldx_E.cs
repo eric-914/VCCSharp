@@ -27,7 +27,7 @@ internal class _BE_Ldx_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC += 2];
+        ushort address = M16[PC]; PC += 2;
 
         X = M16[address];
 

@@ -33,7 +33,7 @@ internal class _11B3_Cmpu_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC += 2];
+        ushort address = M16[PC]; PC += 2;
         ushort value = M16[address];
 
         var sum = Subtract(U, value);

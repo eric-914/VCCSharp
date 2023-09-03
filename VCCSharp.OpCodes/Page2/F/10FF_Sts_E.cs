@@ -27,7 +27,7 @@ internal class _10FF_Sts_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC += 2];
+        ushort address = M16[PC]; PC += 2;
 
         M16[address] = S;
 

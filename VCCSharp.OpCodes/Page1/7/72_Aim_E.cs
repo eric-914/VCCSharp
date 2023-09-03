@@ -50,8 +50,9 @@ internal class _72_Aim_E : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        byte value = M8[PC++];
-        ushort address = M16[PC += 2];
+        byte value = M8[PC++]; PC += 2;
+        ushort address = M16[PC];
+
         byte mask = M8[address];
 
         byte result = (byte)(value & mask);

@@ -27,7 +27,7 @@ internal class _CC_Ldd_M : OpCode, IOpCode
 {
     public int Exec()
     {
-        D = M16[PC += 2];
+        D = M16[PC]; PC += 2;
 
         CC_N = D.Bit15();
         CC_Z = D == 0;

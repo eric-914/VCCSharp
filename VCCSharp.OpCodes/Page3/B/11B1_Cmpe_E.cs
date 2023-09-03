@@ -35,7 +35,7 @@ internal class _11B1_Cmpe_E : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC += 2];
+        ushort address = M16[PC]; PC += 2;
         byte value = M8[address];
 
         var sum = Subtract(E, value);

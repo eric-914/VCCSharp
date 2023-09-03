@@ -40,7 +40,7 @@ internal class _10BA_Ord_E : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC += 2];
+        ushort address = M16[PC]; PC += 2;
         ushort value = M16[address];
 
         ushort result = (ushort)(D | value);

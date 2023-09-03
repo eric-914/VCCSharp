@@ -27,7 +27,7 @@ internal class _8E_Ldx_M : OpCode, IOpCode
 {
     public int Exec()
     {
-        X = M16[PC += 2];
+        X = M16[PC]; PC += 2;
 
         CC_N = X.Bit15();
         CC_Z = X == 0;

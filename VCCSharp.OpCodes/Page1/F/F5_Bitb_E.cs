@@ -34,7 +34,7 @@ internal class _F5_Bitb_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC += 2];
+        ushort address = M16[PC]; PC += 2;
         byte value = (byte)(B & M8[address]);
 
         CC_N = value.Bit7();

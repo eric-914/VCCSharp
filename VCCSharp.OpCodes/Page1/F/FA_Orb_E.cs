@@ -32,7 +32,7 @@ internal class _FA_Orb_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC += 2];
+        ushort address = M16[PC]; PC += 2;
 
         B |= M8[address];
 

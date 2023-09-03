@@ -35,7 +35,7 @@ internal class _1083_Cmpd_M : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort value = M16[PC += 2];
+        ushort value = M16[PC]; PC += 2;
 
         var sum = Subtract(D, value);
 

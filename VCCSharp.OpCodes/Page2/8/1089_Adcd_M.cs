@@ -38,7 +38,7 @@ internal class _1089_Adcd_M : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        ushort value = M16[PC += 2];
+        ushort value = M16[PC]; PC += 2;
 
         var sum = Add(D, value.Plus(CC_C));
 

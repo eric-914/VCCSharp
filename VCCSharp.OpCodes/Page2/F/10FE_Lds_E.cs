@@ -27,7 +27,7 @@ internal class _10FE_Lds_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC += 2];
+        ushort address = M16[PC]; PC += 2;
 
         S = M16[address];
 

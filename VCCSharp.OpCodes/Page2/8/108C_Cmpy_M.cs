@@ -33,7 +33,7 @@ internal class _108C_Cmpy_M : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort value = M16[PC += 2];
+        ushort value = M16[PC]; PC += 2;
 
         var sum = Subtract(Y, value);
 

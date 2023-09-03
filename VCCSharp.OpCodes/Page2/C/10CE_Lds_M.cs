@@ -27,7 +27,7 @@ internal class _10CE_Lds_M : OpCode, IOpCode
 {
     public int Exec()
     {
-        S = M16[PC += 2];
+        S = M16[PC]; PC += 2;
 
         CC_N = S.Bit15();
         CC_Z = S == 0;

@@ -34,7 +34,7 @@ internal class _F1_Cmpb_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC += 2];
+        ushort address = M16[PC]; PC += 2;
         byte value = M8[address];
 
         var sum = Subtract(B, value);

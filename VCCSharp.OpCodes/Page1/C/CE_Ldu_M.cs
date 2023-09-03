@@ -27,7 +27,7 @@ internal class _CE_Ldu_M : OpCode, IOpCode
 {
     public int Exec()
     {
-        U = M16[PC+=2];
+        U = M16[PC]; PC += 2;
 
         CC_N = U.Bit15();
         CC_Z = U == 0;

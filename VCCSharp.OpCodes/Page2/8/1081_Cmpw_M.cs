@@ -36,7 +36,7 @@ internal class _1081_Cmpw_M : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        ushort value = M16[PC += 2];
+        ushort value = M16[PC]; PC += 2;
 
         var sum = Subtract(W, value);
 

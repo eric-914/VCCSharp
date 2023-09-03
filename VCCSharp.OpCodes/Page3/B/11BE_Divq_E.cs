@@ -53,7 +53,7 @@ internal class _11BE_Divq_E : OpCode6309, IOpCode
         const ushort abort = 0xFFFF;
         const ushort overflow = 0x8000;
 
-        ushort address = M16[PC += 2];
+        ushort address = M16[PC]; PC += 2;
 
         short denominator = (short)M16[address];
 

@@ -27,7 +27,7 @@ internal class _108E_Ldy_M : OpCode, IOpCode
 {
     public int Exec()
     {
-        Y = M16[PC += 2];
+        Y = M16[PC]; PC += 2;
 
         CC_N = Y.Bit15();
         CC_Z = Y == 0;

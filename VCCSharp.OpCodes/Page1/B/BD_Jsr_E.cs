@@ -45,7 +45,7 @@ internal class _BD_Jsr_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC += 2];
+        ushort address = M16[PC]; PC += 2;
 
         M8[--S] = PC_L;
         M8[--S] = PC_H;

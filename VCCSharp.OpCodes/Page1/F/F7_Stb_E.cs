@@ -27,7 +27,7 @@ internal class _F7_Stb_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC += 2];
+        ushort address = M16[PC]; PC += 2;
 
         M8[address] = B;
 

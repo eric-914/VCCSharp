@@ -27,7 +27,7 @@ internal class _B6_Lda_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC += 2];
+        ushort address = M16[PC++];
 
         A = M8[address];
 

@@ -35,7 +35,7 @@ internal class _F4_Andb_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC += 2];
+        ushort address = M16[PC]; PC += 2;
         byte value = M8[address];
 
         byte result = (byte)(B & value);

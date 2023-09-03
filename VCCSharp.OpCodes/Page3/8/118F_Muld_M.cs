@@ -28,7 +28,7 @@ internal class _118F_Muld_M : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        short value = (short)M16[PC += 2];
+        short value = (short)M16[PC]; PC += 2;
 
         Q = (uint)((short)D * value);
 

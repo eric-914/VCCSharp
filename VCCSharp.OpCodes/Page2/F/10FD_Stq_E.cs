@@ -28,7 +28,7 @@ internal class _10FD_Stq_E : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC += 2];
+        ushort address = M16[PC]; PC += 2;
 
         M32[address] = Q;
 

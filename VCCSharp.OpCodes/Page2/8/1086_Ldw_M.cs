@@ -28,7 +28,7 @@ internal class _1086_Ldw_M : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        W = M16[PC += 2];
+        W = M16[PC]; PC += 2;
 
         CC_N = W.Bit15();
         CC_Z = W == 0;
