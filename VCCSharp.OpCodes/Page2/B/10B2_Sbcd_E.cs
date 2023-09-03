@@ -43,7 +43,7 @@ internal class _10B2_Sbcd_E : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC+=2];
+        ushort address = M16[PC += 2];
         ushort value = M16[address];
 
         var sum = Subtract(D, value.Plus(CC_C));
@@ -52,7 +52,7 @@ internal class _10B2_Sbcd_E : OpCode6309, IOpCode
         CC_Z = sum.Z;
         CC_V = sum.V;
         CC_C = sum.C;
-        
+
         D = (ushort)sum.Result;
 
         return DynamicCycles._86;

@@ -53,7 +53,7 @@ internal class _11BD_Divd_E : OpCode6309, IOpCode
         const byte abort = 0xFF;
         const byte overflow = 0x80;
 
-        ushort address = M16[PC+=2];
+        ushort address = M16[PC += 2];
         sbyte denominator = (sbyte)M8[address];
 
         if (denominator == 0)

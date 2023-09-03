@@ -28,7 +28,7 @@ internal class _11B6_Lde_E : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC+=2];
+        ushort address = M16[PC += 2];
 
         E = M8[address];
 

@@ -2404,15 +2404,17 @@ public partial class MC6809
 
     public void Lda_E() // B6
     {
-        A_REG = MemRead8(MemRead16(PC_REG));
+        //A_REG = MemRead8(MemRead16(PC_REG));
 
-        CC_Z = ZTEST(A_REG);
-        CC_N = NTEST8(A_REG);
-        CC_V = false;
+        //CC_Z = ZTEST(A_REG);
+        //CC_N = NTEST8(A_REG);
+        //CC_V = false;
 
-        PC_REG += 2;
+        //PC_REG += 2;
 
-        _cycleCounter += 5;
+        //_cycleCounter += 5;
+
+        _cycleCounter += OpCodes.Exec(0xB6);
     }
 
     public void Sta_E() // B7

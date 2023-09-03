@@ -33,7 +33,7 @@ internal class _B9_Adca_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC+=2];
+        ushort address = M16[PC += 2];
         byte value = M8[address];
 
         var sum = Add(A, value);

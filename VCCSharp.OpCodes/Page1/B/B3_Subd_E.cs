@@ -31,12 +31,11 @@ internal class _B3_Subd_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC+=2];
+        ushort address = M16[PC += 2];
         ushort value = M16[address];
 
         var sum = Subtract(D, value);
 
-        //CC_H = sum.H; //--Not applicable
         CC_N = sum.N;
         CC_Z = sum.Z;
         CC_V = sum.V;

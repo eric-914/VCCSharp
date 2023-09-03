@@ -34,15 +34,13 @@ internal class _B8_Eora_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC];
+        ushort address = M16[PC += 2];
 
         A ^= M8[address];
 
         CC_N = A.Bit7();
         CC_Z = A == 0;
         CC_V = false;
-
-        PC += 2;
 
         return DynamicCycles._54;
     }

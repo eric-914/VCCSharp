@@ -43,7 +43,7 @@ internal class _7F_Clr_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC+=2];
+        ushort address = M16[PC += 2];
 
         M8[address] = 0;
 

@@ -36,7 +36,7 @@ internal class _76_Ror_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC+=2];
+        ushort address = M16[PC += 2];
         byte value = M8[address];
 
         byte bit = CC_C.ToBit();

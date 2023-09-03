@@ -32,7 +32,7 @@ internal class _BA_Ora_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC+=2];
+        ushort address = M16[PC += 2];
 
         A |= M8[address];
 

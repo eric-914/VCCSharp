@@ -33,7 +33,7 @@ internal class _10BB_Addw_E : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC+=2];
+        ushort address = M16[PC += 2];
         ushort value = M16[address];
 
         var sum = Add(W, value);

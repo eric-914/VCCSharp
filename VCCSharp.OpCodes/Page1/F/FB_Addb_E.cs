@@ -32,7 +32,7 @@ internal class _FB_Addb_E : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = M16[PC+=2];
+        ushort address = M16[PC += 2];
         byte value = M8[address];
 
         var sum = Add(B, value);
