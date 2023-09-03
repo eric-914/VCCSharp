@@ -3,7 +3,7 @@
 namespace VCCSharp.OpCodes.Page1;
 
 /// <summary>
-/// <code>35/PULU/IMMEDIATE</code>
+/// <code>37/PULU/IMMEDIATE</code>
 /// Pull <c>{ A, B, CC, DP, D, X, Y, S, PC }</c> from hardware stack
 /// </summary>
 /// <remarks>
@@ -56,7 +56,7 @@ internal class _37_Pulu_M : OpCode, IOpCode
         {
             cycles++;
 
-            return M8[S++];
+            return M8[U++];
         }
 
         byte value = M8[PC++];

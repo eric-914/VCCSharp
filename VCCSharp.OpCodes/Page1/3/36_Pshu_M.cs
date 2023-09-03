@@ -55,7 +55,7 @@ internal class _36_Pshu_M : OpCode, IOpCode
         {
             cycles++;
 
-            M8[--S] = value;
+            M8[--U] = value;
         }
 
         byte value = M8[PC++];
