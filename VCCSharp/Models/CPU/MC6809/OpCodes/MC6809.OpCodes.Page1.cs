@@ -1759,13 +1759,15 @@ public partial class MC6809
 
     public void Lda_M() // 86
     {
-        A_REG = MemRead8(PC_REG++);
+        //A_REG = MemRead8(PC_REG++);
 
-        CC_Z = ZTEST(A_REG);
-        CC_N = NTEST8(A_REG);
-        CC_V = false;
+        //CC_Z = ZTEST(A_REG);
+        //CC_N = NTEST8(A_REG);
+        //CC_V = false;
 
-        _cycleCounter += 2;
+        //_cycleCounter += 2;
+
+        _cycleCounter += OpCodes.Exec(0x86);
     }
 
     // 87		//InvalidInsHandler
@@ -1959,13 +1961,15 @@ public partial class MC6809
 
     public void Lda_D() // 96
     {
-        A_REG = MemRead8(DPADDRESS(PC_REG++));
+        //A_REG = MemRead8(DPADDRESS(PC_REG++));
 
-        CC_Z = ZTEST(A_REG);
-        CC_N = NTEST8(A_REG);
-        CC_V = false;
+        //CC_Z = ZTEST(A_REG);
+        //CC_N = NTEST8(A_REG);
+        //CC_V = false;
 
-        _cycleCounter += 4;
+        //_cycleCounter += 4;
+
+        _cycleCounter += OpCodes.Exec(0x96);
     }
 
     public void Sta_D() // 97
