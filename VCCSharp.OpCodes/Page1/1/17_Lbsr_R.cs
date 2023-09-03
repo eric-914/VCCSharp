@@ -37,14 +37,12 @@ internal class _17_Lbsr_R : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort word = M16[PC];
-
-        PC += 2;
+        ushort value = M16[PC]; PC += 2;
 
         M8[--S] = PC_L;
         M8[--S] = PC_H;
 
-        PC += word;
+        PC += value;
 
         return DynamicCycles._97;
     }

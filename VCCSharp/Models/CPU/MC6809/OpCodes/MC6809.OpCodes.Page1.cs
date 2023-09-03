@@ -126,23 +126,12 @@ public partial class MC6809
 
     public void Lbra_R() // 16
     {
-        _postWord = MemRead16(PC_REG);
-        PC_REG += 2;
-        PC_REG += _postWord;
-
-        _cycleCounter += 5;
+        _cycleCounter += OpCodes.Exec(0x16);
     }
 
     public void Lbsr_R() // 17
     {
-        _postWord = MemRead16(PC_REG);
-        PC_REG += 2;
-        S_REG--;
-        MemWrite8(PC_L, S_REG--);
-        MemWrite8(PC_H, S_REG);
-        PC_REG += _postWord;
-
-        _cycleCounter += 9;
+        _cycleCounter += OpCodes.Exec(0x17);
     }
 
     // 18		//InvalidInsHandler
@@ -188,13 +177,7 @@ public partial class MC6809
 
     public void Andcc_M() // 1C
     {
-        _postByte = MemRead8(PC_REG++);
-        _temp8 = GetCC();
-        _temp8 = (byte)(_temp8 & _postByte);
-
-        _cpu.cc.bits = _temp8;
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x1C);
     }
 
     public void Sex_I() // 1D
@@ -208,27 +191,7 @@ public partial class MC6809
 
     public void Exg_M() // 1E
     {
-        _postByte = MemRead8(PC_REG++);
-
-        _cpu.cc.bits = GetCC();
-
-        if (((_postByte & 0x80) >> 4) == (_postByte & 0x08)) //Verify like size registers
-        {
-            if ((_postByte & 0x08) != 0) //8 bit EXG
-            {
-                _temp8 = PUR(((_postByte & 0x70) >> 4));
-                PUR(((_postByte & 0x70) >> 4), PUR(_postByte & 0x07));
-                PUR(_postByte & 0x07, _temp8);
-            }
-            else // 16 bit EXG
-            {
-                _temp16 = PXF((_postByte & 0x70) >> 4);
-                PXF((_postByte & 0x70) >> 4, PXF(_postByte & 0x07));
-                PXF(_postByte & 0x07, _temp16);
-            }
-        }
-
-        _cycleCounter += 8;
+        _cycleCounter += OpCodes.Exec(0x1E);
     }
 
     public void Tfr_M() // 1F

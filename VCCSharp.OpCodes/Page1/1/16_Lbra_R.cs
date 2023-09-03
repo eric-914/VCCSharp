@@ -31,11 +31,9 @@ internal class _16_Lbra_R : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort word = M16[PC];
+        ushort value = M16[PC]; PC += 2;
 
-        PC += 2;
-
-        PC += word;
+        PC += value;
 
         return DynamicCycles._54;
     }
