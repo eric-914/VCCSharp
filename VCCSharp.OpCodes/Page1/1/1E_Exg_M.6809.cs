@@ -10,7 +10,7 @@ namespace VCCSharp.OpCodes.Page1;
 /// <code>r0 ↔ r1</code>
 /// </summary>
 /// <remarks>
-/// This instruction exchanges the contents of two registers.
+/// The <c>EXG</c> instruction exchanges the contents of two registers.
 /// </remarks>
 /// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 /// ╭─────────────────────╮
@@ -18,7 +18,6 @@ namespace VCCSharp.OpCodes.Page1;
 /// ╰─────────────────────╯
 /// 
 /// None of the Condition Code flags are affected unless CC is one of the registers involved in the exchange.
-/// 
 /// Program flow can be altered by specifying PC as one of the registers. 
 /// When this occurs, the other register is set to the address of the instruction that follows EXG.
 /// 
@@ -29,13 +28,13 @@ namespace VCCSharp.OpCodes.Page1;
 /// When exchanging registers of different sizes, a 6809 operates differently than a 6309.
 /// The 8-bit register is always exchanged with the lower half of the 16-bit register, and the the upper half of the 16-bit register is then set to the value shown in the table below.
 /// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-///         ╭───────────────┬─────────────────────┬────────────────────────────────-╮
-///         │ Operand Order │ 8-bit Register Used │ 16-bit Register’s MSB after EXG │
-///         ├───────────────┼─────────────────────┼─────────────────────────────────┤
-///         │    16 , 8     │         Any         │              0xFF *             │
-///         │     8 , 16    │        A or B       │              0xFF *             │
-///         │     8 , 16    │       CC or DP      │           Same as LSB           │
-///         ╰───────────────┴─────────────────────┴────────────────────────────────-╯
+///         ╭───────────┬─────────────────────┬──────────────────────────────────────────╮
+///         │ Operation │ 8-bit Register Used │ 16-bit Register’s MSB after EXG          │
+///         ├───────────┼─────────────────────┼──────────────────────────────────────────┤
+///         │  16 , 8   │         Any         │              0xFF *                      │
+///         │   8 , 16  │        A or B       │              0xFF *                      │
+///         │   8 , 16  │       CC or DP      │           Same as LSB                    │
+///         ╰───────────┴─────────────────────┴──────────────────────────────────────────╯
 ///         *The one exception is for EXG A,D which produces exactly the same result as EXG A,B
 /// ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 /// The EXG instruction requires a postbyte in which the two registers are encoded into the upper and lower nibbles.

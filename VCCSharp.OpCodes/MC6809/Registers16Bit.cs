@@ -2,8 +2,16 @@
 
 namespace VCCSharp.OpCodes.MC6809;
 
+///  ╭────────┬─────────-╮╭────────┬─────────-╮
+///  │  Code  │ Register ││  Code  │ Register │
+///  ├────────┼──────────┤├────────┼──────────┤
+///  │  0000  │    D     ││  0100  │    S     │
+///  │  0001  │    X     ││  0101  │    PC    │
+///  │  0010  │    Y     ││  0110  │ invalid  │
+///  │  0011  │    U     ││  0111  │ invalid  │
+///  ╰────────┴─────────-╯╰────────┴─────────-╯
 internal class Registers16Bit<T> : IRegisters16Bit
-    where T : IRegisterD, IRegisterX, IRegisterY, IRegisterU, IRegisterS
+    where T : IRegisterD, IRegisterX, IRegisterY, IRegisterU, IRegisterS, IRegisterPC
 {
     private readonly T _cpu;
 
@@ -14,8 +22,8 @@ internal class Registers16Bit<T> : IRegisters16Bit
     {
         _cpu = cpu;
 
-        _getter = new Func<ushort>[8] { () => D, () => X, () => Y, () => U , () => S, invalid, invalid, invalid };
-        _setter = new Action<ushort>[8] { v => D = v, v => X = v, v => Y = v, v => U = v, v => S = v, nop, nop, nop };
+        _getter = new Func<ushort>[8] { () => D, () => X, () => Y, () => U , () => S, () => PC, invalid, invalid };
+        _setter = new Action<ushort>[8] { v => D = v, v => X = v, v => Y = v, v => U = v, v => S = v, v => PC = v, nop, nop };
     }
 
     public ushort this[int index]
@@ -29,6 +37,7 @@ internal class Registers16Bit<T> : IRegisters16Bit
     private ushort Y { get => _cpu.Y; set => _cpu.Y = value; }
     private ushort U { get => _cpu.U; set => _cpu.U = value; }
     private ushort S { get => _cpu.S; set => _cpu.S = value; }
+    private ushort PC { get => _cpu.PC; set => _cpu.PC = value; }
 
     ushort invalid() => 0xFFFF;
     void nop(ushort _) { }

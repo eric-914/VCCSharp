@@ -2,6 +2,14 @@
 
 namespace VCCSharp.OpCodes.MC6809;
 
+/// ╭────────┬─────────-╮╭────────┬─────────-╮
+/// │  Code  │ Register ││  Code  │ Register │
+/// ├────────┼──────────┤├────────┼──────────┤
+/// │  1000  │    A     ││  1100  │ invalid  │
+/// │  1001  │    B     ││  1101  │ invalid  │
+/// │  1010  │    CC    ││  1110  │ invalid  │
+/// │  1011  │    DP    ││  1111  │ invalid  │
+/// ╰────────┴─────────-╯╰────────┴─────────-╯
 internal class Registers8Bit<T> : IRegisters8Bit
     where T : IRegisterCC, IRegisterA, IRegisterB, IRegisterDP
 {

@@ -10,13 +10,13 @@ namespace VCCSharp.OpCodes.Page1;
 /// <code>r0 → r1</code>
 /// </summary>
 /// <remarks>
-/// <c>TFR</c> copies the contents of a source register into a destination register. 
+/// The <c>TFR</c> instruction copies the contents of a source register into a destination register. 
 /// </remarks>
 /// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 /// ╭─────────────────────╮
 /// │ 6809 IMPLEMENTATION │
 /// ╰─────────────────────╯
-/// TFR copies the contents of a source register into a destination register. 
+///
 /// None of the Condition Code flags are affected unless CC is specified as the destination register.
 /// The TFR instruction can be used to alter the flow of execution by specifying PC as the destination register.
 /// 
@@ -48,6 +48,7 @@ namespace VCCSharp.OpCodes.Page1;
 /// If an invalid register encoding is used for the destination, then the instruction will have no effect. 
 /// The invalid register encodings have valid meanings when executed on 6309 processors, and should be avoided in code that needs to work the same way on both CPU’s. 
 /// 
+/// TFR r0,r1
 /// Cycles (6)
 /// Byte Count (2)
 /// 
