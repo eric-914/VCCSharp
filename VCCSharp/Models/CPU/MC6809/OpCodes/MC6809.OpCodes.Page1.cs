@@ -200,7 +200,9 @@ public partial class MC6809
 
     public void Nop_I() // 12
     {
-        _cycleCounter += 2;
+        //_cycleCounter += 2;
+
+        _cycleCounter += OpCodes.Exec(0x12);
     }
 
     public void Sync_I() // 13

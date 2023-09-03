@@ -1,6 +1,7 @@
 ﻿using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Models.CPU.MC6809.Registers;
+using VCCSharp.OpCodes;
 
 namespace VCCSharp.Models.CPU.MC6809;
 
@@ -29,6 +30,8 @@ public partial class MC6809 : IMC6809
         _modules = modules;
 
         InitializeJmpVectors();
+
+        OpCodes = OpCodesFactory.Create(this);
     }
 
     public void Init()

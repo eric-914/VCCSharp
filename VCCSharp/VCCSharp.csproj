@@ -35,6 +35,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\DX8\DX8.csproj" />
 		<ProjectReference Include="..\VCCSharp.Libraries\VCCSharp.Libraries.csproj" />
+		<ProjectReference Include="..\VCCSharp.OpCodes\VCCSharp.OpCodes.csproj" />
 		<ProjectReference Include="..\VCCSharp.Shared\VCCSharp.Shared.csproj" />
 	</ItemGroup>
 
