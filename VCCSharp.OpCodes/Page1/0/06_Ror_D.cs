@@ -44,7 +44,7 @@ internal class _06_Ror_D : OpCode, IOpCode
         byte result = (byte)((value >> 1) | (bit << 7));
 
         CC_N = result.Bit7();
-        CC_Z = !(result == 0);
+        CC_Z = result == 0;
         CC_C = value.Bit0();
 
         M8[address] = result;

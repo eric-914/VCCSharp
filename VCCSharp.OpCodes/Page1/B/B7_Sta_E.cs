@@ -31,8 +31,8 @@ internal class _B7_Sta_E : OpCode, IOpCode
 
         M8[address] = A;
 
-        CC_Z = A == 0;
         CC_N = A.Bit7();
+        CC_Z = A == 0;
         CC_V = false;
 
         return DynamicCycles._54;

@@ -26,51 +26,19 @@ public partial class MC6809
 
     public void Com_D() // 03
     {
-        _temp16 = DPADDRESS(PC_REG++);
-        _temp8 = MemRead8(_temp16);
-        _temp8 = (byte)(0xFF - _temp8);
-
-        CC_Z = ZTEST(_temp8);
-        CC_N = NTEST8(_temp8);
-        CC_C = true;
-        CC_V = false;
-
-        MemWrite8(_temp8, _temp16);
-
-        _cycleCounter += 6;
+        _cycleCounter += OpCodes.Exec(0x03);
     }
 
     public void Lsr_D() // 04
     {
-        _temp16 = DPADDRESS(PC_REG++);
-        _temp8 = MemRead8(_temp16);
-
-        CC_C = (_temp8 & 1) != 0;
-        _temp8 >>= 1;
-        CC_Z = ZTEST(_temp8);
-        CC_N = false;
-
-        MemWrite8(_temp8, _temp16);
-
-        _cycleCounter += 6;
+        _cycleCounter += OpCodes.Exec(0x04);
     }
 
     // 05
 
     public void Ror_D() // 06
     {
-        _temp16 = DPADDRESS(PC_REG++);
-        _temp8 = MemRead8(_temp16);
-        _postByte = (byte)((CC_C ? 1 : 0) << 7);
-
-        CC_C = (_temp8 & 1) != 0;
-        _temp8 = (byte)((_temp8 >> 1) | _postByte);
-        CC_Z = ZTEST(_temp8);
-        CC_N = NTEST8(_temp8);
-
-        MemWrite8(_temp8, _temp16);
-
-        _cycleCounter += 6;
+        _cycleCounter += OpCodes.Exec(0x06);
     }
 
     public void Asr_D() // 07
@@ -89,95 +57,39 @@ public partial class MC6809
 
     public void Asl_D() // 08
     {
-        _temp16 = DPADDRESS(PC_REG++);
-        _temp8 = MemRead8(_temp16);
-
-        CC_C = (_temp8 & 0x80) >> 7 != 0;
-        CC_V = ((CC_C ? 1 : 0) ^ ((_temp8 & 0x40) >> 6)) != 0;
-        _temp8 <<= 1;
-        CC_N = NTEST8(_temp8);
-        CC_Z = ZTEST(_temp8);
-
-        MemWrite8(_temp8, _temp16);
-
-        _cycleCounter += 6;
+        _cycleCounter += OpCodes.Exec(0x08);
     }
 
     public void Rol_D() // 09
     {
-        _temp16 = DPADDRESS(PC_REG++);
-        _temp8 = MemRead8(_temp16);
-        _postByte = (byte)(CC_C ? 1 : 0);
-
-        CC_C = (_temp8 & 0x80) >> 7 != 0;
-        CC_V = ((CC_C ? 1 : 0) ^ ((_temp8 & 0x40) >> 6)) != 0;
-        _temp8 = (byte)((_temp8 << 1) | _postByte);
-        CC_Z = ZTEST(_temp8);
-        CC_N = NTEST8(_temp8);
-
-        MemWrite8(_temp8, _temp16);
-
-        _cycleCounter += 6;
+        _cycleCounter += OpCodes.Exec(0x09);
     }
 
     public void Dec_D() // 0A
     {
-        _temp16 = DPADDRESS(PC_REG++);
-        _temp8 = (byte)(MemRead8(_temp16) - 1);
-
-        CC_Z = ZTEST(_temp8);
-        CC_N = NTEST8(_temp8);
-        CC_V = _temp8 == 0x7F;
-
-        MemWrite8(_temp8, _temp16);
-
-        _cycleCounter += 6;
+        _cycleCounter += OpCodes.Exec(0x0A);
     }
 
     // 0B
 
     public void Inc_D() // 0C
     {
-        _temp16 = (DPADDRESS(PC_REG++));
-        _temp8 = (byte)(MemRead8(_temp16) + 1);
-
-        CC_Z = ZTEST(_temp8);
-        CC_V = _temp8 == 0x80;
-        CC_N = NTEST8(_temp8);
-
-        MemWrite8(_temp8, _temp16);
-
-        _cycleCounter += 6;
+        _cycleCounter += OpCodes.Exec(0x0C);
     }
 
     public void Tst_D() // 0D
     {
-        _temp8 = MemRead8(DPADDRESS(PC_REG++));
-
-        CC_Z = ZTEST(_temp8);
-        CC_N = NTEST8(_temp8);
-        CC_V = false;
-
-        _cycleCounter += 6;
+        _cycleCounter += OpCodes.Exec(0x0D);
     }
 
     public void Jmp_D() // 0E
     {
-        PC_REG = (ushort)(DP_REG | MemRead8(PC_REG));
-
-        _cycleCounter += 3;
+        _cycleCounter += OpCodes.Exec(0x0E);
     }
 
     public void Clr_D() // 0F
     {
-        MemWrite8(0, DPADDRESS(PC_REG++));
-
-        CC_Z = true;
-        CC_N = false;
-        CC_V = false;
-        CC_C = false;
-
-        _cycleCounter += 6;
+        _cycleCounter += OpCodes.Exec(0x0F);
     }
 
     #endregion
@@ -200,8 +112,6 @@ public partial class MC6809
 
     public void Nop_I() // 12
     {
-        //_cycleCounter += 2;
-
         _cycleCounter += OpCodes.Exec(0x12);
     }
 
@@ -1759,14 +1669,6 @@ public partial class MC6809
 
     public void Lda_M() // 86
     {
-        //A_REG = MemRead8(PC_REG++);
-
-        //CC_Z = ZTEST(A_REG);
-        //CC_N = NTEST8(A_REG);
-        //CC_V = false;
-
-        //_cycleCounter += 2;
-
         _cycleCounter += OpCodes.Exec(0x86);
     }
 
@@ -1961,26 +1863,12 @@ public partial class MC6809
 
     public void Lda_D() // 96
     {
-        //A_REG = MemRead8(DPADDRESS(PC_REG++));
-
-        //CC_Z = ZTEST(A_REG);
-        //CC_N = NTEST8(A_REG);
-        //CC_V = false;
-
-        //_cycleCounter += 4;
-
         _cycleCounter += OpCodes.Exec(0x96);
     }
 
     public void Sta_D() // 97
     {
-        MemWrite8(A_REG, DPADDRESS(PC_REG++));
-
-        CC_Z = ZTEST(A_REG);
-        CC_N = NTEST8(A_REG);
-        CC_V = false;
-
-        _cycleCounter += 4;
+        _cycleCounter += OpCodes.Exec(0x97);
     }
 
     public void Eora_D() // 98
@@ -2404,30 +2292,12 @@ public partial class MC6809
 
     public void Lda_E() // B6
     {
-        A_REG = MemRead8(MemRead16(PC_REG));
-
-        //CC_Z = ZTEST(A_REG);
-        //CC_N = NTEST8(A_REG);
-        //CC_V = false;
-
-        //PC_REG += 2;
-
-        //_cycleCounter += 5;
-
         _cycleCounter += OpCodes.Exec(0xB6);
     }
 
     public void Sta_E() // B7
     {
-        MemWrite8(A_REG, MemRead16(PC_REG));
-
-        CC_Z = ZTEST(A_REG);
-        CC_N = NTEST8(A_REG);
-        CC_V = false;
-
-        PC_REG += 2;
-
-        _cycleCounter += 5;
+        _cycleCounter += OpCodes.Exec(0xB7);
     }
 
     public void Eora_E() // B8
@@ -2642,13 +2512,7 @@ public partial class MC6809
 
     public void Ldb_M() // C6
     {
-        B_REG = MemRead8(PC_REG++);
-
-        CC_Z = ZTEST(B_REG);
-        CC_N = NTEST8(B_REG);
-        CC_V = false;
-
-        _cycleCounter += 2;
+        _cycleCounter += OpCodes.Exec(0xC6);
     }
 
     // C7	//InvalidInsHandler
@@ -2828,24 +2692,12 @@ public partial class MC6809
 
     public void Ldb_D() // D6
     {
-        B_REG = MemRead8(DPADDRESS(PC_REG++));
-
-        CC_Z = ZTEST(B_REG);
-        CC_N = NTEST8(B_REG);
-        CC_V = false;
-
-        _cycleCounter += 4;
+        _cycleCounter += OpCodes.Exec(0xD6);
     }
 
     public void Stb_D() // D7
     {
-        MemWrite8(B_REG, DPADDRESS(PC_REG++));
-
-        CC_Z = ZTEST(B_REG);
-        CC_N = NTEST8(B_REG);
-        CC_V = false;
-
-        _cycleCounter += 4;
+        _cycleCounter += OpCodes.Exec(0xD7);
     }
 
     public void Eorb_D() // D8
@@ -3258,28 +3110,12 @@ public partial class MC6809
 
     public void Ldb_E() // F6
     {
-        B_REG = MemRead8(MemRead16(PC_REG));
-
-        CC_Z = ZTEST(B_REG);
-        CC_N = NTEST8(B_REG);
-        CC_V = false;
-
-        PC_REG += 2;
-
-        _cycleCounter += 5;
+        _cycleCounter += OpCodes.Exec(0xF6);
     }
 
     public void Stb_E() // F7
     {
-        MemWrite8(B_REG, MemRead16(PC_REG));
-
-        CC_Z = ZTEST(B_REG);
-        CC_N = NTEST8(B_REG);
-        CC_V = false;
-
-        PC_REG += 2;
-
-        _cycleCounter += 5;
+        _cycleCounter += OpCodes.Exec(0xF7);
     }
 
     public void Eorb_E() // F8

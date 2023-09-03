@@ -8,7 +8,7 @@ namespace VCCSharp.OpCodes.Page1;
 /// <code>(M)’ ← B</code>
 /// </summary>
 /// <remarks>
-/// The <c>STB</c> instructions store the contents of the 8-bit <c>B</c> accumulators into a byte in memory. 
+/// The <c>STB</c> instruction stores the contents of the 8-bit <c>B</c> accumulator to a byte in memory. 
 /// </remarks>
 /// 
 /// [E F H I N Z V C]
