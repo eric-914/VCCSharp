@@ -983,20 +983,7 @@ public partial class MC6809
         _cycleCounter += 2;
     }
 
-    public void Cmpx_M() // 8C
-    {
-        _postWord = MemRead16(PC_REG);
-        _temp16 = (ushort)(X_REG - _postWord);
-
-        CC_C = _temp16 > X_REG;
-        CC_V = OVERFLOW16(CC_C, _postWord, _temp16, X_REG);
-        CC_N = NTEST16(_temp16);
-        CC_Z = ZTEST(_temp16);
-
-        PC_REG += 2;
-
-        _cycleCounter += 4;
-    }
+    public void Cmpx_M() => _cycleCounter += OpCodes.Exec(0x8C);
 
     public void Bsr_R() // 8D
     {

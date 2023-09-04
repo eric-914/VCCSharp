@@ -1,6 +1,7 @@
 ﻿using VCCSharp.OpCodes.HD6309;
 using VCCSharp.OpCodes.Model.Functions;
 using VCCSharp.OpCodes.Model.Memory;
+using VCCSharp.OpCodes.Model.Support;
 using VCCSharp.OpCodes.Registers;
 
 namespace VCCSharp.OpCodes.Model.OpCodes;
@@ -246,7 +247,7 @@ internal abstract class OpCode6309
     /// <param name="a">first 8-bit</param>
     /// <param name="b">second 8-bit</param>
     /// <returns>object with summation results</returns>
-    protected Addition Add(byte a, byte b) => new(a, b);
+    protected static IFunction Add(byte a, byte b) => new Addition(a, b);
 
     /// <summary>
     /// Handles the intracies of calculating the sum two values: <c>a+b</c>
@@ -254,7 +255,7 @@ internal abstract class OpCode6309
     /// <param name="a">first 16-bit</param>
     /// <param name="b">second 16-bit</param>
     /// <returns>object with summation results</returns>
-    protected Addition Add(ushort a, ushort b) => new(a, b);
+    protected static IFunction Add(ushort a, ushort b) => new Addition(a, b);
 
     /// <summary>
     /// Handles the intracies of calculating the difference two values: <c>a-b</c>
@@ -262,7 +263,7 @@ internal abstract class OpCode6309
     /// <param name="a">first 16-bit</param>
     /// <param name="b">second 16-bit</param>
     /// <returns>object with summation results</returns>
-    protected Addition Subtract(byte a, byte b) => new(a, b.TwosComplement()); //--Take advantage of: a-b ⇔ a+(-b)
+    protected static IFunction Subtract(byte a, byte b) => new Subtraction(a, b);
 
     /// <summary>
     /// Handles the intracies of calculating the difference two values: <c>a-b</c>
@@ -270,8 +271,8 @@ internal abstract class OpCode6309
     /// <param name="a">first 16-bit</param>
     /// <param name="b">second 16-bit</param>
     /// <returns>object with summation results</returns>
-    protected Addition Subtract(ushort a, ushort b) => new(a, b.TwosComplement()); //--Take advantage of: a-b ⇔ a+(-b)
+    protected static IFunction Subtract(ushort a, ushort b) => new Subtraction(a, b);
 
-    protected Support.Boolean Boolean(byte result) => new(result);
-    protected Support.Boolean Boolean(ushort result) => new(result);
+    protected static IFunction Boolean(byte result) => new Functions.Boolean(result);
+    protected static IFunction Boolean(ushort result) => new Functions.Boolean(result);
 }

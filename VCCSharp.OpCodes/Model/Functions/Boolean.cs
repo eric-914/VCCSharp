@@ -1,4 +1,6 @@
-﻿namespace VCCSharp.OpCodes.Model.Support;
+﻿using VCCSharp.OpCodes.Model.Support;
+
+namespace VCCSharp.OpCodes.Model.Functions;
 
 /// <summary>
 /// Used to calculate CC codes during register transfer logic
