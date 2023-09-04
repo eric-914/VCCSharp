@@ -378,17 +378,7 @@ public partial class MC6809
         _cycleCounter += 2;
     }
 
-    public void Decb_I() // 5A
-    {
-        B_REG--;
-
-        CC_Z = ZTEST(B_REG);
-        CC_V = B_REG == 0x7F;
-        CC_N = NTEST8(B_REG);
-
-        _cycleCounter += 2;
-    }
-
+    public void Decb_I() => Run(0x5A);
     // 5B
 
     public void Incb_I() // 5C
@@ -920,11 +910,7 @@ public partial class MC6809
         _cycleCounter += 2;
     }
 
-    public void Lda_M() // 86
-    {
-        _cycleCounter += OpCodes.Exec(0x86);
-    }
-
+    public void Lda_M() => Run(0x86);
     // 87
 
     public void Eora_M() // 88
@@ -983,7 +969,7 @@ public partial class MC6809
         _cycleCounter += 2;
     }
 
-    public void Cmpx_M() => _cycleCounter += OpCodes.Exec(0x8C);
+    public void Cmpx_M() => Run(0x8C);
 
     public void Bsr_R() // 8D
     {
@@ -1101,15 +1087,8 @@ public partial class MC6809
         _cycleCounter += 4;
     }
 
-    public void Lda_D() // 96
-    {
-        _cycleCounter += OpCodes.Exec(0x96);
-    }
-
-    public void Sta_D() // 97
-    {
-        _cycleCounter += OpCodes.Exec(0x97);
-    }
+    public void Lda_D() => Run(0x96);
+    public void Sta_D() => Run(0x97);
 
     public void Eora_D() // 98
     {
@@ -1530,15 +1509,8 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void Lda_E() // B6
-    {
-        _cycleCounter += OpCodes.Exec(0xB6);
-    }
-
-    public void Sta_E() // B7
-    {
-        _cycleCounter += OpCodes.Exec(0xB7);
-    }
+    public void Lda_E() => Run(0xB6);
+    public void Sta_E() => Run(0xB7);
 
     public void Eora_E() // B8
     {
@@ -1750,12 +1722,8 @@ public partial class MC6809
         _cycleCounter += 2;
     }
 
-    public void Ldb_M() // C6
-    {
-        _cycleCounter += OpCodes.Exec(0xC6);
-    }
-
-    // C7	//InvalidInsHandler
+    public void Ldb_M() => Run(0xC6);
+    // C7
 
     public void Eorb_M() // C8
     {
@@ -1826,7 +1794,7 @@ public partial class MC6809
         _cycleCounter += 2;
     }
 
-    // CD	//InvalidInsHandler
+    // CD
 
     public void Ldu_M() // CE
     {
@@ -1841,7 +1809,7 @@ public partial class MC6809
         _cycleCounter += 3;
     }
 
-    // CF	//InvalidInsHandler
+    // CF
 
     #endregion
 
@@ -1930,15 +1898,8 @@ public partial class MC6809
         _cycleCounter += 4;
     }
 
-    public void Ldb_D() // D6
-    {
-        _cycleCounter += OpCodes.Exec(0xD6);
-    }
-
-    public void Stb_D() // D7
-    {
-        _cycleCounter += OpCodes.Exec(0xD7);
-    }
+    public void Ldb_D() => Run(0xD6);
+    public void Stb_D() => Run(0xD7);
 
     public void Eorb_D() // D8
     {
@@ -2348,15 +2309,8 @@ public partial class MC6809
         _cycleCounter += 5;
     }
 
-    public void Ldb_E() // F6
-    {
-        _cycleCounter += OpCodes.Exec(0xF6);
-    }
-
-    public void Stb_E() // F7
-    {
-        _cycleCounter += OpCodes.Exec(0xF7);
-    }
+    public void Ldb_E() => Run(0xF6);
+    public void Stb_E() => Run(0xF7);
 
     public void Eorb_E() // F8
     {
@@ -2472,8 +2426,6 @@ public partial class MC6809
         PC_REG += 2;
 
         _cycleCounter += 6;
-
-        //_cycleCounter += OpCodes.Exec(0xFF);
     }
 
     #endregion
