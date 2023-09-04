@@ -1,9 +1,11 @@
-﻿namespace VCCSharp.OpCodes.Model.Support;
+﻿using VCCSharp.OpCodes.Model.Support;
+
+namespace VCCSharp.OpCodes.Model.Functions;
 
 /// <summary>
 /// Handles the intracies of adding two values: <c>a+b</c>
 /// </summary>
-internal class Sum : IFunction
+internal class Addition : IFunction
 {
     public int Result { get; }
 
@@ -32,39 +34,25 @@ internal class Sum : IFunction
     public bool F => throw new NotImplementedException();
     public bool E => throw new NotImplementedException();
 
-    private bool Carry(bool A, bool B, bool C) => (A && B) || (A && !C) || (B && !C);
-    private bool Carry(byte a, byte b, byte c) => Carry(a.Bit7(), b.Bit7(), c.Bit7());
-    private bool Carry(ushort a, ushort b, ushort c) => Carry(a.Bit15(), b.Bit15(), c.Bit15());
-
-    private bool Overflow(bool A, bool B, bool C) => (A && B && !C) || (!A && !B && C);
-    private bool Overflow(byte a, byte b, byte c) => Overflow(a.Bit7(), b.Bit7(), c.Bit7());
-    private bool Overflow(ushort a, ushort b, ushort c) => Overflow(a.Bit15(), b.Bit15(), c.Bit15());
-
-    private bool HalfCarry(byte a, byte b, byte c) => Carry(a.Bit3(), b.Bit3(), c.Bit3());
-
-    public Sum(byte a, byte b)
+    public Addition(byte a, byte b)
     {
-        byte c = (byte)(a + b);
+        Result = (byte)(a + b);
 
-        Result = c;
-
-        H = HalfCarry(a, b, c);
-        N = c.Bit7();
-        Z = c == 0;
-        V = Overflow(a, b, c);
-        C = Carry(a, b, c);
+        H = (a & 0x0F) + (b & 0x0F) > 0x0F;
+        N = Result.Bit7();
+        Z = Result == 0;
+        V = ((a & b & Result.I()) | (a.I() & b.I() & Result)).Bit7();
+        C = a + b > 0xFF;
     }
 
-    public Sum(ushort a, ushort b)
+    public Addition(ushort a, ushort b)
     {
-        ushort c = (ushort)(a + b);
-
-        Result = c;
+        Result = (ushort)(a + b);
 
         H = false; //--Not applicable
-        N = c.Bit15();
-        Z = c == 0;
-        V = Overflow(a, b, c);
-        C = Carry(a, b, c);
+        N = Result.Bit15();
+        Z = Result == 0;
+        V = ((a & b & Result.I()) | (a.I() & b.I() & Result)).Bit15();
+        C = a + b > 0xFFFF;
     }
 }

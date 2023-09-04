@@ -23,10 +23,10 @@ public partial class MC6809
 
     // 01
     // 02
-    public void Com_D() => _cycleCounter += OpCodes.Exec(0x03);
-    public void Lsr_D() => _cycleCounter += OpCodes.Exec(0x04);
+    public void Com_D() => Run(0x03);
+    public void Lsr_D() => Run(0x04);
     // 05
-    public void Ror_D() => _cycleCounter += OpCodes.Exec(0x06);
+    public void Ror_D() => Run(0x06);
 
     public void Asr_D() // 07
     {
@@ -42,14 +42,14 @@ public partial class MC6809
         _cycleCounter += 6;
     }
 
-    public void Asl_D() => _cycleCounter += OpCodes.Exec(0x08);
-    public void Rol_D() => _cycleCounter += OpCodes.Exec(0x09);
-    public void Dec_D() => _cycleCounter += OpCodes.Exec(0x0A);
+    public void Asl_D() => Run(0x08);
+    public void Rol_D() => Run(0x09);
+    public void Dec_D() => Run(0x0A);
     // 0B
-    public void Inc_D() => _cycleCounter += OpCodes.Exec(0x0C);
-    public void Tst_D() => _cycleCounter += OpCodes.Exec(0x0D);
-    public void Jmp_D() => _cycleCounter += OpCodes.Exec(0x0E);
-    public void Clr_D() => _cycleCounter += OpCodes.Exec(0x0F);
+    public void Inc_D() => Run(0x0C);
+    public void Tst_D() => Run(0x0D);
+    public void Jmp_D() => Run(0x0E);
+    public void Clr_D() => Run(0x0F);
 
     #endregion
 
@@ -69,7 +69,7 @@ public partial class MC6809
         _jumpVectors0x11[opCode]();
     }
 
-    public void Nop_I() => _cycleCounter += OpCodes.Exec(0x12);
+    public void Nop_I() => Run(0x12);
 
     public void Sync_I() // 13
     {
@@ -79,8 +79,8 @@ public partial class MC6809
 
     // 14
     // 15
-    public void Lbra_R() => _cycleCounter += OpCodes.Exec(0x16);
-    public void Lbsr_R() => _cycleCounter += OpCodes.Exec(0x17);
+    public void Lbra_R() => Run(0x16);
+    public void Lbsr_R() => Run(0x17);
     // 18
 
     public void Daa_I() // 19
@@ -115,9 +115,9 @@ public partial class MC6809
         _cycleCounter += 2;
     }
 
-    public void Orcc_M() => _cycleCounter += OpCodes.Exec(0x1A);
+    public void Orcc_M() => Run(0x1A);
     // 1B
-    public void Andcc_M() => _cycleCounter += OpCodes.Exec(0x1C);
+    public void Andcc_M() => Run(0x1C);
 
     public void Sex_I() // 1D
     {
@@ -128,29 +128,29 @@ public partial class MC6809
         _cycleCounter += 2;
     }
 
-    public void Exg_M() => _cycleCounter += OpCodes.Exec(0x1E);
-    public void Tfr_M() => _cycleCounter += OpCodes.Exec(0x1F);
+    public void Exg_M() => Run(0x1E);
+    public void Tfr_M() => Run(0x1F);
 
     #endregion
 
     #region 0x20 - 0x2F
 
-    public void Bra_R() => _cycleCounter += OpCodes.Exec(0x20);
-    public void Brn_R() => _cycleCounter += OpCodes.Exec(0x21);
-    public void Bhi_R() => _cycleCounter += OpCodes.Exec(0x22);
-    public void Bls_R() => _cycleCounter += OpCodes.Exec(0x23);
-    public void Bhs_R() => _cycleCounter += OpCodes.Exec(0x24);
-    public void Blo_R() => _cycleCounter += OpCodes.Exec(0x25);
-    public void Bne_R() => _cycleCounter += OpCodes.Exec(0x26);
-    public void Beq_R() => _cycleCounter += OpCodes.Exec(0x27);
-    public void Bvc_R() => _cycleCounter += OpCodes.Exec(0x28);
-    public void Bvs_R() => _cycleCounter += OpCodes.Exec(0x29);
-    public void Bpl_R() => _cycleCounter += OpCodes.Exec(0x2A);
-    public void Bmi_R() => _cycleCounter += OpCodes.Exec(0x2B);
-    public void Bge_R() => _cycleCounter += OpCodes.Exec(0x2C);
-    public void Blt_R() => _cycleCounter += OpCodes.Exec(0x2D);
-    public void Bgt_R() => _cycleCounter += OpCodes.Exec(0x2E);
-    public void Ble_R() => _cycleCounter += OpCodes.Exec(0x2F);
+    public void Bra_R() => Run(0x20);
+    public void Brn_R() => Run(0x21);
+    public void Bhi_R() => Run(0x22);
+    public void Bls_R() => Run(0x23);
+    public void Bhs_R() => Run(0x24);
+    public void Blo_R() => Run(0x25);
+    public void Bne_R() => Run(0x26);
+    public void Beq_R() => Run(0x27);
+    public void Bvc_R() => Run(0x28);
+    public void Bvs_R() => Run(0x29);
+    public void Bpl_R() => Run(0x2A);
+    public void Bmi_R() => Run(0x2B);
+    public void Bge_R() => Run(0x2C);
+    public void Blt_R() => Run(0x2D);
+    public void Bgt_R() => Run(0x2E);
+    public void Ble_R() => Run(0x2F);
 
     #endregion
 
@@ -188,12 +188,12 @@ public partial class MC6809
         _cycleCounter += 4;
     }
 
-    public void Pshs_M() => _cycleCounter += OpCodes.Exec(0x34);
-    public void Puls_M() => _cycleCounter += OpCodes.Exec(0x35);
-    public void Pshu_M() => _cycleCounter += OpCodes.Exec(0x36);
-    public void Pulu_M() => _cycleCounter += OpCodes.Exec(0x37);
+    public void Pshs_M() => Run(0x34);
+    public void Puls_M() => Run(0x35);
+    public void Pshu_M() => Run(0x36);
+    public void Pulu_M() => Run(0x37);
     // 38
-    public void Rts_I() => _cycleCounter += OpCodes.Exec(0x39);
+    public void Rts_I() => Run(0x39);
 
     public void Abx_I() // 3A
     {
@@ -202,7 +202,7 @@ public partial class MC6809
         _cycleCounter += 3;
     }
 
-    public void Rti_I() => _cycleCounter += OpCodes.Exec(0x3B);
+    public void Rti_I() => Run(0x3B);
 
     public void Cwai_I() // 3C
     {
@@ -215,7 +215,7 @@ public partial class MC6809
         IsSyncWaiting = true;
     }
 
-    public void Mul_I() => _cycleCounter += OpCodes.Exec(0x3D);
+    public void Mul_I() => Run(0x3D);
     // 3E   //RESET - Undocumented
 
     public void Swi1_I() // 3F
@@ -248,13 +248,13 @@ public partial class MC6809
 
     #region 0x40 - 0x4F
 
-    public void Nega_I() => _cycleCounter += OpCodes.Exec(0x40);
+    public void Nega_I() => Run(0x40);
     // 41
     // 42
-    public void Coma_I() => _cycleCounter += OpCodes.Exec(0x43);
-    public void Lsra_I() => _cycleCounter += OpCodes.Exec(0x44);
+    public void Coma_I() => Run(0x43);
+    public void Lsra_I() => Run(0x44);
     // 45
-    public void Rora_I() => _cycleCounter += OpCodes.Exec(0x46);
+    public void Rora_I() => Run(0x46);
 
     public void Asra_I() // 47
     {
@@ -268,14 +268,14 @@ public partial class MC6809
         _cycleCounter += 2;
     }
 
-    public void Asla_I() => _cycleCounter += OpCodes.Exec(0x48);
-    public void Rola_I() => _cycleCounter += OpCodes.Exec(0x49);
-    public void Deca_I() => _cycleCounter += OpCodes.Exec(0x4A);
+    public void Asla_I() => Run(0x48);
+    public void Rola_I() => Run(0x49);
+    public void Deca_I() => Run(0x4A);
     // 4B
-    public void Inca_I() => _cycleCounter += OpCodes.Exec(0x4C);
-    public void Tsta_I() => _cycleCounter += OpCodes.Exec(0x4D);
+    public void Inca_I() => Run(0x4C);
+    public void Tsta_I() => Run(0x4D);
     // 4E
-    public void Clra_I() => _cycleCounter += OpCodes.Exec(0x4F);
+    public void Clra_I() => Run(0x4F);
 
     #endregion
 
@@ -2485,6 +2485,8 @@ public partial class MC6809
         PC_REG += 2;
 
         _cycleCounter += 6;
+
+        //_cycleCounter += OpCodes.Exec(0xFF);
     }
 
     #endregion

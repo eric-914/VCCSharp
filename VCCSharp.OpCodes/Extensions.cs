@@ -9,6 +9,11 @@ internal static class Extensions
     public static ushort H(this ushort w, byte b) => (ushort)((w & 0x00FF) | (b << 8));
     public static ushort L(this ushort w, byte b) => (ushort)((w & 0xFF00) | b);
 
+    //--Invert the bits
+    public static byte I(this byte b) => (byte)(0xFF - b);
+    public static ushort I(this ushort b) => (ushort)(0xFFFF - b);
+    public static int I(this int b) => 0xFFFF - b;
+
     public static bool Bit7(this byte b) => (b & 0x80) != 0;
     public static bool Bit6(this byte b) => (b & 0x40) != 0;
     public static bool Bit5(this byte b) => (b & 0x20) != 0;
@@ -25,6 +30,9 @@ internal static class Extensions
     public static bool Bit0(this ushort w) => (w & 0x0001) != 0;
 
     public static bool Bit31(this uint d) => (d & 0x80000000) != 0;
+
+    public static bool Bit15(this int b) => (b & 0x8000) != 0;
+    public static bool Bit7(this int b) => (b & 0x0080) != 0;
 
     #region CC Register
 
@@ -66,5 +74,5 @@ internal static class Extensions
     public static byte ToClearMask(this byte b) => (byte)~(1 << b);
 
     public static byte Plus(this byte value, bool bit) => (byte)(value + bit.ToBit());
-    public static ushort Plus(this ushort value, bool bit) => (ushort )(value + bit.ToBit());
+    public static ushort Plus(this ushort value, bool bit) => (ushort)(value + bit.ToBit());
 }

@@ -1,6 +1,6 @@
 ﻿using VCCSharp.OpCodes.MC6809;
+using VCCSharp.OpCodes.Model.Functions;
 using VCCSharp.OpCodes.Model.Memory;
-using VCCSharp.OpCodes.Model.Support;
 using VCCSharp.OpCodes.Registers;
 
 namespace VCCSharp.OpCodes.Model.OpCodes;
@@ -193,7 +193,7 @@ internal abstract class OpCode
     /// <param name="a">first 8-bit</param>
     /// <param name="b">second 8-bit</param>
     /// <returns>object with summation results</returns>
-    protected Sum Add(byte a, byte b) => new(a, b);
+    protected Addition Add(byte a, byte b) => new(a, b);
 
     /// <summary>
     /// Handles the intracies of calculating the sum two values: <c>a+b</c>
@@ -201,7 +201,7 @@ internal abstract class OpCode
     /// <param name="a">first 16-bit</param>
     /// <param name="b">second 16-bit</param>
     /// <returns>object with summation results</returns>
-    protected Sum Add(ushort a, ushort b) => new(a, b);
+    protected Addition Add(ushort a, ushort b) => new(a, b);
 
     /// <summary>
     /// Handles the intracies of calculating the difference two values: <c>a-b</c>
@@ -209,7 +209,7 @@ internal abstract class OpCode
     /// <param name="a">first 16-bit</param>
     /// <param name="b">second 16-bit</param>
     /// <returns>object with summation results</returns>
-    protected Sum Subtract(byte a, byte b) => new(a, b.TwosComplement()); //--Take advantage of: a-b ⇔ a+(-b)
+    protected Addition Subtract(byte a, byte b) => new(a, b.TwosComplement()); //--Take advantage of: a-b ⇔ a+(-b)
 
     /// <summary>
     /// Handles the intracies of calculating the difference two values: <c>a-b</c>
@@ -217,5 +217,5 @@ internal abstract class OpCode
     /// <param name="a">first 16-bit</param>
     /// <param name="b">second 16-bit</param>
     /// <returns>object with summation results</returns>
-    protected Sum Subtract(ushort a, ushort b) => new(a, b.TwosComplement()); //--Take advantage of: a-b ⇔ a+(-b)
+    protected Addition Subtract(ushort a, ushort b) => new(a, b.TwosComplement()); //--Take advantage of: a-b ⇔ a+(-b)
 }
