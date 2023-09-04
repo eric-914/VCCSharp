@@ -270,53 +270,12 @@ public partial class MC6809
 
     public void Asla_I() => _cycleCounter += OpCodes.Exec(0x48);
     public void Rola_I() => _cycleCounter += OpCodes.Exec(0x49);
-
-    public void Deca_I() // 4A
-    {
-        A_REG--;
-
-        CC_Z = ZTEST(A_REG);
-        CC_V = A_REG == 0x7F;
-        CC_N = NTEST8(A_REG);
-
-        _cycleCounter += 2;
-    }
-
+    public void Deca_I() => _cycleCounter += OpCodes.Exec(0x4A);
     // 4B
-
-    public void Inca_I() // 4C
-    {
-        A_REG++;
-
-        CC_Z = ZTEST(A_REG);
-        CC_V = A_REG == 0x80;
-        CC_N = NTEST8(A_REG);
-
-        _cycleCounter += 2;
-    }
-
-    public void Tsta_I() // 4D
-    {
-        CC_Z = ZTEST(A_REG);
-        CC_N = NTEST8(A_REG);
-        CC_V = false;
-
-        _cycleCounter += 2;
-    }
-
+    public void Inca_I() => _cycleCounter += OpCodes.Exec(0x4C);
+    public void Tsta_I() => _cycleCounter += OpCodes.Exec(0x4D);
     // 4E
-
-    public void Clra_I() // 4F
-    {
-        A_REG = 0;
-
-        CC_C = false;
-        CC_V = false;
-        CC_N = false;
-        CC_Z = true;
-
-        _cycleCounter += 2;
-    }
+    public void Clra_I() => _cycleCounter += OpCodes.Exec(0x4F);
 
     #endregion
 
