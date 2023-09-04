@@ -343,10 +343,7 @@ public partial class MC6809
 
     public void Rts_I() // 39
     {
-        PC_H = MemRead8(S_REG++);
-        PC_L = MemRead8(S_REG++);
-
-        _cycleCounter += 5;
+        _cycleCounter += OpCodes.Exec(0x39);
     }
 
     public void Abx_I() // 3A
@@ -358,28 +355,7 @@ public partial class MC6809
 
     public void Rti_I() // 3B
     {
-        _cpu.cc.bits = MemRead8(S_REG++);
-
-        _cycleCounter += 6;
-        IsInInterrupt = false;
-
-        if (CC_E)
-        {
-            A_REG = MemRead8(S_REG++);
-            B_REG = MemRead8(S_REG++);
-            DPA = MemRead8(S_REG++);
-            X_H = MemRead8(S_REG++);
-            X_L = MemRead8(S_REG++);
-            Y_H = MemRead8(S_REG++);
-            Y_L = MemRead8(S_REG++);
-            U_H = MemRead8(S_REG++);
-            U_L = MemRead8(S_REG++);
-
-            _cycleCounter += 9;
-        }
-
-        PC_H = MemRead8(S_REG++);
-        PC_L = MemRead8(S_REG++);
+        _cycleCounter += OpCodes.Exec(0x3B);
     }
 
     public void Cwai_I() // 3C
@@ -395,11 +371,7 @@ public partial class MC6809
 
     public void Mul_I() // 3D
     {
-        D_REG = (ushort)(A_REG * B_REG);
-        CC_C = B_REG > 0x7F;
-        CC_Z = ZTEST(D_REG);
-
-        _cycleCounter += 11;
+        _cycleCounter += OpCodes.Exec(0x3D);
     }
 
     // 3E   //RESET - Undocumented
