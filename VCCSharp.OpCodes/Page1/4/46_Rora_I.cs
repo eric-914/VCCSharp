@@ -41,7 +41,7 @@ internal class _46_Rora_I : OpCode, IOpCode
         byte result = (byte)((A >> 1) | (bit << 7));
 
         CC_N = result.Bit7();
-        CC_Z = !(result == 0);
+        CC_Z = result == 0;
         CC_C = A.Bit0();
 
         A = result;
