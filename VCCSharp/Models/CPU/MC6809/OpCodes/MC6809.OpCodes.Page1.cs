@@ -160,17 +160,7 @@ public partial class MC6809
 
     public void Leax_X() => Run(0x30);
     public void Leay_X() => Run(0x31);
-
-    public void Leas_X() // 32
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        S_REG = ea.CalculateEA(value);
-
-        _cycleCounter += 4;
-    }
+    public void Leas_X() => Run(0x32);
 
     public void Leau_X() // 33
     {
@@ -333,17 +323,7 @@ public partial class MC6809
         _cycleCounter += 2;
     }
 
-    public void Asrb_I() // 57
-    {
-        CC_C = (B_REG & 1) != 0;
-
-        B_REG = (byte)((B_REG & 0x80) | (B_REG >> 1));
-
-        CC_Z = ZTEST(B_REG);
-        CC_N = NTEST8(B_REG);
-
-        _cycleCounter += 2;
-    }
+    public void Asrb_I() => Run(0x57);
 
     public void Aslb_I() // 58
     {
@@ -840,26 +820,8 @@ public partial class MC6809
         _cycleCounter += 7;
     }
 
-    public void Jmp_E() // 7E
-    {
-        PC_REG = MemRead16(PC_REG);
-
-        _cycleCounter += 4;
-    }
-
-    public void Clr_E() // 7F
-    {
-        MemWrite8(0, MemRead16(PC_REG));
-
-        CC_C = false;
-        CC_N = false;
-        CC_V = false;
-        CC_Z = true;
-
-        PC_REG += 2;
-
-        _cycleCounter += 7;
-    }
+    public void Jmp_E() => Run(0x7E);
+    public void Clr_E() => Run(0x7F);
 
     #endregion
 
@@ -881,18 +843,7 @@ public partial class MC6809
         _cycleCounter += 2;
     }
 
-    public void Cmpa_M() // 81
-    {
-        _postByte = MemRead8(PC_REG++);
-        _temp8 = (byte)(A_REG - _postByte);
-
-        CC_C = _temp8 > A_REG;
-        CC_V = OVERFLOW8(CC_C, _postByte, _temp8, A_REG);
-        CC_N = NTEST8(_temp8);
-        CC_Z = ZTEST(_temp8);
-
-        _cycleCounter += 2;
-    }
+    public void Cmpa_M() => Run(0x81);
 
     public void Sbca_M() // 82
     {
@@ -928,16 +879,7 @@ public partial class MC6809
         _cycleCounter += 4;
     }
 
-    public void Anda_M() // 84
-    {
-        A_REG &= MemRead8(PC_REG++);
-
-        CC_N = NTEST8(A_REG);
-        CC_Z = ZTEST(A_REG);
-        CC_V = false;
-
-        _cycleCounter += 2;
-    }
+    public void Anda_M() => Run(0x84);
 
     public void Bita_M() // 85
     {

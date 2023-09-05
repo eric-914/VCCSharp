@@ -32,9 +32,9 @@ public partial class MC6809
     {
         _jumpVectors[opCode]();
 
-        if (++_counter == 2000)
+        if (++_counter == 10000)
         {
-            var filter = _codes.Select((v, i) => new { v, i = $"{i:x}" }).Where(x => x.v > 1).OrderBy(x => -x.v).ToList();
+            var filter = _codes.Select((v, i) => new { v, i = $"{i:x}" }).Where(x => x.v > 0).OrderBy(x => -x.v).ToList();
 
             System.Diagnostics.Debugger.Break();
         }
