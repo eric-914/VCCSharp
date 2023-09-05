@@ -1,4 +1,5 @@
-﻿using VCCSharp.OpCodes.Model.OpCodes;
+﻿using System.Net;
+using VCCSharp.OpCodes.Model.OpCodes;
 
 namespace VCCSharp.OpCodes.Page1;
 
@@ -35,11 +36,15 @@ internal class _C8_Eorb_M : OpCode, IOpCode
 {
     public int Exec()
     {
-        B ^= M8[PC++];
+        byte value = M8[PC++];
 
-        CC_N = B.Bit7();
-        CC_Z = B == 0;
+        byte result = (byte)(B ^ value);
+
+        CC_N = result.Bit7();
+        CC_Z = result == 0;
         CC_V = false;
+
+        B = result;
 
         return 2;
     }

@@ -36,6 +36,8 @@ internal class _66_Ror_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = 6;
+
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
@@ -49,6 +51,6 @@ internal class _66_Ror_X : OpCode, IOpCode
 
         M8[address] = result;
 
-        return 6;
+        return Cycles;
     }
 }

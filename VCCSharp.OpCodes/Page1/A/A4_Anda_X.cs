@@ -35,17 +35,19 @@ internal class _A4_Anda_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = 4;
+
         ushort address = INDEXED[PC++];
         byte value = M8[address];
         
         byte result = (byte)(A & value);
 
-        CC_N = A.Bit7();
-        CC_Z = A == 0;
+        CC_N = result.Bit7();
+        CC_Z = result == 0;
         CC_V = false;
 
         A = result;
 
-        return 4;
+        return Cycles;
     }
 }

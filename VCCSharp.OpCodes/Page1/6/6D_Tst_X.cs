@@ -35,6 +35,8 @@ internal class _6D_Tst_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = DynamicCycles._65;
+
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
@@ -42,6 +44,6 @@ internal class _6D_Tst_X : OpCode, IOpCode
         CC_Z = value == 0;
         CC_V = false;
 
-        return DynamicCycles._65;
+        return Cycles;
     }
 }

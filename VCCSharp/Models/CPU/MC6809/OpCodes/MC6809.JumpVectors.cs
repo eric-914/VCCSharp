@@ -23,7 +23,7 @@ public partial class MC6809
             /* 8_ */    Suba_M, Cmpa_M, Sbca_M, Subd_M, Anda_M, Bita_M, Lda_M,  _____,  Eora_M, Adca_M, Ora_M,  Adda_M, Cmpx_M, Bsr_R,  Ldx_M,  _____,
             /* 9_ */    Suba_D, Cmpa_D, Scba_D, Subd_D, Anda_D, Bita_D, Lda_D,  Sta_D,  Eora_D, Adca_D, Ora_D,  Adda_D, Cmpx_D, Jsr_D,  Ldx_D,  Stx_D,      // 0x9D //BSR_D //Branch or Jump to Subroutine?
             /* A_ */    Suba_X, Cmpa_X, Sbca_X, Subd_X, Anda_X, Bita_X, Lda_X,  Sta_X,  Eora_X, Adca_X, Ora_X,  Adda_X, Cmpx_X, Jsr_X,  Ldx_X,  Stx_X,      // 0xAD //BSR_X //Another Jump or Branch?
-            /* B_ */    Suba_E, Cmpa_E, Sbca_E, Subd_E, Anda_E, Bita_E, Lda_E,  Sta_E,  Eora_E, Adca_E, Ora_E,  Adda_E, Cmpx_E, Bsr_E,  Ldx_E,  Stx_E,
+            /* B_ */    Suba_E, Cmpa_E, Sbca_E, Subd_E, Anda_E, Bita_E, Lda_E,  Sta_E,  Eora_E, Adca_E, Ora_E,  Adda_E, Cmpx_E, Jsr_E,  Ldx_E,  Stx_E,
             /* C_ */    Subb_M, Cmpb_M, Sbcb_M, Addd_M, Andb_M, Bitb_M, Ldb_M,  _____,  Eorb_M, Adcb_M, Orb_M,  Addb_M, Ldd_M,  _____,  Ldu_M,  _____,
             /* D_ */    Subb_D, Cmpb_D, Sbcb_D, Addd_D, Andb_D, Bitb_D, Ldb_D,  Stb_D,  Eorb_D, Adcb_D, Orb_D,  Addb_D, Ldd_D,  Std_D,  Ldu_D,  Stu_D,
             /* E_ */    Subb_X, Cmpb_X, Sbcb_X, Addd_X, Andb_X, Bitb_X, Ldb_X,  Stb_X,  Eorb_X, Adcb_X, Orb_X,  Addb_X, Ldd_X,  Std_X,  Ldu_X,  Stu_X,

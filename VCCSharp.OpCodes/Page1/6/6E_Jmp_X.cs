@@ -40,10 +40,12 @@ internal class _6E_Jmp_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = 3;
+
         ushort address = INDEXED[PC];
 
         PC = address;
 
-        return 3;
+        return Cycles;
     }
 }

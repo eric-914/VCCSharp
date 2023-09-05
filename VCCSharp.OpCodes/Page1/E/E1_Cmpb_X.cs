@@ -34,6 +34,8 @@ internal class _E1_Cmpb_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = 4;
+
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
@@ -45,6 +47,6 @@ internal class _E1_Cmpb_X : OpCode, IOpCode
         CC_V = sum.V;
         CC_C = sum.C;
 
-        return 4;
+        return Cycles;
     }
 }

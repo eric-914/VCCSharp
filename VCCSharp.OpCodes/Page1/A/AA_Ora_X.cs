@@ -32,14 +32,19 @@ internal class _AA_Ora_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = 4;
+
         ushort address = INDEXED[PC++];
+        byte value = M8[address];
 
-        A |= M8[address];
+        byte result = (byte)(A | value);
 
-        CC_N = A.Bit7();
-        CC_Z = A == 0;
+        CC_N = result.Bit7();
+        CC_Z = result == 0;
         CC_V = false;
 
-        return 4;
+        A = result;
+
+        return Cycles;
     }
 }

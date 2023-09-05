@@ -40,8 +40,8 @@ internal class _F4_Andb_E : OpCode, IOpCode
 
         byte result = (byte)(B & value);
 
-        CC_N = B.Bit7();
-        CC_Z = B == 0;
+        CC_N = result.Bit7();
+        CC_Z = result == 0;
         CC_V = false;
 
         B = result;

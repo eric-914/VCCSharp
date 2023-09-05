@@ -34,6 +34,8 @@ internal class _A5_Bita_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = 4;
+
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
@@ -43,6 +45,6 @@ internal class _A5_Bita_X : OpCode, IOpCode
         CC_Z = result == 0;
         CC_V = false;
 
-        return 4;
+        return Cycles;
     }
 }

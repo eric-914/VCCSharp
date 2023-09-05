@@ -32,14 +32,19 @@ internal class _EA_Orb_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = 4;
+
         ushort address = INDEXED[PC++];
+        byte value = M8[address];
 
-        B |= M8[address];
+        byte result = (byte)(B | value);
 
-        CC_N = B.Bit7();
-        CC_Z = B == 0;
+        CC_N = result.Bit7();
+        CC_Z = result == 0;
         CC_V = false;
 
-        return 4;
+        B = result;
+
+        return Cycles;
     }
 }

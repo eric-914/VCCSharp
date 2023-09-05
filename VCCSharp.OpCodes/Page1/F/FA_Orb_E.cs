@@ -33,12 +33,15 @@ internal class _FA_Orb_E : OpCode, IOpCode
     public int Exec()
     {
         ushort address = M16[PC]; PC += 2;
+        byte value = M8[address];
 
-        B |= M8[address];
+        byte result = (byte)(B | value);
 
-        CC_N = B.Bit7();
-        CC_Z = B == 0;
+        CC_N = result.Bit7();
+        CC_Z = result == 0;
         CC_V = false;
+
+        B = result;
 
         return DynamicCycles._54;
     }

@@ -34,6 +34,8 @@ internal class _E5_Bitb_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = 4;
+
         ushort address = INDEXED[PC++];
         byte value = (byte)(B & M8[address]);
 
@@ -41,6 +43,6 @@ internal class _E5_Bitb_X : OpCode, IOpCode
         CC_Z = value == 0;
         CC_V = false;
 
-        return 4;
+        return Cycles;
     }
 }

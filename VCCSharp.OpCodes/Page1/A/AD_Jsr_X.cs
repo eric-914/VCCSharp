@@ -45,6 +45,8 @@ internal class _AD_Jsr_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = DynamicCycles._76;
+
         ushort address = INDEXED[PC++];
 
         M8[--S] = PC_L;
@@ -52,6 +54,6 @@ internal class _AD_Jsr_X : OpCode, IOpCode
 
         PC = address;
 
-        return DynamicCycles._76;
+        return Cycles;
     }
 }

@@ -35,12 +35,15 @@ internal class _D8_Eorb_D : OpCode, IOpCode
     public int Exec()
     {
         ushort address = DIRECT[PC++];
+        byte value = M8[address];
 
-        B ^= M8[address];
+        byte result = (byte)(B ^ value);
 
-        CC_N = B.Bit7();
-        CC_Z = B == 0;
+        CC_N = result.Bit7();
+        CC_Z = result == 0;
         CC_V = false;
+
+        B = result;
 
         return DynamicCycles._43;
     }

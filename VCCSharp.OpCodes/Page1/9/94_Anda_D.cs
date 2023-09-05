@@ -40,8 +40,8 @@ internal class _94_Anda_D : OpCode, IOpCode
         
         byte result = (byte)(A & value);
 
-        CC_N = A.Bit7();
-        CC_Z = A == 0;
+        CC_N = result.Bit7();
+        CC_Z = result == 0;
         CC_V = false;
 
         A = result;

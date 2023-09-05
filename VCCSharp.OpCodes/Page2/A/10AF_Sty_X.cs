@@ -27,6 +27,8 @@ internal class _10AF_Sty_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = 6;
+
         ushort address = INDEXED[PC++];
 
         M16[address] = Y;
@@ -35,6 +37,6 @@ internal class _10AF_Sty_X : OpCode, IOpCode
         CC_Z = Y == 0;
         CC_V = false;
 
-        return 6;
+        return Cycles;
     }
 }

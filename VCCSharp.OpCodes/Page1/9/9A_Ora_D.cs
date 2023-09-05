@@ -33,12 +33,15 @@ internal class _9A_Ora_D : OpCode, IOpCode
     public int Exec()
     {
         ushort address = DIRECT[PC++];
+        byte value = M8[address];
 
-        A |= M8[address];
+        byte result = (byte)(A | value);
 
-        CC_N = A.Bit7();
-        CC_Z = A == 0;
+        CC_N = result.Bit7();
+        CC_Z = result == 0;
         CC_V = false;
+
+        A = result;
 
         return DynamicCycles._43;
     }

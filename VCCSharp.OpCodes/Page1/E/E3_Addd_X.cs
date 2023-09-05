@@ -31,6 +31,8 @@ internal class _E3_Addd_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = DynamicCycles._65;
+
         ushort address = INDEXED[PC++];
         ushort value = M16[address];
 
@@ -44,6 +46,6 @@ internal class _E3_Addd_X : OpCode, IOpCode
 
         D = (ushort)sum.Result;
 
-        return DynamicCycles._65;
+        return Cycles;
     }
 }
