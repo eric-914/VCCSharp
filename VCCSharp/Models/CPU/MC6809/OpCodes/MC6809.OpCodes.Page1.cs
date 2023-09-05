@@ -1064,19 +1064,7 @@ public partial class MC6809
         _cycleCounter += 7;
     }
 
-    public void Ldx_M() // 8E
-    {
-        X_REG = MemRead16(PC_REG);
-
-        CC_Z = ZTEST(X_REG);
-        CC_N = NTEST16(X_REG);
-        CC_V = false;
-
-        PC_REG += 2;
-
-        _cycleCounter += 3;
-    }
-
+    public void Ldx_M() => Run(0x8E);
     // 8F
 
     #endregion
@@ -1397,39 +1385,8 @@ public partial class MC6809
         _cycleCounter += 4;
     }
 
-    public void Lda_X() // A6
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        ushort address = ea.CalculateEA(value);
-
-        A_REG = MemRead8(address);
-
-        CC_Z = ZTEST(A_REG);
-        CC_N = NTEST8(A_REG);
-        CC_V = false;
-
-        _cycleCounter += 4;
-    }
-
-    public void Sta_X() // A7
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        ushort address = ea.CalculateEA(value);
-
-        MemWrite8(A_REG, address);
-
-        CC_Z = ZTEST(A_REG);
-        CC_N = NTEST8(A_REG);
-        CC_V = false;
-
-        _cycleCounter += 4;
-    }
+    public void Lda_X() => Run(0xA6);
+    public void Sta_X() => Run(0xA7);
 
     public void Eora_X() // A8
     {
@@ -2418,57 +2375,9 @@ public partial class MC6809
     }
 
     public void Ldd_X() => Run(0xEC);
-
-    public void Std_X() // ED
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        ushort address = ea.CalculateEA(value);
-
-        MemWrite16(D_REG, address);
-
-        CC_Z = ZTEST(D_REG);
-        CC_N = NTEST16(D_REG);
-        CC_V = false;
-
-        _cycleCounter += 5;
-    }
-
-    public void Ldu_X() // EE
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        ushort address = ea.CalculateEA(value);
-
-        U_REG = MemRead16(address);
-
-        CC_Z = ZTEST(U_REG);
-        CC_N = NTEST16(U_REG);
-        CC_V = false;
-
-        _cycleCounter += 5;
-    }
-
-    public void Stu_X() // EF
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        ushort address = ea.CalculateEA(value);
-
-        MemWrite16(U_REG, address);
-
-        CC_Z = ZTEST(U_REG);
-        CC_N = NTEST16(U_REG);
-        CC_V = false;
-
-        _cycleCounter += 5;
-    }
+    public void Std_X() => Run(0xED);
+    public void Ldu_X() => Run(0xEE);
+    public void Stu_X() => Run(0xEF);
 
     #endregion
 

@@ -120,6 +120,9 @@ internal class ExtendedAddressing : IExtendedAddressing
 
     public ushort CalculateEA(byte postByte)
     {
+        //--If encountered, probably forgot to set Cycles for the opcode.
+        //System.Diagnostics.Debug.Assert(Cycles > 0);
+
         ushort address = 0;
         byte reg = (byte)(((postByte >> 5) & 3) + 1); //_RR_____ + 1
 

@@ -51,6 +51,10 @@ internal abstract class OpCode : ITempAccess
     public IRegisters16Bit R16 => SS.R16;
 
     protected DynamicCycles DynamicCycles => SS.DynamicCycles;
+
+    /// <summary>
+    /// For use on EA/INDEXED memory access as EA has cycle penalties.
+    /// </summary>
     protected int Cycles { get => SS.Cycles; set => SS.Cycles = value; }
 
     protected bool IsInInterrupt { get => cpu.IsInInterrupt; set => cpu.IsInInterrupt = value; }

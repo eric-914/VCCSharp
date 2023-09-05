@@ -27,6 +27,8 @@ internal class _EF_Stu_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = 5;
+
         ushort address = INDEXED[PC++];
 
         M16[address] = U;
@@ -35,6 +37,6 @@ internal class _EF_Stu_X : OpCode, IOpCode
         CC_Z = U == 0;
         CC_V = false;
 
-        return 5;
+        return Cycles;
     }
 }
