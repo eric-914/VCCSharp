@@ -1622,18 +1622,7 @@ public partial class MC6809
         _cycleCounter += 6;
     }
 
-    public void Stx_E() // BF
-    {
-        MemWrite16(X_REG, MemRead16(PC_REG));
-
-        CC_Z = ZTEST(X_REG);
-        CC_N = NTEST16(X_REG);
-        CC_V = false;
-
-        PC_REG += 2;
-
-        _cycleCounter += 6;
-    }
+    public void Stx_E() => Run(0xBF);
 
     #endregion
 
@@ -1783,34 +1772,9 @@ public partial class MC6809
         _cycleCounter += 2;
     }
 
-    public void Ldd_M() // CC
-    {
-        D_REG = MemRead16(PC_REG);
-
-        CC_Z = ZTEST(D_REG);
-        CC_N = NTEST16(D_REG);
-        CC_V = false;
-
-        PC_REG += 2;
-
-        _cycleCounter += 2;
-    }
-
+    public void Ldd_M() => Run(0xCC);
     // CD
-
-    public void Ldu_M() // CE
-    {
-        U_REG = MemRead16(PC_REG);
-
-        CC_Z = ZTEST(U_REG);
-        CC_N = NTEST16(U_REG);
-        CC_V = false;
-
-        PC_REG += 2;
-
-        _cycleCounter += 3;
-    }
-
+    public void Ldu_M() => Run(0xCE);
     // CF
 
     #endregion
