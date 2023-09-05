@@ -158,31 +158,8 @@ public partial class MC6809
 
     #region 0x30 - 0x3F
 
-    public void Leax_X() // 30
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        X_REG = ea.CalculateEA(value);
-
-        CC_Z = ZTEST(X_REG);
-
-        _cycleCounter += 4;
-    }
-
-    public void Leay_X() // 31
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        Y_REG = ea.CalculateEA(value);
-
-        CC_Z = ZTEST(Y_REG);
-
-        _cycleCounter += 4;
-    }
+    public void Leax_X() => Run(0x30);
+    public void Leay_X() => Run(0x31);
 
     public void Leas_X() // 32
     {
@@ -668,23 +645,7 @@ public partial class MC6809
         _cycleCounter += 3;
     }
 
-    public void Clr_X() // 6F
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        ushort address = ea.CalculateEA(value);
-
-        MemWrite8(0, address);
-
-        CC_C = false;
-        CC_N = false;
-        CC_V = false;
-        CC_Z = true;
-
-        _cycleCounter += 6;
-    }
+    public void Clr_X() => Run(0x6F);
 
     #endregion
 
@@ -1504,39 +1465,8 @@ public partial class MC6809
         _cycleCounter += 7;
     }
 
-    public void Ldx_X() // AE
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        ushort address = ea.CalculateEA(value);
-
-        X_REG = MemRead16(address);
-
-        CC_Z = ZTEST(X_REG);
-        CC_N = NTEST16(X_REG);
-        CC_V = false;
-
-        _cycleCounter += 5;
-    }
-
-    public void Stx_X() // AF
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        ushort address = ea.CalculateEA(value);
-
-        MemWrite16(X_REG, address);
-
-        CC_Z = ZTEST(X_REG);
-        CC_N = NTEST16(X_REG);
-        CC_V = false;
-
-        _cycleCounter += 5;
-    }
+    public void Ldx_X() => Run(0xAE);
+    public void Stx_X() => Run(0xAF);
 
     #endregion
 
@@ -2275,22 +2205,7 @@ public partial class MC6809
         _cycleCounter += 4;
     }
 
-    public void Stb_X() // E7
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        ushort address = ea.CalculateEA(value);
-
-        MemWrite8(B_REG, address);
-
-        CC_Z = ZTEST(B_REG);
-        CC_N = NTEST8(B_REG);
-        CC_V = false;
-
-        _cycleCounter += 4;
-    }
+    public void Stb_X() => Run(0xE7);
 
     public void Eorb_X() // E8
     {

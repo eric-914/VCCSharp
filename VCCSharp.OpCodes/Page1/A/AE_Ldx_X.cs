@@ -27,6 +27,8 @@ internal class _AE_Ldx_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = 5;
+
         ushort address = INDEXED[PC++];
 
         X = M16[address];
@@ -35,6 +37,6 @@ internal class _AE_Ldx_X : OpCode, IOpCode
         CC_Z = X == 0;
         CC_V = false;
 
-        return 5;
+        return Cycles;
     }
 }

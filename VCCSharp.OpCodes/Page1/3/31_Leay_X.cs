@@ -34,10 +34,12 @@ internal class _31_Leay_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = 4;
+
         Y = INDEXED[PC++];
 
         CC_Z = Y == 0;
 
-        return 4;
+        return Cycles;
     }
 }

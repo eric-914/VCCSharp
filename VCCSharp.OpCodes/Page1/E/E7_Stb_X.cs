@@ -27,6 +27,8 @@ internal class _E7_Stb_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = 4;
+
         ushort address = INDEXED[PC++];
 
         M8[address] = B;
@@ -35,6 +37,6 @@ internal class _E7_Stb_X : OpCode, IOpCode
         CC_Z = B == 0;
         CC_V = false;
 
-        return 4;
+        return Cycles;
     }
 }
