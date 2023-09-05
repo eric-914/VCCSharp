@@ -1,4 +1,4 @@
-﻿namespace VCCSharp.OpCodes.Model.Support;
+﻿namespace VCCSharp.OpCodes.Memory;
 
 public interface IExtendedAddressing
 {

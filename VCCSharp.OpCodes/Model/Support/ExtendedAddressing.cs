@@ -1,4 +1,5 @@
-﻿using VCCSharp.OpCodes.Model.Memory;
+﻿using VCCSharp.OpCodes.Memory;
+using VCCSharp.OpCodes.Model.Memory;
 using VCCSharp.OpCodes.Registers;
 
 namespace VCCSharp.OpCodes.Model.Support;

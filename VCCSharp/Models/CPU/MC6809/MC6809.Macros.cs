@@ -218,8 +218,6 @@ public partial class MC6809
         MemWrite8((byte)(data & 0xFF), (ushort)(address + 1));
     }
 
-    public ushort INDADDRESS(ushort address) => CalculateEA(MemRead8(address));
-
     private static bool NTEST8(byte value) => value > 0x7F;
     private static bool NTEST16(ushort value) => value > 0x7FFF;
 

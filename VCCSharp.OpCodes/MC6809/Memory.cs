@@ -1,5 +1,5 @@
-﻿using VCCSharp.OpCodes.Model.Memory;
-using VCCSharp.OpCodes.Model.Support;
+﻿using VCCSharp.OpCodes.Memory;
+using VCCSharp.OpCodes.Model.Memory;
 
 namespace VCCSharp.OpCodes.MC6809;
 

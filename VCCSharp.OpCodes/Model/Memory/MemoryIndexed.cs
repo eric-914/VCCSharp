@@ -1,5 +1,4 @@
 ﻿using VCCSharp.OpCodes.Memory;
-using VCCSharp.OpCodes.Model.Support;
 
 namespace VCCSharp.OpCodes.Model.Memory;
 
@@ -14,8 +13,7 @@ internal class MemoryIndexed
         _ea = ea;
     }
 
-    //TODO: Inline this to use regular memory accessors.  This process takes cpu cycles in itself and needs to accommodate that fact.
-    //SEE: ushort CalculateEA(byte postByte)
+    //TODO: This process takes cpu cycles in itself and needs to accommodate that fact.
     public ushort this[ushort address]
     {
         get

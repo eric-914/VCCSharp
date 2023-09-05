@@ -3,7 +3,6 @@
     public interface IBus
     {
         ushort DPADDRESS(ushort address);
-        ushort INDADDRESS(ushort address);
 
         byte MemRead8(ushort address);
         void MemWrite8(byte data, ushort address);

@@ -1,4 +1,5 @@
 ﻿using VCCSharp.OpCodes.MC6809;
+using VCCSharp.OpCodes.Memory;
 using VCCSharp.OpCodes.Model.Functions;
 using VCCSharp.OpCodes.Model.Memory;
 using VCCSharp.OpCodes.Model.Support;
