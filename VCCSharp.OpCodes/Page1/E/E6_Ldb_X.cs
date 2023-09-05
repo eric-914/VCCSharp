@@ -27,6 +27,8 @@ internal class _E6_Ldb_X : OpCode, IOpCode
 {
     public int Exec()
     {
+        Cycles = 4;
+
         ushort address = INDEXED[PC++];
 
         B = M8[address];
@@ -35,6 +37,6 @@ internal class _E6_Ldb_X : OpCode, IOpCode
         CC_Z = B == 0;
         CC_V = false;
 
-        return 4;
+        return Cycles;
     }
 }

@@ -25,14 +25,14 @@ public partial class MC6809
 
     #endregion
 
-    private byte[] _codes = new byte[256];
+    private int[] _codes = new int[256];
     private int _counter = 0;
 
     private void Exec(byte opCode)
     {
         _jumpVectors[opCode]();
 
-        if (++_counter == 10000)
+        if (++_counter == 100000)
         {
             var filter = _codes.Select((v, i) => new { v, i = $"{i:x}" }).Where(x => x.v > 0).OrderBy(x => -x.v).ToList();
 
@@ -44,7 +44,7 @@ public partial class MC6809
 
     private void Run(byte opcode)
     {
-        _codes[opcode] = 0;
+        _codes[opcode] = -1;
 
         _cycleCounter += OpCodes.Exec(opcode);
     }
