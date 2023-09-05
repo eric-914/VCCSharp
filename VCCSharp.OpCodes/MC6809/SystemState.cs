@@ -20,7 +20,7 @@ internal class SystemState : ISystemState, IExtendedAddress, ITempAccess
     public IRegisters8Bit R8 { get; }
     public IRegisters16Bit R16 { get; }
 
-    public IExtendedAddressing EA { get; }
+    public IExtendedAddressing EA => INDEXED.EA;
 
     public DynamicCycles DynamicCycles { get; }
 
@@ -35,10 +35,7 @@ internal class SystemState : ISystemState, IExtendedAddress, ITempAccess
     {
         this.cpu = cpu;
 
-        //TODO: The current EA class only handles 6809 rules.
-        EA = new ExtendedAddressing(this);
-
-        var memory = new Memory(cpu, EA);
+        var memory = new Memory(cpu, this);
         M8 = memory.Byte;
         M16 = memory.Word;
         DIRECT = memory.DP;

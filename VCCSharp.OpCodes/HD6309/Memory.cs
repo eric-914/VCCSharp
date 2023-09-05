@@ -1,11 +1,13 @@
 ﻿using VCCSharp.OpCodes.Memory;
 using VCCSharp.OpCodes.Model.Memory;
+using VCCSharp.OpCodes.Model.OpCodes;
+using VCCSharp.OpCodes.Model.Support;
 
 namespace VCCSharp.OpCodes.HD6309;
 
-internal class Memory
+internal class Memory : ITempAccess
 {
-    public Memory(IMemory cpu, IExtendedAddressing ea)
+    public Memory(IMemory cpu, IExtendedAddress ea)
     {
         Byte = new Memory8Bit (cpu);
         Word = new Memory16Bit(cpu);
@@ -19,4 +21,6 @@ internal class Memory
     public Memory32Bit DWord { get; }
     public MemoryDP DP { get; }
     public MemoryIndexed Indexed { get; }
+
+    public IExtendedAddressing EA => Indexed.EA;
 }
