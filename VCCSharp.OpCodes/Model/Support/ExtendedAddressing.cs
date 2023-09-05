@@ -12,11 +12,6 @@ internal interface IExtendedAddress : IRegisterPC, IRegisterA, IRegisterB, IRegi
     int Cycles { get; set; }
 }
 
-public interface IExtendedAddressing
-{
-    ushort CalculateEA(byte postByte);
-}
-
 /// <summary>
 /// INDEXED:
 /// In these addressing modes, one of the pointer registers (X, Y, U, or S), and sometimes the program counter (PC) is used in the calculation of the effective address of the instruction operand. 
