@@ -18,4 +18,6 @@ internal interface ISystemState
     IRegisters16Bit R16 { get; }
 
     DynamicCycles DynamicCycles { get; }
+
+    int Cycles { get; set; }
 }

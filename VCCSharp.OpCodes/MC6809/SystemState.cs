@@ -1,10 +1,12 @@
 ﻿using VCCSharp.OpCodes.Model;
 using VCCSharp.OpCodes.Model.Memory;
+using VCCSharp.OpCodes.Model.OpCodes;
+using VCCSharp.OpCodes.Model.Support;
 using VCCSharp.OpCodes.Registers;
 
 namespace VCCSharp.OpCodes.MC6809;
 
-internal class SystemState : ISystemState
+internal class SystemState : ISystemState, IExtendedAddress, ITempAccess
 {
     public IState cpu { get; }
 
@@ -17,7 +19,16 @@ internal class SystemState : ISystemState
     public IRegisters8Bit R8 { get; }
     public IRegisters16Bit R16 { get; }
 
+    public IExtendedAddressing EA { get; }
+
     public DynamicCycles DynamicCycles { get; }
+
+    public int Cycles { get; set; }
+
+    public ushort PC { get => cpu.PC; set => cpu.PC = value; }
+    public ushort D { get => cpu.D; set => cpu.D = value; }
+    public byte A { get => cpu.A; set => cpu.A = value; }
+    public byte B { get => cpu.B; set => cpu.B = value; }
 
     public SystemState(IState cpu)
     {
@@ -33,5 +44,7 @@ internal class SystemState : ISystemState
         R16 = new Registers16Bit<IState>(cpu);
 
         DynamicCycles = new DynamicCycles(cpu);
+
+        EA = new ExtendedAddressing(this);
     }
 }

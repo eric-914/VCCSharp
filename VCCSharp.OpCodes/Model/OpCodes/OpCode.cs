@@ -6,14 +6,21 @@ using VCCSharp.OpCodes.Registers;
 
 namespace VCCSharp.OpCodes.Model.OpCodes;
 
+public interface ITempAccess
+{
+    IExtendedAddressing EA { get;}
+}
+
 /// <summary>
 /// Most OpCodes are 6809 compatible, so this is the default OpCode base class.
 /// </summary>
-internal abstract class OpCode 
+internal abstract class OpCode : ITempAccess
 {
-    public ISystemState SS { get;set; } = default!;
+    public ISystemState SS { get; set; } = default!;
 
     private IState cpu => SS.cpu;
+
+    public IExtendedAddressing EA => ((ITempAccess)SS).EA;
 
     /// <summary>
     /// 8-bit memory access
@@ -43,6 +50,7 @@ internal abstract class OpCode
     public IRegisters16Bit R16 => SS.R16;
 
     protected DynamicCycles DynamicCycles => SS.DynamicCycles;
+    protected int Cycles { get => SS.Cycles; set => SS.Cycles = value; }
 
     protected bool IsInInterrupt { get => cpu.IsInInterrupt; set => cpu.IsInInterrupt = value; }
 
