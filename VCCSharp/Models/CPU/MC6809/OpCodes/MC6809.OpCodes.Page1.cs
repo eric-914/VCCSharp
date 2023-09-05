@@ -160,7 +160,11 @@ public partial class MC6809
 
     public void Leax_X() // 30
     {
-        X_REG = INDADDRESS(PC_REG++);
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        X_REG = ea.CalculateEA(value);
 
         CC_Z = ZTEST(X_REG);
 
@@ -169,7 +173,11 @@ public partial class MC6809
 
     public void Leay_X() // 31
     {
-        Y_REG = INDADDRESS(PC_REG++);
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        Y_REG = ea.CalculateEA(value);
 
         CC_Z = ZTEST(Y_REG);
 
@@ -178,14 +186,22 @@ public partial class MC6809
 
     public void Leas_X() // 32
     {
-        S_REG = INDADDRESS(PC_REG++);
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        S_REG = ea.CalculateEA(value);
 
         _cycleCounter += 4;
     }
 
     public void Leau_X() // 33
     {
-        U_REG = INDADDRESS(PC_REG++);
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        U_REG = ea.CalculateEA(value);
 
         _cycleCounter += 4;
     }
@@ -423,7 +439,12 @@ public partial class MC6809
 
     public void Neg_X() // 60
     {
-        _temp16 = INDADDRESS(PC_REG++);
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        _temp16 = ea.CalculateEA(value);
+
         _postByte = MemRead8(_temp16);
         _temp8 = (byte)(0 - _postByte);
 
@@ -442,7 +463,12 @@ public partial class MC6809
 
     public void Com_X() // 63
     {
-        _temp16 = INDADDRESS(PC_REG++);
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        _temp16 = ea.CalculateEA(value);
+
         _temp8 = MemRead8(_temp16);
         _temp8 = (byte)(0xFF - _temp8);
 
@@ -458,7 +484,12 @@ public partial class MC6809
 
     public void Lsr_X() // 64
     {
-        _temp16 = INDADDRESS(PC_REG++);
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        _temp16 = ea.CalculateEA(value);
+
         _temp8 = MemRead8(_temp16);
 
         CC_C = (_temp8 & 1) != 0;
@@ -477,7 +508,12 @@ public partial class MC6809
 
     public void Ror_X() // 66
     {
-        _temp16 = INDADDRESS(PC_REG++);
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        _temp16 = ea.CalculateEA(value);
+
         _temp8 = MemRead8(_temp16);
         _postByte = CC_C ? (byte)0x80 : (byte)0x00; //CC_C << 7;
 
@@ -495,7 +531,12 @@ public partial class MC6809
 
     public void Asr_X() // 67
     {
-        _temp16 = INDADDRESS(PC_REG++);
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        _temp16 = ea.CalculateEA(value);
+
         _temp8 = MemRead8(_temp16);
 
         CC_C = (_temp8 & 1) != 0;
@@ -512,7 +553,12 @@ public partial class MC6809
 
     public void Asl_X() // 68
     {
-        _temp16 = INDADDRESS(PC_REG++);
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        _temp16 = ea.CalculateEA(value);
+
         _temp8 = MemRead8(_temp16);
 
         CC_C = _temp8 > 0x7F;
@@ -530,7 +576,12 @@ public partial class MC6809
 
     public void Rol_X() // 69
     {
-        _temp16 = INDADDRESS(PC_REG++);
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        _temp16 = ea.CalculateEA(value);
+
         _temp8 = MemRead8(_temp16);
         _postByte = CC_C ? (byte)1 : (byte)0;
 
@@ -549,7 +600,12 @@ public partial class MC6809
 
     public void Dec_X() // 6A
     {
-        _temp16 = INDADDRESS(PC_REG++);
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        _temp16 = ea.CalculateEA(value);
+
         _temp8 = MemRead8(_temp16);
         _temp8--;
 
@@ -566,7 +622,12 @@ public partial class MC6809
 
     public void Inc_X() // 6C
     {
-        _temp16 = INDADDRESS(PC_REG++);
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        _temp16 = ea.CalculateEA(value);
+
         _temp8 = MemRead8(_temp16);
         _temp8++;
 
@@ -581,7 +642,13 @@ public partial class MC6809
 
     public void Tst_X() // 6D
     {
-        _temp8 = MemRead8(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        _temp8 = MemRead8(address);
 
         CC_Z = ZTEST(_temp8);
         CC_N = NTEST8(_temp8);
@@ -592,14 +659,24 @@ public partial class MC6809
 
     public void Jmp_X() // 6E
     {
-        PC_REG = INDADDRESS(PC_REG++);
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        PC_REG = ea.CalculateEA(value);
 
         _cycleCounter += 3;
     }
 
     public void Clr_X() // 6F
     {
-        MemWrite8(0, INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        MemWrite8(0, address);
 
         CC_C = false;
         CC_N = false;
@@ -1203,7 +1280,13 @@ public partial class MC6809
 
     public void Suba_X() // A0
     {
-        _postByte = MemRead8(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        _postByte = MemRead8(address);
         _temp16 = (ushort)(A_REG - _postByte);
 
         CC_C = (_temp16 & 0x100) >> 8 != 0;
@@ -1219,7 +1302,13 @@ public partial class MC6809
 
     public void Cmpa_X() // A1
     {
-        _postByte = MemRead8(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        _postByte = MemRead8(address);
         _temp8 = (byte)(A_REG - _postByte);
 
         CC_C = _temp8 > A_REG;
@@ -1232,7 +1321,13 @@ public partial class MC6809
 
     public void Sbca_X() // A2
     {
-        _postByte = MemRead8(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        _postByte = MemRead8(address);
         _temp16 = (ushort)(A_REG - _postByte - (CC_C ? 1 : 0));
 
         CC_C = (_temp16 & 0x100) >> 8 != 0;
@@ -1248,7 +1343,13 @@ public partial class MC6809
 
     public void Subd_X() // A3
     {
-        _temp16 = MemRead16(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        _temp16 = MemRead16(address);
         _temp32 = (uint)(D_REG - _temp16);
 
         CC_C = (_temp32 & 0x10000) >> 16 != 0;
@@ -1264,7 +1365,13 @@ public partial class MC6809
 
     public void Anda_X() // A4
     {
-        A_REG &= MemRead8(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        A_REG &= MemRead8(address);
 
         CC_N = NTEST8(A_REG);
         CC_Z = ZTEST(A_REG);
@@ -1275,7 +1382,13 @@ public partial class MC6809
 
     public void Bita_X() // A5
     {
-        _temp8 = (byte)(A_REG & MemRead8(INDADDRESS(PC_REG++)));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        _temp8 = (byte)(A_REG & MemRead8(address));
 
         CC_N = NTEST8(_temp8);
         CC_Z = ZTEST(_temp8);
@@ -1286,7 +1399,13 @@ public partial class MC6809
 
     public void Lda_X() // A6
     {
-        A_REG = MemRead8(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        A_REG = MemRead8(address);
 
         CC_Z = ZTEST(A_REG);
         CC_N = NTEST8(A_REG);
@@ -1297,7 +1416,13 @@ public partial class MC6809
 
     public void Sta_X() // A7
     {
-        MemWrite8(A_REG, INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        MemWrite8(A_REG, address);
 
         CC_Z = ZTEST(A_REG);
         CC_N = NTEST8(A_REG);
@@ -1308,7 +1433,13 @@ public partial class MC6809
 
     public void Eora_X() // A8
     {
-        A_REG ^= MemRead8(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        A_REG ^= MemRead8(address);
 
         CC_N = NTEST8(A_REG);
         CC_Z = ZTEST(A_REG);
@@ -1319,7 +1450,13 @@ public partial class MC6809
 
     public void Adca_X() // A9
     {
-        _postByte = MemRead8(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        _postByte = MemRead8(address);
         _temp16 = (ushort)(A_REG + _postByte + (CC_C ? 1 : 0));
 
         CC_C = (_temp16 & 0x100) >> 8 != 0;
@@ -1336,7 +1473,13 @@ public partial class MC6809
 
     public void Ora_X() // AA
     {
-        A_REG |= MemRead8(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        A_REG |= MemRead8(address);
 
         CC_N = NTEST8(A_REG);
         CC_Z = ZTEST(A_REG);
@@ -1347,7 +1490,13 @@ public partial class MC6809
 
     public void Adda_X() // AB
     {
-        _postByte = MemRead8(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        _postByte = MemRead8(address);
         _temp16 = (ushort)(A_REG + _postByte);
 
         CC_C = (_temp16 & 0x100) >> 8 != 0;
@@ -1364,7 +1513,13 @@ public partial class MC6809
 
     public void Cmpx_X() // AC
     {
-        _postWord = MemRead16(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        _postWord = MemRead16(address);
         _temp16 = (ushort)(X_REG - _postWord);
         CC_C = _temp16 > X_REG;
         CC_V = OVERFLOW16(CC_C, _postWord, _temp16, X_REG);
@@ -1376,7 +1531,11 @@ public partial class MC6809
 
     public void Jsr_X() // AD
     {
-        _temp16 = INDADDRESS(PC_REG++);
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        _temp16 = ea.CalculateEA(value);
 
         S_REG--;
 
@@ -1390,7 +1549,13 @@ public partial class MC6809
 
     public void Ldx_X() // AE
     {
-        X_REG = MemRead16(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        X_REG = MemRead16(address);
 
         CC_Z = ZTEST(X_REG);
         CC_N = NTEST16(X_REG);
@@ -1401,7 +1566,13 @@ public partial class MC6809
 
     public void Stx_X() // AF
     {
-        MemWrite16(X_REG, INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        MemWrite16(X_REG, address);
 
         CC_Z = ZTEST(X_REG);
         CC_N = NTEST16(X_REG);

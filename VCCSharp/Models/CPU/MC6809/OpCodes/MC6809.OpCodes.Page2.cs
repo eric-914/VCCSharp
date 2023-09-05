@@ -1,4 +1,6 @@
-﻿namespace VCCSharp.Models.CPU.MC6809;
+﻿using VCCSharp.OpCodes.Model.OpCodes;
+
+namespace VCCSharp.Models.CPU.MC6809;
 
 // ReSharper disable once InconsistentNaming
 public partial class MC6809
@@ -352,7 +354,13 @@ public partial class MC6809
 
     public void Cmpd_X() //0x10A3
     {
-        _postWord = MemRead16(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        _postWord = MemRead16(address);
         _temp16 = (ushort)(D_REG - _postWord);
         CC_C = _temp16 > D_REG;
         CC_V = OVERFLOW16(CC_C, _postWord, _temp16, D_REG);
@@ -366,7 +374,13 @@ public partial class MC6809
 
     public void Cmpy_X() //0x10AC
     {
-        _postWord = MemRead16(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        _postWord = MemRead16(address);
         _temp16 = (ushort)(Y_REG - _postWord);
         CC_C = _temp16 > Y_REG;
         CC_V = OVERFLOW16(CC_C, _postWord, _temp16, Y_REG);
@@ -380,7 +394,13 @@ public partial class MC6809
 
     public void Ldy_X() //0x10AE
     {
-        Y_REG = MemRead16(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        Y_REG = MemRead16(address);
         CC_Z = ZTEST(Y_REG);
         CC_N = NTEST16(Y_REG);
         CC_V = false;
@@ -390,7 +410,13 @@ public partial class MC6809
 
     public void Sty_X() //0x10AF
     {
-        MemWrite16(Y_REG, INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        MemWrite16(Y_REG, address);
         CC_Z = ZTEST(Y_REG);
         CC_N = NTEST16(Y_REG);
         CC_V = false;
@@ -509,7 +535,13 @@ public partial class MC6809
 
     public void Lds_X() //0x10EE
     {
-        S_REG = MemRead16(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        S_REG = MemRead16(address);
         CC_Z = ZTEST(S_REG);
         CC_N = NTEST16(S_REG);
         CC_V = false;
@@ -519,7 +551,13 @@ public partial class MC6809
 
     public void Sts_X() //0x10EF
     {
-        MemWrite16(S_REG, INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        MemWrite16(S_REG, address);
         CC_Z = ZTEST(S_REG);
         CC_N = NTEST16(S_REG);
         CC_V = false;

@@ -1,4 +1,6 @@
-﻿namespace VCCSharp.Models.CPU.MC6809;
+﻿using VCCSharp.OpCodes.Model.OpCodes;
+
+namespace VCCSharp.Models.CPU.MC6809;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable IdentifierTypo
@@ -76,7 +78,13 @@ public partial class MC6809
 
     public void Cmpu_X() //11A3 
     {
-        _postWord = MemRead16(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        _postWord = MemRead16(address);
         _temp16 = (ushort)(U_REG - _postWord);
         CC_C = _temp16 > U_REG;
         CC_V = OVERFLOW16(CC_C, _postWord, _temp16, U_REG);
@@ -88,7 +96,13 @@ public partial class MC6809
 
     public void Cmps_X() //11AC 
     {
-        _postWord = MemRead16(INDADDRESS(PC_REG++));
+        var ea = ((ITempAccess)OpCodes).EA;
+
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = ea.CalculateEA(value);
+
+        _postWord = MemRead16(address);
         _temp16 = (ushort)(S_REG - _postWord);
         CC_C = _temp16 > S_REG;
         CC_V = OVERFLOW16(CC_C, _postWord, _temp16, S_REG);
