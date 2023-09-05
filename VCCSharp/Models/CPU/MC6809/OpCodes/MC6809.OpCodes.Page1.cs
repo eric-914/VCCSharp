@@ -2417,22 +2417,7 @@ public partial class MC6809
         _cycleCounter += 4;
     }
 
-    public void Ldd_X() // EC
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        ushort address = ea.CalculateEA(value);
-
-        D_REG = MemRead16(address);
-
-        CC_Z = ZTEST(D_REG);
-        CC_N = NTEST16(D_REG);
-        CC_V = false;
-
-        _cycleCounter += 5;
-    }
+    public void Ldd_X() => Run(0xEC);
 
     public void Std_X() // ED
     {

@@ -36,7 +36,7 @@ public partial class MC6809
         {
             var filter = _codes.Select((v, i) => new { v, i = $"{i:x}" }).Where(x => x.v != 0).OrderBy(x => -x.v).ToList();
 
-            //System.Diagnostics.Debugger.Break();
+            System.Diagnostics.Debugger.Break();
         }
 
         _codes[opCode]++;
