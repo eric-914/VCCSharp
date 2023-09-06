@@ -37,7 +37,7 @@ internal class _80_Suba_M : OpCode, IOpCode
 
         var sum = Subtract(A, value);
 
-        CC_H = sum.H;
+        //CC_H = undefined;
         CC_N = sum.N;
         CC_Z = sum.Z;
         CC_V = sum.V;

@@ -41,7 +41,7 @@ internal class _56_Rorb_I : OpCode, IOpCode
         byte result = (byte)((B >> 1) | (bit << 7));
 
         CC_N = result.Bit7();
-        CC_Z = !(result == 0);
+        CC_Z = result == 0;
         CC_C = B.Bit0();
 
         B = result;
