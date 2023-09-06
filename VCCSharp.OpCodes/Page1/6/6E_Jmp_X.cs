@@ -42,7 +42,7 @@ internal class _6E_Jmp_X : OpCode, IOpCode
     {
         Cycles = 3;
 
-        ushort address = INDEXED[PC];
+        ushort address = INDEXED[PC++]; //--Note that INDEXED makes use of PC in its calculations, hence the ++ is required.
 
         PC = address;
 

@@ -27,7 +27,7 @@ internal class _DE_Ldu_D : OpCode, IOpCode
 {
     public int Exec()
     {
-        ushort address = DIRECT[PC += 2];
+        ushort address = DIRECT[PC++];
 
         U = M16[address];
 
