@@ -827,17 +827,7 @@ public partial class MC6809
 
     public void Lda_M() => Run(0x86);
     // 87
-
-    public void Eora_M() // 88
-    {
-        A_REG ^= MemRead8(PC_REG++);
-
-        CC_N = NTEST8(A_REG);
-        CC_Z = ZTEST(A_REG);
-        CC_V = false;
-
-        _cycleCounter += 2;
-    }
+    public void Eora_M() => Run(0x88);
 
     public void Adca_M() // 89
     {
@@ -1015,18 +1005,7 @@ public partial class MC6809
         _cycleCounter += 4;
     }
 
-    public void Cmpx_D() // 9C
-    {
-        _postWord = MemRead16(DPADDRESS(PC_REG++));
-        _temp16 = (ushort)(X_REG - _postWord);
-
-        CC_C = _temp16 > X_REG;
-        CC_V = OVERFLOW16(CC_C, _postWord, _temp16, X_REG);
-        CC_N = NTEST16(_temp16);
-        CC_Z = ZTEST(_temp16);
-
-        _cycleCounter += 6;
-    }
+    public void Cmpx_D() => Run(0x9C);
 
     public void Jsr_D() // 9D
     {
@@ -1042,17 +1021,7 @@ public partial class MC6809
         _cycleCounter += 7;
     }
 
-    public void Ldx_D() // 9E
-    {
-        X_REG = MemRead16(DPADDRESS(PC_REG++));
-
-        CC_Z = ZTEST(X_REG);
-        CC_N = NTEST16(X_REG);
-        CC_V = false;
-
-        _cycleCounter += 5;
-    }
-
+    public void Ldx_D() => Run(0x9E);
     public void Stx_D() => Run(0x9F);
 
     #endregion
@@ -1165,23 +1134,7 @@ public partial class MC6809
 
     public void Lda_X() => Run(0xA6);
     public void Sta_X() => Run(0xA7);
-
-    public void Eora_X() // A8
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        ushort address = ea.CalculateEA(value);
-
-        A_REG ^= MemRead8(address);
-
-        CC_N = NTEST8(A_REG);
-        CC_Z = ZTEST(A_REG);
-        CC_V = false;
-
-        _cycleCounter += 4;
-    }
+    public void Eora_X() => Run(0xA8);
 
     public void Adca_X() // A9
     {
@@ -1469,20 +1422,7 @@ public partial class MC6809
     }
 
     public void Jsr_E() => Run(0xBD);
-
-    public void Ldx_E() // BE
-    {
-        X_REG = MemRead16(MemRead16(PC_REG));
-
-        CC_Z = ZTEST(X_REG);
-        CC_N = NTEST16(X_REG);
-        CC_V = false;
-
-        PC_REG += 2;
-
-        _cycleCounter += 6;
-    }
-
+    public void Ldx_E() => Run(0xBE);
     public void Stx_E() => Run(0xBF);
 
     #endregion
@@ -1563,17 +1503,7 @@ public partial class MC6809
         _cycleCounter += 2;
     }
 
-    public void Bitb_M() // C5
-    {
-        _temp8 = (byte)(B_REG & MemRead8(PC_REG++));
-
-        CC_N = NTEST8(_temp8);
-        CC_Z = ZTEST(_temp8);
-        CC_V = false;
-
-        _cycleCounter += 2;
-    }
-
+    public void Bitb_M() => Run(0xC5);
     public void Ldb_M() => Run(0xC6);
     // C7
 
@@ -1784,27 +1714,8 @@ public partial class MC6809
         _cycleCounter += 4;
     }
 
-    public void Ldd_D() // DC
-    {
-        D_REG = MemRead16(DPADDRESS(PC_REG++));
-
-        CC_Z = ZTEST(D_REG);
-        CC_N = NTEST16(D_REG);
-        CC_V = false;
-
-        _cycleCounter += 5;
-    }
-
-    public void Std_D() // DD
-    {
-        MemWrite16(D_REG, DPADDRESS(PC_REG++));
-
-        CC_Z = ZTEST(D_REG);
-        CC_N = NTEST16(D_REG);
-        CC_V = false;
-
-        _cycleCounter += 5;
-    }
+    public void Ldd_D() => Run(0xDC);
+    public void Std_D() => Run(0xDD);
 
     public void Ldu_D() // DE
     {
