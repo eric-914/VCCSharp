@@ -259,20 +259,7 @@ public partial class MC6809
 
     #region 0x50 - 0x5F
 
-    public void Negb_I() // 50
-    {
-        _temp8 = (byte)(0 - B_REG);
-
-        CC_C = _temp8 > 0;
-        CC_V = B_REG == 0x80;
-        CC_N = NTEST8(_temp8);
-        CC_Z = ZTEST(_temp8);
-
-        B_REG = _temp8;
-
-        _cycleCounter += 2;
-    }
-
+    public void Negb_I() => Run(0x50);
     // 51
     // 52
 
@@ -301,52 +288,14 @@ public partial class MC6809
     }
 
     // 55
-
-    public void Rorb_I() // 56
-    {
-        _postByte = CC_C ? (byte)0x80 : (byte)0x00; //CC_C << 7;
-
-        CC_C = (B_REG & 1) != 0;
-
-        B_REG = (byte)((B_REG >> 1) | _postByte);
-
-        CC_Z = ZTEST(B_REG);
-        CC_N = NTEST8(B_REG);
-
-        _cycleCounter += 2;
-    }
-
+    public void Rorb_I() => Run(0x56);
     public void Asrb_I() => Run(0x57);
     public void Aslb_I() => Run(0x58);
-
-    public void Rolb_I() // 59
-    {
-        _postByte = CC_C ? (byte)1 : (byte)0;
-
-        CC_C = B_REG > 0x7F;
-        CC_V = CC_C ^ ((B_REG & 0x40) >> 6 != 0);
-
-        B_REG = (byte)((B_REG << 1) | _postByte);
-
-        CC_Z = ZTEST(B_REG);
-        CC_N = NTEST8(B_REG);
-
-        _cycleCounter += 2;
-    }
-
+    public void Rolb_I() => Run(0x59);
     public void Decb_I() => Run(0x5A);
     // 5B
     public void Incb_I() => Run(0x5C);
-
-    public void Tstb_I() // 5D
-    {
-        CC_Z = ZTEST(B_REG);
-        CC_N = NTEST8(B_REG);
-        CC_V = false;
-
-        _cycleCounter += 2;
-    }
-
+    public void Tstb_I() => Run(0x5D);
     // 5E
     public void Clrb_I() => Run(0x5F);
 
@@ -399,28 +348,7 @@ public partial class MC6809
         _cycleCounter += 6;
     }
 
-    public void Lsr_X() // 64
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        _temp16 = ea.CalculateEA(value);
-
-        _temp8 = MemRead8(_temp16);
-
-        CC_C = (_temp8 & 1) != 0;
-
-        _temp8 = (byte)(_temp8 >> 1);
-
-        CC_Z = ZTEST(_temp8);
-        CC_N = false;
-
-        MemWrite8(_temp8, _temp16);
-
-        _cycleCounter += 6;
-    }
-
+    public void Lsr_X() => Run(0x64);
     // 65
 
     public void Ror_X() // 66
@@ -784,22 +712,7 @@ public partial class MC6809
 
     #region 0x90 - 0x9F
 
-    public void Suba_D() // 90
-    {
-        _postByte = MemRead8(DPADDRESS(PC_REG++));
-        _temp16 = (ushort)(A_REG - _postByte);
-
-        CC_C = (_temp16 & 0x100) >> 8 != 0;
-        CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
-
-        A_REG = (byte)_temp16;
-
-        CC_Z = ZTEST(A_REG);
-        CC_N = NTEST8(A_REG);
-
-        _cycleCounter += 4;
-    }
-
+    public void Suba_D() => Run(0x90);
     public void Cmpa_D() => Run(0x91);
 
     public void Scba_D() // 92
@@ -915,28 +828,7 @@ public partial class MC6809
 
     #region 0xA0 - 0xAF
 
-    public void Suba_X() // A0
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        ushort address = ea.CalculateEA(value);
-
-        _postByte = MemRead8(address);
-        _temp16 = (ushort)(A_REG - _postByte);
-
-        CC_C = (_temp16 & 0x100) >> 8 != 0;
-        CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
-
-        A_REG = (byte)_temp16;
-
-        CC_Z = ZTEST(A_REG);
-        CC_N = NTEST8(A_REG);
-
-        _cycleCounter += 4;
-    }
-
+    public void Suba_X() => Run(0xA0);
     public void Cmpa_X() => Run(0xA1);
 
     public void Sbca_X() // A2
@@ -1395,17 +1287,7 @@ public partial class MC6809
 
     public void Ldb_D() => Run(0xD6);
     public void Stb_D() => Run(0xD7);
-
-    public void Eorb_D() // D8
-    {
-        B_REG ^= MemRead8(DPADDRESS(PC_REG++));
-
-        CC_N = NTEST8(B_REG);
-        CC_Z = ZTEST(B_REG);
-        CC_V = false;
-
-        _cycleCounter += 4;
-    }
+    public void Eorb_D() => Run(0xD8);
 
     public void Adcb_D() // D9
     {
@@ -1484,25 +1366,7 @@ public partial class MC6809
         _cycleCounter += 4;
     }
 
-    public void Cmpb_X() // E1
-    {
-        var ea = ((ITempAccess)OpCodes).EA;
-
-        byte value = MemRead8(PC_REG++);
-
-        ushort address = ea.CalculateEA(value);
-
-        _postByte = MemRead8(address);
-
-        _temp8 = (byte)(B_REG - _postByte);
-
-        CC_C = _temp8 > B_REG;
-        CC_V = OVERFLOW8(CC_C, _postByte, _temp8, B_REG);
-        CC_N = NTEST8(_temp8);
-        CC_Z = ZTEST(_temp8);
-
-        _cycleCounter += 4;
-    }
+    public void Cmpb_X() => Run(0xE1);
 
     public void Sbcb_X() // E2
     {
