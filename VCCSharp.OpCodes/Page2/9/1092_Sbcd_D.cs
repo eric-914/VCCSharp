@@ -46,7 +46,7 @@ internal class _1092_Sbcd_D : OpCode6309, IOpCode
         ushort address = DIRECT[PC++];
         ushort value = M16[address];
 
-        var sum = Subtract(D, value.Plus(CC_C));
+        var sum = Subtract(D, value, CC_C);
 
         CC_N = sum.N;
         CC_Z = sum.Z;

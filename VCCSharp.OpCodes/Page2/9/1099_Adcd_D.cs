@@ -41,7 +41,7 @@ internal class _1099_Adcd_D : OpCode6309, IOpCode
         ushort address = DIRECT[PC++];
         ushort value = M16[address];
 
-        var sum = Add(D, value.Plus(CC_C));
+        var sum = Add(D, value, CC_C);
 
         CC_N = sum.N;
         CC_Z = sum.Z;

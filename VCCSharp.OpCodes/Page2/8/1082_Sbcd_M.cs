@@ -45,7 +45,7 @@ internal class _1082_Sbcd_M : OpCode6309, IOpCode
     {
         var value = M16[PC]; PC += 2;
 
-        var sum = Subtract(D, value.Plus(CC_C));
+        var sum = Subtract(D, value, CC_C);
 
         CC_N = sum.N;
         CC_Z = sum.Z;

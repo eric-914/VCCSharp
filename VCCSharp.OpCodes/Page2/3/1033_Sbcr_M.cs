@@ -45,8 +45,8 @@ internal class _1033_Sbcr_M : OpCode6309, IOpCode, IIndexedRegisterSwap
     {
         _irs = new IndexedRegisterSwap(this, true)
         {
-            F8 = (d,s) => Subtract(d, s.Plus(CC_C)),
-            F16 = (d,s) => Subtract(d, s.Plus(CC_C))
+            F8 = (d,s) => Subtract(d, s, CC_C),
+            F16 = (d,s) => Subtract(d, s, CC_C)
         };
     }
 

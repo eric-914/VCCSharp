@@ -36,9 +36,9 @@ internal class _A9_Adca_X : OpCode, IOpCode
         Cycles = 4;
 
         ushort address = INDEXED[PC++];
-        byte value = M8[address++].Plus(CC_C);
+        byte value = M8[address++];
 
-        var sum = Add(A, value);
+        var sum = Add(A, value, CC_C);
 
         CC_H = sum.H;
         CC_N = sum.N;

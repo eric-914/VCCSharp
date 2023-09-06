@@ -41,8 +41,8 @@ internal class _1031_Adcr_M : OpCode6309, IOpCode, IIndexedRegisterSwap
     {
         _irs = new IndexedRegisterSwap(this, true)
         {
-            F8 = (d,s) => Add(d, s.Plus(CC_C)),
-            F16 = (d,s) => Add(d, s.Plus(CC_C))
+            F8 = (d,s) => Add(d, s, CC_C),
+            F16 = (d,s) => Add(d, s, CC_C)
         };
     }
 

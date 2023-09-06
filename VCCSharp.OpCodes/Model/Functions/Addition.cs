@@ -7,7 +7,7 @@ namespace VCCSharp.OpCodes.Model.Functions;
 /// </summary>
 internal class Addition : IFunction
 {
-    public int Result { get; }
+    public int Result { get; private set; }
 
     /// <summary>
     /// <c>H</c>: The Half-Carry flag is set if a carry out of bit 3/7 (into bit 4/8) occurred; cleared otherwise.
@@ -16,43 +16,43 @@ internal class Addition : IFunction
     /// <summary>
     /// <c>N</c>: The Negative flag is set equal to the new value of bit 7/15 of the accumulator.
     /// </summary>
-    public bool N { get; }
+    public bool N { get; private set; }
     /// <summary>
     /// <c>Z</c>: The Zero flag is set if the new accumulator value is zero; cleared otherwise.
     /// </summary>
-    public bool Z { get; }
+    public bool Z { get; private set; }
     /// <summary>
     /// <c>V</c>: The Overflow flag is set if an overflow occurred; cleared otherwise.
     /// </summary>
-    public bool V { get; }
+    public bool V { get; private set; }
     /// <summary>
     /// <c>C</c>: The Carry flag is set if a carry out of bit 7/15 (into bit 8/16) occurred; cleared otherwise.
     /// </summary>
-    public bool C { get; }
+    public bool C { get; private set; }
 
     public bool I => throw new NotImplementedException();
     public bool F => throw new NotImplementedException();
     public bool E => throw new NotImplementedException();
 
-    public Addition(byte a, byte b)
+    public Addition(byte a, byte b, byte cc)
     {
-        Result = (byte)(a + b);
-
-        H = (a & 0x0F) + (b & 0x0F) > 0x0F;
-        N = Result.Bit7();
-        Z = Result == 0;
-        V = ((a & b & Result.I()) | (a.I() & b.I() & Result)).Bit7();
-        C = a + b > 0xFF;
+        H = (a & 0x0F) + (b & 0x0F) + cc > 0x0F;
+        Exec(a, b, cc, 0xFF, x => x.Bit7());
     }
 
-    public Addition(ushort a, ushort b)
+    public Addition(ushort a, ushort b, byte cc)
     {
-        Result = (ushort)(a + b);
-
         H = false; //--Not applicable
-        N = Result.Bit15();
+        Exec(a, b, cc, 0xFFFF, x => x.Bit15());
+    }
+
+    public void Exec(int a, int b, int cc, int max, Func<int, bool> bit)
+    {
+        Result = (ushort)(a + b + cc);
+
+        N = bit(Result);
         Z = Result == 0;
-        V = ((a & b & Result.I()) | (a.I() & b.I() & Result)).Bit15();
-        C = a + b > 0xFFFF;
+        V = bit((a & b & Result.I()) | (a.I() & b.I() & Result));
+        C = a + b > max;
     }
 }

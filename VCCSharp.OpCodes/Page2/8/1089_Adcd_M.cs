@@ -40,7 +40,7 @@ internal class _1089_Adcd_M : OpCode6309, IOpCode
     {
         ushort value = M16[PC]; PC += 2;
 
-        var sum = Add(D, value.Plus(CC_C));
+        var sum = Add(D, value, CC_C);
 
         CC_N = sum.N;
         CC_Z = sum.Z;

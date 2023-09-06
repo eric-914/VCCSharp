@@ -672,6 +672,27 @@ public partial class MC6809
         //Run(0x98);
     }
 
+    //public void Adca_D() // 99
+    //{
+    //    ushort address = DPADDRESS(PC_REG++);
+
+    //    _postByte = MemRead8(address);
+
+    //    var carry = (CC_C ? 1 : 0);
+
+    //    _temp16 = (ushort)(A_REG + _postByte + carry);
+
+    //    CC_C = (_temp16 & 0x100) >> 8 != 0;
+    //    CC_V = OVERFLOW8(CC_C, _postByte, _temp16, A_REG);
+    //    CC_H = ((A_REG ^ _temp16 ^ _postByte) & 0x10) >> 4 != 0;
+
+    //    A_REG = (byte)_temp16;
+
+    //    CC_N = NTEST8(A_REG);
+    //    CC_Z = ZTEST(A_REG);
+
+    //    _cycleCounter += 4;
+    //}
     public void Adca_D() => Run(0x99);
 
     public void Ora_D() // 9A

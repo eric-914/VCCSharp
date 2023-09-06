@@ -247,7 +247,8 @@ internal abstract class OpCode6309
     /// <param name="a">first 8-bit</param>
     /// <param name="b">second 8-bit</param>
     /// <returns>object with summation results</returns>
-    protected static IFunction Add(byte a, byte b) => new Addition(a, b);
+    protected static IFunction Add(byte a, byte b) => new Addition(a, b, 0);
+    protected static IFunction Add(byte a, byte b, bool cc) => new Addition(a, b, cc.ToBit());
 
     /// <summary>
     /// Handles the intracies of calculating the sum two values: <c>a+b</c>
@@ -255,7 +256,8 @@ internal abstract class OpCode6309
     /// <param name="a">first 16-bit</param>
     /// <param name="b">second 16-bit</param>
     /// <returns>object with summation results</returns>
-    protected static IFunction Add(ushort a, ushort b) => new Addition(a, b);
+    protected static IFunction Add(ushort a, ushort b) => new Addition(a, b, 0);
+    protected static IFunction Add(ushort a, ushort b, bool cc) => new Addition(a, b, cc.ToBit());
 
     /// <summary>
     /// Handles the intracies of calculating the difference two values: <c>a-b</c>
@@ -263,7 +265,8 @@ internal abstract class OpCode6309
     /// <param name="a">first 16-bit</param>
     /// <param name="b">second 16-bit</param>
     /// <returns>object with summation results</returns>
-    protected static IFunction Subtract(byte a, byte b) => new Subtraction(a, b);
+    protected static IFunction Subtract(byte a, byte b) => new Subtraction(a, b, 0);
+    protected static IFunction Subtract(byte a, byte b, bool cc) => new Subtraction(a, b, cc.ToBit());
 
     /// <summary>
     /// Handles the intracies of calculating the difference two values: <c>a-b</c>
@@ -271,7 +274,8 @@ internal abstract class OpCode6309
     /// <param name="a">first 16-bit</param>
     /// <param name="b">second 16-bit</param>
     /// <returns>object with summation results</returns>
-    protected static IFunction Subtract(ushort a, ushort b) => new Subtraction(a, b);
+    protected static IFunction Subtract(ushort a, ushort b) => new Subtraction(a, b, 0);
+    protected static IFunction Subtract(ushort a, ushort b, bool cc) => new Subtraction(a, b, cc.ToBit());
 
     protected static IFunction Boolean(byte result) => new Functions.Boolean(result);
     protected static IFunction Boolean(ushort result) => new Functions.Boolean(result);

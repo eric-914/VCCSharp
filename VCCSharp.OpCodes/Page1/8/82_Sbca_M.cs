@@ -36,7 +36,7 @@ internal class _82_Sbca_M : OpCode, IOpCode
     {
         byte value = M8[PC++];
 
-        var sum = Subtract(A, value.Plus(CC_C));
+        var sum = Subtract(A, value, CC_C);
 
         //CC_H = undefined;
         CC_N = sum.N;
