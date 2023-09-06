@@ -36,7 +36,7 @@ internal class _E3_Addd_X : OpCode, IOpCode
         ushort address = INDEXED[PC++];
         ushort value = M16[address];
 
-        var sum = Add(A, value);
+        var sum = Add(D, value);
 
         //CC_H = sum.H; //--Not applicable
         CC_N = sum.N;

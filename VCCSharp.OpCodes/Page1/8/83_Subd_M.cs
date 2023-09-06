@@ -33,7 +33,7 @@ internal class _83_Subd_M : OpCode, IOpCode
     {
         ushort value = M16[PC]; PC += 2;
 
-        var sum = Subtract(A, value);
+        var sum = Subtract(D, value);
 
         //CC_H = sum.H; //--Not applicable
         CC_N = sum.N;

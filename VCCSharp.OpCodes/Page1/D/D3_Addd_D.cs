@@ -34,7 +34,7 @@ internal class _D3_Addd_D : OpCode, IOpCode
         ushort address = DIRECT[PC++];
         ushort value = M16[address];
 
-        var sum = Add(A, value);
+        var sum = Add(D, value);
 
         //CC_H = sum.H; //--Not applicable
         CC_N = sum.N;
