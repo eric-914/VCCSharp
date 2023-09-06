@@ -31,18 +31,14 @@ public partial class MC6809
     {
         _jumpVectors[opCode]();
 
-        //var page1 = _codes.Select((v, i) => new { v, i }).Where(x => x.i != 0x10 && x.i != 0x11).ToList();
-
-        //var filter = page1.Where(x => x.v > 0).ToList();
-
-        //if (filter.Any())
+        //if (opCode != 0x10 && opCode != 0x11)
         //{
-        //    var n = filter.Select(x => new { x.v, x.i, h = $"{x.i:x}" }).First();
-
-        //    System.Diagnostics.Debugger.Break();
+        //    if (++_codes[opCode] > 1)
+        //    {
+        //        var n = new { h = $"{opCode:x}" };
+        //        System.Diagnostics.Debugger.Break();
+        //    };
         //}
-
-        _codes[opCode]++;
     }
 
     private void Run(byte opcode)

@@ -312,6 +312,7 @@ public partial class MC6809
         MemWrite8(_temp8, _temp16);
 
         _cycleCounter += 6;
+        //Run(0x63);
     }
 
     public void Lsr_X() => Run(0x64);
@@ -340,6 +341,7 @@ public partial class MC6809
         MemWrite8(_temp8, _temp16);
 
         _cycleCounter += 6;
+        //Run(0x68);
     }
 
     public void Rol_X() => Run(0x69);
@@ -411,6 +413,7 @@ public partial class MC6809
         PC_REG += 2;
 
         _cycleCounter += 7;
+        //Run(0x73);
     }
 
     public void Lsr_E() // 74
@@ -666,6 +669,7 @@ public partial class MC6809
         CC_V = false;
 
         _cycleCounter += 4;
+        //Run(0x98);
     }
 
     public void Adca_D() => Run(0x99);
@@ -679,6 +683,7 @@ public partial class MC6809
         CC_V = false;
 
         _cycleCounter += 4;
+        //Run(0x9A);
     }
 
     public void Adda_D() // 9B
@@ -1119,19 +1124,20 @@ public partial class MC6809
 
     public void Addb_D() // DB
     {
-        _postByte = MemRead8(DPADDRESS(PC_REG++));
-        _temp16 = (ushort)(B_REG + _postByte);
+        //_postByte = MemRead8(DPADDRESS(PC_REG++));
+        //_temp16 = (ushort)(B_REG + _postByte);
 
-        CC_C = (_temp16 & 0x100) >> 8 != 0;
-        CC_H = ((B_REG ^ _postByte ^ _temp16) & 0x10) >> 4 != 0;
-        CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
+        //CC_C = (_temp16 & 0x100) >> 8 != 0;
+        //CC_H = ((B_REG ^ _postByte ^ _temp16) & 0x10) >> 4 != 0;
+        //CC_V = OVERFLOW8(CC_C, _postByte, _temp16, B_REG);
 
-        B_REG = (byte)_temp16;
+        //B_REG = (byte)_temp16;
 
-        CC_N = NTEST8(B_REG);
-        CC_Z = ZTEST(B_REG);
+        //CC_N = NTEST8(B_REG);
+        //CC_Z = ZTEST(B_REG);
 
-        _cycleCounter += 4;
+        //_cycleCounter += 4;
+        _cycleCounter += OpCodes.Exec(0xDB);
     }
 
     public void Ldd_D() => Run(0xDC);
