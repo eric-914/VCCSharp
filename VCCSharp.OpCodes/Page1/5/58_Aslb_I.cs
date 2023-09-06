@@ -48,7 +48,7 @@ internal class _58_Aslb_I : OpCode, IOpCode
         CC_V = B.Bit7() ^ B.Bit6();
         CC_C = B.Bit7();
 
-        A = result;
+        B = result;
 
         return DynamicCycles._21;
     }

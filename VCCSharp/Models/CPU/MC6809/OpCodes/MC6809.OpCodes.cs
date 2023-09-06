@@ -26,18 +26,21 @@ public partial class MC6809
     #endregion
 
     private int[] _codes = new int[256];
-    private int _counter = 0;
 
     private void Exec(byte opCode)
     {
         _jumpVectors[opCode]();
 
-        if (++_counter == 100000)
-        {
-            var filter = _codes.Select((v, i) => new { v, i = $"{i:x}" }).Where(x => x.v > 0).OrderBy(x => -x.v).ToList();
+        //var page1 = _codes.Select((v, i) => new { v, i }).Where(x => x.i != 0x10 && x.i != 0x11).ToList();
 
-            System.Diagnostics.Debugger.Break();
-        }
+        //var filter = page1.Where(x => x.v > 0).ToList();
+
+        //if (filter.Any())
+        //{
+        //    var n = filter.Select(x => new { x.v, x.i, h = $"{x.i:x}" }).First();
+
+        //    System.Diagnostics.Debugger.Break();
+        //}
 
         _codes[opCode]++;
     }
