@@ -33,7 +33,7 @@ internal class _AC_Cmpx_X : OpCode, IOpCode
 {
     public int Exec()
     {
-        Cycles = 4;
+        Cycles = DynamicCycles._65;
 
         ushort address = INDEXED[PC++];
         ushort value = M16[address];

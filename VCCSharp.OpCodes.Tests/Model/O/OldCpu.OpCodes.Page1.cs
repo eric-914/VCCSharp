@@ -3142,7 +3142,9 @@ internal partial class OldCpu
 
     public void Stu_X() // EF
     {
-        MemWrite16(U_REG, INDADDRESS(PC_REG++));
+        ushort address = INDADDRESS(PC_REG++);
+
+        MemWrite16(U_REG, address);
 
         CC_Z = ZTEST(U_REG);
         CC_N = NTEST16(U_REG);

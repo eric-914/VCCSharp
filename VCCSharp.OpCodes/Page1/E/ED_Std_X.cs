@@ -19,15 +19,15 @@ namespace VCCSharp.OpCodes.Page1;
 ///         Z The Zero flag is set if the register value is zero; cleared otherwise.
 ///         V The Overflow flag is always cleared.
 ///         
-/// Cycles (5+ / 2+)
-/// Byte Count (2)
+/// Cycles (5+)
+/// Byte Count (2+)
 /// 
 /// See Also: ST (8-bit), STQ
 internal class _ED_Std_X : OpCode, IOpCode
 {
     public int Exec()
     {
-        Cycles = 4;
+        Cycles = 5;
 
         ushort address = INDEXED[PC++];
 

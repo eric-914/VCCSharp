@@ -44,6 +44,7 @@ internal partial class OldCpu
     private byte U_L { get => (byte)(U_REG & 0xFF); set => U_REG = (ushort)((U_REG & 0xFF00) | value); }
 
     public byte DPA { get => (byte)(DP_REG >> 8); set => DP_REG = (ushort)((DP_REG & 0x00FF) | (value << 8)); }
+    public object R8 { get; private set; }
 
     private byte GetCC() => CC;
     private void SetCC(byte value) => CC = value;
@@ -59,17 +60,65 @@ internal partial class OldCpu
 
     private ushort DPADDRESS(ushort r) => (ushort)(DP_REG | MemRead8(r)); //DIRECT PAGE REGISTER
 
-    private ushort INDADDRESS(ushort address)
+    private ushort INDADDRESS(ushort address) => CalculateEA(MemRead8(address));
+
+    private byte PUR(int i)
     {
-        throw new NotImplementedException();
+        return i switch
+        {
+            0 => A_REG,
+            1 => B_REG,
+            2 => CC,
+            3 => DPA,
+            4 => DPA,
+            5 => DPA,
+            6 => DPA,
+            7 => DPA,
+            _ => throw new NotImplementedException()
+        };
     }
 
-    private byte PUR(int i) => R8[i];
-    private void PUR(int i, byte value) => R8[i] = value;
+    private void PUR(int i, byte value)
+    {
+        switch (i)
+        {
+            case 0: A_REG = value; break;
+            case 1: B_REG = value; break;
+            case 2: CC = value; break;
+            case 3: DPA = value; break;
+            case 4: DPA = value; break;
+            case 5: DPA = value; break;
+            case 6: DPA = value; break;
+            case 7: DPA = value; break;
+        }
+    }
 
-    private ushort PXF(int i) => R16[i];
-    private void PXF(int i, ushort value) => R16[i] = value;
+    private ushort PXF(int i)
+    {
+        return i switch
+        {
+            0 => D_REG,
+            1 => X_REG,
+            2 => Y_REG,
+            3 => U_REG,
+            4 => S_REG,
+            5 => PC_REG,
+            _ => throw new NotImplementedException()
+        };
+    }
 
+    private void PXF(int i, ushort value)
+    {
+        switch (i)
+        {
+            case 0: D_REG = value; break;
+            case 1: X_REG = value; break;
+            case 2: Y_REG = value; break;
+            case 3: U_REG = value; break;
+            case 4: S_REG = value; break;
+            case 5: PC_REG = value; break;
+        }
+    }
 
     public byte MemRead8(ushort address)
     {

@@ -1,10 +1,11 @@
 ﻿using VCCSharp.OpCodes.MC6809;
 using VCCSharp.OpCodes.Model.Memory;
+using VCCSharp.OpCodes.Model.Support;
 using VCCSharp.OpCodes.Registers;
 
 namespace VCCSharp.OpCodes.Tests;
 
-internal partial class NewCpu : ISystemState
+internal partial class NewCpu : ISystemState, IExtendedAddress
 {
     public void EndInterrupt() { }
     public int SyncWait() => 0;
@@ -29,11 +30,11 @@ internal partial class NewCpu : ISystemState
 
     public MemoryDP DIRECT => new MemoryDP(this);
 
-    public MemoryIndexed INDEXED => throw new NotImplementedException();
+    public MemoryIndexed INDEXED => new MemoryIndexed(cpu, this);
 
-    public IRegisters8Bit R8 => throw new NotImplementedException();
+    public IRegisters8Bit R8 => new Registers8Bit<IState>(cpu);
 
-    public IRegisters16Bit R16 => throw new NotImplementedException();
+    public IRegisters16Bit R16 => new Registers16Bit<IState>(cpu);
 
     public int Cycles { get; set; }
 }
