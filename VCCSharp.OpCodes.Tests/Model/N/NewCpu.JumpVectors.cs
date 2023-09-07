@@ -1,9 +1,6 @@
 ﻿using VCCSharp.OpCodes.MC6809;
-using VCCSharp.OpCodes.Model;
-using VCCSharp.OpCodes.Model.Memory;
 using VCCSharp.OpCodes.Model.OpCodes;
 using VCCSharp.OpCodes.Page1;
-using VCCSharp.OpCodes.Registers;
 
 namespace VCCSharp.OpCodes.Tests;
 
@@ -13,8 +10,12 @@ internal partial class NewCpu : ISystemState
 
     public void Exec(byte opCode)
     {
-        var v = _jumpVectors[opCode];
-        ((OpCode)v).SS = this;
-        v.Exec();
+        IOpCode iop = _jumpVectors[opCode];
+        OpCode op = (OpCode)iop;
+
+        op.SS = this;
+        op.Cycles = 0;
+
+        Cycles = iop.Exec();
     }
 }

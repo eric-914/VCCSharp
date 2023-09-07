@@ -18,4 +18,6 @@ internal partial class OldCpu
 
     public byte[] R8 { get; } = new byte[8];
     public ushort[] R16 { get; } = new ushort[8];
+
+    public int Cycles { get => _cycleCounter; }
 }

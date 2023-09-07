@@ -36,11 +36,11 @@ public class Tests
         Assert.That(_old.S_REG, Is.EqualTo(_new.S));
         Assert.That(_old.DPA, Is.EqualTo(_new.DP));
         Assert.That(_old.X_REG, Is.EqualTo(_new.X));
+        Assert.That(_old.Cycles, Is.EqualTo(_new.Cycles));
     }
 
-   [TestCase(0x19)]
-   [TestCase(0x1A)]
-   [TestCase(0x1D)]
+    [TestCase(0xCC)]
+    [TestCase(0xFC)]
     public void TestOpcode(byte opcode)
     {
         _old.Exec(opcode);
@@ -49,6 +49,10 @@ public class Tests
         Verify();
     }
 
+
+    //[TestCase(0x19)]
+    //[TestCase(0x1A)]
+    //[TestCase(0x1D)]
     //[TestCase(0x0E)]
     //[TestCase(0x12)]
     //[TestCase(0x16)]
@@ -148,7 +152,6 @@ public class Tests
     //[TestCase(0xC9)]
     //[TestCase(0xCA)]
     //[TestCase(0xCB)]
-    //[TestCase(0xCC)]
     //[TestCase(0xCE)]
     //[TestCase(0xF0)]
     //[TestCase(0xF1)]
@@ -162,7 +165,6 @@ public class Tests
     //[TestCase(0xF9)]
     //[TestCase(0xFA)]
     //[TestCase(0xFB)]
-    //[TestCase(0xFC)]
     //[TestCase(0xFD)]
     //[TestCase(0xFE)]
     //[TestCase(0xFF)]

@@ -35,6 +35,6 @@ internal class _FC_Ldd_E : OpCode, IOpCode
         CC_Z = D == 0;
         CC_V = false;
 
-        return DynamicCycles._54;
+        return DynamicCycles._65;
     }
 }

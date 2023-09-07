@@ -32,6 +32,7 @@ internal partial class OldCpu
 
     public void Exec(byte opCode)
     {
+        _cycleCounter = 0;
         _jumpVectors[opCode]();
     }
 }

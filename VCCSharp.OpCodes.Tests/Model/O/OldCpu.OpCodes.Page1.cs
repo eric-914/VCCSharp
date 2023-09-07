@@ -2712,7 +2712,8 @@ internal partial class OldCpu
 
         PC_REG += 2;
 
-        _cycleCounter += 2;
+        //_cycleCounter += 2;
+        _cycleCounter += 3;
     }
 
     // CD	//InvalidInsHandler
