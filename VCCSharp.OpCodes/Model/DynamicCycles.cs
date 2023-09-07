@@ -1,4 +1,5 @@
 ﻿using VCCSharp.Models.CPU.OpCodes;
+using VCCSharp.OpCodes.Definitions;
 
 namespace VCCSharp.OpCodes.Model;
 
@@ -10,8 +11,6 @@ namespace VCCSharp.OpCodes.Model;
 /// </summary>
 internal class DynamicCycles
 {
-    private readonly IMode _cpu;
-
     private static byte[,] _cycles =
     {
         {6, 5},    /* M65 */
@@ -40,7 +39,7 @@ internal class DynamicCycles
         {5, 3}     /* M53 */
     };
 
-    private byte T(int index) => _cycles[index, (int)_cpu.Mode];
+    private byte T(int index) => _cycles[index, (int)_mode()];
 
     #region Factory
 
@@ -71,8 +70,10 @@ internal class DynamicCycles
 
     #endregion
 
-    public DynamicCycles(IMode cpu)
+    private readonly Func<Mode> _mode;
+
+    public DynamicCycles(Func<Mode> mode)
     {
-        _cpu = cpu;
+        _mode = mode;
     }
 }

@@ -1,4 +1,4 @@
-﻿using VCCSharp.OpCodes.Model;
+﻿using VCCSharp.OpCodes.Definitions;
 using VCCSharp.OpCodes.Model.Memory;
 using VCCSharp.OpCodes.Registers;
 
@@ -17,7 +17,7 @@ internal interface ISystemState
     IRegisters8Bit R8 { get; }
     IRegisters16Bit R16 { get; }
 
-    DynamicCycles DynamicCycles { get; }
+    Mode Mode { get; }
 
     int Cycles { get; set; }
 }

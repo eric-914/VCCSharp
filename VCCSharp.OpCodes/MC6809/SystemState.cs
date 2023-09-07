@@ -1,4 +1,5 @@
-﻿using VCCSharp.OpCodes.Memory;
+﻿using VCCSharp.OpCodes.Definitions;
+using VCCSharp.OpCodes.Memory;
 using VCCSharp.OpCodes.Model;
 using VCCSharp.OpCodes.Model.Memory;
 using VCCSharp.OpCodes.Model.OpCodes;
@@ -22,14 +23,14 @@ internal class SystemState : ISystemState, IExtendedAddress, ITempAccess
 
     public IExtendedAddressing EA => INDEXED.EA;
 
-    public DynamicCycles DynamicCycles { get; }
-
     public int Cycles { get; set; }
 
     public ushort PC { get => cpu.PC; set => cpu.PC = value; }
     public ushort D { get => cpu.D; set => cpu.D = value; }
     public byte A { get => cpu.A; set => cpu.A = value; }
     public byte B { get => cpu.B; set => cpu.B = value; }
+
+    public Mode Mode => Mode.MC6809;
 
     public SystemState(IState cpu)
     {
@@ -43,7 +44,5 @@ internal class SystemState : ISystemState, IExtendedAddress, ITempAccess
 
         R8 = new Registers8Bit<IState>(cpu);
         R16 = new Registers16Bit<IState>(cpu);
-
-        DynamicCycles = new DynamicCycles(cpu);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using VCCSharp.OpCodes.MC6809;
-using VCCSharp.OpCodes.Model;
 using VCCSharp.OpCodes.Model.Memory;
 using VCCSharp.OpCodes.Registers;
 
@@ -36,8 +35,6 @@ internal partial class NewCpu : ISystemState
     public IRegisters8Bit R8 => throw new NotImplementedException();
 
     public IRegisters16Bit R16 => throw new NotImplementedException();
-
-    public DynamicCycles DynamicCycles => new DynamicCycles(this);
 
     public int Cycles { get; set; }
 }
