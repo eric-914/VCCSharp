@@ -36,20 +36,20 @@ internal class Subtraction : IFunction
 
     public Subtraction(byte a, byte b, byte cc)
     {
-        Exec(a, b, cc, x => x.Bit7());
+        Exec(a, b, cc, 0xFF, x => x.Bit7());
     }
 
     public Subtraction(ushort a, ushort b, byte cc)
     {
-        Exec(a, b, cc, x => x.Bit15());
+        Exec(a, b, cc, 0xFFFF, x => x.Bit15());
     }
 
-    public void Exec(int a, int b, int cc, Func<int, bool> bit)
+    public void Exec(int a, int b, int cc, int max, Func<int, bool> bit)
     {
         Result = a - (b + cc);
 
         N = bit(Result);
-        Z = Result == 0;
+        Z = (Result & max) == 0;
         V = bit(((a & b.I() & Result.I()) | (a.I() & b & Result)));
         C = b > a;
     }

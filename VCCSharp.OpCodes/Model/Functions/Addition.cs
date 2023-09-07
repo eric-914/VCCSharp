@@ -51,7 +51,7 @@ internal class Addition : IFunction
         Result = (ushort)(a + b + cc);
 
         N = bit(Result);
-        Z = Result == 0;
+        Z = (Result & max) == 0;
         V = bit((a & b & Result.I()) | (a.I() & b.I() & Result));
         C = a + b > max;
     }
