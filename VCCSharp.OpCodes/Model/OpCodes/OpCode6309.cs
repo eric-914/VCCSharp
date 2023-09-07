@@ -52,7 +52,7 @@ internal abstract class OpCode6309
 
     protected DynamicCycles DynamicCycles => new DynamicCycles(() => SS.Mode);
 
-    protected bool IsInInterrupt { get => cpu.IsInInterrupt; set => cpu.IsInInterrupt = value; }
+    protected void EndInterrupt() => cpu.EndInterrupt();
 
     protected int SyncWait() => cpu.SyncWait(); 
 

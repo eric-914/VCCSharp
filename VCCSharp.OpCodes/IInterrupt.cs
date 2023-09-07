@@ -2,6 +2,6 @@
 
 public interface IInterrupt
 {
-    bool IsInInterrupt { get; set; }
+    void EndInterrupt();
     int SyncWait();
 }

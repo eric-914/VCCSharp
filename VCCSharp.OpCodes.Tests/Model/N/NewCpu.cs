@@ -6,7 +6,7 @@ namespace VCCSharp.OpCodes.Tests;
 
 internal partial class NewCpu : ISystemState
 {
-    public bool IsInInterrupt { get; set; }
+    public void EndInterrupt() { }
     public int SyncWait() => 0;
 
     public ushort PC { get; set; }

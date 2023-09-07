@@ -57,7 +57,7 @@ internal abstract class OpCode : ITempAccess
     /// </summary>
     public int Cycles { get => SS.Cycles; set => SS.Cycles = value; }
 
-    protected bool IsInInterrupt { get => cpu.IsInInterrupt; set => cpu.IsInInterrupt = value; }
+    protected void EndInterrupt() => cpu.EndInterrupt();
 
     protected int SyncWait() => cpu.SyncWait(); 
 

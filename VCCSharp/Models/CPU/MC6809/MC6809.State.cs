@@ -25,4 +25,9 @@ public partial class MC6809 : VCCSharp.OpCodes.MC6809.IState
 
         return SyncCycle;
     }
+
+    public void EndInterrupt()
+    {
+        IsInInterrupt = false;
+    }
 }
