@@ -59,9 +59,7 @@ internal abstract class OpCode : ITempAccess
 
     protected bool IsInInterrupt { get => cpu.IsInInterrupt; set => cpu.IsInInterrupt = value; }
 
-    protected bool IsSyncWaiting { get => cpu.IsSyncWaiting; set => cpu.IsSyncWaiting = value; }
-
-    protected int SyncCycle { get => cpu.SyncCycle; set => cpu.SyncCycle = value; }
+    protected int SyncWait() => cpu.SyncWait(); 
 
     /// <summary>
     /// 8-bit register

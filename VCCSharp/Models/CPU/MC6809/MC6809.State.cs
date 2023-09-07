@@ -18,4 +18,11 @@ public partial class MC6809 : VCCSharp.OpCodes.MC6809.IState
     public ushort Y { get => Y_REG; set => Y_REG = value; }
     public ushort S { get => S_REG; set => S_REG = value; }
     public ushort U { get => U_REG; set => U_REG = value; }
+
+    public int SyncWait()
+    {
+        IsSyncWaiting = true;
+
+        return SyncCycle;
+    }
 }

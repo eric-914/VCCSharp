@@ -75,8 +75,7 @@ public partial class MC6809
 
     public void Sync_I() // 13
     {
-        _cycleCounter = SyncCycle;
-        IsSyncWaiting = true;
+        _cycleCounter = SyncWait();
     }
 
     // 14
@@ -178,8 +177,7 @@ public partial class MC6809
         _cpu.cc.bits = GetCC();
         _cpu.cc.bits &= _postByte;
 
-        _cycleCounter = SyncCycle;
-        IsSyncWaiting = true;
+        _cycleCounter = SyncWait();
     }
 
     public void Mul_I() => Run(0x3D);

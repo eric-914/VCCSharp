@@ -51,8 +51,6 @@ internal class _3C_Cwai_I : OpCode, IOpCode
 
         CC &= value;
 
-        IsSyncWaiting = true;
-
-        return SyncCycle;
+        return SyncWait();
     }
 }

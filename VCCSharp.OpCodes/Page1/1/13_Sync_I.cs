@@ -32,8 +32,6 @@ internal class _13_Sync_I : OpCode, IOpCode
 {
     public int Exec()
     {
-        IsSyncWaiting = true;
-
-        return SyncCycle;
+        return SyncWait();
     }
 }
