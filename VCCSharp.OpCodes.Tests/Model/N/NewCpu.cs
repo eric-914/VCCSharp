@@ -29,7 +29,7 @@ internal partial class NewCpu : ISystemState
 
     public Memory16Bit M16 => new Memory16Bit(this);
 
-    public MemoryDP DIRECT => throw new NotImplementedException();
+    public MemoryDP DIRECT => new MemoryDP(this);
 
     public MemoryIndexed INDEXED => throw new NotImplementedException();
 

@@ -38,7 +38,7 @@ internal class _D0_Subb_D : OpCode, IOpCode
 
         var sum = Subtract(B, value);
 
-        CC_H = sum.H;
+        //CC_H = undefined
         CC_N = sum.N;
         CC_Z = sum.Z;
         CC_V = sum.V;

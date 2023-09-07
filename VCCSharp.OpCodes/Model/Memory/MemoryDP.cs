@@ -11,10 +11,8 @@ internal class MemoryDP
         _cpu = cpu;
     }
 
-    //TODO: Inline this to use regular memory accessors.  
-    //SEE: ushort DPADDRESS(ushort r);
     public ushort this[ushort address]
     {
-        get { return _cpu.DPADDRESS(address); }
+        get { return (ushort)((_cpu.DP << 8) | _cpu.MemRead8(address)); }
     }
 }

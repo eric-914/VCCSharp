@@ -1,6 +1,7 @@
-﻿namespace VCCSharp.OpCodes.Memory;
+﻿using VCCSharp.OpCodes.Registers;
 
-public interface IAddressDP
+namespace VCCSharp.OpCodes.Memory;
+
+public interface IAddressDP : IRegisterDP, IMemory8bit
 {
-    ushort DPADDRESS(ushort address);
 }

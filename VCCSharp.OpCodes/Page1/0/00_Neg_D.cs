@@ -46,7 +46,7 @@ internal class _00_Neg_D : OpCode, IOpCode
         CC_N = result.Bit7();
         CC_Z = result == 0;
         CC_V = value == 0x80;
-        CC_C = value == 0;
+        CC_C = !(value == 0);
 
         M8[address] = result;
 
