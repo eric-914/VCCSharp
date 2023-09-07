@@ -71,7 +71,7 @@ internal class _3F_Swi_I_6809 : OpCode, IOpCode
         CC_I = true;
         CC_F = true;
 
-        PC = M8[Define.VSWI];
+        PC = M16[Define.VSWI];
 
         return 19;
     }

@@ -16,8 +16,8 @@ internal partial class OldCpu
 
     private int _cycleCounter;
 
-    private bool CC_E { get => (CC & 0x80) != 0; set => CC = (byte)((CC & 0b01111111) | (value ? 1 : 0) << 8); }
-    private bool CC_F { get => (CC & 0x40) != 0; set => CC = (byte)((CC & 0b10111111) | (value ? 1 : 0) << 7); }
+    private bool CC_E { get => (CC & 0x80) != 0; set => CC = (byte)((CC & 0b01111111) | (value ? 1 : 0) << 7); }
+    private bool CC_F { get => (CC & 0x40) != 0; set => CC = (byte)((CC & 0b10111111) | (value ? 1 : 0) << 6); }
     private bool CC_H { get => (CC & 0x20) != 0; set => CC = (byte)((CC & 0b11011111) | (value ? 1 : 0) << 5); }
     private bool CC_I { get => (CC & 0x10) != 0; set => CC = (byte)((CC & 0b11101111) | (value ? 1 : 0) << 4); }
     private bool CC_N { get => (CC & 0x08) != 0; set => CC = (byte)((CC & 0b11110111) | (value ? 1 : 0) << 3); }

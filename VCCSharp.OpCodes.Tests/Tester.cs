@@ -13,7 +13,7 @@ public class Tests
     [SetUp]
     public void Setup()
     {
-        var seeds = new Seeds(10);
+        var seeds = new Seeds(20);
 
         _memOld = new MemoryTester(seeds);
         _memNew = new MemoryTester(seeds);
@@ -21,12 +21,14 @@ public class Tests
         byte CC = Rnd.B();
         ushort PC = Rnd.W();
         ushort S = Rnd.W();
+        ushort U = Rnd.W();
         byte DP = Rnd.B();
         ushort D = Rnd.W();
         ushort X = Rnd.W();
+        ushort Y = Rnd.W();
 
-        _old = new OldCpu(_memOld) { CC = CC, PC_REG = PC, S_REG = S, DPA = DP, D_REG = D, X_REG = X };
-        _new = new NewCpu(_memNew) { CC = CC, PC = PC, S = S, DP = DP, D = D, X = X };
+        _old = new OldCpu(_memOld) { CC = CC, PC_REG = PC, S_REG = S, U_REG = U, DPA = DP, D_REG = D, X_REG = X, Y_REG = Y };
+        _new = new NewCpu(_memNew) { CC = CC, PC = PC, S = S, U = U, DP = DP, D = D, X = X, Y = Y };
     }
 
     private void Verify()
@@ -34,8 +36,10 @@ public class Tests
         Assert.That(_old.CC, Is.EqualTo(_new.CC));
         Assert.That(_old.PC_REG, Is.EqualTo(_new.PC));
         Assert.That(_old.S_REG, Is.EqualTo(_new.S));
+        Assert.That(_old.U_REG, Is.EqualTo(_new.U));
         Assert.That(_old.DPA, Is.EqualTo(_new.DP));
         Assert.That(_old.X_REG, Is.EqualTo(_new.X));
+        Assert.That(_old.Y_REG, Is.EqualTo(_new.Y));
         Assert.That(_old.Cycles, Is.EqualTo(_new.Cycles));
     }
 
@@ -74,9 +78,16 @@ public class Tests
     [TestCase(0x2D)]
     [TestCase(0x2E)]
     [TestCase(0x2F)]
+    [TestCase(0x34)]
+    [TestCase(0x35)]
+    [TestCase(0x36)]
+    [TestCase(0x37)]
     [TestCase(0x39)]
     [TestCase(0x3A)]
+    [TestCase(0x3B)]
+    [TestCase(0x3C)]
     [TestCase(0x3D)]
+    [TestCase(0x3F)]
     [TestCase(0x40)]
     [TestCase(0x43)]
     [TestCase(0x44)]
@@ -209,4 +220,60 @@ public class Tests
 
         Verify();
     }
+
+    //[TestCase(0x30)]
+    //[TestCase(0x31)]
+    //[TestCase(0x32)]
+    //[TestCase(0x33)]
+    //[TestCase(0x60)]
+    //[TestCase(0x63)]
+    //[TestCase(0x64)]
+    //[TestCase(0x66)]
+    //[TestCase(0x67)]
+    //[TestCase(0x68)]
+    //[TestCase(0x69)]
+    //[TestCase(0x6A)]
+    //[TestCase(0x6C)]
+    //[TestCase(0x6D)]
+    //[TestCase(0x6E)]
+    //[TestCase(0x6F)]
+    //[TestCase(0xA0)]
+    //[TestCase(0xA1)]
+    //[TestCase(0xA2)]
+    //[TestCase(0xA3)]
+    //[TestCase(0xA4)]
+    //[TestCase(0xA5)]
+    //[TestCase(0xA6)]
+    //[TestCase(0xA7)]
+    //[TestCase(0xA8)]
+    //[TestCase(0xA9)]
+    //[TestCase(0xAA)]
+    //[TestCase(0xAB)]
+    //[TestCase(0xAC)]
+    //[TestCase(0xAD)]
+    //[TestCase(0xAE)]
+    //[TestCase(0xAF)]
+    //[TestCase(0xE0)]
+    //[TestCase(0xE1)]
+    //[TestCase(0xE2)]
+    //[TestCase(0xE3)]
+    //[TestCase(0xE4)]
+    //[TestCase(0xE5)]
+    //[TestCase(0xE6)]
+    //[TestCase(0xE7)]
+    //[TestCase(0xE8)]
+    //[TestCase(0xE9)]
+    //[TestCase(0xEA)]
+    //[TestCase(0xEB)]
+    //[TestCase(0xEC)]
+    //[TestCase(0xED)]
+    //[TestCase(0xEE)]
+    //[TestCase(0xEF)]
+    //public void Test_INDIRECT(byte opcode)
+    //{
+    //    _old.Exec(opcode);
+    //    _new.Exec(opcode);
+
+    //    Verify();
+    //}
 }
