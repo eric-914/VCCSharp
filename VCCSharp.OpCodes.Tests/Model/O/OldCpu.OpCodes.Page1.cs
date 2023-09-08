@@ -184,16 +184,14 @@ internal partial class OldCpu
 
     #region 0x10 - 0x1F
 
-    public void Page_2() // 10
+    public void Page_2(byte opcode) // 10
     {
-        //byte opCode = MemRead8(PC_REG++);
-
-        //_jumpVectors0x10[opCode]();
+        _page2[opcode]();
     }
 
     public void Page_3() // 11
     {
-        //byte opCode = MemRead8(PC_REG++);
+        byte opCode = MemRead8(PC_REG++);
 
         //_jumpVectors0x11[opCode]();
     }

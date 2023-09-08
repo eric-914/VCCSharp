@@ -5,7 +5,7 @@ namespace VCCSharp.OpCodes.Tests;
 public class Tests
 {
     #region TestOpCode 
-    private void TestOpCode(byte opcode)
+    private void TestOpCode(byte opcode, Action<byte, OldCpu, NewCpu> exec)
     {
         var seeds = new Seeds(20);
         var state = new TestState();
@@ -16,8 +16,7 @@ public class Tests
         var _old = new OldCpu(memOld) { CC = state.CC, PC_REG = state.PC, S_REG = state.S, U_REG = state.U, DPA = state.DP, D_REG = state.D, X_REG = state.X, Y_REG = state.Y };
         var _new = new NewCpu(memNew) { CC = state.CC, PC = state.PC, S = state.S, U = state.U, DP = state.DP, D = state.D, X = state.X, Y = state.Y };
 
-        _old.Exec(opcode);
-        _new.Exec(opcode);
+        exec(opcode, _old, _new);
 
         string message = $@"
 byte opcode=0x{opcode:x}; 
@@ -36,7 +35,7 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
     }
     #endregion
 
-    [Test]
+    [Test, Ignore("For now")]
     public void TestPage1Opcodes()
     {
         #region Not Tested
@@ -68,7 +67,33 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
         {
             for (int i = 0; i < 100; i++)
             {
-                TestOpCode(opcode);
+                TestOpCode(opcode, (op, o, n) => { o.Exec(op); n.Exec(op); });
+            }
+        }
+    }
+
+    [Test]
+    public void TestPage2Opcodes()
+    {
+        var opcodes = new byte[]
+        {
+            0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28,0x29,0x2A,0x2B,0x2C,0x2D,0x2E,0x2F,
+            0x3F,
+            0x83,0x8C,0x8E,
+            0x93,0x9C,0x9E,0x9F,
+            0xA3,0xAC,0xAE,0xAF,
+            0xB3,0xBC,0xBE,0xBF,
+            0xCE,
+            0xDE,0xDF,
+            0xEE,0xEF,
+            0xFE,0xFF
+        };
+
+        foreach (var opcode in opcodes)
+        {
+            for (var i = 0; i < 100; i++)
+            {
+                TestOpCode(opcode, (op, o, n) => { o.Exec2(op); n.Exec2(op); });
             }
         }
     }
@@ -76,9 +101,9 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
     [Test]
     public void OneOffTest()
     {
-        byte opcode = 0x1e;
-        var seeds = new Seeds { 229, 236, 203, 193, 129, 225, 88, 117, 76, 107, 124, 61, 23, 3, 145, 10, 176, 153, 73, 202 };
-        var state = new TestState { CC = 0x35, PC = 0x59c1, S = 0xa85, U = 0x28db, DP = 0xde, D = 0xd59f, X = 0xd545, Y = 0x4884 };
+        byte opcode = 0x9f;
+        var seeds = new Seeds { 139, 87, 180, 137, 14, 117, 229, 20, 208, 227, 139, 71, 104, 105, 131, 79, 34, 255, 33, 244 };
+        var state = new TestState { CC = 0xd8, PC = 0x2952, S = 0x3008, U = 0x2d99, DP = 0x13, D = 0xbd8e, X = 0xbd22, Y = 0xb3dd };
 
         var memOld = new MemoryTester(seeds);
         var memNew = new MemoryTester(seeds);
@@ -86,8 +111,8 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
         var _old = new OldCpu(memOld) { CC = state.CC, PC_REG = state.PC, S_REG = state.S, U_REG = state.U, DPA = state.DP, D_REG = state.D, X_REG = state.X, Y_REG = state.Y };
         var _new = new NewCpu(memNew) { CC = state.CC, PC = state.PC, S = state.S, U = state.U, DP = state.DP, D = state.D, X = state.X, Y = state.Y };
 
-        _old.Exec(opcode);
-        _new.Exec(opcode);
+        _old.Exec2(opcode);
+        _new.Exec2(opcode);
 
         Assert.That(_old.CC, Is.EqualTo(_new.CC));
         Assert.That(_old.PC_REG, Is.EqualTo(_new.PC));

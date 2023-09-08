@@ -16,8 +16,5 @@ internal partial class OldCpu
     public ushort U_REG { get; set; }
     public ushort DP_REG { get; set; }
 
-    //public byte[] R8 { get; } = new byte[8];
-    public ushort[] R16 { get; } = new ushort[8];
-
     public int Cycles { get => _cycleCounter; }
 }

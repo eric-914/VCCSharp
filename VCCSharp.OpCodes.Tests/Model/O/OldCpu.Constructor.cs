@@ -9,6 +9,7 @@ internal partial class OldCpu
     public OldCpu(MemoryTester mem)
     {
         _mem = mem;
-        _jumpVectors = JumpVectors();
+        _page1 = Page1Vectors();
+        _page2 = Page2Vectors();
     }
 }
