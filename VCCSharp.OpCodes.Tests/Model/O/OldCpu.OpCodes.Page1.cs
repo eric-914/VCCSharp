@@ -189,11 +189,9 @@ internal partial class OldCpu
         _page2[opcode]();
     }
 
-    public void Page_3() // 11
+    public void Page_3(byte opcode) // 11
     {
-        byte opCode = MemRead8(PC_REG++);
-
-        //_jumpVectors0x11[opCode]();
+        _page3[opcode]();
     }
 
     public void Nop_I() // 12

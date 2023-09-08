@@ -44,7 +44,6 @@ internal partial class OldCpu
     private byte U_L { get => (byte)(U_REG & 0xFF); set => U_REG = (ushort)((U_REG & 0xFF00) | value); }
 
     public byte DPA { get => (byte)(DP_REG >> 8); set => DP_REG = (ushort)((DP_REG & 0x00FF) | (value << 8)); }
-    public object R8 { get; private set; }
 
     private byte GetCC() => CC;
     private void SetCC(byte value) => CC = value;

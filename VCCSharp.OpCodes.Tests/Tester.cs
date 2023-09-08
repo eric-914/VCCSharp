@@ -4,6 +4,8 @@ namespace VCCSharp.OpCodes.Tests;
 
 public class Tests
 {
+    const int iterations = 1000;
+
     #region TestOpCode 
     private void TestOpCode(byte opcode, Action<byte, OldCpu, NewCpu> exec)
     {
@@ -35,10 +37,12 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
     }
     #endregion
 
-    [Test, Ignore("For now")]
+    [Test]
     public void TestPage1Opcodes()
     {
         #region Not Tested
+        // 0x10/PAGE2 -- Overridden with separate tests
+        // 0x11/PAGE3 -- Overridden with separate tests
         // 0x1E/EXG -- Original code is missing functionality, so doesn't match new code
         // 0x1F/TFR -- Original code is missing functionality, so doesn't match new code
         #endregion
@@ -65,7 +69,7 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
 
         foreach (byte opcode in opcodes)
         {
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < iterations; i++)
             {
                 TestOpCode(opcode, (op, o, n) => { o.Exec(op); n.Exec(op); });
             }
@@ -91,7 +95,28 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
 
         foreach (var opcode in opcodes)
         {
-            for (var i = 0; i < 100; i++)
+            for (var i = 0; i < iterations; i++)
+            {
+                TestOpCode(opcode, (op, o, n) => { o.Exec2(op); n.Exec2(op); });
+            }
+        }
+    }
+
+    [Test]
+    public void TestPage3Opcodes()
+    {
+        var opcodes = new byte[]
+        {
+            0x3F,
+            0x83, 0x8C,
+            0x93, 0x9C,
+            0xA3, 0xAC,
+            0xB3, 0xBC
+        };
+
+        foreach (var opcode in opcodes)
+        {
+            for (var i = 0; i < iterations; i++)
             {
                 TestOpCode(opcode, (op, o, n) => { o.Exec2(op); n.Exec2(op); });
             }

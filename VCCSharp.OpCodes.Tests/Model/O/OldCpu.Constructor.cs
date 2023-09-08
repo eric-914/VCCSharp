@@ -11,5 +11,6 @@ internal partial class OldCpu
         _mem = mem;
         _page1 = Page1Vectors();
         _page2 = Page2Vectors();
+        _page3 = Page3Vectors();
     }
 }
