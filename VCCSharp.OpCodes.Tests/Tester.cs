@@ -4,263 +4,81 @@ namespace VCCSharp.OpCodes.Tests;
 
 public class Tests
 {
-    [TestCase(0x00)]
-    [TestCase(0x03)]
-    [TestCase(0x04)]
-    [TestCase(0x06)]
-    [TestCase(0x07)]
-    [TestCase(0x08)]
-    [TestCase(0x09)]
-    [TestCase(0x0A)]
-    [TestCase(0x0C)]
-    [TestCase(0x0D)]
-    [TestCase(0x0E)]
-    [TestCase(0x0F)]
-    [TestCase(0x12)]
-    [TestCase(0x16)]
-    [TestCase(0x17)]
-    [TestCase(0x19)]
-    [TestCase(0x1A)]
-    [TestCase(0x1C)]
-    [TestCase(0x1D)]
-    [TestCase(0x20)]
-    [TestCase(0x21)]
-    [TestCase(0x22)]
-    [TestCase(0x23)]
-    [TestCase(0x24)]
-    [TestCase(0x25)]
-    [TestCase(0x26)]
-    [TestCase(0x27)]
-    [TestCase(0x28)]
-    [TestCase(0x29)]
-    [TestCase(0x2A)]
-    [TestCase(0x2B)]
-    [TestCase(0x2C)]
-    [TestCase(0x2D)]
-    [TestCase(0x2E)]
-    [TestCase(0x2F)]
-    [TestCase(0x30)]
-    [TestCase(0x31)]
-    [TestCase(0x32)]
-    [TestCase(0x33)]
-    [TestCase(0x34)]
-    [TestCase(0x35)]
-    [TestCase(0x36)]
-    [TestCase(0x37)]
-    [TestCase(0x39)]
-    [TestCase(0x3A)]
-    [TestCase(0x3B)]
-    [TestCase(0x3C)]
-    [TestCase(0x3D)]
-    [TestCase(0x3F)]
-    [TestCase(0x40)]
-    [TestCase(0x43)]
-    [TestCase(0x44)]
-    [TestCase(0x46)]
-    [TestCase(0x47)]
-    [TestCase(0x48)]
-    [TestCase(0x49)]
-    [TestCase(0x4A)]
-    [TestCase(0x4C)]
-    [TestCase(0x4D)]
-    [TestCase(0x4F)]
-    [TestCase(0x50)]
-    [TestCase(0x53)]
-    [TestCase(0x54)]
-    [TestCase(0x56)]
-    [TestCase(0x57)]
-    [TestCase(0x58)]
-    [TestCase(0x59)]
-    [TestCase(0x5A)]
-    [TestCase(0x5C)]
-    [TestCase(0x5D)]
-    [TestCase(0x5F)]
-    [TestCase(0x60)]
-    [TestCase(0x63)]
-    [TestCase(0x64)]
-    [TestCase(0x66)]
-    [TestCase(0x67)]
-    [TestCase(0x68)]
-    [TestCase(0x69)]
-    [TestCase(0x6A)]
-    [TestCase(0x6C)]
-    [TestCase(0x6D)]
-    [TestCase(0x6E)]
-    [TestCase(0x6F)]
-    [TestCase(0x70)]
-    [TestCase(0x73)]
-    [TestCase(0x74)]
-    [TestCase(0x76)]
-    [TestCase(0x77)]
-    [TestCase(0x78)]
-    [TestCase(0x79)]
-    [TestCase(0x7A)]
-    [TestCase(0x7C)]
-    [TestCase(0x7D)]
-    [TestCase(0x7E)]
-    [TestCase(0x7F)]
-    [TestCase(0x80)]
-    [TestCase(0x81)]
-    [TestCase(0x82)]
-    [TestCase(0x83)]
-    [TestCase(0x84)]
-    [TestCase(0x85)]
-    [TestCase(0x86)]
-    [TestCase(0x88)]
-    [TestCase(0x89)]
-    [TestCase(0x8A)]
-    [TestCase(0x8B)]
-    [TestCase(0x8C)]
-    [TestCase(0x8D)]
-    [TestCase(0x8E)]
-    [TestCase(0x90)]
-    [TestCase(0x91)]
-    [TestCase(0x92)]
-    [TestCase(0x93)]
-    [TestCase(0x94)]
-    [TestCase(0x95)]
-    [TestCase(0x96)]
-    [TestCase(0x97)]
-    [TestCase(0x98)]
-    [TestCase(0x99)]
-    [TestCase(0x9A)]
-    [TestCase(0x9B)]
-    [TestCase(0x9C)]
-    [TestCase(0x9D)]
-    [TestCase(0x9E)]
-    [TestCase(0x9F)]
-    [TestCase(0xA0)]
-    [TestCase(0xA1)]
-    [TestCase(0xA2)]
-    [TestCase(0xA3)]
-    [TestCase(0xA4)]
-    [TestCase(0xA5)]
-    [TestCase(0xA6)]
-    [TestCase(0xA7)]
-    [TestCase(0xA8)]
-    [TestCase(0xA9)]
-    [TestCase(0xAA)]
-    [TestCase(0xAB)]
-    [TestCase(0xAC)]
-    [TestCase(0xAD)]
-    [TestCase(0xAE)]
-    [TestCase(0xAF)]
-    [TestCase(0xB0)]
-    [TestCase(0xB1)]
-    [TestCase(0xB2)]
-    [TestCase(0xB3)]
-    [TestCase(0xB4)]
-    [TestCase(0xB5)]
-    [TestCase(0xB6)]
-    [TestCase(0xB7)]
-    [TestCase(0xB8)]
-    [TestCase(0xB9)]
-    [TestCase(0xBA)]
-    [TestCase(0xBB)]
-    [TestCase(0xBC)]
-    [TestCase(0xBD)]
-    [TestCase(0xBE)]
-    [TestCase(0xBF)]
-    [TestCase(0xC0)]
-    [TestCase(0xC1)]
-    [TestCase(0xC2)]
-    [TestCase(0xC3)]
-    [TestCase(0xC4)]
-    [TestCase(0xC5)]
-    [TestCase(0xC6)]
-    [TestCase(0xC8)]
-    [TestCase(0xC9)]
-    [TestCase(0xCA)]
-    [TestCase(0xCB)]
-    [TestCase(0xCC)]
-    [TestCase(0xCE)]
-    [TestCase(0xD0)]
-    [TestCase(0xD1)]
-    [TestCase(0xD2)]
-    [TestCase(0xD3)]
-    [TestCase(0xD4)]
-    [TestCase(0xD5)]
-    [TestCase(0xD6)]
-    [TestCase(0xD7)]
-    [TestCase(0xD8)]
-    [TestCase(0xD9)]
-    [TestCase(0xDA)]
-    [TestCase(0xDB)]
-    [TestCase(0xDC)]
-    [TestCase(0xDD)]
-    [TestCase(0xDE)]
-    [TestCase(0xDF)]
-    [TestCase(0xE0)]
-    [TestCase(0xE1)]
-    [TestCase(0xE2)]
-    [TestCase(0xE3)]
-    [TestCase(0xE4)]
-    [TestCase(0xE5)]
-    [TestCase(0xE6)]
-    [TestCase(0xE7)]
-    [TestCase(0xE8)]
-    [TestCase(0xE9)]
-    [TestCase(0xEA)]
-    [TestCase(0xEB)]
-    [TestCase(0xEC)]
-    [TestCase(0xED)]
-    [TestCase(0xEE)]
-    [TestCase(0xEF)]
-    [TestCase(0xF0)]
-    [TestCase(0xF1)]
-    [TestCase(0xF2)]
-    [TestCase(0xF3)]
-    [TestCase(0xF4)]
-    [TestCase(0xF5)]
-    [TestCase(0xF6)]
-    [TestCase(0xF7)]
-    [TestCase(0xF8)]
-    [TestCase(0xF9)]
-    [TestCase(0xFA)]
-    [TestCase(0xFB)]
-    [TestCase(0xFC)]
-    [TestCase(0xFD)]
-    [TestCase(0xFE)]
-    [TestCase(0xFF)]
-    public void TestOpcode(byte opcode)
+    #region TestOpCode 
+    private void TestOpCode(byte opcode)
     {
-        for (int i = 0; i < 20; i++)
-        {
-            var seeds = new Seeds(20);
-            var state = new TestState();
+        var seeds = new Seeds(20);
+        var state = new TestState();
 
-            var memOld = new MemoryTester(seeds);
-            var memNew = new MemoryTester(seeds);
+        var memOld = new MemoryTester(seeds);
+        var memNew = new MemoryTester(seeds);
 
-            var _old = new OldCpu(memOld) { CC = state.CC, PC_REG = state.PC, S_REG = state.S, U_REG = state.U, DPA = state.DP, D_REG = state.D, X_REG = state.X, Y_REG = state.Y };
-            var _new = new NewCpu(memNew) { CC = state.CC, PC = state.PC, S = state.S, U = state.U, DP = state.DP, D = state.D, X = state.X, Y = state.Y };
+        var _old = new OldCpu(memOld) { CC = state.CC, PC_REG = state.PC, S_REG = state.S, U_REG = state.U, DPA = state.DP, D_REG = state.D, X_REG = state.X, Y_REG = state.Y };
+        var _new = new NewCpu(memNew) { CC = state.CC, PC = state.PC, S = state.S, U = state.U, DP = state.DP, D = state.D, X = state.X, Y = state.Y };
 
-            _old.Exec(opcode);
-            _new.Exec(opcode);
+        _old.Exec(opcode);
+        _new.Exec(opcode);
 
-            string message = $@"
+        string message = $@"
 byte opcode=0x{opcode:x}; 
 var seeds = new Seeds {{{string.Join(", ", seeds)}}};
 var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:x}, U=0x{state.U:x}, DP=0x{state.DP:x}, D=0x{state.D:x}, X=0x{state.X:x}, Y=0x{state.Y:x} }};
 ";
 
-            Assert.That(_old.CC, Is.EqualTo(_new.CC), message);
-            Assert.That(_old.PC_REG, Is.EqualTo(_new.PC), message);
-            Assert.That(_old.S_REG, Is.EqualTo(_new.S), message);
-            Assert.That(_old.U_REG, Is.EqualTo(_new.U), message);
-            Assert.That(_old.DPA, Is.EqualTo(_new.DP), message);
-            Assert.That(_old.X_REG, Is.EqualTo(_new.X), message);
-            Assert.That(_old.Y_REG, Is.EqualTo(_new.Y), message);
-            Assert.That(_old.Cycles, Is.EqualTo(_new.Cycles), message);
+        Assert.That(_old.CC, Is.EqualTo(_new.CC), message);
+        Assert.That(_old.PC_REG, Is.EqualTo(_new.PC), message);
+        Assert.That(_old.S_REG, Is.EqualTo(_new.S), message);
+        Assert.That(_old.U_REG, Is.EqualTo(_new.U), message);
+        Assert.That(_old.DPA, Is.EqualTo(_new.DP), message);
+        Assert.That(_old.X_REG, Is.EqualTo(_new.X), message);
+        Assert.That(_old.Y_REG, Is.EqualTo(_new.Y), message);
+        Assert.That(_old.Cycles, Is.EqualTo(_new.Cycles), message);
+    }
+    #endregion
+
+    [Test]
+    public void TestPage1Opcodes()
+    {
+        #region Not Tested
+        // 0x1E/EXG -- Original code is missing functionality, so doesn't match new code
+        // 0x1F/TFR -- Original code is missing functionality, so doesn't match new code
+        #endregion
+
+        //--Currently tested
+        var opcodes = new byte[] {
+            0x00, 0x03, 0x04, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0C, 0x0D, 0x0E, 0x0F,
+            0x12, 0x16, 0x17, 0x19, 0x1A, 0x1C, 0x1D,
+            0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x2E, 0x2F,
+            0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3F,
+            0x40, 0x43, 0x44, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4C, 0x4D, 0x4F,
+            0x50, 0x53, 0x54, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x5C, 0x5D, 0x5F,
+            0x60, 0x63, 0x64, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6C, 0x6D, 0x6E, 0x6F,
+            0x70, 0x73, 0x74, 0x76, 0x77, 0x78, 0x79, 0x7A, 0x7C, 0x7D, 0x7E, 0x7F,
+            0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D, 0x8E,
+            0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 0x9A, 0x9B, 0x9C, 0x9D, 0x9E, 0x9F,
+            0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9, 0xAA, 0xAB, 0xAC, 0xAD, 0xAE, 0xAF,
+            0xB0, 0xB1, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6, 0xB7, 0xB8, 0xB9, 0xBA, 0xBB, 0xBC, 0xBD, 0xBE, 0xBF,
+            0xC0, 0xC1, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC8, 0xC9, 0xCA, 0xCB, 0xCC, 0xCE,
+            0xD0, 0xD1, 0xD2, 0xD3, 0xD4, 0xD5, 0xD6, 0xD7, 0xD8, 0xD9, 0xDA, 0xDB, 0xDC, 0xDD, 0xDE, 0xDF,
+            0xE0, 0xE1, 0xE2, 0xE3, 0xE4, 0xE5, 0xE6, 0xE7, 0xE8, 0xE9, 0xEA, 0xEB, 0xEC, 0xED, 0xEE, 0xEF,
+            0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE, 0xFF
+        };
+
+        foreach (byte opcode in opcodes)
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                TestOpCode(opcode);
+            }
         }
     }
 
     [Test]
     public void OneOffTest()
     {
-        byte opcode = 0xe2;
-        var seeds = new Seeds { 214, 167, 7, 180, 194, 78, 130, 11, 4, 213, 96, 103, 1, 30, 50, 161, 79, 101, 143, 194 };
-        var state = new TestState { CC = 0x65, PC = 0x99fc, S = 0x2406, U = 0x1f5e, DP = 0x64, D = 0x2534, X = 0xa27a, Y = 0xeaee };
+        byte opcode = 0x1e;
+        var seeds = new Seeds { 229, 236, 203, 193, 129, 225, 88, 117, 76, 107, 124, 61, 23, 3, 145, 10, 176, 153, 73, 202 };
+        var state = new TestState { CC = 0x35, PC = 0x59c1, S = 0xa85, U = 0x28db, DP = 0xde, D = 0xd59f, X = 0xd545, Y = 0x4884 };
 
         var memOld = new MemoryTester(seeds);
         var memNew = new MemoryTester(seeds);

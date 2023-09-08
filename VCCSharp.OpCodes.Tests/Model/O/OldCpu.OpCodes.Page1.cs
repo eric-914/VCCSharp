@@ -304,6 +304,8 @@ internal partial class OldCpu
     {
         _postByte = MemRead8(PC_REG++);
 
+        var c0 = CC;
+
         SetCC(GetCC());
 
         if (((_postByte & 0x80) >> 4) == (_postByte & 0x08)) //Verify like size registers

@@ -103,7 +103,7 @@ internal partial class OldCpu
             3 => U_REG,
             4 => S_REG,
             5 => PC_REG,
-            _ => throw new NotImplementedException()
+            _ => 0
         };
     }
 
@@ -117,6 +117,7 @@ internal partial class OldCpu
             case 3: U_REG = value; break;
             case 4: S_REG = value; break;
             case 5: PC_REG = value; break;
+            default: break;
         }
     }
 
