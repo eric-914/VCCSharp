@@ -10,54 +10,6 @@ public partial class MC6809
         set => _cpu.cc.bits = value;
     }
 
-    private bool CC_E
-    {
-        get => _cpu.cc.E;
-        set => _cpu.cc.E = value;
-    }
-
-    private bool CC_F
-    {
-        get => _cpu.cc.F;
-        set => _cpu.cc.F = value;
-    }
-
-    private bool CC_H
-    {
-        get => _cpu.cc.H;
-        set => _cpu.cc.H = value;
-    }
-
-    private bool CC_I
-    {
-        get => _cpu.cc.I;
-        set => _cpu.cc.I = value;
-    }
-
-    private bool CC_N
-    {
-        get => _cpu.cc.N;
-        set => _cpu.cc.N = value;
-    }
-
-    private bool CC_Z
-    {
-        get => _cpu.cc.Z;
-        set => _cpu.cc.Z = value;
-    }
-
-    private bool CC_V
-    {
-        get => _cpu.cc.V;
-        set => _cpu.cc.V = value;
-    }
-
-    private bool CC_C
-    {
-        get => _cpu.cc.C;
-        set => _cpu.cc.C = value;
-    }
-
     #endregion
 
     #region Register Macros

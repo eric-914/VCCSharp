@@ -71,14 +71,7 @@ public partial class MC6809 : IMC6809
             _cpu.ureg8[index] = 0; //PUR
         }
 
-        CC_E = false;
-        CC_F = true;
-        CC_H = false;
-        CC_I = true;
-        CC_N = false;
-        CC_Z = false;
-        CC_V = false;
-        CC_C = false;
+        _cpu.cc.bits = 0b01010000;
 
         DP_REG = 0;
 
@@ -140,7 +133,7 @@ public partial class MC6809 : IMC6809
         return cycleFor - _cycleCounter;
     }
 
-    public void Cpu_Nmi()
+    private void Cpu_Nmi()
     {
         _cpu.cc.E = true;
 
@@ -159,7 +152,7 @@ public partial class MC6809 : IMC6809
         Write(_cpu.d.lsb); //B
         Write(_cpu.d.msb); //A
 
-        Write(GetCC());
+        Write(_cpu.cc.bits);
 
         _cpu.cc.I = true;
         _cpu.cc.F = true;
@@ -169,7 +162,7 @@ public partial class MC6809 : IMC6809
         _pendingInterrupts &= 251;
     }
 
-    public void Cpu_Firq()
+    private void Cpu_Firq()
     {
         if (!_cpu.cc.F)
         {
@@ -180,7 +173,7 @@ public partial class MC6809 : IMC6809
             _modules.TCC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
             _modules.TCC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
 
-            _modules.TCC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
+            _modules.TCC1014.MemWrite8(_cpu.cc.bits, --_cpu.s.Reg);
 
             _cpu.cc.I = true;
             _cpu.cc.F = true;
@@ -191,7 +184,7 @@ public partial class MC6809 : IMC6809
         _pendingInterrupts &= 253;
     }
 
-    public void Cpu_Irq()
+    private void Cpu_Irq()
     {
         if (IsInInterrupt)
         {
@@ -217,33 +210,12 @@ public partial class MC6809 : IMC6809
             Write(_cpu.d.lsb); //B
             Write(_cpu.d.msb); //A
 
-            Write(GetCC());
+            Write(_cpu.cc.bits);
 
             _cpu.pc.Reg = MemRead16(Define.VIRQ);
             _cpu.cc.I = true;
         }
 
         _pendingInterrupts &= 254;
-    }
-
-    public byte GetCC()
-    {
-        int cc = 0;
-
-        void Test(bool value, CCFlagMasks mask)
-        {
-            if (value) { cc |= (1 << (int)mask); }
-        }
-
-        Test(CC_E, CCFlagMasks.E);
-        Test(CC_F, CCFlagMasks.F);
-        Test(CC_H, CCFlagMasks.H);
-        Test(CC_I, CCFlagMasks.I);
-        Test(CC_N, CCFlagMasks.N);
-        Test(CC_Z, CCFlagMasks.Z);
-        Test(CC_V, CCFlagMasks.V);
-        Test(CC_C, CCFlagMasks.C);
-
-        return (byte)cc;
     }
 }
