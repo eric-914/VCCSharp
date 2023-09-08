@@ -6,7 +6,7 @@ using VCCSharp.OpCodes;
 namespace VCCSharp.Models.CPU.MC6809;
 
 // ReSharper disable once InconsistentNaming
-public interface IMC6809 : ICpuProcessor { }
+public interface IMC6809 : IProcessor { }
 
 // ReSharper disable once InconsistentNaming
 public partial class MC6809 : IMC6809
@@ -28,8 +28,6 @@ public partial class MC6809 : IMC6809
     public MC6809(IModules modules)
     {
         _modules = modules;
-
-        InitializeJmpVectors();
 
         OpCodes = OpCodesFactory.Create(this);
     }
@@ -65,12 +63,12 @@ public partial class MC6809 : IMC6809
 
         for (index = 0; index <= 5; index++)
         {
-            PXF(index, 0);
+            _cpu.xfreg16[index] = 0; //PXF
         }
 
         for (index = 0; index <= 7; index++)
         {
-            PUR(index, 0);
+            _cpu.ureg8[index] = 0; //PUR
         }
 
         CC_E = false;
@@ -136,7 +134,7 @@ public partial class MC6809 : IMC6809
 
             byte opCode = _modules.TCC1014.MemRead8(_cpu.pc.Reg++);   //PC_REG
 
-            Exec(opCode);
+            _cycleCounter += OpCodes.Exec(opCode);
         }
 
         return cycleFor - _cycleCounter;
@@ -146,20 +144,22 @@ public partial class MC6809 : IMC6809
     {
         _cpu.cc.E = true;
 
-        _modules.TCC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
-        _modules.TCC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
-        _modules.TCC1014.MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
-        _modules.TCC1014.MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
-        _modules.TCC1014.MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
-        _modules.TCC1014.MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
-        _modules.TCC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
-        _modules.TCC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
-        _modules.TCC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
+        void Write(byte data) => _modules.TCC1014.MemWrite8(data, --_cpu.s.Reg);
 
-        _modules.TCC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg); //B
-        _modules.TCC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg); //A
+        Write(_cpu.pc.lsb);
+        Write(_cpu.pc.msb);
+        Write(_cpu.u.lsb);
+        Write(_cpu.u.msb);
+        Write(_cpu.y.lsb);
+        Write(_cpu.y.msb);
+        Write(_cpu.x.lsb);
+        Write(_cpu.x.msb);
+        Write(_cpu.dp.msb);
 
-        _modules.TCC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
+        Write(_cpu.d.lsb); //B
+        Write(_cpu.d.msb); //A
+
+        Write(GetCC());
 
         _cpu.cc.I = true;
         _cpu.cc.F = true;
@@ -203,19 +203,21 @@ public partial class MC6809 : IMC6809
         {
             _cpu.cc.E = true;
 
-            _modules.TCC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
-            _modules.TCC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
-            _modules.TCC1014.MemWrite8(_cpu.u.lsb, --_cpu.s.Reg);
-            _modules.TCC1014.MemWrite8(_cpu.u.msb, --_cpu.s.Reg);
-            _modules.TCC1014.MemWrite8(_cpu.y.lsb, --_cpu.s.Reg);
-            _modules.TCC1014.MemWrite8(_cpu.y.msb, --_cpu.s.Reg);
-            _modules.TCC1014.MemWrite8(_cpu.x.lsb, --_cpu.s.Reg);
-            _modules.TCC1014.MemWrite8(_cpu.x.msb, --_cpu.s.Reg);
-            _modules.TCC1014.MemWrite8(_cpu.dp.msb, --_cpu.s.Reg);
-            _modules.TCC1014.MemWrite8(_cpu.d.lsb, --_cpu.s.Reg); //B
-            _modules.TCC1014.MemWrite8(_cpu.d.msb, --_cpu.s.Reg); //A
+            void Write(byte data) => _modules.TCC1014.MemWrite8(data, --_cpu.s.Reg);
 
-            _modules.TCC1014.MemWrite8(GetCC(), --_cpu.s.Reg);
+            Write(_cpu.pc.lsb);
+            Write(_cpu.pc.msb);
+            Write(_cpu.u.lsb);
+            Write(_cpu.u.msb);
+            Write(_cpu.y.lsb);
+            Write(_cpu.y.msb);
+            Write(_cpu.x.lsb);
+            Write(_cpu.x.msb);
+            Write(_cpu.dp.msb);
+            Write(_cpu.d.lsb); //B
+            Write(_cpu.d.msb); //A
+
+            Write(GetCC());
 
             _cpu.pc.Reg = MemRead16(Define.VIRQ);
             _cpu.cc.I = true;

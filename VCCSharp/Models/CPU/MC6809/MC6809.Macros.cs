@@ -1,11 +1,5 @@
-﻿#pragma warning disable IDE1006
+﻿namespace VCCSharp.Models.CPU.MC6809;
 
-using VCCSharp.Enums;
-
-namespace VCCSharp.Models.CPU.MC6809;
-
-// ReSharper disable InconsistentNaming
-// ReSharper disable IdentifierTypo
 public partial class MC6809
 {
     #region CC Masks Macros
@@ -16,49 +10,49 @@ public partial class MC6809
         set => _cpu.cc.bits = value;
     }
 
-    public bool CC_E
+    private bool CC_E
     {
         get => _cpu.cc.E;
         set => _cpu.cc.E = value;
     }
 
-    public bool CC_F
+    private bool CC_F
     {
         get => _cpu.cc.F;
         set => _cpu.cc.F = value;
     }
 
-    public bool CC_H
+    private bool CC_H
     {
         get => _cpu.cc.H;
         set => _cpu.cc.H = value;
     }
 
-    public bool CC_I
+    private bool CC_I
     {
         get => _cpu.cc.I;
         set => _cpu.cc.I = value;
     }
 
-    public bool CC_N
+    private bool CC_N
     {
         get => _cpu.cc.N;
         set => _cpu.cc.N = value;
     }
 
-    public bool CC_Z
+    private bool CC_Z
     {
         get => _cpu.cc.Z;
         set => _cpu.cc.Z = value;
     }
 
-    public bool CC_V
+    private bool CC_V
     {
         get => _cpu.cc.V;
         set => _cpu.cc.V = value;
     }
 
-    public bool CC_C
+    private bool CC_C
     {
         get => _cpu.cc.C;
         set => _cpu.cc.C = value;
@@ -92,34 +86,10 @@ public partial class MC6809
         set => _cpu.s.Reg = value;
     }
 
-    public byte S_L
-    {
-        get => _cpu.s.lsb;
-        set => _cpu.s.lsb = value;
-    }
-
-    public byte S_H
-    {
-        get => _cpu.s.msb;
-        set => _cpu.s.msb = value;
-    }
-
     public ushort U_REG
     {
         get => _cpu.u.Reg;
         set => _cpu.u.Reg = value;
-    }
-
-    public byte PC_L
-    {
-        get => _cpu.pc.lsb;
-        set => _cpu.pc.lsb = value;
-    }
-
-    public byte PC_H
-    {
-        get => _cpu.pc.msb;
-        set => _cpu.pc.msb = value;
     }
 
     public ushort X_REG
@@ -128,46 +98,10 @@ public partial class MC6809
         set => _cpu.x.Reg = value;
     }
 
-    public byte X_L
-    {
-        get => _cpu.x.lsb;
-        set => _cpu.x.lsb = value;
-    }
-
-    public byte X_H
-    {
-        get => _cpu.x.msb;
-        set => _cpu.x.msb = value;
-    }
-
     public ushort Y_REG
     {
         get => _cpu.y.Reg;
         set => _cpu.y.Reg = value;
-    }
-
-    public byte Y_L
-    {
-        get => _cpu.y.lsb;
-        set => _cpu.y.lsb = value;
-    }
-
-    public byte Y_H
-    {
-        get => _cpu.y.msb;
-        set => _cpu.y.msb = value;
-    }
-
-    public byte U_L
-    {
-        get => _cpu.u.lsb;
-        set => _cpu.u.lsb = value;
-    }
-
-    public byte U_H
-    {
-        get => _cpu.u.msb;
-        set => _cpu.u.msb = value;
     }
 
     public byte A_REG
@@ -192,18 +126,6 @@ public partial class MC6809
 
     #region Macros
 
-    public byte PUR(int i) => _cpu.ureg8[i];
-    public void PUR(int i, byte value) => _cpu.ureg8[i] = value;
-
-    public ushort PXF(int i) => _cpu.xfreg16[i];
-    public void PXF(int i, ushort value) => _cpu.xfreg16[i] = value;
-
-    public void AUR(int i, byte value) => _cpu.ureg8[i] &= (byte)~(1 << value); //AND
-    public void OUR(int i, byte value) => _cpu.ureg8[i] |= (byte)~(1 << value); //OR
-    public void XUR(int i, byte value) => _cpu.ureg8[i] ^= (byte)~(1 << value); //XOR
-
-    public ushort DPADDRESS(ushort r) => (ushort)(_cpu.dp.Reg | MemRead8(r)); //DIRECT PAGE REGISTER
-
     public byte MemRead8(ushort address) => _modules.TCC1014.MemRead8(address);
     public void MemWrite8(byte data, ushort address) => _modules.TCC1014.MemWrite8(data, address);
 
@@ -218,16 +140,5 @@ public partial class MC6809
         MemWrite8((byte)(data & 0xFF), (ushort)(address + 1));
     }
 
-    private static bool NTEST8(byte value) => value > 0x7F;
-    private static bool NTEST16(ushort value) => value > 0x7FFF;
-
-    private static bool ZTEST(byte value) => value == 0;
-    private static bool ZTEST(ushort value) => value == 0;
-
-    private static bool OVERFLOW8(bool c, byte a, ushort b, byte r) => ((c ? 1 : 0) ^ (((a ^ b ^ r) >> 7) & 1)) != 0;
-    private static bool OVERFLOW16(bool c, uint a, ushort b, ushort r) => ((c ? (byte)1 : (byte)0) ^ (((a ^ b ^ r) >> 15) & 1)) != 0;
-
     #endregion
 }
-// ReSharper restore IdentifierTypo
-// ReSharper restore InconsistentNaming

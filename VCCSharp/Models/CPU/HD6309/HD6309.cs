@@ -6,7 +6,7 @@ using VCCSharp.Models.CPU.HD6309.Registers;
 namespace VCCSharp.Models.CPU.HD6309;
 
 // ReSharper disable once InconsistentNaming
-public interface IHD6309 : ICpuProcessor
+public interface IHD6309 : IProcessor
 {
     byte E_REG { get; set; }
     byte F_REG { get; set; }

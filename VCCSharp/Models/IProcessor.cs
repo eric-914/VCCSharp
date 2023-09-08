@@ -1,7 +1,8 @@
-﻿using VCCSharp.Models.CPU.OpCodes;
+﻿namespace VCCSharp.Models;
 
-namespace VCCSharp.Models;
-
+/// <summary>
+/// This is how the emulation system sees the processing unit.
+/// </summary>
 public interface IProcessor
 {
     void Init();
@@ -11,5 +12,3 @@ public interface IProcessor
     void AssertInterrupt(byte irq, byte flag);
     void DeAssertInterrupt(byte irq);
 }
-
-public interface ICpuProcessor : IProcessor, IRegisters, IBus, IInterrupt { }
