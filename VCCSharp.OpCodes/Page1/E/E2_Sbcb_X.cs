@@ -39,7 +39,7 @@ internal class _E2_Sbcb_X : OpCode, IOpCode
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
-        var sum = Subtract(B, value);
+        var sum = Subtract(B, value, CC_C);
 
         //CC_H = undefined;
         CC_N = sum.N;

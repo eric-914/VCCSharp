@@ -4,41 +4,6 @@ namespace VCCSharp.OpCodes.Tests;
 
 public class Tests
 {
-    private OldCpu _old;
-    private NewCpu _new;
-
-    private MemoryTester _memOld;
-    private MemoryTester _memNew;
-
-    private TestState _state;
-
-    [SetUp]
-    public void Setup()
-    {
-        var seeds = new Seeds(20);
-
-        _memOld = new MemoryTester(seeds);
-        _memNew = new MemoryTester(seeds);
-
-        _state = new TestState();
-        _old = new OldCpu(_memOld) { CC = _state.CC, PC_REG = _state.PC, S_REG = _state.S, U_REG = _state.U, DPA = _state.DP, D_REG = _state.D, X_REG = _state.X, Y_REG = _state.Y };
-        _new = new NewCpu(_memNew) { CC = _state.CC, PC = _state.PC, S = _state.S, U = _state.U, DP = _state.DP, D = _state.D, X = _state.X, Y = _state.Y };
-    }
-
-    private void Verify(byte opcode)
-    {
-        string message = $"opcode={opcode:x} :: _state = new TestState {{ CC=0x{_state.CC:x}, PC=0x{_state.PC:x}, S=0x{_state.S:x}, U=0x{_state.U:x}, DP=0x{_state.DP:x}, D=0x{_state.D:x}, X=0x{_state.X:x}, Y=0x{_state.Y:x} }};";
-
-        Assert.That(_old.CC, Is.EqualTo(_new.CC), message);
-        Assert.That(_old.PC_REG, Is.EqualTo(_new.PC), message);
-        Assert.That(_old.S_REG, Is.EqualTo(_new.S), message);
-        Assert.That(_old.U_REG, Is.EqualTo(_new.U), message);
-        Assert.That(_old.DPA, Is.EqualTo(_new.DP), message);
-        Assert.That(_old.X_REG, Is.EqualTo(_new.X), message);
-        Assert.That(_old.Y_REG, Is.EqualTo(_new.Y), message);
-        Assert.That(_old.Cycles, Is.EqualTo(_new.Cycles), message);
-    }
-
     [TestCase(0x00)]
     [TestCase(0x03)]
     [TestCase(0x04)]
@@ -259,9 +224,60 @@ public class Tests
     [TestCase(0xFF)]
     public void TestOpcode(byte opcode)
     {
+        for (int i = 0; i < 20; i++)
+        {
+            var seeds = new Seeds(20);
+            var state = new TestState();
+
+            var memOld = new MemoryTester(seeds);
+            var memNew = new MemoryTester(seeds);
+
+            var _old = new OldCpu(memOld) { CC = state.CC, PC_REG = state.PC, S_REG = state.S, U_REG = state.U, DPA = state.DP, D_REG = state.D, X_REG = state.X, Y_REG = state.Y };
+            var _new = new NewCpu(memNew) { CC = state.CC, PC = state.PC, S = state.S, U = state.U, DP = state.DP, D = state.D, X = state.X, Y = state.Y };
+
+            _old.Exec(opcode);
+            _new.Exec(opcode);
+
+            string message = $@"
+byte opcode=0x{opcode:x}; 
+var seeds = new Seeds {{{string.Join(", ", seeds)}}};
+var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:x}, U=0x{state.U:x}, DP=0x{state.DP:x}, D=0x{state.D:x}, X=0x{state.X:x}, Y=0x{state.Y:x} }};
+";
+
+            Assert.That(_old.CC, Is.EqualTo(_new.CC), message);
+            Assert.That(_old.PC_REG, Is.EqualTo(_new.PC), message);
+            Assert.That(_old.S_REG, Is.EqualTo(_new.S), message);
+            Assert.That(_old.U_REG, Is.EqualTo(_new.U), message);
+            Assert.That(_old.DPA, Is.EqualTo(_new.DP), message);
+            Assert.That(_old.X_REG, Is.EqualTo(_new.X), message);
+            Assert.That(_old.Y_REG, Is.EqualTo(_new.Y), message);
+            Assert.That(_old.Cycles, Is.EqualTo(_new.Cycles), message);
+        }
+    }
+
+    [Test]
+    public void OneOffTest()
+    {
+        byte opcode = 0xe2;
+        var seeds = new Seeds { 214, 167, 7, 180, 194, 78, 130, 11, 4, 213, 96, 103, 1, 30, 50, 161, 79, 101, 143, 194 };
+        var state = new TestState { CC = 0x65, PC = 0x99fc, S = 0x2406, U = 0x1f5e, DP = 0x64, D = 0x2534, X = 0xa27a, Y = 0xeaee };
+
+        var memOld = new MemoryTester(seeds);
+        var memNew = new MemoryTester(seeds);
+
+        var _old = new OldCpu(memOld) { CC = state.CC, PC_REG = state.PC, S_REG = state.S, U_REG = state.U, DPA = state.DP, D_REG = state.D, X_REG = state.X, Y_REG = state.Y };
+        var _new = new NewCpu(memNew) { CC = state.CC, PC = state.PC, S = state.S, U = state.U, DP = state.DP, D = state.D, X = state.X, Y = state.Y };
+
         _old.Exec(opcode);
         _new.Exec(opcode);
 
-        Verify(opcode);
+        Assert.That(_old.CC, Is.EqualTo(_new.CC));
+        Assert.That(_old.PC_REG, Is.EqualTo(_new.PC));
+        Assert.That(_old.S_REG, Is.EqualTo(_new.S));
+        Assert.That(_old.U_REG, Is.EqualTo(_new.U));
+        Assert.That(_old.DPA, Is.EqualTo(_new.DP));
+        Assert.That(_old.X_REG, Is.EqualTo(_new.X));
+        Assert.That(_old.Y_REG, Is.EqualTo(_new.Y));
+        Assert.That(_old.Cycles, Is.EqualTo(_new.Cycles));
     }
 }

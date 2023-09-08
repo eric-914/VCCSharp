@@ -2118,7 +2118,9 @@ internal partial class OldCpu
 
     public void Sbca_X() // A2
     {
-        _postByte = MemRead8(INDADDRESS(PC_REG++));
+        ushort address = INDADDRESS(PC_REG++);
+
+        _postByte = MemRead8(address);
         _temp16 = (ushort)(A_REG - _postByte - (CC_C ? 1 : 0));
 
         CC_C = (_temp16 & 0x100) >> 8 != 0;
@@ -2438,7 +2440,9 @@ internal partial class OldCpu
 
     public void Adca_E() // B9
     {
-        _postByte = MemRead8(MemRead16(PC_REG));
+        ushort address = MemRead16(PC_REG);
+
+        _postByte = MemRead8(address);
         _temp16 = (ushort)(A_REG + _postByte + (CC_C ? 1 : 0));
 
         CC_C = (_temp16 & 0x100) >> 8 != 0;

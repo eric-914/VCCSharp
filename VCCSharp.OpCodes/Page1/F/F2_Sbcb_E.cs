@@ -37,7 +37,7 @@ internal class _F2_Sbcb_E : OpCode, IOpCode
         ushort address = M16[PC]; PC += 2;
         byte value = M8[address];
 
-        var sum = Subtract(B, value);
+        var sum = Subtract(B, value, CC_C);
 
         //CC_H = undefined;
         CC_N = sum.N;

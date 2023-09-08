@@ -51,6 +51,6 @@ internal class Subtraction : IFunction
         N = bit(Result);
         Z = (Result & max) == 0;
         V = bit(((a & b.I() & Result.I()) | (a.I() & b & Result)));
-        C = b > a;
+        C = (b + cc) > a;
     }
 }

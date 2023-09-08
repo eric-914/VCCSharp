@@ -45,4 +45,6 @@ public class Seeds : List<byte>
             Add(Rnd.B());
         }
     }
+
+    public Seeds() { }
 }

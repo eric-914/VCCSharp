@@ -36,7 +36,7 @@ internal class _D9_Adcb_D : OpCode, IOpCode
         ushort address = DIRECT[PC++];
         byte value = M8[address];
 
-        var sum = Add(B, value);
+        var sum = Add(B, value, CC_C);
 
         CC_H = sum.H;
         CC_N = sum.N;

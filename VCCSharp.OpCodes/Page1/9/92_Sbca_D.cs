@@ -37,7 +37,7 @@ internal class _92_Sbca_D : OpCode, IOpCode
         ushort address = DIRECT[PC++];
         byte value = M8[address];
 
-        var sum = Subtract(A, value);
+        var sum = Subtract(A, value, CC_C);
 
         //CC_H = undefined;
         CC_N = sum.N;

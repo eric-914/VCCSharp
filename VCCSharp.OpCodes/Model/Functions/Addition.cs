@@ -48,11 +48,11 @@ internal class Addition : IFunction
 
     public void Exec(int a, int b, int cc, int max, Func<int, bool> bit)
     {
-        Result = (ushort)(a + b + cc);
+        Result = a + b + cc;
 
         N = bit(Result);
         Z = (Result & max) == 0;
         V = bit((a & b & Result.I()) | (a.I() & b.I() & Result));
-        C = a + b > max;
+        C = Result > max;
     }
 }
