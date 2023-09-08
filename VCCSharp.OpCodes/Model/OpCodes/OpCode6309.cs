@@ -52,9 +52,9 @@ internal abstract class OpCode6309
 
     protected DynamicCycles DynamicCycles => new DynamicCycles(() => SS.Mode);
 
-    protected void EndInterrupt() => cpu.EndInterrupt();
+    protected void EndInterrupt() => cpu.ClearInterrupt();
 
-    protected int SyncWait() => cpu.SyncWait(); 
+    protected int SyncWait() => cpu.SynchronizeWithInterrupt(); 
 
     /// <summary>
     /// 8-bit register

@@ -51,6 +51,6 @@ internal class _3C_Cwai_I : OpCode, IOpCode
 
         CC &= value;
 
-        return SyncWait();
+        return SynchronizeWithInterrupt();
     }
 }

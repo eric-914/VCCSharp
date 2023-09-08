@@ -21,9 +21,9 @@ public partial class MC6809 : IMC6809
     private byte _irqWaiter;
     private byte _pendingInterrupts;
 
-    public bool IsInInterrupt { get; set; }
-    public bool IsSyncWaiting { get; set; }
-    public int SyncCycle { get; set; }
+    private bool _isInFastInterrupt;
+    private bool _isSyncWaiting;
+    private int _syncCycle;
 
     public MC6809(IModules modules)
     {
@@ -41,18 +41,18 @@ public partial class MC6809 : IMC6809
         _cpu.pc.Reg = address;
 
         _pendingInterrupts = 0;
-        IsSyncWaiting = false;
+        _isSyncWaiting = false;
     }
 
     public void DeAssertInterrupt(byte irq)
     {
         _pendingInterrupts &= (byte)~(1 << (irq - 1));
-        IsInInterrupt = false;
+        _isInFastInterrupt = false;
     }
 
     public void AssertInterrupt(byte irq, byte flag)
     {
-        IsSyncWaiting = false;
+        _isSyncWaiting = false;
         _pendingInterrupts |= (byte)(1 << (irq - 1));
         _irqWaiter = flag;
     }
@@ -75,7 +75,7 @@ public partial class MC6809 : IMC6809
 
         DP_REG = 0;
 
-        IsSyncWaiting = false;
+        _isSyncWaiting = false;
 
         PC_REG = MemRead16(Define.VRESET);	//PC gets its reset vector
 
@@ -88,44 +88,18 @@ public partial class MC6809 : IMC6809
 
         while (_cycleCounter < cycleFor)
         {
-            if (_pendingInterrupts != 0)
-            {
-                if ((_pendingInterrupts & 4) != 0)
-                {
-                    Cpu_Nmi();
-                }
+            CheckInterrupts();
 
-                if ((_pendingInterrupts & 2) != 0)
-                {
-                    Cpu_Firq();
-                }
-
-                if ((_pendingInterrupts & 1) != 0)
-                {
-                    if (_irqWaiter == 0)
-                    {
-                        // This is needed to fix a subtle timing problem
-                        // It allows the CPU to see $FF03 bit 7 high before...
-                        Cpu_Irq();
-                    }
-                    else
-                    {
-                        // ...The IRQ is asserted.
-                        _irqWaiter -= 1;
-                    }
-                }
-            }
-
-            if (IsSyncWaiting)
+            if (_isSyncWaiting)
             {
                 //Abort the run nothing happens asynchronously from the CPU
                 // WDZ - Experimental SyncWaiting should still return used cycles (and not zero) by breaking from loop
                 break;
             }
 
-            SyncCycle = cycleFor;
+            _syncCycle = cycleFor;
 
-            byte opCode = _modules.TCC1014.MemRead8(_cpu.pc.Reg++);   //PC_REG
+            byte opCode = _modules.TCC1014.MemRead8(_cpu.pc.Reg++);
 
             _cycleCounter += OpCodes.Exec(opCode);
         }
@@ -133,26 +107,42 @@ public partial class MC6809 : IMC6809
         return cycleFor - _cycleCounter;
     }
 
+    private void CheckInterrupts()
+    {
+        if (_pendingInterrupts != 0)
+        {
+            if ((_pendingInterrupts & 4) != 0)
+            {
+                Cpu_Nmi();
+            }
+
+            if ((_pendingInterrupts & 2) != 0)
+            {
+                Cpu_Firq();
+            }
+
+            if ((_pendingInterrupts & 1) != 0)
+            {
+                if (_irqWaiter == 0)
+                {
+                    // This is needed to fix a subtle timing problem
+                    // It allows the CPU to see $FF03 bit 7 high before...
+                    Cpu_Irq();
+                }
+                else
+                {
+                    // ...The IRQ is asserted.
+                    _irqWaiter -= 1;
+                }
+            }
+        }
+    }
+
     private void Cpu_Nmi()
     {
         _cpu.cc.E = true;
 
-        void Write(byte data) => _modules.TCC1014.MemWrite8(data, --_cpu.s.Reg);
-
-        Write(_cpu.pc.lsb);
-        Write(_cpu.pc.msb);
-        Write(_cpu.u.lsb);
-        Write(_cpu.u.msb);
-        Write(_cpu.y.lsb);
-        Write(_cpu.y.msb);
-        Write(_cpu.x.lsb);
-        Write(_cpu.x.msb);
-        Write(_cpu.dp.msb);
-
-        Write(_cpu.d.lsb); //B
-        Write(_cpu.d.msb); //A
-
-        Write(_cpu.cc.bits);
+        PushStack(CPUInterrupts.NMI);
 
         _cpu.cc.I = true;
         _cpu.cc.F = true;
@@ -166,14 +156,11 @@ public partial class MC6809 : IMC6809
     {
         if (!_cpu.cc.F)
         {
-            IsInInterrupt = true; //Flag to indicate FIRQ has been asserted
+            _isInFastInterrupt = true; //Flag to indicate FIRQ has been asserted
 
             _cpu.cc.E = false; // Turn E flag off
 
-            _modules.TCC1014.MemWrite8(_cpu.pc.lsb, --_cpu.s.Reg);
-            _modules.TCC1014.MemWrite8(_cpu.pc.msb, --_cpu.s.Reg);
-
-            _modules.TCC1014.MemWrite8(_cpu.cc.bits, --_cpu.s.Reg);
+            PushStack(CPUInterrupts.FIRQ);
 
             _cpu.cc.I = true;
             _cpu.cc.F = true;
@@ -186,7 +173,7 @@ public partial class MC6809 : IMC6809
 
     private void Cpu_Irq()
     {
-        if (IsInInterrupt)
+        if (_isInFastInterrupt)
         {
             //If FIRQ is running postpone the IRQ
             return;
@@ -196,10 +183,26 @@ public partial class MC6809 : IMC6809
         {
             _cpu.cc.E = true;
 
-            void Write(byte data) => _modules.TCC1014.MemWrite8(data, --_cpu.s.Reg);
+            PushStack(CPUInterrupts.IRQ);
 
-            Write(_cpu.pc.lsb);
-            Write(_cpu.pc.msb);
+            _cpu.pc.Reg = MemRead16(Define.VIRQ);
+
+            //TODO: This doesn't look right compared to above.
+            _cpu.cc.I = true;
+        }
+
+        _pendingInterrupts &= 254;
+    }
+
+    private void PushStack(CPUInterrupts irq)
+    {
+        void Write(byte data) => _modules.TCC1014.MemWrite8(data, --_cpu.s.Reg);
+
+        Write(_cpu.pc.lsb);
+        Write(_cpu.pc.msb);
+
+        if (irq != CPUInterrupts.FIRQ)
+        {
             Write(_cpu.u.lsb);
             Write(_cpu.u.msb);
             Write(_cpu.y.lsb);
@@ -207,15 +210,10 @@ public partial class MC6809 : IMC6809
             Write(_cpu.x.lsb);
             Write(_cpu.x.msb);
             Write(_cpu.dp.msb);
-            Write(_cpu.d.lsb); //B
-            Write(_cpu.d.msb); //A
-
-            Write(_cpu.cc.bits);
-
-            _cpu.pc.Reg = MemRead16(Define.VIRQ);
-            _cpu.cc.I = true;
+            Write(_cpu.d.lsb);
+            Write(_cpu.d.msb);
         }
 
-        _pendingInterrupts &= 254;
+        Write(_cpu.cc.bits);
     }
 }

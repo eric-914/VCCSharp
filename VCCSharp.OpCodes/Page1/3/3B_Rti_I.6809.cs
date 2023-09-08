@@ -70,7 +70,7 @@ internal class _3B_Rti_I_6809 : OpCode, IOpCode
 
         CC = M8[S++];
 
-        EndInterrupt(); //TODO: Does the interrupt technically end before or after the stack pull?
+        ClearInterrupt(); //TODO: Does the interrupt technically end before or after the stack pull?
 
         if (CC_E)
         {

@@ -57,9 +57,9 @@ internal abstract class OpCode : ITempAccess
     /// </summary>
     public int Cycles { get => SS.Cycles; set => SS.Cycles = value; }
 
-    protected void EndInterrupt() => cpu.EndInterrupt();
+    protected void ClearInterrupt() => cpu.ClearInterrupt();
 
-    protected int SyncWait() => cpu.SyncWait(); 
+    protected int SynchronizeWithInterrupt() => cpu.SynchronizeWithInterrupt(); 
 
     /// <summary>
     /// 8-bit register

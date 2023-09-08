@@ -7,8 +7,8 @@ namespace VCCSharp.OpCodes.Tests;
 
 internal partial class NewCpu : ISystemState, IExtendedAddress
 {
-    public void EndInterrupt() { }
-    public int SyncWait() => 0;
+    public void ClearInterrupt() { }
+    public int SynchronizeWithInterrupt() => 0;
 
     public ushort PC { get; set; }
     public byte DP { get; set; }
