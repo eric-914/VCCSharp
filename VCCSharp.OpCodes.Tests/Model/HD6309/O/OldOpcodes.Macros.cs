@@ -1,11 +1,15 @@
-﻿namespace VCCSharp.OpCodes.Tests;
+﻿using VCCSharp.OpCodes.Definitions;
 
-internal partial class OldCpu
+namespace VCCSharp.OpCodes.Tests.Model.HD6309.O;
+
+internal partial class OldOpcodes
 {
     private const ushort VTRAP = 0xFFF0;
     private const ushort VSWI3 = 0xFFF2;
     private const ushort VSWI2 = 0xFFF4;
     private const ushort VSWI = 0xFFFA;
+
+    public Mode Mode { get; set; } = Mode.MC6809;
 
     private byte _temp8;
     private ushort _temp16;
@@ -15,6 +19,11 @@ internal partial class OldCpu
     private ushort _postWord;
 
     private int _cycleCounter;
+
+    private byte _source;
+    private byte _dest;
+    private short _signedShort;
+    private int _signedInt;
 
     private bool CC_E { get => (CC & 0x80) != 0; set => CC = (byte)((CC & 0b01111111) | (value ? 1 : 0) << 7); }
     private bool CC_F { get => (CC & 0x40) != 0; set => CC = (byte)((CC & 0b10111111) | (value ? 1 : 0) << 6); }
@@ -45,14 +54,20 @@ internal partial class OldCpu
 
     public byte DPA { get => (byte)(DP_REG >> 8); set => DP_REG = (ushort)((DP_REG & 0x00FF) | (value << 8)); }
 
+    public bool MD_NATIVE6309 { get => MD.Bit_NATIVE6309(); }
+    public bool MD_ZERODIV { set => MD.Bit_ZERODIV(value); }
+    public bool MD_ILLEGAL { set => MD.Bit_ILLEGAL(value); }
+
     private byte GetCC() => CC;
     private void SetCC(byte value) => CC = value;
 
     private static bool NTEST8(byte value) => value > 0x7F;
     private static bool NTEST16(ushort value) => value > 0x7FFF;
+    private static bool NTEST32(uint value) => value > 0x7FFFFFFF;
 
     private static bool ZTEST(byte value) => value == 0;
     private static bool ZTEST(ushort value) => value == 0;
+    private static bool ZTEST(uint value) => value == 0;
 
     private static bool OVERFLOW8(bool c, byte a, ushort b, byte r) => ((c ? 1 : 0) ^ (((a ^ b ^ r) >> 7) & 1)) != 0;
     private static bool OVERFLOW16(bool c, uint a, ushort b, ushort r) => ((c ? (byte)1 : (byte)0) ^ (((a ^ b ^ r) >> 15) & 1)) != 0;
@@ -139,5 +154,23 @@ internal partial class OldCpu
     {
         MemWrite8((byte)(data >> 8), address);
         MemWrite8((byte)(data & 0xFF), (ushort)(address + 1));
+    }
+
+    public uint MemRead32(ushort address)
+    {
+        return (ushort)(MemRead16(address) << 16 | MemRead16((ushort)(address + 2)));
+    }
+
+    public void MemWrite32(uint data, ushort address)
+    {
+        MemWrite16((byte)(data >> 16), address);
+        MemWrite16((byte)(data & 0xFFFF), (ushort)(address + 2));
+    }
+
+    public void DivByZero()
+    {
+        MD_ZERODIV = true;
+
+        //ErrorVector();
     }
 }

@@ -1,13 +1,16 @@
 using VCCSharp.OpCodes.Tests.Model;
+using VCCSharp.OpCodes.Tests.Model.MC6809;
+using VCCSharp.OpCodes.Tests.Model.MC6809.O;
+using VCCSharp.OpCodes.Tests.Model.MC6809.N;
 
 namespace VCCSharp.OpCodes.Tests;
 
-public class Tests
+public class MC6809Tests
 {
     const int iterations = 100;
 
     #region TestOpCode 
-    private void TestOpCode(byte opcode, Action<byte, OldCpu, NewCpu> exec)
+    private void TestOpCode(byte opcode, Action<byte, OldOpcodes, NewOpcodes> exec)
     {
         var seeds = new Seeds(20);
         var state = new TestState();
@@ -15,8 +18,8 @@ public class Tests
         var memOld = new MemoryTester(seeds);
         var memNew = new MemoryTester(seeds);
 
-        var _old = new OldCpu(memOld) { CC = state.CC, PC_REG = state.PC, S_REG = state.S, U_REG = state.U, DPA = state.DP, D_REG = state.D, X_REG = state.X, Y_REG = state.Y };
-        var _new = new NewCpu(memNew) { CC = state.CC, PC = state.PC, S = state.S, U = state.U, DP = state.DP, D = state.D, X = state.X, Y = state.Y };
+        var _old = new OldOpcodes(memOld) { CC = state.CC, PC_REG = state.PC, S_REG = state.S, U_REG = state.U, DPA = state.DP, D_REG = state.D, X_REG = state.X, Y_REG = state.Y };
+        var _new = new NewOpcodes(memNew) { CC = state.CC, PC = state.PC, S = state.S, U = state.U, DP = state.DP, D = state.D, X = state.X, Y = state.Y };
 
         exec(opcode, _old, _new);
 
@@ -139,8 +142,8 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
         var memOld = new MemoryTester(seeds);
         var memNew = new MemoryTester(seeds);
 
-        var _old = new OldCpu(memOld) { CC = state.CC, PC_REG = state.PC, S_REG = state.S, U_REG = state.U, DPA = state.DP, D_REG = state.D, X_REG = state.X, Y_REG = state.Y };
-        var _new = new NewCpu(memNew) { CC = state.CC, PC = state.PC, S = state.S, U = state.U, DP = state.DP, D = state.D, X = state.X, Y = state.Y };
+        var _old = new OldOpcodes(memOld) { CC = state.CC, PC_REG = state.PC, S_REG = state.S, U_REG = state.U, DPA = state.DP, D_REG = state.D, X_REG = state.X, Y_REG = state.Y };
+        var _new = new NewOpcodes(memNew) { CC = state.CC, PC = state.PC, S = state.S, U = state.U, DP = state.DP, D = state.D, X = state.X, Y = state.Y };
 
         _old.Exec2(opcode);
         _new.Exec2(opcode);

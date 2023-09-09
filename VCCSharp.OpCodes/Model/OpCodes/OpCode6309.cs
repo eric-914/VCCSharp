@@ -12,7 +12,7 @@ namespace VCCSharp.OpCodes.Model.OpCodes;
 /// </summary>
 internal abstract class OpCode6309
 {
-    public ISystemState SS { get;set; } = default!;
+    public ISystemState SS { get; set; } = default!;
 
     private IState cpu => SS.cpu;
 
@@ -52,9 +52,14 @@ internal abstract class OpCode6309
 
     protected DynamicCycles DynamicCycles => new DynamicCycles(() => SS.Mode);
 
+    /// <summary>
+    /// For use on EA/INDEXED memory access as EA has cycle penalties.
+    /// </summary>
+    public int Cycles { get => SS.Cycles; set => SS.Cycles = value; }
+
     protected void EndInterrupt() => cpu.ClearInterrupt();
 
-    protected int SyncWait() => cpu.SynchronizeWithInterrupt(); 
+    protected int SyncWait() => cpu.SynchronizeWithInterrupt();
 
     /// <summary>
     /// 8-bit register

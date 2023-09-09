@@ -1,24 +1,12 @@
-﻿using VCCSharp.OpCodes.Definitions;
-using VCCSharp.OpCodes.Model.Memory;
-using VCCSharp.OpCodes.Registers;
+﻿using VCCSharp.OpCodes.Model.Memory;
 
 namespace VCCSharp.OpCodes.HD6309;
 
-internal interface ISystemState
+internal interface ISystemState : MC6809.ISystemState
 {
-    IState cpu { get; }
+    new IState cpu { get; }
 
-    Memory8Bit M8 { get; }
-    Memory16Bit M16 { get; }
     Memory32Bit M32 { get; }
-
-    MemoryDP DIRECT { get; }
-    MemoryIndexed INDEXED { get; }
-
-    IRegisters8Bit R8 { get; }
-    IRegisters16Bit R16 { get; }
-
-    Mode Mode { get; }
 
     Exceptions Exceptions { get; }
 }

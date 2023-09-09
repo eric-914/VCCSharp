@@ -1,12 +1,10 @@
-﻿using VCCSharp.OpCodes.Tests.Model;
+﻿namespace VCCSharp.OpCodes.Tests.Model.MC6809.O;
 
-namespace VCCSharp.OpCodes.Tests;
-
-internal partial class OldCpu
+internal partial class OldOpcodes
 {
     private readonly MemoryTester _mem;
 
-    public OldCpu(MemoryTester mem)
+    public OldOpcodes(MemoryTester mem)
     {
         _mem = mem;
         _page1 = Page1Vectors();

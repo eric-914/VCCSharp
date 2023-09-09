@@ -1,4 +1,4 @@
-﻿namespace VCCSharp.OpCodes.Tests.Model;
+﻿namespace VCCSharp.OpCodes.Tests.Model.MC6809;
 
 internal class TestState
 {

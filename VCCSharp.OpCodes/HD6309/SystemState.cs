@@ -8,6 +8,7 @@ namespace VCCSharp.OpCodes.HD6309;
 
 internal class SystemState : ISystemState, IExtendedAddress
 {
+    MC6809.IState MC6809.ISystemState.cpu => cpu;
     public IState cpu { get; }
 
     public Memory8Bit M8 { get; }

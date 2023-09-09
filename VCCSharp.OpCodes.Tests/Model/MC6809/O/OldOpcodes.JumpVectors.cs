@@ -1,6 +1,6 @@
-﻿namespace VCCSharp.OpCodes.Tests;
+﻿namespace VCCSharp.OpCodes.Tests.Model.MC6809.O;
 
-internal partial class OldCpu
+internal partial class OldOpcodes
 {
     private readonly Action _____ = null!;
 

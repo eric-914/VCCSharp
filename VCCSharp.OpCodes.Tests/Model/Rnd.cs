@@ -6,4 +6,5 @@ internal static class Rnd
 
     public static byte B() => (byte) _rnd.Next();
     public static ushort W() => (ushort) _rnd.Next();
+    //public static uint D() => (uint) _rnd.Next();
 }

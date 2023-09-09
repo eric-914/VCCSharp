@@ -1,6 +1,6 @@
-﻿namespace VCCSharp.OpCodes.Tests;
+﻿namespace VCCSharp.OpCodes.Tests.Model.HD6309.O;
 
-internal partial class OldCpu
+internal partial class OldOpcodes
 {
     public ushort CalculateEA(byte postByte)
     {
