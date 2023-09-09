@@ -21,8 +21,8 @@ internal partial class NewOpcodes : ISystemState, IExtendedAddress
     public byte CC { get; set; }
 
     public ushort D { get => (ushort)(Q >> 16); set => Q = (Q & 0x0000FFFF) | (uint)(value << 16); } // A | B
-    public byte A { get => (byte)(D >> 8); set => W = (ushort)((D & 0x00FF) | (value << 8)); }
-    public byte B { get => (byte)(D & 0xFF); set => W = (ushort)((D & 0xFF00) | value); }
+    public byte A { get => (byte)(D >> 8); set => D = (ushort)((D & 0x00FF) | (value << 8)); }
+    public byte B { get => (byte)(D & 0xFF); set => D = (ushort)((D & 0xFF00) | value); }
 
     public ushort V { get; set; }
     public byte MD { get; set; }
@@ -50,6 +50,6 @@ internal partial class NewOpcodes : ISystemState, IExtendedAddress
 
     public Memory32Bit M32 => new(this);
 
-    public Exceptions Exceptions => new();
+    public Exceptions Exceptions { get; private set; }
 
 }

@@ -129,11 +129,38 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
     }
 
     [Test]
+    public void TestPage3Opcodes()
+    {
+        var opcodes = new byte[]
+        {
+            0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3F, 
+            //0x43, 0x4A, 0x4C, 0x4D, 0x4F, 
+            //0x53, 0x5A, 0x5C, 0x5D, 0x5F, 
+            //0x80, 0x81, 0x83, 0x86, 0x8B, 0x8C, 0x8D, 0x8E, 0x8F, 
+            //0x90, 0x91, 0x93, 0x96, 0x97, 0x9B, 0x9C, 0x9D, 0x9E, 0x9F, 
+            //0xA0, 0xA1, 0xA3, 0xA6, 0xA7, 0xAB, 0xAC, 0xAD, 0xAE, 0xAF, 
+            //0xB0, 0xB1, 0xB3, 0xB6, 0xB7, 0xBB, 0xBC, 0xBD, 0xBE, 0xBF, 
+            //0xC0, 0xC1, 0xC6, 0xCB, 
+            //0xD0, 0xD1, 0xD6, 0xD7, 0xDB, 
+            //0xE0, 0xE1, 0xE6, 0xE7, 0xEB, 
+            //0xF0, 0xF1, 0xF6, 0xF7, 0xFB        
+        };
+
+        foreach (var opcode in opcodes)
+        {
+            for (var i = 0; i < iterations; i++)
+            {
+                TestOpCode(opcode, (op, o, n) => { o.Exec3(op); n.Exec3(op); });
+            }
+        }
+    }
+
+    [Test]
     public void OneOffTest()
     {
-        byte opcode = 0xec;
-        var seeds = new Seeds { 123, 212, 80, 223, 126, 155, 193, 173, 161, 250, 134, 238, 251, 20, 174, 142, 52, 242, 232, 182 };
-        var state = new TestState { CC = 0xdb, PC = 0xfb6b, S = 0x4114, U = 0x2609, DP = 0x54, D = 0xc8cf, X = 0x9b6d, Y = 0xb4e9, MD = 0xef, W = 0xcd27, V = 0x523b };
+        byte opcode = 0x30;
+        var seeds = new Seeds { 207, 255, 122, 148, 109, 223, 53, 235, 24, 220, 231, 30, 24, 238, 142, 61, 243, 18, 147, 118 };
+        var state = new TestState { CC = 0x7f, PC = 0xf1bc, S = 0x5894, U = 0x6023, DP = 0x32, D = 0xecca, X = 0x5ab6, Y = 0x326, MD = 0xf, W = 0x7183, V = 0x6f1 };
 
         var memOld = new MemoryTester(seeds);
         var memNew = new MemoryTester(seeds);
@@ -141,8 +168,8 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
         var _old = new OldOpcodes(memOld) { CC = state.CC, PC_REG = state.PC, S_REG = state.S, U_REG = state.U, DPA = state.DP, D_REG = state.D, X_REG = state.X, Y_REG = state.Y, MD = state.MD, W_REG = state.W, V_REG = state.V };
         var _new = new NewOpcodes(memNew) { CC = state.CC, PC = state.PC, S = state.S, U = state.U, DP = state.DP, D = state.D, X = state.X, Y = state.Y, MD = state.MD, W = state.W, V = state.V };
 
-        _old.Exec2(opcode);
-        _new.Exec2(opcode);
+        _old.Exec3(opcode);
+        _new.Exec3(opcode);
 
         Assert.That(_old.CC, Is.EqualTo(_new.CC));
         Assert.That(_old.PC_REG, Is.EqualTo(_new.PC));

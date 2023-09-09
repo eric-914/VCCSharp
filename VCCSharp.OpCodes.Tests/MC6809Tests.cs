@@ -127,7 +127,7 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
         {
             for (var i = 0; i < iterations; i++)
             {
-                TestOpCode(opcode, (op, o, n) => { o.Exec2(op); n.Exec2(op); });
+                TestOpCode(opcode, (op, o, n) => { o.Exec3(op); n.Exec3(op); });
             }
         }
     }

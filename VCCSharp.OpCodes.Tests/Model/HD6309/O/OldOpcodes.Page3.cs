@@ -18,7 +18,7 @@ internal partial class OldOpcodes
 
         if (_postByte == 3)
         {
-            _____();
+            IllegalInstruction();
             return;
         }
 
@@ -54,7 +54,7 @@ internal partial class OldOpcodes
 
         if (_postByte == 3)
         {
-            _____();
+            IllegalInstruction();
             return;
         }
 

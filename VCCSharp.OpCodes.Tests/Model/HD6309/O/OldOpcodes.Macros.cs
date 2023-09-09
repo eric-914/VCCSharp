@@ -55,8 +55,8 @@ internal partial class OldOpcodes
     public byte DPA { get => (byte)(DP_REG >> 8); set => DP_REG = (ushort)((DP_REG & 0x00FF) | (value << 8)); }
 
     public bool MD_NATIVE6309 { get => MD.Bit_NATIVE6309(); }
-    public bool MD_ZERODIV { set => MD.Bit_ZERODIV(value); }
-    public bool MD_ILLEGAL { set => MD.Bit_ILLEGAL(value); }
+    public bool MD_ZERODIV { set => MD = MD.Bit_ZERODIV(value); }
+    public bool MD_ILLEGAL { set => MD = MD.Bit_ILLEGAL(value); }
 
     private byte E_REG { get => (byte)(W_REG >> 8); set => W_REG = (ushort)((W_REG & 0x00FF) | (value << 8)); }
     private byte F_REG { get => (byte)(W_REG & 0xFF); set => W_REG = (ushort)((W_REG & 0xFF00) | value); }
@@ -183,6 +183,44 @@ internal partial class OldOpcodes
     {
         MD_ZERODIV = true;
 
-        //ErrorVector();
+        ErrorVector();
+    }
+
+    public void IllegalInstruction()
+    {
+        MD_ILLEGAL = true;
+
+        ErrorVector();
+    }
+
+    private void ErrorVector()
+    {
+        CC_E = true; //1;
+
+        MemWrite8(PC_L, --S_REG);
+        MemWrite8(PC_H, --S_REG);
+        MemWrite8(U_L, --S_REG);
+        MemWrite8(U_H, --S_REG);
+        MemWrite8(Y_L, --S_REG);
+        MemWrite8(Y_H, --S_REG);
+        MemWrite8(X_L, --S_REG);
+        MemWrite8(X_H, --S_REG);
+        MemWrite8(DPA, --S_REG);
+
+        if (MD_NATIVE6309)
+        {
+            MemWrite8(F_REG, --S_REG);
+            MemWrite8(E_REG, --S_REG);
+
+            _cycleCounter += 2;
+        }
+
+        MemWrite8(B_REG, --S_REG);
+        MemWrite8(A_REG, --S_REG);
+        MemWrite8(GetCC(), --S_REG);
+
+        PC_REG = MemRead16(Define.VTRAP);
+
+        _cycleCounter += 12 + _instance._54;	//One for each byte +overhead? Guessing from PSHS
     }
 }
