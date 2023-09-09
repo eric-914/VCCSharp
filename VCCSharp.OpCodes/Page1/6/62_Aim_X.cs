@@ -50,6 +50,8 @@ internal class _62_Aim_X : OpCode6309, IOpCode
 {
     public int Exec()
     {
+        Cycles = 6;
+
         byte value = M8[PC++];
         ushort address = INDEXED[PC++];
         byte mask = M8[address];
@@ -62,6 +64,6 @@ internal class _62_Aim_X : OpCode6309, IOpCode
 
         M8[address] = result;
 
-        return 6;
+        return Cycles;
     }
 }

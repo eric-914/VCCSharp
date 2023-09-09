@@ -39,7 +39,7 @@ namespace VCCSharp.OpCodes.Page1;
 ///     │ OPCODE │ IMMED VALUE │ ADDRESS / INDEX BYTE(S) │
 ///     ╰────────┴─────────────┴─────────────────────────╯
 ///     
-/// Cycles (6+)
+/// Cycles (7+)
 /// Byte Count (3+)
 /// 
 /// EIM #i8;EA
@@ -51,6 +51,8 @@ internal class _65_Eim_X : OpCode6309, IOpCode
 {
     public int Exec()
     {
+        Cycles = 7;
+
         byte value = M8[PC++];
         ushort address = INDEXED[PC++];
         byte mask = M8[address];
@@ -63,6 +65,6 @@ internal class _65_Eim_X : OpCode6309, IOpCode
 
         M8[address] = result;
 
-        return 7;
+        return Cycles;
     }
 }

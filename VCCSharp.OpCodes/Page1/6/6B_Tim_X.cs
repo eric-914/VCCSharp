@@ -48,6 +48,8 @@ internal class _6B_Tim_X : OpCode6309, IOpCode
 {
     public int Exec()
     {
+        Cycles = 7;
+
         byte value = M8[PC++];
         ushort address = INDEXED[PC++];
         byte mask = M8[address];
@@ -58,6 +60,6 @@ internal class _6B_Tim_X : OpCode6309, IOpCode
         CC_Z = result == 0;
         CC_V = false;
 
-        return 7;
+        return Cycles;
     }
 }
