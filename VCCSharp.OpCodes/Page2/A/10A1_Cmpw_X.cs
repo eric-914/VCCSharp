@@ -36,6 +36,8 @@ internal class _10A1_Cmpw_X : OpCode6309, IOpCode
 {
     public int Exec()
     {
+        Cycles = DynamicCycles._76;
+
         ushort address = INDEXED[PC++];
         ushort value = M16[address];
 
@@ -46,6 +48,6 @@ internal class _10A1_Cmpw_X : OpCode6309, IOpCode
         CC_V = sum.V;
         CC_C = sum.C;
 
-        return DynamicCycles._76;
+        return Cycles;
     }
 }

@@ -90,20 +90,59 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
     }
 
     [Test]
+    public void TestPage2Opcodes()
+    {
+        #region Not Tested -- Uses Indexed Registers (PUR/PXF)
+        // 0x30/ADDR
+        // 0x31/ADCR
+        // 0x32/SUBR
+        // 0x33/SBCR
+        // 0x34/ANDR
+        // 0x35/ORR
+        // 0x36/EORR
+        // 0x37/CMPR
+        #endregion
+
+        var opcodes = new byte[]
+        {
+            0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x2E, 0x2F,
+            0x38, 0x39, 0x3A, 0x3B, 0x3F,
+            0x40, 0x43, 0x44, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4C, 0x4D, 0x4F,
+            0x53, 0x54, 0x56, 0x59, 0x5A, 0x5C, 0x5D, 0x5F,
+            0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8E,
+            0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 0x9A, 0x9B, 0x9C, 0x9E, 0x9F,
+            0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9, 0xAA, 0xAB, 0xAC, 0xAE, 0xAF,
+            0xB0, 0xB1, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6, 0xB7, 0xB8, 0xB9, 0xBA, 0xBB, 0xBC, 0xBE, 0xBF,
+            0xCE,
+            0xDC, 0xDD, 0xDE, 0xDF,
+            0xEC, 0xED, 0xEE, 0xEF,
+            0xFC, 0xFD, 0xFE, 0xFF
+        };
+
+        foreach (var opcode in opcodes)
+        {
+            for (var i = 0; i < iterations; i++)
+            {
+                TestOpCode(opcode, (op, o, n) => { o.Exec2(op); n.Exec2(op); });
+            }
+        }
+    }
+
+    [Test]
     public void OneOffTest()
     {
-        byte opcode = 0x72;
-        var seeds = new Seeds { 78, 131, 120, 32, 157, 215, 161, 232, 199, 48, 2, 118, 78, 55, 133, 1, 122, 252, 78, 1 };
-        var state = new TestState { CC = 0x13, PC = 0x8377, S = 0xc814, U = 0x9292, DP = 0x13, D = 0xb5dd, X = 0xc2bf, Y = 0xfbdc, MD = 0x6e, W = 0xc69f, V = 0xf21 };
+        byte opcode = 0xec;
+        var seeds = new Seeds { 123, 212, 80, 223, 126, 155, 193, 173, 161, 250, 134, 238, 251, 20, 174, 142, 52, 242, 232, 182 };
+        var state = new TestState { CC = 0xdb, PC = 0xfb6b, S = 0x4114, U = 0x2609, DP = 0x54, D = 0xc8cf, X = 0x9b6d, Y = 0xb4e9, MD = 0xef, W = 0xcd27, V = 0x523b };
 
         var memOld = new MemoryTester(seeds);
         var memNew = new MemoryTester(seeds);
 
-        var _old = new OldOpcodes(memOld) { CC = state.CC, PC_REG = state.PC, S_REG = state.S, U_REG = state.U, DPA = state.DP, D_REG = state.D, X_REG = state.X, Y_REG = state.Y };
-        var _new = new NewOpcodes(memNew) { CC = state.CC, PC = state.PC, S = state.S, U = state.U, DP = state.DP, D = state.D, X = state.X, Y = state.Y };
+        var _old = new OldOpcodes(memOld) { CC = state.CC, PC_REG = state.PC, S_REG = state.S, U_REG = state.U, DPA = state.DP, D_REG = state.D, X_REG = state.X, Y_REG = state.Y, MD = state.MD, W_REG = state.W, V_REG = state.V };
+        var _new = new NewOpcodes(memNew) { CC = state.CC, PC = state.PC, S = state.S, U = state.U, DP = state.DP, D = state.D, X = state.X, Y = state.Y, MD = state.MD, W = state.W, V = state.V };
 
-        _old.Exec(opcode);
-        _new.Exec(opcode);
+        _old.Exec2(opcode);
+        _new.Exec2(opcode);
 
         Assert.That(_old.CC, Is.EqualTo(_new.CC));
         Assert.That(_old.PC_REG, Is.EqualTo(_new.PC));

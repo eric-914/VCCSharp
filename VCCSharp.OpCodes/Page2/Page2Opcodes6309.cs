@@ -74,7 +74,7 @@ internal class Page2Opcodes6309
     //_3C
     //_3D
     //_3E
-    private IOpCode _3F_Swi2_I => new _103F_Swi2_I_6809();
+    private IOpCode _3F_Swi2_I => new _103F_Swi2_I_6309();
     
     private IOpCode _40_Negd_I => new _1040_Negd_I();
     //_41

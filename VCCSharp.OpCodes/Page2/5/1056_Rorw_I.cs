@@ -40,7 +40,7 @@ internal class _1056_Rorw_I : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        var result = (ushort)((W >> 1) | CC_C.ToBit());
+        var result = (ushort)((W >> 1) | (CC_C.ToBit() << 15));
 
         CC_N = result.Bit15();
         CC_Z = result == 0;

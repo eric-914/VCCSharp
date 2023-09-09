@@ -58,6 +58,14 @@ internal partial class OldOpcodes
     public bool MD_ZERODIV { set => MD.Bit_ZERODIV(value); }
     public bool MD_ILLEGAL { set => MD.Bit_ILLEGAL(value); }
 
+    private byte E_REG { get => (byte)(W_REG >> 8); set => W_REG = (ushort)((W_REG & 0x00FF) | (value << 8)); }
+    private byte F_REG { get => (byte)(W_REG & 0xFF); set => W_REG = (ushort)((W_REG & 0xFF00) | value); }
+
+    public ushort D_REG { get => (ushort)(Q_REG >> 16); set => Q_REG = (Q_REG & 0x0000FFFF) | (uint)(value << 16); } // A | B
+    public ushort W_REG { get => (ushort)(Q_REG & 0xFFFF); set => Q_REG = (Q_REG & 0xFFFF0000) | value; } // E | F
+
+    private byte Z_REG { get => 0; set { } }
+
     private byte GetCC() => CC;
     private void SetCC(byte value) => CC = value;
 
@@ -84,10 +92,10 @@ internal partial class OldOpcodes
             1 => B_REG,
             2 => CC,
             3 => DPA,
-            4 => DPA,
-            5 => DPA,
-            6 => DPA,
-            7 => DPA,
+            4 => Z_REG,
+            5 => Z_REG,
+            6 => E_REG,
+            7 => F_REG,
             _ => throw new NotImplementedException()
         };
     }
@@ -100,10 +108,10 @@ internal partial class OldOpcodes
             case 1: B_REG = value; break;
             case 2: CC = value; break;
             case 3: DPA = value; break;
-            case 4: DPA = value; break;
-            case 5: DPA = value; break;
-            case 6: DPA = value; break;
-            case 7: DPA = value; break;
+            case 4: Z_REG = value; break;
+            case 5: Z_REG = value; break;
+            case 6: E_REG = value; break;
+            case 7: F_REG = value; break;
         }
     }
 
@@ -117,7 +125,9 @@ internal partial class OldOpcodes
             3 => U_REG,
             4 => S_REG,
             5 => PC_REG,
-            _ => 0
+            6 => W_REG,
+            7 => V_REG,
+            _ => throw new NotImplementedException()
         };
     }
 
@@ -131,6 +141,8 @@ internal partial class OldOpcodes
             case 3: U_REG = value; break;
             case 4: S_REG = value; break;
             case 5: PC_REG = value; break;
+            case 6: W_REG = value; break;
+            case 7: V_REG = value; break;
             default: break;
         }
     }

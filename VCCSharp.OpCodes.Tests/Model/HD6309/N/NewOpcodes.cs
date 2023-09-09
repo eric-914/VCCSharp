@@ -10,24 +10,26 @@ internal partial class NewOpcodes : ISystemState, IExtendedAddress
     public void ClearInterrupt() { }
     public int SynchronizeWithInterrupt() => 0;
 
+    public uint Q { get; set; } // D | W
+
     public ushort PC { get; set; }
     public byte DP { get; set; }
-    public ushort D { get; set; }
     public ushort X { get; set; }
     public ushort Y { get; set; }
     public ushort S { get; set; }
     public ushort U { get; set; }
     public byte CC { get; set; }
 
-    public byte A { get => (byte)(D >> 8); set => D = (ushort)((D & 0x00FF) | (value << 8)); }
-    public byte B { get => (byte)(D & 0xFF); set => D = (ushort)((D & 0xFF00) | value); }
+    public ushort D { get => (ushort)(Q >> 16); set => Q = (Q & 0x0000FFFF) | (uint)(value << 16); } // A | B
+    public byte A { get => (byte)(D >> 8); set => W = (ushort)((D & 0x00FF) | (value << 8)); }
+    public byte B { get => (byte)(D & 0xFF); set => W = (ushort)((D & 0xFF00) | value); }
 
-    public uint Q { get; set; }
-    public ushort W { get; set; }
-    public byte E { get; set; }
-    public byte F { get; set; }
     public ushort V { get; set; }
     public byte MD { get; set; }
+
+    public ushort W { get => (ushort)(Q & 0xFFFF); set => Q = (Q & 0xFFFF0000) | value; } // E | F
+    public byte E { get => (byte)(W >> 8); set => W = (ushort)((W & 0x00FF) | (value << 8)); }
+    public byte F { get => (byte)(W & 0xFF); set => W = (ushort)((W & 0xFF00) | value); }
 
     VCCSharp.OpCodes.MC6809.IState VCCSharp.OpCodes.MC6809.ISystemState.cpu => this;
     public IState cpu => this;

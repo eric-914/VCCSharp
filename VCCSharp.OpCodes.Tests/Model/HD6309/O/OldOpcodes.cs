@@ -11,7 +11,6 @@ internal partial class OldOpcodes
     public byte CC { get; set; }
 
     public ushort PC_REG { get; set; }
-    public ushort D_REG { get; set; }
     public ushort X_REG { get; set; }
     public ushort Y_REG { get; set; }
     public ushort S_REG { get; set; }
@@ -23,9 +22,6 @@ internal partial class OldOpcodes
     public byte MD { get; set; }
 
     public uint Q_REG { get; set; }
-    public ushort W_REG { get; set; }
-    public byte E_REG { get; set; }
-    public byte F_REG { get; set; }
     public ushort V_REG { get; set; }
     public ushort O_REG { get => 0; set { } } //--Always zero
 

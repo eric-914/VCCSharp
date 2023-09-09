@@ -50,7 +50,7 @@ internal class _1040_Negd_I : OpCode6309, IOpCode
         CC_N = result.Bit15();
         CC_Z = result == 0;
         CC_V = D == 0x8000;
-        CC_C = D == 0;
+        CC_C = !(D == 0);
 
         D = result;
 

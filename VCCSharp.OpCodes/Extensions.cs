@@ -12,7 +12,7 @@ internal static class Extensions
     //--Invert the bits
     public static byte I(this byte b) => (byte)(0xFF - b);
     public static ushort I(this ushort b) => (ushort)(0xFFFF - b);
-    public static int I(this int b) => 0xFFFF - b;
+    public static int I(this int b) => (int)(0xFFFFFFFF - (uint)b);
 
     public static bool Bit7(this byte b) => (b & 0x80) != 0;
     public static bool Bit6(this byte b) => (b & 0x40) != 0;

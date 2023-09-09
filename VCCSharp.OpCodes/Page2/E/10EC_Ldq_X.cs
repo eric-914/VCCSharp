@@ -28,6 +28,8 @@ internal class _10EC_Ldq_X : OpCode6309, IOpCode
 {
     public int Exec()
     {
+        Cycles = 8;
+
         ushort address = INDEXED[PC++];
 
         Q = M32[address];
@@ -36,6 +38,6 @@ internal class _10EC_Ldq_X : OpCode6309, IOpCode
         CC_Z = Q == 0;
         CC_V = false;
 
-        return 8;
+        return Cycles;
     }
 }

@@ -28,6 +28,8 @@ internal class _10A7_Stw_X : OpCode6309, IOpCode
 {
     public int Exec()
     {
+        Cycles = 6;
+
         ushort address = INDEXED[PC++];
 
         M16[address] = W;
@@ -36,6 +38,6 @@ internal class _10A7_Stw_X : OpCode6309, IOpCode
         CC_Z = W == 0;
         CC_V = false;
 
-        return 6;
+        return Cycles;
     }
 }

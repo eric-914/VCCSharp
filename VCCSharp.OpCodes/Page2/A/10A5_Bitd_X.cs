@@ -32,6 +32,8 @@ internal class _10A5_Bitd_X : OpCode6309, IOpCode
 {
     public int Exec()
     {
+        Cycles = DynamicCycles._76;
+
         ushort address = INDEXED[PC++];
         ushort value = M16[address];
 
@@ -41,6 +43,6 @@ internal class _10A5_Bitd_X : OpCode6309, IOpCode
         CC_Z = result == 0;
         CC_V = false;
 
-        return DynamicCycles._76;
+        return Cycles;
     }
 }

@@ -28,6 +28,8 @@ internal class _10ED_Stq_X : OpCode6309, IOpCode
 {
     public int Exec()
     {
+        Cycles = 8;
+
         ushort address = INDEXED[PC++];
 
         M32[address] = Q;
@@ -36,6 +38,6 @@ internal class _10ED_Stq_X : OpCode6309, IOpCode
         CC_Z = Q == 0;
         CC_V = false;
 
-        return 8;
+        return Cycles;
     }
 }

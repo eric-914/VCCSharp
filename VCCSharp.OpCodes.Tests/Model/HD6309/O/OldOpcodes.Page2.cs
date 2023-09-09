@@ -197,7 +197,7 @@ internal partial class OldOpcodes
         { // 8 bit dest
             _dest &= 7;
 
-            byte dest8 = _dest == 2 ? GetCC() : PUR(_dest);
+            byte dest8 = _dest == 2 ? CC : PUR(_dest);
 
             byte source8;
             if (_source > 7)
@@ -205,7 +205,7 @@ internal partial class OldOpcodes
                 // 8 bit source
                 _source &= 7;
 
-                source8 = _source == 2 ? GetCC() : PUR(_source);
+                source8 = _source == 2 ? CC: PUR(_source);
             }
             else // 16 bit source - demote to 8 bit
             {
@@ -217,15 +217,17 @@ internal partial class OldOpcodes
 
             switch (_dest)
             {
-                case 2: SetCC((byte)_temp16); break;
+                case 2: CC = (byte)_temp16; break;
                 case 4: case 5: break; // never assign to zero reg
                 default: PUR(_dest, (byte)_temp16); break;
             }
 
+            byte purDes = PUR(_dest);
+
             CC_C = (_temp16 & 0x100) >> 8 != 0;
             CC_V = OVERFLOW8(CC_C, source8, dest8, (byte)_temp16);
-            CC_N = NTEST8(PUR(_dest));
-            CC_Z = ZTEST(PUR(_dest));
+            CC_N = NTEST8(purDes);
+            CC_Z = ZTEST(purDes);
         }
         else // 16 bit dest
         {
@@ -242,7 +244,7 @@ internal partial class OldOpcodes
                 switch (_source)
                 {
                     case 0: case 1: source16 = D_REG; break; // A & B Reg
-                    case 2: source16 = GetCC(); break; // CC
+                    case 2: source16 = CC; break; // CC
                     case 3: source16 = DP_REG; break; // DP
                     case 4: case 5: source16 = 0; break; // Zero Reg
                     case 6: case 7: source16 = W_REG; break; // E & F Reg
@@ -271,7 +273,7 @@ internal partial class OldOpcodes
         {
             _dest &= 7;
 
-            var dest8 = _dest == 2 ? GetCC() : PUR(_dest);
+            var dest8 = _dest == 2 ? CC : PUR(_dest);
 
             byte source8;
             if (_source > 7)
@@ -1300,15 +1302,20 @@ internal partial class OldOpcodes
 
     public void Adcd_M() // 89 
     {
-        _postWord = MemRead16(PC_REG);
-        _temp32 = (ushort)(D_REG + _postWord + (CC_C ? 1 : 0));
+        _temp16 = MemRead16(PC_REG);
+        _temp32 = (uint)(D_REG + _temp16 + (CC_C ? 1 : 0));
+
         CC_C = (_temp32 & 0x10000) >> 16 != 0;
-        CC_V = OVERFLOW16(CC_C, _postWord, (ushort)_temp32, D_REG);
-        CC_H = ((D_REG ^ _temp32 ^ _postWord) & 0x100) >> 8 != 0;
+        CC_V = OVERFLOW16(CC_C, _temp32, _temp16, D_REG);
+
+        //CC_H = ((D_REG ^ _temp32 ^ _postWord) & 0x100) >> 8 != 0; //--TODO: Why was there a half-carry on a 16-bit register?
         D_REG = (ushort)_temp32;
+
         CC_N = NTEST16(D_REG);
         CC_Z = ZTEST(D_REG);
+
         PC_REG += 2;
+
         _cycleCounter += _instance._54;
     }
 
@@ -1356,7 +1363,7 @@ internal partial class OldOpcodes
         CC_N = NTEST16(Y_REG);
         CC_V = false;
         PC_REG += 2;
-        _cycleCounter += _instance._54;
+        _cycleCounter += 4;
     }
 
     // 8F
@@ -1463,7 +1470,7 @@ internal partial class OldOpcodes
         _temp32 = (uint)(D_REG + _postWord + (CC_C ? 1 : 0));
         CC_C = (_temp32 & 0x10000) >> 16 != 0;
         CC_V = OVERFLOW16(CC_C, _postWord, (ushort)_temp32, D_REG);
-        CC_H = ((D_REG ^ _temp32 ^ _postWord) & 0x100) >> 8 != 0;
+        //CC_H = ((D_REG ^ _temp32 ^ _postWord) & 0x100) >> 8 != 0; //TODO: Why is there a half-carry on a 16-bit register?
         D_REG = (ushort)_temp32;
         CC_N = NTEST16(D_REG);
         CC_Z = ZTEST(D_REG);
@@ -1623,7 +1630,7 @@ internal partial class OldOpcodes
         _temp32 = (uint)(D_REG + _postWord + (CC_C ? 1 : 0));
         CC_C = (_temp32 & 0x10000) >> 16 != 0;
         CC_V = OVERFLOW16(CC_C, _postWord, (ushort)_temp32, D_REG);
-        CC_H = (((D_REG ^ _temp32 ^ _postWord) & 0x100) >> 8) != 0;
+        //CC_H = (((D_REG ^ _temp32 ^ _postWord) & 0x100) >> 8) != 0;    //TODO: Why is there a half-carry on a 16-bit register?
         D_REG = (ushort)_temp32;
         CC_N = NTEST16(D_REG);
         CC_Z = ZTEST(D_REG);
@@ -1792,7 +1799,7 @@ internal partial class OldOpcodes
         _temp32 = (uint)(D_REG + _postWord + (CC_C ? 1 : 0));
         CC_C = (_temp32 & 0x10000) >> 16 != 0;
         CC_V = OVERFLOW16(CC_C, _postWord, (ushort)_temp32, D_REG);
-        CC_H = (((D_REG ^ _temp32 ^ _postWord) & 0x100) >> 8) != 0;
+        //CC_H = (((D_REG ^ _temp32 ^ _postWord) & 0x100) >> 8) != 0;  //TODO: Why is there a half-carry on a 16-bit register?
         D_REG = (ushort)_temp32;
         CC_N = NTEST16(D_REG);
         CC_Z = ZTEST(D_REG);

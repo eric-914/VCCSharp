@@ -33,6 +33,8 @@ internal class _10AB_Addw_X : OpCode6309, IOpCode
 {
     public int Exec()
     {
+        Cycles = DynamicCycles._76;
+
         ushort address = INDEXED[PC++];
         ushort value = M16[address];
 
@@ -45,6 +47,6 @@ internal class _10AB_Addw_X : OpCode6309, IOpCode
 
         W = (ushort)sum.Result;
 
-        return DynamicCycles._76;
+        return Cycles;
     }
 }

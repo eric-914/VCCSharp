@@ -1648,12 +1648,17 @@ internal partial class OldOpcodes
     {
         _temp16 = MemRead16(PC_REG);
         _temp32 = (uint)(D_REG - _temp16);
+
         CC_C = (_temp32 & 0x10000) >> 16 != 0;
         CC_V = OVERFLOW16(CC_C, _temp32, _temp16, D_REG);
+
         D_REG = (ushort)_temp32;
+
         CC_Z = ZTEST(D_REG);
         CC_N = NTEST16(D_REG);
+
         PC_REG += 2;
+
         _cycleCounter += _instance._43;
     }
 
@@ -2334,12 +2339,17 @@ internal partial class OldOpcodes
     {
         _temp16 = MemRead16(PC_REG);
         _temp32 = (uint)(D_REG + _temp16);
+
         CC_C = (_temp32 & 0x10000) >> 16 != 0;
         CC_V = OVERFLOW16(CC_C, _temp32, _temp16, D_REG);
+
         D_REG = (ushort)_temp32;
+
         CC_Z = ZTEST(D_REG);
         CC_N = NTEST16(D_REG);
+
         PC_REG += 2;
+
         _cycleCounter += _instance._43;
     }
 

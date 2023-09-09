@@ -40,7 +40,7 @@ internal class _1046_Rord_I : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        var result = (ushort)((D >> 1) | CC_C.ToBit());
+        var result = (ushort)((D >> 1) | (CC_C.ToBit() << 15));
 
         CC_N = result.Bit15();
         CC_Z = result == 0;

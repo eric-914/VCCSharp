@@ -28,6 +28,8 @@ internal class _10A6_Ldw_X : OpCode6309, IOpCode
 {
     public int Exec()
     {
+        Cycles = 6;
+
         ushort address = INDEXED[PC++];
 
         W = M16[address];
@@ -36,6 +38,6 @@ internal class _10A6_Ldw_X : OpCode6309, IOpCode
         CC_Z = W == 0;
         CC_V = false;
 
-        return 6;
+        return Cycles;
     }
 }
