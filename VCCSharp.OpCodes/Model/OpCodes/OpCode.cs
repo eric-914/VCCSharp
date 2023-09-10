@@ -200,38 +200,42 @@ internal abstract class OpCode : ITempAccess
     protected bool CC_Z { get => CC.BitZ(); set => CC = CC.BitZ(value); }
 
     /// <summary>
-    /// Handles the intracies of calculating the sum two values: <c>a+b</c>
+    /// Handles the intracies of calculating the sum of two values: <c>a+b</c>
     /// </summary>
     /// <param name="a">first 8-bit</param>
     /// <param name="b">second 8-bit</param>
     /// <returns>object with summation results</returns>
-    protected static IFunction Add(byte a, byte b) => new Addition(a, b, 0);
-    protected static IFunction Add(byte a, byte b, bool cc) => new Addition(a, b, cc.ToBit());
+    protected static IFunction Add(byte a, byte b, bool cc = false) => new Addition(a, b, cc.ToBit());
 
     /// <summary>
-    /// Handles the intracies of calculating the sum two values: <c>a+b</c>
+    /// Handles the intracies of calculating the sum of two values: <c>a+b</c>
     /// </summary>
     /// <param name="a">first 16-bit</param>
     /// <param name="b">second 16-bit</param>
     /// <returns>object with summation results</returns>
-    protected static IFunction Add(ushort a, ushort b) => new Addition(a, b, 0);
-    protected static IFunction Add(ushort a, ushort b, bool cc) => new Addition(a, b, cc.ToBit());
+    protected static IFunction Add(ushort a, ushort b, bool cc = false) => new Addition(a, b, cc.ToBit());
 
     /// <summary>
-    /// Handles the intracies of calculating the difference two values: <c>a-b</c>
+    /// Handles the intracies of calculating the difference of two values: <c>a-b</c>
     /// </summary>
     /// <param name="a">first 16-bit</param>
     /// <param name="b">second 16-bit</param>
     /// <returns>object with summation results</returns>
-    protected static IFunction Subtract(byte a, byte b) => new Subtraction(a, b, 0);
-    protected static IFunction Subtract(byte a, byte b, bool cc) => new Subtraction(a, b, cc.ToBit());
+    protected static IFunction Subtract(byte a, byte b, bool cc = false) => new Subtraction(a, b, cc.ToBit());
 
     /// <summary>
-    /// Handles the intracies of calculating the difference two values: <c>a-b</c>
+    /// Handles the intracies of calculating the difference of two values: <c>a-b</c>
     /// </summary>
     /// <param name="a">first 16-bit</param>
     /// <param name="b">second 16-bit</param>
     /// <returns>object with summation results</returns>
-    protected static IFunction Subtract(ushort a, ushort b) => new Subtraction(a, b, 0);
-    protected static IFunction Subtract(ushort a, ushort b, bool cc) => new Subtraction(a, b, cc.ToBit());
+    protected static IFunction Subtract(ushort a, ushort b, bool cc = false) => new Subtraction(a, b, cc.ToBit());
+
+    /// <summary>
+    /// Handles the intracies of calculating the product of two values: <c>a*b</c>
+    /// </summary>
+    /// <param name="a">first 16-bit</param>
+    /// <param name="b">second 16-bit</param>
+    /// <returns>object with summation results</returns>
+    protected static IFunction Multiply(byte a, byte b) => new Multiplication(a, b);
 }

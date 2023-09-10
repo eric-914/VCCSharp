@@ -135,9 +135,9 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
     [Test]
     public void OneOffTest()
     {
-        byte opcode = 0xF3;
-        var seeds = new Seeds { 228, 10, 253, 101, 120, 107, 48, 17, 167, 36, 75, 130, 179, 135, 223, 129, 33, 4, 0, 127 };
-        var state = new TestState { CC = 0x3e, PC = 0x27c, S = 0xab6f, U = 0xb996, DP = 0xa, D = 0x84f1, X = 0x9db7, Y = 0xc4d7 };
+        byte opcode = 0x3d;
+        var seeds = new Seeds { 144, 202, 140, 154, 187, 156, 15, 65, 21, 36, 215, 45, 208, 119, 76, 252, 122, 228, 47, 154 };
+        var state = new TestState { CC = 0x7d, PC = 0x8b4e, S = 0x7179, U = 0x1176, DP = 0x36, D = 0xe988, X = 0xccdf, Y = 0x3d67 };
 
         var memOld = new MemoryTester(seeds);
         var memNew = new MemoryTester(seeds);

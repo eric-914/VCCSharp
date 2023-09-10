@@ -29,12 +29,14 @@ internal class _119F_Muld_D : OpCode6309, IOpCode
     public int Exec()
     {
         ushort address = DIRECT[PC++];
-        short value = (short)M16[address];
+        ushort value = M16[address];
 
-        Q = (uint)((short)D * value);
+        var fn = Multiply(D, value);
 
-        CC_N = Q.Bit31();
-        CC_Z = Q == 0;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+
+        Q = (uint)fn.Result;
 
         return DynamicCycles._3029;
     }

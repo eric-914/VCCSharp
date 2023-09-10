@@ -31,12 +31,14 @@ internal class _11AF_Muld_X : OpCode6309, IOpCode
         Cycles = 30;
 
         ushort address = INDEXED[PC++];
-        short value = (short)M16[address];
+        ushort value = M16[address];
 
-        Q = (uint)((short)D * value);
+        var fn = Multiply(D, value);
 
-        CC_N = Q.Bit31();
-        CC_Z = Q == 0;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+
+        Q = (uint)fn.Result;
 
         return Cycles;
     }

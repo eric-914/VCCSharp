@@ -31,6 +31,7 @@ internal static class Extensions
 
     public static bool Bit31(this uint d) => (d & 0x80000000) != 0;
 
+    public static bool Bit31(this int b) => (b & 0x80000000) != 0;
     public static bool Bit15(this int b) => (b & 0x8000) != 0;
     public static bool Bit7(this int b) => (b & 0x0080) != 0;
 

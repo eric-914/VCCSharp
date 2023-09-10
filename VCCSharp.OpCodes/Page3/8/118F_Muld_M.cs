@@ -28,12 +28,14 @@ internal class _118F_Muld_M : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        short value = (short)M16[PC]; PC += 2;
+        ushort value = M16[PC]; PC += 2;
 
-        Q = (uint)((short)D * value);
+        var fn = Multiply(D, value);
 
-        CC_N = Q.Bit31();
-        CC_Z = Q == 0;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+
+        Q = (uint)fn.Result;
 
         return 28;
     }

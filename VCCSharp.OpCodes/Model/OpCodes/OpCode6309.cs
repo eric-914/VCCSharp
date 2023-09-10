@@ -280,6 +280,22 @@ internal abstract class OpCode6309
     protected static IFunction Subtract(ushort a, ushort b) => new Subtraction(a, b, 0);
     protected static IFunction Subtract(ushort a, ushort b, bool cc) => new Subtraction(a, b, cc.ToBit());
 
+    /// <summary>
+    /// Handles the intracies of calculating the product of two values: <c>a*b</c>
+    /// </summary>
+    /// <param name="a">first 16-bit</param>
+    /// <param name="b">second 16-bit</param>
+    /// <returns>object with summation results</returns>
+    protected static IFunction Multiply(byte a, byte b) => new Multiplication(a, b);
+
+    /// <summary>
+    /// Handles the intracies of calculating the product of two values: <c>a*b</c>
+    /// </summary>
+    /// <param name="a">first 16-bit</param>
+    /// <param name="b">second 16-bit</param>
+    /// <returns>object with summation results</returns>
+    protected static IFunction Multiply(ushort a, ushort b) => new Multiplication(a, b);
+
     protected static IFunction Boolean(byte result) => new Functions.Boolean(result);
     protected static IFunction Boolean(ushort result) => new Functions.Boolean(result);
 }

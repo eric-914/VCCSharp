@@ -30,10 +30,12 @@ internal class _3D_Mul_I : OpCode, IOpCode
 {
     public int Exec()
     {
-        D = (ushort)(A * B);
+        var fn = Multiply(A, B);
 
-        CC_Z = D == 0;
-        CC_C = B.Bit7();
+        CC_Z = fn.Z;
+        CC_C = fn.C;
+
+        D = (ushort)fn.Result;
 
         return DynamicCycles._1110;
     }
