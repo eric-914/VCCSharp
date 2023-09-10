@@ -1,4 +1,5 @@
-﻿using VCCSharp.OpCodes.Model.Support;
+﻿using VCCSharp.OpCodes.Definitions;
+using VCCSharp.OpCodes.Model.Support;
 
 namespace VCCSharp.OpCodes.Model.Functions;
 
@@ -7,6 +8,8 @@ namespace VCCSharp.OpCodes.Model.Functions;
 /// </summary>
 internal class Division : IFunction
 {
+    #region Properties
+
     public int Result { get; private set; }
     public int Remainder { get; private set; }
     public int Cycles { get; private set; }
@@ -39,7 +42,9 @@ internal class Division : IFunction
     /// <summary>
     /// Set when Divide By Zero occurs.  Error to be handled by client.
     /// </summary>
-    public bool Error { get; private set; }
+    public DivisionErrors Error { get; private set; } = DivisionErrors.None;
+
+    #endregion
 
     public Division(short numerator, sbyte denominator, int cycles)
     {
@@ -50,7 +55,7 @@ internal class Division : IFunction
 
         if (denominator == 0)
         {
-            Error = true;
+            Error = DivisionErrors.DivideByZero;
 
             return;
         }
@@ -60,6 +65,8 @@ internal class Division : IFunction
         //--range overflow
         if (result > abort || result < ~abort)
         {
+            Error = DivisionErrors.RangeOverflow;
+
             N = false;
             Z = false;
             V = true;
@@ -79,6 +86,55 @@ internal class Division : IFunction
 
         N = overflow || b.Bit7();
         Z = !overflow && b == 0;
+        V = overflow;
+        C = (b & 1) != 0;
+
+        Cycles -= overflow.ToBit();
+    }
+
+    public Division(int numerator, short denominator, int cycles)
+    {
+        const ushort abort = 0xFFFF;
+        const ushort max = 0x7FFF;
+
+        Cycles = cycles;
+
+        if (denominator == 0)
+        {
+            Error = DivisionErrors.DivideByZero;
+
+            return;
+        }
+
+        int result = numerator / denominator;
+
+        //--range overflow
+        if (result > abort || result < ~abort)
+        {
+            Error = DivisionErrors.RangeOverflow;
+
+            N = false;
+            Z = false;
+            V = true;
+            C = false;
+
+            Cycles -= 21; //If a range overflow occurs, DIVQ uses 21 fewer cycles than what is shown in the table.
+
+            return;
+        }
+
+        int remainder = numerator % denominator;
+
+        Result = result;
+        Remainder = (ushort)remainder;
+
+        //--two’s complement overflow
+        bool overflow = result > max || result < ~max;
+        ushort w = (ushort)result;
+        byte b = (byte)remainder;
+
+        N = overflow || w.Bit15();
+        Z = w == 0;
         V = overflow;
         C = (b & 1) != 0;
 

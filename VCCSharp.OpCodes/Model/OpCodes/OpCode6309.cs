@@ -297,6 +297,7 @@ internal abstract class OpCode6309
     protected static IFunction Multiply(ushort a, ushort b) => new Multiplication(a, b);
 
     protected static IFunction Divide(short numerator, sbyte denominator, int cycles) => new Division(numerator, denominator, cycles);
+    protected static IFunction Divide(int numerator, short denominator, int cycles) => new Division(numerator, denominator, cycles);
 
     protected static IFunction Boolean(byte result) => new Functions.Boolean(result);
     protected static IFunction Boolean(ushort result) => new Functions.Boolean(result);

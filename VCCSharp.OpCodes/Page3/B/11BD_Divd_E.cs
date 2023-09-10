@@ -1,4 +1,5 @@
-﻿using VCCSharp.OpCodes.Model.OpCodes;
+﻿using VCCSharp.OpCodes.Definitions;
+using VCCSharp.OpCodes.Model.OpCodes;
 
 namespace VCCSharp.OpCodes.Page3;
 
@@ -59,13 +60,16 @@ internal class _11BD_Divd_E : OpCode6309, IOpCode
 
         var fn = Divide(numerator, denominator, Cycles);
 
-        if (fn.Error)
+        if (fn.Error == DivisionErrors.DivideByZero)
         {
             return 3 + Exceptions.DivideByZero(); // 3 cycles to read byte and increment PC and compare to zero.
         }
 
-        A = (byte)fn.Remainder;
-        B = (byte)fn.Result;
+        if (fn.Error == DivisionErrors.None)
+        {
+            A = (byte)fn.Remainder;
+            B = (byte)fn.Result;
+        }
 
         CC_N = fn.N;
         CC_Z = fn.Z;

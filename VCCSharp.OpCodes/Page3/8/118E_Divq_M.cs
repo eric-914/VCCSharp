@@ -1,4 +1,5 @@
-﻿using VCCSharp.OpCodes.Model.OpCodes;
+﻿using VCCSharp.OpCodes.Definitions;
+using VCCSharp.OpCodes.Model.OpCodes;
 
 namespace VCCSharp.OpCodes.Page3;
 
@@ -50,45 +51,29 @@ internal class _118E_Divq_M : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        const ushort abort = 0xFFFF;
-        const ushort max = 0x7FFF;
-
         Cycles = 34;
 
+        int numerator = (int)Q;
         short denominator = (short)M16[PC]; PC += 2;
 
-        if (denominator == 0)
+        var fn = Divide(numerator, denominator, Cycles);
+
+        if (fn.Error == DivisionErrors.DivideByZero)
         {
             return 4 + Exceptions.DivideByZero(); // 4 cycles to read word and increment PC and compare to zero.
         }
 
-        int numerator = (int)Q;
-        int result = numerator / denominator;
-
-        //--range overflow
-        if (result > abort || result < -abort)
+        if (fn.Error == DivisionErrors.None)
         {
-            CC_N = false;
-            CC_Z = false;
-            CC_V = true;
-            CC_C = false;
-
-            return Cycles - 21;
+            D = (ushort)fn.Remainder;
+            W = (ushort)fn.Result;
         }
 
-        int remainder = numerator % denominator;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
-        D = (ushort)remainder;
-        W = (ushort)result;
-
-        //--two’s complement overflow
-        bool overflow = result > max || result < ~max;
-
-        CC_N = overflow || W.Bit15();
-        CC_Z = W == 0;
-        CC_V = overflow;
-        CC_C = (B & 1) != 0;
-
-        return Cycles - overflow.ToBit();
+        return fn.Cycles;
     }
 }

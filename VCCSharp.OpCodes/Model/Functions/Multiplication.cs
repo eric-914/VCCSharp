@@ -1,4 +1,5 @@
-﻿using VCCSharp.OpCodes.Model.Support;
+﻿using VCCSharp.OpCodes.Definitions;
+using VCCSharp.OpCodes.Model.Support;
 
 namespace VCCSharp.OpCodes.Model.Functions;
 
@@ -35,7 +36,7 @@ internal class Multiplication : IFunction
     /// </remarks>
     public bool C { get; private set; }
 
-    public bool Error => throw new NotImplementedException();
+    public DivisionErrors Error => throw new NotImplementedException();
 
     public Multiplication(byte a, byte b)
     {
