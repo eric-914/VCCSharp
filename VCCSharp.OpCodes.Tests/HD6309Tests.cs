@@ -131,6 +131,12 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
     [Test]
     public void TestPage3Opcodes()
     {
+        #region More Testing Needed -- Old code processes CC differently than for A/B.  Made same, but need to confirm.
+        //0x32/BOR
+        //0x33/BIOR
+        //0x34/BEOR
+        #endregion
+
         var opcodes = new byte[]
         {
             0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3F, 
@@ -158,9 +164,9 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
     [Test]
     public void OneOffTest()
     {
-        byte opcode = 0x32;
-        var seeds = new Seeds { 165, 103, 51, 99, 251, 154, 94, 137, 14, 203, 72, 35, 39, 187, 42, 239, 30, 105, 192, 4 };
-        var state = new TestState { CC = 0x4c, PC = 0x5f78, S = 0xbc4a, U = 0xd8e6, DP = 0xb4, D = 0xb128, X = 0x825e, Y = 0x7316, MD = 0x92, W = 0x9685, V = 0xc276 };
+        byte opcode = 0x3c;
+        var seeds = new Seeds { 131, 223, 83, 194, 205, 199, 91, 80, 65, 107, 170, 114, 219, 67, 10, 100, 147, 83, 183, 125 };
+        var state = new TestState { CC = 0xaf, PC = 0x2ac8, S = 0x9b2c, U = 0xcef1, DP = 0x3a, D = 0x668f, X = 0x8690, Y = 0xa69f, MD = 0xd8, W = 0xda18, V = 0x16fd };
 
         var memOld = new MemoryTester(seeds);
         var memNew = new MemoryTester(seeds);

@@ -69,22 +69,16 @@ internal class _1136_Ldbt_D : OpCode6309, IOpCode
             return Exceptions.IllegalInstruction();
         }
 
-        //TODO: Verify the following:
-
-        byte data = M8[address];
-
         byte sBit = (byte)(1 << source);
 
-        if ((data & sBit) != 0)
+        if ((mask & sBit) != 0)
         {
-            mask |= destination.ToSetMask();
+            R8[register] |= destination.ToSetMask();
         }
         else
         {
-            mask &= destination.ToClearMask();
+            R8[register] &= destination.ToClearMask();
         }
-
-        R8[register] = mask;
 
         return DynamicCycles._76;
     }

@@ -101,13 +101,14 @@ internal partial class OldOpcodes
                 case 0: // A Reg
                 case 1: // B Reg
                     byte t = PUR(_postByte);
-                    t &= (byte)~(1 << _dest);
+                    //t &= (byte)~(1 << _dest);
+                    t |= (byte)(1 << _dest);
                     PUR(_postByte, t);
                     //_cpu.ureg8[_postByte] |= (byte)~(1 << _dest);
                     break;
 
                 case 2: // CC Reg
-                    CC = (byte)(CC | (1 << _dest));
+                    SetCC((byte)(GetCC() | (1 << _dest)));
                     break;
             }
         }
@@ -137,7 +138,8 @@ internal partial class OldOpcodes
                 case 0: // A Reg
                 case 1: // B Reg
                     byte t = PUR(_postByte);
-                    t &= (byte)~(1 << _dest);
+                    //t &= (byte)~(1 << _dest);
+                    t |= (byte)(1 << _dest);
                     PUR(_postByte, t);
                     //_cpu.ureg8[_postByte] |= (byte)~(1 << _dest);
                     break;
@@ -173,7 +175,8 @@ internal partial class OldOpcodes
                 case 0: // A Reg
                 case 1: // B Reg
                     byte t = PUR(_postByte);
-                    t &= (byte)~(1 << _dest);
+                    //t &= (byte)~(1 << _dest);
+                    t ^= (byte)(1 << _dest);
                     PUR(_postByte, t);
                     //_cpu.ureg8[_postByte] ^= (byte)~(1 << _dest);
                     break;
@@ -208,7 +211,8 @@ internal partial class OldOpcodes
                 case 0: // A Reg
                 case 1: // B Reg
                     byte t = PUR(_postByte);
-                    t &= (byte)~(1 << _dest);
+                    //t &= (byte)~(1 << _dest);
+                    t ^= (byte)(1 << _dest);
                     PUR(_postByte, t);
                     //_cpu.ureg8[_postByte] ^= (byte)~(1 << _dest);
                     break;
@@ -225,7 +229,8 @@ internal partial class OldOpcodes
     public void Ldbt() // 36 
     {
         _postByte = MemRead8(PC_REG++);
-        _temp8 = MemRead8(DPADDRESS(PC_REG++));
+        ushort address = DPADDRESS(PC_REG++);
+        _temp8 = MemRead8(address);
         _source = (byte)((_postByte >> 3) & 7);
         _dest = (byte)(_postByte & 7);
         _postByte >>= 6;
@@ -243,7 +248,8 @@ internal partial class OldOpcodes
                 case 0: // A Reg
                 case 1: // B Reg
                     byte t = PUR(_postByte);
-                    t &= (byte)~(1 << _dest);
+                    //t &= (byte)~(1 << _dest);
+                    t |= (byte)(1 << _dest);
                     PUR(_postByte, t);
                     //_cpu.ureg8[_postByte] |= (byte)~(1 << _dest);
                     break;
@@ -266,7 +272,8 @@ internal partial class OldOpcodes
                     break;
 
                 case 2: // CC Reg
-                    SetCC((byte)(GetCC() & ~(1 << _dest)));
+                    //SetCC((byte)(GetCC() & ~(1 << _dest)));
+                    CC = ((byte)(CC & ~(1 << _dest)));
                     break;
             }
         }
@@ -430,8 +437,8 @@ internal partial class OldOpcodes
         _temp8 = (byte)(MD & _postByte);
         CC_Z = ZTEST(_temp8);
 
-        if ((_temp8 & 0x80) != 0) MD_ZERODIV = false;
         if ((_temp8 & 0x40) != 0) MD_ILLEGAL = false;
+        if ((_temp8 & 0x80) != 0) MD_ZERODIV = false;
 
         _cycleCounter += 4;
     }

@@ -237,12 +237,12 @@ internal abstract class OpCode6309
     /// <summary>
     /// <c>(IL)</c> Illegal Instruction Exception
     /// </summary>
-    protected bool MD_ILLEGAL { set => MD = MD.Bit_ILLEGAL(value); }
+    protected bool MD_ILLEGAL {  set => MD = MD.Bit_ILLEGAL(value); }
 
     /// <summary>
     /// <c>(/0)</c> Divide-by-zero Exception
     /// </summary>
-    protected bool MD_ZERODIV { set => MD = MD = MD.Bit_ILLEGAL(value); }
+    protected bool MD_ZERODIV { set => MD = MD = MD.Bit_ZERODIV(value); }
 
     /// <summary>
     /// Handles the intracies of calculating the sum two values: <c>a+b</c>

@@ -15,6 +15,7 @@ namespace VCCSharp.OpCodes.Page3;
 /// </summary>
 /// <remarks>
 /// The <c>BITMD</c> instruction logically ANDs the two most-significant bits of the MD register (the Divide-by-Zero and Illegal Instruction status bits) with the two most-significant bits of the immediate operand. 
+/// The corresponding MD bits are cleared only.
 /// <code>🚫 6309 ONLY 🚫</code>
 /// </remarks>
 /// 
@@ -57,8 +58,13 @@ internal class _113C_Bitmd_M : OpCode6309, IOpCode
 
         CC_Z = result == 0;
 
-        MD_ZERODIV = !result.Bit7();
-        MD_ILLEGAL = !result.Bit6();
+        byte mask = (byte)(MD & result.I());
+
+        //--Clear corresponding bits
+        //--The documentation would require reading the MD flags which goes against their read-only usage.
+        //--The logic can be simplified to: IF (BIT) → MD_BIT = false;
+        if (result.Bit6()) MD_ILLEGAL = false;
+        if (result.Bit7()) MD_ZERODIV = false;
 
         return 4;
     }
