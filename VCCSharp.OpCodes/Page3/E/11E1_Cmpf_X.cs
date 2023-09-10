@@ -35,6 +35,8 @@ internal class _11E1_Cmpf_X : OpCode6309, IOpCode
 {
     public int Exec()
     {
+        Cycles = 5;
+
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
@@ -46,6 +48,6 @@ internal class _11E1_Cmpf_X : OpCode6309, IOpCode
         CC_V = sum.V;
         CC_C = sum.C;
 
-        return 5;
+        return Cycles;
     }
 }

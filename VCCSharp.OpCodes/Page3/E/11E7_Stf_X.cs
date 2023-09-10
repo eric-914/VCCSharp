@@ -28,14 +28,16 @@ internal class _11E7_Stf_X : OpCode6309, IOpCode
 {
     public int Exec()
     {
+        Cycles = 5;
+
         ushort address = INDEXED[PC++];
 
-        M8[address] = E;
+        M8[address] = F;
 
-        CC_N = E.Bit7();
-        CC_Z = E == 0;
+        CC_N = F.Bit7();
+        CC_Z = F == 0;
         CC_V = false;
 
-        return 5;
+        return Cycles;
     }
 }

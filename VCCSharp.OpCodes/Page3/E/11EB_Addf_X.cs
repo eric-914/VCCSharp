@@ -33,6 +33,8 @@ internal class _11EB_Addf_X : OpCode6309, IOpCode
 {
     public int Exec()
     {
+        Cycles = 5;
+
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
@@ -46,6 +48,6 @@ internal class _11EB_Addf_X : OpCode6309, IOpCode
 
         F = (byte)sum.Result;
 
-        return 5;
+        return Cycles;
     }
 }

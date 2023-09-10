@@ -30,10 +30,10 @@ internal class _11D7_Stf_D : OpCode6309, IOpCode
     {
         ushort address = DIRECT[PC++];
 
-        M8[address] = E;
+        M8[address] = F;
 
-        CC_N = E.Bit7();
-        CC_Z = E == 0;
+        CC_N = F.Bit7();
+        CC_Z = F == 0;
         CC_V = false;
 
         return DynamicCycles._54;

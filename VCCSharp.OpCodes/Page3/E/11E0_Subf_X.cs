@@ -34,12 +34,14 @@ internal class _11E0_Subf_X : OpCode6309, IOpCode
 {
     public int Exec()
     {
+        Cycles = 5;
+
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
         var sum = Subtract(F, value);
 
-        CC_H = sum.H;
+        //CC_H = undefined
         CC_N = sum.N;
         CC_Z = sum.Z;
         CC_V = sum.V;
@@ -47,6 +49,6 @@ internal class _11E0_Subf_X : OpCode6309, IOpCode
 
         F = (byte)sum.Result;
 
-        return 5;
+        return Cycles;
     }
 }

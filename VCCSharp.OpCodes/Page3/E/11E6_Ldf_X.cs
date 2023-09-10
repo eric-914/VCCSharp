@@ -28,6 +28,8 @@ internal class _11E6_Ldf_X : OpCode6309, IOpCode
 {
     public int Exec()
     {
+        Cycles = 5;
+
         ushort address = INDEXED[PC++];
 
         F = M8[address];
@@ -36,6 +38,6 @@ internal class _11E6_Ldf_X : OpCode6309, IOpCode
         CC_Z = F == 0;
         CC_V = false;
 
-        return 5;
+        return Cycles;
     }
 }
