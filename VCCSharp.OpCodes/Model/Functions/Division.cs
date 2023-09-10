@@ -134,7 +134,7 @@ internal class Division : IFunction
         byte b = (byte)remainder;
 
         N = overflow || w.Bit15();
-        Z = w == 0;
+        Z = !overflow && w == 0;
         V = overflow;
         C = (b & 1) != 0;
 

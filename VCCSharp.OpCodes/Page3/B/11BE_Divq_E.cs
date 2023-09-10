@@ -62,7 +62,7 @@ internal class _11BE_Divq_E : OpCode6309, IOpCode
 
         if (fn.Error == DivisionErrors.DivideByZero)
         {
-            return 3 + Exceptions.DivideByZero(); // 3 cycles to read word and increment PC and compare to zero.
+            return 4 + Exceptions.DivideByZero(); // 4 cycles to read word and increment PC and compare to zero.
         }
 
         if (fn.Error == DivisionErrors.None)
