@@ -1,6 +1,6 @@
 ﻿namespace VCCSharp.Models.CPU.MC6809;
 
-public partial class MC6809
+partial class MC6809
 {
     #region CC Masks Macros
 
@@ -76,7 +76,7 @@ public partial class MC6809
 
     #endregion
 
-    #region Macros
+    #region Memory Macros
 
     public byte MemRead8(ushort address) => _modules.TCC1014.MemRead8(address);
     public void MemWrite8(byte data, ushort address) => _modules.TCC1014.MemWrite8(data, address);

@@ -5,10 +5,8 @@ using VCCSharp.OpCodes;
 
 namespace VCCSharp.Models.CPU.MC6809;
 
-// ReSharper disable once InconsistentNaming
 public interface IMC6809 : IProcessor { }
 
-// ReSharper disable once InconsistentNaming
 public partial class MC6809 : IMC6809
 {
     private readonly IModules _modules;
@@ -71,11 +69,11 @@ public partial class MC6809 : IMC6809
             _cpu.ureg8[index] = 0; //PUR
         }
 
-        _cpu.cc.bits = 0b01010000;
-
-        DP_REG = 0;
+        CC = 0b01010000;
 
         _isSyncWaiting = false;
+
+        DP_REG = 0;
 
         PC_REG = MemRead16(Define.VRESET);	//PC gets its reset vector
 
