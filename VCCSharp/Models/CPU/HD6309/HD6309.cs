@@ -62,9 +62,9 @@ public partial class HD6309 : IHD6309
 
         _isSyncWaiting = false;
 
-        DP_REG = 0;
+        DP = 0;
 
-        PC_REG = MemRead16(Define.VRESET);	//PC gets its reset vector
+        PC = MemRead16(Define.VRESET);	//PC gets its reset vector
 
         //_modules.TCC1014.SetMapType(false);	//shouldn't be here
     }
@@ -201,31 +201,26 @@ public partial class HD6309 : IHD6309
 
     private void PushStack(CPUInterrupts irq)
     {
-        void Write(byte data) => _modules.TCC1014.MemWrite8(data, --_cpu.s.Reg);
+        void W8(byte data) => _modules.TCC1014.MemWrite8(data, --_cpu.s.Reg);
+        void W16(ushort data) { W8((byte)data); W8((byte)(data >> 8)); };
 
-        Write(_cpu.pc.lsb);
-        Write(_cpu.pc.msb);
+        W16(PC);
 
         if (irq != CPUInterrupts.FIRQ)
         {
-            Write(_cpu.u.lsb);
-            Write(_cpu.u.msb);
-            Write(_cpu.y.lsb);
-            Write(_cpu.y.msb);
-            Write(_cpu.x.lsb);
-            Write(_cpu.x.msb);
-            Write(_cpu.dp.msb);
+            W16(U);
+            W16(Y);
+            W16(X);
+            W8(DP);
 
             if (_cpu.md.NATIVE6309)
             {
-                Write(_cpu.q.mswlsb); //F
-                Write(_cpu.q.mswmsb); //E
+                W16(W);
             }
 
-            Write(_cpu.q.lswlsb); //B
-            Write(_cpu.q.lswmsb); //A
+            W16(D);
         }
 
-        Write(_cpu.cc.bits);
+        W8(CC);
     }
 }
