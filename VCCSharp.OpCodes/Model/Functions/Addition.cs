@@ -8,6 +8,7 @@ namespace VCCSharp.OpCodes.Model.Functions;
 internal class Addition : IFunction
 {
     public int Result { get; private set; }
+    public int Remainder => throw new NotImplementedException();
 
     /// <summary>
     /// <c>H</c>: The Half-Carry flag is set if a carry out of bit 3/7 (into bit 4/8) occurred; cleared otherwise.

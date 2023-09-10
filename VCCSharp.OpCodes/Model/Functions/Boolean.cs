@@ -8,6 +8,7 @@ namespace VCCSharp.OpCodes.Model.Functions;
 internal class Boolean : IFunction
 {
     public int Result { get; }
+    public int Remainder => throw new NotImplementedException();
 
     public bool N { get; }
     public bool Z { get; }

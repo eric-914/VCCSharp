@@ -8,6 +8,7 @@ namespace VCCSharp.OpCodes.Model.Functions;
 internal class Subtraction : IFunction
 {
     public int Result { get; private set; }
+    public int Remainder => throw new NotImplementedException();
 
     /// <summary>
     /// <c>H</c>: The Half-Carry flag is undefined for 8-bit subtraction

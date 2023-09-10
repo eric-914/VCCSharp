@@ -5,6 +5,7 @@ namespace VCCSharp.OpCodes.Model.Functions;
 internal class Multiplication : IFunction
 {
     public int Result { get; private set; }
+    public int Remainder => throw new NotImplementedException();
 
     public bool E => throw new NotImplementedException();
     public bool F => throw new NotImplementedException();
