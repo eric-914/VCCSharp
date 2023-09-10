@@ -728,7 +728,6 @@ internal partial class OldOpcodes
         {
             CC_Z = false;
             CC_V = true;
-            CC_N = NTEST8((byte)(256 + _signedShort));
             CC_N = true;
             cycleAdjust = 1;
         }
@@ -771,10 +770,14 @@ internal partial class OldOpcodes
         D_REG = (ushort)((int)_temp32 % (short)_postWord);
         W_REG = (ushort)_signedInt;
 
-        if (_signedShort > 32767 || _signedShort < -32768)
+        int cycleAdjust = 0;
+
+        if (_signedInt > 32767 || _signedInt < -32768)
         {
+            CC_Z = false;
             CC_V = true;
             CC_N = true;
+            cycleAdjust = 1;
         }
         else
         {
@@ -784,15 +787,15 @@ internal partial class OldOpcodes
         }
 
         CC_C = (B_REG & 1) != 0;
-        _cycleCounter += 34;
+        _cycleCounter += 34 - cycleAdjust;
     }
 
     public void Muld_M() // 8F 
     {
         Q_REG = (uint)((short)D_REG * (short)MemRead16(PC_REG));
-        CC_C = false;
+        //CC_C = false;
         CC_Z = ZTEST(Q_REG);
-        CC_V = false;
+        //CC_V = false;
         CC_N = NTEST32(Q_REG);
         PC_REG += 2;
         _cycleCounter += 28;

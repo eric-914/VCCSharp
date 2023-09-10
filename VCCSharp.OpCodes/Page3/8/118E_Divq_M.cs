@@ -51,18 +51,21 @@ internal class _118E_Divq_M : OpCode6309, IOpCode
     public int Exec()
     {
         const ushort abort = 0xFFFF;
-        const ushort overflow = 0x8000;
+        const ushort max = 0x7FFF;
+
+        Cycles = 34;
 
         short denominator = (short)M16[PC]; PC += 2;
 
         if (denominator == 0)
         {
-            return Exceptions.DivideByZero();
+            return 4 + Exceptions.DivideByZero(); // 4 cycles to read word and increment PC and compare to zero.
         }
 
         int numerator = (int)Q;
         int result = numerator / denominator;
 
+        //--range overflow
         if (result > abort || result < -abort) //Abort
         {
             CC_N = false;
@@ -70,7 +73,7 @@ internal class _118E_Divq_M : OpCode6309, IOpCode
             CC_V = true;
             CC_C = false;
 
-            return 13; //34 - 21
+            return Cycles - 21;
         }
 
         int remainder = numerator % denominator;
@@ -78,11 +81,14 @@ internal class _118E_Divq_M : OpCode6309, IOpCode
         D = (ushort)remainder;
         W = (ushort)result;
 
-        CC_N = W.Bit15();
+        //--two’s complement overflow
+        bool overflow = result > max || result < ~max;
+
+        CC_N = overflow || W.Bit15();
         CC_Z = W == 0;
-        CC_V = result > ~overflow || result < overflow;
+        CC_V = overflow;
         CC_C = (B & 1) != 0;
 
-        return 34;
+        return Cycles - overflow.ToBit();;
     }
 }
