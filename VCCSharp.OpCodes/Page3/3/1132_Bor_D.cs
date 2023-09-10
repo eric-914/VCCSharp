@@ -78,7 +78,7 @@ internal class _1132_Bor_D : OpCode6309, IOpCode
         byte sBit = (byte)(1 << source);
         byte dBit = (byte)~(1 << destination);
 
-        if ((mask & sBit) == 0)
+        if ((mask & sBit) != 0)
         {
             R8[register] |= dBit;
         }

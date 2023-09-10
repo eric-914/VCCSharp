@@ -90,7 +90,7 @@ internal partial class OldOpcodes
 
         if (_postByte == 3)
         {
-            _____();
+            IllegalInstruction();
             return;
         }
 
@@ -107,7 +107,7 @@ internal partial class OldOpcodes
                     break;
 
                 case 2: // CC Reg
-                    SetCC((byte)(GetCC() | (1 << _dest)));
+                    CC = (byte)(CC | (1 << _dest));
                     break;
             }
         }
@@ -126,7 +126,7 @@ internal partial class OldOpcodes
 
         if (_postByte == 3)
         {
-            _____();
+            IllegalInstruction();
             return;
         }
 
@@ -162,7 +162,7 @@ internal partial class OldOpcodes
 
         if (_postByte == 3)
         {
-            _____();
+            IllegalInstruction();
             return;
         }
 
@@ -197,7 +197,7 @@ internal partial class OldOpcodes
 
         if (_postByte == 3)
         {
-            _____();
+            IllegalInstruction();
             return;
         }
 
@@ -232,7 +232,7 @@ internal partial class OldOpcodes
 
         if (_postByte == 3)
         {
-            _____();
+            IllegalInstruction();
             return;
         }
 
@@ -285,7 +285,7 @@ internal partial class OldOpcodes
 
         if (_postByte == 3)
         {
-            _____();
+            IllegalInstruction();
             return;
         }
 
@@ -329,7 +329,7 @@ internal partial class OldOpcodes
 
         if (_source > 4 || _dest > 4)
         {
-            _____();
+            IllegalInstruction();
             return;
         }
 
@@ -357,7 +357,7 @@ internal partial class OldOpcodes
 
         if (_source > 4 || _dest > 4)
         {
-            _____();
+            IllegalInstruction();
             return;
         }
 
@@ -385,7 +385,7 @@ internal partial class OldOpcodes
 
         if (_source > 4 || _dest > 4)
         {
-            _____();
+            IllegalInstruction();
             return;
         }
 
@@ -412,7 +412,7 @@ internal partial class OldOpcodes
 
         if (_source > 4 || _dest > 4)
         {
-            _____();
+            IllegalInstruction();
             return;
         }
 
