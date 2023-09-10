@@ -36,6 +36,6 @@ internal class _119F_Muld_D : OpCode6309, IOpCode
         CC_N = Q.Bit31();
         CC_Z = Q == 0;
 
-        return DynamicCycles._3029;  //--TODO: This implies a 6809 implementation?
+        return DynamicCycles._3029;
     }
 }

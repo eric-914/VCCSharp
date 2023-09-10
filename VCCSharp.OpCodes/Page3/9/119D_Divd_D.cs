@@ -51,27 +51,30 @@ internal class _119D_Divd_D : OpCode6309, IOpCode
     public int Exec()
     {
         const byte abort = 0xFF;
-        const byte overflow = 0x80;
+        const byte max = 0x7F;
+
+        Cycles = DynamicCycles._2726;
 
         ushort address = DIRECT[PC++];
         sbyte denominator = (sbyte)M8[address];
 
         if (denominator == 0)
         {
-            return Exceptions.DivideByZero();
+            return 3 + Exceptions.DivideByZero(); // 3 cycles to read byte and increment PC and compare to zero.
         }
 
         short numerator = (short)D;
         short result = (short)(numerator / denominator);
 
-        if (result > abort || result < -abort) //Abort
+        //--range overflow
+        if (result > abort || result < -abort)
         {
             CC_N = false;
             CC_Z = false;
             CC_V = true;
             CC_C = false;
 
-            return DynamicCycles._2726 - 13;
+            return Cycles - 13;
         }
 
         byte remainder = (byte)(numerator % denominator);
@@ -79,11 +82,14 @@ internal class _119D_Divd_D : OpCode6309, IOpCode
         A = remainder;
         B = (byte)result;
 
-        CC_N = B.Bit7();
+        //--two’s complement overflow
+        bool overflow = result > max || result < ~max;
+
+        CC_N = overflow || B.Bit7();
         CC_Z = B == 0;
-        CC_V = result > ~overflow || result < overflow;
+        CC_V = overflow;
         CC_C = (B & 1) != 0;
 
-        return DynamicCycles._2726;
+        return Cycles - overflow.ToBit();
     }
 }

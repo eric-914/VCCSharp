@@ -51,9 +51,11 @@ internal class _119E_Divq_D : OpCode6309, IOpCode
     public int Exec()
     {
         const ushort abort = 0xFFFF;
-        const ushort overflow = 0x8000;
+        const ushort max = 0x7FFF;
 
         ushort address = DIRECT[PC++];
+
+        Cycles = DynamicCycles._3635;
 
         short denominator = (short)M16[address];
 
@@ -65,14 +67,15 @@ internal class _119E_Divq_D : OpCode6309, IOpCode
         int numerator = (int)Q;
         int result = numerator / denominator;
 
-        if (result > abort || result < -abort) //Abort
+        //--range overflow
+        if (result > abort || result < -abort)
         {
-            CC_V = true;
             CC_N = false;
             CC_Z = false;
+            CC_V = true;
             CC_C = false;
 
-            return DynamicCycles._3635 - 21;
+            return Cycles - 21;
         }
 
         int remainder = numerator % denominator;
@@ -80,11 +83,14 @@ internal class _119E_Divq_D : OpCode6309, IOpCode
         D = (ushort)remainder;
         W = (ushort)result;
 
-        CC_N = W.Bit15();
+        //--two’s complement overflow
+        bool overflow = result > max || result < ~max;
+
+        CC_N = overflow || W.Bit15();
         CC_Z = W == 0;
-        CC_V = result > ~overflow || result < overflow;
+        CC_V = overflow;
         CC_C = (B & 1) != 0;
 
-        return DynamicCycles._3635; //--TODO: This implies a 6809 implementation?
+        return Cycles - overflow.ToBit();
     }
 }

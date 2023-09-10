@@ -66,7 +66,7 @@ internal class _118E_Divq_M : OpCode6309, IOpCode
         int result = numerator / denominator;
 
         //--range overflow
-        if (result > abort || result < -abort) //Abort
+        if (result > abort || result < -abort)
         {
             CC_N = false;
             CC_Z = false;
@@ -89,6 +89,6 @@ internal class _118E_Divq_M : OpCode6309, IOpCode
         CC_V = overflow;
         CC_C = (B & 1) != 0;
 
-        return Cycles - overflow.ToBit();;
+        return Cycles - overflow.ToBit();
     }
 }
