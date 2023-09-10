@@ -715,17 +715,22 @@ internal partial class OldOpcodes
             CC_N = false;
             CC_Z = false;
             CC_C = false;
-            _cycleCounter += 17;
+            _cycleCounter += 25 - 13;
             return;
         }
 
         A_REG = (byte)((short)_postWord % (sbyte)_postByte);
         B_REG = (byte)_signedShort;
 
+        int cycleAdjust = 0;
+
         if (_signedShort > 127 || _signedShort < -128)
         {
+            CC_Z = false;
             CC_V = true;
+            CC_N = NTEST8((byte)(256 + _signedShort));
             CC_N = true;
+            cycleAdjust = 1;
         }
         else
         {
@@ -735,7 +740,7 @@ internal partial class OldOpcodes
         }
 
         CC_C = (B_REG & 1) != 0;
-        _cycleCounter += 25;
+        _cycleCounter += 25 - cycleAdjust;
     }
 
     public void Divq_M() // 8E 

@@ -38,7 +38,7 @@ internal class _1180_Sube_M : OpCode6309, IOpCode
 
         var sum = Subtract(E, value);
 
-        CC_H = sum.H;
+        //CC_H = undefined
         CC_N = sum.N;
         CC_Z = sum.Z;
         CC_V = sum.V;

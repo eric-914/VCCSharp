@@ -40,7 +40,7 @@ internal class _115C_Incf_I : OpCode6309, IOpCode
         CC_Z = result == 0;
         CC_V = F == 0x7F;
 
-        result = F;
+        F = result;
 
         return DynamicCycles._32;
     }

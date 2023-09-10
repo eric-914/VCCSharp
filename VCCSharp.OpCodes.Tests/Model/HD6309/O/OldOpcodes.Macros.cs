@@ -195,7 +195,7 @@ internal partial class OldOpcodes
 
     private void ErrorVector()
     {
-        CC_E = true; //1;
+        CC_E = true;
 
         MemWrite8(PC_L, --S_REG);
         MemWrite8(PC_H, --S_REG);
