@@ -9,6 +9,7 @@ internal class Subtraction : IFunction
 {
     public int Result { get; private set; }
     public int Remainder => throw new NotImplementedException();
+    public int Cycles => throw new NotImplementedException();
 
     /// <summary>
     /// <c>H</c>: The Half-Carry flag is undefined for 8-bit subtraction
@@ -34,6 +35,8 @@ internal class Subtraction : IFunction
     public bool I => throw new NotImplementedException();
     public bool F => throw new NotImplementedException();
     public bool E => throw new NotImplementedException();
+
+    public bool Error => throw new NotImplementedException();
 
     public Subtraction(byte a, byte b, byte cc)
     {

@@ -9,6 +9,7 @@ internal class Addition : IFunction
 {
     public int Result { get; private set; }
     public int Remainder => throw new NotImplementedException();
+    public int Cycles => throw new NotImplementedException();
 
     /// <summary>
     /// <c>H</c>: The Half-Carry flag is set if a carry out of bit 3/7 (into bit 4/8) occurred; cleared otherwise.
@@ -34,6 +35,8 @@ internal class Addition : IFunction
     public bool I => throw new NotImplementedException();
     public bool F => throw new NotImplementedException();
     public bool E => throw new NotImplementedException();
+
+    public bool Error => throw new NotImplementedException();
 
     public Addition(byte a, byte b, byte cc)
     {

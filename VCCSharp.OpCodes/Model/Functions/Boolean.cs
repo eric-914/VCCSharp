@@ -9,6 +9,7 @@ internal class Boolean : IFunction
 {
     public int Result { get; }
     public int Remainder => throw new NotImplementedException();
+    public int Cycles => throw new NotImplementedException();
 
     public bool N { get; }
     public bool Z { get; }
@@ -19,6 +20,8 @@ internal class Boolean : IFunction
     public bool H => throw new NotImplementedException();
     public bool I => throw new NotImplementedException();
     public bool C => throw new NotImplementedException();
+
+    public bool Error => throw new NotImplementedException();
 
     public Boolean(byte result)
     {

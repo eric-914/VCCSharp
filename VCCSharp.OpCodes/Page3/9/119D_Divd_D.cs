@@ -50,46 +50,28 @@ internal class _119D_Divd_D : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        const byte abort = 0xFF;
-        const byte max = 0x7F;
-
         Cycles = DynamicCycles._2726;
 
         ushort address = DIRECT[PC++];
+
+        short numerator = (short)D;
         sbyte denominator = (sbyte)M8[address];
 
-        if (denominator == 0)
+        var fn = Divide(numerator, denominator, Cycles);
+
+        if (fn.Error)
         {
             return 3 + Exceptions.DivideByZero(); // 3 cycles to read byte and increment PC and compare to zero.
         }
 
-        short numerator = (short)D;
-        short result = (short)(numerator / denominator);
+        A = (byte)fn.Remainder;
+        B = (byte)fn.Result;
 
-        //--range overflow
-        if (result > abort || result < -abort)
-        {
-            CC_N = false;
-            CC_Z = false;
-            CC_V = true;
-            CC_C = false;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
-            return Cycles - 13;
-        }
-
-        byte remainder = (byte)(numerator % denominator);
-
-        A = remainder;
-        B = (byte)result;
-
-        //--two’s complement overflow
-        bool overflow = result > max || result < ~max;
-
-        CC_N = overflow || B.Bit7();
-        CC_Z = B == 0;
-        CC_V = overflow;
-        CC_C = (B & 1) != 0;
-
-        return Cycles - overflow.ToBit();
+        return fn.Cycles;
     }
 }

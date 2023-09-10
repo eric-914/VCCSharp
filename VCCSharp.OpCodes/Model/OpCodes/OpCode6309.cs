@@ -237,7 +237,7 @@ internal abstract class OpCode6309
     /// <summary>
     /// <c>(IL)</c> Illegal Instruction Exception
     /// </summary>
-    protected bool MD_ILLEGAL {  set => MD = MD.Bit_ILLEGAL(value); }
+    protected bool MD_ILLEGAL { set => MD = MD.Bit_ILLEGAL(value); }
 
     /// <summary>
     /// <c>(/0)</c> Divide-by-zero Exception
@@ -295,6 +295,8 @@ internal abstract class OpCode6309
     /// <param name="b">second 16-bit</param>
     /// <returns>object with summation results</returns>
     protected static IFunction Multiply(ushort a, ushort b) => new Multiplication(a, b);
+
+    protected static IFunction Divide(short numerator, sbyte denominator, int cycles) => new Division(numerator, denominator, cycles);
 
     protected static IFunction Boolean(byte result) => new Functions.Boolean(result);
     protected static IFunction Boolean(ushort result) => new Functions.Boolean(result);

@@ -6,6 +6,7 @@ internal class Multiplication : IFunction
 {
     public int Result { get; private set; }
     public int Remainder => throw new NotImplementedException();
+    public int Cycles => throw new NotImplementedException();
 
     public bool E => throw new NotImplementedException();
     public bool F => throw new NotImplementedException();
@@ -33,6 +34,8 @@ internal class Multiplication : IFunction
     /// Applies to 8-bit × 8-bit only
     /// </remarks>
     public bool C { get; private set; }
+
+    public bool Error => throw new NotImplementedException();
 
     public Multiplication(byte a, byte b)
     {
