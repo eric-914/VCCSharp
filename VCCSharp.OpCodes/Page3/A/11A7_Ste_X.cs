@@ -27,6 +27,8 @@ internal class _11A7_Ste_X : OpCode6309, IOpCode
 {
     public int Exec()
     {
+        Cycles = 5;
+
         ushort address = INDEXED[PC++];
 
         M8[address] = E;
@@ -35,6 +37,6 @@ internal class _11A7_Ste_X : OpCode6309, IOpCode
         CC_Z = E == 0;
         CC_V = false;
 
-        return 5;
+        return Cycles;
     }
 }

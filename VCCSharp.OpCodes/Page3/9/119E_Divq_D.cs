@@ -61,7 +61,7 @@ internal class _119E_Divq_D : OpCode6309, IOpCode
 
         if (denominator == 0)
         {
-            return Exceptions.DivideByZero();
+            return 4 + Exceptions.DivideByZero(); // 4 cycles to read word and increment PC and compare to zero.
         }
 
         int numerator = (int)Q;
