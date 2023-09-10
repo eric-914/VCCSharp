@@ -24,13 +24,4 @@ public class HD6309CpuRegisters
 
     public RegisterCC cc { get; } = new();
     public RegisterMD md { get; } = new();
-
-    public Reg8 ureg8 { get; }
-    public Reg16 xfreg16 { get; }
-
-    public HD6309CpuRegisters()
-    {
-        ureg8 = new Reg8(this);
-        xfreg16 = new Reg16(this);
-    }
 }

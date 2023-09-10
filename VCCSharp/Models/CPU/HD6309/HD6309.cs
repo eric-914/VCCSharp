@@ -57,17 +57,6 @@ public partial class HD6309 : IHD6309
 
     public void Reset()
     {
-        //Set all register to 0 except V
-        for (byte index = 0; index <= 6; index++)
-        {
-            _cpu.xfreg16[index] = 0; //PXF  
-        }
-
-        for (byte index = 0; index <= 7; index++)
-        {
-            _cpu.ureg8[index] = 0; //PUR
-        }
-
         CC = 0b01010000;
         MD = 0b00000000;
 

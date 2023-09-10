@@ -20,13 +20,4 @@ public class MC6809CpuRegisters
     public Register16 dp { get; } = new();
 
     public RegisterCC cc { get; } = new();
-
-    public Reg8 ureg8 { get; }
-    public Reg16 xfreg16 { get; }
-
-    public MC6809CpuRegisters()
-    {
-        ureg8 = new Reg8(this);
-        xfreg16 = new Reg16(this);
-    }
 }

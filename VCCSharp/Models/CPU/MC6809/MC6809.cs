@@ -57,18 +57,6 @@ public partial class MC6809 : IMC6809
 
     public void Reset()
     {
-        byte index;
-
-        for (index = 0; index <= 5; index++)
-        {
-            _cpu.xfreg16[index] = 0; //PXF
-        }
-
-        for (index = 0; index <= 7; index++)
-        {
-            _cpu.ureg8[index] = 0; //PUR
-        }
-
         CC = 0b01010000;
 
         _isSyncWaiting = false;
