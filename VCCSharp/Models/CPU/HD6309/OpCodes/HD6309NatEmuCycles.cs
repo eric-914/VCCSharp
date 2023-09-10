@@ -23,7 +23,7 @@ public class HD6309NatEmuCycles
     public byte _3635 { get; set; } = 36;
     public byte _3029 { get; set; } = 30;
     public byte _2827 { get; set; } = 28;
-    public byte _3726 { get; set; } = 37;
+    public byte _3736 { get; set; } = 37;
     public byte _3130 { get; set; } = 31;
     public byte _42 { get; set; } = 4;
     public byte _53 { get; set; } = 5;
@@ -50,7 +50,7 @@ public class HD6309NatEmuCycles
         {36, 35},  /* M3635 */
         {30, 29},  /* M3029 */
         {28, 27},  /* M2827 */
-        {37, 26},  /* M3726 */
+        {37, 36},  /* M3736 */
         {31, 30},  /* M3130 */
         {4, 2},    /* M42 */
         {5, 3}     /* M53 */
@@ -82,7 +82,7 @@ public class HD6309NatEmuCycles
                 17 => _3635,
                 18 => _3029,
                 19 => _2827,
-                20 => _3726,
+                20 => _3736,
                 21 => _3130,
                 22 => _42,
                 23 => _53,
@@ -114,7 +114,7 @@ public class HD6309NatEmuCycles
                 case 17: _3635 = value; break;
                 case 18: _3029 = value; break;
                 case 19: _2827 = value; break;
-                case 20: _3726 = value; break;
+                case 20: _3736 = value; break;
                 case 21: _3130 = value; break;
                 case 22: _42 = value; break;
                 case 23: _53 = value; break;

@@ -1307,17 +1307,21 @@ internal partial class OldOpcodes
             CC_N = false;
             CC_Z = false;
             CC_C = false;
-            _cycleCounter += 17;
+            _cycleCounter += _instance._2827 - 13;
             return;
         }
 
         A_REG = (byte)((short)_postWord % (sbyte)_postByte);
         B_REG = (byte)_signedShort;
 
+        int cycleAdjust = 0;
+
         if (_signedShort > 127 || _signedShort < -128)
         {
+            CC_Z = false;
             CC_V = true;
             CC_N = true;
+            cycleAdjust = 1;
         }
         else
         {
@@ -1326,7 +1330,7 @@ internal partial class OldOpcodes
             CC_V = false;
         }
         CC_C = (B_REG & 1) != 0;
-        _cycleCounter += 25;
+        _cycleCounter += _instance._2827 - cycleAdjust;
     }
 
     public void Divq_E() // BE 
@@ -1350,17 +1354,21 @@ internal partial class OldOpcodes
             CC_N = false;
             CC_Z = false;
             CC_C = false;
-            _cycleCounter += _instance._3635 - 21;
+            _cycleCounter += _instance._3736 - 21;
             return;
         }
 
         D_REG = (ushort)((int)_temp32 % (short)_postWord);
         W_REG = (ushort)_signedInt;
 
-        if (_signedShort > 32767 || _signedShort < -32768)
+        int cycleAdjust = 0;
+
+        if (_signedInt > 32767 || _signedInt < -32768)
         {
+            CC_Z = false;
             CC_V = true;
             CC_N = true;
+            cycleAdjust = 1;
         }
         else
         {
@@ -1369,16 +1377,16 @@ internal partial class OldOpcodes
             CC_V = false;
         }
         CC_C = (B_REG & 1) != 0;
-        _cycleCounter += _instance._3635;
+        _cycleCounter += _instance._3736 - cycleAdjust;
     }
 
     public void Muld_E() // BF 
     {
-        Q_REG = (ushort)((short)D_REG * (short)MemRead16(MemRead16(PC_REG)));
+        Q_REG = (uint)((short)D_REG * (short)MemRead16(MemRead16(PC_REG)));
         PC_REG += 2;
-        CC_C = false;
+        //CC_C = false;
         CC_Z = ZTEST(Q_REG);
-        CC_V = false;
+        //CC_V = false;
         CC_N = NTEST32(Q_REG);
         _cycleCounter += _instance._3130;
     }
