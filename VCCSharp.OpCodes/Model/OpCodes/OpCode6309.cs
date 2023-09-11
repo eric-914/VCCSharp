@@ -31,7 +31,7 @@ internal abstract class OpCode6309
     /// </summary>
     protected Memory32Bit M32 => SS.M32;
 
-    protected MemoryDP DIRECT => SS.DIRECT;
+    protected MemoryDirect DIRECT => SS.DIRECT;
 
     /// <summary>
     /// 8-bit "Effective Address" memory access
@@ -61,26 +61,6 @@ internal abstract class OpCode6309
 
     protected int SyncWait() => cpu.SynchronizeWithInterrupt();
 
-    /// <summary>
-    /// 8-bit register
-    /// </summary>
-    protected byte A { get => cpu.A; set => cpu.A = value; }
-
-    /// <summary>
-    /// 8-bit register
-    /// </summary>
-    protected byte B { get => cpu.B; set => cpu.B = value; }
-
-    /// <summary>
-    /// 8-bit register
-    /// </summary>
-    protected byte E { get => cpu.E; set => cpu.E = value; }
-
-    /// <summary>
-    /// 8-bit register
-    /// </summary>
-    protected byte F { get => cpu.F; set => cpu.F = value; }
-
     //TODO: See details in IRegisterDP
     public byte DP { get => cpu.DP; set => cpu.DP = value; }
 
@@ -93,6 +73,16 @@ internal abstract class OpCode6309
     /// 16-bit register <c>A.B</c>
     /// </summary>
     public ushort D { get => cpu.D; set => cpu.D = value; }
+
+    /// <summary>
+    /// 8-bit register <c>A</c>
+    /// </summary>
+    protected byte A { get => cpu.A(); set => cpu.A(value); }
+
+    /// <summary>
+    /// 8-bit register <c>B</c>
+    /// </summary>
+    protected byte B { get => cpu.B(); set => cpu.B(value); }
 
     /// <summary>
     /// 16-bit register
@@ -213,6 +203,16 @@ internal abstract class OpCode6309
     /// 16-bit register <c>E.F</c>
     /// </summary>
     public ushort W { get => cpu.W; set => cpu.W = value; }
+
+    /// <summary>
+    /// 8-bit register
+    /// </summary>
+    protected byte E { get => cpu.E(); set => cpu.E(value); }
+
+    /// <summary>
+    /// 8-bit register
+    /// </summary>
+    protected byte F { get => cpu.F(); set => cpu.F(value); }
 
     /// <summary>
     /// 32-bit register <c>D.W</c> or <c>A.B.E.F</c>

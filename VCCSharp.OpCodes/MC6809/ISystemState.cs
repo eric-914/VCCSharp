@@ -11,7 +11,7 @@ internal interface ISystemState
     Memory8Bit M8 { get; }
     Memory16Bit M16 { get; }
 
-    MemoryDP DIRECT { get; }
+    MemoryDirect DIRECT { get; }
     MemoryIndexed INDEXED { get; }
 
     IRegisters8Bit R8 { get; }

@@ -11,7 +11,7 @@ namespace VCCSharp.OpCodes.MC6809;
 /// │  1011  │    DP    ││  1111  │ invalid  │
 /// ╰────────┴─────────-╯╰────────┴─────────-╯
 internal class Registers8Bit<T> : IRegisters8Bit
-    where T : IRegisterCC, IRegisterA, IRegisterB, IRegisterDP
+    where T : IRegisterCC, IRegisterD, IRegisterDP
 {
     private readonly T _cpu;
 
@@ -32,11 +32,11 @@ internal class Registers8Bit<T> : IRegisters8Bit
         set => _setter[index](value);
     }
 
-    private byte A { get => _cpu.A; set => _cpu.A = value; }
-    private byte B { get => _cpu.B; set => _cpu.B = value; }
+    private byte A { get => _cpu.A(); set => _cpu.A(value); }
+    private byte B { get => _cpu.B(); set => _cpu.B(value); }
     private byte CC { get => _cpu.CC; set => _cpu.CC = value; }
     private byte DP { get => _cpu.DP; set => _cpu.DP = value; }
 
-    byte invalid() => 0xFF;
-    void nop(byte _) { }
+    private byte invalid() => 0xFF;
+    private void nop(byte _) { }
 }

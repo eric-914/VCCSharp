@@ -1,10 +1,9 @@
 ﻿using VCCSharp.OpCodes.Memory;
-using VCCSharp.OpCodes.Model.OpCodes;
 using VCCSharp.OpCodes.Model.Support;
 
 namespace VCCSharp.OpCodes.Model.Memory;
 
-internal class MemoryIndexed : ITempAccess
+internal class MemoryIndexed
 {
     private readonly IMemory8bit _cpu;
     private readonly IExtendedAddressing _ea;
@@ -27,6 +26,4 @@ internal class MemoryIndexed : ITempAccess
             return _ea.CalculateEA(value);
         }
     }
-
-    public IExtendedAddressing EA => _ea;
 }

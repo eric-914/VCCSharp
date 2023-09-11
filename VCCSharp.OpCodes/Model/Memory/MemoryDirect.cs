@@ -2,11 +2,11 @@
 
 namespace VCCSharp.OpCodes.Model.Memory;
 
-internal class MemoryDP
+internal class MemoryDirect
 {
     private readonly IAddressDP _cpu;
 
-    public MemoryDP(IAddressDP cpu)
+    public MemoryDirect(IAddressDP cpu)
     {
         _cpu = cpu;
     }

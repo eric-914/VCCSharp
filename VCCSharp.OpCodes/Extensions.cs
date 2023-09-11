@@ -1,4 +1,5 @@
 ﻿using VCCSharp.OpCodes.Definitions;
+using VCCSharp.OpCodes.Registers;
 
 namespace VCCSharp.OpCodes;
 
@@ -73,4 +74,22 @@ internal static class Extensions
     public static byte ToBit(this bool b) => b ? (byte)1 : (byte)0;
     public static byte ToSetMask(this byte b) => (byte)(1 << b);
     public static byte ToClearMask(this byte b) => (byte)~(1 << b);
+
+    #region Register D ⇔ Register A (High) | Register B (Low)
+
+    public static byte A(this IRegisterD d) => d.D.H();
+    public static void A(this IRegisterD d, byte value) => d.D = d.D.H(value);
+    public static byte B(this IRegisterD d) => d.D.L();
+    public static void B(this IRegisterD d, byte value) => d.D = d.D.L(value);
+
+    #endregion
+
+    #region Register W ⇔ Register E (High) | Register F (Low)
+
+    public static byte E(this IRegisterW w) => w.W.H();
+    public static void E(this IRegisterW w, byte value) => w.W = w.W.H(value);
+    public static byte F(this IRegisterW w) => w.W.L();
+    public static void F(this IRegisterW w, byte value) => w.W = w.W.L(value);
+
+    #endregion
 }

@@ -39,6 +39,6 @@ internal class Registers16Bit<T> : IRegisters16Bit
     private ushort S { get => _cpu.S; set => _cpu.S = value; }
     private ushort PC { get => _cpu.PC; set => _cpu.PC = value; }
 
-    ushort invalid() => 0xFFFF;
-    void nop(ushort _) { }
+    private ushort invalid() => 0xFFFF;
+    private void nop(ushort _) { }
 }

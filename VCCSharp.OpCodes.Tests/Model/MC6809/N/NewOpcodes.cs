@@ -28,7 +28,7 @@ internal partial class NewOpcodes : ISystemState, IExtendedAddress
 
     public Memory16Bit M16 => new(this);
 
-    public MemoryDP DIRECT => new(this);
+    public MemoryDirect DIRECT => new(this);
 
     public MemoryIndexed INDEXED => new(cpu, this);
 

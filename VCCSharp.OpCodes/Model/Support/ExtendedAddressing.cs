@@ -4,7 +4,7 @@ using VCCSharp.OpCodes.Registers;
 
 namespace VCCSharp.OpCodes.Model.Support;
 
-internal interface IExtendedAddress : IRegisterPC, IRegisterA, IRegisterB, IRegisterD
+internal interface IExtendedAddress : IRegisterPC, IRegisterD
 {
     Memory8Bit M8 { get; }
     Memory16Bit M16 { get; }
@@ -108,8 +108,8 @@ internal class ExtendedAddressing : IExtendedAddressing
 
     private ushort PC { get => _ea.PC; set => _ea.PC = value;}
     private ushort D { get => _ea.D; set => _ea.D = value;}
-    private byte A { get => _ea.A; set => _ea.A = value;}
-    private byte B { get => _ea.B; set => _ea.B = value;}
+    private byte A { get => _ea.A(); set => _ea.A(value); }
+    private byte B { get => _ea.B(); set => _ea.B(value); }
 
     private int Cycles { get => _ea.Cycles; set => _ea.Cycles = value; }
 
@@ -120,9 +120,6 @@ internal class ExtendedAddressing : IExtendedAddressing
 
     public ushort CalculateEA(byte postByte)
     {
-        //--If encountered, probably forgot to set Cycles for the opcode.
-        //System.Diagnostics.Debug.Assert(Cycles > 0);
-
         ushort address = 0;
         byte reg = (byte)(((postByte >> 5) & 3) + 1); //_RR_____ + 1
 

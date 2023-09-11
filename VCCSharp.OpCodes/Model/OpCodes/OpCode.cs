@@ -1,5 +1,4 @@
 ﻿using VCCSharp.OpCodes.MC6809;
-using VCCSharp.OpCodes.Memory;
 using VCCSharp.OpCodes.Model.Functions;
 using VCCSharp.OpCodes.Model.Memory;
 using VCCSharp.OpCodes.Model.Support;
@@ -7,21 +6,14 @@ using VCCSharp.OpCodes.Registers;
 
 namespace VCCSharp.OpCodes.Model.OpCodes;
 
-public interface ITempAccess
-{
-    IExtendedAddressing EA { get;}
-}
-
 /// <summary>
 /// Most OpCodes are 6809 compatible, so this is the default OpCode base class.
 /// </summary>
-internal abstract class OpCode : ITempAccess
+internal abstract class OpCode
 {
     public ISystemState SS { get; set; } = default!;
 
     private IState cpu => SS.cpu;
-
-    public IExtendedAddressing EA => ((ITempAccess)SS).EA;
 
     /// <summary>
     /// 8-bit memory access
@@ -33,7 +25,7 @@ internal abstract class OpCode : ITempAccess
     /// </summary>
     protected Memory16Bit M16 => SS.M16;
 
-    protected MemoryDP DIRECT => SS.DIRECT;
+    protected MemoryDirect DIRECT => SS.DIRECT;
 
     /// <summary>
     /// 8-bit "Effective Address" memory access
@@ -61,16 +53,6 @@ internal abstract class OpCode : ITempAccess
 
     protected int SynchronizeWithInterrupt() => cpu.SynchronizeWithInterrupt(); 
 
-    /// <summary>
-    /// 8-bit register
-    /// </summary>
-    protected byte A { get => cpu.A; set => cpu.A = value; }
-
-    /// <summary>
-    /// 8-bit register
-    /// </summary>
-    protected byte B { get => cpu.B; set => cpu.B = value; }
-
     //TODO: See details in IRegisterDP
     protected byte DP { get => cpu.DP; set => cpu.DP = value; }
 
@@ -83,6 +65,16 @@ internal abstract class OpCode : ITempAccess
     /// 16-bit register <c>A.B</c>
     /// </summary>
     protected ushort D { get => cpu.D; set => cpu.D = value; }
+
+    /// <summary>
+    /// 8-bit register <c>A</c>
+    /// </summary>
+    protected byte A { get => cpu.A(); set => cpu.A(value); }
+
+    /// <summary>
+    /// 8-bit register <c>B</c>
+    /// </summary>
+    protected byte B { get => cpu.B(); set => cpu.B(value); }
 
     /// <summary>
     /// 16-bit register
