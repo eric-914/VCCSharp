@@ -5,6 +5,6 @@ namespace VCCSharp.OpCodes.HD6309;
 /// <summary>
 /// All registers required for HD6309 CPU OpCodes, which are all MC6809 registered, extended.
 /// </summary>
-public interface IRegisters : MC6809.IRegisters, IRegisterE, IRegisterF, IRegisterW, IRegisterMD, IRegisterV, IRegisterZ, IRegisterQ
+public interface IRegisters : MC6809.IRegisters, IRegisterW, IRegisterMD, IRegisterV, IRegisterQ
 {
 }

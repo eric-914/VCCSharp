@@ -7,7 +7,7 @@
 /// <c>E</c> is contained in the high 8 bits and <c>F</c> is contained in the low 8 bits. 
 /// <code>🚫 6309 ONLY 🚫</code>
 /// </summary>
-public interface IRegisterW : IRegisterE, IRegisterF
+public interface IRegisterW //: IRegisterE, IRegisterF
 {
     /// <summary>
     /// 16 bit accumulator <c>W</c>. 

@@ -8,7 +8,7 @@
 /// Certain instructions concatenate the <c>A</c> and <c>B</c> registers to form a single 16-bit accumulator. 
 /// This is referred to as the <c>D</c> register, and is formed with the <c>A</c> register as the most significant byte and <c>B</c> as the least significant byte.
 /// </remarks>
-public interface IRegisterD : IRegisterA, IRegisterB
+public interface IRegisterD //: IRegisterA, IRegisterB
 {
     /// <summary>
     /// 16 bit accumulator <c>D</c>. 
