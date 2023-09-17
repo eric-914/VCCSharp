@@ -11,23 +11,23 @@ partial class HD6309 : VCCSharp.OpCodes.HD6309.IState
 
     #region Registers 
 
-    public byte CC { get => _cpu.cc.bits; set => _cpu.cc.bits = value; }
-    public ushort PC { get => _cpu.pc.Reg; set => _cpu.pc.Reg = value; }
-    public byte DP { get => _cpu.dp.msb; set => _cpu.dp.msb = value; }
-    public ushort D { get => _cpu.q.lsw; set => _cpu.q.lsw = value; }
-    public byte A { get => _cpu.q.lswmsb; set => _cpu.q.lswmsb = value; }
-    public byte B { get => _cpu.q.lswlsb; set => _cpu.q.lswlsb = value; }
-    public ushort X { get => _cpu.x.Reg; set => _cpu.x.Reg = value; }
-    public ushort Y { get => _cpu.y.Reg; set => _cpu.y.Reg = value; }
-    public ushort S { get => _cpu.s.Reg; set => _cpu.s.Reg = value; }
-    public ushort U { get => _cpu.u.Reg; set => _cpu.u.Reg = value; }
+    public byte CC { get => cc.bits; set => cc.bits = value; }
+    public ushort PC { get => pc.Reg; set => pc.Reg = value; }
+    public byte DP { get => dp.msb; set => dp.msb = value; }
+    public ushort D { get => q.lsw; set => q.lsw = value; }
+    public byte A { get => q.lswmsb; set => q.lswmsb = value; }
+    public byte B { get => q.lswlsb; set => q.lswlsb = value; }
+    public ushort X { get => x.Reg; set => x.Reg = value; }
+    public ushort Y { get => y.Reg; set => y.Reg = value; }
+    public ushort S { get => s.Reg; set => s.Reg = value; }
+    public ushort U { get => u.Reg; set => u.Reg = value; }
 
-    public byte MD { get => _cpu.md.bits; set => _cpu.md.bits = value; }
-    public ushort V { get => _cpu.v.Reg; set => _cpu.v.Reg = value; }
-    public uint Q { get => _cpu.q.Reg; set => _cpu.q.Reg = value; }
-    public ushort W { get => _cpu.q.msw; set => _cpu.q.msw = value; }
-    public byte E { get => _cpu.q.mswmsb; set => _cpu.q.mswmsb = value; }
-    public byte F { get => _cpu.q.mswlsb; set => _cpu.q.mswlsb = value; }
+    public byte MD { get => md.bits; set => md.bits = value; }
+    public ushort V { get => v.Reg; set => v.Reg = value; }
+    public uint Q { get => q.Reg; set => q.Reg = value; }
+    public ushort W { get => q.msw; set => q.msw = value; }
+    public byte E { get => q.mswmsb; set => q.mswmsb = value; }
+    public byte F { get => q.mswlsb; set => q.mswlsb = value; }
 
     #endregion
 

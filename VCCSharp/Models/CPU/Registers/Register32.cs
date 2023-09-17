@@ -1,9 +1,9 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace VCCSharp.Models.CPU.HD6309.Registers;
+namespace VCCSharp.Models.CPU.Registers;
 
 [StructLayout(LayoutKind.Explicit)]
-internal class HD6309WideRegister
+internal class Register32
 {
     [FieldOffset(0)]
     internal uint Reg;

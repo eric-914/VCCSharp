@@ -13,12 +13,12 @@ partial class HD6309
 
     private void Nmi()
     {
-        _cpu.cc.E = true;
+        cc.E = true;
 
         PushStack(CPUInterrupts.NMI);
 
-        _cpu.cc.I = true;
-        _cpu.cc.F = true;
+        cc.I = true;
+        cc.F = true;
 
         PC = MemRead16(Define.VNMI);
 
@@ -27,31 +27,31 @@ partial class HD6309
 
     private void Firq()
     {
-        if (!_cpu.cc.F)
+        if (!cc.F)
         {
             _isInFastInterrupt = true; //Flag to indicate FIRQ has been asserted
 
-            switch (_cpu.md.FIRQMODE)
+            switch (md.FIRQMODE)
             {
                 case false:
-                    _cpu.cc.E = false; // Turn E flag off
+                    cc.E = false; // Turn E flag off
 
                     PushStack(CPUInterrupts.FIRQ);
 
-                    _cpu.cc.I = true;
-                    _cpu.cc.F = true;
+                    cc.I = true;
+                    cc.F = true;
 
                     PC = MemRead16(Define.VFIRQ);
 
                     break;
 
                 case true:		//6309
-                    _cpu.cc.E = true;
+                    cc.E = true;
 
                     PushStack(CPUInterrupts.IRQ);
 
-                    _cpu.cc.I = true;
-                    _cpu.cc.F = true;
+                    cc.I = true;
+                    cc.F = true;
 
                     PC = MemRead16(Define.VFIRQ);
 
@@ -77,16 +77,16 @@ partial class HD6309
             return;
         }
 
-        if (!_cpu.cc.I)
+        if (!cc.I)
         {
-            _cpu.cc.E = true;
+            cc.E = true;
 
             PushStack(CPUInterrupts.IRQ);
 
             PC = MemRead16(Define.VIRQ);
 
             //TODO: This doesn't look right compared to above.
-            _cpu.cc.I = true;
+            cc.I = true;
         }
 
         _irqFlag = false;

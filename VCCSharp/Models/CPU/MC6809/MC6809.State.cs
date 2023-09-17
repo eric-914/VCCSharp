@@ -11,16 +11,16 @@ partial class MC6809 : VCCSharp.OpCodes.MC6809.IState
 
     #region Registers
 
-    public byte CC { get => _cpu.cc.bits; set => _cpu.cc.bits = value; }
-    public ushort PC { get => _cpu.pc.Reg; set => _cpu.pc.Reg = value; }
-    public byte DP { get => _cpu.dp.msb; set => _cpu.dp.msb = value; }
-    public ushort D { get => _cpu.d.Reg; set => _cpu.d.Reg = value; }
-    public byte A { get => _cpu.d.msb; set => _cpu.d.msb = value; }
-    public byte B { get => _cpu.d.lsb; set => _cpu.d.lsb = value; }
-    public ushort X { get => _cpu.x.Reg; set => _cpu.x.Reg = value; }
-    public ushort Y { get => _cpu.y.Reg; set => _cpu.y.Reg = value; }
-    public ushort S { get => _cpu.s.Reg; set => _cpu.s.Reg = value; }
-    public ushort U { get => _cpu.u.Reg; set => _cpu.u.Reg = value; }
+    public byte CC { get => cc.bits; set => cc.bits = value; }
+    public ushort PC { get => pc.Reg; set => pc.Reg = value; }
+    public byte DP { get => dp.msb; set => dp.msb = value; }
+    public ushort D { get => d.Reg; set => d.Reg = value; }
+    public byte A { get => d.msb; set => d.msb = value; }
+    public byte B { get => d.lsb; set => d.lsb = value; }
+    public ushort X { get => x.Reg; set => x.Reg = value; }
+    public ushort Y { get => y.Reg; set => y.Reg = value; }
+    public ushort S { get => s.Reg; set => s.Reg = value; }
+    public ushort U { get => u.Reg; set => u.Reg = value; }
 
     #endregion
 

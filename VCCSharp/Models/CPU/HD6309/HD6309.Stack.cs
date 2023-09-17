@@ -18,7 +18,7 @@ partial class HD6309
             W16(X);
             W8(DP);
 
-            if (_cpu.md.NATIVE6309)
+            if (md.NATIVE6309)
             {
                 W16(W);
             }

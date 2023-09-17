@@ -1,5 +1,5 @@
 ﻿using VCCSharp.IoC;
-using VCCSharp.Models.CPU.MC6809.Registers;
+using VCCSharp.Models.CPU.Registers;
 using VCCSharp.OpCodes;
 using VCCSharp.OpCodes.Definitions;
 
@@ -11,7 +11,15 @@ public partial class MC6809 : IMC6809
 {
     private readonly IModules _modules;
 
-    private readonly MC6809CpuRegisters _cpu = new();
+    internal Register16 pc { get; } = new();
+    internal Register16 d { get; } = new();
+    internal Register16 x { get; } = new();
+    internal Register16 y { get; } = new();
+    internal Register16 u { get; } = new();
+    internal Register16 s { get; } = new();
+    internal Register16 dp { get; } = new();
+
+    internal RegisterCC cc { get; } = new();
 
     private int _cycleCounter;
 
@@ -101,7 +109,7 @@ public partial class MC6809 : IMC6809
 
             _syncCycle = cycleFor;
 
-            byte opCode = _modules.TCC1014.MemRead8(_cpu.pc.Reg++);
+            byte opCode = _modules.TCC1014.MemRead8(pc.Reg++);
 
             _cycleCounter += OpCodes.Exec(opCode);
         }

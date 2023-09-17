@@ -1,5 +1,5 @@
 ﻿using VCCSharp.IoC;
-using VCCSharp.Models.CPU.HD6309.Registers;
+using VCCSharp.Models.CPU.Registers;
 using VCCSharp.OpCodes;
 using VCCSharp.OpCodes.Definitions;
 
@@ -11,7 +11,19 @@ public partial class HD6309 : IHD6309
 {
     private readonly IModules _modules;
 
-    private readonly HD6309CpuRegisters _cpu = new();
+    internal Register16 pc { get; } = new();
+    internal Register16 x { get; } = new();
+    internal Register16 y { get; } = new();
+    internal Register16 u { get; } = new();
+    internal Register16 s { get; } = new();
+    internal Register16 dp { get; } = new();
+    internal Register16 v { get; } = new();
+    internal Register16 z { get; } = new();
+
+    internal Register32 q { get; } = new();
+
+    internal RegisterCC cc { get; } = new();
+    internal RegisterMD md { get; } = new();
 
     private int _cycleCounter;
 
@@ -101,7 +113,7 @@ public partial class HD6309 : IHD6309
 
             _syncCycle = cycleFor;
 
-            byte opCode = _modules.TCC1014.MemRead8(_cpu.pc.Reg++);
+            byte opCode = _modules.TCC1014.MemRead8(pc.Reg++);
 
             _cycleCounter += OpCodes.Exec(opCode);
         }
