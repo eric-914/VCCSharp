@@ -8,8 +8,8 @@ namespace VCCSharp.OpCodes.HD6309;
 
 internal class SystemState : ISystemState, IExtendedAddress
 {
-    MC6809.IState MC6809.ISystemState.cpu => cpu;
-    public IState cpu { get; }
+    MC6809.IState MC6809.ISystemState.State => State;
+    public IState State { get; }
 
     public Memory8Bit M8 { get; }
     public Memory16Bit M16 { get; }
@@ -23,18 +23,18 @@ internal class SystemState : ISystemState, IExtendedAddress
 
     public int Cycles { get; set; }
 
-    public ushort PC { get => cpu.PC; set => cpu.PC = value; }
-    public ushort D { get => cpu.D; set => cpu.D = value; }
-    public byte A { get => cpu.A(); set => cpu.A(value); }
-    public byte B { get => cpu.B(); set => cpu.B(value); }
+    public ushort PC { get => State.PC; set => State.PC = value; }
+    public ushort D { get => State.D; set => State.D = value; }
+    public byte A { get => State.A(); set => State.A(value); }
+    public byte B { get => State.B(); set => State.B(value); }
 
-    public Mode Mode => cpu.Mode;
+    public Mode Mode => State.Mode;
 
     public Exceptions Exceptions { get; }
 
     public SystemState(IState cpu)
     {
-        this.cpu = cpu;
+        this.State = cpu;
 
         var memory = new Memory(cpu, this);
         M8 = memory.Byte;
@@ -46,6 +46,6 @@ internal class SystemState : ISystemState, IExtendedAddress
         R8 = new Registers8Bit<IState>(cpu);
         R16 = new Registers16Bit<IState>(cpu);
 
-        Exceptions = new Exceptions() { SS = this };
+        Exceptions = new Exceptions() { _system = this };
     }
 }

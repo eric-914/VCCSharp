@@ -18,7 +18,7 @@ internal partial class NewOpcodes : ISystemState
 
         OpCode op = (OpCode)iop;
 
-        op.SS = this;
+        op._system = this;
         op.Cycles = 0;
 
         return iop;

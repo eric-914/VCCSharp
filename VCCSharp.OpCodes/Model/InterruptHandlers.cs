@@ -27,24 +27,24 @@ public interface IInterruptHandlers
 /// </summary>
 internal class InterruptHandlers : IInterruptHandlers
 {
-    public ISystemState SS { get; set; } = default!;
+    public ISystemState _system { get; set; } = default!;
 
-    private IState cpu => SS.cpu;
+    private IState _state => _system.State;
 
     public void Firq()
     {
-        if (!cpu.CC.BitF())
+        if (!_state.CC.BitF())
         {
             //_isInFastInterrupt = true; //Flag to indicate FIRQ has been asserted
 
-            cpu.CC.BitE(false); // Turn E flag off
+            _state.CC.BitE(false); // Turn E flag off
 
             PushStack(CPUInterrupts.FIRQ);
 
-            cpu.CC.BitI(true);
-            cpu.CC.BitF(true);
+            _state.CC.BitI(true);
+            _state.CC.BitF(true);
 
-            cpu.PC = cpu.MemRead16(Define.VFIRQ);
+            _state.PC = _state.MemRead16(Define.VFIRQ);
         }
 
         //_pendingInterrupts &= ~_masks[CPUInterrupts.FIRQ];
@@ -65,16 +65,16 @@ internal class InterruptHandlers : IInterruptHandlers
         //    return;
         //}
 
-        if (!cpu.CC.BitI())
+        if (!_state.CC.BitI())
         {
-            cpu.CC.BitE(true);
+            _state.CC.BitE(true);
 
             PushStack(CPUInterrupts.IRQ);
 
-            cpu.PC = cpu.MemRead16(Define.VIRQ);
+            _state.PC = _state.MemRead16(Define.VIRQ);
 
             //TODO: This doesn't look right compared to others.
-            cpu.CC.BitI(true);
+            _state.CC.BitI(true);
         }
 
         //_pendingInterrupts &= ~_masks[CPUInterrupts.IRQ];
@@ -82,34 +82,34 @@ internal class InterruptHandlers : IInterruptHandlers
 
     public void Nmi()
     {
-        cpu.CC.BitE(true);
+        _state.CC.BitE(true);
 
         PushStack(CPUInterrupts.NMI);
 
-        cpu.CC.BitI(true);
-        cpu.CC.BitF(true);
+        _state.CC.BitI(true);
+        _state.CC.BitF(true);
 
-        cpu.PC = cpu.MemRead16(Define.VNMI);
+        _state.PC = _state.MemRead16(Define.VNMI);
 
         //_pendingInterrupts &= ~_masks[CPUInterrupts.NMI];
     }
 
     private void PushStack(CPUInterrupts irq)
     {
-        void W8(byte data) => cpu.MemWrite8(data, --cpu.S);
+        void W8(byte data) => _state.MemWrite8(data, --_state.S);
         void W16(ushort data) { W8((byte)data); W8((byte)(data >> 8)); };
 
-        W16(cpu.PC);
+        W16(_state.PC);
 
         if (irq != CPUInterrupts.FIRQ)
         {
-            W16(cpu.U);
-            W16(cpu.Y);
-            W16(cpu.X);
-            W8(cpu.DP);
-            W16(cpu.D);
+            W16(_state.U);
+            W16(_state.Y);
+            W16(_state.X);
+            W8(_state.DP);
+            W16(_state.D);
         }
 
-        W8(cpu.CC);
+        W8(_state.CC);
     }
 }

@@ -20,14 +20,14 @@ internal partial class NewOpcodes : ISystemState
         {
             OpCode6309 op = (OpCode6309)iop;
 
-            op.SS = this;
+            op._system = this;
             op.Cycles = 0;
         }
         else
         {
             OpCode op = (OpCode)iop;
 
-            op.SS = this;
+            op._system = this;
             op.Cycles = 0;
         }
 

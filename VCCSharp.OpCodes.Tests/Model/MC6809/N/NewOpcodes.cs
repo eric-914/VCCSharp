@@ -22,7 +22,7 @@ internal partial class NewOpcodes : ISystemState, IExtendedAddress
     public byte A { get => (byte)(D >> 8); set => D = (ushort)((D & 0x00FF) | (value << 8)); }
     public byte B { get => (byte)(D & 0xFF); set => D = (ushort)((D & 0xFF00) | value); }
 
-    public IState cpu => this;
+    public IState State => this;
 
     public Memory8Bit M8 => new(this);
 
@@ -30,11 +30,11 @@ internal partial class NewOpcodes : ISystemState, IExtendedAddress
 
     public MemoryDirect DIRECT => new(this);
 
-    public MemoryIndexed INDEXED => new(cpu, this);
+    public MemoryIndexed INDEXED => new(State, this);
 
-    public IRegisters8Bit R8 => new Registers8Bit<IState>(cpu);
+    public IRegisters8Bit R8 => new Registers8Bit<IState>(State);
 
-    public IRegisters16Bit R16 => new Registers16Bit<IState>(cpu);
+    public IRegisters16Bit R16 => new Registers16Bit<IState>(State);
 
     public int Cycles { get; set; }
 }

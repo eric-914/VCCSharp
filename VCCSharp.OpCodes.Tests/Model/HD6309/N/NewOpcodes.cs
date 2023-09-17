@@ -31,8 +31,8 @@ internal partial class NewOpcodes : ISystemState, IExtendedAddress
     public byte E { get => (byte)(W >> 8); set => W = (ushort)((W & 0x00FF) | (value << 8)); }
     public byte F { get => (byte)(W & 0xFF); set => W = (ushort)((W & 0xFF00) | value); }
 
-    VCCSharp.OpCodes.MC6809.IState VCCSharp.OpCodes.MC6809.ISystemState.cpu => this;
-    public IState cpu => this;
+    VCCSharp.OpCodes.MC6809.IState VCCSharp.OpCodes.MC6809.ISystemState.State => this;
+    public IState State => this;
 
     public Memory8Bit M8 => new(this);
 
@@ -40,11 +40,11 @@ internal partial class NewOpcodes : ISystemState, IExtendedAddress
 
     public MemoryDirect DIRECT => new(this);
 
-    public MemoryIndexed INDEXED => new(cpu, this);
+    public MemoryIndexed INDEXED => new(State, this);
 
-    public IRegisters8Bit R8 => new Registers8Bit<IState>(cpu);
+    public IRegisters8Bit R8 => new Registers8Bit<IState>(State);
 
-    public IRegisters16Bit R16 => new Registers16Bit<IState>(cpu);
+    public IRegisters16Bit R16 => new Registers16Bit<IState>(State);
 
     public int Cycles { get; set; }
 

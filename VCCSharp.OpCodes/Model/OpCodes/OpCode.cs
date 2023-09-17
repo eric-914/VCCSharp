@@ -11,90 +11,90 @@ namespace VCCSharp.OpCodes.Model.OpCodes;
 /// </summary>
 internal abstract class OpCode
 {
-    public ISystemState SS { get; set; } = default!;
+    public ISystemState _system { get; set; } = default!;
 
-    private IState cpu => SS.cpu;
+    private IState _state => _system.State;
 
     /// <summary>
     /// 8-bit memory access
     /// </summary>
-    protected Memory8Bit M8 => SS.M8;
+    protected Memory8Bit M8 => _system.M8;
 
     /// <summary>
     /// 16-bit memory access
     /// </summary>
-    protected Memory16Bit M16 => SS.M16;
+    protected Memory16Bit M16 => _system.M16;
 
-    protected MemoryDirect DIRECT => SS.DIRECT;
+    protected MemoryDirect DIRECT => _system.DIRECT;
 
     /// <summary>
     /// 8-bit "Effective Address" memory access
     /// </summary>
-    protected MemoryIndexed INDEXED => SS.INDEXED;
+    protected MemoryIndexed INDEXED => _system.INDEXED;
 
     /// <summary>
     /// Index accessor for 8-bit registers
     /// </summary>
-    public IRegisters8Bit R8 => SS.R8;
+    public IRegisters8Bit R8 => _system.R8;
 
     /// <summary>
     /// Index accessor for 16-bit registers
     /// </summary>
-    public IRegisters16Bit R16 => SS.R16;
+    public IRegisters16Bit R16 => _system.R16;
 
-    protected DynamicCycles DynamicCycles => new DynamicCycles(() => SS.Mode);
+    protected DynamicCycles DynamicCycles => new DynamicCycles(() => _system.Mode);
 
     /// <summary>
     /// For use on EA/INDEXED memory access as EA has cycle penalties.
     /// </summary>
-    public int Cycles { get => SS.Cycles; set => SS.Cycles = value; }
+    public int Cycles { get => _system.Cycles; set => _system.Cycles = value; }
 
-    protected void ClearInterrupt() => cpu.ClearInterrupt();
+    protected void ClearInterrupt() => _state.ClearInterrupt();
 
-    protected int SynchronizeWithInterrupt() => cpu.SynchronizeWithInterrupt(); 
+    protected int SynchronizeWithInterrupt() => _state.SynchronizeWithInterrupt(); 
 
     //TODO: See details in IRegisterDP
-    protected byte DP { get => cpu.DP; set => cpu.DP = value; }
+    protected byte DP { get => _state.DP; set => _state.DP = value; }
 
     /// <summary>
     /// Program Counter
     /// </summary>
-    protected ushort PC { get => cpu.PC; set => cpu.PC = value; }
+    protected ushort PC { get => _state.PC; set => _state.PC = value; }
 
     /// <summary>
     /// 16-bit register <c>A.B</c>
     /// </summary>
-    protected ushort D { get => cpu.D; set => cpu.D = value; }
+    protected ushort D { get => _state.D; set => _state.D = value; }
 
     /// <summary>
     /// 8-bit register <c>A</c>
     /// </summary>
-    protected byte A { get => cpu.A(); set => cpu.A(value); }
+    protected byte A { get => _state.A(); set => _state.A(value); }
 
     /// <summary>
     /// 8-bit register <c>B</c>
     /// </summary>
-    protected byte B { get => cpu.B(); set => cpu.B(value); }
+    protected byte B { get => _state.B(); set => _state.B(value); }
 
     /// <summary>
     /// 16-bit register
     /// </summary>
-    protected ushort X { get => cpu.X; set => cpu.X = value; }
+    protected ushort X { get => _state.X; set => _state.X = value; }
 
     /// <summary>
     /// 16-bit register
     /// </summary>
-    protected ushort Y { get => cpu.Y; set => cpu.Y = value; }
+    protected ushort Y { get => _state.Y; set => _state.Y = value; }
 
     /// <summary>
     /// 16-bit <c>STACK</c> register
     /// </summary>
-    protected ushort S { get => cpu.S; set => cpu.S = value; }
+    protected ushort S { get => _state.S; set => _state.S = value; }
 
     /// <summary>
     /// 16-bit <c>USER-STACK</c> register
     /// </summary>
-    protected ushort U { get => cpu.U; set => cpu.U = value; }
+    protected ushort U { get => _state.U; set => _state.U = value; }
 
     /// <summary>
     /// <c>PC</c> low 8 bits
@@ -149,7 +149,7 @@ internal abstract class OpCode
     /// <summary>
     /// Condition Codes Register
     /// </summary>
-    protected byte CC { get => cpu.CC; set => cpu.CC = value; }
+    protected byte CC { get => _state.CC; set => _state.CC = value; }
 
     /// <summary>
     /// Condition Code Carry Flag

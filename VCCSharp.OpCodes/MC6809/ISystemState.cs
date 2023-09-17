@@ -6,7 +6,7 @@ namespace VCCSharp.OpCodes.MC6809;
 
 internal interface ISystemState
 {
-    IState cpu { get; }
+    IState State { get; }
 
     Memory8Bit M8 { get; }
     Memory16Bit M16 { get; }

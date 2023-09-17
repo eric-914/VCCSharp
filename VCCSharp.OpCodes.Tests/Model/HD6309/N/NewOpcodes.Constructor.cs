@@ -9,6 +9,6 @@ internal partial class NewOpcodes : ISystemState
     public NewOpcodes(MemoryTester mem)
     {
         _mem = mem;
-        Exceptions = new() { SS = this };
+        Exceptions = new() { _system = this };
     }
 }
