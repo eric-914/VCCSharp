@@ -21,7 +21,7 @@ namespace VCCSharp.Models.CPU.Registers
     /// <url>
     /// https://colorcomputerarchive.com/repo/Documents/Microprocessors/HD6309/HD63B09EP%20Technical%20Reference%20Guide.pdf
     /// </url>
-    public class RegisterMD
+    internal class RegisterMD
     {
         private readonly byte _NATIVE6309 = 1 << (byte)MDFlagMasks.NATIVE6309;
         private readonly byte _FIRQMODE = 1 << (byte)MDFlagMasks.FIRQMODE;
@@ -32,16 +32,16 @@ namespace VCCSharp.Models.CPU.Registers
         private readonly byte _ILLEGAL = 1 << (byte)MDFlagMasks.ILLEGAL;
         private readonly byte _ZERODIV = 1 << (byte)MDFlagMasks.ZERODIV;
 
-        public byte bits;
+        internal byte bits;
 
-        public bool NATIVE6309 { get { return Get(_NATIVE6309); } set { Set(_NATIVE6309, value); } }
-        public bool FIRQMODE { get { return Get(_FIRQMODE); } set { Set(_FIRQMODE, value); } }
-        public bool MD_UNDEF2 { get { return Get(_UNDEF2); } set { Set(_UNDEF2, value); } }
-        public bool MD_UNDEF3 { get { return Get(_UNDEF3); } set { Set(_UNDEF3, value); } }
-        public bool MD_UNDEF4 { get { return Get(_UNDEF4); } set { Set(_UNDEF4, value); } }
-        public bool MD_UNDEF5 { get { return Get(_UNDEF5); } set { Set(_UNDEF5, value); } }
-        public bool ILLEGAL { get { return Get(_ILLEGAL); } set { Set(_ILLEGAL, value); } }
-        public bool ZERODIV { get { return Get(_ZERODIV); } set { Set(_ZERODIV, value); } }
+        internal bool NATIVE6309 { get { return Get(_NATIVE6309); } set { Set(_NATIVE6309, value); } }
+        internal bool FIRQMODE { get { return Get(_FIRQMODE); } set { Set(_FIRQMODE, value); } }
+        internal bool MD_UNDEF2 { get { return Get(_UNDEF2); } set { Set(_UNDEF2, value); } }
+        internal bool MD_UNDEF3 { get { return Get(_UNDEF3); } set { Set(_UNDEF3, value); } }
+        internal bool MD_UNDEF4 { get { return Get(_UNDEF4); } set { Set(_UNDEF4, value); } }
+        internal bool MD_UNDEF5 { get { return Get(_UNDEF5); } set { Set(_UNDEF5, value); } }
+        internal bool ILLEGAL { get { return Get(_ILLEGAL); } set { Set(_ILLEGAL, value); } }
+        internal bool ZERODIV { get { return Get(_ZERODIV); } set { Set(_ZERODIV, value); } }
 
         private bool Get(byte mask)
         {

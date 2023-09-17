@@ -7,17 +7,17 @@ namespace VCCSharp.Models.CPU.Registers
     /// Some like the X register can be accessed as two 8-bit registers: A register, B register
     /// </summary>
     [StructLayout(LayoutKind.Explicit)]
-    public class Register16
+    internal class Register16
     {
         [FieldOffset(0)]
-        public ushort Reg;
+        internal ushort Reg;
 
         //--------------------------------------
 
         [FieldOffset(0)]
-        public byte lsb;
+        internal byte lsb;
 
         [FieldOffset(1)]
-        public byte msb;
+        internal byte msb;
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace VCCSharp.Models;
+﻿using VCCSharp.Enums;
+
+namespace VCCSharp.Models;
 
 /// <summary>
 /// This is how the emulation system sees the processing unit.
@@ -9,6 +11,6 @@ public interface IProcessor
     int Exec(int cycleFor);
     void ForcePc(ushort address);
     void Reset();
-    void AssertInterrupt(byte irq, byte flag);
-    void DeAssertInterrupt(byte irq);
+    void AssertInterrupt(CPUInterrupts irq, byte flag);
+    void DeAssertInterrupt(CPUInterrupts irq);
 }

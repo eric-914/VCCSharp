@@ -7,7 +7,7 @@ partial class HD6309 : VCCSharp.OpCodes.HD6309.IState
 {
     public IOpCodes OpCodes { get; }
 
-    public Mode Mode => Mode.MC6809;  //TODO: Fix this!
+    public Mode Mode { get; set; } = Mode.MC6809;  //TODO: Fix this!
 
     #region Registers 
 

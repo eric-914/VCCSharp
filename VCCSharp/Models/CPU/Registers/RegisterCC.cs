@@ -5,7 +5,7 @@ namespace VCCSharp.Models.CPU.Registers
     /// <summary>
     /// CONDITION CODE REGISTER (CC)
     /// </summary>
-    public class RegisterCC
+    internal class RegisterCC
     {
         private readonly byte _E = 1 << (byte)CCFlagMasks.E;
         private readonly byte _F = 1 << (byte)CCFlagMasks.F;
@@ -16,16 +16,16 @@ namespace VCCSharp.Models.CPU.Registers
         private readonly byte _V = 1 << (byte)CCFlagMasks.V;
         private readonly byte _C = 1 << (byte)CCFlagMasks.C;
 
-        public byte bits { get; set; }
+        internal byte bits { get; set; }
 
-        public bool E { get { return Get(_E); } set { Set(_E, value); } }
-        public bool F { get { return Get(_F); } set { Set(_F, value); } }
-        public bool H { get { return Get(_H); } set { Set(_H, value); } }
-        public bool I { get { return Get(_I); } set { Set(_I, value); } }
-        public bool N { get { return Get(_N); } set { Set(_N, value); } }
-        public bool Z { get { return Get(_Z); } set { Set(_Z, value); } }
-        public bool V { get { return Get(_V); } set { Set(_V, value); } }
-        public bool C { get { return Get(_C); } set { Set(_C, value); } }
+        internal bool E { get { return Get(_E); } set { Set(_E, value); } }
+        internal bool F { get { return Get(_F); } set { Set(_F, value); } }
+        internal bool H { get { return Get(_H); } set { Set(_H, value); } }
+        internal bool I { get { return Get(_I); } set { Set(_I, value); } }
+        internal bool N { get { return Get(_N); } set { Set(_N, value); } }
+        internal bool Z { get { return Get(_Z); } set { Set(_Z, value); } }
+        internal bool V { get { return Get(_V); } set { Set(_V, value); } }
+        internal bool C { get { return Get(_C); } set { Set(_C, value); } }
 
         private bool Get(byte mask)
         {

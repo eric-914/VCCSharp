@@ -16,12 +16,19 @@ public partial class MC6809 : IMC6809
     private int _cycleCounter;
 
     //--Interrupt states
-    private byte _irqWaiter;
-    private byte _pendingInterrupts;
+    private bool _irqWait;
+    private int _pendingInterrupts;
 
     private bool _isInFastInterrupt;
     private bool _isSyncWaiting;
     private int _syncCycle;
+
+    private Dictionary<CPUInterrupts, byte> _masks = new()
+    {
+        { CPUInterrupts.IRQ, 0b001},
+        { CPUInterrupts.FIRQ, 0b010},
+        { CPUInterrupts.NMI, 0b100}
+    };
 
     public MC6809(IModules modules)
     {
@@ -36,23 +43,23 @@ public partial class MC6809 : IMC6809
 
     public void ForcePc(ushort address)
     {
-        _cpu.pc.Reg = address;
+        PC = address;
 
         _pendingInterrupts = 0;
         _isSyncWaiting = false;
     }
 
-    public void DeAssertInterrupt(byte irq)
+    public void DeAssertInterrupt(CPUInterrupts irq)
     {
-        _pendingInterrupts &= (byte)~(1 << (irq - 1));
+        _pendingInterrupts &= _masks[irq];
         _isInFastInterrupt = false;
     }
 
-    public void AssertInterrupt(byte irq, byte flag)
+    public void AssertInterrupt(CPUInterrupts irq, byte flag)
     {
         _isSyncWaiting = false;
-        _pendingInterrupts |= (byte)(1 << (irq - 1));
-        _irqWaiter = flag;
+        _pendingInterrupts |= _masks[irq];
+        _irqWait = flag != 0;
     }
 
     public void Reset()
@@ -95,36 +102,20 @@ public partial class MC6809 : IMC6809
 
     private void CheckInterrupts()
     {
-        if (_pendingInterrupts != 0)
+        switch (_pendingInterrupts)
         {
-            if ((_pendingInterrupts & 4) != 0)
-            {
-                Cpu_Nmi();
-            }
-
-            if ((_pendingInterrupts & 2) != 0)
-            {
-                Cpu_Firq();
-            }
-
-            if ((_pendingInterrupts & 1) != 0)
-            {
-                if (_irqWaiter == 0)
-                {
-                    // This is needed to fix a subtle timing problem
-                    // It allows the CPU to see $FF03 bit 7 high before...
-                    Cpu_Irq();
-                }
-                else
-                {
-                    // ...The IRQ is asserted.
-                    _irqWaiter -= 1;
-                }
-            }
+            case 0b000:                         break;
+            case 0b001:                 Irq();  break;
+            case 0b010:         Firq();         break;
+            case 0b011:         Firq(); Irq();  break;
+            case 0b100: Nmi();                  break;
+            case 0b101: Nmi();          Irq();  break;
+            case 0b110: Nmi();  Firq();         break;
+            case 0b111: Nmi();  Firq(); Irq();  break;
         }
     }
 
-    private void Cpu_Nmi()
+    private void Nmi()
     {
         _cpu.cc.E = true;
 
@@ -133,12 +124,12 @@ public partial class MC6809 : IMC6809
         _cpu.cc.I = true;
         _cpu.cc.F = true;
 
-        _cpu.pc.Reg = MemRead16(Define.VNMI);
+        PC = MemRead16(Define.VNMI);
 
-        _pendingInterrupts &= 251;
+        _pendingInterrupts &= ~_masks[CPUInterrupts.NMI];
     }
 
-    private void Cpu_Firq()
+    private void Firq()
     {
         if (!_cpu.cc.F)
         {
@@ -151,14 +142,21 @@ public partial class MC6809 : IMC6809
             _cpu.cc.I = true;
             _cpu.cc.F = true;
 
-            _cpu.pc.Reg = MemRead16(Define.VFIRQ);
+            PC = MemRead16(Define.VFIRQ);
         }
 
-        _pendingInterrupts &= 253;
+        _pendingInterrupts &= ~_masks[CPUInterrupts.FIRQ];
     }
 
-    private void Cpu_Irq()
+    private void Irq()
     {
+        // This is needed to fix a subtle timing problem.  Wait one cycle and it allows the CPU to see $FF03 bit 7 high before the IRQ is asserted.
+        if (_irqWait)
+        {
+            _irqWait = false;
+            return;
+        }
+
         if (_isInFastInterrupt)
         {
             //If FIRQ is running postpone the IRQ
@@ -171,13 +169,13 @@ public partial class MC6809 : IMC6809
 
             PushStack(CPUInterrupts.IRQ);
 
-            _cpu.pc.Reg = MemRead16(Define.VIRQ);
+            PC = MemRead16(Define.VIRQ);
 
             //TODO: This doesn't look right compared to above.
             _cpu.cc.I = true;
         }
 
-        _pendingInterrupts &= 254;
+        _pendingInterrupts &= ~_masks[CPUInterrupts.IRQ];
     }
 
     private void PushStack(CPUInterrupts irq)

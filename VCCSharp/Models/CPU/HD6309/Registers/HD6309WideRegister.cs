@@ -3,34 +3,30 @@
 namespace VCCSharp.Models.CPU.HD6309.Registers;
 
 [StructLayout(LayoutKind.Explicit)]
-// ReSharper disable InconsistentNaming
-// ReSharper disable IdentifierTypo
-public class HD6309WideRegister
+internal class HD6309WideRegister
 {
     [FieldOffset(0)]
-    public uint Reg;
+    internal uint Reg;
 
     //--------------------------------------
 
     [FieldOffset(0)]
-    public ushort msw;
+    internal ushort msw;
 
     [FieldOffset(2)]
-    public ushort lsw;
+    internal ushort lsw;
 
     //--------------------------------------
 
     [FieldOffset(0)]
-    public byte mswlsb;
+    internal byte mswlsb;
 
     [FieldOffset(1)]
-    public byte mswmsb;
+    internal byte mswmsb;
 
     [FieldOffset(2)]
-    public byte lswlsb;
+    internal byte lswlsb;
 
     [FieldOffset(3)]
-    public byte lswmsb;	//Might be backwards
+    internal byte lswmsb;
 }
-// ReSharper restore IdentifierTypo
-// ReSharper restore InconsistentNaming

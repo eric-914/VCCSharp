@@ -55,12 +55,12 @@ public class CPU : ICPU
 
     public void AssertInterrupt(CPUInterrupts irq, byte flag)
     {
-        _processor.AssertInterrupt((byte)irq, flag);
+        _processor.AssertInterrupt(irq, flag);
     }
 
     public void DeAssertInterrupt(CPUInterrupts irq)
     {
-        _processor.DeAssertInterrupt((byte)irq);
+        _processor.DeAssertInterrupt(irq);
     }
 
     public void ModuleReset()
