@@ -6,17 +6,9 @@ partial class MC6809
 {
     private void CheckInterrupts()
     {
-        switch (_pendingInterrupts)
-        {
-            case 0b000:                         break;
-            case 0b001:                 Irq();  break;
-            case 0b010:         Firq();         break;
-            case 0b011:         Firq(); Irq();  break;
-            case 0b100: Nmi();                  break;
-            case 0b101: Nmi();          Irq();  break;
-            case 0b110: Nmi();  Firq();         break;
-            case 0b111: Nmi();  Firq(); Irq();  break;
-        }
+        if (_nmiFlag) Nmi();
+        if (_firqFlag) Firq();
+        if (_irqFlag) Irq();
     }
 
     private void Nmi()
@@ -30,7 +22,7 @@ partial class MC6809
 
         PC = MemRead16(Define.VNMI);
 
-        _pendingInterrupts &= ~_masks[CPUInterrupts.NMI];
+        _nmiFlag = false;
     }
 
     private void Firq()
@@ -49,7 +41,7 @@ partial class MC6809
             PC = MemRead16(Define.VFIRQ);
         }
 
-        _pendingInterrupts &= ~_masks[CPUInterrupts.FIRQ];
+        _firqFlag = false;
     }
 
     private void Irq()
@@ -79,6 +71,6 @@ partial class MC6809
             _cpu.cc.I = true;
         }
 
-        _pendingInterrupts &= ~_masks[CPUInterrupts.IRQ];
+        _irqFlag = false;
     }
 }
