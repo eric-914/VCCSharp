@@ -1,7 +1,7 @@
-﻿using VCCSharp.Enums;
-using VCCSharp.IoC;
+﻿using VCCSharp.IoC;
 using VCCSharp.Models.CPU.MC6809.Registers;
 using VCCSharp.OpCodes;
+using VCCSharp.OpCodes.Definitions;
 
 namespace VCCSharp.Models.CPU.MC6809;
 

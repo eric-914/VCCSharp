@@ -1,6 +1,6 @@
-﻿using VCCSharp.Enums;
-using VCCSharp.IoC;
+﻿using VCCSharp.IoC;
 using VCCSharp.Modules.TCC1014.Masks;
+using VCCSharp.OpCodes.Definitions;
 
 namespace VCCSharp.Modules.TCC1014;
 // ReSharper disable InconsistentNaming

@@ -1,10 +1,10 @@
 ﻿using System.IO;
 using System.Runtime.InteropServices;
 using VCCSharp.Configuration;
-using VCCSharp.Enums;
 using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
+using VCCSharp.OpCodes.Definitions;
 using static System.IntPtr;
 using HINSTANCE = System.IntPtr;
 

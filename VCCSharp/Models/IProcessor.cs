@@ -1,4 +1,4 @@
-﻿using VCCSharp.Enums;
+﻿using VCCSharp.OpCodes.Definitions;
 
 namespace VCCSharp.Models;
 

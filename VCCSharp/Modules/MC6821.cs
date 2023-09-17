@@ -5,6 +5,7 @@ using VCCSharp.IoC;
 using VCCSharp.Libraries;
 using VCCSharp.Models;
 using VCCSharp.Models.Audio;
+using VCCSharp.OpCodes.Definitions;
 using HANDLE = System.IntPtr;
 
 namespace VCCSharp.Modules;
