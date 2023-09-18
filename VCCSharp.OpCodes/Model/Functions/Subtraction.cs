@@ -1,17 +1,13 @@
-﻿using VCCSharp.OpCodes.Definitions;
-using VCCSharp.OpCodes.Model.Support;
+﻿using VCCSharp.OpCodes.Model.Support;
 
 namespace VCCSharp.OpCodes.Model.Functions;
 
 /// <summary>
-/// Handles the intracies of adding two values: <c>a+b</c>
+/// Handles the intricacies of adding two values: <c>a+b</c>
 /// </summary>
 internal class Subtraction : IFunction
 {
     public int Result { get; private set; }
-    public int Remainder => throw new NotImplementedException();
-    public int Cycles => throw new NotImplementedException();
-
     /// <summary>
     /// <c>H</c>: The Half-Carry flag is undefined for 8-bit subtraction
     /// </summary>
@@ -36,8 +32,6 @@ internal class Subtraction : IFunction
     public bool I => throw new NotImplementedException();
     public bool F => throw new NotImplementedException();
     public bool E => throw new NotImplementedException();
-
-    public DivisionErrors Error => throw new NotImplementedException();
 
     public Subtraction(byte a, byte b, byte cc)
     {

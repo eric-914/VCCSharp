@@ -1,5 +1,4 @@
-﻿using VCCSharp.OpCodes.Definitions;
-using VCCSharp.OpCodes.Model.Support;
+﻿using VCCSharp.OpCodes.Model.Support;
 
 namespace VCCSharp.OpCodes.Model.Functions;
 
@@ -9,8 +8,6 @@ namespace VCCSharp.OpCodes.Model.Functions;
 internal class Boolean : IFunction
 {
     public int Result { get; }
-    public int Remainder => throw new NotImplementedException();
-    public int Cycles => throw new NotImplementedException();
 
     public bool N { get; }
     public bool Z { get; }
@@ -21,8 +18,6 @@ internal class Boolean : IFunction
     public bool H => throw new NotImplementedException();
     public bool I => throw new NotImplementedException();
     public bool C => throw new NotImplementedException();
-
-    public DivisionErrors Error => throw new NotImplementedException();
 
     public Boolean(byte result)
     {

@@ -192,7 +192,7 @@ internal abstract class OpCode
     protected bool CC_Z { get => CC.BitZ(); set => CC = CC.BitZ(value); }
 
     /// <summary>
-    /// Handles the intracies of calculating the sum of two values: <c>a+b</c>
+    /// Handles the intricacies of calculating the sum of two values: <c>a+b</c>
     /// </summary>
     /// <param name="a">first 8-bit</param>
     /// <param name="b">second 8-bit</param>
@@ -200,7 +200,7 @@ internal abstract class OpCode
     protected static IFunction Add(byte a, byte b, bool cc = false) => new Addition(a, b, cc.ToBit());
 
     /// <summary>
-    /// Handles the intracies of calculating the sum of two values: <c>a+b</c>
+    /// Handles the intricacies of calculating the sum of two values: <c>a+b</c>
     /// </summary>
     /// <param name="a">first 16-bit</param>
     /// <param name="b">second 16-bit</param>
@@ -208,7 +208,7 @@ internal abstract class OpCode
     protected static IFunction Add(ushort a, ushort b, bool cc = false) => new Addition(a, b, cc.ToBit());
 
     /// <summary>
-    /// Handles the intracies of calculating the difference of two values: <c>a-b</c>
+    /// Handles the intricacies of calculating the difference of two values: <c>a-b</c>
     /// </summary>
     /// <param name="a">first 16-bit</param>
     /// <param name="b">second 16-bit</param>
@@ -216,7 +216,7 @@ internal abstract class OpCode
     protected static IFunction Subtract(byte a, byte b, bool cc = false) => new Subtraction(a, b, cc.ToBit());
 
     /// <summary>
-    /// Handles the intracies of calculating the difference of two values: <c>a-b</c>
+    /// Handles the intricacies of calculating the difference of two values: <c>a-b</c>
     /// </summary>
     /// <param name="a">first 16-bit</param>
     /// <param name="b">second 16-bit</param>
@@ -224,7 +224,7 @@ internal abstract class OpCode
     protected static IFunction Subtract(ushort a, ushort b, bool cc = false) => new Subtraction(a, b, cc.ToBit());
 
     /// <summary>
-    /// Handles the intracies of calculating the product of two values: <c>a*b</c>
+    /// Handles the intricacies of calculating the product of two values: <c>a*b</c>
     /// </summary>
     /// <param name="a">first 16-bit</param>
     /// <param name="b">second 16-bit</param>

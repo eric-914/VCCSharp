@@ -1,13 +1,10 @@
-﻿using VCCSharp.OpCodes.Definitions;
-using VCCSharp.OpCodes.Model.Support;
+﻿using VCCSharp.OpCodes.Model.Support;
 
 namespace VCCSharp.OpCodes.Model.Functions;
 
 internal class Multiplication : IFunction
 {
     public int Result { get; private set; }
-    public int Remainder => throw new NotImplementedException();
-    public int Cycles => throw new NotImplementedException();
 
     public bool E => throw new NotImplementedException();
     public bool F => throw new NotImplementedException();
@@ -35,8 +32,6 @@ internal class Multiplication : IFunction
     /// Applies to 8-bit × 8-bit only
     /// </remarks>
     public bool C { get; private set; }
-
-    public DivisionErrors Error => throw new NotImplementedException();
 
     public Multiplication(byte a, byte b)
     {

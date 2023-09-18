@@ -6,7 +6,7 @@ namespace VCCSharp.OpCodes.Model.Functions;
 /// <summary>
 /// Division is more complex than the other functions as it has a remainder, its cycle execution time can vary, and can 'throws' an exception.
 /// </summary>
-internal class Division : IFunction
+internal class Division : IFunctionDiv
 {
     #region Properties
 
