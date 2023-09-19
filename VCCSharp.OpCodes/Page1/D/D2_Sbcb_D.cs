@@ -37,15 +37,15 @@ internal class _D2_Sbcb_D : OpCode, IOpCode
         ushort address = DIRECT[PC++];
         byte value = M8[address];
 
-        var sum = Subtract(B, value, CC_C);
+        var fn = Subtract(B, value, CC_C);
 
         //CC_H = undefined;
-        CC_N = sum.N;
-        CC_Z = sum.Z;
-        CC_V = sum.V;
-        CC_C = sum.C;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
-        B = (byte)sum.Result;
+        B = (byte)fn.Result;
 
         return DynamicCycles._43;
     }

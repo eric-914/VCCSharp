@@ -34,15 +34,15 @@ internal class _8B_Adda_M : OpCode, IOpCode
     {
         byte value = M8[PC++];
 
-        var sum = Add(A, value);
+        var fn = Add(A, value);
 
-        CC_H = sum.H;
-        CC_N = sum.N;
-        CC_Z = sum.Z;
-        CC_V = sum.V;
-        CC_C = sum.C;
+        CC_H = fn.H;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
-        A = (byte)sum.Result;
+        A = (byte)fn.Result;
 
         return 2;
     }

@@ -38,15 +38,15 @@ internal class _11AB_Adde_X : OpCode6309, IOpCode
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
-        var sum = Add(E, value);
+        var fn = Add(E, value);
 
-        CC_H = sum.H;
-        CC_N = sum.N;
-        CC_Z = sum.Z;
-        CC_V = sum.V;
-        CC_C = sum.C;
+        CC_H = fn.H;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
-        E = (byte)sum.Result;
+        E = (byte)fn.Result;
 
         return Cycles;
     }

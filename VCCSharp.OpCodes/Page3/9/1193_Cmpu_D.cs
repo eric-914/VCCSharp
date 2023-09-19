@@ -36,12 +36,12 @@ internal class _1193_Cmpu_D : OpCode, IOpCode
         ushort address = DIRECT[PC++];
         ushort value = M16[address];
 
-        var sum = Subtract(U, value);
+        var fn = Subtract(U, value);
 
-        CC_N = sum.N;
-        CC_Z = sum.Z;
-        CC_V = sum.V;
-        CC_C = sum.C;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
         return DynamicCycles._75;
     }

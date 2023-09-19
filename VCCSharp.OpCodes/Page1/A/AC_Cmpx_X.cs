@@ -38,12 +38,12 @@ internal class _AC_Cmpx_X : OpCode, IOpCode
         ushort address = INDEXED[PC++];
         ushort value = M16[address];
 
-        var sum = Subtract(X, value);
+        var fn = Subtract(X, value);
 
-        CC_N = sum.N;
-        CC_Z = sum.Z;
-        CC_V = sum.V;
-        CC_C = sum.C;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
         return Cycles;
     }

@@ -33,15 +33,15 @@ internal class _83_Subd_M : OpCode, IOpCode
     {
         ushort value = M16[PC]; PC += 2;
 
-        var sum = Subtract(D, value);
+        var fn = Subtract(D, value);
 
         //CC_H = sum.H; //--Not applicable
-        CC_N = sum.N;
-        CC_Z = sum.Z;
-        CC_V = sum.V;
-        CC_C = sum.C;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
-        D = (ushort)sum.Result;
+        D = (ushort)fn.Result;
 
         return DynamicCycles._43;
     }

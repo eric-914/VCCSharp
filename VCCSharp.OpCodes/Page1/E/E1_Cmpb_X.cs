@@ -39,13 +39,13 @@ internal class _E1_Cmpb_X : OpCode, IOpCode
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
-        var sum = Subtract(B, value);
+        var fn = Subtract(B, value);
 
         //CC_H = undefined
-        CC_N = sum.N;
-        CC_Z = sum.Z;
-        CC_V = sum.V;
-        CC_C = sum.C;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
         return Cycles;
     }

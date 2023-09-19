@@ -108,16 +108,6 @@ internal abstract class OpCode6309
     protected ushort U { get => _state.U; set => _state.U = value; }
 
     /// <summary>
-    /// <c>PC</c> low 8 bits
-    /// </summary>
-    protected byte PC_L { get => PC.L(); set => PC = PC.L(value); }
-
-    /// <summary>
-    /// <c>PC</c> high 8 bits
-    /// </summary>
-    protected byte PC_H { get => PC.H(); set => PC = PC.H(value); }
-
-    /// <summary>
     /// <c>X</c> low 8 bits
     /// </summary>
     protected byte X_L { get => X.L(); set => X = X.L(value); }

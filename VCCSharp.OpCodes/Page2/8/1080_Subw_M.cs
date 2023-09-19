@@ -37,14 +37,14 @@ internal class _1080_Subw_M : OpCode6309, IOpCode
     {
         ushort value = M16[PC]; PC += 2;
         
-        var sum = Subtract(W, value);
+        var fn = Subtract(W, value);
 
-        CC_N = sum.N;
-        CC_Z = sum.Z;
-        CC_V = sum.V;
-        CC_C = sum.C;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
-        W = (ushort)sum.Result;
+        W = (ushort)fn.Result;
 
         return DynamicCycles._54;
     }

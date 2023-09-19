@@ -36,14 +36,14 @@ internal class _10BB_Addw_E : OpCode6309, IOpCode
         ushort address = M16[PC]; PC += 2;
         ushort value = M16[address];
 
-        var sum = Add(W, value);
+        var fn = Add(W, value);
 
-        CC_N = sum.N;
-        CC_Z = sum.Z;
-        CC_V = sum.V;
-        CC_C = sum.C;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
-        W = (ushort)sum.Result;
+        W = (ushort)fn.Result;
 
         return DynamicCycles._86;
     }

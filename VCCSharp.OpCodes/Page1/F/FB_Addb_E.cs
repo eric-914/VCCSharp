@@ -35,15 +35,15 @@ internal class _FB_Addb_E : OpCode, IOpCode
         ushort address = M16[PC]; PC += 2;
         byte value = M8[address];
 
-        var sum = Add(B, value);
+        var fn = Add(B, value);
 
-        CC_H = sum.H;
-        CC_N = sum.N;
-        CC_Z = sum.Z;
-        CC_V = sum.V;
-        CC_C = sum.C;
+        CC_H = fn.H;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
-        B = (byte)sum.Result;
+        B = (byte)fn.Result;
 
         return DynamicCycles._54;
     }

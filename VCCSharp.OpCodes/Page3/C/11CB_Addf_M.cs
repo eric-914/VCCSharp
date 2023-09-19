@@ -35,15 +35,15 @@ internal class _11CB_Addf_M : OpCode6309, IOpCode
     {
         byte value = M8[PC++];
 
-        var sum = Add(F, value);
+        var fn = Add(F, value);
 
-        CC_H = sum.H;
-        CC_N = sum.N;
-        CC_Z = sum.Z;
-        CC_V = sum.V;
-        CC_C = sum.C;
+        CC_H = fn.H;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
-        F = (byte)sum.Result;
+        F = (byte)fn.Result;
 
         return 3;
     }

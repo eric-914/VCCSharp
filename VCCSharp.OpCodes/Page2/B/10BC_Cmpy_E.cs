@@ -36,12 +36,12 @@ internal class _10BC_Cmpy_E : OpCode, IOpCode
         ushort address = M16[PC]; PC += 2;
         ushort value = M16[address];
 
-        var sum = Subtract(Y, value);
+        var fn = Subtract(Y, value);
 
-        CC_N = sum.N;
-        CC_Z = sum.Z;
-        CC_V = sum.V;
-        CC_C = sum.C;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
         return DynamicCycles._86;
     }

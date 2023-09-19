@@ -35,15 +35,15 @@ internal class _C9_Adcb_M : OpCode, IOpCode
     {
         byte value = M8[PC++];
 
-        var sum = Add(B, value, CC_C);
+        var fn = Add(B, value, CC_C);
 
-        CC_H = sum.H;
-        CC_N = sum.N;
-        CC_Z = sum.Z;
-        CC_V = sum.V;
-        CC_C = sum.C;
+        CC_H = fn.H;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
-        B = (byte)sum.Result;
+        B = (byte)fn.Result;
 
         return 2;
     }

@@ -34,15 +34,15 @@ internal class _D3_Addd_D : OpCode, IOpCode
         ushort address = DIRECT[PC++];
         ushort value = M16[address];
 
-        var sum = Add(D, value);
+        var fn = Add(D, value);
 
         //CC_H = sum.H; //--Not applicable
-        CC_N = sum.N;
-        CC_Z = sum.Z;
-        CC_V = sum.V;
-        CC_C = sum.C;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
-        D = (ushort)sum.Result;
+        D = (ushort)fn.Result;
 
         return DynamicCycles._64;
     }

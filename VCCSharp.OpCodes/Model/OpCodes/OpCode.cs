@@ -100,16 +100,6 @@ internal abstract class OpCode
     protected ushort U { get => _state.U; set => _state.U = value; }
 
     /// <summary>
-    /// <c>PC</c> low 8 bits
-    /// </summary>
-    protected byte PC_L { get => PC.L(); set => PC = PC.L(value); }
-
-    /// <summary>
-    /// <c>PC</c> high 8 bits
-    /// </summary>
-    protected byte PC_H { get => PC.H(); set => PC = PC.H(value); }
-
-    /// <summary>
     /// Condition Codes Register
     /// </summary>
     protected byte CC { get => _state.CC; set => _state.CC = value; }

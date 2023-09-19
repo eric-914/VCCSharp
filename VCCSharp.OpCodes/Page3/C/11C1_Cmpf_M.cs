@@ -37,13 +37,13 @@ internal class _11C1_Cmpf_M : OpCode6309, IOpCode
     {
         byte value = M8[PC++];
 
-        var sum = Subtract(F, value);
+        var fn = Subtract(F, value);
 
         //CC_H = undefined
-        CC_N = sum.N;
-        CC_Z = sum.Z;
-        CC_V = sum.V;
-        CC_C = sum.C;
+        CC_N = fn.N;
+        CC_Z = fn.Z;
+        CC_V = fn.V;
+        CC_C = fn.C;
 
         return 3;
     }
