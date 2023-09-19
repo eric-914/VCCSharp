@@ -46,6 +46,6 @@ internal class SystemState : ISystemState, IExtendedAddress
         R8 = new Registers8Bit<IState>(cpu);
         R16 = new Registers16Bit<IState>(cpu);
 
-        Exceptions = new Exceptions() { _system = this };
+        Exceptions = new Exceptions() { System = this };
     }
 }

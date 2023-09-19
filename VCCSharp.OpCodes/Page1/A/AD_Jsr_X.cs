@@ -49,9 +49,8 @@ internal class _AD_Jsr_X : OpCode, IOpCode
 
         ushort address = INDEXED[PC++];
 
-        M8[--S] = PC_L;
-        M8[--S] = PC_H;
-
+        Push(PC);
+        
         PC = address;
 
         return Cycles;

@@ -39,8 +39,7 @@ internal class _17_Lbsr_R : OpCode, IOpCode
     {
         ushort value = M16[PC]; PC += 2;
 
-        M8[--S] = PC_L;
-        M8[--S] = PC_H;
+        Push(PC);
 
         PC += value;
 

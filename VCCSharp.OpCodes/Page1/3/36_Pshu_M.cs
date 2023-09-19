@@ -51,23 +51,19 @@ internal class _36_Pshu_M : OpCode, IOpCode
     {
         int cycles = DynamicCycles._54;
 
-        void Write(byte value)
-        {
-            cycles++;
-
-            M8[--U] = value;
-        }
+        void _8(byte value) { cycles++; M8[--U] = value; }
+        void _16(ushort value) { cycles += 2; M8[--U] = value.L(); M8[--U] = value.H(); }
 
         byte value = M8[PC++];
 
-        if (value.Bit7()) { Write(PC_L); Write(PC_H); }
-        if (value.Bit6()) { Write(S_L); Write(S_H); }
-        if (value.Bit5()) { Write(Y_L); Write(Y_H); }
-        if (value.Bit4()) { Write(X_L); Write(X_H); }
-        if (value.Bit3()) { Write(DP); }
-        if (value.Bit2()) { Write(B); }
-        if (value.Bit1()) { Write(A); }
-        if (value.Bit0()) { Write(CC); }
+        if (value.Bit7()) { _16(PC); }
+        if (value.Bit6()) { _16(S); }
+        if (value.Bit5()) { _16(Y); }
+        if (value.Bit4()) { _16(X); }
+        if (value.Bit3()) { _8(DP); }
+        if (value.Bit2()) { _8(B); }
+        if (value.Bit1()) { _8(A); }
+        if (value.Bit0()) { _8(CC); }
 
         return cycles;
     }

@@ -44,7 +44,7 @@ public static class OpCodesFactory
 
         foreach (var opcode in match)
         {
-            opcode._system = ss;
+            opcode.System = ss;
         }
     }
 
@@ -56,7 +56,7 @@ public static class OpCodesFactory
 
         foreach (var opcode in match)
         {
-            opcode._system = ss;
+            opcode.System = ss;
         }
     }
 }

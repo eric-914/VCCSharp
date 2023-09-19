@@ -68,27 +68,22 @@ internal class _3B_Rti_I_6809 : OpCode, IOpCode
     {
         int cycles = 6;
 
-        CC = M8[S++];
+        CC = Pop8();
 
         ClearInterrupt(); //TODO: Does the interrupt technically end before or after the stack pull?
 
         if (CC_E)
         {
-            A = M8[S++];
-            B = M8[S++];
-            DP = M8[S++];
-            X_H = M8[S++];
-            X_L = M8[S++];
-            Y_H = M8[S++];
-            Y_L = M8[S++];
-            U_H = M8[S++];
-            U_L = M8[S++];
+            D = Pop16();
+            DP = Pop8();
+            X = Pop16();
+            Y = Pop16();
+            U = Pop16();
 
-            cycles += 9;
+            cycles += 9; //--9 bytes pushed
         }
 
-        PC_H = M8[S++];
-        PC_L = M8[S++];
+        PC = Pop16();
 
         return cycles;
     }

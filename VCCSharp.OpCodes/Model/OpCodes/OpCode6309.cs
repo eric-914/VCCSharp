@@ -12,50 +12,53 @@ namespace VCCSharp.OpCodes.Model.OpCodes;
 /// </summary>
 internal abstract class OpCode6309
 {
-    public ISystemState _system { get; set; } = default!;
+    public ISystemState System { get; set; } = default!;
 
-    private IState _state => _system.State;
+    private IState _state => System.State;
 
     /// <summary>
     /// 8-bit memory access
     /// </summary>
-    protected Memory8Bit M8 => _system.M8;
+    protected Memory8Bit M8 => System.M8;
 
     /// <summary>
     /// 16-bit memory access
     /// </summary>
-    protected Memory16Bit M16 => _system.M16;
+    protected Memory16Bit M16 => System.M16;
 
     /// <summary>
     /// 32-bit memory access
     /// </summary>
-    protected Memory32Bit M32 => _system.M32;
+    protected Memory32Bit M32 => System.M32;
 
-    protected MemoryDirect DIRECT => _system.DIRECT;
+    /// <summary>
+    /// 8-bit (DP | offset) memory access
+    /// </summary>
+    protected MemoryDirect DIRECT => System.DIRECT;
 
     /// <summary>
     /// 8-bit "Effective Address" memory access
     /// </summary>
-    protected MemoryIndexed INDEXED => _system.INDEXED;
+    protected MemoryIndexed INDEXED => System.INDEXED;
 
     /// <summary>
     /// Index accessor for 8-bit registers
     /// </summary>
-    public IRegisters8Bit R8 => _system.R8;
+    public IRegisters8Bit R8 => System.R8;
 
     /// <summary>
     /// Index accessor for 16-bit registers
     /// </summary>
-    public IRegisters16Bit R16 => _system.R16;
+    public IRegisters16Bit R16 => System.R16;
 
-    protected Exceptions Exceptions => _system.Exceptions;
+    protected Exceptions Exceptions => System.Exceptions;
 
-    protected DynamicCycles DynamicCycles => new DynamicCycles(() => _system.Mode);
+    protected DynamicCycles DynamicCycles => new DynamicCycles(() => System.Mode);
 
     /// <summary>
     /// For use on EA/INDEXED memory access as EA has cycle penalties.
     /// </summary>
-    public int Cycles { get => _system.Cycles; set => _system.Cycles = value; }
+    public int Cycles { get => System.Cycles; set => System.Cycles = value; }
 
     protected void EndInterrupt() => _state.ClearInterrupt();
 
@@ -301,4 +304,12 @@ internal abstract class OpCode6309
 
     protected static IFunction Boolean(byte result) => new Functions.Boolean(result);
     protected static IFunction Boolean(ushort result) => new Functions.Boolean(result);
+
+    protected void Push(byte value) { M8[--S] = value; }
+
+    protected void Push(ushort value) { M8[--S] = value.L(); M8[--S] = value.H(); }
+
+    protected byte Pop8() { return M8[++S]; }
+
+    protected ushort Pop16() { return (ushort)(M8[++S] << 8 | M8[++S]); }
 }

@@ -51,23 +51,19 @@ internal class _34_Pshs_M : OpCode, IOpCode
     {
         int cycles = DynamicCycles._54;
 
-        void Write(byte value)
-        {
-            cycles++;
-
-            M8[--S] = value;
-        }
+        void _8(byte value) { cycles++; Push(value); }
+        void _16(ushort value) { cycles += 2; Push(value); }
 
         byte value = M8[PC++];
 
-        if (value.Bit7()) { Write(PC_L); Write(PC_H); }
-        if (value.Bit6()) { Write(U_L); Write(U_H); }
-        if (value.Bit5()) { Write(Y_L); Write(Y_H); }
-        if (value.Bit4()) { Write(X_L); Write(X_H); }
-        if (value.Bit3()) { Write(DP); }
-        if (value.Bit2()) { Write(B); }
-        if (value.Bit1()) { Write(A); }
-        if (value.Bit0()) { Write(CC); }
+        if (value.Bit7()) { _16(PC); }
+        if (value.Bit6()) { _16(U); }
+        if (value.Bit5()) { _16(Y); }
+        if (value.Bit4()) { _16(X); }
+        if (value.Bit3()) { _8(DP); }
+        if (value.Bit2()) { _8(B); }
+        if (value.Bit1()) { _8(A); }
+        if (value.Bit0()) { _8(CC); }
 
         return cycles;
     }

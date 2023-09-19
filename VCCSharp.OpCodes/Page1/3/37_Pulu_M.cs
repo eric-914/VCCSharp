@@ -52,23 +52,19 @@ internal class _37_Pulu_M : OpCode, IOpCode
     {
         int cycles = DynamicCycles._54;
 
-        byte Read()
-        {
-            cycles++;
-
-            return M8[U++];
-        }
+        byte _8() { cycles++; return M8[U++]; }
+        ushort _16() { cycles += 2; return (ushort)(M8[U++] << 8 | M8[U++]); }
 
         byte value = M8[PC++];
 
-        if (value.Bit0()) { CC = Read(); }
-        if (value.Bit1()) { A = Read(); }
-        if (value.Bit2()) { B = Read(); }
-        if (value.Bit3()) { DP = Read(); }
-        if (value.Bit4()) { X_H = Read(); X_L = Read(); }
-        if (value.Bit5()) { Y_H = Read(); Y_L = Read(); }
-        if (value.Bit6()) { S_H = Read(); S_L = Read(); }
-        if (value.Bit7()) { PC_H = Read(); PC_L = Read(); }
+        if (value.Bit0()) { CC = _8(); }
+        if (value.Bit1()) { A = _8(); }
+        if (value.Bit2()) { B = _8(); }
+        if (value.Bit3()) { DP = _8(); }
+        if (value.Bit4()) { X = _16(); }
+        if (value.Bit5()) { Y = _16(); }
+        if (value.Bit6()) { S = _16(); }
+        if (value.Bit7()) { PC = _16(); }
 
         return cycles;
     }

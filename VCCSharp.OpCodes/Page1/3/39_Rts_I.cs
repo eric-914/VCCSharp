@@ -36,8 +36,7 @@ internal class _39_Rts_I : OpCode, IOpCode
 {
     public int Exec()
     {
-        PC_H = M8[S++];
-        PC_L = M8[S++];
+        PC = Pop16();
 
         return DynamicCycles._54;
     }

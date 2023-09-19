@@ -39,8 +39,7 @@ internal class _8D_Bsr_R : OpCode, IOpCode
     {
         sbyte offset = (sbyte)M8[PC++];
 
-        M8[--S] = PC_L;
-        M8[--S] = PC_H;
+        Push(PC);
 
         PC += (ushort)offset;
 

@@ -47,8 +47,7 @@ internal class _9D_Jsr_D : OpCode, IOpCode
     {
         ushort address = DIRECT[PC++];
 
-        M8[--S] = PC_L;
-        M8[--S] = PC_H;
+        Push(PC);
 
         PC = address;
 

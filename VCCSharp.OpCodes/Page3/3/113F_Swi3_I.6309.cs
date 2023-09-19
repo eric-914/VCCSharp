@@ -54,31 +54,25 @@ internal class _113F_Swi3_I_6309 : OpCode6309, IOpCode
 {
     public int Exec()
     {
-        int cycles = 20;
+        int cycles = 12 + 8; // One cycle for each byte pushed + Overhead
 
-        CC_E = true;
+        CC_E = true; //--Everything is going on stack
 
-        M8[--S] = PC_L;
-        M8[--S] = PC_H;
-        M8[--S] = U_L;
-        M8[--S] = U_H;
-        M8[--S] = Y_L;
-        M8[--S] = Y_H;
-        M8[--S] = X_L;
-        M8[--S] = X_H;
-        M8[--S] = DP;
+        Push(PC);
+        Push(U);
+        Push(Y);
+        Push(X);
+        Push(DP);
 
         if (MD_NATIVE6309)
         {
-            M8[--S] = F;
-            M8[--S] = E;
+            Push(W);
 
             cycles += 2;
         }
 
-        M8[--S] = B;
-        M8[--S] = A;
-        M8[--S] = CC;
+        Push(D);
+        Push(CC);
 
         PC = M16[Define.VSWI3];
 

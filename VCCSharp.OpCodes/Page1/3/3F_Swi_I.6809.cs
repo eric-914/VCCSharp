@@ -53,26 +53,21 @@ internal class _3F_Swi_I_6809 : OpCode, IOpCode
 {
     public int Exec()
     {
-        CC_E = true;
+        CC_E = true; //--Everything is going on stack
 
-        M8[--S] = PC_L;
-        M8[--S] = PC_H;
-        M8[--S] = U_L;
-        M8[--S] = U_H;
-        M8[--S] = Y_L;
-        M8[--S] = Y_H;
-        M8[--S] = X_L;
-        M8[--S] = X_H;
-        M8[--S] = DP;
-        M8[--S] = B;
-        M8[--S] = A;
-        M8[--S] = CC;
+        Push(PC);
+        Push(U);
+        Push(Y);
+        Push(X);
+        Push(DP);
+        Push(D);
+        Push(CC);
 
         CC_I = true;
         CC_F = true;
 
         PC = M16[Define.VSWI];
 
-        return 19;
+        return 12 + 7; // One cycle for each byte pushed + Overhead
     }
 }
