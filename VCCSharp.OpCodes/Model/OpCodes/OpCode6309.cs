@@ -19,7 +19,7 @@ internal abstract class OpCode6309
     /// <summary>
     /// 8-bit memory access
     /// </summary>
-    protected Memory8Bit M8 => System.M8;
+    public Memory8Bit M8 => System.M8;
 
     /// <summary>
     /// 16-bit memory access
@@ -51,7 +51,7 @@ internal abstract class OpCode6309
     /// </summary>
     public IRegisters16Bit R16 => System.R16;
 
-    protected Exceptions Exceptions => System.Exceptions;
+    public Exceptions Exceptions => System.Exceptions;
 
     protected DynamicCycles DynamicCycles => new DynamicCycles(() => System.Mode);
 
@@ -70,7 +70,7 @@ internal abstract class OpCode6309
     /// <summary>
     /// Program Counter
     /// </summary>
-    protected ushort PC { get => _state.PC; set => _state.PC = value; }
+    public ushort PC { get => _state.PC; set => _state.PC = value; }
 
     /// <summary>
     /// 16-bit register <c>A.B</c>
@@ -106,46 +106,6 @@ internal abstract class OpCode6309
     /// 16-bit <c>USER-STACK</c> register
     /// </summary>
     protected ushort U { get => _state.U; set => _state.U = value; }
-
-    /// <summary>
-    /// <c>X</c> low 8 bits
-    /// </summary>
-    protected byte X_L { get => X.L(); set => X = X.L(value); }
-
-    /// <summary>
-    /// <c>X</c> high 8 bits
-    /// </summary>
-    protected byte X_H { get => X.H(); set => X = X.H(value); }
-
-    /// <summary>
-    /// <c>Y</c> low 8 bits
-    /// </summary>
-    protected byte Y_L { get => Y.L(); set => Y = Y.L(value); }
-
-    /// <summary>
-    /// <c>Y</c> high 8 bits
-    /// </summary>
-    protected byte Y_H { get => Y.H(); set => Y = Y.H(value); }
-
-    /// <summary>
-    /// <c>S</c> low 8 bits
-    /// </summary>
-    protected byte S_L { get => S.L(); set => S = S.L(value); }
-
-    /// <summary>
-    /// <c>S</c> high 8 bits
-    /// </summary>
-    protected byte S_H { get => S.H(); set => S = S.H(value); }
-
-    /// <summary>
-    /// <c>U</c> low 8 bits
-    /// </summary>
-    protected byte U_L { get => U.L(); set => U = U.L(value); }
-
-    /// <summary>
-    /// <c>U</c> high 8 bits
-    /// </summary>
-    protected byte U_H { get => U.H(); set => U = U.H(value); }
 
     /// <summary>
     /// Condition Codes Register

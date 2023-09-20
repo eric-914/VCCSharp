@@ -1,4 +1,5 @@
 ﻿using VCCSharp.OpCodes.Model.OpCodes;
+using VCCSharp.OpCodes.Model.Support;
 
 namespace VCCSharp.OpCodes.Page3;
 
@@ -22,8 +23,8 @@ namespace VCCSharp.OpCodes.Page3;
 /// The forms which increment only one of the addresses are useful for filling a block of memory with a particular byte value (destination increments), and for reading or writing a block of data from or to a memory-mapped I/O device. 
 /// For the reasons described below, I/O transfers should always be performed with interrupts masked.
 /// 
-/// The Immediate operand for this instruction is a postbyte which uses the same format as that used by the TFR and EXG instructions. 
-/// An Illegal Instruction exception will occur if the postbyte contains encodings for registers other than X, Y, U, S or D.
+/// The Immediate operand for this instruction is a post-byte which uses the same format as that used by the TFR and EXG instructions. 
+/// An Illegal Instruction exception will occur if the post-byte contains encodings for registers other than X, Y, U, S or D.
 /// 
 /// ***IMPORTANT:***
 /// The TFM instructions are unique in that they are the only instructions that may be interrupted before they have completed. 
@@ -39,41 +40,19 @@ namespace VCCSharp.OpCodes.Page3;
 /// Cycles (6 + 3n)
 /// Byte Count (3)
 /// (Three additional cycles are used for each BYTE transferred.)
-internal class _113B_Tfm4_M : OpCode6309, IOpCode
+internal class _113B_Tfm4_M : OpCode6309, IOpCode, ITransferMemory
 {
-    public int CycleCount => throw new NotImplementedException();
+    private readonly TransferMemory _tm = new();
+
+    public int CycleCount => 6;
 
     public int Exec()
     {
-        if (W == 0)
-        {
-            PC++;
+        return _tm.Exec(this);
+    }
 
-            return 6;
-        }
-
-        byte value = M8[PC];
-
-        byte source = (byte)(value >> 4);
-        byte destination = (byte)(value & 15);
-
-        if (source > 4 || destination > 4)
-        {
-            return Exceptions.IllegalInstruction();
-        }
-
-        byte mask = M8[R16[source]];
-
-        M8[R16[destination]] = mask;
-
+    public void Swap(byte source, byte destination)
+    {
         R16[destination] = (ushort)(R16[destination] + 1);
-
-
-        W--;
-
-        //SNEAKY!!!  Force the CPU to call the same OpCode over and over until done.
-        PC -= 2; //Hit the same instruction on the next loop if not done copying
-
-        return 3;
     }
 }
