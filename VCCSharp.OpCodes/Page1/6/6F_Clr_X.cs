@@ -41,9 +41,11 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CLR (accumulator), ST
 internal class _6F_Clr_X : OpCode, IOpCode
 {
+    public int CycleCount => 6;
+
     public int Exec()
     {
-        Cycles = 6;
+        Cycles = CycleCount;
 
         ushort address = INDEXED[PC++];
 

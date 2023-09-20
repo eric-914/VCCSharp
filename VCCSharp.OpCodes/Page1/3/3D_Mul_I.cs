@@ -28,6 +28,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADCA, MULD
 internal class _3D_Mul_I : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._1110;
+
     public int Exec()
     {
         var fn = Multiply(A, B);
@@ -37,6 +39,6 @@ internal class _3D_Mul_I : OpCode, IOpCode
 
         D = (ushort)fn.Result;
 
-        return DynamicCycles._1110;
+        return CycleCount;
     }
 }

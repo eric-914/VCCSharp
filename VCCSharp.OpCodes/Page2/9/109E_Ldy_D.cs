@@ -25,6 +25,8 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: LD (8-bit), LDQ, LEA
 internal class _109E_Ldy_D : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._65;
+
     public int Exec()
     {
         ushort address = DIRECT[PC++];
@@ -35,6 +37,6 @@ internal class _109E_Ldy_D : OpCode, IOpCode
         CC_Z = Y == 0;
         CC_V = false;
 
-        return DynamicCycles._65;
+        return CycleCount;
     }
 }

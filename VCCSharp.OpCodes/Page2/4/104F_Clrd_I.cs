@@ -31,6 +31,8 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: CLR (memory), LD
 internal class _104F_Clrd_I : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._32;
+
     public int Exec()
     {
         CC_N = false;
@@ -40,6 +42,6 @@ internal class _104F_Clrd_I : OpCode6309, IOpCode
 
         D = 0;
 
-        return DynamicCycles._32;
+        return CycleCount;
     }
 }

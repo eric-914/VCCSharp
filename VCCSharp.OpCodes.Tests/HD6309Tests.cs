@@ -170,9 +170,9 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
     [Test]
     public void OneOffTest()
     {
-        byte opcode = 0xbe;
-        var seeds = new Seeds { 9, 166, 0, 0, 115, 190, 63, 27, 66, 78, 56, 49, 54, 247, 180, 18, 142, 176, 72, 29 };
-        var state = new TestState { CC = 0x7, PC = 0xd5c6, S = 0xc41f, U = 0x23af, DP = 0x3a, D = 0x31f0, X = 0xf885, Y = 0x81c0, MD = 0x48, W = 0x1eda, V = 0xbc53 };
+        byte opcode = 0x3a;
+        var seeds = new Seeds { 65, 221, 209, 170, 15, 137, 242, 237, 108, 12, 175, 139, 9, 209, 35, 3, 18, 43, 135, 4 };
+        var state = new TestState { CC = 0x22, PC = 0xb170, S = 0xc5d1, U = 0x9f54, DP = 0x17, D = 0x5ef0, X = 0xe7e9, Y = 0x9484, MD = 0x57, W = 0x928a, V = 0x7bfa };
 
         var memOld = new MemoryTester(seeds);
         var memNew = new MemoryTester(seeds);
@@ -180,8 +180,8 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
         var _old = new OldOpcodes(memOld) { CC = state.CC, PC_REG = state.PC, S_REG = state.S, U_REG = state.U, DPA = state.DP, D_REG = state.D, X_REG = state.X, Y_REG = state.Y, MD = state.MD, W_REG = state.W, V_REG = state.V };
         var _new = new NewOpcodes(memNew) { CC = state.CC, PC = state.PC, S = state.S, U = state.U, DP = state.DP, D = state.D, X = state.X, Y = state.Y, MD = state.MD, W = state.W, V = state.V };
 
-        _old.Exec3(opcode);
-        _new.Exec3(opcode);
+        _old.Exec2(opcode);
+        _new.Exec2(opcode);
 
         Assert.That(_old.CC, Is.EqualTo(_new.CC));
         Assert.That(_old.PC_REG, Is.EqualTo(_new.PC));

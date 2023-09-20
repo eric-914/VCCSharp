@@ -32,6 +32,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: SBCD, SBCR
 internal class _C2_Sbcb_M : OpCode, IOpCode
 {
+    public int CycleCount => 2;
+
     public int Exec()
     {
         byte value = M8[PC++];
@@ -46,6 +48,6 @@ internal class _C2_Sbcb_M : OpCode, IOpCode
 
         B = (byte)fn.Result;
 
-        return 2;
+        return CycleCount;
     }
 }

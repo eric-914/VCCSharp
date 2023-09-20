@@ -64,6 +64,8 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: BAND, BEOR, BIAND, BIEOR, BOR, LDBT, STBT
 internal class _1133_Bior_D : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._76;
+
     public int Exec()
     {
         byte value = M8[PC++];
@@ -88,6 +90,6 @@ internal class _1133_Bior_D : OpCode6309, IOpCode
         }
 
         // Else nothing changes
-        return DynamicCycles._76;
+        return CycleCount;
     }
 }

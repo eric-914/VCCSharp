@@ -48,12 +48,14 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: PSH, PULSW, PULUW
 internal class _37_Pulu_M : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._54;
+
     public int Exec()
     {
-        int cycles = DynamicCycles._54;
+        Cycles = CycleCount;
 
-        byte _8() { cycles++; return M8[U++]; }
-        ushort _16() { cycles += 2; return (ushort)(M8[U++] << 8 | M8[U++]); }
+        byte _8() { Cycles++; return M8[U++]; }
+        ushort _16() { Cycles += 2; return (ushort)(M8[U++] << 8 | M8[U++]); }
 
         byte value = M8[PC++];
 
@@ -66,6 +68,6 @@ internal class _37_Pulu_M : OpCode, IOpCode
         if (value.Bit6()) { S = _16(); }
         if (value.Bit7()) { PC = _16(); }
 
-        return cycles;
+        return Cycles;
     }
 }

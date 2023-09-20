@@ -29,12 +29,14 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BRA, LBRN, JMP
 internal class _16_Lbra_R : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._54;
+
     public int Exec()
     {
         ushort value = M16[PC]; PC += 2;
 
         PC += value;
 
-        return DynamicCycles._54;
+        return CycleCount;
     }
 }

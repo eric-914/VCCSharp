@@ -25,9 +25,11 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: LD (8-bit), LDQ, LEA
 internal class _EE_Ldu_X : OpCode, IOpCode
 {
+    public int CycleCount => 5;
+
     public int Exec()
     {
-        Cycles = 5;
+        Cycles = CycleCount;
 
         ushort address = INDEXED[PC++];
 

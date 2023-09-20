@@ -6,6 +6,11 @@
 public interface IOpCode
 {
     /// <summary>
+    /// Default cycle count
+    /// </summary>
+    int CycleCount {  get; }
+
+    /// <summary>
     /// Invokes the opcode
     /// </summary>
     /// <returns>The execution cycle count</returns>

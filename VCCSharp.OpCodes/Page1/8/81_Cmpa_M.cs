@@ -32,6 +32,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CMP (16-bit), CMPR
 internal class _81_Cmpa_M : OpCode, IOpCode
 {
+    public int CycleCount => 2;
+
     public int Exec()
     {
         byte value = M8[PC++];
@@ -44,6 +46,6 @@ internal class _81_Cmpa_M : OpCode, IOpCode
         CC_V = fn.V;
         CC_C = fn.C;
 
-        return 2;
+        return CycleCount;
     }
 }

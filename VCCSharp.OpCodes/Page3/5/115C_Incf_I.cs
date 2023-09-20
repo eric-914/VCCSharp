@@ -32,6 +32,8 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: ADD, DEC, INC (memory)
 internal class _115C_Incf_I : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._32;
+
     public int Exec()
     {
         byte result = (byte)(F + 1);
@@ -42,6 +44,6 @@ internal class _115C_Incf_I : OpCode6309, IOpCode
 
         F = result;
 
-        return DynamicCycles._32;
+        return CycleCount;
     }
 }

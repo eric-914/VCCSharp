@@ -26,9 +26,11 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: ST (8-bit), STQ
 internal class _10A7_Stw_X : OpCode6309, IOpCode
 {
+    public int CycleCount => 6;
+
     public int Exec()
     {
-        Cycles = 6;
+        Cycles = CycleCount;
 
         ushort address = INDEXED[PC++];
 

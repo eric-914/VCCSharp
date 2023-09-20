@@ -31,6 +31,8 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: ADD (16-bit), ADDR
 internal class _11CB_Addf_M : OpCode6309, IOpCode
 {
+    public int CycleCount => 3;
+
     public int Exec()
     {
         byte value = M8[PC++];
@@ -45,6 +47,6 @@ internal class _11CB_Addf_M : OpCode6309, IOpCode
 
         F = (byte)fn.Result;
 
-        return 3;
+        return CycleCount;
     }
 }

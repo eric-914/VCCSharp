@@ -9,6 +9,8 @@ internal class _11_Page_3_6309 : OpCode, IOpCode, IPage3
 {
     public IOpCode[] Page3 { get; } = new Page3Opcodes6809().OpCodes;
 
+    public int CycleCount => throw new NotImplementedException();
+
     public int Exec()
     {
         byte opCode = M8[PC++];

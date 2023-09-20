@@ -47,10 +47,12 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BRA, NOP, LBRN
 internal class _21_Brn_R : OpCode, IOpCode
 {
+    public int CycleCount => 3;
+
     public int Exec()
     {
         PC++;
 
-        return 3;
+        return CycleCount;
     }
 }

@@ -31,12 +31,14 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CMP, STQ, TST (memory)
 internal class _5D_Tstb_I : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._21;
+
     public int Exec()
     {
         CC_N = B.Bit7();
         CC_Z = B == 0;
         CC_V = false;
 
-        return DynamicCycles._21;
+        return CycleCount;
     }
 }

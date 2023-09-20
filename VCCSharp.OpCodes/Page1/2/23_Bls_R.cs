@@ -31,6 +31,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BHI, BLE, LBLS
 internal class _23_Bls_R : OpCode, IOpCode
 {
+    public int CycleCount => 3;
+
     public int Exec()
     {
         if (CC_C | CC_Z)
@@ -40,6 +42,6 @@ internal class _23_Bls_R : OpCode, IOpCode
 
         PC++;
 
-        return 3;
+        return CycleCount;
     }
 }

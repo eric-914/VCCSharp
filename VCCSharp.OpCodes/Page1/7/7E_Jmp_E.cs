@@ -38,12 +38,14 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BRA, JSR, LBRA
 internal class _7E_Jmp_E : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._43;
+
     public int Exec()
     {
         ushort address = M16[PC];
 
         PC = address;
 
-        return DynamicCycles._43;
+        return CycleCount;
     }
 }

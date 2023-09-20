@@ -29,6 +29,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BVC, LBVS
 internal class _29_Bvs_R : OpCode, IOpCode
 {
+    public int CycleCount => 3;
+
     public int Exec()
     {
         if (CC_V)
@@ -38,6 +40,6 @@ internal class _29_Bvs_R : OpCode, IOpCode
 
         PC++;
 
-        return 3;
+        return CycleCount;
     }
 }

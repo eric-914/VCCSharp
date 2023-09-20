@@ -32,9 +32,11 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: SBCD, SBCR
 internal class _E2_Sbcb_X : OpCode, IOpCode
 {
+    public int CycleCount => 4;
+
     public int Exec()
     {
-        Cycles = 4;
+        Cycles = CycleCount;
 
         ushort address = INDEXED[PC++];
         byte value = M8[address];

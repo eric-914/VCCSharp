@@ -31,9 +31,11 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CMP (8-bit), CMPR
 internal class _AC_Cmpx_X : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._65;
+
     public int Exec()
     {
-        Cycles = DynamicCycles._65;
+        Cycles = CycleCount;
 
         ushort address = INDEXED[PC++];
         ushort value = M16[address];

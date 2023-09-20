@@ -33,6 +33,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BEOR, BIEOR, EIM, EORD, EORR
 internal class _88_Eora_M : OpCode, IOpCode
 {
+    public int CycleCount => 2;
+
     public int Exec()
     {
         byte value = M8[PC++];
@@ -45,6 +47,6 @@ internal class _88_Eora_M : OpCode, IOpCode
 
         A = result;
 
-        return 2;
+        return CycleCount;
     }
 }

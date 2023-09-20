@@ -26,6 +26,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: LD (8-bit), LD (16-bit)
 internal class _CD_Ldq_M : OpCode6309, IOpCode
 {
+    public int CycleCount => 5;
+
     public int Exec()
     {
         Q = M32[PC+=4];
@@ -34,6 +36,6 @@ internal class _CD_Ldq_M : OpCode6309, IOpCode
         CC_Z = Q == 0;
         CC_V = false;
 
-        return 5;
+        return CycleCount;
     }
 }

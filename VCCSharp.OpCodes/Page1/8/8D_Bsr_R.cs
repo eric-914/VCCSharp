@@ -35,6 +35,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: JSR, LBSR, RTS
 internal class _8D_Bsr_R : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._76;
+
     public int Exec()
     {
         sbyte offset = (sbyte)M8[PC++];
@@ -43,6 +45,6 @@ internal class _8D_Bsr_R : OpCode, IOpCode
 
         PC += (ushort)offset;
 
-        return DynamicCycles._76;
+        return CycleCount;
     }
 }

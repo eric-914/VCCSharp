@@ -32,6 +32,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: LSR (16-bit)
 internal class _04_Lsr_D : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._65;
+
     public int Exec()
     {
         ushort address = DIRECT[PC++];
@@ -45,6 +47,6 @@ internal class _04_Lsr_D : OpCode, IOpCode
 
         M8[address] = result;
 
-        return DynamicCycles._65;
+        return CycleCount;
     }
 }

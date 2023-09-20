@@ -43,6 +43,8 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: COM, NEG (memory)
 internal class _1040_Negd_I : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._32;
+
     public int Exec()
     {
         ushort result = (ushort)(0 - D);
@@ -54,6 +56,6 @@ internal class _1040_Negd_I : OpCode6309, IOpCode
 
         D = result;
 
-        return DynamicCycles._32;
+        return CycleCount;
     }
 }

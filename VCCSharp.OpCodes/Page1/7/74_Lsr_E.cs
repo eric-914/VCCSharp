@@ -33,6 +33,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// </remarks>
 internal class _74_Lsr_E : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._76;
+
     public int Exec()
     {
         ushort address = M16[PC]; PC += 2;
@@ -46,6 +48,6 @@ internal class _74_Lsr_E : OpCode, IOpCode
 
         M8[address] = result;
 
-        return DynamicCycles._76;
+        return CycleCount;
     }
 }

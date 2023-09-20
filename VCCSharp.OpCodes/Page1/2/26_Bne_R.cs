@@ -37,6 +37,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BEQ, LBNE
 internal class _26_Bne_R : OpCode, IOpCode
 {
+    public int CycleCount => 3;
+
     public int Exec()
     {
         if (!CC_Z)
@@ -46,6 +48,6 @@ internal class _26_Bne_R : OpCode, IOpCode
 
         PC++;
 
-        return 3;
+        return CycleCount;
     }
 }

@@ -65,6 +65,8 @@ internal class _1E_Exg_M_6809 : OpCode, IOpCode
 
     private readonly RegisterMap4Bit _map;
 
+    public int CycleCount => 8;
+
     internal _1E_Exg_M_6809()
     {
         _map = new RegisterMap4Bit
@@ -82,7 +84,7 @@ internal class _1E_Exg_M_6809 : OpCode, IOpCode
 
         _map.Execute(value);
 
-        return 8;
+        return CycleCount;
     }
 
     private void _16Bit_and_16Bit(byte source, byte destination)

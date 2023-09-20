@@ -25,9 +25,11 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: LD (16-bit), LDQ
 internal class _A6_Lda_X : OpCode, IOpCode
 {
+    public int CycleCount => 4;
+
     public int Exec()
     {
-        Cycles = 4;
+        Cycles = CycleCount;
 
         ushort address = INDEXED[PC++];
 

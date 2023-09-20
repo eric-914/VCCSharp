@@ -33,9 +33,11 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: SUB (8-bit), SUBR
 internal class _10A0_Subw_X : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._76;
+
     public int Exec()
     {
-        Cycles = DynamicCycles._76;
+        Cycles = CycleCount;
 
         ushort address = INDEXED[PC++];
         ushort value = M16[address];

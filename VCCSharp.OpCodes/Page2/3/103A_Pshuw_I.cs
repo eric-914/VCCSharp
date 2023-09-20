@@ -30,11 +30,13 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: PSH, PSHSW, PULSW, PULUW
 internal class _103A_Pshuw_I : OpCode6309, IOpCode
 {
+    public int CycleCount => 6;
+
     public int Exec()
     {
         M8[--U] = F;
         M8[--U] = E;
 
-        return 6;
+        return CycleCount;
     }
 }

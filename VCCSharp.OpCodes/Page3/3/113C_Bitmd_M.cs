@@ -50,6 +50,8 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: LDMD
 internal class _113C_Bitmd_M : OpCode6309, IOpCode
 {
+    public int CycleCount => 4;
+
     public int Exec()
     {
         byte value = M8[PC++];
@@ -66,6 +68,6 @@ internal class _113C_Bitmd_M : OpCode6309, IOpCode
         if (result.Bit6()) MD_ILLEGAL = false;
         if (result.Bit7()) MD_ZERODIV = false;
 
-        return 4;
+        return CycleCount;
     }
 }

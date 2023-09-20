@@ -35,6 +35,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADCR, ROL (16-bit)
 internal class _09_Rol_D : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._65;
+
     public int Exec()
     {
         ushort address = DIRECT[PC++];
@@ -51,6 +53,6 @@ internal class _09_Rol_D : OpCode, IOpCode
 
         M8[address] = result;
 
-        return DynamicCycles._65;
+        return CycleCount;
     }
 }

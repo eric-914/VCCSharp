@@ -36,6 +36,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ASRD
 internal class _07_Asr_D : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._65;
+
     public int Exec()
     {
         ushort address = DIRECT[PC++];
@@ -50,6 +52,6 @@ internal class _07_Asr_D : OpCode, IOpCode
 
         M8[address] = result;
 
-        return DynamicCycles._65;
+        return CycleCount;
     }
 }

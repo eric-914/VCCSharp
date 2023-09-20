@@ -30,9 +30,11 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: DEC (accumulator), INC, SUB
 internal class _6A_Dec_X : OpCode, IOpCode
 {
+    public int CycleCount => 6;
+
     public int Exec()
     {
-        Cycles = 6;
+        Cycles = CycleCount;
 
         ushort address = INDEXED[PC++];
         byte value = M8[address];

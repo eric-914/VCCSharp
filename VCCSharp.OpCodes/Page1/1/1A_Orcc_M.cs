@@ -42,6 +42,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ANDCC, OR (8-bit), ORD, ORR
 internal class _1A_Orcc_M : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._32;
+
     public int Exec()
     {
         byte value = M8[PC++];
@@ -50,6 +52,6 @@ internal class _1A_Orcc_M : OpCode, IOpCode
 
         CC = result;
 
-        return DynamicCycles._32;
+        return CycleCount;
     }
 }

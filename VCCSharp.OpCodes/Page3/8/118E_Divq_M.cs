@@ -49,9 +49,11 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: DIVD
 internal class _118E_Divq_M : OpCode6309, IOpCode
 {
+    public int CycleCount => 34;
+
     public int Exec()
     {
-        Cycles = 34;
+        Cycles = CycleCount;
 
         int numerator = (int)Q;
         short denominator = (short)M16[PC]; PC += 2;

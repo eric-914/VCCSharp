@@ -31,19 +31,21 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: BGE, LBHS, LBLT
 internal class _102C_LBge_R : OpCode, IOpCode
 {
+    public int CycleCount => 5;
+
     public int Exec()
     {
-        int cycles = 5;
+        Cycles = CycleCount;
 
         if (!(CC_N ^ CC_V))
         {
             PC += (ushort)(short)M16[PC];
 
-            cycles += 1;
+            Cycles += 1;
         }
 
         PC += 2;
 
-        return cycles;
+        return Cycles;
     }
 }

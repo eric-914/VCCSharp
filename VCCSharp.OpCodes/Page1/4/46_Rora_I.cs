@@ -34,6 +34,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ROR (16-bit)
 internal class _46_Rora_I : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._21;
+
     public int Exec()
     {
         byte bit = CC_C.ToBit();
@@ -46,6 +48,6 @@ internal class _46_Rora_I : OpCode, IOpCode
 
         A = result;
 
-        return DynamicCycles._21;
+        return CycleCount;
     }
 }

@@ -36,6 +36,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BGE, BLO, LBHS
 internal class _24_Bhs_R : OpCode, IOpCode
 {
+    public int CycleCount => 3;
+
     public int Exec()
     {
         if (!CC_C)
@@ -45,6 +47,6 @@ internal class _24_Bhs_R : OpCode, IOpCode
 
         PC++;
 
-        return 3;
+        return CycleCount;
     }
 }

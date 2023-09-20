@@ -40,6 +40,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: LSLD
 internal class _78_Asl_E : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._76;
+
     public int Exec()
     {
         ushort address = M16[PC]; PC += 2;
@@ -55,6 +57,6 @@ internal class _78_Asl_E : OpCode, IOpCode
 
         M8[address] = result;
 
-        return DynamicCycles._76;
+        return CycleCount;
     }
 }

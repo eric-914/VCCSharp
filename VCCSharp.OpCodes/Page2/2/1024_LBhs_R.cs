@@ -36,19 +36,21 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: BCC, LBCS, LBGE
 internal class _1024_LBhs_R : OpCode, IOpCode
 {
+    public int CycleCount => 6;
+
     public int Exec()
     {
-        int cycles = 6;
+        Cycles = CycleCount;
 
         if (!CC_C)
         {
             PC += (ushort)(short)M16[PC];
 
-            cycles += 1;
+            Cycles += 1;
         }
 
         PC += 2;
 
-        return cycles;
+        return Cycles;
     }
 }

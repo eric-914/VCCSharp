@@ -49,6 +49,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: AIM, OIM, TIM
 internal class _75_Eim_E : OpCode6309, IOpCode
 {
+    public int CycleCount => 7;
+
     public int Exec()
     {
         byte value = M8[PC++];
@@ -63,6 +65,6 @@ internal class _75_Eim_E : OpCode6309, IOpCode
 
         M8[address] = result;
 
-        return 7;
+        return CycleCount;
     }
 }

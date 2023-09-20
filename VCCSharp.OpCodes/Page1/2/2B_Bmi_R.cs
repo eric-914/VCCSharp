@@ -30,6 +30,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BLT, BPL, LBMI
 internal class _2B_Bmi_R : OpCode, IOpCode
 {
+    public int CycleCount => 3;
+
     public int Exec()
     {
         if (CC_N)
@@ -39,6 +41,6 @@ internal class _2B_Bmi_R : OpCode, IOpCode
 
         PC++;
 
-        return 3;
+        return CycleCount;
     }
 }

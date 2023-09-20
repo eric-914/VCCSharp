@@ -32,9 +32,11 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADDR, LD (16-bit), SUBR
 internal class _31_Leay_X : OpCode, IOpCode
 {
+    public int CycleCount => 4;
+
     public int Exec()
     {
-        Cycles = 4;
+        Cycles = CycleCount;
 
         Y = INDEXED[PC++];
 

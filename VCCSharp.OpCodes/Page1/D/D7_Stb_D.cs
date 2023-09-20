@@ -25,6 +25,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ST (16-bit), STQ
 internal class _D7_Stb_D : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._43;
+
     public int Exec()
     {
         ushort address = DIRECT[PC++];
@@ -35,6 +37,6 @@ internal class _D7_Stb_D : OpCode, IOpCode
         CC_Z = B == 0;
         CC_V = false;
 
-        return DynamicCycles._43;
+        return CycleCount;
     }
 }

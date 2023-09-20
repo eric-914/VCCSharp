@@ -31,9 +31,11 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: SUB (16-bit), SUBR
 internal class _A0_Suba_X : OpCode, IOpCode
 {
+    public int CycleCount => 4;
+
     public int Exec()
     {
-        Cycles = 4;
+        Cycles = CycleCount;
 
         ushort address = INDEXED[PC++];
         byte value = M8[address];

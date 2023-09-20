@@ -35,6 +35,8 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: AND (8-bit), ANDCC, ANDR, BITD
 internal class _10B4_Andd_E : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._86;
+
     public int Exec()
     {
         ushort address = M16[PC]; PC += 2;
@@ -48,6 +50,6 @@ internal class _10B4_Andd_E : OpCode6309, IOpCode
 
         D = result;
 
-        return DynamicCycles._86;
+        return CycleCount;
     }
 }

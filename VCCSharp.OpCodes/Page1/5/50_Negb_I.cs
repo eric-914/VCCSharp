@@ -36,6 +36,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: COM, NEG (memory)
 internal class _50_Negb_I : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._21;
+
     public int Exec()
     {
         byte value = (byte)(0 - B);
@@ -47,6 +49,6 @@ internal class _50_Negb_I : OpCode, IOpCode
 
         B = value;
 
-        return DynamicCycles._21;
+        return CycleCount;
     }
 }

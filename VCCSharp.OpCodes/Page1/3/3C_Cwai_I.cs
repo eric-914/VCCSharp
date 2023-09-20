@@ -45,12 +45,14 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ANDCC, RTI, SYNC
 internal class _3C_Cwai_I : OpCode, IOpCode
 {
+    public int CycleCount => SynchronizeWithInterrupt();
+
     public int Exec()
     {
         byte value = M8[PC++];
 
         CC &= value;
 
-        return SynchronizeWithInterrupt();
+        return CycleCount;
     }
 }

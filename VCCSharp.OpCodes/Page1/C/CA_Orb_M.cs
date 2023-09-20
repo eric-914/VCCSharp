@@ -32,6 +32,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BIOR, BOR, OIM, ORCC, ORD, ORR
 internal class _CA_Orb_M : OpCode, IOpCode
 {
+    public int CycleCount => 2;
+
     public int Exec()
     {
         byte value = M8[PC++];
@@ -44,6 +46,6 @@ internal class _CA_Orb_M : OpCode, IOpCode
 
         B = result;
 
-        return 2;
+        return CycleCount;
     }
 }

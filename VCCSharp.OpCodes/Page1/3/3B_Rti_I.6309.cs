@@ -71,9 +71,11 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CWAI, RTS, SWI, SWI2, SWI3
 internal class _3B_Rti_I_6309 : OpCode6309, IOpCode
 {
+    public int CycleCount => 6;
+
     public int Exec()
     {
-        int cycles = 6;
+        Cycles = CycleCount;
 
         CC = Pop8();
 
@@ -87,7 +89,7 @@ internal class _3B_Rti_I_6309 : OpCode6309, IOpCode
             {
                 W = Pop16();
 
-                cycles += 2;
+                Cycles += 2;
             }
 
             DP = Pop8();
@@ -95,11 +97,11 @@ internal class _3B_Rti_I_6309 : OpCode6309, IOpCode
             Y = Pop16();
             U = Pop16();
 
-            cycles += 9; //--9 bytes pushed
+            Cycles += 9; //--9 bytes pushed
         }
 
         PC = Pop16();
 
-        return cycles;
+        return Cycles;
     }
 }

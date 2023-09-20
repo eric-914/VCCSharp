@@ -32,6 +32,8 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: SUB (16-bit), SUBR
 internal class _11C0_Subf_M : OpCode6309, IOpCode
 {
+    public int CycleCount => 3;
+
     public int Exec()
     {
         byte value = M8[PC++];
@@ -46,6 +48,6 @@ internal class _11C0_Subf_M : OpCode6309, IOpCode
 
         F = (byte)fn.Result;
 
-        return 3;
+        return CycleCount;
     }
 }

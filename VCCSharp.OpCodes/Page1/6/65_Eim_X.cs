@@ -49,9 +49,11 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: AIM, OIM, TIM
 internal class _65_Eim_X : OpCode6309, IOpCode
 {
+    public int CycleCount => 7;
+
     public int Exec()
     {
-        Cycles = 7;
+        Cycles = CycleCount;
 
         byte value = M8[PC++];
         ushort address = INDEXED[PC++];

@@ -32,6 +32,8 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: SUB (16-bit), SUBR
 internal class _1190_Sube_D : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._54;
+
     public int Exec()
     {
         ushort address = DIRECT[PC++];
@@ -47,6 +49,6 @@ internal class _1190_Sube_D : OpCode6309, IOpCode
 
         E = (byte)fn.Result;
 
-        return DynamicCycles._54;
+        return CycleCount;
     }
 }

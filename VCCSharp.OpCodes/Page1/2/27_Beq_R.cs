@@ -38,6 +38,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BNE, LBEQ
 internal class _27_Beq_R : OpCode, IOpCode
 {
+    public int CycleCount => 3;
+
     public int Exec()
     {
         if (CC_Z)
@@ -47,6 +49,6 @@ internal class _27_Beq_R : OpCode, IOpCode
 
         PC++;
 
-        return 3;
+        return CycleCount;
     }
 }

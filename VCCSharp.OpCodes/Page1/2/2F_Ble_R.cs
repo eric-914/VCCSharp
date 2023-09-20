@@ -28,6 +28,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BGT, BLS, LBLE
 internal class _2F_Ble_R : OpCode, IOpCode
 {
+    public int CycleCount => 3;
+
     public int Exec()
     {
         if (CC_Z | (CC_N ^ CC_V))
@@ -37,6 +39,6 @@ internal class _2F_Ble_R : OpCode, IOpCode
 
         PC++;
 
-        return 3;
+        return CycleCount;
     }
 }

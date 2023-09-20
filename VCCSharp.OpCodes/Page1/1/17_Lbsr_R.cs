@@ -35,6 +35,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BSR, JSR, PULS, RTS
 internal class _17_Lbsr_R : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._97;
+
     public int Exec()
     {
         ushort value = M16[PC]; PC += 2;
@@ -43,6 +45,6 @@ internal class _17_Lbsr_R : OpCode, IOpCode
 
         PC += value;
 
-        return DynamicCycles._97;
+        return CycleCount;
     }
 }

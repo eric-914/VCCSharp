@@ -33,6 +33,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CMP, LD (8-bit),TST (accumulator)
 internal class _0D_Tst_D : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._64;
+
     public int Exec()
     {
         ushort address = DIRECT[PC++];
@@ -42,6 +44,6 @@ internal class _0D_Tst_D : OpCode, IOpCode
         CC_Z = value == 0;
         CC_V = false;
 
-        return DynamicCycles._64;
+        return CycleCount;
     }
 }

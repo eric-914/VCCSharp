@@ -33,6 +33,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: AIM, ANDCC, ANDD, ANDR, BAND, BIAND, BIT
 internal class _D4_Andb_D : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._43;
+
     public int Exec()
     {
         ushort address = DIRECT[PC++];
@@ -47,6 +49,6 @@ internal class _D4_Andb_D : OpCode, IOpCode
 
         B = result;
 
-        return DynamicCycles._43;
+        return CycleCount;
     }
 }

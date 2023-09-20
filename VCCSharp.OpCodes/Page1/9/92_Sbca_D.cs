@@ -32,6 +32,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: SBCD, SBCR
 internal class _92_Sbca_D : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._43;
+
     public int Exec()
     {
         ushort address = DIRECT[PC++];
@@ -47,6 +49,6 @@ internal class _92_Sbca_D : OpCode, IOpCode
 
         A = (byte)fn.Result;
 
-        return DynamicCycles._43;
+        return CycleCount;
     }
 }

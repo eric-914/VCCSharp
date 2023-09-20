@@ -41,6 +41,8 @@ namespace VCCSharp.OpCodes.Page3;
 /// (Three additional cycles are used for each BYTE transferred.)
 internal class _113B_Tfm4_M : OpCode6309, IOpCode
 {
+    public int CycleCount => throw new NotImplementedException();
+
     public int Exec()
     {
         if (W == 0)

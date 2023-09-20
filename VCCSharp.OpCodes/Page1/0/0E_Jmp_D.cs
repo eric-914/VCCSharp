@@ -38,6 +38,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BRA, JSR, LBRA
 internal class _0E_Jmp_D : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._32;
+
     public int Exec()
     {
         byte offset = M8[PC];
@@ -46,6 +48,6 @@ internal class _0E_Jmp_D : OpCode, IOpCode
 
         PC = address;
 
-        return DynamicCycles._32;
+        return CycleCount;
     }
 }

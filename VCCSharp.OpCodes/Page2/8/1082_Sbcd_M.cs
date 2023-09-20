@@ -41,6 +41,8 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: SBC (8-bit), SBCR
 internal class _1082_Sbcd_M : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._54;
+
     public int Exec()
     {
         var value = M16[PC]; PC += 2;
@@ -54,6 +56,6 @@ internal class _1082_Sbcd_M : OpCode6309, IOpCode
 
         D = (ushort)fn.Result;
 
-        return DynamicCycles._54;
+        return CycleCount;
     }
 }

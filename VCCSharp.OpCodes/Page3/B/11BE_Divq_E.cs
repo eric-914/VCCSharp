@@ -49,9 +49,11 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: DIVD
 internal class _11BE_Divq_E : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._3736;
+
     public int Exec()
     {
-        Cycles = DynamicCycles._3736;
+        Cycles = CycleCount;
 
         ushort address = M16[PC]; PC += 2;
 

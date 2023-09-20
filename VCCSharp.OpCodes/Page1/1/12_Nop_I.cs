@@ -29,6 +29,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BRN, EXG, LBRN, LEA, PSH, PUL, TFR
 internal class _12_Nop_I : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._21;
+
     public int Exec()
     {
         return DynamicCycles._21;

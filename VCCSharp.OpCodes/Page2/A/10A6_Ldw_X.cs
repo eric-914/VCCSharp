@@ -26,9 +26,11 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: LD (8-bit), LDQ, LEA
 internal class _10A6_Ldw_X : OpCode6309, IOpCode
 {
+    public int CycleCount => 6;
+
     public int Exec()
     {
-        Cycles = 6;
+        Cycles = CycleCount;
 
         ushort address = INDEXED[PC++];
 

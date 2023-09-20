@@ -26,6 +26,8 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: ST (8-bit), ST (16-bit)
 internal class _10FD_Stq_E : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._98;
+
     public int Exec()
     {
         ushort address = M16[PC]; PC += 2;
@@ -36,6 +38,6 @@ internal class _10FD_Stq_E : OpCode6309, IOpCode
         CC_Z = Q == 0;
         CC_V = false;
 
-        return DynamicCycles._98;
+        return CycleCount;
     }
 }

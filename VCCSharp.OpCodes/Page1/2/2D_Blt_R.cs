@@ -29,6 +29,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BGE, BLO, LBLT
 internal class _2D_Blt_R : OpCode, IOpCode
 {
+    public int CycleCount => 3;
+
     public int Exec()
     {
         if (CC_V ^ CC_N)
@@ -38,6 +40,6 @@ internal class _2D_Blt_R : OpCode, IOpCode
 
         PC++;
 
-        return 3;
+        return CycleCount;
     }
 }

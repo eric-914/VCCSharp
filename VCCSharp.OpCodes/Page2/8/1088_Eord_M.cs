@@ -34,6 +34,8 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: EOR (8-bit), EORR
 internal class _1088_Eord_M : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._54;
+
     public int Exec()
     {
         ushort value = M16[PC]; PC += 2;
@@ -46,6 +48,6 @@ internal class _1088_Eord_M : OpCode6309, IOpCode
 
         D = result;
 
-        return DynamicCycles._54;
+        return CycleCount;
     }
 }

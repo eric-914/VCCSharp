@@ -26,9 +26,11 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: MUL
 internal class _11AF_Muld_X : OpCode6309, IOpCode
 {
+    public int CycleCount => 30;
+
     public int Exec()
     {
-        Cycles = 30;
+        Cycles = CycleCount;
 
         ushort address = INDEXED[PC++];
         ushort value = M16[address];

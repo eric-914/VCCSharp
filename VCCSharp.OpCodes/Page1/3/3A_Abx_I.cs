@@ -33,10 +33,12 @@ namespace VCCSharp.OpCodes.Page1;
 /// 
 internal class _3A_Abx_I : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._31;
+
     public int Exec()
     {
         X += B;
 
-        return DynamicCycles._31;
+        return CycleCount;
     }
 }

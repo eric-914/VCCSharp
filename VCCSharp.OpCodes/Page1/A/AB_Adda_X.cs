@@ -30,9 +30,11 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADD (16-bit), ADDR
 internal class _AB_Adda_X : OpCode, IOpCode
 {
+    public int CycleCount => 4;
+
     public int Exec()
     {
-        Cycles = 4;
+        Cycles = CycleCount;
 
         ushort address = INDEXED[PC++];
         byte value = M8[address];

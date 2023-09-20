@@ -32,6 +32,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BEOR, BIEOR, EIM, EORD, EORR
 internal class _F8_Eorb_E : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._54;
+
     public int Exec()
     {
         ushort address = M16[PC]; PC += 2;
@@ -45,6 +47,6 @@ internal class _F8_Eorb_E : OpCode, IOpCode
 
         B = result;
 
-        return DynamicCycles._54;
+        return CycleCount;
     }
 }

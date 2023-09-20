@@ -31,9 +31,11 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: ADD (8-bit), ADDR
 internal class _10AB_Addw_X : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._76;
+
     public int Exec()
     {
-        Cycles = DynamicCycles._76;
+        Cycles = CycleCount;
 
         ushort address = INDEXED[PC++];
         ushort value = M16[address];

@@ -38,6 +38,8 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: BIOR, BOR, OIM, OR (8-bit), ORCC, ORR
 internal class _10BA_Ord_E : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._86;
+
     public int Exec()
     {
         ushort address = M16[PC]; PC += 2;
@@ -51,6 +53,6 @@ internal class _10BA_Ord_E : OpCode6309, IOpCode
 
         D = result;
 
-        return DynamicCycles._86;
+        return CycleCount;
     }
 }

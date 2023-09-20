@@ -30,6 +30,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: DEC (accumulator), INC, SUB
 internal class _0A_Dec_D : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._65;
+
     public int Exec()
     {
         ushort address = DIRECT[PC++];
@@ -43,6 +45,6 @@ internal class _0A_Dec_D : OpCode, IOpCode
 
         M8[address] = result;
 
-        return DynamicCycles._65;
+        return CycleCount;
     }
 }

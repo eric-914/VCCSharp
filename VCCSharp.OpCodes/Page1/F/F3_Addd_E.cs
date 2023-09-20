@@ -29,6 +29,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADD (8-bit), ADDR
 internal class _F3_Addd_E : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._76;
+
     public int Exec()
     {
         ushort address = M16[PC]; PC += 2;
@@ -44,6 +46,6 @@ internal class _F3_Addd_E : OpCode, IOpCode
 
         D = (ushort)fn.Result;
 
-        return DynamicCycles._76;
+        return CycleCount;
     }
 }

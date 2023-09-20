@@ -42,6 +42,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: AND (8-bit), ANDD, ANDR, CWAI, ORCC
 internal class _1C_Andcc_M : OpCode, IOpCode
 {
+    public int CycleCount => 3;
+
     public int Exec()
     {
         byte value = M8[PC++];
@@ -50,6 +52,6 @@ internal class _1C_Andcc_M : OpCode, IOpCode
 
         CC = result;
 
-        return 3;
+        return CycleCount;
     }
 }

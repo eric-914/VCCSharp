@@ -26,6 +26,8 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: LD (8-bit), LDQ, LEA
 internal class _1086_Ldw_M : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._54;
+
     public int Exec()
     {
         W = M16[PC]; PC += 2;
@@ -34,6 +36,6 @@ internal class _1086_Ldw_M : OpCode6309, IOpCode
         CC_Z = W == 0;
         CC_V = false;
 
-        return DynamicCycles._54;
+        return CycleCount;
     }
 }

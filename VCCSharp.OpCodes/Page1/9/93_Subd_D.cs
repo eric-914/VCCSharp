@@ -29,6 +29,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: SUB (8-bit), SUBR
 internal class _93_Subd_D : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._64;
+
     public int Exec()
     {
         ushort address = DIRECT[PC++];
@@ -44,6 +46,6 @@ internal class _93_Subd_D : OpCode, IOpCode
 
         D = (ushort)fn.Result;
 
-        return DynamicCycles._64;
+        return CycleCount;
     }
 }

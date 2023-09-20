@@ -40,19 +40,21 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: BEQ, LBNE
 internal class _1027_LBeq_R : OpCode, IOpCode
 {
+    public int CycleCount => 5;
+
     public int Exec()
     {
-        int cycles = 5;
+        Cycles = CycleCount;
 
         if (CC_Z)
         {
             PC += (ushort)(short)M16[PC];
 
-            cycles += 1;
+            Cycles += 1;
         }
 
         PC += 2;
 
-        return cycles;
+        return Cycles;
     }
 }

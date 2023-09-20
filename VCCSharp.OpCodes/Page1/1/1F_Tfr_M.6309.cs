@@ -61,6 +61,8 @@ internal class _1F_Tfr_M_6309 : OpCode6309, IOpCode
     private readonly Action<byte, byte, bool>[] _mixed;
     private readonly RegisterMap4Bit _map;
 
+    public int CycleCount => DynamicCycles._64;
+
     internal _1F_Tfr_M_6309()
     {
         //--From mapping in above documentation
@@ -71,7 +73,7 @@ internal class _1F_Tfr_M_6309 : OpCode6309, IOpCode
         var DP = MSB;
         var CC = LSB;
 
-        _mixed = new Action<byte, byte, bool>[8] { A, B, CC, DP, Z, Z, E, F }; //--Define handlers when exchanging registers of mixed sizes
+        _mixed = [A, B, CC, DP, Z, Z, E, F]; //--Define handlers when exchanging registers of mixed sizes
 
         _map = new RegisterMap4Bit
         {
@@ -88,12 +90,12 @@ internal class _1F_Tfr_M_6309 : OpCode6309, IOpCode
 
         _map.Execute(value);
 
-        return DynamicCycles._64;
+        return CycleCount;
     }
 
     private void _16Bit_and_16Bit(byte source, byte destination) => R16[destination] = R16[source];
 
-    //--The exhange handlers work with the first register being 8-bit and the second being 16-bit.
+    //--The exchange handlers work with the first register being 8-bit and the second being 16-bit.
     //--The source is a 16-bit register so swap our registers to match.
     private void _16Bit_and_8Bit(byte source, byte destination) => _mixed[destination](destination, source, true);
 
@@ -110,36 +112,36 @@ internal class _1F_Tfr_M_6309 : OpCode6309, IOpCode
         }
     }
 
-    // Transfer HIGH: Get high byte of 16 bit Dest
+    // Transfer HIGH: Get high byte of 16 bit Destination
     private void MSB(byte r8, byte r16, bool reverse)
     {
         if (reverse) //--target: 8-bit
         {
             ushort r2 = R16[r16];
-            byte r2Byte = (byte)(r2 >> 8);              // Get high byte of 16 bit Dest
+            byte r2Byte = (byte)(r2 >> 8);              // Get high byte of 16 bit Destination
             R8[r8] = r2Byte;
         }
         else //--target: 16-bit
         {
             byte r1 = R8[r8];
-            ushort r1Word = (ushort)((r1 << 8) | r1);   // Place 8 bit source in both halves of 16 bit Dest
+            ushort r1Word = (ushort)((r1 << 8) | r1);   // Place 8 bit source in both halves of 16 bit Destination
             R16[r16] = r1Word;
         }
     }
 
-    // Transfer LOW: Get low byte of 16 bit Dest
+    // Transfer LOW: Get low byte of 16 bit Destination
     private void LSB(byte r8, byte r16, bool reverse)
     {
         if (reverse) //--target: 8-bit
         {
             ushort r2 = R16[r16];
-            byte r2Byte = (byte)(r2 & 0xFF);            // Get low byte of 16 bit Dest
+            byte r2Byte = (byte)(r2 & 0xFF);            // Get low byte of 16 bit Destination
             R8[r8] = r2Byte;
         }
         else //--target: 16-bit
         {
             byte r1 = R8[r8];
-            ushort r1Word = (ushort)((r1 << 8) | r1);   // Place 8 bit source in both halves of 16 bit Dest
+            ushort r1Word = (ushort)((r1 << 8) | r1);   // Place 8 bit source in both halves of 16 bit Destination
             R16[r16] = r1Word;
         }
     }

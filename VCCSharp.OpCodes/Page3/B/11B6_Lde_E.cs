@@ -26,6 +26,8 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: LD (16-bit), LDQ
 internal class _11B6_Lde_E : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._65;
+
     public int Exec()
     {
         ushort address = M16[PC]; PC += 2;
@@ -36,6 +38,6 @@ internal class _11B6_Lde_E : OpCode6309, IOpCode
         CC_Z = E == 0;
         CC_V = false;
 
-        return DynamicCycles._65;
+        return CycleCount;
     }
 }

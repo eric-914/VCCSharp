@@ -31,6 +31,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADCD, ADCR
 internal class _D9_Adcb_D : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._43;
+
     public int Exec()
     {
         ushort address = DIRECT[PC++];
@@ -46,6 +48,6 @@ internal class _D9_Adcb_D : OpCode, IOpCode
 
         B = (byte)fn.Result;
 
-        return DynamicCycles._43;
+        return CycleCount;
     }
 }

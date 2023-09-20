@@ -30,8 +30,10 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ANDCC, CWAI, RTI, SYNC
 internal class _13_Sync_I : OpCode, IOpCode
 {
+    public int CycleCount => SynchronizeWithInterrupt();
+
     public int Exec()
     {
-        return SynchronizeWithInterrupt();
+        return CycleCount;
     }
 }

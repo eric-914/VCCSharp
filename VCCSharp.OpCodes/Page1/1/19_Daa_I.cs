@@ -42,6 +42,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADCA, ADDA
 internal class _19_Daa_I : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._21;
+
     public int Exec()
     {
         byte msn = (byte)(A >> 4);  // -- A[4..7]
@@ -68,6 +70,6 @@ internal class _19_Daa_I : OpCode, IOpCode
         //CC_V = undefined
         CC_Z = A == 0;
 
-        return DynamicCycles._21;
+        return CycleCount;
     }
 }

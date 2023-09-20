@@ -41,6 +41,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CLR (accumulator), ST
 internal class _7F_Clr_E : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._76;
+
     public int Exec()
     {
         ushort address = M16[PC]; PC += 2;
@@ -52,6 +54,6 @@ internal class _7F_Clr_E : OpCode, IOpCode
         CC_V = false;
         CC_C = false;
 
-        return DynamicCycles._76;
+        return CycleCount;
     }
 }

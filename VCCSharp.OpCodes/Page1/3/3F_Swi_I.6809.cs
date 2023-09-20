@@ -51,6 +51,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: RTI
 internal class _3F_Swi_I_6809 : OpCode, IOpCode
 {
+    public int CycleCount => 12 + 7; // One cycle for each byte pushed + Overhead
+
     public int Exec()
     {
         CC_E = true; //--Everything is going on stack
@@ -68,6 +70,6 @@ internal class _3F_Swi_I_6809 : OpCode, IOpCode
 
         PC = M16[Define.VSWI];
 
-        return 12 + 7; // One cycle for each byte pushed + Overhead
+        return CycleCount;
     }
 }

@@ -29,6 +29,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: COM (accumulator), NEG
 internal class _73_Com_E : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._76;
+
     public int Exec()
     {
         ushort address = M16[PC]; PC += 2;
@@ -43,6 +45,6 @@ internal class _73_Com_E : OpCode, IOpCode
 
         M8[address] = result;
 
-        return DynamicCycles._76;
+        return CycleCount;
     }
 }

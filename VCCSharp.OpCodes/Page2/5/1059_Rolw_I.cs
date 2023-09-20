@@ -39,6 +39,8 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: ROL (8-bit)
 internal class _1059_Rolw_I : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._32;
+
     public int Exec()
     {
         ushort result = (ushort)((W << 1) | CC_C.ToBit());;
@@ -50,6 +52,6 @@ internal class _1059_Rolw_I : OpCode6309, IOpCode
 
         W = result;
 
-        return DynamicCycles._32;
+        return CycleCount;
     }
 }

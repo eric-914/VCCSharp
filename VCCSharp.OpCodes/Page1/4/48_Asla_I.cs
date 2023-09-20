@@ -38,6 +38,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: LSLD
 internal class _48_Asla_I : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._21;
+
     public int Exec()
     {
         byte result = (byte)(A << 1);
@@ -50,6 +52,6 @@ internal class _48_Asla_I : OpCode, IOpCode
 
         A = result;
 
-        return DynamicCycles._21;
+        return CycleCount;
     }
 }

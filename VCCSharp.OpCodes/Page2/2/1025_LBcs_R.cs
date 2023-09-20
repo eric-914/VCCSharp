@@ -36,19 +36,21 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: BLO, LBHS, LBLT
 internal class _1025_LBcs_R : OpCode, IOpCode
 {
+    public int CycleCount => 5;
+
     public int Exec()
     {
-        int cycles = 5;
+        Cycles = CycleCount;
 
         if (CC_C)
         {
             PC += (ushort)(short)M16[PC];
 
-            cycles += 1;
+            Cycles += 1;
         }
 
         PC += 2;
 
-        return cycles;
+        return Cycles;
     }
 }

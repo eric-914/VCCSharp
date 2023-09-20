@@ -36,9 +36,11 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ASRD
 internal class _67_Asr_X : OpCode, IOpCode
 {
+    public int CycleCount => 6;
+
     public int Exec()
     {
-        Cycles = 6;
+        Cycles = CycleCount;
 
         ushort address = INDEXED[PC++];
         byte value = M8[address];

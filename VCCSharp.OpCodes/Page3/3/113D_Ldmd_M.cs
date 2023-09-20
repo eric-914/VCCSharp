@@ -43,12 +43,14 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: BITMD, RTI
 internal class _113D_Ldmd_M : OpCode6309, IOpCode
 {
+    public int CycleCount => 5;
+
     public int Exec()
     {
         byte value = M8[PC++];
 
         MD = (byte)(value & 0x03);
 
-        return 5;
+        return CycleCount;
     }
 }

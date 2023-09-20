@@ -34,10 +34,12 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BSR, JSR, PULS, RTI
 internal class _39_Rts_I : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._54;
+
     public int Exec()
     {
         PC = Pop16();
 
-        return DynamicCycles._54;
+        return CycleCount;
     }
 }

@@ -30,6 +30,8 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: ANDD, BIT (8-bit), BITMD
 internal class _1085_Bitd_M : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._54;
+
     public int Exec()
     {
         ushort value = M16[PC]; PC += 2;
@@ -40,6 +42,6 @@ internal class _1085_Bitd_M : OpCode6309, IOpCode
         CC_Z = result == 0;
         CC_V = false;
 
-        return DynamicCycles._54;
+        return CycleCount;
     }
 }

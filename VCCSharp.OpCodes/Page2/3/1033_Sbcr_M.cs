@@ -41,6 +41,8 @@ internal class _1033_Sbcr_M : OpCode6309, IOpCode, IIndexedRegisterSwap
 {
     private readonly IndexedRegisterSwap _irs;
 
+    public int CycleCount => 4;
+
     internal _1033_Sbcr_M()
     {
         _irs = new IndexedRegisterSwap(this, true)
@@ -56,7 +58,7 @@ internal class _1033_Sbcr_M : OpCode6309, IOpCode, IIndexedRegisterSwap
 
         _irs.Exec(value);
 
-        return 4;
+        return CycleCount;
     }
 
     public void SetFlags(IFlags f)

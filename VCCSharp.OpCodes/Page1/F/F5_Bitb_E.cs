@@ -32,6 +32,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: AND (8-bit), BITD, BITMD
 internal class _F5_Bitb_E : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._54;
+
     public int Exec()
     {
         ushort address = M16[PC]; PC += 2;
@@ -41,6 +43,6 @@ internal class _F5_Bitb_E : OpCode, IOpCode
         CC_Z = value == 0;
         CC_V = false;
 
-        return DynamicCycles._54;
+        return CycleCount;
     }
 }

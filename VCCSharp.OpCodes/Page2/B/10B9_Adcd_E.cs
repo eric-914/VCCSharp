@@ -36,6 +36,8 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: ADC (8-bit), ADCR
 internal class _10B9_Adcd_E : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._86;
+
     public int Exec()
     {
         ushort address = M16[PC]; PC += 2;
@@ -50,6 +52,6 @@ internal class _10B9_Adcd_E : OpCode6309, IOpCode
 
         D = (ushort)fn.Result;
 
-        return DynamicCycles._86;
+        return CycleCount;
     }
 }

@@ -34,9 +34,11 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ROR (16-bit)
 internal class _66_Ror_X : OpCode, IOpCode
 {
+    public int CycleCount => 6;
+
     public int Exec()
     {
-        Cycles = 6;
+        Cycles = CycleCount;
 
         ushort address = INDEXED[PC++];
         byte value = M8[address];

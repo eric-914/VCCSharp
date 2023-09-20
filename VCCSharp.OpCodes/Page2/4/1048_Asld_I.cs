@@ -49,6 +49,8 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: LSL (8-bit), ROL (16-bit)
 internal class _1048_Asld_I : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._32;
+
     public int Exec()
     {
         ushort result = (ushort)(D << 1);
@@ -60,6 +62,6 @@ internal class _1048_Asld_I : OpCode6309, IOpCode
 
         D = result;
 
-        return DynamicCycles._32;
+        return CycleCount;
     }
 }

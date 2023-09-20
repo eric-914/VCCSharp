@@ -54,6 +54,8 @@ namespace VCCSharp.OpCodes.Page3;
 /// The object code format for the STBT instruction is:
 internal class _1137_Stbt_D : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._87;
+
     public int Exec()
     {
         byte value = M8[PC++];
@@ -86,6 +88,6 @@ internal class _1137_Stbt_D : OpCode6309, IOpCode
 
         M8[address] = mask;
 
-        return DynamicCycles._87;
+        return CycleCount;
     }
 }

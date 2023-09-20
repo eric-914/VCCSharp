@@ -34,6 +34,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// Byte Count (1)
 internal class _47_Asra_I : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._21;
+
     public int Exec()
     {
         byte result = (byte)((A & 0x80) | (A >> 1));
@@ -45,6 +47,6 @@ internal class _47_Asra_I : OpCode, IOpCode
 
         A = result;
 
-        return DynamicCycles._21;
+        return CycleCount;
     }
 }

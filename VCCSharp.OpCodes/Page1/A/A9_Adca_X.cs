@@ -31,9 +31,11 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADCD, ADCR
 internal class _A9_Adca_X : OpCode, IOpCode
 {
+    public int CycleCount => 4;
+
     public int Exec()
     {
-        Cycles = 4;
+        Cycles = CycleCount;
 
         ushort address = INDEXED[PC++];
         byte value = M8[address++];

@@ -26,6 +26,8 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: MUL
 internal class _11BF_Muld_E : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._3130;
+
     public int Exec()
     {
         ushort address = M16[PC]; PC += 2;
@@ -38,6 +40,6 @@ internal class _11BF_Muld_E : OpCode6309, IOpCode
 
         Q = (uint)fn.Result;
 
-        return DynamicCycles._3130;
+        return CycleCount;
     }
 }

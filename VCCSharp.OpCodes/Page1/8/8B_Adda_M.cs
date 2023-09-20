@@ -30,6 +30,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: ADD (16-bit), ADDR
 internal class _8B_Adda_M : OpCode, IOpCode
 {
+    public int CycleCount => 2;
+
     public int Exec()
     {
         byte value = M8[PC++];
@@ -44,6 +46,6 @@ internal class _8B_Adda_M : OpCode, IOpCode
 
         A = (byte)fn.Result;
 
-        return 2;
+        return CycleCount;
     }
 }

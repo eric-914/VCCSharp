@@ -31,6 +31,8 @@ namespace VCCSharp.OpCodes.Page2;
 /// See Also: ADD (8-bit), ADDR
 internal class _10BB_Addw_E : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._86;
+
     public int Exec()
     {
         ushort address = M16[PC]; PC += 2;
@@ -45,6 +47,6 @@ internal class _10BB_Addw_E : OpCode6309, IOpCode
 
         W = (ushort)fn.Result;
 
-        return DynamicCycles._86;
+        return CycleCount;
     }
 }

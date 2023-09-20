@@ -33,6 +33,8 @@ namespace VCCSharp.OpCodes.Page3;
 /// See Also: DEC (memory), INC, SUB
 internal class _115A_Decf_I : OpCode6309, IOpCode
 {
+    public int CycleCount => DynamicCycles._21;
+
     public int Exec()
     {
         byte result = (byte)(F - 1);
@@ -43,6 +45,6 @@ internal class _115A_Decf_I : OpCode6309, IOpCode
 
         F = result;
 
-        return DynamicCycles._21;
+        return CycleCount;
     }
 }

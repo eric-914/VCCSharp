@@ -43,6 +43,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: BSR, JMP, LBSR, PULS, RTS
 internal class _BD_Jsr_E : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._87;
+
     public int Exec()
     {
         ushort address = M16[PC]; PC += 2;
@@ -51,6 +53,6 @@ internal class _BD_Jsr_E : OpCode, IOpCode
 
         PC = address;
 
-        return DynamicCycles._87;
+        return CycleCount;
     }
 }

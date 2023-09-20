@@ -32,6 +32,8 @@ namespace VCCSharp.OpCodes.Page1;
 /// See Also: CMP (16-bit), CMPR
 internal class _D1_Cmpb_D : OpCode, IOpCode
 {
+    public int CycleCount => DynamicCycles._43;
+
     public int Exec()
     {
         ushort address = DIRECT[PC++];
@@ -45,6 +47,6 @@ internal class _D1_Cmpb_D : OpCode, IOpCode
         CC_V = fn.V;
         CC_C = fn.C;
 
-        return DynamicCycles._43;
+        return CycleCount;
     }
 }

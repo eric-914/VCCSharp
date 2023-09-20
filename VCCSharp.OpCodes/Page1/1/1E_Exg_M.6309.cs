@@ -64,6 +64,8 @@ internal class _1E_Exg_M_6309 : OpCode6309, IOpCode
     private readonly Action<byte, byte>[] _mixed;
     private readonly RegisterMap4Bit _map;
 
+    public int CycleCount => DynamicCycles._85;
+
     internal _1E_Exg_M_6309()
     {
         //--From mapping in above documentation
@@ -91,7 +93,7 @@ internal class _1E_Exg_M_6309 : OpCode6309, IOpCode
 
         _map.Execute(value);
 
-        return DynamicCycles._85;
+        return CycleCount;
     }
 
     private void _16Bit_and_16Bit(byte source, byte destination)
