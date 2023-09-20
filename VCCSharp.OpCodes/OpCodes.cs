@@ -1,9 +1,12 @@
-﻿using VCCSharp.OpCodes.Page1;
+﻿using VCCSharp.OpCodes.Model.Support;
+using VCCSharp.OpCodes.Page1;
 
 namespace VCCSharp.OpCodes;
 
 internal class OpCodes : IOpCodes, IPage1
 {
+    private readonly Executor _exec = new();
+
     public IOpCode[] Page1 { get; }
 
     internal OpCodes(IOpCode[] page1)
@@ -13,8 +16,6 @@ internal class OpCodes : IOpCodes, IPage1
 
     public int Exec(byte opcode)
     {
-        IOpCode vector = Page1[opcode];
-
-        return vector.Exec();
+        return _exec.Exec(Page1[opcode]);
     }
 }

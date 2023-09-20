@@ -8,7 +8,12 @@ public interface IOpCode
     /// <summary>
     /// Default cycle count
     /// </summary>
-    int CycleCount {  get; }
+    int CycleCount { get; }
+
+    /// <summary>
+    /// Final cycle count
+    /// </summary>
+    int Cycles { get; set; }
 
     /// <summary>
     /// Invokes the opcode

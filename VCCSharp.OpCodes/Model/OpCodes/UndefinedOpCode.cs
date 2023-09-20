@@ -6,5 +6,7 @@ internal class UndefinedOpCode : IOpCode
 
     public int CycleCount => throw new NotImplementedException();
 
+    public int Cycles { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
     public int Exec() => throw new NotImplementedException();
 }
