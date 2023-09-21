@@ -28,20 +28,32 @@ internal partial class NewOpcodes : ISystemState
     {
         IOpCode iop = GetOpCode(_page1, opCode);
 
-        Cycles = iop.Exec();
+        iop.Cycles = iop.CycleCount;
+
+        iop.Exec();
+
+        Cycles = iop.Cycles;
     }
 
     public void Exec2(byte opCode)
     {
         IOpCode iop = GetOpCode(_page2, opCode);
 
-        Cycles = iop.Exec();
+        iop.Cycles = iop.CycleCount;
+
+        iop.Exec();
+
+        Cycles = iop.Cycles;
     }
 
     public void Exec3(byte opCode)
     {
         IOpCode iop = GetOpCode(_page3, opCode);
 
-        Cycles = iop.Exec();
+        iop.Cycles = iop.CycleCount;
+
+        iop.Exec();
+
+        Cycles = iop.Cycles;
     }
 }
