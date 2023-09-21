@@ -2287,7 +2287,11 @@ internal partial class OldOpcodes
 
     public void Stx_X() // AF
     {
-        MemWrite16(X_REG, INDADDRESS(PC_REG++));
+        ushort address = INDADDRESS(PC_REG++);
+
+        MemWrite16(X_REG, address);
+
+        //MemWrite16(X_REG, INDADDRESS(PC_REG++)); //--This has a subtle bug: CalculateEA can modify X_REG, and if it does will not write the modified X_REG.
 
         CC_Z = ZTEST(X_REG);
         CC_N = NTEST16(X_REG);

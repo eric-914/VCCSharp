@@ -67,7 +67,7 @@ internal class _113F_Swi3_I_6809 : OpCode, IOpCode
     {
         CC_E = true; //--Everything is going on stack
 
-        Push(S);
+        Push(PC);
         Push(U);
         Push(Y);
         Push(X);

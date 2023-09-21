@@ -23,20 +23,24 @@ public class MC6809Tests
 
         exec(opcode, _old, _new);
 
-        string message = $@"
+        string scenario = $@"
 byte opcode=0x{opcode:x}; 
 var seeds = new Seeds {{{string.Join(", ", seeds)}}};
 var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:x}, U=0x{state.U:x}, DP=0x{state.DP:x}, D=0x{state.D:x}, X=0x{state.X:x}, Y=0x{state.Y:x} }};
 ";
 
-        Assert.That(_old.CC, Is.EqualTo(_new.CC), message);
-        Assert.That(_old.PC_REG, Is.EqualTo(_new.PC), message);
-        Assert.That(_old.S_REG, Is.EqualTo(_new.S), message);
-        Assert.That(_old.U_REG, Is.EqualTo(_new.U), message);
-        Assert.That(_old.DPA, Is.EqualTo(_new.DP), message);
-        Assert.That(_old.X_REG, Is.EqualTo(_new.X), message);
-        Assert.That(_old.Y_REG, Is.EqualTo(_new.Y), message);
-        Assert.That(_old.Cycles, Is.EqualTo(_new.Cycles), message);
+        string message(string key) => $"{key} failed:\n\n{scenario}";
+
+        Assert.That(_old.CC, Is.EqualTo(_new.CC), message("CC"));
+        Assert.That(_old.PC_REG, Is.EqualTo(_new.PC), message("PC"));
+        Assert.That(_old.S_REG, Is.EqualTo(_new.S), message("S"));
+        Assert.That(_old.U_REG, Is.EqualTo(_new.U), message("U"));
+        Assert.That(_old.DPA, Is.EqualTo(_new.DP), message("DP"));
+        Assert.That(_old.X_REG, Is.EqualTo(_new.X), message("X"));
+        Assert.That(_old.Y_REG, Is.EqualTo(_new.Y), message("Y"));
+        Assert.That(_old.Cycles, Is.EqualTo(_new.Cycles), message("Cycles"));
+
+        Assert.That(memOld.ToList(), Is.EqualTo(memNew.ToList()), message("Mem"));
     }
     #endregion
 
@@ -135,9 +139,9 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
     [Test]
     public void OneOffTest()
     {
-        byte opcode = 0x37;
-        var seeds = new Seeds { 116, 63, 103, 239, 128, 90, 20, 45, 7, 109, 100, 189, 78, 153, 24, 66, 34, 121, 18, 100 };
-        var state = new TestState { CC = 0xc1, PC = 0x92e3, S = 0x857d, U = 0x92df, DP = 0xe7, D = 0xeba8, X = 0x4eab, Y = 0x97d9 };
+        byte opcode = 0x3f;
+        var seeds = new Seeds { 135, 57, 14, 199, 132, 188, 219, 236, 65, 219, 195, 137, 181, 104, 158, 94, 169, 28, 160, 32 };
+        var state = new TestState { CC = 0x9b, PC = 0xad7c, S = 0x81ff, U = 0xd302, DP = 0x33, D = 0x9aef, X = 0x1a1a, Y = 0x3c54 };
 
         var memOld = new MemoryTester(seeds);
         var memNew = new MemoryTester(seeds);
@@ -145,8 +149,8 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
         var _old = new OldOpcodes(memOld) { CC = state.CC, PC_REG = state.PC, S_REG = state.S, U_REG = state.U, DPA = state.DP, D_REG = state.D, X_REG = state.X, Y_REG = state.Y };
         var _new = new NewOpcodes(memNew) { CC = state.CC, PC = state.PC, S = state.S, U = state.U, DP = state.DP, D = state.D, X = state.X, Y = state.Y };
 
-        _old.Exec(opcode);
-        _new.Exec(opcode);
+        _old.Exec3(opcode);
+        _new.Exec3(opcode);
 
         Assert.That(_old.CC, Is.EqualTo(_new.CC));
         Assert.That(_old.PC_REG, Is.EqualTo(_new.PC));
@@ -156,5 +160,10 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
         Assert.That(_old.X_REG, Is.EqualTo(_new.X));
         Assert.That(_old.Y_REG, Is.EqualTo(_new.Y));
         Assert.That(_old.Cycles, Is.EqualTo(_new.Cycles));
+
+        var @old = string.Join(',', memOld.ToList());
+        var @new = string.Join(',', memNew.ToList());
+
+        Assert.That(@old, Is.EqualTo(@new));
     }
 }
