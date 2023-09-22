@@ -36,10 +36,8 @@ internal class _10A8_Eord_X : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._76;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
         ushort value = M16[address];
 
@@ -50,7 +48,5 @@ internal class _10A8_Eord_X : OpCode6309, IOpCode
         CC_V = false;
 
         D = result;
-
-        return Cycles;
     }
 }

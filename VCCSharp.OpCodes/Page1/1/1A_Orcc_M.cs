@@ -44,14 +44,12 @@ internal class _1A_Orcc_M : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._32;
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
 
         byte result = (byte)(CC | value);
 
         CC = result;
-
-        return CycleCount;
     }
 }

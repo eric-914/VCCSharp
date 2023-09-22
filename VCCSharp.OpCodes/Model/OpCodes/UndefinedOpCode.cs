@@ -8,5 +8,5 @@ internal class UndefinedOpCode : IOpCode
 
     public int Cycles { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-    public int Exec() => throw new NotImplementedException();
+    public void Exec() => throw new NotImplementedException();
 }

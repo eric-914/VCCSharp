@@ -32,10 +32,8 @@ internal class _6A_Dec_X : OpCode, IOpCode
 {
     public int CycleCount => 6;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
@@ -46,7 +44,5 @@ internal class _6A_Dec_X : OpCode, IOpCode
         CC_V = value == 0x80;
 
         M8[address] = result;
-
-        return Cycles;
     }
 }

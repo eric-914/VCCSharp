@@ -27,7 +27,7 @@ internal class _FE_Ldu_E : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._65;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = M16[PC]; PC += 2;
 
@@ -36,7 +36,5 @@ internal class _FE_Ldu_E : OpCode, IOpCode
         CC_N = U.Bit15();
         CC_Z = U == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

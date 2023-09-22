@@ -51,10 +51,8 @@ internal class _11AD_Divd_X : OpCode6309, IOpCode
 {
     public int CycleCount => 27;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
 
         short numerator = (short)D;
@@ -64,7 +62,8 @@ internal class _11AD_Divd_X : OpCode6309, IOpCode
 
         if (fn.Error == DivisionErrors.DivideByZero)
         {
-            return Cycles - 24 + Exceptions.DivideByZero(); // (27-24) 3 + INDEXED cycles to read byte and increment PC and compare to zero.
+            Cycles = Cycles - 24 + Exceptions.DivideByZero(); // (27-24) 3 + INDEXED cycles to read byte and increment PC and compare to zero.
+            return;
         }
 
         if (fn.Error == DivisionErrors.None)
@@ -78,6 +77,6 @@ internal class _11AD_Divd_X : OpCode6309, IOpCode
         CC_V = fn.V;
         CC_C = fn.C;
 
-        return fn.Cycles;
+        Cycles = fn.Cycles;
     }
 }

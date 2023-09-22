@@ -37,14 +37,12 @@ internal class _8D_Bsr_R : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._76;
 
-    public int Exec()
+    public void Exec()
     {
         sbyte offset = (sbyte)M8[PC++];
 
         Push(PC);
 
         PC += (ushort)offset;
-
-        return CycleCount;
     }
 }

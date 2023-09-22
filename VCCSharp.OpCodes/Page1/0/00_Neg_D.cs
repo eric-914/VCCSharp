@@ -38,7 +38,7 @@ internal class _00_Neg_D : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._65;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = DIRECT[PC++];
         byte value = M8[address];
@@ -51,7 +51,5 @@ internal class _00_Neg_D : OpCode, IOpCode
         CC_C = !(value == 0);
 
         M8[address] = result;
-
-        return CycleCount;
     }
 }

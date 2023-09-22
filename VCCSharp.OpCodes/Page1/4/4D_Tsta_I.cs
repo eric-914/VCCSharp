@@ -33,12 +33,10 @@ internal class _4D_Tsta_I : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._21;
 
-    public int Exec()
+    public void Exec()
     {
         CC_N = A.Bit7();
         CC_Z = A == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

@@ -28,7 +28,7 @@ internal class _11D7_Stf_D : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._54;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = DIRECT[PC++];
 
@@ -37,7 +37,5 @@ internal class _11D7_Stf_D : OpCode6309, IOpCode
         CC_N = F.Bit7();
         CC_Z = F == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

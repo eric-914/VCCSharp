@@ -34,7 +34,7 @@ internal class _B5_Bita_E : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._54;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = M16[PC]; PC += 2;
         byte value = M8[address];
@@ -44,7 +44,5 @@ internal class _B5_Bita_E : OpCode, IOpCode
         CC_N = result.Bit7();
         CC_Z = result == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

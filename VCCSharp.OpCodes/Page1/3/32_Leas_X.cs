@@ -33,12 +33,8 @@ internal class _32_Leas_X : OpCode, IOpCode
 {
     public int CycleCount => 4;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         S = INDEXED[PC++];
-
-        return Cycles;
     }
 }

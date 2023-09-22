@@ -45,7 +45,7 @@ internal class _1047_Asrd_I : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._32;
 
-    public int Exec()
+    public void Exec()
     {
         ushort result = (ushort)((D & 0x8000) | (D >> 1)); ;
 
@@ -54,7 +54,5 @@ internal class _1047_Asrd_I : OpCode6309, IOpCode
         CC_C = D.Bit0();
 
         D = result;
-
-        return CycleCount;
     }
 }

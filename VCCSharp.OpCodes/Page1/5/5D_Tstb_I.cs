@@ -33,12 +33,10 @@ internal class _5D_Tstb_I : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._21;
 
-    public int Exec()
+    public void Exec()
     {
         CC_N = B.Bit7();
         CC_Z = B == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

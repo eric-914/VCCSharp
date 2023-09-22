@@ -50,10 +50,8 @@ internal class _35_Puls_M : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._54;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         byte _8() { Cycles++; return Pop8(); }
         ushort _16() { Cycles += 2; return Pop16(); }
 
@@ -67,7 +65,5 @@ internal class _35_Puls_M : OpCode, IOpCode
         if (value.Bit5()) { Y = _16(); }
         if (value.Bit6()) { U = _16(); }
         if (value.Bit7()) { PC = _16(); }
-
-        return Cycles;
     }
 }

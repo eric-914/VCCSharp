@@ -27,14 +27,12 @@ internal class _10CE_Lds_M : OpCode, IOpCode
 {
     public int CycleCount => 4;
 
-    public int Exec()
+    public void Exec()
     {
         S = M16[PC]; PC += 2;
 
         CC_N = S.Bit15();
         CC_Z = S == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

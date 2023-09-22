@@ -27,7 +27,7 @@ internal class _DF_Stu_D : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._54;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = DIRECT[PC++];
 
@@ -36,7 +36,5 @@ internal class _DF_Stu_D : OpCode, IOpCode
         CC_N = U.Bit15();
         CC_Z = U == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

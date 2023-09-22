@@ -32,7 +32,7 @@ internal class _1085_Bitd_M : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._54;
 
-    public int Exec()
+    public void Exec()
     {
         ushort value = M16[PC]; PC += 2;
 
@@ -41,7 +41,5 @@ internal class _1085_Bitd_M : OpCode6309, IOpCode
         CC_N = result.Bit15();
         CC_Z = result == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

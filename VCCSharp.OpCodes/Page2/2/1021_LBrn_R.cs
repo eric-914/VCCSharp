@@ -30,10 +30,8 @@ internal class _1021_LBrn_R : OpCode, IOpCode
 {
     public int CycleCount => 5;
 
-    public int Exec()
+    public void Exec()
     {
         PC += 2;
-
-        return CycleCount;
     }
 }

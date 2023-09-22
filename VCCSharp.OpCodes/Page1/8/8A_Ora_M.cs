@@ -33,7 +33,7 @@ internal class _8A_Ora_M : OpCode, IOpCode
 {
     public int CycleCount => 2;
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
 
@@ -44,7 +44,5 @@ internal class _8A_Ora_M : OpCode, IOpCode
         CC_V = false;
 
         A = result;
-
-        return CycleCount;
     }
 }

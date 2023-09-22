@@ -27,7 +27,7 @@ internal class _109E_Ldy_D : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._65;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = DIRECT[PC++];
 
@@ -36,7 +36,5 @@ internal class _109E_Ldy_D : OpCode, IOpCode
         CC_N = Y.Bit15();
         CC_Z = Y == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

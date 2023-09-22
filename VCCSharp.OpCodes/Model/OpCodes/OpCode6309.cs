@@ -259,7 +259,7 @@ internal abstract class OpCode6309
 
     protected void Push(ushort value) { M8[--S] = value.L(); M8[--S] = value.H(); }
 
-    protected byte Pop8() { return M8[++S]; }
+    protected byte Pop8() { return M8[S++]; }
 
-    protected ushort Pop16() { return (ushort)(M8[++S] << 8 | M8[++S]); }
+    protected ushort Pop16() { return (ushort)(M8[S++] << 8 | M8[S++]); }
 }

@@ -34,7 +34,7 @@ internal class _C1_Cmpb_M : OpCode, IOpCode
 {
     public int CycleCount => 2;
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
 
@@ -45,7 +45,5 @@ internal class _C1_Cmpb_M : OpCode, IOpCode
         CC_Z = fn.Z;
         CC_V = fn.V;
         CC_C = fn.C;
-
-        return CycleCount;
     }
 }

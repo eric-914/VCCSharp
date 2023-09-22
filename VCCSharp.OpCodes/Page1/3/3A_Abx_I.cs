@@ -35,10 +35,8 @@ internal class _3A_Abx_I : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._31;
 
-    public int Exec()
+    public void Exec()
     {
         X += B;
-
-        return CycleCount;
     }
 }

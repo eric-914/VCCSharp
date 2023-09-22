@@ -23,24 +23,28 @@ public class HD6309Tests
 
         exec(opcode, _old, _new);
 
-        string message = $@"
+        string scenario = $@"
 byte opcode=0x{opcode:x}; 
 var seeds = new Seeds {{{string.Join(", ", seeds)}}};
-var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:x}, U=0x{state.U:x}, DP=0x{state.DP:x}, D=0x{state.D:x}, X=0x{state.X:x}, Y=0x{state.Y:x}, MD=0x{state.MD:x}, W=0x{state.W:x}, V=0x{state.V:x} }};
+var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:x}, U=0x{state.U:x}, DP=0x{state.DP:x}, D=0x{state.D:x}, X=0x{state.X:x}, Y=0x{state.Y:x} }};
 ";
 
-        Assert.That(_old.CC, Is.EqualTo(_new.CC), message);
-        Assert.That(_old.PC_REG, Is.EqualTo(_new.PC), message);
-        Assert.That(_old.S_REG, Is.EqualTo(_new.S), message);
-        Assert.That(_old.U_REG, Is.EqualTo(_new.U), message);
-        Assert.That(_old.DPA, Is.EqualTo(_new.DP), message);
-        Assert.That(_old.X_REG, Is.EqualTo(_new.X), message);
-        Assert.That(_old.Y_REG, Is.EqualTo(_new.Y), message);
-        Assert.That(_old.Cycles, Is.EqualTo(_new.Cycles), message);
+        string message(string key) => $"{key} failed:\n\n{scenario}";
 
-        Assert.That(_old.MD, Is.EqualTo(_new.MD), message);
-        Assert.That(_old.W_REG, Is.EqualTo(_new.W), message);
-        Assert.That(_old.V_REG, Is.EqualTo(_new.V), message);
+        Assert.That(_old.CC, Is.EqualTo(_new.CC), message("CC"));
+        Assert.That(_old.PC_REG, Is.EqualTo(_new.PC), message("PC"));
+        Assert.That(_old.S_REG, Is.EqualTo(_new.S), message("S"));
+        Assert.That(_old.U_REG, Is.EqualTo(_new.U), message("U"));
+        Assert.That(_old.DPA, Is.EqualTo(_new.DP), message("DP"));
+        Assert.That(_old.X_REG, Is.EqualTo(_new.X), message("X"));
+        Assert.That(_old.Y_REG, Is.EqualTo(_new.Y), message("Y"));
+        Assert.That(_old.Cycles, Is.EqualTo(_new.Cycles), message("Cycles"));
+
+        Assert.That(_old.MD, Is.EqualTo(_new.MD), message("MD"));
+        Assert.That(_old.W_REG, Is.EqualTo(_new.W), message("W"));
+        Assert.That(_old.V_REG, Is.EqualTo(_new.V), message("V"));
+
+        Assert.That(memOld.ToList(), Is.EqualTo(memNew.ToList()), message("Mem"));
     }
     #endregion
 
@@ -167,9 +171,9 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
     [Test]
     public void OneOffTest()
     {
-        byte opcode = 0x3a;
-        var seeds = new Seeds { 65, 221, 209, 170, 15, 137, 242, 237, 108, 12, 175, 139, 9, 209, 35, 3, 18, 43, 135, 4 };
-        var state = new TestState { CC = 0x22, PC = 0xb170, S = 0xc5d1, U = 0x9f54, DP = 0x17, D = 0x5ef0, X = 0xe7e9, Y = 0x9484, MD = 0x57, W = 0x928a, V = 0x7bfa };
+        byte opcode = 0xaf;
+        var seeds = new Seeds { 160, 111, 158, 150, 106, 71, 2, 94, 241, 123, 17, 243, 152, 232, 165, 194, 243, 137, 123, 136 };
+        var state = new TestState { CC = 0x45, PC = 0xa196, S = 0xce68, U = 0xaec2, DP = 0x37, D = 0xd67c, X = 0x9ac4, Y = 0xbd5d };
 
         var memOld = new MemoryTester(seeds);
         var memNew = new MemoryTester(seeds);
@@ -192,5 +196,10 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
         Assert.That(_old.MD, Is.EqualTo(_new.MD));
         Assert.That(_old.W_REG, Is.EqualTo(_new.W));
         Assert.That(_old.V_REG, Is.EqualTo(_new.V));
+
+        var @old = string.Join(',', memOld.ToList());
+        var @new = string.Join(',', memNew.ToList());
+
+        Assert.That(@old, Is.EqualTo(@new));
     }
 }

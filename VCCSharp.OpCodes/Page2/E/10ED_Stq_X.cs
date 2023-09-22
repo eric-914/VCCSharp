@@ -28,10 +28,8 @@ internal class _10ED_Stq_X : OpCode6309, IOpCode
 {
     public int CycleCount => 8;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
 
         M32[address] = Q;
@@ -39,7 +37,5 @@ internal class _10ED_Stq_X : OpCode6309, IOpCode
         CC_N = Q.Bit31();
         CC_Z = Q == 0;
         CC_V = false;
-
-        return Cycles;
     }
 }

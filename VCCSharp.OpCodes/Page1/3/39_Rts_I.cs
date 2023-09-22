@@ -36,10 +36,8 @@ internal class _39_Rts_I : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._54;
 
-    public int Exec()
+    public void Exec()
     {
         PC = Pop16();
-
-        return CycleCount;
     }
 }

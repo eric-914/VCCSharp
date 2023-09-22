@@ -45,16 +45,12 @@ internal class _AD_Jsr_X : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._76;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
 
         Push(PC);
         
         PC = address;
-
-        return Cycles;
     }
 }

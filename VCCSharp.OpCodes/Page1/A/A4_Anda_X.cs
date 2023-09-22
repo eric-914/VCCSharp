@@ -35,10 +35,8 @@ internal class _A4_Anda_X : OpCode, IOpCode
 {
     public int CycleCount => 4;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
         byte value = M8[address];
         
@@ -49,7 +47,5 @@ internal class _A4_Anda_X : OpCode, IOpCode
         CC_V = false;
 
         A = result;
-
-        return Cycles;
     }
 }

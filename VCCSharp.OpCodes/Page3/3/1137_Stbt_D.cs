@@ -56,7 +56,7 @@ internal class _1137_Stbt_D : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._87;
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
         ushort address = DIRECT[PC++];
@@ -68,7 +68,8 @@ internal class _1137_Stbt_D : OpCode6309, IOpCode
 
         if (register == 3)
         {
-            return Exceptions.IllegalInstruction();
+            Cycles = Exceptions.IllegalInstruction();
+            return;
         }
 
         //TODO: Verify the following:
@@ -87,7 +88,5 @@ internal class _1137_Stbt_D : OpCode6309, IOpCode
         }
 
         M8[address] = mask;
-
-        return CycleCount;
     }
 }

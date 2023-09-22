@@ -54,13 +54,11 @@ internal class _1032_Subr_M : OpCode6309, IOpCode, IIndexedRegisterSwap
         };
     }
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
 
         _irs.Exec(value);
-
-        return CycleCount;
     }
 
     public void SetFlags(IFlags f)

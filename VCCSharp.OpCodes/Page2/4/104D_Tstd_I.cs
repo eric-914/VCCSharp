@@ -40,12 +40,10 @@ internal class _104D_Tstd_I : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._32;
 
-    public int Exec()
+    public void Exec()
     {
         CC_N = D.Bit15();
         CC_Z = D == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

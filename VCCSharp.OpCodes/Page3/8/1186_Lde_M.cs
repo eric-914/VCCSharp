@@ -28,14 +28,12 @@ internal class _1186_Lde_M : OpCode6309, IOpCode
 {
     public int CycleCount => 3;
 
-    public int Exec()
+    public void Exec()
     {
         E = M8[PC++];
 
         CC_N = E.Bit7();
         CC_Z = E == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

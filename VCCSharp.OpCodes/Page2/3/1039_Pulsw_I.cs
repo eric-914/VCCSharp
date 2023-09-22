@@ -32,10 +32,8 @@ internal class _1039_Pulsw_I : OpCode6309, IOpCode
 {
     public int CycleCount => 6;
 
-    public int Exec()
+    public void Exec()
     {
         W = Pop16();
-
-        return CycleCount;
     }
 }

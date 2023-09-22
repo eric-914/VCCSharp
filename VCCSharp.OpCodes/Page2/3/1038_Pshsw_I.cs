@@ -32,10 +32,8 @@ internal class _1038_Pshsw_I : OpCode6309, IOpCode
 {
     public int CycleCount => 6;
 
-    public int Exec()
+    public void Exec()
     {
         Push(W);
-
-        return CycleCount;
     }
 }

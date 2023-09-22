@@ -27,14 +27,12 @@ internal class _108E_Ldy_M : OpCode, IOpCode
 {
     public int CycleCount => 4;
 
-    public int Exec()
+    public void Exec()
     {
         Y = M16[PC]; PC += 2;
 
         CC_N = Y.Bit15();
         CC_Z = Y == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

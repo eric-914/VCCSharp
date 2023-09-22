@@ -32,7 +32,7 @@ internal class _7A_Dec_E : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._76;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = M16[PC]; PC += 2;
         byte value = M8[address];
@@ -44,7 +44,5 @@ internal class _7A_Dec_E : OpCode, IOpCode
         CC_V = value == 0x80;
 
         M8[address] = result;
-
-        return CycleCount;
     }
 }

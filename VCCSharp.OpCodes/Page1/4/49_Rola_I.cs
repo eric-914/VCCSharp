@@ -37,7 +37,7 @@ internal class _49_Rola_I : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._21;
 
-    public int Exec()
+    public void Exec()
     {
         byte bit = CC_C.ToBit();
 
@@ -49,7 +49,5 @@ internal class _49_Rola_I : OpCode, IOpCode
         CC_C = A.Bit7();
 
         A = result;
-
-        return CycleCount;
     }
 }

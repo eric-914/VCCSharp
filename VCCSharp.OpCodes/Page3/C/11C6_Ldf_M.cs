@@ -28,14 +28,12 @@ internal class _11C6_Ldf_M : OpCode6309, IOpCode
 {
     public int CycleCount => 3;
 
-    public int Exec()
+    public void Exec()
     {
         F = M8[PC++];
 
         CC_N = F.Bit7();
         CC_Z = F == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

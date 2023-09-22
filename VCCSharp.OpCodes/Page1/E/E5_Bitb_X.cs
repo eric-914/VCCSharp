@@ -34,17 +34,13 @@ internal class _E5_Bitb_X : OpCode, IOpCode
 {
     public int CycleCount => 4;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
         byte value = (byte)(B & M8[address]);
 
         CC_N = value.Bit7();
         CC_Z = value == 0;
         CC_V = false;
-
-        return Cycles;
     }
 }

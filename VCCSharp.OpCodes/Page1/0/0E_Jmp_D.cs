@@ -40,14 +40,12 @@ internal class _0E_Jmp_D : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._32;
 
-    public int Exec()
+    public void Exec()
     {
         byte offset = M8[PC];
 
         ushort address = (ushort)((DP * 0x100) | offset);
 
         PC = address;
-
-        return CycleCount;
     }
 }

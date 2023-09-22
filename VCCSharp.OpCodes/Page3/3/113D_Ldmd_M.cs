@@ -45,12 +45,10 @@ internal class _113D_Ldmd_M : OpCode6309, IOpCode
 {
     public int CycleCount => 5;
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
 
         MD = (byte)(value & 0x03);
-
-        return CycleCount;
     }
 }

@@ -28,10 +28,8 @@ internal class _11AF_Muld_X : OpCode6309, IOpCode
 {
     public int CycleCount => 30;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
         ushort value = M16[address];
 
@@ -41,7 +39,5 @@ internal class _11AF_Muld_X : OpCode6309, IOpCode
         CC_Z = fn.Z;
 
         Q = (uint)fn.Result;
-
-        return Cycles;
     }
 }

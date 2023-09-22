@@ -31,7 +31,7 @@ internal class _115F_Clrf_I : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._32;
 
-    public int Exec()
+    public void Exec()
     {
         F = 0;
 
@@ -39,7 +39,5 @@ internal class _115F_Clrf_I : OpCode6309, IOpCode
         CC_Z = true;
         CC_V = false;
         CC_C = false;
-
-        return CycleCount;
     }
 }

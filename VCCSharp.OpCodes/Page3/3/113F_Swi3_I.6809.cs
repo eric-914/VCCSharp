@@ -63,7 +63,7 @@ internal class _113F_Swi3_I_6809 : OpCode, IOpCode
 {
     public int CycleCount => 12 + 8; // One cycle for each byte pushed + Overhead
 
-    public int Exec()
+    public void Exec()
     {
         CC_E = true; //--Everything is going on stack
 
@@ -76,7 +76,5 @@ internal class _113F_Swi3_I_6809 : OpCode, IOpCode
         Push(CC);
 
         PC = M16[Define.VSWI3];
-
-        return CycleCount;
     }
 }

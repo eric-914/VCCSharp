@@ -28,10 +28,8 @@ internal class _10A7_Stw_X : OpCode6309, IOpCode
 {
     public int CycleCount => 6;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
 
         M16[address] = W;
@@ -39,7 +37,5 @@ internal class _10A7_Stw_X : OpCode6309, IOpCode
         CC_N = W.Bit15();
         CC_Z = W == 0;
         CC_V = false;
-
-        return Cycles;
     }
 }

@@ -37,7 +37,7 @@ internal class _1084_Andd_M : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._54;
 
-    public int Exec()
+    public void Exec()
     {
         ushort value = M16[PC]; PC += 2;
 
@@ -48,7 +48,5 @@ internal class _1084_Andd_M : OpCode6309, IOpCode
         CC_V = false;
 
         D = result;
-
-        return CycleCount;
     }
 }

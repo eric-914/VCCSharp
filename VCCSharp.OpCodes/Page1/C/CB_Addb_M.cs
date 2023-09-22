@@ -32,7 +32,7 @@ internal class _CB_Addb_M : OpCode, IOpCode
 {
     public int CycleCount => 2;
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
 
@@ -45,7 +45,5 @@ internal class _CB_Addb_M : OpCode, IOpCode
         CC_C = fn.C;
 
         B = (byte)fn.Result;
-
-        return CycleCount;
     }
 }

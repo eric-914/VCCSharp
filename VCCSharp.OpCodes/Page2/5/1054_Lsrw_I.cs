@@ -41,7 +41,7 @@ internal class _1054_Lsrw_I : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._32;
 
-    public int Exec()
+    public void Exec()
     {
         ushort result = (ushort)(W >> 1);
 
@@ -50,7 +50,5 @@ internal class _1054_Lsrw_I : OpCode6309, IOpCode
         CC_C = W.Bit0();
 
         W = result;
-
-        return CycleCount;
     }
 }

@@ -1682,7 +1682,12 @@ internal partial class OldOpcodes
 
     public void Sty_X() // AF 
     {
-        MemWrite16(Y_REG, INDADDRESS(PC_REG++));
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = CalculateEA(value);
+
+        MemWrite16(Y_REG, address);
+
         CC_Z = ZTEST(Y_REG);
         CC_N = NTEST16(Y_REG);
         CC_V = false;
@@ -1951,7 +1956,14 @@ internal partial class OldOpcodes
 
     public void Sts_X() // EF 
     {
-        MemWrite16(S_REG, INDADDRESS(PC_REG++));
+        byte value = MemRead8(PC_REG++);
+
+        ushort address = CalculateEA(value);
+
+        MemWrite16(S_REG, address);
+        
+        //MemWrite16(S_REG, INDADDRESS(PC_REG++));
+
         CC_Z = ZTEST(S_REG);
         CC_N = NTEST16(S_REG);
         CC_V = false;

@@ -27,14 +27,12 @@ internal class _CE_Ldu_M : OpCode, IOpCode
 {
     public int CycleCount => 3;
 
-    public int Exec()
+    public void Exec()
     {
         U = M16[PC]; PC += 2;
 
         CC_N = U.Bit15();
         CC_Z = U == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

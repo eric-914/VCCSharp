@@ -37,7 +37,7 @@ internal class _09_Rol_D : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._65;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = DIRECT[PC++];
         byte value = M8[address];
@@ -52,7 +52,5 @@ internal class _09_Rol_D : OpCode, IOpCode
         CC_C = value.Bit7();
 
         M8[address] = result;
-
-        return CycleCount;
     }
 }

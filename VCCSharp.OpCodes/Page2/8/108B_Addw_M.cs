@@ -33,7 +33,7 @@ internal class _108B_Addw_M : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._54;
 
-    public int Exec()
+    public void Exec()
     {
         ushort value = M16[PC]; PC += 2;
 
@@ -45,7 +45,5 @@ internal class _108B_Addw_M : OpCode6309, IOpCode
         CC_C = fn.C;
 
         W = (ushort)fn.Result;
-
-        return CycleCount;
     }
 }

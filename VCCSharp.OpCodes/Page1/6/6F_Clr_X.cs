@@ -43,10 +43,8 @@ internal class _6F_Clr_X : OpCode, IOpCode
 {
     public int CycleCount => 6;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
 
         M8[address] = 0;
@@ -55,7 +53,5 @@ internal class _6F_Clr_X : OpCode, IOpCode
         CC_Z = true;
         CC_V = false;
         CC_C = false;
-
-        return Cycles;
     }
 }

@@ -34,14 +34,10 @@ internal class _30_Leax_X : OpCode, IOpCode
 {
     public int CycleCount => 4;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         X = INDEXED[PC++];
 
         CC_Z = X == 0;
-
-        return Cycles;
     }
 }

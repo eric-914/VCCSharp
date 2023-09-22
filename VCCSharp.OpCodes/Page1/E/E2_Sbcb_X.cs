@@ -34,10 +34,8 @@ internal class _E2_Sbcb_X : OpCode, IOpCode
 {
     public int CycleCount => 4;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
@@ -50,7 +48,5 @@ internal class _E2_Sbcb_X : OpCode, IOpCode
         CC_C = fn.C;
 
         B = (byte)fn.Result;
-
-        return Cycles;
     }
 }

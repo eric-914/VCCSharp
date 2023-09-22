@@ -49,10 +49,8 @@ internal class _34_Pshs_M : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._54;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         void _8(byte value) { Cycles++; Push(value); }
         void _16(ushort value) { Cycles += 2; Push(value); }
 
@@ -66,7 +64,5 @@ internal class _34_Pshs_M : OpCode, IOpCode
         if (value.Bit2()) { _8(B); }
         if (value.Bit1()) { _8(A); }
         if (value.Bit0()) { _8(CC); }
-
-        return Cycles;
     }
 }

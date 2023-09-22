@@ -45,14 +45,12 @@ internal class _9D_Jsr_D : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._76;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = DIRECT[PC++];
 
         Push(PC);
 
         PC = address;
-
-        return CycleCount;
     }
 }

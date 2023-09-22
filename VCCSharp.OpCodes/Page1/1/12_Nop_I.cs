@@ -31,8 +31,8 @@ internal class _12_Nop_I : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._21;
 
-    public int Exec()
+    public void Exec()
     {
-        return DynamicCycles._21;
+        //--Do nothing
     }
 }

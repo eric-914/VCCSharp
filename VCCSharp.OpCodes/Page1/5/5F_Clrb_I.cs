@@ -30,7 +30,7 @@ internal class _5F_Clrb_I : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._21;
 
-    public int Exec()
+    public void Exec()
     {
         B = 0;
 
@@ -38,7 +38,5 @@ internal class _5F_Clrb_I : OpCode, IOpCode
         CC_Z = true;
         CC_V = false;
         CC_C = false;
-
-        return CycleCount;
     }
 }

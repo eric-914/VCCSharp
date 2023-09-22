@@ -28,7 +28,7 @@ internal class _10B6_Ldw_E : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._76;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = M16[PC]; PC += 2;
 
@@ -37,7 +37,5 @@ internal class _10B6_Ldw_E : OpCode6309, IOpCode
         CC_N = W.Bit15();
         CC_Z = W == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

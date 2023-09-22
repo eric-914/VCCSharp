@@ -32,7 +32,7 @@ internal class _FA_Orb_E : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._54;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = M16[PC]; PC += 2;
         byte value = M8[address];
@@ -44,7 +44,5 @@ internal class _FA_Orb_E : OpCode, IOpCode
         CC_V = false;
 
         B = result;
-
-        return CycleCount;
     }
 }

@@ -51,10 +51,8 @@ internal class _11BE_Divq_E : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._3736;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = M16[PC]; PC += 2;
 
         int numerator = (int)Q;
@@ -64,7 +62,8 @@ internal class _11BE_Divq_E : OpCode6309, IOpCode
 
         if (fn.Error == DivisionErrors.DivideByZero)
         {
-            return 4 + Exceptions.DivideByZero(); // 4 cycles to read word and increment PC and compare to zero.
+            Cycles = 4 + Exceptions.DivideByZero(); // 4 cycles to read word and increment PC and compare to zero.
+            return;
         }
 
         if (fn.Error == DivisionErrors.None)
@@ -78,6 +77,6 @@ internal class _11BE_Divq_E : OpCode6309, IOpCode
         CC_V = fn.V;
         CC_C = fn.C;
 
-        return fn.Cycles;
+        Cycles = fn.Cycles;
     }
 }

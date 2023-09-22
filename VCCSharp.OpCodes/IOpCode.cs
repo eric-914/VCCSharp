@@ -19,5 +19,5 @@ public interface IOpCode
     /// Invokes the opcode
     /// </summary>
     /// <returns>The execution cycle count</returns>
-    int Exec();
+    void Exec();
 }

@@ -37,14 +37,12 @@ internal class _17_Lbsr_R : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._97;
 
-    public int Exec()
+    public void Exec()
     {
         ushort value = M16[PC]; PC += 2;
 
         Push(PC);
 
         PC += value;
-
-        return CycleCount;
     }
 }

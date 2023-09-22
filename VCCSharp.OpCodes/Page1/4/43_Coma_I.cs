@@ -33,7 +33,7 @@ internal class _43_Coma_I : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._21;
 
-    public int Exec()
+    public void Exec()
     {
         byte result = (byte)(0xFF - A);
 
@@ -43,7 +43,5 @@ internal class _43_Coma_I : OpCode, IOpCode
         CC_C = true;
 
         A = result;
-
-        return CycleCount;
     }
 }

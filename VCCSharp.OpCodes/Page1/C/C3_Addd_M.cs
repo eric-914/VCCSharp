@@ -32,7 +32,7 @@ internal class _C3_Addd_M : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._43;
 
-    public int Exec()
+    public void Exec()
     {
         ushort value = M16[PC]; PC += 2;
 
@@ -45,7 +45,5 @@ internal class _C3_Addd_M : OpCode, IOpCode
         CC_C = fn.C;
 
         D = (ushort)fn.Result;
-
-        return CycleCount;
     }
 }

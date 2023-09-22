@@ -47,13 +47,11 @@ internal class _14_Sexw_I : OpCode6309, IOpCode
 {
     public int CycleCount => 4;
 
-    public int Exec()
+    public void Exec()
     {
         D = (W & 32768) != 0 ? (ushort)0xFFFF : (ushort)0;
 
         CC_Z = Q == 0;
         CC_N = D.Bit15();
-
-        return CycleCount;
     }
 }

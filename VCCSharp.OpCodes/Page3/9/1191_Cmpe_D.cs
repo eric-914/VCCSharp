@@ -35,7 +35,7 @@ internal class _1191_Cmpe_D : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._54;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = DIRECT[PC++];
         byte value = M8[address];
@@ -47,7 +47,5 @@ internal class _1191_Cmpe_D : OpCode6309, IOpCode
         CC_Z = fn.Z;
         CC_V = fn.V;
         CC_C = fn.C;
-
-        return CycleCount;
     }
 }

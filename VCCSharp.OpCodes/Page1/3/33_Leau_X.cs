@@ -33,12 +33,8 @@ internal class _33_Leau_X : OpCode, IOpCode
 {
     public int CycleCount => 4;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         U = INDEXED[PC++];
-
-        return Cycles;
     }
 }

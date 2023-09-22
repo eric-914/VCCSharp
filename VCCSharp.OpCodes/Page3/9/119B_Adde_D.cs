@@ -33,7 +33,7 @@ internal class _119B_Adde_D : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._54;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = DIRECT[PC++];
         byte value = M8[address];
@@ -47,7 +47,5 @@ internal class _119B_Adde_D : OpCode6309, IOpCode
         CC_C = fn.C;
 
         E = (byte)fn.Result;
-
-        return CycleCount;
     }
 }

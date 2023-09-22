@@ -27,14 +27,12 @@ internal class _CC_Ldd_M : OpCode, IOpCode
 {
     public int CycleCount => 3;
 
-    public int Exec()
+    public void Exec()
     {
         D = M16[PC]; PC += 2;
 
         CC_N = D.Bit15();
         CC_Z = D == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

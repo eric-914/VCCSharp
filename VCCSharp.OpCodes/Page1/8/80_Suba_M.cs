@@ -33,7 +33,7 @@ internal class _80_Suba_M : OpCode, IOpCode
 {
     public int CycleCount => 2;
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
 
@@ -46,7 +46,5 @@ internal class _80_Suba_M : OpCode, IOpCode
         CC_C = fn.C;
 
         A = (byte)fn.Result;
-
-        return CycleCount;
     }
 }

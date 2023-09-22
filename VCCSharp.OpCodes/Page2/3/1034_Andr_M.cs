@@ -50,13 +50,11 @@ internal class _1034_Andr_M : OpCode6309, IOpCode, IIndexedRegisterSwap
         };
     }
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
 
         _irs.Exec(value);
-
-        return CycleCount;
     }
 
     public void SetFlags(IFlags f)

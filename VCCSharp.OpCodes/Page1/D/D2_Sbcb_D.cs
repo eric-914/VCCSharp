@@ -34,7 +34,7 @@ internal class _D2_Sbcb_D : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._43;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = DIRECT[PC++];
         byte value = M8[address];
@@ -48,7 +48,5 @@ internal class _D2_Sbcb_D : OpCode, IOpCode
         CC_C = fn.C;
 
         B = (byte)fn.Result;
-
-        return CycleCount;
     }
 }

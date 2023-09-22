@@ -27,14 +27,12 @@ internal class _86_Lda_M : OpCode, IOpCode
 {
     public int CycleCount => 2;
 
-    public int Exec()
+    public void Exec()
     {
         A = M8[PC++];
 
         CC_N = A.Bit7();
         CC_Z = A == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

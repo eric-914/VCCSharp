@@ -38,10 +38,8 @@ internal class _1024_LBhs_R : OpCode, IOpCode
 {
     public int CycleCount => 6;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         if (!CC_C)
         {
             PC += (ushort)(short)M16[PC];
@@ -50,7 +48,5 @@ internal class _1024_LBhs_R : OpCode, IOpCode
         }
 
         PC += 2;
-
-        return Cycles;
     }
 }

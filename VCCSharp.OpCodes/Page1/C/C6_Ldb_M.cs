@@ -27,14 +27,12 @@ internal class _C6_Ldb_M : OpCode, IOpCode
 {
     public int CycleCount => 2;
 
-    public int Exec()
+    public void Exec()
     {
         B = M8[PC++];
 
         CC_N = B.Bit7();
         CC_Z = B == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

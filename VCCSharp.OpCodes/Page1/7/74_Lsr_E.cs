@@ -35,7 +35,7 @@ internal class _74_Lsr_E : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._76;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = M16[PC]; PC += 2;
         byte value = M8[address];
@@ -47,7 +47,5 @@ internal class _74_Lsr_E : OpCode, IOpCode
         CC_C = value.Bit0();
 
         M8[address] = result;
-
-        return CycleCount;
     }
 }

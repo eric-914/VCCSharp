@@ -32,11 +32,9 @@ internal class _103A_Pshuw_I : OpCode6309, IOpCode
 {
     public int CycleCount => 6;
 
-    public int Exec()
+    public void Exec()
     {
         M8[--U] = F;
         M8[--U] = E;
-
-        return CycleCount;
     }
 }

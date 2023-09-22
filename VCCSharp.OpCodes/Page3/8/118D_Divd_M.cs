@@ -51,10 +51,8 @@ internal class _118D_Divd_M : OpCode6309, IOpCode
 {
     public int CycleCount => 25;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         short numerator = (short)D;
         sbyte denominator = (sbyte)M8[PC++];
 
@@ -62,7 +60,8 @@ internal class _118D_Divd_M : OpCode6309, IOpCode
 
         if (fn.Error == DivisionErrors.DivideByZero)
         {
-            return 3 + Exceptions.DivideByZero(); // 3 cycles to read byte and increment PC and compare to zero.
+            Cycles = 3 + Exceptions.DivideByZero(); // 3 cycles to read byte and increment PC and compare to zero.
+            return;
         }
 
         if (fn.Error == DivisionErrors.None)
@@ -76,6 +75,6 @@ internal class _118D_Divd_M : OpCode6309, IOpCode
         CC_V = fn.V;
         CC_C = fn.C;
 
-        return fn.Cycles;
+        Cycles = fn.Cycles;
     }
 }

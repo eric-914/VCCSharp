@@ -34,7 +34,7 @@ internal class _D1_Cmpb_D : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._43;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = DIRECT[PC++];
         byte value = M8[address];
@@ -46,7 +46,5 @@ internal class _D1_Cmpb_D : OpCode, IOpCode
         CC_Z = fn.Z;
         CC_V = fn.V;
         CC_C = fn.C;
-
-        return CycleCount;
     }
 }

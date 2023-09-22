@@ -38,7 +38,7 @@ internal class _40_Nega_I : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._21;
 
-    public int Exec()
+    public void Exec()
     {
         byte value = (byte)(0 - A);
 
@@ -48,7 +48,5 @@ internal class _40_Nega_I : OpCode, IOpCode
         CC_C = !(A == 0);
 
         A = value;
-
-        return CycleCount;
     }
 }

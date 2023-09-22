@@ -84,13 +84,11 @@ internal class _1F_Tfr_M_6309 : OpCode6309, IOpCode
         };
     }
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
 
         _map.Execute(value);
-
-        return CycleCount;
     }
 
     private void _16Bit_and_16Bit(byte source, byte destination) => R16[destination] = R16[source];

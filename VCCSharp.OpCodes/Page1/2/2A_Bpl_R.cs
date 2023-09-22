@@ -32,7 +32,7 @@ internal class _2A_Bpl_R : OpCode, IOpCode
 {
     public int CycleCount => 3;
 
-    public int Exec()
+    public void Exec()
     {
         if (!CC_N)
         {
@@ -40,7 +40,5 @@ internal class _2A_Bpl_R : OpCode, IOpCode
         }
 
         PC++;
-
-        return CycleCount;
     }
 }

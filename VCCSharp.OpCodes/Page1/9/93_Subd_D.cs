@@ -31,7 +31,7 @@ internal class _93_Subd_D : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._64;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = DIRECT[PC++];
         ushort value = M16[address];
@@ -45,7 +45,5 @@ internal class _93_Subd_D : OpCode, IOpCode
         CC_C = fn.C;
 
         D = (ushort)fn.Result;
-
-        return CycleCount;
     }
 }

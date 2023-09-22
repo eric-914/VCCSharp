@@ -30,7 +30,7 @@ internal class _2F_Ble_R : OpCode, IOpCode
 {
     public int CycleCount => 3;
 
-    public int Exec()
+    public void Exec()
     {
         if (CC_Z | (CC_N ^ CC_V))
         {
@@ -38,7 +38,5 @@ internal class _2F_Ble_R : OpCode, IOpCode
         }
 
         PC++;
-
-        return CycleCount;
     }
 }

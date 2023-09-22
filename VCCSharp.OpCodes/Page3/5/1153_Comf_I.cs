@@ -34,7 +34,7 @@ internal class _1153_Comf_I : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._32;
 
-    public int Exec()
+    public void Exec()
     {
         byte result = (byte)(0xFF - F);
 
@@ -44,7 +44,5 @@ internal class _1153_Comf_I : OpCode6309, IOpCode
         CC_C = true;
 
         F = result;
-
-        return CycleCount;
     }
 }

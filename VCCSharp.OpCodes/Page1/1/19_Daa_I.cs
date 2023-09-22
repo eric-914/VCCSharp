@@ -44,7 +44,7 @@ internal class _19_Daa_I : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._21;
 
-    public int Exec()
+    public void Exec()
     {
         byte msn = (byte)(A >> 4);  // -- A[4..7]
         byte lsn = (byte)(A & 0x0F); // -- A[0..3]
@@ -69,7 +69,5 @@ internal class _19_Daa_I : OpCode, IOpCode
         CC_C |= result > 0xFF;
         //CC_V = undefined
         CC_Z = A == 0;
-
-        return CycleCount;
     }
 }

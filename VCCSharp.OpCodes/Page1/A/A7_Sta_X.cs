@@ -27,10 +27,8 @@ internal class _A7_Sta_X : OpCode, IOpCode
 {
     public int CycleCount => 4;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
 
         M8[address] = A;
@@ -38,7 +36,5 @@ internal class _A7_Sta_X : OpCode, IOpCode
         CC_Z = A == 0;
         CC_N = A.Bit7();
         CC_V = false;
-
-        return Cycles;
     }
 }

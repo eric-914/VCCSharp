@@ -33,7 +33,7 @@ internal class _1183_Cmpu_M : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._54;
 
-    public int Exec()
+    public void Exec()
     {
         ushort value = M16[PC]; PC += 2;
 
@@ -43,7 +43,5 @@ internal class _1183_Cmpu_M : OpCode, IOpCode
         CC_Z = fn.Z;
         CC_V = fn.V;
         CC_C = fn.C;
-
-        return CycleCount;
     }
 }

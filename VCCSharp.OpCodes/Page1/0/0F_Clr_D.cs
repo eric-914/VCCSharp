@@ -43,7 +43,7 @@ internal class _0F_Clr_D : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._65;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = DIRECT[PC++];
 
@@ -53,7 +53,5 @@ internal class _0F_Clr_D : OpCode, IOpCode
         CC_Z = true;
         CC_V = false;
         CC_C = false;
-
-        return CycleCount;
     }
 }

@@ -50,10 +50,8 @@ internal class _37_Pulu_M : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._54;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         byte _8() { Cycles++; return M8[U++]; }
         ushort _16() { Cycles += 2; return (ushort)(M8[U++] << 8 | M8[U++]); }
 
@@ -67,7 +65,5 @@ internal class _37_Pulu_M : OpCode, IOpCode
         if (value.Bit5()) { Y = _16(); }
         if (value.Bit6()) { S = _16(); }
         if (value.Bit7()) { PC = _16(); }
-
-        return Cycles;
     }
 }

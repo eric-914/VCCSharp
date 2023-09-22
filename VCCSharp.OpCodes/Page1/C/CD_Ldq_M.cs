@@ -28,14 +28,12 @@ internal class _CD_Ldq_M : OpCode6309, IOpCode
 {
     public int CycleCount => 5;
 
-    public int Exec()
+    public void Exec()
     {
         Q = M32[PC+=4];
 
         CC_N = Q.Bit31();
         CC_Z = Q == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

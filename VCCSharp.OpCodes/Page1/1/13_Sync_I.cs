@@ -32,8 +32,8 @@ internal class _13_Sync_I : OpCode, IOpCode
 {
     public int CycleCount => SynchronizeWithInterrupt();
 
-    public int Exec()
+    public void Exec()
     {
-        return CycleCount;
+        //--Do nothing but count cycles until interrupt
     }
 }

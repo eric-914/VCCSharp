@@ -28,14 +28,12 @@ internal class _1086_Ldw_M : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._54;
 
-    public int Exec()
+    public void Exec()
     {
         W = M16[PC]; PC += 2;
 
         CC_N = W.Bit15();
         CC_Z = W == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

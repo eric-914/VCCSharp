@@ -35,10 +35,8 @@ internal class _11A1_Cmpe_X : OpCode6309, IOpCode
 {
     public int CycleCount => 5;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
@@ -49,7 +47,5 @@ internal class _11A1_Cmpe_X : OpCode6309, IOpCode
         CC_Z = fn.Z;
         CC_V = fn.V;
         CC_C = fn.C;
-
-        return Cycles;
     }
 }

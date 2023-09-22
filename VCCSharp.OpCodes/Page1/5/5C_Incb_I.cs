@@ -33,7 +33,7 @@ internal class _5C_Incb_I : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._21;
 
-    public int Exec()
+    public void Exec()
     {
         byte result = (byte)(B + 1);
 
@@ -42,7 +42,5 @@ internal class _5C_Incb_I : OpCode, IOpCode
         CC_V = B == 0x7F;
 
         B = result;
-
-        return CycleCount;
     }
 }

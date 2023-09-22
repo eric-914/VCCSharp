@@ -31,12 +31,10 @@ internal class _20_Bra_R : OpCode, IOpCode
 {
     public int CycleCount => 3;
 
-    public int Exec()
+    public void Exec()
     {
         sbyte value = (sbyte)M8[PC++];
 
         PC += (ushort)value;
-
-        return CycleCount;
     }
 }

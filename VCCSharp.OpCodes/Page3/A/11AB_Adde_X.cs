@@ -33,10 +33,8 @@ internal class _11AB_Adde_X : OpCode6309, IOpCode
 {
     public int CycleCount => 5;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
@@ -49,7 +47,5 @@ internal class _11AB_Adde_X : OpCode6309, IOpCode
         CC_C = fn.C;
 
         E = (byte)fn.Result;
-
-        return Cycles;
     }
 }

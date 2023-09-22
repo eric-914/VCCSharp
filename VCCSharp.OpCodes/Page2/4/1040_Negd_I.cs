@@ -45,7 +45,7 @@ internal class _1040_Negd_I : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._32;
 
-    public int Exec()
+    public void Exec()
     {
         ushort result = (ushort)(0 - D);
 
@@ -55,7 +55,5 @@ internal class _1040_Negd_I : OpCode6309, IOpCode
         CC_C = !(D == 0);
 
         D = result;
-
-        return CycleCount;
     }
 }

@@ -35,7 +35,7 @@ internal class _D4_Andb_D : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._43;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = DIRECT[PC++];
 
@@ -48,7 +48,5 @@ internal class _D4_Andb_D : OpCode, IOpCode
         CC_V = false;
 
         B = result;
-
-        return CycleCount;
     }
 }

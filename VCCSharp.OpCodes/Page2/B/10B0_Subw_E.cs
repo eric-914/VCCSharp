@@ -35,7 +35,7 @@ internal class _10B0_Subw_E : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._86;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = M16[PC]; PC += 2;
         ushort value = M16[address];
@@ -48,7 +48,5 @@ internal class _10B0_Subw_E : OpCode6309, IOpCode
         CC_C = fn.C;
 
         W = (ushort)fn.Result;
-
-        return CycleCount;
     }
 }

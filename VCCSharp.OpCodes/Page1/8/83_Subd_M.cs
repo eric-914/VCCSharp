@@ -31,20 +31,18 @@ internal class _83_Subd_M : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._43;
 
-    public int Exec()
+    public void Exec()
     {
         ushort value = M16[PC]; PC += 2;
 
         var fn = Subtract(D, value);
 
-        //CC_H = sum.H; //--Not applicable
+        //CC_H = undefined;
         CC_N = fn.N;
         CC_Z = fn.Z;
         CC_V = fn.V;
         CC_C = fn.C;
 
         D = (ushort)fn.Result;
-
-        return CycleCount;
     }
 }

@@ -42,10 +42,8 @@ internal class _68_Asl_X : OpCode, IOpCode
 {
     public int CycleCount => 6;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
@@ -58,7 +56,5 @@ internal class _68_Asl_X : OpCode, IOpCode
         CC_C = value.Bit7();
 
         M8[address] = result;
-
-        return Cycles;
     }
 }

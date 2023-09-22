@@ -48,7 +48,7 @@ internal class _0B_Tim_D : OpCode6309, IOpCode
 {
     public int CycleCount => 6;
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
         ushort address = DIRECT[PC++];
@@ -59,7 +59,5 @@ internal class _0B_Tim_D : OpCode6309, IOpCode
         CC_N = result.Bit7();
         CC_Z = result == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

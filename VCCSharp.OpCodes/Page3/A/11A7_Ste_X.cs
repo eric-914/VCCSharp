@@ -27,10 +27,8 @@ internal class _11A7_Ste_X : OpCode6309, IOpCode
 {
     public int CycleCount => 5;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
 
         M8[address] = E;
@@ -38,7 +36,5 @@ internal class _11A7_Ste_X : OpCode6309, IOpCode
         CC_N = E.Bit7();
         CC_Z = E == 0;
         CC_V = false;
-
-        return Cycles;
     }
 }

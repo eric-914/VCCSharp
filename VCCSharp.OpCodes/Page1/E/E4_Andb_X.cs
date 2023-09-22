@@ -35,10 +35,8 @@ internal class _E4_Andb_X : OpCode, IOpCode
 {
     public int CycleCount => 4;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
 
         byte value = M8[address];
@@ -50,7 +48,5 @@ internal class _E4_Andb_X : OpCode, IOpCode
         CC_V = false;
 
         B = result;
-
-        return Cycles;
     }
 }

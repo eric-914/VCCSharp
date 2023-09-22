@@ -34,7 +34,7 @@ internal class _44_Lsra_I : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._21;
 
-    public int Exec()
+    public void Exec()
     {
         byte result = (byte)(A >> 1);
 
@@ -43,7 +43,5 @@ internal class _44_Lsra_I : OpCode, IOpCode
         CC_C = A.Bit0();
 
         A = result;
-
-        return CycleCount;
     }
 }

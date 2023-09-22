@@ -51,7 +51,7 @@ internal class _05_Eim_D : OpCode6309, IOpCode
 {
     public int CycleCount => 6;
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
         ushort address = DIRECT[PC++];
@@ -64,7 +64,5 @@ internal class _05_Eim_D : OpCode6309, IOpCode
         CC_V = false;
 
         M8[address] = result;
-
-        return CycleCount;
     }
 }

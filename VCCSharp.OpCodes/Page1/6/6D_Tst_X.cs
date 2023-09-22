@@ -35,17 +35,13 @@ internal class _6D_Tst_X : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._65;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
         byte value = M8[address];
 
         CC_N = value.Bit7();
         CC_Z = value == 0;
         CC_V = false;
-
-        return Cycles;
     }
 }

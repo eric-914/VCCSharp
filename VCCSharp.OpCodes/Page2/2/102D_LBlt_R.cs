@@ -33,10 +33,8 @@ internal class _102D_LBlt_R : OpCode, IOpCode
 {
     public int CycleCount => 5;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         if (CC_V ^ CC_N)
         {
             PC += (ushort)(short)M16[PC];
@@ -45,7 +43,5 @@ internal class _102D_LBlt_R : OpCode, IOpCode
         }
 
         PC += 2;
-
-        return Cycles;
     }
 }

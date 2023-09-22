@@ -78,13 +78,11 @@ internal class _1E_Exg_M_6809 : OpCode, IOpCode
         };
     }
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
 
         _map.Execute(value);
-
-        return CycleCount;
     }
 
     private void _16Bit_and_16Bit(byte source, byte destination)

@@ -40,12 +40,10 @@ internal class _7E_Jmp_E : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._43;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = M16[PC];
 
         PC = address;
-
-        return CycleCount;
     }
 }

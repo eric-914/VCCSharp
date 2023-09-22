@@ -35,10 +35,8 @@ internal class _10A3_Cmpd_X : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._76;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++];
         ushort value = M16[address];
 
@@ -48,7 +46,5 @@ internal class _10A3_Cmpd_X : OpCode, IOpCode
         CC_Z = fn.Z;
         CC_V = fn.V;
         CC_C = fn.C;
-
-        return Cycles;
     }
 }

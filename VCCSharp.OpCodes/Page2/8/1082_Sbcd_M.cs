@@ -43,7 +43,7 @@ internal class _1082_Sbcd_M : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._54;
 
-    public int Exec()
+    public void Exec()
     {
         var value = M16[PC]; PC += 2;
 
@@ -55,7 +55,5 @@ internal class _1082_Sbcd_M : OpCode6309, IOpCode
         CC_C = fn.C;
 
         D = (ushort)fn.Result;
-
-        return CycleCount;
     }
 }

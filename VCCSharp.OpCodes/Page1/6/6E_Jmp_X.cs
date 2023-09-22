@@ -40,14 +40,10 @@ internal class _6E_Jmp_X : OpCode, IOpCode
 {
     public int CycleCount => 3;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         ushort address = INDEXED[PC++]; //--Note that INDEXED makes use of PC in its calculations, hence the ++ is required.
 
         PC = address;
-
-        return Cycles;
     }
 }

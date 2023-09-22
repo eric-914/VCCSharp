@@ -66,10 +66,8 @@ internal class _3B_Rti_I_6809 : OpCode, IOpCode
 {
     public int CycleCount => 6;
 
-    public int Exec()
+    public void Exec()
     {
-        Cycles = CycleCount;
-
         CC = Pop8();
 
         ClearInterrupt(); //TODO: Does the interrupt technically end before or after the stack pull?
@@ -86,7 +84,5 @@ internal class _3B_Rti_I_6809 : OpCode, IOpCode
         }
 
         PC = Pop16();
-
-        return Cycles;
     }
 }

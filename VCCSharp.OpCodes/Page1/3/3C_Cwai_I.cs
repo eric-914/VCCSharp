@@ -47,12 +47,10 @@ internal class _3C_Cwai_I : OpCode, IOpCode
 {
     public int CycleCount => SynchronizeWithInterrupt();
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
 
         CC &= value;
-
-        return CycleCount;
     }
 }

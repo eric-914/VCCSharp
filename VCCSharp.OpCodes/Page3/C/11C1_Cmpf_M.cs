@@ -35,7 +35,7 @@ internal class _11C1_Cmpf_M : OpCode6309, IOpCode
 {
     public int CycleCount => 3;
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
 
@@ -46,7 +46,5 @@ internal class _11C1_Cmpf_M : OpCode6309, IOpCode
         CC_Z = fn.Z;
         CC_V = fn.V;
         CC_C = fn.C;
-
-        return CycleCount;
     }
 }

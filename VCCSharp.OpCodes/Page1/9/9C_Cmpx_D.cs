@@ -33,7 +33,7 @@ internal class _9C_Cmpx_D : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._64;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = DIRECT[PC++];
         ushort value = M16[address];
@@ -44,7 +44,5 @@ internal class _9C_Cmpx_D : OpCode, IOpCode
         CC_Z = fn.Z;
         CC_V = fn.V;
         CC_C = fn.C;
-
-        return CycleCount;
     }
 }

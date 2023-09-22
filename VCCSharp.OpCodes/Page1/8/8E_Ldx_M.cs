@@ -27,14 +27,12 @@ internal class _8E_Ldx_M : OpCode, IOpCode
 {
     public int CycleCount => 3;
 
-    public int Exec()
+    public void Exec()
     {
         X = M16[PC]; PC += 2;
 
         CC_N = X.Bit15();
         CC_Z = X == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

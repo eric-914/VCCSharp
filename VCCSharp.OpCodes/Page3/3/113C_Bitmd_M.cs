@@ -52,7 +52,7 @@ internal class _113C_Bitmd_M : OpCode6309, IOpCode
 {
     public int CycleCount => 4;
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
 
@@ -60,14 +60,10 @@ internal class _113C_Bitmd_M : OpCode6309, IOpCode
 
         CC_Z = result == 0;
 
-        byte mask = (byte)(MD & result.I());
-
         //--Clear corresponding bits
         //--The documentation would require reading the MD flags which goes against their read-only usage.
         //--The logic can be simplified to: IF (BIT) → MD_BIT = false;
         if (result.Bit6()) MD_ILLEGAL = false;
         if (result.Bit7()) MD_ZERODIV = false;
-
-        return CycleCount;
     }
 }

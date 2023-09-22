@@ -36,7 +36,7 @@ internal class _1043_Comd_I : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._32;
 
-    public int Exec()
+    public void Exec()
     {
         var result = (ushort)(0xFFFF - D);
 
@@ -46,7 +46,5 @@ internal class _1043_Comd_I : OpCode6309, IOpCode
         CC_C = true;
 
         D = result;
-
-        return CycleCount;
     }
 }

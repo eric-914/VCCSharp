@@ -34,7 +34,7 @@ internal class _85_Bita_M : OpCode, IOpCode
 {
     public int CycleCount => 2;
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
 
@@ -43,7 +43,5 @@ internal class _85_Bita_M : OpCode, IOpCode
         CC_N = result.Bit7();
         CC_Z = result == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

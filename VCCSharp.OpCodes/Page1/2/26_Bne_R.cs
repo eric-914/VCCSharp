@@ -39,7 +39,7 @@ internal class _26_Bne_R : OpCode, IOpCode
 {
     public int CycleCount => 3;
 
-    public int Exec()
+    public void Exec()
     {
         if (!CC_Z)
         {
@@ -47,7 +47,5 @@ internal class _26_Bne_R : OpCode, IOpCode
         }
 
         PC++;
-
-        return CycleCount;
     }
 }

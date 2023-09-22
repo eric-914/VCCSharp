@@ -61,7 +61,7 @@ internal class _1134_Beor_D : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._76;
 
-    public int Exec()
+    public void Exec()
     {
         byte value = M8[PC++];
         ushort address = DIRECT[PC++];
@@ -73,7 +73,8 @@ internal class _1134_Beor_D : OpCode6309, IOpCode
 
         if (register == 3)
         {
-            return Exceptions.IllegalInstruction();
+            Cycles = Exceptions.IllegalInstruction();
+            return;
         }
 
         byte sBit = (byte)(1 << source);
@@ -83,8 +84,5 @@ internal class _1134_Beor_D : OpCode6309, IOpCode
         {
             R8[register] ^= dBit;
         }
-
-        // Else nothing changes
-        return CycleCount;
     }
 }

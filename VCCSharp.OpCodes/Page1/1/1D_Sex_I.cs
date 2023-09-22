@@ -44,7 +44,7 @@ internal class _1D_Sex_I : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._21;
 
-    public int Exec()
+    public void Exec()
     {
         bool bit = B.Bit7();
 
@@ -52,7 +52,5 @@ internal class _1D_Sex_I : OpCode, IOpCode
 
         CC_Z = D == 0;
         CC_N = bit;
-
-        return CycleCount;
     }
 }

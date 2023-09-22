@@ -14,10 +14,10 @@ internal class _11_Page_3_6809 : OpCode, IOpCode, IPage3
 
     public int CycleCount => 0;
 
-    public int Exec()
+    public void Exec()
     {
         byte opCode = M8[PC++];
 
-        return _exec.Exec(Page3[opCode]);
+        Cycles = _exec.Exec(Page3[opCode]);
     }
 }

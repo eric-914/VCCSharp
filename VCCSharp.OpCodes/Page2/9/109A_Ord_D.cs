@@ -40,7 +40,7 @@ internal class _109A_Ord_D : OpCode6309, IOpCode
 {
     public int CycleCount => DynamicCycles._75;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = DIRECT[PC++];
         ushort value = M16[address];
@@ -52,7 +52,5 @@ internal class _109A_Ord_D : OpCode6309, IOpCode
         CC_V = false;
 
         D = result;
-
-        return CycleCount;
     }
 }

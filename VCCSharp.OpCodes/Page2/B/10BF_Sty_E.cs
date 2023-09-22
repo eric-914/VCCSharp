@@ -27,7 +27,7 @@ internal class _10BF_Sty_E : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._76;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = M16[PC]; PC += 2;
 
@@ -36,7 +36,5 @@ internal class _10BF_Sty_E : OpCode, IOpCode
         CC_N = Y.Bit15();
         CC_Z = Y == 0;
         CC_V = false;
-
-        return CycleCount;
     }
 }

@@ -45,14 +45,12 @@ internal class _BD_Jsr_E : OpCode, IOpCode
 {
     public int CycleCount => DynamicCycles._87;
 
-    public int Exec()
+    public void Exec()
     {
         ushort address = M16[PC]; PC += 2;
 
         Push(PC);
 
         PC = address;
-
-        return CycleCount;
     }
 }

@@ -46,9 +46,9 @@ internal class _113B_Tfm4_M : OpCode6309, IOpCode, ITransferMemory
 
     public int CycleCount => 6;
 
-    public int Exec()
+    public void Exec()
     {
-        return _tm.Exec(this);
+        Cycles = _tm.Exec(this);
     }
 
     public void Swap(byte source, byte destination)
