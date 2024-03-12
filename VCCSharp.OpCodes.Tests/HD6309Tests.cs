@@ -13,7 +13,7 @@ public class HD6309Tests
     private void TestOpCode(byte opcode, Action<byte, OldOpcodes, NewOpcodes> exec)
     {
         var seeds = new Seeds(20);
-        var state = new TestState();
+        var state = new HD6309TestState();
 
         var memOld = new MemoryTester(seeds);
         var memNew = new MemoryTester(seeds);
@@ -26,7 +26,7 @@ public class HD6309Tests
         string scenario = $@"
 byte opcode=0x{opcode:x}; 
 var seeds = new Seeds {{{string.Join(", ", seeds)}}};
-var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:x}, U=0x{state.U:x}, DP=0x{state.DP:x}, D=0x{state.D:x}, X=0x{state.X:x}, Y=0x{state.Y:x} }};
+var state = new HD6309TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:x}, U=0x{state.U:x}, DP=0x{state.DP:x}, D=0x{state.D:x}, X=0x{state.X:x}, Y=0x{state.Y:x}, MD=0x{state.MD:x}, W=0x{state.W:x}, V=0x{state.V:x} }};
 ";
 
         string message(string key) => $"{key} failed:\n\n{scenario}";
@@ -173,7 +173,7 @@ var state = new TestState {{ CC=0x{state.CC:x}, PC=0x{state.PC:x}, S=0x{state.S:
     {
         byte opcode = 0xaf;
         var seeds = new Seeds { 160, 111, 158, 150, 106, 71, 2, 94, 241, 123, 17, 243, 152, 232, 165, 194, 243, 137, 123, 136 };
-        var state = new TestState { CC = 0x45, PC = 0xa196, S = 0xce68, U = 0xaec2, DP = 0x37, D = 0xd67c, X = 0x9ac4, Y = 0xbd5d };
+        var state = new HD6309TestState { CC = 0x45, PC = 0xa196, S = 0xce68, U = 0xaec2, DP = 0x37, D = 0xd67c, X = 0x9ac4, Y = 0xbd5d };
 
         var memOld = new MemoryTester(seeds);
         var memNew = new MemoryTester(seeds);

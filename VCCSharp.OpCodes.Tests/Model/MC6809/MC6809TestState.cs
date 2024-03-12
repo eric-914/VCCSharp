@@ -1,6 +1,9 @@
 ﻿namespace VCCSharp.OpCodes.Tests.Model.MC6809;
 
-internal class TestState
+/// <summary>
+/// MC6809 registers to test
+/// </summary>
+internal class MC6809TestState
 {
     public byte CC = Rnd.B();
     public ushort PC = Rnd.W();
